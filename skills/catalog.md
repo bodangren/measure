@@ -148,6 +148,7 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`, `iam.tf`
     - **Keywords**: `OWASP`, `Security`, `Cloud Asset Inventory`, `IAM`, `Load Balancing`
 
 ### gcp-cryptographic-failures
@@ -156,6 +157,8 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`
+    - **Dependencies**: `@google-cloud/kms`, `@google-cloud/secret-manager`, `google-cloud-kms`, `google-cloud-secret-manager`, `cloud.google.com/go/kms`
     - **Keywords**: `OWASP`, `Security`, `KMS`, `Secret Manager`, `Cloud DLP`
 
 ### gcp-injection
@@ -164,6 +167,8 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `app.yaml`, `Dockerfile`
+    - **Dependencies**: `pg`, `mysql`, `sqlite3`, `mssql`
     - **Keywords**: `OWASP`, `Security`, `Web Security Scanner`, `Cloud Armor`, `SQLi`
 
 ### gcp-insecure-design
@@ -172,6 +177,7 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`, `cloudbuild.yaml`
     - **Keywords**: `OWASP`, `Security`, `Apigee`, `Cloud DLP`, `Security Command Center`
 
 ### gcp-security-misconfiguration
@@ -180,6 +186,7 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`, `app.yaml`, `cloudbuild.yaml`, `Dockerfile`
     - **Keywords**: `OWASP`, `Security`, `VPC Firewall`, `Compute Engine`, `Hardening`
 
 ### gcp-vulnerable-components
@@ -188,6 +195,7 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `package.json`, `requirements.txt`, `go.mod`, `pom.xml`, `build.gradle`, `Dockerfile`, `cloudbuild.yaml`
     - **Keywords**: `OWASP`, `Security`, `Artifact Registry`, `GKE`, `Container Analysis`
 
 ### gcp-auth-failures
@@ -196,6 +204,8 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`, `app.yaml`
+    - **Dependencies**: `firebase-admin`, `google-auth-library`, `google-cloud-identity`, `@google-cloud/iap`
     - **Keywords**: `OWASP`, `Security`, `IAP`, `Identity-Aware Proxy`, `Cloud Armor`, `Identity Platform`
 
 ### gcp-integrity-failures
@@ -204,6 +214,7 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `cloudbuild.yaml`, `Dockerfile`, `binauthz.yaml`
     - **Keywords**: `OWASP`, `Security`, `Artifact Registry`, `Cloud Build`, `Binary Authorization`
 
 ### gcp-logging-monitoring-failures
@@ -212,6 +223,8 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`
+    - **Dependencies**: `@google-cloud/logging`, `@google-cloud/monitoring`, `google-cloud-logging`, `cloud.google.com/go/logging`
     - **Keywords**: `OWASP`, `Security`, `Cloud Logging`, `Cloud Monitoring`, `Audit Logs`
 
 ### gcp-ssrf
@@ -220,4 +233,5 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
 - **Party**: 3p
 - **Commit SHA**: 38789fb168ca741b9cc907e9f156405f9cb6c9df
 - **Detection Signals**:
+    - **Files**: `*.tf`, `app.yaml`
     - **Keywords**: `OWASP`, `Security`, `VPC Service Controls`, `Access Context Manager`, `Egress`
