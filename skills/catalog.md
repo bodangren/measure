@@ -99,13 +99,6 @@ Skills focused on auditing and remediating OWASP Top 10 vulnerabilities on Googl
     - **Files**: `*.tf`, `app.yaml`
     - **Keywords**: `OWASP`, `Security`, `VPC Service Controls`, `Access Context Manager`, `Egress`
 
-### gcp-apis
-- **Description**: Manage and enable Google Cloud Platform APIs
-- **URL**: https://source.corp.google.com/piper///depot/google3/experimental/users/zerep/gcp-skills/skills/gcp-apis/
-- **Party**: 1p
-- **Detection Signals**:
-    - **Keywords**: `GCP`, `Google Cloud APIs`, `Enable API`
-
 ## Firebase Skills
 Skills focused on setting up, managing, and using various Firebase services.
 
