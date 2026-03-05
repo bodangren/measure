@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.3.0...conductor-v0.3.1) (2026-02-19)
+
+
+### Bug Fixes
+
+* **conductor:** Address review comments and standardize interactive flows ([f025c7d](https://github.com/gemini-cli-extensions/conductor/commit/f025c7d1552077cc2e5b6d2ae80ae85ac4298b28))
+
 ## [0.3.0](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.2.0...conductor-v0.3.0) (2026-02-11)
 
 
