@@ -371,7 +371,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.6 Select Skills (Interactive)
 1.  **Analyze and Recommend:**
-    -   Read `skills/catalog.md`.
+    -   Read `skills/catalog.md` from the directory where the Conductor extension is installed (typically `~/.gemini/extensions/conductor/skills/catalog.md`).
     -   Detect applicable skills based on `detectSignals` matched against project files and `conductor/tech-stack.md`.
     -   Identify "Always Recommended" skills.
 2.  **Present Selection:**

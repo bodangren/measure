@@ -132,8 +132,8 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.4 Skill Recommendation (Interactive)
 1.  **Analyze Needs:**
-    -   Read `skills/catalog.md`.
-    -   Analyze the confirmed `spec.md` and `plan.md` against the `Detection Signals` in `skills/catalog.md`.
+    -   Read `skills/catalog.md` from the directory where the Conductor extension is installed (typically `~/.gemini/extensions/conductor/skills/catalog.md`).
+    -   Analyze the confirmed `spec.md` and `plan.md` against the `Detection Signals` in the loaded `skills/catalog.md`.
     -   Identify any relevant skills that are NOT yet installed (check `~/.agents/extensions/conductor/skills/` and `.agents/skills/`).
 2.  **Recommendation Loop:**
     -   **If relevant missing skills are found:**
