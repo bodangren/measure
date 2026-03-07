@@ -118,17 +118,17 @@ Update `references/implement.md` and the workflow template to capture retrospect
 
 Update `references/review.md` to offer logging critical/high findings to lessons-learned.md.
 
-- [ ] Task 5.1: Load recurring gotchas before analysis
-    - [ ] Define acceptance criteria: review.md checks context budget, then reads relevant `lessons-learned.md` entries before analysis so the review can look for repeated failure modes
-    - [ ] Edit `claude-skills/conductor/references/review.md` §2.2
-    - [ ] Verify the step is additive and handles missing files gracefully
+- [x] Task 5.1: Load recurring gotchas before analysis `b73bb15`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/review.md` §2.2
+    - [x] Verify the step is additive and handles missing files gracefully
 
-- [ ] Task 5.2: Add lessons-learned logging offer to review.md §3.1 (FR-7)
-    - [ ] Define acceptance criteria: review.md §3.1 (Review Decision), after the Apply Fixes option, has a new prompt offering to log the root cause of Critical or High findings to `lessons-learned.md` under "Recurring Gotchas"
-    - [ ] Edit `claude-skills/conductor/references/review.md` §3.1
-    - [ ] Verify the prompt only triggers for Critical/High severity findings and handles absent lessons-learned.md gracefully
+- [x] Task 5.2: Add lessons-learned logging offer to review.md §3.1 (FR-7) `b73bb15`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/review.md` §3.1
+    - [x] Verify the prompt only triggers for Critical/High severity findings and handles absent lessons-learned.md gracefully
 
-- [ ] Task 5.3: Conductor - User Manual Verification 'Phase 5: Review Workflow Integration' (Protocol in workflow.md)
+- [ ] Task 5.3: Conductor - User Manual Verification 'Phase 5: Review Workflow Integration' (Protocol in workflow.md) — deferred
 
 ---
 
