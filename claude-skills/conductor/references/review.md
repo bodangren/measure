@@ -38,6 +38,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 1.  **Load Project Context**:
     -   Read **Product Guidelines** and **Tech Stack**.
     -   **CRITICAL:** Check for `conductor/code_styleguides/`. Read ALL `.md` files within it. Violations here are **High** severity.
+    -   **Load Recurring Gotchas:** Resolve **Lessons Learned** (if it exists). Check line count with `wc -l`; if over 50 lines, summarize or prune before loading. Read the "Recurring Gotchas" section so the review can check for repeated failure modes. If the file does not exist, skip silently.
 2.  **Load Track Context (if applicable)**:
     -   Read the track's **Implementation Plan**.
     -   Extract commit hashes and determine the revision range.
@@ -67,7 +68,7 @@ Format report with:
 
 1.  **Recommend**: Recommendation based on severity of findings.
 2.  **Action**:
-    -   **Apply Fixes (A)**: Automatically apply suggested changes.
+    -   **Apply Fixes (A)**: Automatically apply suggested changes. After applying, if any findings were **Critical** or **High** severity, offer: "Would you like to log the root cause of these findings to `lessons-learned.md` under 'Recurring Gotchas'?" If yes, append an entry with the date and track ID. If `lessons-learned.md` does not exist, warn the user and skip.
     -   **Manual Fix (B)**: Stop for user to fix.
     -   **Complete Track (C)**: Proceed to cleanup.
 
