@@ -95,22 +95,22 @@ Update `references/new-track.md` to load lessons-learned before planning and sur
 
 Update `references/implement.md` and the workflow template to capture retrospectives and tech debt during implementation.
 
-- [ ] Task 4.1: Load project memory before execution begins
-    - [ ] Define acceptance criteria: implement.md instructs the agent to check context budget, then read relevant entries from `lessons-learned.md` and open items from `tech-debt.md` before task execution starts
-    - [ ] Edit `claude-skills/conductor/references/implement.md`
-    - [ ] Verify the step is additive, runs before task execution, and handles missing files gracefully
+- [x] Task 4.1: Load project memory before execution begins `95633d5`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/implement.md`
+    - [x] Verify the step is additive, runs before task execution, and handles missing files gracefully
 
-- [ ] Task 4.2: Add retrospective and metadata finalization steps to implement.md §3.4
-    - [ ] Define acceptance criteria: implement.md §3.4 (Finalize Track) has a new step before the track status update that asks three retrospective questions, appends entries to `lessons-learned.md` or `tech-debt.md` when needed, updates `actual_tasks`, and fills `deviation_notes` when the plan materially changed
-    - [ ] Edit `claude-skills/conductor/references/implement.md` §3.4
-    - [ ] Verify the step handles absent lessons-learned.md/tech-debt.md gracefully and explains when `deviation_notes` must be filled
+- [x] Task 4.2: Add retrospective and metadata finalization steps to implement.md §3.4 `95633d5`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/implement.md` §3.4
+    - [x] Verify the step handles absent lessons-learned.md/tech-debt.md gracefully and explains when `deviation_notes` must be filled
 
-- [ ] Task 4.3: Add tech debt prompt and context budget note to workflow templates
-    - [ ] Define acceptance criteria: `assets/workflow.md` Standard Task Workflow notes that when a known shortcut is taken, the agent prompts the user to add a row to `tech-debt.md`, and references the standard context-budget checker before loading memory artifacts
-    - [ ] Edit `claude-skills/conductor/assets/workflow.md` and `templates/workflow.md`
-    - [ ] Verify both copies are identical after edit
+- [x] Task 4.3: Add tech debt prompt and context budget note to workflow templates `95633d5`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/assets/workflow.md` and `templates/workflow.md`
+    - [x] Verify both copies are identical after edit
 
-- [ ] Task 4.4: Conductor - User Manual Verification 'Phase 4: Implement Workflow Integration' (Protocol in workflow.md)
+- [ ] Task 4.4: Conductor - User Manual Verification 'Phase 4: Implement Workflow Integration' (Protocol in workflow.md) — deferred
 
 ---
 
