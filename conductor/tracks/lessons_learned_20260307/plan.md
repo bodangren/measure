@@ -34,27 +34,27 @@ Create the two new artifact templates, keep `claude-skills/` and `templates/` co
 
 Update `references/setup.md` to create both new files and register them in `index.md`.
 
-- [ ] Task 2.1: Add stub creation steps to setup.md (FR-3)
-    - [ ] Define acceptance criteria: after step 2.5 in setup.md, there is a new step that copies `assets/lessons-learned.md` to `conductor/lessons-learned.md` and `assets/tech-debt.md` to `conductor/tech-debt.md`
-    - [ ] Edit `claude-skills/conductor/references/setup.md` — add the new step after §2.5
-    - [ ] Verify the step is correctly placed and references the correct asset paths
+- [x] Task 2.1: Add stub creation steps to setup.md (FR-3) `52e2f79`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/setup.md` — add the new step after §2.5
+    - [x] Verify the step is correctly placed and references the correct asset paths
 
-- [ ] Task 2.2: Add index.md entries for new files (FR-3)
-    - [ ] Define acceptance criteria: setup.md's index creation steps include entries for `**Lessons Learned**` and `**Tech Debt Registry**`
-    - [ ] Edit `claude-skills/conductor/references/setup.md` — add index entries in the index update instructions
-    - [ ] Verify entries use correct link format
+- [x] Task 2.2: Add index.md entries for new files (FR-3) `52e2f79`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/setup.md` — add index entries in the index update instructions
+    - [x] Verify entries use correct link format
 
-- [ ] Task 2.3: Update metadata.json template in setup.md (FR-8)
-    - [ ] Define acceptance criteria: the metadata.json template in setup.md §3.3 includes `estimated_tasks`, `actual_tasks`, and `deviation_notes` fields
-    - [ ] Edit `claude-skills/conductor/references/setup.md` — update the metadata.json template
-    - [ ] Verify the JSON is valid and fields are present
+- [x] Task 2.3: Update metadata.json template in setup.md (FR-8) `52e2f79`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/setup.md` — update the metadata.json template
+    - [x] Verify the JSON is valid and fields are present
 
-- [ ] Task 2.4: Add setup guidance for memory artifacts and budget checker
-    - [ ] Define acceptance criteria: setup.md notes that `lessons-learned.md` and `tech-debt.md` are bounded working-memory artifacts and references the standard context budget checker command
-    - [ ] Edit `claude-skills/conductor/references/setup.md`
-    - [ ] Verify the guidance is additive and clearly points to the checker script
+- [x] Task 2.4: Add setup guidance for memory artifacts and budget checker `52e2f79`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/setup.md`
+    - [x] Verify the guidance is additive and clearly points to the checker script
 
-- [ ] Task 2.5: Conductor - User Manual Verification 'Phase 2: Setup Workflow Integration' (Protocol in workflow.md)
+- [ ] Task 2.5: Conductor - User Manual Verification 'Phase 2: Setup Workflow Integration' (Protocol in workflow.md) — deferred
 
 ---
 
