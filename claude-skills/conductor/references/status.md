@@ -98,6 +98,20 @@ Progress: [████████░░░░░░░░░░░░] <comple
 [<status>] <track description>
     Phases: <n> | Tasks: <completed>/<total> (<percentage>%)
 
+───────────────────────────────────────────────────────────
+                    PROJECT HEALTH
+───────────────────────────────────────────────────────────
+
+Lessons Learned:
+  Last updated: <result of `git log -1 --format="%ar" -- conductor/lessons-learned.md`, or "not created yet">
+  Line count:   <line count via `wc -l`, or "N/A">
+  Budget:       <OK or OVER_LIMIT (max 50 lines)>
+
+Tech Debt:
+  Open items:   <count of rows where Status = Open, or "not created yet">
+  Line count:   <line count via `wc -l`, or "N/A">
+  Budget:       <OK or OVER_LIMIT (max 50 lines)>
+
 ═══════════════════════════════════════════════════════════
 ```
 
