@@ -136,21 +136,21 @@ Update `references/review.md` to offer logging critical/high findings to lessons
 
 Update `references/status.md` to show project health indicators.
 
-- [ ] Task 6.1: Read status.md to understand current output format
-    - [ ] Read `claude-skills/conductor/references/status.md`
-    - [ ] Identify the correct insertion point for the new "Project Health" section
+- [x] Task 6.1: Read status.md to understand current output format `7323d8f`
+    - [x] Read `claude-skills/conductor/references/status.md`
+    - [x] Identify the correct insertion point for the new "Project Health" section
 
-- [ ] Task 6.2: Add Project Health section to status.md (FR-7)
-    - [ ] Define acceptance criteria: status.md output includes a "Project Health" section showing (a) last update date of `lessons-learned.md` via `git log -1 --format="%ar"`, (b) count of open rows in `tech-debt.md`, and (c) current line counts for both memory artifacts
-    - [ ] Edit `claude-skills/conductor/references/status.md`
-    - [ ] Verify all values handle absent files gracefully (show "not created yet" rather than erroring)
+- [x] Task 6.2: Add Project Health section to status.md (FR-7) `7323d8f`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/status.md`
+    - [x] Verify all values handle absent files gracefully (show "not created yet" rather than erroring)
 
-- [ ] Task 6.3: Add context budget warnings to status.md
-    - [ ] Define acceptance criteria: status.md reports whether either memory artifact exceeds the 50-line context budget using `wc -l` or the standard checker script
-    - [ ] Edit `claude-skills/conductor/references/status.md`
-    - [ ] Verify the warning format is clear and non-fatal
+- [x] Task 6.3: Add context budget warnings to status.md `7323d8f`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/status.md`
+    - [x] Verify the warning format is clear and non-fatal
 
-- [ ] Task 6.4: Conductor - User Manual Verification 'Phase 6: Status Workflow Integration' (Protocol in workflow.md)
+- [ ] Task 6.4: Conductor - User Manual Verification 'Phase 6: Status Workflow Integration' (Protocol in workflow.md) — deferred
 
 ---
 
