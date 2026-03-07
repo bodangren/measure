@@ -14,7 +14,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - `"2.2_product_guidelines"` → Skip to Tech Stack (2.3)
    - `"2.3_tech_stack"` → Skip to Code Styleguides (2.4)
    - `"2.4_code_styleguides"` → Skip to Workflow (2.5)
-   - `"2.5_workflow"` → Skip to Initial Track (3.0)
+   - `"2.5_workflow"` → Skip to Memory Artifacts (2.6)
+   - `"2.6_memory_artifacts"` → Skip to Initial Track (3.0)
    - `"3.3_initial_track_generated"` → Setup complete, inform user to use `new track` or `implement`
 
 ## 1.0 Project Discovery
@@ -118,6 +119,16 @@ If Customize:
 4. Update `conductor/workflow.md` based on responses
 5. Update state: `{"last_successful_step": "2.5_workflow"}`
 
+### 2.6 Memory Artifacts
+
+1. Copy `assets/lessons-learned.md` to `conductor/lessons-learned.md`
+2. Copy `assets/tech-debt.md` to `conductor/tech-debt.md`
+3. Update `conductor/index.md` with links:
+   - `**Lessons Learned**`: `./lessons-learned.md`
+   - `**Tech Debt Registry**`: `./tech-debt.md`
+4. Announce: "Created **Lessons Learned** and **Tech Debt Registry** as bounded working-memory artifacts (50-line context budget each). Use `scripts/conductor/check_context_budget.sh` to check limits."
+5. Update state: `{"last_successful_step": "2.6_memory_artifacts"}`
+
 ## 3.0 Initial Track Generation
 
 ### 3.1 Product Requirements (Greenfield only)
@@ -158,7 +169,10 @@ This file tracks all major tracks for the project.
   "status": "new",
   "created_at": "YYYY-MM-DDTHH:MM:SSZ",
   "updated_at": "YYYY-MM-DDTHH:MM:SSZ",
-  "description": "<description>"
+  "description": "<description>",
+  "estimated_tasks": null,
+  "actual_tasks": null,
+  "deviation_notes": ""
 }
 ```
 6. **Create Track Index**: Create `conductor/tracks/<track_id>/index.md`.
