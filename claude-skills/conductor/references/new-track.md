@@ -41,21 +41,27 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - Last option must be "Type your own answer"
    - Summarize understanding before moving on
 
-4. Draft **Specification** (`spec.md`) with:
+4. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
+   - Check line count with `wc -l`. If over 50 lines, summarize or prune before loading.
+   - If the file exists, scan for `Open` items relevant to the feature area.
+   - If relevant items are found, present them: "There are open tech debt items that may relate to this track. Would you like to address any of them?"
+   - If the file does not exist, skip silently.
+
+5. Draft **Specification** (`spec.md`) with:
    - Overview
    - Functional Requirements
    - Non-Functional Requirements (if applicable)
    - Acceptance Criteria
    - Out of Scope
 
-5. Present draft for review:
+6. Present draft for review:
    > "I've drafted the **Specification**. Please review:"
    > ```markdown
    > [spec content]
    > ```
    > "Does this accurately capture the requirements? Suggest changes or confirm."
 
-6. Revise until confirmed
+7. Revise until confirmed
 
 ### 2.3 Plan Generation (**Implementation Plan**)
 
@@ -64,6 +70,11 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 2. Read:
    - Confirmed **Specification** content
    - **Workflow**
+   - **Lessons Learned** (if it exists): Check line count with `wc -l` first. If over 50 lines, summarize or prune before loading. Use its contents to:
+     - Identify known gotchas relevant to the track type or feature area.
+     - Adjust task complexity estimates based on "Planning Improvements" entries.
+     - Note relevant patterns in the generated plan.
+   - If **Lessons Learned** does not exist, log a warning and continue.
 
 3. Generate **Implementation Plan** (`plan.md`):
    - Hierarchical structure: Phases → Tasks → Sub-tasks
@@ -102,7 +113,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
   "status": "new",
   "created_at": "YYYY-MM-DDTHH:MM:SSZ",
   "updated_at": "YYYY-MM-DDTHH:MM:SSZ",
-  "description": "<Initial user description>"
+  "description": "<Initial user description>",
+  "estimated_tasks": null,
+  "actual_tasks": null,
+  "deviation_notes": ""
 }
 ```
 
@@ -120,5 +134,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
   *Link: [./conductor/tracks/<track_id>/](./conductor/tracks/<track_id>/)*
 ```
 
-9. Announce completion:
-   > "New track '<track_id>' has been created. You can now start implementation."
+9. **Populate `estimated_tasks`:** Count the total number of tasks in the finalized `plan.md` (top-level task items, not sub-tasks) and write that value into `metadata.json` as `estimated_tasks`.
+
+10. Announce completion:
+    > "New track '<track_id>' has been created. You can now start implementation."
