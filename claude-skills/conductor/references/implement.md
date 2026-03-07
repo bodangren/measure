@@ -54,6 +54,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
     -   **Track Context:** Using the **Universal File Resolution Protocol**, resolve and read the **Specification** and **Implementation Plan** for the selected track.
     -   **Workflow:** Resolve **Workflow** (via the **Universal File Resolution Protocol** using the project's index file).
 3.  **Error Handling:** If you fail to read any of these files, you MUST stop and inform the user of the error.
+4.  **Load Project Memory:** Resolve **Lessons Learned** and **Tech Debt Registry** (if they exist).
+    -   Check line count with `wc -l` before loading. If either file exceeds 50 lines, summarize or prune it first.
+    -   Load relevant entries so implementation benefits from project memory.
+    -   If either file does not exist, log a warning and continue.
 
 ### 3.3 Execute Tasks
 
@@ -64,9 +68,20 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ### 3.4 Finalize Track
 
-1.  After all tasks in the track's local **Implementation Plan** are completed, you MUST update the track's status in the **Tracks Registry**.
-2.  **Commit Changes:** Stage the **Tracks Registry** file and commit with the message `chore(conductor): Mark track '<track_description>' as complete`.
-3.  Announce that the track is fully complete and the tracks file has been updated.
+1.  **Retrospective:** Before marking the track as complete, ask the user:
+    -   "Were there any surprises or deviations from the plan worth documenting?"
+    -   "Were any shortcuts taken that should be logged as tech debt?"
+    -   "Were there insights that should be added to lessons-learned.md?"
+    -   If yes to any, append entries to **Lessons Learned** or **Tech Debt Registry** as appropriate. If either file does not exist, warn the user and skip.
+
+2.  **Update Track Metadata:** Read the track's `metadata.json`.
+    -   Set `actual_tasks` to the total number of completed tasks in the **Implementation Plan**.
+    -   If the actual work materially differed from the original plan (e.g., tasks were added, removed, or significantly changed), fill `deviation_notes` with a brief explanation.
+    -   Write the updated `metadata.json`.
+
+3.  After all tasks in the track's local **Implementation Plan** are completed, update the track's status in the **Tracks Registry**.
+4.  **Commit Changes:** Stage the **Tracks Registry** file, `metadata.json`, and any updated memory files. Commit with the message `chore(conductor): Mark track '<track_description>' as complete`.
+5.  Announce that the track is fully complete and the tracks file has been updated.
 
 ## 4.0 Synchronize Documentation
 
