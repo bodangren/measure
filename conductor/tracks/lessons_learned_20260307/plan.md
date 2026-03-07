@@ -62,32 +62,32 @@ Update `references/setup.md` to create both new files and register them in `inde
 
 Update `references/new-track.md` to load lessons-learned before planning and surface tech debt during spec gathering.
 
-- [ ] Task 3.1: Load lessons-learned.md before plan generation (FR-4, item 1)
-    - [ ] Define acceptance criteria: in new-track.md §2.3 step 2 (Read section), there is an instruction to resolve and read `**Lessons Learned**` (if it exists) and use its contents to inform plan complexity and ordering
-    - [ ] Edit `claude-skills/conductor/references/new-track.md` §2.3
-    - [ ] Verify the instruction is placed before the "Generate Implementation Plan" step and handles file-not-found gracefully
+- [x] Task 3.1: Load lessons-learned.md before plan generation (FR-4, item 1) `b30cd9d`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/new-track.md` §2.3
+    - [x] Verify the instruction is placed before the "Generate Implementation Plan" step and handles file-not-found gracefully
 
-- [ ] Task 3.2: Surface tech debt during spec questions (FR-4, item 2)
-    - [ ] Define acceptance criteria: in new-track.md §2.2, after the spec questions are complete, there is a step that checks `**Tech Debt Registry**` for relevant open items and presents them to the user
-    - [ ] Edit `claude-skills/conductor/references/new-track.md` §2.2
-    - [ ] Verify the step handles file-not-found gracefully and only surfaces relevant items
+- [x] Task 3.2: Surface tech debt during spec questions (FR-4, item 2) `b30cd9d`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/new-track.md` §2.2
+    - [x] Verify the step handles file-not-found gracefully and only surfaces relevant items
 
-- [ ] Task 3.3: Add context-budget checks before memory files are loaded
-    - [ ] Define acceptance criteria: new-track.md checks line count with `wc -l` or `scripts/conductor/check_context_budget.sh` before loading `lessons-learned.md` or `tech-debt.md`, and instructs the agent to summarize or prune when either file exceeds 50 lines
-    - [ ] Edit `claude-skills/conductor/references/new-track.md`
-    - [ ] Verify the instructions are placed before memory files are read
+- [x] Task 3.3: Add context-budget checks before memory files are loaded `b30cd9d`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/new-track.md`
+    - [x] Verify the instructions are placed before memory files are read
 
-- [ ] Task 3.4: Update metadata.json template in new-track.md (FR-9)
-    - [ ] Define acceptance criteria: the metadata.json template in new-track.md §2.4 includes `estimated_tasks`, `actual_tasks`, and `deviation_notes` fields
-    - [ ] Edit `claude-skills/conductor/references/new-track.md` §2.4
-    - [ ] Verify JSON is valid and fields are present
+- [x] Task 3.4: Update metadata.json template in new-track.md (FR-9) `b30cd9d`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/new-track.md` §2.4
+    - [x] Verify JSON is valid and fields are present
 
-- [ ] Task 3.5: Populate `estimated_tasks` during plan finalization
-    - [ ] Define acceptance criteria: new-track.md instructs the agent to count planned tasks when the plan is finalized and write that value into `metadata.json`
-    - [ ] Edit `claude-skills/conductor/references/new-track.md`
-    - [ ] Verify the counting rule is clearly described and occurs before artifact creation is finalized
+- [x] Task 3.5: Populate `estimated_tasks` during plan finalization `b30cd9d`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/references/new-track.md`
+    - [x] Verify the counting rule is clearly described and occurs before artifact creation is finalized
 
-- [ ] Task 3.6: Conductor - User Manual Verification 'Phase 3: New Track Workflow Integration' (Protocol in workflow.md)
+- [ ] Task 3.6: Conductor - User Manual Verification 'Phase 3: New Track Workflow Integration' (Protocol in workflow.md) — deferred
 
 ---
 
