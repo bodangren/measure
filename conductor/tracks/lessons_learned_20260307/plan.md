@@ -158,14 +158,14 @@ Update `references/status.md` to show project health indicators.
 
 Update top-level conductor documentation so the new memory features are discoverable to agents.
 
-- [ ] Task 7.1: Update conductor skill overview and directory structure
-    - [ ] Define acceptance criteria: `claude-skills/conductor/SKILL.md` mentions `lessons-learned.md` and `tech-debt.md` in the directory structure or core concepts and describes them as bounded working-memory artifacts
-    - [ ] Edit `claude-skills/conductor/SKILL.md`
-    - [ ] Verify the changes are concise and consistent with the workflow references
+- [x] Task 7.1: Update conductor skill overview and directory structure `84dfc3e`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/SKILL.md`
+    - [x] Verify the changes are concise and consistent with the workflow references
 
-- [ ] Task 7.2: Update conductor skill assets section
-    - [ ] Define acceptance criteria: `claude-skills/conductor/SKILL.md` assets section mentions the new templates or otherwise points readers to where they are maintained
-    - [ ] Edit `claude-skills/conductor/SKILL.md`
-    - [ ] Verify the new references are accurate
+- [x] Task 7.2: Update conductor skill assets section `84dfc3e`
+    - [x] Define acceptance criteria
+    - [x] Edit `claude-skills/conductor/SKILL.md`
+    - [x] Verify the new references are accurate
 
-- [ ] Task 7.3: Conductor - User Manual Verification 'Phase 7: Skill Documentation Synchronization' (Protocol in workflow.md)
+- [ ] Task 7.3: Conductor - User Manual Verification 'Phase 7: Skill Documentation Synchronization' (Protocol in workflow.md) — deferred
