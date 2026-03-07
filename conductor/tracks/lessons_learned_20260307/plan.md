@@ -9,22 +9,22 @@ Spec: [./spec.md](./spec.md)
 
 Create the two new artifact templates, keep `claude-skills/` and `templates/` copies in sync, and define the bounded-memory format.
 
-- [ ] Task 1.1: Create `lessons-learned.md` template
-    - [ ] Define acceptance criteria: file has four sections (Architecture & Design, Recurring Gotchas, Patterns That Worked Well, Planning Improvements), each with a comment placeholder, an example entry, and guidance that the file is curated working memory capped at 50 lines
-    - [ ] Write `claude-skills/conductor/assets/lessons-learned.md`
-    - [ ] Write `templates/lessons-learned.md`
-    - [ ] Verify both copies match the acceptance criteria and remain identical
+- [x] Task 1.1: Create `lessons-learned.md` template `8cae46a`
+    - [x] Define acceptance criteria: file has four sections (Architecture & Design, Recurring Gotchas, Patterns That Worked Well, Planning Improvements), each with a comment placeholder, an example entry, and guidance that the file is curated working memory capped at 50 lines
+    - [x] Write `claude-skills/conductor/assets/lessons-learned.md`
+    - [x] Write `templates/lessons-learned.md`
+    - [x] Verify both copies match the acceptance criteria and remain identical
 
-- [ ] Task 1.2: Create `tech-debt.md` template
-    - [ ] Define acceptance criteria: file has a table with columns (Date, Track, Item, Severity, Status, Notes), uses `Open`/`Resolved` status values, includes one example row marked as resolved, and states that the file is curated working memory capped at 50 lines
-    - [ ] Write `claude-skills/conductor/assets/tech-debt.md`
-    - [ ] Write `templates/tech-debt.md`
-    - [ ] Verify both copies match the acceptance criteria and remain identical
+- [x] Task 1.2: Create `tech-debt.md` template `8cae46a`
+    - [x] Define acceptance criteria: file has a table with columns (Date, Track, Item, Severity, Status, Notes), uses `Open`/`Resolved` status values, includes one example row marked as resolved, and states that the file is curated working memory capped at 50 lines
+    - [x] Write `claude-skills/conductor/assets/tech-debt.md`
+    - [x] Write `templates/tech-debt.md`
+    - [x] Verify both copies match the acceptance criteria and remain identical
 
-- [ ] Task 1.3: Add context budget checker script
-    - [ ] Define acceptance criteria: repository contains a small script that reports line counts for `conductor/lessons-learned.md` and `conductor/tech-debt.md`, marks each as `OK` or `OVER_LIMIT`, and exits successfully even when files do not yet exist
-    - [ ] Write `scripts/conductor/check_context_budget.sh`
-    - [ ] Verify the script uses a standard 50-line limit and can be referenced by workflow docs
+- [x] Task 1.3: Add context budget checker script `8cae46a`
+    - [x] Define acceptance criteria: repository contains a small script that reports line counts for `conductor/lessons-learned.md` and `conductor/tech-debt.md`, marks each as `OK` or `OVER_LIMIT`, and exits successfully even when files do not yet exist
+    - [x] Write `scripts/conductor/check_context_budget.sh`
+    - [x] Verify the script uses a standard 50-line limit and can be referenced by workflow docs
 
 - [ ] Task 1.4: Conductor - User Manual Verification 'Phase 1: New Template Files' (Protocol in workflow.md)
 
