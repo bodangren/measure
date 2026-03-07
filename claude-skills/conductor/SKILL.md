@@ -23,7 +23,9 @@ Spec-driven development framework that organizes AI-assisted software developmen
 - **Spec**: Detailed requirements and acceptance criteria (`spec.md`)
 - **Plan**: Phased implementation tasks following TDD methodology (`plan.md`)
 - **Workflow**: Development procedures including TDD, quality gates, and commit guidelines
-- **Universal File Resolution Protocol**: A standardized way to locate project and track files using an index.
+- **Lessons Learned**: Curated working-memory file (`lessons-learned.md`) capturing architecture decisions, recurring gotchas, useful patterns, and planning insights across tracks
+- **Tech Debt Registry**: Bounded working-memory file (`tech-debt.md`) tracking known shortcuts and deferred work with severity and status
+- **Universal File Resolution Protocol**: Index-based file lookup that resolves named references (e.g., **Product Definition**) to file paths via `index.md`
 
 ## Directory Structure
 
@@ -35,6 +37,8 @@ conductor/
 ├── tech-stack.md          # Technology choices and rationale (Tech Stack)
 ├── workflow.md            # Development workflow and quality gates (Workflow)
 ├── tracks.md              # Master list of all tracks (Tracks Registry)
+├── lessons-learned.md     # Curated project memory (bounded, 50-line max)
+├── tech-debt.md           # Known shortcuts and deferred work (bounded, 50-line max)
 ├── code_styleguides/      # Language-specific style guides
 ├── tracks/                # Individual track directories
 │   └── <track_id>/
@@ -53,16 +57,16 @@ Initialize Conductor in a new or existing project. Read [references/setup.md](re
 Create a new track with spec and plan. Read [references/new-track.md](references/new-track.md) for the full workflow.
 
 ### Implement
-Execute tasks from a track's plan following TDD. Read [references/implement.md](references/implement.md) for the full workflow.
+Execute tasks from a track's plan following the project workflow. Loads project memory (lessons learned, tech debt) before starting, and prompts for retrospective insights before finalizing. Read [references/implement.md](references/implement.md) for the full workflow.
 
 ### Review
-Review completed work against guidelines and the plan. Read [references/review.md](references/review.md) for the full workflow.
+Review completed work against product guidelines, code styleguides, and the original plan. Checks for recurring gotchas from lessons learned. Read [references/review.md](references/review.md) for the full workflow.
 
 ### Status
-Display project progress overview. Read [references/status.md](references/status.md) for the full workflow.
+Display project progress overview including track breakdown and project health indicators. Read [references/status.md](references/status.md) for the full workflow.
 
 ### Revert
-Revert previous work using Git history. Read [references/revert.md](references/revert.md) for the full workflow.
+Roll back previous work by track, phase, or task using Git history. Read [references/revert.md](references/revert.md) for the full workflow.
 
 ## Task Status Markers
 
@@ -82,3 +86,5 @@ Revert previous work using Git history. Read [references/revert.md](references/r
 
 - **Workflow Template**: [assets/workflow.md](assets/workflow.md)
 - **Code Styleguides**: [assets/code_styleguides/](assets/code_styleguides/)
+- **Lessons Learned Template**: [assets/lessons-learned.md](assets/lessons-learned.md)
+- **Tech Debt Template**: [assets/tech-debt.md](assets/tech-debt.md)
