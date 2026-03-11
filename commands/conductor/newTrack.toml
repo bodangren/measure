@@ -137,9 +137,14 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     -   Identify any relevant skills that are NOT yet installed (check `~/.agents/extensions/conductor/skills/` and `.agents/skills/`).
 2.  **Recommendation Loop:**
     -   **If relevant missing skills are found:**
-        -   **Present:** specific recommendations to the user, explaining WHY they are relevant for this track.
-        -   **Ask:** "Would you like to install these skills now?" (yes/no or select specific).
-        -   **Install:** If confirmed, install them using the same logic as `setup.toml` (download from URL/Git to `.agents/skills/`).
+        -   **Ask:** "Would you like to install these skills now?" using the `ask_user` tool (do not repeat in chat):
+            - **questions:**
+                - **header:** "Install Skills"
+                - **question:** "I've identified some skills that could help with this track. Would you like to install any of them?"
+                - **type:** "choice"
+                - **multiSelect:** true
+                - **options:** (Populate with the recommended skills, providing a `label` and a `description` explaining the relevance for each).
+        -   **Install:** If the user selects any skills, install them using the same logic as `setup.toml` (download from URL/Git to `.agents/skills/`).
         -   **Notify:** **CRITICAL:** If you installed any new skills, you MUST explicitly instruct the user: "New skills installed. Please run `/skills reload` to enable them."
     -   **If no missing skills found:** Skip this section.
 
