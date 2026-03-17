@@ -391,15 +391,13 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
             - Label: "Skip", Description: "Do not install any skills at this time."
 3.  **Gather Selection (Conditional):**
     - **If user chose "Hand-pick":**
-        - **Batching Strategy:** You MUST split the list of available skills from the catalog into groups of 3-4 items.
-        - **Action:** Announce "I'll present the available skills in groups. Please select all that you wish to install." Then, immediately call the `ask_user` tool with the batched questions.
-        - **Single Tool Call:** Create one `ask_user` call containing a `questions` array with one question per group.
-        - **Question Structure:**
+        - **Action:** List all available skills from the catalog in the chat (including names and descriptions).
+        - **Prompt for Selection:** Use the `ask_user` tool with a single question:
             - **header:** "Select Skills"
-            - **type:** "choice"
-            - **multiSelect:** true
-            - **question:** "Which skill(s) would you like to install? (Part X/Y):"
-            - **options:** The subset of skills for this group (each with label as the skill name and description as the skill description).
+            - **type:** "text"
+            - **question:** "Which skill(s) would you like to install? You can type the names (comma-separated) or paste a list."
+            - **placeholder:** "e.g., firebase-auth-basics, firebase-firestore-basics"
+        - **Interaction Flow:** Wait for the user's response, then parse the selected skills based on the names provided.
 4.  **Process Selection:**
     -   If "Install All": Install all recommended skills.
     -   If "Hand-pick": Parse the results from the `ask_user` call and install selected skills.
