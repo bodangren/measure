@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.4.0...conductor-v0.4.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* update readme ([d1957ae](https://github.com/gemini-cli-extensions/conductor/commit/d1957ae0b965f2aa769331b9d850b7dd93eeb27a))
+
+## [0.4.0](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.3.1...conductor-v0.4.0) (2026-03-10)
+
+
+### Features
+
+* integrate Plan Mode and extension-native policies into Conductor ([4a4d9b2](https://github.com/gemini-cli-extensions/conductor/commit/4a4d9b2d21d896c032161aa0247fb1ab9a7e59bc))
+* **plan:** add conductor as planning directory ([5cf078c](https://github.com/gemini-cli-extensions/conductor/commit/5cf078c9c186fa9474e579123ecaeee3533fa1e2))
+* **plan:** basic plan mode tool integration ([923ef57](https://github.com/gemini-cli-extensions/conductor/commit/923ef57c06cb97aeef1a3d0cf2c192f7bb28e63d))
+* **policy:** move and configure conductor policies ([e0fbc72](https://github.com/gemini-cli-extensions/conductor/commit/e0fbc723cc3eb693063ae13b0d39fa00376b3594))
+* **setup:** add user confirmation loop for product requirements drafting ([6907cae](https://github.com/gemini-cli-extensions/conductor/commit/6907cae60aef8e858c6495ca46957f46c22b1470))
+* **setup:** allow intelligent self-correction on tool failures ([898daa7](https://github.com/gemini-cli-extensions/conductor/commit/898daa707793eba6884583d9d22cd6623719c4fc))
+* **setup:** enforce run_shell_command for listing external templates ([1224569](https://github.com/gemini-cli-extensions/conductor/commit/122456948166283fb37af9317596472cdf487cb5))
+* **setup:** implement shallow artifact inference with state priority table ([68a2a2c](https://github.com/gemini-cli-extensions/conductor/commit/68a2a2ceb24603bf3ecb59a80a44d4551d450671))
+* **setup:** mandate relative paths for file operations in plan mode ([a717aa0](https://github.com/gemini-cli-extensions/conductor/commit/a717aa0d909605cf373a7036592f2748b092655f))
+* **setup:** use ask_user tool for interactive prompts ([e71e8e0](https://github.com/gemini-cli-extensions/conductor/commit/e71e8e0d6b7086855789ba9c0acb35cac439279d))
+
+
+### Bug Fixes
+
+* **conductor:** refine plan mode entry logic in setup and newTrack ([3d9b3c8](https://github.com/gemini-cli-extensions/conductor/commit/3d9b3c8cc34849120e778bfebd02b47230953e29))
+* **conductor:** refine plan mode entry logic in setup and newTrack ([9a413d2](https://github.com/gemini-cli-extensions/conductor/commit/9a413d28332763d231dbb6f9a693ae604856b7e2))
+* **plan:** configure agent to avoid redirection in shell commands which is blocked by plan mode ([7b27eca](https://github.com/gemini-cli-extensions/conductor/commit/7b27eca892c9f7f2d7f624569ad7f62a33832740))
+* **plan:** use extension-native policies folder ([db6d52d](https://github.com/gemini-cli-extensions/conductor/commit/db6d52dd33cb5492ecc7df1444e67f9f615091d6))
+* **setup:** refine project maturity detection and harden resume edge-cases ([eb9d127](https://github.com/gemini-cli-extensions/conductor/commit/eb9d1277c1e0b29593e3929f902ca0fcbef0b2fc))
+* **setup:** Remove model selection constraint from setup command ([90b583f](https://github.com/gemini-cli-extensions/conductor/commit/90b583fd2f6a3167e436d72778f7d9ab94498263))
+
 ## [0.3.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.3.0...conductor-v0.3.1) (2026-02-19)
 
 
