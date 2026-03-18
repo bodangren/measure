@@ -81,6 +81,11 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
         -   **Track Context:** Using the **Universal File Resolution Protocol**, resolve and read the **Specification** and **Implementation Plan** for the selected track.
         -   **Workflow:** Resolve **Workflow** (via the **Universal File Resolution Protocol** using the project's index file).
     c. **Error Handling:** If you fail to read any of these files, you MUST stop and inform the user of the error.
+    d. **Activate Relevant Skills:**
+        - Check for the existence of installed skills in `.agents/skills/` (Workspace tier) and `~/.agents/extensions/conductor/skills/` (Extension tier).
+        - If either exists, list the subdirectories to identify available skills.
+        - Based on the track's **Specification**, **Implementation Plan**, and the **Product Definition**, determine if any installed skills are relevant to the track.
+        - **CRITICAL:** For every relevant skill identified, you MUST read its `SKILL.md` file (e.g., `.agents/skills/<skill-name>/SKILL.md`) to activate it. You MUST explicitly apply and prioritize the guidelines, commands, and constraints from these files during the execution of the track's tasks.
 
 4.  **Execute Tasks and Update Track Plan:**
     a. **Announce:** State that you will now execute the tasks from the track's **Implementation Plan** by following the procedures in the **Workflow**.
