@@ -164,7 +164,7 @@ PLAN MODE PROTOCOL: Parts of this process run within Plan Mode. While in Plan Mo
 
 ### 2.4.1 Skill Reload Confirmation
 1.  **Execution Trigger:** This step MUST only be executed if you installed new skills in the previous section.
-2.  **Notify and Pause:** **CRITICAL:** You MUST explicitly instruct the user: "New skills installed. Please run `/skills reload` to enable them. Let me know when you have done this."
+2.  **Notify and Pause:** **CRITICAL:** You MUST explicitly instruct the user: "New skills installed. Please run `/skills reload` to enable them. Let me know when you have done this." Do NOT use the `ask_user` tool here.
 3.  **Wait for Confirmation:** You MUST pause your execution here and wait for the user to confirm they have run the command and reloaded the skills before proceeding.
 
 ### 2.5 Create Track Artifacts and Update Main Plan
