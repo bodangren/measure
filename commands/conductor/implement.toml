@@ -85,7 +85,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
         - Check for the existence of installed skills in `.agents/skills/` (Workspace tier) and `~/.agents/extensions/conductor/skills/` (Extension tier).
         - If either exists, list the subdirectories to identify available skills.
         - Based on the track's **Specification**, **Implementation Plan**, and the **Product Definition**, determine if any installed skills are relevant to the track.
-        - **CRITICAL:** For every relevant skill identified, you MUST activate it and read its `SKILL.md` file (e.g., `.agents/skills/<skill-name>/SKILL.md`).
+        - **CRITICAL:** For every relevant skill identified, ask the model to activate it and read its `SKILL.md` file (e.g., `.agents/skills/<skill-name>/SKILL.md`).
         - You MUST explicitly apply and prioritize the guidelines, commands, and constraints from these files during the execution of the track's tasks.
 
 4.  **Execute Tasks and Update Track Plan:**
