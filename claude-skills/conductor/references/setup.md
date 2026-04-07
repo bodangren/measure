@@ -129,6 +129,54 @@ If Customize:
 4. Announce: "Created **Lessons Learned** and **Tech Debt Registry** as bounded working-memory artifacts (50-line context budget each). Use `scripts/conductor/check_context_budget.sh` to check limits."
 5. Update state: `{"last_successful_step": "2.6_memory_artifacts"}`
 
+### 2.7 Select Skills (Interactive)
+
+1. **Analyze and Recommend:**
+   - Read `skills/catalog.md` from the skills directory (typically `.claude/skills/` or `~/.claude/skills/`).
+   - **Catalog Not Found Handling:** If the skills catalog cannot be found, announce "Skills catalog not found. Skipping skill selection." and skip to Section 2.8.
+   - Detect applicable skills based on `Detection Signals` matched against project files and `conductor/tech-stack.md`.
+   - Identify "Always Recommended" skills.
+
+2. **Determine Mode:**
+   - **If no recommended skills are found:** Announce "No additional agent skills were recommended for this project context. Skipping skill installation." and skip to 2.8.
+   - **If recommended skills are found:** Present recommendations to the user.
+   - Ask: "Based on your project context, I recommend the following skills: <List>. How would you like to proceed?"
+   - Options:
+     - **Install All**: Install all recommended skills.
+     - **Hand-pick**: Select specific skills from the catalog.
+     - **Skip**: Do not install any skills at this time.
+
+3. **Gather Selection (Conditional):**
+   - **If user chose "Hand-pick":** List all available skills from the catalog and ask which ones to install.
+
+4. **Process Selection:**
+   - If "Install All": Install all recommended skills.
+   - If "Hand-pick": Parse the user's selection and install chosen skills.
+   - If "Skip": Proceed without installation.
+
+5. **Installation Action:**
+   - For each selected skill:
+     - **Determine Installation Path:**
+       - If `alwaysRecommend` is true, use `.claude/skills/<skill-name>/`.
+       - Otherwise, use `.claude/skills/<skill-name>/` (workspace-level for now).
+     - Create directory at the determined path.
+     - **Download Strategy:**
+       - If `party` is '1p' and `version` is provided, download that specific version.
+       - Otherwise, download the latest from the `url`.
+       - If `party` is '3p', use the provided `commit_sha`.
+     - Download the skill folder content.
+     - **CRITICAL:** If the URL is a file path, find the parent folder. If it's a Git URL, use `git clone` or `sparse-checkout`.
+
+6. **Continue:** Proceed to Section 2.8.
+
+### 2.7.1 Skill Reload Confirmation
+
+1. **Execution Trigger:** This step MUST only be executed if you installed new skills in the previous section.
+2. **Notify and Pause:** "New skills installed. Please run `/claude skills reload` to enable them. Let me know when you have done this." Do NOT use AskUserQuestion here.
+3. **Wait for Confirmation:** Pause and wait for the user to confirm they have reloaded the skills.
+
+### 2.8 Finalization
+
 ## 3.0 Initial Track Generation
 
 ### 3.1 Product Requirements (Greenfield only)

@@ -17,6 +17,13 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 2.  **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Conductor is not set up. Please run setup first." and HALT.
 
+3.  **Activate Relevant Skills:**
+   - Check for the existence of installed skills in `.claude/skills/` (workspace-level).
+   - If skills exist, list the subdirectories to identify available skills.
+   - Based on the track's **Specification**, **Implementation Plan**, and **Product Definition**, determine if any installed skills are relevant.
+   - **CRITICAL:** For every relevant skill identified, ask the agent to activate it and read its `SKILL.md` and reference files.
+   - Explicitly apply and prioritize the guidelines, commands, and constraints from these files during task execution.
+
 ## 2.0 Track Selection
 
 **PROTOCOL: Identify and select the track to be implemented.**

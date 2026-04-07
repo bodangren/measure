@@ -93,7 +93,34 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 4. Present draft for review
 5. Revise until confirmed
 
-### 2.4 Create Artifacts
+### 2.5 Skill Recommendation (Interactive)
+
+1. **Analyze Needs:**
+   - Read `skills/catalog.md` from the skills directory (typically `.claude/skills/`).
+   - Analyze the confirmed `spec.md` and `plan.md` against the `Detection Signals` in the catalog.
+   - Identify any relevant skills that are NOT yet installed (check `.claude/skills/`).
+
+2. **Recommendation Loop:**
+   - **If relevant missing skills are found:**
+     - Ask: "I've identified some skills that could help with this track. Would you like to install any of them?"
+     - Present options with labels and descriptions explaining relevance.
+     - Multi-select enabled.
+   - **Install:** If the user selects any skills, for each:
+     - Determine Installation Path:
+       - If `alwaysRecommend` is true, use `.claude/skills/<skill-name>/`.
+       - Otherwise, use `.claude/skills/<skill-name>/`.
+     - Create directory.
+     - Download from `url` using appropriate strategy (version, commit_sha, or latest).
+     - If URL is Git, use `git clone` or `sparse-checkout`.
+   - **If no missing skills found:** Skip this section.
+
+### 2.5.1 Skill Reload Confirmation
+
+1. **Execution Trigger:** This step MUST only be executed if you installed new skills in the previous section.
+2. **Notify and Pause:** "New skills installed. Please run `/claude skills reload` to enable them. Let me know when you have done this." Do NOT use AskUserQuestion here.
+3. **Wait for Confirmation:** Pause and wait for the user to confirm they have reloaded the skills.
+
+### 2.6 Create Artifacts
 
 1. Check for existing track names:
    - Resolve **Tracks Directory**.

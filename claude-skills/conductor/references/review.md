@@ -38,6 +38,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 1.  **Load Project Context**:
     -   Read **Product Guidelines** and **Tech Stack**.
     -   **CRITICAL:** Check for `conductor/code_styleguides/`. Read ALL `.md` files within it. Violations here are **High** severity.
+    -   **Check for Installed Skills:**
+        -   Check for the existence of `.claude/skills/` (workspace-level).
+        -   If skills exist, list the subdirectories to identify installed skills.
+        -   If relevant skills (e.g., `gcp-*`, `firebase-*`) are found, enable specialized feedback for those domains.
     -   **Load Recurring Gotchas:** Resolve **Lessons Learned** (if it exists). Check line count with `wc -l`; if over 50 lines, summarize or prune before loading. Read the "Recurring Gotchas" section so the review can check for repeated failure modes. If the file does not exist, skip silently.
 2.  **Load Track Context (if applicable)**:
     -   Read the track's **Implementation Plan**.
@@ -54,6 +58,9 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 4.  **Testing**:
     -   Check for new tests.
     -   **Execute the test suite automatically**: Infer and run the test command (e.g., `npm test`, `pytest`). Analyze output.
+
+5.  **Skill-Specific Checks:**
+    -   If specific skills are installed (e.g., GCP, Firebase), verify compliance with their best practices.
 
 ### 2.4 Output Findings
 
