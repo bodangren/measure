@@ -27,6 +27,8 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 2. **Handle Failure:** If ANY of these files are missing, list them, announce: "Measure is not set up. Please run setup first." and HALT.
 
+3. **Check CDP Availability (non-blocking):** Run `command -v browser-harness-js >/dev/null 2>&1`. If found, note that the Browser Runtime Check (section 2.4) is available. If not found, note it as unavailable — this does NOT block the review, but the CDP step will be skipped if frontend changes are detected.
+
 ## 2.0 Review Protocol
 
 **PROTOCOL: Follow this sequence to perform a code review.**
@@ -82,7 +84,150 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 5. **Skill-Specific Checks:**
    - If specific skills are installed, verify compliance with their best practices.
 
-### 2.4 Output Findings
+### 2.4 Browser Runtime Check (CDP)
+
+**CONDITIONAL:** Only execute this section if the diff touches frontend files (extensions: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`, `.svg`, or any file in directories named `pages/`, `components/`, `views/`, `app/`, `src/app/`, `routes/`). If no frontend files are present in the diff, skip to 2.5.
+
+**PURPOSE:** Complement unit/integration tests with real browser diagnostics — console errors, network failures, visual spot-checks, and DOM verification — using `browser-harness-js` (CDP).
+
+#### 2.4.1 Prerequisites
+
+1. **Verify `browser-harness-js` is available:**
+   ```bash
+   command -v browser-harness-js >/dev/null 2>&1
+   ```
+   If not found, warn: "CDP check skipped: `browser-harness-js` not found on PATH." and skip to 2.5.
+
+2. **Detect dev server command** from `package.json`:
+   - Read `package.json` and look for scripts in order: `"dev"`, `"start"`, `"serve"`.
+   - Use the appropriate package manager (`npx`, `pnpx`, `yarn`, `bunx`) based on the lockfile present (`package-lock.json` → `npx`, `pnpm-lock.yaml` → `pnpx`, `bun.lock` → `bunx`, otherwise `npx`).
+   - Record the command as `<pm> run <script>`.
+
+3. **Check if dev server is already running:**
+   ```bash
+   curl -sf http://localhost:3000 >/dev/null 2>&1 || curl -sf http://localhost:5173 >/dev/null 2>&1 || curl -sf http://localhost:4173 >/dev/null 2>&1
+   ```
+   - If a server responds, skip starting one and use the existing URL.
+   - If no server responds, start the dev server in the background:
+     ```bash
+     <pm> run <script> &>/tmp/measure-dev-server.log &
+     ```
+     Wait up to 15 seconds for it to become available (poll `curl -sf` on the expected port). If it fails to start, warn and skip to 2.5.
+
+#### 2.4.2 Connect and Collect Diagnostics
+
+1. **Connect to Chrome via CDP:**
+   ```bash
+   browser-harness-js 'await session.connect()'
+   ```
+   If this fails with "No running browser with remote debugging detected":
+   - Inform the user: "CDP check requires a running Chrome with remote debugging. Opening chrome://inspect/#remote-debugging — please click **Allow** when prompted."
+   - Run: `xdg-open 'chrome://inspect/#remote-debugging' 2>/dev/null || google-chrome 'chrome://inspect/#remote-debugging' 2>/dev/null`
+   - Retry `session.connect()` with `timeoutMs: 30000`.
+   - If still fails, warn and skip to 2.5.
+
+2. **Identify affected routes:**
+   - Scan the diff for route/page files (e.g., `app/**/page.tsx`, `src/pages/*`, `pages/*`).
+   - Map changed files to their routes (e.g., `app/dashboard/page.tsx` → `/dashboard`).
+   - If no specific routes can be inferred, use `/` (root) as default.
+   - Build a list of URLs to check: `http://localhost:<port><route>` for each route.
+
+3. **For each affected route, run these checks:**
+
+   **a) Navigate to the page:**
+   ```bash
+   browser-harness-js "await session.Page.navigate({url: 'http://localhost:<port><route>'})"
+   ```
+
+   **b) Console errors & warnings:**
+   ```bash
+   browser-harness-js <<'EOF'
+   await session.Runtime.enable()
+   const consoleMessages = []
+   const off = session.onEvent((method, params) => {
+     if (method === 'Runtime.consoleAPICalled' && (params.type === 'error' || params.type === 'warning')) {
+       const args = params.args.map(a => a.value || a.description || '').join(' ')
+       consoleMessages.push({ type: params.type, text: args })
+     }
+     if (method === 'Runtime.exceptionThrown') {
+       consoleMessages.push({ type: 'exception', text: params.exceptionDetails?.text || 'uncaught exception' })
+     }
+   })
+   globalThis._consoleOff = off
+   globalThis._consoleMessages = consoleMessages
+   await new Promise(r => setTimeout(r, 3000))
+   off()
+   return consoleMessages
+   EOF
+   ```
+   Collect and store results. Any `error` or `exception` entries are **High** severity findings.
+
+   **c) Network errors:**
+   ```bash
+   browser-harness-js <<'EOF'
+   await session.Network.enable()
+   const failedRequests = []
+   const off = session.onEvent((method, params) => {
+     if (method === 'Network.responseReceived' && params.response?.status >= 400) {
+       failedRequests.push({ url: params.response.url, status: params.response.status })
+     }
+     if (method === 'Network.loadingFailed') {
+       failedRequests.push({ url: params.requestId, error: params.errorText || 'loading failed' })
+     }
+   })
+   globalThis._netOff = off
+   globalThis._failedRequests = failedRequests
+   await new Promise(r => setTimeout(r, 3000))
+   off()
+   return failedRequests
+   EOF
+   ```
+   Collect and store results. Any 4xx/5xx responses are **Medium** severity findings.
+
+   **d) Screenshot:**
+   ```bash
+   browser-harness-js 'await session.Page.captureScreenshot({format:"png"})'
+   ```
+   Save the screenshot and include it in the review report for visual inspection. Note any obvious visual issues (blank pages, layout breaks, error states visible in the screenshot).
+
+   **e) DOM/visual spot-check:**
+   - For each changed component/page, verify key elements exist:
+   ```bash
+   browser-harness-js <<'EOF'
+   const { root } = await session.DOM.getDocument()
+   const checks = {}
+   const selectors = ['main', 'h1', '[data-testid]']
+   for (const sel of selectors) {
+     try {
+       const { nodeId } = await session.DOM.querySelector({ nodeId: root.nodeId, selector: sel })
+       checks[sel] = nodeId > 0 ? 'found' : 'missing'
+     } catch { checks[sel] = 'error' }
+   }
+   return checks
+   EOF
+   ```
+   - If critical structural elements (like `<main>` or the primary heading) are missing, flag as **Medium** severity.
+
+4. **Cleanup:**
+   ```bash
+   browser-harness-js 'await session.Page.close()' 2>/dev/null
+   ```
+   If the review started the dev server, stop it:
+   ```bash
+   kill %1 2>/dev/null
+   ```
+
+#### 2.4.3 Aggregate CDP Findings
+
+Combine all diagnostics into a structured summary:
+- **Console Issues:** List errors, warnings, and exceptions per route.
+- **Network Issues:** List failed requests per route.
+- **Visual Issues:** Note any problems seen in screenshots.
+- **DOM Issues:** Note missing critical elements per route.
+
+Each issue becomes a finding in section 2.5 with appropriate severity.
+
+### 2.5 Output Findings
 
 **Format your output strictly as follows:**
 
@@ -98,6 +243,9 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 - [ ] **New Tests**: [Yes/No]
 - [ ] **Test Coverage**: [Yes/No/Partial]
 - [ ] **Test Results**: [Passed/Failed] - [Summary or 'All passed']
+- [ ] **Browser Console Errors**: [None/Found] - [Count and summary, or 'Skipped (no frontend changes)']
+- [ ] **Network Errors**: [None/Found] - [Count and summary, or 'Skipped']
+- [ ] **Visual Check**: [Pass/Fail/Skipped] - [Notes on screenshots, or 'Skipped']
 
 ## Findings
 *(Only include this section if issues are found)*
