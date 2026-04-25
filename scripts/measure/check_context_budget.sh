@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Check context budget for conductor memory artifacts.
+# Check context budget for measure memory artifacts.
 # Reports line counts and whether each file is within the 50-line limit.
 # Exits 0 even when files do not exist.
 
@@ -24,5 +24,5 @@ check_file() {
   fi
 }
 
-check_file "conductor/lessons-learned.md" "lessons-learned.md"
-check_file "conductor/tech-debt.md"       "tech-debt.md"
+check_file "measure/lessons-learned.md" "lessons-learned.md"
+check_file "measure/tech-debt.md"       "tech-debt.md"

@@ -10,23 +10,26 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 **PROTOCOL: Verify that the Measure environment is properly set up.**
 
-1.  **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
-    -   **Tracks Registry**
-    -   **Product Definition**
-    -   **Tech Stack**
-    -   **Workflow**
+1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
+   - **Tracks Registry**
+   - **Product Definition**
+   - **Tech Stack**
+   - **Workflow**
 
-2.  **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
 
 ## 2.0 Read Project Data
 
-1.  **Locate and Parse Tracks Registry:**
-    -   Resolve the **Tracks Registry**.
-    -   Read and parse this file. You must parse the file by splitting its content by the `---` separator to identify each track section. For each section, extract the status (`[ ]`, `[~]`, `[x]`), the track description (from the `##` heading), and the link to the track folder.
+1. **Locate and Parse Tracks Registry:**
+   - Resolve the **Tracks Registry**.
+   - Read and parse this file. Support both track formats:
+     - New standard format: `- [ ] **Track: <Description>**`
+     - Legacy format: `## [ ] Track: <Description>`
+   - Split content by `---` separator to identify each track section. For each section, extract the status, the track description, and the link to the track folder.
 
-2.  **Locate Tracks Directory:** Resolve the **Tracks Directory**.
+2. **Locate Tracks Directory:** Resolve the **Tracks Directory**.
 
-3.  **Read Track Plans:** For each track in the **Tracks Registry**, resolve and read its **Implementation Plan** (`plan.md`).
+3. **Read Track Plans:** For each track in the **Tracks Registry**, resolve and read its **Implementation Plan** (`plan.md`).
 
 ## 3.0 Parse and Analyze
 
@@ -49,28 +52,28 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 Present a clear, formatted report:
 
 ```
-═══════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════
                     MEASURE STATUS REPORT
-═══════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════
 
-📅 Date/Time: <current timestamp>
+Date/Time: <current timestamp>
 
-📊 Project Status: <On Track | Behind Schedule | Blocked>
+Project Status: <On Track | Behind Schedule | Blocked>
 
 ───────────────────────────────────────────────────────────
-                      CURRENT WORK
+                       CURRENT WORK
 ───────────────────────────────────────────────────────────
 
-🔄 Current Track: <track description>
+Current Track: <track description>
    Phase: <current phase>
    Task:  <current in-progress task>
 
-⏭️  Next Action: <next pending task>
+Next Action: <next pending task>
 
-🚧 Blockers: <any blocked items, or "None">
+Blockers: <any blocked items, or "None">
 
 ───────────────────────────────────────────────────────────
-                       PROGRESS
+                        PROGRESS
 ───────────────────────────────────────────────────────────
 
 Tracks:
@@ -91,7 +94,7 @@ Tasks:
 Progress: [████████░░░░░░░░░░░░] <completed>/<total> (<percentage>%)
 
 ───────────────────────────────────────────────────────────
-                    TRACK BREAKDOWN
+                     TRACK BREAKDOWN
 ───────────────────────────────────────────────────────────
 
 <For each track>:
@@ -99,7 +102,7 @@ Progress: [████████░░░░░░░░░░░░] <comple
     Phases: <n> | Tasks: <completed>/<total> (<percentage>%)
 
 ───────────────────────────────────────────────────────────
-                    PROJECT HEALTH
+                     PROJECT HEALTH
 ───────────────────────────────────────────────────────────
 
 Lessons Learned:
@@ -112,7 +115,7 @@ Tech Debt:
   Line count:   <line count via `wc -l`, or "N/A">
   Budget:       <OK or OVER_LIMIT (max 50 lines)>
 
-═══════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════
 ```
 
 ## Status Determination Logic
