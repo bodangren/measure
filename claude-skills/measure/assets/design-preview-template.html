@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Preview — Measure</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  /* ================================================================
+     DESIGN PREVIEW TEMPLATE
+     This file is generated during Measure setup to preview three
+     getdesign.md aesthetics side-by-side. Each design has its own
+     CSS custom properties and component styles scoped to a container.
+     ================================================================ */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  /* Tab Switcher */
+  .tab-bar {
+    position: sticky; top: 0; z-index: 200;
+    display: flex; gap: 8px; padding: 16px 24px;
+    background: #0f0f11; border-bottom: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12);
+    background: transparent; color: #a1a1aa; font-size: 14px; font-weight: 500;
+    cursor: pointer; white-space: nowrap; transition: all 180ms ease;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .tab-btn:hover { border-color: rgba(255,255,255,0.3); color: #e4e4e7; }
+  .tab-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+  /* Design containers */
+  .design-tab { display: none; }
+  .design-tab.active { display: block; }
+
+  /* ================================================================
+     DESIGN 1 TOKENS & COMPONENTS
+     Replace all values below with the first recommended design's
+     actual colors, fonts, spacing, and radii from getdesign.md.
+     ================================================================ */
+  .design-1 {
+    /* TOKENS */
+    --d1-canvas: #000000;
+    --d1-surface: #0d0e10;
+    --d1-surface-2: #17181b;
+    --d1-primary: #0070cc;
+    --d1-accent: #1eaedb;
+    --d1-text: #ffffff;
+    --d1-text-secondary: #cccccc;
+    --d1-text-muted: #949494;
+    --d1-border: rgba(255,255,255,0.08);
+    --d1-font: 'Manrope', system-ui, sans-serif;
+    --d1-radius-sm: 3px;
+    --d1-radius-md: 12px;
+    --d1-radius-lg: 19px;
+    --d1-radius-pill: 999px;
+  }
+  .design-1 body { background: var(--d1-canvas); color: var(--d1-text); font-family: var(--d1-font); }
+  /* DESIGN 1: Nav */
+  .design-1 .preview-nav {
+    padding: 16px 48px; background: var(--d1-canvas); border-bottom: 1px solid var(--d1-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .design-1 .preview-nav .brand { font-size: 20px; font-weight: 300; letter-spacing: 0.1px; }
+  .design-1 .preview-nav .nav-cta {
+    background: var(--d1-primary); color: #fff; padding: 10px 22px; border-radius: var(--d1-radius-pill);
+    font-size: 14px; font-weight: 700; letter-spacing: 0.3px; border: none; cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+  .design-1 .preview-nav .nav-cta:hover { background: var(--d1-accent); transform: scale(1.05); }
+  /* DESIGN 1: Hero */
+  .design-1 .preview-hero {
+    padding: 96px 48px 88px;
+    background: linear-gradient(180deg, #121314 0%, var(--d1-canvas) 100%);
+  }
+  .design-1 .preview-hero .eyebrow { font-size: 14px; font-weight: 500; color: #53b1ff; margin-bottom: 20px; letter-spacing: 0.14px; }
+  .design-1 .preview-hero h1 { font-size: 72px; font-weight: 300; line-height: 1.10; letter-spacing: -0.5px; margin-bottom: 28px; max-width: 900px; }
+  .design-1 .preview-hero p { font-size: 18px; line-height: 1.50; color: rgba(255,255,255,0.7); max-width: 680px; margin-bottom: 44px; }
+  .design-1 .preview-hero .hero-btns { display: flex; gap: 18px; flex-wrap: wrap; }
+  .design-1 .btn-primary {
+    background: var(--d1-primary); color: #fff; padding: 14px 30px; border-radius: var(--d1-radius-pill);
+    font-size: 18px; font-weight: 500; border: 2px solid transparent; cursor: pointer;
+    transition: all 180ms ease;
+  }
+  .design-1 .btn-primary:hover { background: var(--d1-accent); transform: scale(1.05); }
+  .design-1 .btn-secondary {
+    background: #fff; color: var(--d1-primary); padding: 14px 30px; border-radius: var(--d1-radius-pill);
+    font-size: 18px; font-weight: 500; border: 2px solid #fff; cursor: pointer; transition: all 180ms ease;
+  }
+  .design-1 .btn-secondary:hover { background: var(--d1-accent); color: #fff; }
+  /* DESIGN 1: Section frame */
+  .design-1 .preview-section { padding: 80px 48px; border-top: 1px solid var(--d1-border); background: var(--d1-canvas); }
+  .design-1 .preview-section.alt { background: linear-gradient(180deg, var(--d1-canvas) 0%, var(--d1-surface) 100%); }
+  .design-1 .sec-eyebrow { font-size: 14px; font-weight: 500; color: #53b1ff; margin-bottom: 16px; letter-spacing: 0.14px; }
+  .design-1 .sec-title { font-size: 48px; font-weight: 300; line-height: 1.15; margin-bottom: 16px; }
+  .design-1 .sec-subtitle { font-size: 18px; line-height: 1.50; color: var(--d1-text-secondary); margin-bottom: 48px; max-width: 760px; }
+  /* DESIGN 1: Color swatches */
+  .design-1 .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .design-1 .swatch { background: var(--d1-surface-2); border-radius: var(--d1-radius-lg); overflow: hidden; border: 1px solid var(--d1-border); }
+  .design-1 .swatch .block { height: 120px; }
+  .design-1 .swatch .meta { padding: 18px 20px 20px; }
+  .design-1 .swatch .name { font-size: 18px; font-weight: 300; margin-bottom: 6px; }
+  .design-1 .swatch .hex { font-size: 12px; font-weight: 500; color: var(--d1-text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .design-1 .swatch .role { font-size: 13px; line-height: 1.50; color: var(--d1-text-secondary); }
+  /* DESIGN 1: Typography */
+  .design-1 .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 24px 0; border-bottom: 1px solid var(--d1-border); align-items: baseline; }
+  .design-1 .type-row:last-child { border-bottom: none; }
+  .design-1 .type-meta { font-size: 12px; font-weight: 500; color: var(--d1-text-muted); line-height: 1.60; }
+  .design-1 .type-meta strong { display: block; color: var(--d1-text); font-weight: 700; margin-bottom: 6px; font-size: 13px; }
+  /* DESIGN 1: Buttons grid */
+  .design-1 .btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .design-1 .btn-cell { padding: 36px 28px; border-radius: 24px; background: var(--d1-surface-2); border: 1px solid var(--d1-border); display: flex; flex-direction: column; gap: 20px; }
+  .design-1 .btn-cell .label { font-size: 13px; font-weight: 700; color: var(--d1-text-secondary); letter-spacing: 0.14px; }
+  /* DESIGN 1: Cards */
+  .design-1 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .design-1 .card {
+    background: var(--d1-surface-2); border-radius: var(--d1-radius-lg); overflow: hidden; border: 1px solid var(--d1-border);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .design-1 .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px 0 rgba(0,0,0,0.8); }
+  .design-1 .card .img { aspect-ratio: 3/4; background: linear-gradient(135deg, var(--d1-primary) 0%, #121314 100%); border-radius: 12px; margin: 14px 14px 0; }
+  .design-1 .card .cmeta { padding: 18px 20px 20px; }
+  .design-1 .card .tag { display: inline-block; font-size: 11px; font-weight: 500; color: var(--d1-text-secondary); padding: 3px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 9999px; margin-bottom: 10px; }
+  .design-1 .card .ctitle { font-size: 16px; font-weight: 500; line-height: 1.25; margin-bottom: 14px; }
+  .design-1 .card .cfoot { display: flex; justify-content: space-between; align-items: center; }
+  .design-1 .card .cprice { font-size: 13px; font-weight: 700; color: #d53b00; }
+  /* DESIGN 1: Forms */
+  .design-1 .form-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 800px; }
+  .design-1 .f-field { display: flex; flex-direction: column; gap: 8px; }
+  .design-1 .f-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-1 .f-input {
+    background: var(--d1-surface-2); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--d1-radius-sm);
+    padding: 12px 14px; font-size: 15px; color: var(--d1-text); outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .design-1 .f-input:focus { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 2px var(--d1-primary); }
+  /* DESIGN 1: Spacing */
+  .design-1 .space-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .design-1 .space-item { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .design-1 .space-block { background: var(--d1-primary); height: 64px; border-radius: 4px; }
+  .design-1 .space-label { font-size: 11px; font-weight: 500; color: var(--d1-text-secondary); }
+  /* DESIGN 1: Radius */
+  .design-1 .rad-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; }
+  .design-1 .rad-item { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .design-1 .rad-block { width: 90px; height: 90px; background: var(--d1-primary); }
+  .design-1 .rad-label { font-size: 11px; font-weight: 500; text-align: center; }
+  .design-1 .rad-label small { display: block; color: var(--d1-text-muted); margin-top: 3px; font-size: 10px; }
+  /* DESIGN 1: Elevation */
+  .design-1 .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+  .design-1 .elev-cell {
+    padding: 36px 24px; border-radius: 24px; background: var(--d1-surface-2); text-align: center;
+    min-height: 160px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;
+  }
+  .design-1 .elev-cell .label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-1 .elev-cell .desc { font-size: 12px; line-height: 1.50; opacity: 0.75; }
+
+  /* ================================================================
+     DESIGN 2 TOKENS & COMPONENTS
+     Copy the full block above and replace tokens for the second
+     recommended design from getdesign.md.
+     ================================================================ */
+  .design-2 {
+    --d2-canvas: #ffffff;
+    --d2-surface: #f8f9fb;
+    --d2-surface-2: #f1f3f6;
+    --d2-primary: #635bff;
+    --d2-accent: #96f7d6;
+    --d2-text: #0a2540;
+    --d2-text-secondary: #425466;
+    --d2-text-muted: #6b7c93;
+    --d2-border: rgba(10,37,64,0.08);
+    --d2-font: system-ui, -apple-system, sans-serif;
+    --d2-radius-sm: 4px;
+    --d2-radius-md: 8px;
+    --d2-radius-lg: 12px;
+    --d2-radius-pill: 999px;
+  }
+  .design-2 body { background: var(--d2-canvas); color: var(--d2-text); font-family: var(--d2-font); }
+  .design-2 .preview-nav {
+    padding: 16px 48px; background: var(--d2-canvas); border-bottom: 1px solid var(--d2-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .design-2 .preview-nav .brand { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .design-2 .preview-nav .nav-cta {
+    background: var(--d2-primary); color: #fff; padding: 10px 22px; border-radius: var(--d2-radius-pill);
+    font-size: 14px; font-weight: 600; letter-spacing: 0.2px; border: none; cursor: pointer;
+    transition: all 180ms ease;
+  }
+  .design-2 .preview-nav .nav-cta:hover { background: #0a2540; transform: scale(1.03); }
+  .design-2 .preview-hero {
+    padding: 96px 48px 88px;
+    background: linear-gradient(180deg, #f6f9fc 0%, var(--d2-canvas) 100%);
+  }
+  .design-2 .preview-hero .eyebrow { font-size: 14px; font-weight: 600; color: var(--d2-primary); margin-bottom: 20px; letter-spacing: 0.14px; text-transform: uppercase; }
+  .design-2 .preview-hero h1 { font-size: 72px; font-weight: 600; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 28px; max-width: 900px; }
+  .design-2 .preview-hero p { font-size: 18px; line-height: 1.60; color: var(--d2-text-secondary); max-width: 680px; margin-bottom: 44px; }
+  .design-2 .preview-hero .hero-btns { display: flex; gap: 18px; flex-wrap: wrap; }
+  .design-2 .btn-primary {
+    background: var(--d2-primary); color: #fff; padding: 14px 30px; border-radius: var(--d2-radius-pill);
+    font-size: 18px; font-weight: 600; border: none; cursor: pointer; transition: all 180ms ease;
+  }
+  .design-2 .btn-primary:hover { background: #0a2540; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,91,255,0.25); }
+  .design-2 .btn-secondary {
+    background: transparent; color: var(--d2-primary); padding: 14px 30px; border-radius: var(--d2-radius-pill);
+    font-size: 18px; font-weight: 600; border: 1px solid var(--d2-primary); cursor: pointer; transition: all 180ms ease;
+  }
+  .design-2 .btn-secondary:hover { background: rgba(99,91,255,0.06); }
+  .design-2 .preview-section { padding: 80px 48px; border-top: 1px solid var(--d2-border); background: var(--d2-canvas); }
+  .design-2 .preview-section.alt { background: linear-gradient(180deg, var(--d2-canvas) 0%, var(--d2-surface) 100%); }
+  .design-2 .sec-eyebrow { font-size: 14px; font-weight: 600; color: var(--d2-primary); margin-bottom: 16px; letter-spacing: 0.14px; text-transform: uppercase; }
+  .design-2 .sec-title { font-size: 48px; font-weight: 600; line-height: 1.10; letter-spacing: -1px; margin-bottom: 16px; }
+  .design-2 .sec-subtitle { font-size: 18px; line-height: 1.60; color: var(--d2-text-secondary); margin-bottom: 48px; max-width: 760px; }
+  .design-2 .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .design-2 .swatch { background: var(--d2-surface-2); border-radius: var(--d2-radius-lg); overflow: hidden; border: 1px solid var(--d2-border); }
+  .design-2 .swatch .block { height: 120px; }
+  .design-2 .swatch .meta { padding: 18px 20px 20px; }
+  .design-2 .swatch .name { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .design-2 .swatch .hex { font-size: 12px; font-weight: 500; color: var(--d2-text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .design-2 .swatch .role { font-size: 13px; line-height: 1.50; color: var(--d2-text-secondary); }
+  .design-2 .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 24px 0; border-bottom: 1px solid var(--d2-border); align-items: baseline; }
+  .design-2 .type-row:last-child { border-bottom: none; }
+  .design-2 .type-meta { font-size: 12px; font-weight: 500; color: var(--d2-text-muted); line-height: 1.60; }
+  .design-2 .type-meta strong { display: block; color: var(--d2-text); font-weight: 700; margin-bottom: 6px; font-size: 13px; }
+  .design-2 .btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .design-2 .btn-cell { padding: 36px 28px; border-radius: 16px; background: var(--d2-surface-2); border: 1px solid var(--d2-border); display: flex; flex-direction: column; gap: 20px; }
+  .design-2 .btn-cell .label { font-size: 13px; font-weight: 700; color: var(--d2-text-secondary); letter-spacing: 0.14px; }
+  .design-2 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .design-2 .card {
+    background: var(--d2-surface-2); border-radius: var(--d2-radius-lg); overflow: hidden; border: 1px solid var(--d2-border);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .design-2 .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px 0 rgba(10,37,64,0.12); }
+  .design-2 .card .img { aspect-ratio: 3/4; background: linear-gradient(135deg, var(--d2-primary) 0%, #0a2540 100%); border-radius: 8px; margin: 14px 14px 0; }
+  .design-2 .card .cmeta { padding: 18px 20px 20px; }
+  .design-2 .card .tag { display: inline-block; font-size: 11px; font-weight: 500; color: var(--d2-text-secondary); padding: 3px 10px; border: 1px solid rgba(10,37,64,0.15); border-radius: 9999px; margin-bottom: 10px; }
+  .design-2 .card .ctitle { font-size: 16px; font-weight: 600; line-height: 1.25; margin-bottom: 14px; }
+  .design-2 .card .cfoot { display: flex; justify-content: space-between; align-items: center; }
+  .design-2 .card .cprice { font-size: 13px; font-weight: 700; color: var(--d2-primary); }
+  .design-2 .form-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 800px; }
+  .design-2 .f-field { display: flex; flex-direction: column; gap: 8px; }
+  .design-2 .f-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-2 .f-input {
+    background: var(--d2-surface-2); border: 1px solid rgba(10,37,64,0.15); border-radius: var(--d2-radius-sm);
+    padding: 12px 14px; font-size: 15px; color: var(--d2-text); outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .design-2 .f-input:focus { border-color: var(--d2-primary); box-shadow: 0 0 0 3px rgba(99,91,255,0.15); }
+  .design-2 .space-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .design-2 .space-item { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .design-2 .space-block { background: var(--d2-primary); height: 64px; border-radius: 4px; }
+  .design-2 .space-label { font-size: 11px; font-weight: 500; color: var(--d2-text-secondary); }
+  .design-2 .rad-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; }
+  .design-2 .rad-item { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .design-2 .rad-block { width: 90px; height: 90px; background: var(--d2-primary); }
+  .design-2 .rad-label { font-size: 11px; font-weight: 500; text-align: center; }
+  .design-2 .rad-label small { display: block; color: var(--d2-text-muted); margin-top: 3px; font-size: 10px; }
+  .design-2 .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+  .design-2 .elev-cell {
+    padding: 36px 24px; border-radius: 16px; background: var(--d2-surface-2); text-align: center;
+    min-height: 160px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;
+  }
+  .design-2 .elev-cell .label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-2 .elev-cell .desc { font-size: 12px; line-height: 1.50; opacity: 0.75; }
+
+  /* ================================================================
+     DESIGN 3 TOKENS & COMPONENTS
+     Copy the full block above and replace tokens for the third
+     recommended design from getdesign.md.
+     ================================================================ */
+  .design-3 {
+    --d3-canvas: #0c0c0c;
+    --d3-surface: #141414;
+    --d3-surface-2: #1a1a1a;
+    --d3-primary: #5e6ad2;
+    --d3-accent: #7f8af7;
+    --d3-text: #f7f8f8;
+    --d3-text-secondary: #8a8f98;
+    --d3-text-muted: #5e6269;
+    --d3-border: rgba(255,255,255,0.06);
+    --d3-font: 'Inter', system-ui, sans-serif;
+    --d3-radius-sm: 6px;
+    --d3-radius-md: 8px;
+    --d3-radius-lg: 10px;
+    --d3-radius-pill: 999px;
+  }
+  .design-3 body { background: var(--d3-canvas); color: var(--d3-text); font-family: var(--d3-font); }
+  .design-3 .preview-nav {
+    padding: 16px 48px; background: var(--d3-canvas); border-bottom: 1px solid var(--d3-border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .design-3 .preview-nav .brand { font-size: 18px; font-weight: 500; letter-spacing: -0.2px; }
+  .design-3 .preview-nav .nav-cta {
+    background: var(--d3-primary); color: #fff; padding: 8px 18px; border-radius: var(--d3-radius-md);
+    font-size: 13px; font-weight: 500; letter-spacing: 0.1px; border: none; cursor: pointer;
+    transition: all 150ms ease;
+  }
+  .design-3 .preview-nav .nav-cta:hover { background: var(--d3-accent); }
+  .design-3 .preview-hero {
+    padding: 96px 48px 88px;
+    background: linear-gradient(180deg, #111111 0%, var(--d3-canvas) 100%);
+  }
+  .design-3 .preview-hero .eyebrow { font-size: 13px; font-weight: 500; color: var(--d3-primary); margin-bottom: 20px; letter-spacing: 0.05px; }
+  .design-3 .preview-hero h1 { font-size: 68px; font-weight: 500; line-height: 1.05; letter-spacing: -2px; margin-bottom: 28px; max-width: 900px; }
+  .design-3 .preview-hero p { font-size: 17px; line-height: 1.60; color: var(--d3-text-secondary); max-width: 680px; margin-bottom: 44px; }
+  .design-3 .preview-hero .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .design-3 .btn-primary {
+    background: var(--d3-primary); color: #fff; padding: 12px 24px; border-radius: var(--d3-radius-md);
+    font-size: 16px; font-weight: 500; border: none; cursor: pointer; transition: all 150ms ease;
+  }
+  .design-3 .btn-primary:hover { background: var(--d3-accent); }
+  .design-3 .btn-secondary {
+    background: var(--d3-surface-2); color: var(--d3-text); padding: 12px 24px; border-radius: var(--d3-radius-md);
+    font-size: 16px; font-weight: 500; border: 1px solid var(--d3-border); cursor: pointer; transition: all 150ms ease;
+  }
+  .design-3 .btn-secondary:hover { background: var(--d3-surface); }
+  .design-3 .preview-section { padding: 80px 48px; border-top: 1px solid var(--d3-border); background: var(--d3-canvas); }
+  .design-3 .preview-section.alt { background: linear-gradient(180deg, var(--d3-canvas) 0%, var(--d3-surface) 100%); }
+  .design-3 .sec-eyebrow { font-size: 13px; font-weight: 500; color: var(--d3-primary); margin-bottom: 16px; letter-spacing: 0.05px; }
+  .design-3 .sec-title { font-size: 44px; font-weight: 500; line-height: 1.10; letter-spacing: -1.5px; margin-bottom: 16px; }
+  .design-3 .sec-subtitle { font-size: 17px; line-height: 1.60; color: var(--d3-text-secondary); margin-bottom: 48px; max-width: 760px; }
+  .design-3 .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .design-3 .swatch { background: var(--d3-surface-2); border-radius: var(--d3-radius-lg); overflow: hidden; border: 1px solid var(--d3-border); }
+  .design-3 .swatch .block { height: 120px; }
+  .design-3 .swatch .meta { padding: 18px 20px 20px; }
+  .design-3 .swatch .name { font-size: 17px; font-weight: 500; margin-bottom: 6px; }
+  .design-3 .swatch .hex { font-size: 12px; font-weight: 500; color: var(--d3-text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+  .design-3 .swatch .role { font-size: 13px; line-height: 1.50; color: var(--d3-text-secondary); }
+  .design-3 .type-row { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 24px 0; border-bottom: 1px solid var(--d3-border); align-items: baseline; }
+  .design-3 .type-row:last-child { border-bottom: none; }
+  .design-3 .type-meta { font-size: 12px; font-weight: 500; color: var(--d3-text-muted); line-height: 1.60; }
+  .design-3 .type-meta strong { display: block; color: var(--d3-text); font-weight: 700; margin-bottom: 6px; font-size: 13px; }
+  .design-3 .btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .design-3 .btn-cell { padding: 36px 28px; border-radius: 12px; background: var(--d3-surface-2); border: 1px solid var(--d3-border); display: flex; flex-direction: column; gap: 20px; }
+  .design-3 .btn-cell .label { font-size: 13px; font-weight: 700; color: var(--d3-text-secondary); letter-spacing: 0.14px; }
+  .design-3 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .design-3 .card {
+    background: var(--d3-surface-2); border-radius: var(--d3-radius-lg); overflow: hidden; border: 1px solid var(--d3-border);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .design-3 .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px 0 rgba(0,0,0,0.4); }
+  .design-3 .card .img { aspect-ratio: 3/4; background: linear-gradient(135deg, var(--d3-primary) 0%, #0c0c0c 100%); border-radius: 6px; margin: 14px 14px 0; }
+  .design-3 .card .cmeta { padding: 18px 20px 20px; }
+  .design-3 .card .tag { display: inline-block; font-size: 11px; font-weight: 500; color: var(--d3-text-secondary); padding: 3px 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 9999px; margin-bottom: 10px; }
+  .design-3 .card .ctitle { font-size: 16px; font-weight: 500; line-height: 1.25; margin-bottom: 14px; }
+  .design-3 .card .cfoot { display: flex; justify-content: space-between; align-items: center; }
+  .design-3 .card .cprice { font-size: 13px; font-weight: 700; color: var(--d3-primary); }
+  .design-3 .form-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 800px; }
+  .design-3 .f-field { display: flex; flex-direction: column; gap: 8px; }
+  .design-3 .f-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-3 .f-input {
+    background: var(--d3-surface-2); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--d3-radius-sm);
+    padding: 12px 14px; font-size: 15px; color: var(--d3-text); outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .design-3 .f-input:focus { border-color: var(--d3-primary); box-shadow: 0 0 0 2px rgba(94,106,210,0.2); }
+  .design-3 .space-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .design-3 .space-item { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .design-3 .space-block { background: var(--d3-primary); height: 64px; border-radius: 4px; }
+  .design-3 .space-label { font-size: 11px; font-weight: 500; color: var(--d3-text-secondary); }
+  .design-3 .rad-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; }
+  .design-3 .rad-item { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .design-3 .rad-block { width: 90px; height: 90px; background: var(--d3-primary); }
+  .design-3 .rad-label { font-size: 11px; font-weight: 500; text-align: center; }
+  .design-3 .rad-label small { display: block; color: var(--d3-text-muted); margin-top: 3px; font-size: 10px; }
+  .design-3 .elev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+  .design-3 .elev-cell {
+    padding: 36px 24px; border-radius: 12px; background: var(--d3-surface-2); text-align: center;
+    min-height: 160px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;
+  }
+  .design-3 .elev-cell .label { font-size: 13px; font-weight: 700; letter-spacing: 0.14px; }
+  .design-3 .elev-cell .desc { font-size: 12px; line-height: 1.50; opacity: 0.75; }
+
+  @media (max-width: 900px) {
+    .preview-hero { padding: 64px 24px 56px !important; }
+    .preview-hero h1 { font-size: 40px !important; }
+    .sec-title { font-size: 32px !important; }
+    .preview-section { padding: 64px 24px !important; }
+    .form-stack { grid-template-columns: 1fr !important; }
+    .type-row { grid-template-columns: 1fr !important; gap: 16px; }
+    .preview-nav { padding: 12px 20px !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TAB SWITCHER -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="design-1">Design 1</button>
+  <button class="tab-btn" data-tab="design-2">Design 2</button>
+  <button class="tab-btn" data-tab="design-3">Design 3</button>
+</div>
+
+<!-- ================================================================
+   DESIGN 1 TAB
+   ================================================================ -->
+<div id="design-1" class="design-tab active design-1">
+
+  <nav class="preview-nav">
+    <div class="brand">Design 1</div>
+    <button class="nav-cta">Sign In</button>
+  </nav>
+
+  <section class="preview-hero">
+    <span class="eyebrow">Design System / Console Retail</span>
+    <h1>Play has no limits</h1>
+    <p>Quiet-authority display type, cyan hover-scale interactions, and a three-surface channel layout anchored by PlayStation Blue.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">Explore</button>
+      <button class="btn-secondary">Learn More</button>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 01 / Palette</span>
+    <h2 class="sec-title">Color Palette</h2>
+    <p class="sec-subtitle">Primary, secondary, accent, surface, and text colors that define the design language.</p>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="block" style="background:#0070cc;"></div><div class="meta"><div class="name">Primary</div><div class="hex">#0070CC</div><div class="role">Anchor color for CTAs and key actions.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#1eaedb;"></div><div class="meta"><div class="name">Accent</div><div class="hex">#1EAEDB</div><div class="role">Hover, focus, and interaction states.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#000000;"></div><div class="meta"><div class="name">Canvas</div><div class="hex">#000000</div><div class="role">Background and framing surface.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#ffffff;"></div><div class="meta"><div class="name">Paper</div><div class="hex">#FFFFFF</div><div class="role">Content panels and inverted surfaces.</div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 02 / Typography</span>
+    <h2 class="sec-title">Typographic Hierarchy</h2>
+    <p class="sec-subtitle">Display, heading, body, and caption scales with specific weights and tracking.</p>
+    <div class="type-row"><div class="type-meta"><strong>Hero Display</strong>72px / 300 / 1.10 / -0.5px</div><div class="type-sample" style="font-size:72px;font-weight:300;line-height:1.10;letter-spacing:-0.5px;">Play has no limits</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Section Heading</strong>48px / 300 / 1.15</div><div class="type-sample" style="font-size:48px;font-weight:300;line-height:1.15;">Explore worlds</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Body</strong>18px / 400 / 1.50 / 0.1px</div><div class="type-sample" style="font-size:18px;font-weight:400;line-height:1.50;letter-spacing:0.1px;">Standard reading body with generous leading for product narrative.</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Caption</strong>14px / 500 / 1.50</div><div class="type-sample" style="font-size:14px;font-weight:500;line-height:1.50;">Utility labels and metadata</div></div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 03 / Buttons</span>
+    <h2 class="sec-title">Button Variants</h2>
+    <p class="sec-subtitle">Primary, secondary, ghost, and icon button styles with hover states.</p>
+    <div class="btn-grid">
+      <div class="btn-cell"><span class="label">Primary</span><button class="btn-primary">Sign Up</button></div>
+      <div class="btn-cell"><span class="label">Secondary</span><button class="btn-secondary">Learn More</button></div>
+      <div class="btn-cell"><span class="label">Ghost</span><button class="btn-ghost">Filter</button></div>
+      <div class="btn-cell"><span class="label">Icon</span><button class="btn-icon">→</button></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 04 / Cards</span>
+    <h2 class="sec-title">Product Cards</h2>
+    <p class="sec-subtitle">Grid layouts with cover art, metadata, and pricing.</p>
+    <div class="card-grid">
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Platform</span><h3 class="ctitle">Product One</h3><div class="cfoot"><span class="cprice">$49.99</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Buy</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Platform</span><h3 class="ctitle">Product Two</h3><div class="cfoot"><span class="cprice">$39.99</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Buy</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Platform</span><h3 class="ctitle">Product Three</h3><div class="cfoot"><span class="cprice">$29.99</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Buy</button></div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 05 / Forms</span>
+    <h2 class="sec-title">Inputs & Fields</h2>
+    <p class="sec-subtitle">Text inputs, focus states, and error handling.</p>
+    <div class="form-stack">
+      <div class="f-field"><label class="f-label">Email</label><input class="f-input" type="email" placeholder="you@example.com"></div>
+      <div class="f-field"><label class="f-label">Password</label><input class="f-input" type="password" placeholder="••••••••"></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 06 / Spacing</span>
+    <h2 class="sec-title">Spacing Scale</h2>
+    <p class="sec-subtitle">Base unit and multiples used for margins, padding, and gaps.</p>
+    <div class="space-row">
+      <div class="space-item"><div class="space-block" style="width:4px;"></div><span class="space-label">4px</span></div>
+      <div class="space-item"><div class="space-block" style="width:8px;"></div><span class="space-label">8px</span></div>
+      <div class="space-item"><div class="space-block" style="width:16px;"></div><span class="space-label">16px</span></div>
+      <div class="space-item"><div class="space-block" style="width:24px;"></div><span class="space-label">24px</span></div>
+      <div class="space-item"><div class="space-block" style="width:32px;"></div><span class="space-label">32px</span></div>
+      <div class="space-item"><div class="space-block" style="width:48px;"></div><span class="space-label">48px</span></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 07 / Radius</span>
+    <h2 class="sec-title">Border Radius Scale</h2>
+    <p class="sec-subtitle">Discrete radii from sharp utility to full pill shapes.</p>
+    <div class="rad-row">
+      <div class="rad-item"><div class="rad-block" style="border-radius:0;"></div><span class="rad-label">0px<small>Sharp</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:4px;"></div><span class="rad-label">4px<small>Compact</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:8px;"></div><span class="rad-label">8px<small>Standard</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:16px;"></div><span class="rad-label">16px<small>Soft</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:999px;width:140px;height:50px;"></div><span class="rad-label">999px<small>Pill</small></span></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 08 / Elevation</span>
+    <h2 class="sec-title">Depth & Elevation</h2>
+    <p class="sec-subtitle">Shadow and border treatments for hierarchy.</p>
+    <div class="elev-grid">
+      <div class="elev-cell" style="border:1px solid var(--d1-border);"><span class="label">Flat</span><span class="desc">Border only</span></div>
+      <div class="elev-cell" style="box-shadow:0 2px 8px rgba(0,0,0,0.3);"><span class="label">Raised</span><span class="desc">Subtle lift</span></div>
+      <div class="elev-cell" style="box-shadow:0 8px 24px rgba(0,0,0,0.5);"><span class="label">Floating</span><span class="desc">Prominent drop</span></div>
+      <div class="elev-cell" style="box-shadow:0 0 0 2px var(--d1-primary);"><span class="label">Focused</span><span class="desc">Ring highlight</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================================================================
+   DESIGN 2 TAB
+   ================================================================ -->
+<div id="design-2" class="design-tab design-2">
+
+  <nav class="preview-nav">
+    <div class="brand">Design 2</div>
+    <button class="nav-cta">Sign In</button>
+  </nav>
+
+  <section class="preview-hero">
+    <span class="eyebrow">Design System / Fintech</span>
+    <h1>Payments infrastructure for the internet</h1>
+    <p>Weight-300 elegance, signature purple gradients, and trust-focused precision for financial products.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">Get Started</button>
+      <button class="btn-secondary">Contact Sales</button>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 01 / Palette</span>
+    <h2 class="sec-title">Color Palette</h2>
+    <p class="sec-subtitle">Primary, secondary, accent, surface, and text colors that define the design language.</p>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="block" style="background:#635bff;"></div><div class="meta"><div class="name">Primary</div><div class="hex">#635BFF</div><div class="role">Anchor color for CTAs and key actions.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#96f7d6;"></div><div class="meta"><div class="name">Accent</div><div class="hex">#96F7D6</div><div class="role">Hover, focus, and interaction states.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#ffffff;"></div><div class="meta"><div class="name">Canvas</div><div class="hex">#FFFFFF</div><div class="role">Background and framing surface.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#0a2540;"></div><div class="meta"><div class="name">Ink</div><div class="hex">#0A2540</div><div class="role">Dark surfaces and inverted modes.</div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 02 / Typography</span>
+    <h2 class="sec-title">Typographic Hierarchy</h2>
+    <p class="sec-subtitle">Display, heading, body, and caption scales with specific weights and tracking.</p>
+    <div class="type-row"><div class="type-meta"><strong>Hero Display</strong>72px / 600 / 1.05 / -1.5px</div><div class="type-sample" style="font-size:72px;font-weight:600;line-height:1.05;letter-spacing:-1.5px;">Payments infrastructure</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Section Heading</strong>48px / 600 / 1.10 / -1px</div><div class="type-sample" style="font-size:48px;font-weight:600;line-height:1.10;letter-spacing:-1px;">Global scale</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Body</strong>18px / 400 / 1.60</div><div class="type-sample" style="font-size:18px;font-weight:400;line-height:1.60;">Standard reading body with comfortable leading for long-form content.</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Caption</strong>14px / 500 / 1.50</div><div class="type-sample" style="font-size:14px;font-weight:500;line-height:1.50;">Utility labels and metadata</div></div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 03 / Buttons</span>
+    <h2 class="sec-title">Button Variants</h2>
+    <p class="sec-subtitle">Primary, secondary, ghost, and icon button styles with hover states.</p>
+    <div class="btn-grid">
+      <div class="btn-cell"><span class="label">Primary</span><button class="btn-primary">Get Started</button></div>
+      <div class="btn-cell"><span class="label">Secondary</span><button class="btn-secondary">Contact Sales</button></div>
+      <div class="btn-cell"><span class="label">Ghost</span><button class="btn-ghost">Learn More</button></div>
+      <div class="btn-cell"><span class="label">Icon</span><button class="btn-icon">→</button></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 04 / Cards</span>
+    <h2 class="sec-title">Feature Cards</h2>
+    <p class="sec-subtitle">Grid layouts with imagery, metadata, and actions.</p>
+    <div class="card-grid">
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Feature</span><h3 class="ctitle">Checkout</h3><div class="cfoot"><span class="cprice">Learn more</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">View</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Feature</span><h3 class="ctitle">Billing</h3><div class="cfoot"><span class="cprice">Learn more</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">View</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Feature</span><h3 class="ctitle">Invoicing</h3><div class="cfoot"><span class="cprice">Learn more</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">View</button></div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 05 / Forms</span>
+    <h2 class="sec-title">Inputs & Fields</h2>
+    <p class="sec-subtitle">Text inputs, focus states, and error handling.</p>
+    <div class="form-stack">
+      <div class="f-field"><label class="f-label">Email</label><input class="f-input" type="email" placeholder="you@example.com"></div>
+      <div class="f-field"><label class="f-label">Password</label><input class="f-input" type="password" placeholder="••••••••"></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 06 / Spacing</span>
+    <h2 class="sec-title">Spacing Scale</h2>
+    <p class="sec-subtitle">Base unit and multiples used for margins, padding, and gaps.</p>
+    <div class="space-row">
+      <div class="space-item"><div class="space-block" style="width:4px;"></div><span class="space-label">4px</span></div>
+      <div class="space-item"><div class="space-block" style="width:8px;"></div><span class="space-label">8px</span></div>
+      <div class="space-item"><div class="space-block" style="width:16px;"></div><span class="space-label">16px</span></div>
+      <div class="space-item"><div class="space-block" style="width:24px;"></div><span class="space-label">24px</span></div>
+      <div class="space-item"><div class="space-block" style="width:32px;"></div><span class="space-label">32px</span></div>
+      <div class="space-item"><div class="space-block" style="width:48px;"></div><span class="space-label">48px</span></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 07 / Radius</span>
+    <h2 class="sec-title">Border Radius Scale</h2>
+    <p class="sec-subtitle">Discrete radii from sharp utility to full pill shapes.</p>
+    <div class="rad-row">
+      <div class="rad-item"><div class="rad-block" style="border-radius:0;"></div><span class="rad-label">0px<small>Sharp</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:4px;"></div><span class="rad-label">4px<small>Compact</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:8px;"></div><span class="rad-label">8px<small>Standard</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:12px;"></div><span class="rad-label">12px<small>Soft</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:999px;width:140px;height:50px;"></div><span class="rad-label">999px<small>Pill</small></span></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 08 / Elevation</span>
+    <h2 class="sec-title">Depth & Elevation</h2>
+    <p class="sec-subtitle">Shadow and border treatments for hierarchy.</p>
+    <div class="elev-grid">
+      <div class="elev-cell" style="border:1px solid var(--d2-border);"><span class="label">Flat</span><span class="desc">Border only</span></div>
+      <div class="elev-cell" style="box-shadow:0 2px 8px rgba(10,37,64,0.08);"><span class="label">Raised</span><span class="desc">Subtle lift</span></div>
+      <div class="elev-cell" style="box-shadow:0 8px 24px rgba(10,37,64,0.12);"><span class="label">Floating</span><span class="desc">Prominent drop</span></div>
+      <div class="elev-cell" style="box-shadow:0 0 0 3px rgba(99,91,255,0.15);"><span class="label">Focused</span><span class="desc">Ring highlight</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================================================================
+   DESIGN 3 TAB
+   ================================================================ -->
+<div id="design-3" class="design-tab design-3">
+
+  <nav class="preview-nav">
+    <div class="brand">Design 3</div>
+    <button class="nav-cta">Sign In</button>
+  </nav>
+
+  <section class="preview-hero">
+    <span class="eyebrow">Design System / Productivity</span>
+    <h1>Issue tracking you'll enjoy using</h1>
+    <p>Ultra-minimal precision, purple accent discipline, and sparse data density for focused work.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">Get Started</button>
+      <button class="btn-secondary">View Demo</button>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 01 / Palette</span>
+    <h2 class="sec-title">Color Palette</h2>
+    <p class="sec-subtitle">Primary, secondary, accent, surface, and text colors that define the design language.</p>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="block" style="background:#5e6ad2;"></div><div class="meta"><div class="name">Primary</div><div class="hex">#5E6AD2</div><div class="role">Anchor color for CTAs and key actions.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#7f8af7;"></div><div class="meta"><div class="name">Accent</div><div class="hex">#7F8AF7</div><div class="role">Hover, focus, and interaction states.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#0c0c0c;"></div><div class="meta"><div class="name">Canvas</div><div class="hex">#0C0C0C</div><div class="role">Background and framing surface.</div></div></div>
+      <div class="swatch"><div class="block" style="background:#f7f8f8;"></div><div class="meta"><div class="name">Paper</div><div class="hex">#F7F8F8</div><div class="role">Content panels and inverted surfaces.</div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 02 / Typography</span>
+    <h2 class="sec-title">Typographic Hierarchy</h2>
+    <p class="sec-subtitle">Display, heading, body, and caption scales with specific weights and tracking.</p>
+    <div class="type-row"><div class="type-meta"><strong>Hero Display</strong>68px / 500 / 1.05 / -2px</div><div class="type-sample" style="font-size:68px;font-weight:500;line-height:1.05;letter-spacing:-2px;">Issue tracking</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Section Heading</strong>44px / 500 / 1.10 / -1.5px</div><div class="type-sample" style="font-size:44px;font-weight:500;line-height:1.10;letter-spacing:-1.5px;">Streamlined workflow</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Body</strong>17px / 400 / 1.60</div><div class="type-sample" style="font-size:17px;font-weight:400;line-height:1.60;">Standard reading body with comfortable leading for interface copy.</div></div>
+    <div class="type-row"><div class="type-meta"><strong>Caption</strong>13px / 500 / 1.50</div><div class="type-sample" style="font-size:13px;font-weight:500;line-height:1.50;">Utility labels and metadata</div></div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 03 / Buttons</span>
+    <h2 class="sec-title">Button Variants</h2>
+    <p class="sec-subtitle">Primary, secondary, ghost, and icon button styles with hover states.</p>
+    <div class="btn-grid">
+      <div class="btn-cell"><span class="label">Primary</span><button class="btn-primary">Get Started</button></div>
+      <div class="btn-cell"><span class="label">Secondary</span><button class="btn-secondary">View Demo</button></div>
+      <div class="btn-cell"><span class="label">Ghost</span><button class="btn-ghost">Learn More</button></div>
+      <div class="btn-cell"><span class="label">Icon</span><button class="btn-icon">→</button></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 04 / Cards</span>
+    <h2 class="sec-title">Task Cards</h2>
+    <p class="sec-subtitle">Grid layouts with imagery, metadata, and actions.</p>
+    <div class="card-grid">
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">In Progress</span><h3 class="ctitle">Design System</h3><div class="cfoot"><span class="cprice">View</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Open</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Done</span><h3 class="ctitle">API Integration</h3><div class="cfoot"><span class="cprice">View</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Open</button></div></div></div>
+      <div class="card"><div class="img"></div><div class="cmeta"><span class="tag">Backlog</span><h3 class="ctitle">Mobile App</h3><div class="cfoot"><span class="cprice">View</span><button class="btn-primary" style="font-size:13px;padding:8px 16px;">Open</button></div></div></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 05 / Forms</span>
+    <h2 class="sec-title">Inputs & Fields</h2>
+    <p class="sec-subtitle">Text inputs, focus states, and error handling.</p>
+    <div class="form-stack">
+      <div class="f-field"><label class="f-label">Email</label><input class="f-input" type="email" placeholder="you@example.com"></div>
+      <div class="f-field"><label class="f-label">Password</label><input class="f-input" type="password" placeholder="••••••••"></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 06 / Spacing</span>
+    <h2 class="sec-title">Spacing Scale</h2>
+    <p class="sec-subtitle">Base unit and multiples used for margins, padding, and gaps.</p>
+    <div class="space-row">
+      <div class="space-item"><div class="space-block" style="width:4px;"></div><span class="space-label">4px</span></div>
+      <div class="space-item"><div class="space-block" style="width:8px;"></div><span class="space-label">8px</span></div>
+      <div class="space-item"><div class="space-block" style="width:16px;"></div><span class="space-label">16px</span></div>
+      <div class="space-item"><div class="space-block" style="width:24px;"></div><span class="space-label">24px</span></div>
+      <div class="space-item"><div class="space-block" style="width:32px;"></div><span class="space-label">32px</span></div>
+      <div class="space-item"><div class="space-block" style="width:48px;"></div><span class="space-label">48px</span></div>
+    </div>
+  </section>
+
+  <section class="preview-section">
+    <span class="sec-eyebrow">Section 07 / Radius</span>
+    <h2 class="sec-title">Border Radius Scale</h2>
+    <p class="sec-subtitle">Discrete radii from sharp utility to full pill shapes.</p>
+    <div class="rad-row">
+      <div class="rad-item"><div class="rad-block" style="border-radius:0;"></div><span class="rad-label">0px<small>Sharp</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:6px;"></div><span class="rad-label">6px<small>Compact</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:8px;"></div><span class="rad-label">8px<small>Standard</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:10px;"></div><span class="rad-label">10px<small>Soft</small></span></div>
+      <div class="rad-item"><div class="rad-block" style="border-radius:999px;width:140px;height:50px;"></div><span class="rad-label">999px<small>Pill</small></span></div>
+    </div>
+  </section>
+
+  <section class="preview-section alt">
+    <span class="sec-eyebrow">Section 08 / Elevation</span>
+    <h2 class="sec-title">Depth & Elevation</h2>
+    <p class="sec-subtitle">Shadow and border treatments for hierarchy.</p>
+    <div class="elev-grid">
+      <div class="elev-cell" style="border:1px solid var(--d3-border);"><span class="label">Flat</span><span class="desc">Border only</span></div>
+      <div class="elev-cell" style="box-shadow:0 2px 8px rgba(0,0,0,0.3);"><span class="label">Raised</span><span class="desc">Subtle lift</span></div>
+      <div class="elev-cell" style="box-shadow:0 8px 24px rgba(0,0,0,0.4);"><span class="label">Floating</span><span class="desc">Prominent drop</span></div>
+      <div class="elev-cell" style="box-shadow:0 0 0 2px rgba(94,106,210,0.2);"><span class="label">Focused</span><span class="desc">Ring highlight</span></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Tab switcher
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.design-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

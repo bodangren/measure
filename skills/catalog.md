@@ -1,6 +1,6 @@
 # Agent Skills Catalog
 
-This catalog defines the curriculum of skills available to the Conductor extension.
+This catalog defines the curriculum of skills available to the Measure extension.
 
 ## Firebase Skills
 Skills focused on setting up, managing, and using various Firebase services.

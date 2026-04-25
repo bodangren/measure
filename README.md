@@ -1,128 +1,203 @@
-# Conductor Extension for Gemini CLI
+# Measure
 
 **Measure twice, code once.**
 
-Conductor is a Gemini CLI extension that enables **Context-Driven Development**. It turns the Gemini CLI into a proactive project manager that follows a strict protocol to specify, plan, and implement software features and bug fixes.
+Measure is a spec-driven development framework for AI-assisted software projects. It organizes work into structured, trackable units called **tracks** — each with a specification and a phased implementation plan — so your AI coding assistant writes code that actually matches your intent.
 
-Instead of just writing code, Conductor ensures a consistent, high-quality lifecycle for every task: **Context -> Spec & Plan -> Implement**.
+> Measure is a community fork of [Google's Conductor framework](https://github.com/gemini-cli-extensions/conductor) for Gemini CLI, extended with persistent memory, skills integration, design workflows, and multi-agent support.
 
-The philosophy behind Conductor is simple: control your code. By treating context as a managed artifact alongside your code, you transform your repository into a single source of truth that drives every agent interaction with deep, persistent project awareness.
+---
+
+## Why Measure?
+
+AI coding assistants are great at writing code, but terrible at remembering context. Without structure, every session starts from zero. Style guides drift. Tech stack decisions get ignored. Features wander off-spec. And when something breaks, reverting means hunting through commit hashes instead of rolling back a logical unit of work.
+
+Measure fixes this by treating project context as a first-class artifact. It lives in your repo, versioned alongside your code, so every agent interaction starts with deep, persistent project awareness.
+
+---
+
+## The Workflow
+
+Every piece of work follows the same lifecycle:
+
+```
+Context → Spec & Plan → Implement → Review
+```
+
+1. **Setup** — Define your product, tech stack, workflow, and style guides once.
+2. **New Track** — Write a spec and break the work into phased tasks.
+3. **Implement** — Your agent executes the plan, checkpoint by checkpoint.
+4. **Review** — Verify against the spec, style guides, and product goals.
+
+---
+
+## Commands: When to Use What
+
+Measure provides six commands. Each maps to a specific phase of the development lifecycle.
+
+### `/measure:setup` — Project Onboarding
+**When:** Once per project, or when resurrecting a project that lacks context.  
+**What it does:** Scaffolds the `measure/` directory with product definition, tech stack, workflow, style guides, and design preferences. Optionally generates a visual design preview by fetching getdesign.md and rendering three recommended aesthetics as a tabbed HTML preview.  
+**Artifact:** `measure/product.md`, `measure/tech-stack.md`, `measure/workflow.md`, `measure/design-preview.html` (if using getdesign.md), etc.
+
+### `/measure:newTrack` — Planning
+**When:** You have a new feature, bug, or chore to tackle.  
+**What it does:** Guides you through writing a `spec.md` (requirements & acceptance criteria) and a `plan.md` (phased tasks with TDD checkpoints). Loads lessons-learned and tech-debt from previous tracks to surface gotchas early.  
+**Artifact:** `measure/tracks/<track_id>/spec.md`, `measure/tracks/<track_id>/plan.md`, `measure/tracks/<track_id>/metadata.json`
+
+### `/measure:implement` — Execution
+**When:** A track's plan is approved and you're ready to build.  
+**What it does:** The agent works through `plan.md` task by task, following your project's workflow (e.g., TDD: write test → fail → implement → pass). Loads project memory before starting and prompts for retrospective insights before finalizing.  
+**Artifact:** Updated `measure/tracks/<track_id>/plan.md` (checked-off tasks), synchronized context files.
+
+### `/measure:review` — Quality Gate
+**When:** A track (or phase) is complete and you want to verify quality before merging.  
+**What it does:** Checks the implementation against product guidelines, code style guides, the original spec, and recurring gotchas from `lessons-learned.md`. Can auto-commit fixes.  
+**Artifact:** Review notes, potential fix commits, updated plan status.
+
+### `/measure:status` — Progress Check
+**When:** You want a quick overview of where things stand.  
+**What it does:** Reads `measure/tracks.md` and active track plans to show completion percentages, current phase, project health indicators (memory artifacts age, open tech debt), and upcoming work.
+
+### `/measure:revert` — Safe Rollback
+**When:** Something went wrong and you need to undo work at a logical level.  
+**What it does:** Analyzes git history (or jj) to understand which commits belong to a track, phase, or task. Reverts the logical unit rather than raw commit hashes.  
+**Artifact:** Clean working tree with targeted rollback.
+
+---
+
+## Skills Integration
+
+Measure doesn't just manage your project — it activates relevant **external skills** based on your tech stack.
+
+During setup and new-track creation, Measure analyzes your project's dependencies and keywords, then recommends skills from the catalog (Firebase, DevOps, OWASP, etc.). When you approve, the agent loads those skills into context, giving you deep, domain-specific expertise without manual configuration.
+
+| Skill Domain | Example Triggers |
+|-------------|------------------|
+| **Firebase** | `firebase`, `firestore`, `auth` dependencies |
+| **DevOps / GCP** | `terraform`, `gcloud`, `skaffold` |
+| **Security** | OWASP signals based on file patterns and dependencies |
+
+Skills are loaded from the shared `.agents/skills/` convention, so they work across Claude Code, Gemini CLI, and any compatible agent.
+
+---
 
 ## Features
 
-- **Plan before you build**: Create specs and plans that guide the agent for new and existing codebases.
-- **Maintain context**: Ensure AI follows style guides, tech stack choices, and product goals.
-- **Iterate safely**: Review plans before code is written, keeping you firmly in the loop.
-- **Work as a team**: Set project-level context for your product, tech stack, and workflow preferences that become a shared foundation for your team.
-- **Build on existing projects**: Intelligent initialization for both new (Greenfield) and existing (Brownfield) projects.
-- **Smart revert**: A git-aware revert command that understands logical units of work (tracks, phases, tasks) rather than just commit hashes.
+- **📋 Tracks** — Structured units of work (features, bugs, chores) with `spec.md` and `plan.md`
+- **🧠 Persistent Memory** — `lessons-learned.md` and `tech-debt.md` accumulate knowledge across tracks
+- **🎨 Visual Design Preview** — Tabbed HTML preview of 3 getdesign.md aesthetics during setup
+- **🛠️ Skills Integration** — Auto-detect project tech and activate relevant agent skills
+- **🔍 Universal File Resolution** — Index-based protocol so agents always find the right file
+- **🔄 VCS-Agnostic Revert** — Roll back by track, phase, or task (Git + Jujutsu support)
+- **📐 Plan Mode Support** — Native integration with agent plan-mode tools for safe planning
+- **✅ Quality Gates** — Review against style guides, product guidelines, and the original plan
 
-## Installation
+---
 
-Install the Conductor extension by running the following command from your terminal:
+## Supported Platforms
 
-```bash
-gemini extensions install https://github.com/gemini-cli-extensions/conductor --auto-update
+Measure works across multiple AI agent environments:
+
+| Platform | Format | Installation |
+|----------|--------|-------------|
+| **Claude Code** | `.skill` bundle | `claude skills add /path/to/measure.skill` |
+| **Gemini CLI** | Extension | `gemini extensions install <repo-url> --auto-update` |
+| **Shared Skills** | `.agents/skills/` | Copy `claude-skills/measure/` to your shared skills directory |
+
+---
+
+## Generated Artifacts
+
+Measure scaffolds a `measure/` directory in your project root:
+
+```
+measure/
+├── product.md              # Product vision and features
+├── product-guidelines.md   # Brand, voice, and design standards
+├── tech-stack.md          # Technology choices and rationale
+├── workflow.md            # Development workflow and quality gates
+├── design-preview.html    # Visual comparison of 3 getdesign.md aesthetics
+├── lessons-learned.md     # Curated project memory (≤50 lines)
+├── tech-debt.md           # Known shortcuts and deferred work
+├── index.md               # Universal File Resolution index
+├── tracks.md              # Master list of all tracks
+├── code_styleguides/      # Language-specific style guides
+└── tracks/
+    └── <track_id>/
+        ├── spec.md        # Track specification
+        ├── plan.md        # Implementation plan
+        └── metadata.json  # Track metadata
 ```
 
-The `--auto-update` is optional: if specified, it will update to new versions as they are released.
+---
 
-## Usage
+## Quick Start
 
-Conductor is designed to manage the entire lifecycle of your development tasks.
+### 1. Install Measure
 
-**Note on Token Consumption:** Conductor's context-driven approach involves reading and analyzing your project's context, specifications, and plans. This can lead to increased token consumption, especially in larger projects or during extensive planning and implementation phases. You can check the token consumption in the current session by running `/stats model`.
-
-### 1. Set Up the Project (Run Once)
-
-When you run `/conductor:setup`, Conductor helps you define the core components of your project context. This context is then used for building new components or features by you or anyone on your team.
-
-- **Product**: Define project context (e.g. users, product goals, high-level features).
-- **Product guidelines**: Define standards (e.g. prose style, brand messaging, visual identity).
-- **Tech stack**: Configure technical preferences (e.g. language, database, frameworks).
-- **Workflow**: Set team preferences (e.g. TDD, commit strategy). Uses [workflow.md](templates/workflow.md) as a customizable template.
-
-**Generated Artifacts:**
-- `conductor/product.md`
-- `conductor/product-guidelines.md`
-- `conductor/tech-stack.md`
-- `conductor/workflow.md`
-- `conductor/code_styleguides/`
-- `conductor/tracks.md`
-
+**Claude Code:**
 ```bash
-/conductor:setup
+claude skills add /path/to/claude-skills/measure
 ```
 
-### 2. Start a New Track (Feature or Bug)
-
-When you’re ready to take on a new feature or bug fix, run `/conductor:newTrack`. This initializes a **track** — a high-level unit of work. Conductor helps you generate two critical artifacts:
-
-- **Specs**: The detailed requirements for the specific job. What are we building and why?
-- **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
-
-**Generated Artifacts:**
-- `conductor/tracks/<track_id>/spec.md`
-- `conductor/tracks/<track_id>/plan.md`
-- `conductor/tracks/<track_id>/metadata.json`
-
+**Gemini CLI:**
 ```bash
-/conductor:newTrack
-# OR with a description
-/conductor:newTrack "Add a dark mode toggle to the settings page"
+gemini extensions install <repo-url> --auto-update
 ```
 
-### 3. Implement the Track
-
-Once you approve the plan, run `/conductor:implement`. Your coding agent then works through the `plan.md` file, checking off tasks as it completes them.
-
-**Updated Artifacts:**
-- `conductor/tracks.md` (Status updates)
-- `conductor/tracks/<track_id>/plan.md` (Status updates)
-- Project context files (Synchronized on completion)
-
+**Shared skills (any agent):**
 ```bash
-/conductor:implement
+cp -r claude-skills/measure ~/.agents/skills/
 ```
 
-Conductor will:
-1.  Select the next pending task.
-2.  Follow the defined workflow (e.g., TDD: Write Test -> Fail -> Implement -> Pass).
-3.  Update the status in the plan as it progresses.
-4.  **Verify Progress**: Guide you through a manual verification step at the end of each phase to ensure everything works as expected.
+### 2. Set Up Your Project
 
-During implementation, you can also:
+```bash
+/measure:setup
+```
 
-- **Check status**: Get a high-level overview of your project's progress.
-  ```bash
-  /conductor:status
-  ```
-- **Revert work**: Undo a feature or a specific task if needed.
-  ```bash
-  /conductor:revert
-  ```
+Measure will guide you through defining your product, tech stack, and workflow preferences. If you opt for getdesign.md recommendations, you'll get a `measure/design-preview.html` with 3 tabbed design options to review in your browser.
 
-- **Review work**: Review completed work against guidelines and the plan.
-  ```bash
-  /conductor:review
-  ```
+### 3. Start Your First Track
 
-## Commands Reference
+```bash
+/measure:newTrack "Add OAuth login with Google and GitHub"
+```
 
-| Command | Description | Artifacts |
-| :--- | :--- | :--- |
-| `/conductor:setup` | Scaffolds the project and sets up the Conductor environment. Run this once per project. | `conductor/product.md`<br>`conductor/product-guidelines.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/tracks.md` |
-| `/conductor:newTrack` | Starts a new feature or bug track. Generates `spec.md` and `plan.md`. | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md` |
-| `/conductor:implement` | Executes the tasks defined in the current track's plan. | `conductor/tracks.md`<br>`conductor/tracks/<id>/plan.md` |
-| `/conductor:status` | Displays the current progress of the tracks file and active tracks. | Reads `conductor/tracks.md` |
-| `/conductor:revert` | Reverts a track, phase, or task by analyzing git history. | Reverts git history |
-| `/conductor:review` | Reviews completed work against guidelines and the plan. | Reads `plan.md`, `product-guidelines.md` |
+Review the generated spec and plan, then:
 
-## Resources
+```bash
+/measure:implement
+```
 
-- [Gemini CLI extensions](https://geminicli.com/docs/extensions/): Documentation about using extensions in Gemini CLI
-- [GitHub issues](https://github.com/gemini-cli-extensions/conductor/issues): Report bugs or request features
+### 4. Review and Iterate
 
-## Legal
+```bash
+/measure:review
+```
 
-- License: [Apache License 2.0](LICENSE)
+---
+
+## Origin & Attribution
+
+Measure started as a fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), the spec-driven development framework built for Gemini CLI. We've preserved the core philosophy — **Context → Spec & Plan → Implement** — while extending it with:
+
+- Persistent project memory (lessons-learned, tech-debt)
+- Cross-platform skill packaging (Claude Code, Gemini CLI, shared skills)
+- Visual design preview with getdesign.md integration
+- Plan mode policies and safe execution boundaries
+- VCS abstraction beyond Git
+- An expanded skills catalog with auto-activation
+
+If you're coming from Conductor, the core concepts (tracks, specs, plans, workflow) are identical. The command namespace has moved from `/conductor:*` to `/measure:*`, and the scaffold directory from `conductor/` to `measure/`.
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue or pull request.
+
+## License
+
+Apache License 2.0

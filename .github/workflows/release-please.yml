@@ -27,7 +27,7 @@ jobs:
       - name: Create TAR archive
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          tar -czvf ../conductor-release.tar.gz \
+          tar -czvf ../measure-release.tar.gz \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='release-please-config.json' \
@@ -35,7 +35,7 @@ jobs:
             --exclude='.gitignore' \
             --exclude='CONTRIBUTING.md' \
             .
-          mv ../conductor-release.tar.gz .
+          mv ../measure-release.tar.gz .
 
       - name: Upload archive to GitHub Release
         if: ${{ steps.release.outputs.release_created }}
@@ -45,4 +45,4 @@ jobs:
         run: |
           gh release upload \
             ${STEPS_RELEASE_OUTPUTS_TAG_NAME} \
-            conductor-release.tar.gz
+            measure-release.tar.gz

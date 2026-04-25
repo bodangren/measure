@@ -205,7 +205,7 @@ __marimo__/
 # Genkit
 .genkit/
 
-# Conductor
+# Measure
 tmp/
 
 /.gemini/tmp/

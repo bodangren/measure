@@ -2,7 +2,7 @@
   "packages": {
     ".": {
       "release-type": "simple",
-      "package-name": "conductor",
+      "package-name": "measure",
       "extra-files": [
         "gemini-extension.json"
       ]
