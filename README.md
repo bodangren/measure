@@ -38,7 +38,7 @@ Measure provides six commands. Each maps to a specific phase of the development 
 ### `/measure:setup` — Project Onboarding
 **When:** Once per project, or when resurrecting a project that lacks context.  
 **What it does:** Scaffolds the `measure/` directory with product definition, tech stack, workflow, style guides, and design preferences. Optionally generates a visual design preview by fetching getdesign.md and rendering three recommended aesthetics as a tabbed HTML preview.  
-**Artifact:** `measure/product.md`, `measure/tech-stack.md`, `measure/workflow.md`, `measure/design-preview.html` (if using getdesign.md), etc.
+**Artifact:** `measure/product.md`, `measure/tech-stack.md`, `measure/workflow.md`, `measure/design-preview.html` (if using getdesign.md), `DESIGN.md` (in project root), etc.
 
 ### `/measure:newTrack` — Planning
 **When:** You have a new feature, bug, or chore to tackle.  
@@ -109,7 +109,7 @@ Measure works across multiple AI agent environments:
 
 ## Generated Artifacts
 
-Measure scaffolds a `measure/` directory in your project root:
+Measure scaffolds a `measure/` directory in your project root, plus a design definition at the project root:
 
 ```
 measure/
@@ -128,6 +128,8 @@ measure/
         ├── spec.md        # Track specification
         ├── plan.md        # Implementation plan
         └── metadata.json  # Track metadata
+
+DESIGN.md                   # Visual identity & design system (project root)
 ```
 
 ---
