@@ -91,7 +91,9 @@ Present the following overview:
    - Database Drivers
    - Architecture type from top 2 levels of file tree
    - Project goal in one sentence from README header or package.json description
-7. Proceed to Section 2.1
+7. **Define Measure Zone:** To avoid breaking on legacy code, ask: "To avoid breaking on legacy code, where should new Measure-managed features live? (Default: `src/features`)"
+   - Write this path into a configuration file `measure/config.json` as `{"measure_zone": "<path>"}`.
+8. Proceed to Section 2.1
 
 ### Greenfield Workflow
 
@@ -266,7 +268,21 @@ Present the following overview:
 2. **Notify and Pause:** "New skills installed. Please reload your skills to enable them. Let me know when you have done this." Do NOT ask a question here — make a statement and wait.
 3. **Wait for Confirmation:** Pause and wait for the user to confirm they have reloaded the skills.
 
-## 2.9 Finalization
+## 2.9 Scaffold Architecture Tools
+
+**CRITICAL:** Placeholder scripts are useless. You MUST configure actual architectural enforcement based on the project's **Tech Stack**.
+
+1. **Create Machine-Generated Directory:** Execute `mkdir -p measure/generated`.
+2. **Install Enforcers:**
+   - **For JS/TS:** Install `eslint-plugin-boundaries` (or `dependency-cruiser`) and configure strict rules in the project's ESLint config preventing cross-feature internal imports.
+   - **For Python:** Install and configure `import-linter` or an equivalent tool to enforce boundaries.
+   - **For Go/Other:** Configure equivalent static analysis tools.
+3. **Implement Doctor (`measure/doctor.sh`):** Write a script that executes the architectural linters installed above. It must fail (exit code != 0) if boundaries are violated. It must also include: `git diff --exit-code measure/generated/ || (echo "Generated docs stale"; exit 1)`.
+4. **Implement Generator (`measure/generate.sh`):** Write a script tailored to the tech stack (e.g., a short Node script using AST or generic bash `grep`/`tree` logic) that maps the `measure_zone` and outputs `measure/generated/architecture.json` and a human-readable `measure/generated/routes.md`.
+5. Make both scripts executable (`chmod +x measure/*.sh`).
+6. Update state: `{"last_successful_step": "2.9_architecture_tools"}`
+
+## 2.10 Finalization
 
 1. **Generate Index File:** Create `measure/index.md` with the following content:
    ```markdown
@@ -282,6 +298,11 @@ Present the following overview:
    - [Workflow](./workflow.md)
    - [Code Style Guides](./code_styleguides/)
 
+   ## Architecture & Facts
+   - [Generated Architecture](./generated/architecture.json)
+   - [Doctor Script](./doctor.sh)
+   - [Generate Script](./generate.sh)
+
    ## Learning & Continuity
    - [Lessons Learned](./lessons-learned.md)
    - [Tech Debt Registry](./tech-debt.md)
@@ -295,6 +316,7 @@ Present the following overview:
 2. **Summarize Actions:** Present a summary of all actions taken during the initial setup, including:
    - The guide files that were copied
    - The workflow file that was copied
+   - The architecture tools that were scaffolded
 3. **Transition:** Announce that the initial setup is complete and you will now proceed to define the first track for the project.
 
 ## 3.0 Initial Track Generation

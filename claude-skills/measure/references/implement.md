@@ -69,6 +69,9 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - Check line count with `wc -l` before loading. If either file exceeds 50 lines, summarize or prune it first.
    - Load relevant entries so implementation benefits from project memory.
    - If either file does not exist, log a warning and continue.
+5. **Load Architecture Context:**
+   - Read `measure/generated/architecture.json` (if it exists) to map the existing feature domains, contracts, and boundaries.
+   - Check if `src/features/_example/` (or similar golden path template) exists, and read its structure to enforce convention-over-configuration during implementation.
 
 ### 3.3 Execute Tasks
 
@@ -94,48 +97,24 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 4. **Commit Changes:** Stage the **Tracks Registry** file, `metadata.json`, and any updated memory files. Commit with the message `chore(measure): Mark track '<track_description>' as complete`.
 5. Announce that the track is fully complete and the tracks file has been updated.
 
-## 4.0 Synchronize Documentation
+## 4.0 Verify Architecture & Generate Docs
 
-**PROTOCOL: Update project-level documentation based on the completed track.**
+**PROTOCOL: Update machine-generated facts and verify architectural integrity based on the completed track.**
 
 1. **Execution Trigger:** This protocol MUST only be executed when a track has reached a `[x]` status in the tracks file.
 
-2. **Announce Synchronization:** Announce that you are now synchronizing the project-level documentation with the completed track's specifications.
+2. **Announce Verification:** Announce that you are now regenerating the architecture facts and running the doctor script.
 
-3. **Load Track Specification:** Read the track's **Specification**.
+3. **Run Architecture Tools:**
+   - Execute the project's generate script (e.g., `./measure/generate.sh` or `npm run generate`).
+   - Execute the project's doctor script (e.g., `./measure/doctor.sh` or `npm run doctor`).
 
-4. **Load Project Documents:** Resolve and read:
-   - **Product Definition**
-   - **Tech Stack**
-   - **Product Guidelines**
+4. **Verify Integrity:**
+   - If the doctor script fails, halt and fix the structural violations (e.g., import boundaries, missing exports) before proceeding.
+   - Run `git diff --exit-code measure/generated/`. If there are uncommitted changes in the generated folder, stage them.
 
-5. **Analyze and Update:**
-   - **Update Product Definition:**
-     - Determine if the completed feature significantly impacts the description of the product itself.
-     - If needed, propose updates in diff format and embed in a confirmation prompt:
-       > "Please review the proposed updates to the Product Definition below. Do you approve?"
-       > ```diff
-       > [proposed changes]
-       > ```
-     - Only edit after explicit confirmation. Record whether this file was changed.
-   - **Update Tech Stack:**
-     - Determine if significant changes in the technology stack are detected.
-     - If needed, propose updates in diff format with embedded confirmation. Only edit after explicit confirmation. Record whether changed.
-   - **Update Product Guidelines (Strictly Controlled):**
-     - **CRITICAL WARNING:** This file defines the core identity and communication style of the product. It should be modified with extreme caution and ONLY in cases of significant strategic shifts, such as a product rebrand or a fundamental change in user engagement philosophy. Routine feature updates or bug fixes should NOT trigger changes.
-     - You may ONLY propose an update if the track's **Specification** explicitly describes a change that directly impacts branding, voice, tone, or other core product guidelines.
-     - If the conditions are met, propose changes with a clear warning:
-       > "WARNING: This is a sensitive action as it impacts core product guidelines. Please review the proposed changes below. Do you approve?"
-       > ```diff
-       > [proposed changes]
-       > ```
-     - Only edit after explicit confirmation. Record whether changed.
-
-6. **Final Report:** Announce completion and provide a summary.
-   - Construct the message based on which files were changed:
-     - If files changed: "Documentation synchronization is complete. Changes made to: <list>. No changes needed for: <list>."
-     - If no files changed: "Documentation synchronization is complete. No updates were necessary."
-   - **Commit Changes:** If any files were changed, stage and commit with message `docs(measure): Synchronize docs for track '<track_description>'`.
+5. **Final Report:** Announce completion and provide a summary of the regenerated facts and doctor status.
+   - **Commit Changes:** Stage and commit any changes to the generated docs with message `chore(measure): Regenerate facts for track '<track_description>'`.
 
 ## 5.0 Track Cleanup
 

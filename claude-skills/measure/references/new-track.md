@@ -80,12 +80,16 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 3. Generate **Implementation Plan** (`plan.md`):
    - Hierarchical structure: Phases → Tasks → Sub-tasks
-   - Follow TDD methodology from **Workflow** (e.g., "Write Tests" then "Implement")
+   - **CRITICAL:** Enforce the strict Contract-First pipeline. The plan MUST include the following phases in order:
+     1. **Contract & Schema Definition:** Update or create strict schemas (e.g., Zod, OpenAPI) and contracts.
+     2. **Test:** Write contract/unit tests for the new features.
+     3. **Implement:** Implement the service/repo/backend/UI based on the contracts.
+     4. **Generate Docs & Doctor:** Run `measure/generate.sh` to update generated facts, and run `measure/doctor.sh` to pass architectural linters.
    - Include `[ ]` status markers for EVERY task and sub-task:
      ```markdown
-     - [ ] Task: Create user model
-         - [ ] Write unit tests for user model
-         - [ ] Implement user model
+     - [ ] Task: Define User Model Contract
+         - [ ] Update Zod schema for User
+         - [ ] Export schema from feature root
      ```
    - If **Workflow** defines "Phase Completion Verification Protocol", append to each phase:
      ```markdown

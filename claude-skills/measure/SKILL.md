@@ -10,11 +10,15 @@ description: |
 
 Spec-driven development framework that organizes AI-assisted software development into structured, trackable units of work.
 
+**Core Rule:**
+- **Human docs explain why.** (e.g., `product.md`, `tech-stack.md`)
+- **Generated docs describe what currently exists.** (e.g., `generated/architecture.json`, `generated/routes.md`)
+
 ## Core Concepts
 
 - **Track**: A high-level unit of work (feature, bug fix, or chore) with its own spec and plan
 - **Spec**: Detailed requirements and acceptance criteria (`spec.md`)
-- **Plan**: Phased implementation tasks following TDD methodology (`plan.md`)
+- **Plan**: Phased implementation tasks following strict Contract-First and TDD methodology (`plan.md`)
 - **Workflow**: Development procedures including TDD, quality gates, and commit guidelines
 - **Lessons Learned**: Curated working-memory file (`lessons-learned.md`) capturing architecture decisions, recurring gotchas, useful patterns, and planning insights across tracks
 - **Tech Debt Registry**: Bounded working-memory file (`tech-debt.md`) tracking known shortcuts and deferred work with severity and status
@@ -27,18 +31,19 @@ measure/
 ├── index.md                # Index for file resolution
 ├── product.md              # Product vision and features (Product Definition)
 ├── product-guidelines.md   # Brand, voice, and design guidelines (Product Guidelines)
-├── tech-stack.md          # Technology choices and rationale (Tech Stack)
-├── workflow.md            # Development workflow and quality gates (Workflow)
-├── tracks.md              # Master list of all tracks (Tracks Registry)
-├── lessons-learned.md     # Curated project memory (bounded, 50-line max)
-├── tech-debt.md           # Known shortcuts and deferred work (bounded, 50-line max)
-├── code_styleguides/      # Language-specific style guides
-├── tracks/                # Individual track directories
+├── tech-stack.md           # Technology choices and rationale (Tech Stack)
+├── workflow.md             # Development workflow and quality gates (Workflow)
+├── tracks.md               # Master list of all tracks (Tracks Registry)
+├── lessons-learned.md      # Curated project memory (bounded, 50-line max)
+├── tech-debt.md            # Known shortcuts and deferred work (bounded, 50-line max)
+├── code_styleguides/       # Language-specific style guides
+├── generated/              # Machine-generated facts (architecture.json, routes.md)
+├── tracks/                 # Individual track directories
 │   └── <track_id>/
-│       ├── metadata.json  # Track metadata
-│       ├── spec.md        # Track specification (Specification)
-│       └── plan.md        # Implementation plan (Implementation Plan)
-└── archive/               # Completed/archived tracks
+│       ├── metadata.json   # Track metadata
+│       ├── spec.md         # Track specification (Specification)
+│       └── plan.md         # Implementation plan (Implementation Plan)
+└── archive/                # Completed/archived tracks
 ```
 
 ## Commands
@@ -54,6 +59,9 @@ Execute tasks from a track's plan following the project workflow. Loads project 
 
 ### Review
 Review completed work against product guidelines, code styleguides, and the original plan. Checks for recurring gotchas from lessons learned. Read [references/review.md](references/review.md) for the full workflow.
+
+### Doctor (/measure:doctor)
+Run architectural linting and structural checks on the repository (e.g., boundary enforcement, generated doc freshness) to prevent context drift and junk-drawer coding. Read [references/doctor.md](references/doctor.md) for the full workflow.
 
 ### Status
 Display project progress overview including track breakdown and project health indicators. Read [references/status.md](references/status.md) for the full workflow.

@@ -8,6 +8,8 @@
 4. **High Code Coverage:** Aim for >80% code coverage for all modules
 5. **User Experience First:** Every decision should prioritize user experience
 6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
+7. **Machine Enforcement Over Prose:** Architectural constraints (boundaries, contracts) are enforced by automated scripts (like `measure/doctor.sh`), not just documented.
+8. **Generated Facts:** Ensure `measure/generated/` reflects the current codebase state by running generation scripts.
 
 ## Task Workflow
 
@@ -38,33 +40,38 @@ All tasks follow a strict lifecycle:
    ```
    Target: >80% coverage for new code. The specific tools and commands will vary by language and framework.
 
-7. **Document Deviations:** If implementation differs from tech stack:
+7. **Verify Architecture & Generated Docs (Doctor Phase):**
+   - Run the project's generator script (e.g., `npm run generate` or `./measure/generate.sh`) to update `measure/generated/`.
+   - Run the architecture linter (e.g., `npm run doctor` or `./measure/doctor.sh`). If it fails, fix the architectural violation (e.g., bad import boundary) before proceeding.
+   - Run `git diff --exit-code measure/generated/` to ensure generated facts are committed.
+
+8. **Document Deviations:** If implementation differs from tech stack:
    - **STOP** implementation
    - Update `tech-stack.md` with new design
    - Add dated note explaining the change
    - Resume implementation
 
-8. **Log Known Shortcuts as Tech Debt:** If a shortcut was knowingly taken during implementation (e.g., skipping an edge case, hardcoding a value, deferring error handling), prompt the user: "A shortcut was taken. Would you like to add a row to `tech-debt.md`?" If yes, append a row with the date, track ID, description, severity, and `Open` status. Check line count with `wc -l` first; if `tech-debt.md` exceeds 50 lines, ask the user to prune resolved items before adding new ones.
+9. **Log Known Shortcuts as Tech Debt:** If a shortcut was knowingly taken during implementation (e.g., skipping an edge case, hardcoding a value, deferring error handling), prompt the user: "A shortcut was taken. Would you like to add a row to `tech-debt.md`?" If yes, append a row with the date, track ID, description, severity, and `Open` status. Check line count with `wc -l` first; if `tech-debt.md` exceeds 50 lines, ask the user to prune resolved items before adding new ones.
 
-9. **Commit Code Changes:**
-   - Stage all code changes related to the task.
-   - Propose a clear, concise commit message e.g, `feat(ui): Create basic HTML structure for calculator`.
-   - Perform the commit.
+10. **Commit Code Changes:**
+    - Stage all code changes related to the task.
+    - Propose a clear, concise commit message e.g, `feat(ui): Create basic HTML structure for calculator`.
+    - Perform the commit.
 
-10. **Attach Task Summary with Git Notes:**
-    - **Step 10.1: Get Commit Hash:** Obtain the hash of the *just-completed commit* (`git log -1 --format="%H"`).
-    - **Step 10.2: Draft Note Content:** Create a detailed summary for the completed task. This should include the task name, a summary of changes, a list of all created/modified files, and the core "why" for the change.
-    - **Step 10.3: Attach Note:** Use the `git notes` command to attach the summary to the commit.
+11. **Attach Task Summary with Git Notes:**
+    - **Step 11.1: Get Commit Hash:** Obtain the hash of the *just-completed commit* (`git log -1 --format="%H"`).
+    - **Step 11.2: Draft Note Content:** Create a detailed summary for the completed task. This should include the task name, a summary of changes, a list of all created/modified files, and the core "why" for the change.
+    - **Step 11.3: Attach Note:** Use the `git notes` command to attach the summary to the commit.
       ```bash
       # The note content from the previous step is passed via the -m flag.
       git notes add -m "<note content>" <commit_hash>
       ```
 
-11. **Get and Record Task Commit SHA:**
-    - **Step 11.1: Update Plan:** Read `plan.md`, find the line for the completed task, update its status from `[~]` to `[x]`, and append the first 7 characters of the *just-completed commit's* commit hash.
-    - **Step 11.2: Write Plan:** Write the updated content back to `plan.md`.
+12. **Get and Record Task Commit SHA:**
+    - **Step 12.1: Update Plan:** Read `plan.md`, find the line for the completed task, update its status from `[~]` to `[x]`, and append the first 7 characters of the *just-completed commit's* commit hash.
+    - **Step 12.2: Write Plan:** Write the updated content back to `plan.md`.
 
-12. **Commit Plan Update:**
+13. **Commit Plan Update:**
     - **Action:** Stage the modified `plan.md` file.
     - **Action:** Commit this change with a descriptive message (e.g., `measure(plan): Mark task 'Create user model' as complete`).
 
@@ -143,11 +150,12 @@ Before marking any task complete, verify:
 - [ ] All tests pass
 - [ ] Code coverage meets requirements (>80%)
 - [ ] Code follows project's code style guidelines (as defined in `code_styleguides/`)
+- [ ] Architecture Linter passes (`pnpm doctor` or `./measure/doctor.sh`)
+- [ ] Generated docs are up-to-date (`git diff --exit-code measure/generated/`)
 - [ ] All public functions/methods are documented (e.g., docstrings, JSDoc, GoDoc)
 - [ ] Type safety is enforced (e.g., type hints, TypeScript types, Go types)
 - [ ] No linting or static analysis errors (using the project's configured tools)
 - [ ] Works correctly on mobile (if applicable)
-- [ ] Documentation updated if needed
 - [ ] No security vulnerabilities introduced
 
 ## Development Commands
