@@ -46,14 +46,14 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: Setup scaffolding + SKILL.md sync
 _Story ref: spec.md#story-s5_
 
-- [~] Task: Define acceptance criteria for setup.md §2.9 build-graph offer
-- [~] Task: Edit `references/setup.md` §2.9 to add build-graph install + scan offer (TS-detected only)
-    - [ ] Append AGENTS.md rules to project's AGENTS.md (or create one)
-    - [ ] Add `graph.db` link to `measure/index.md` under "Architecture & Facts"
-- [~] Task: Edit `SKILL.md` to add "Graph-Aware Mode (optional)" subsection (≤15 lines)
-    - [ ] Update directory tree to mention optional `graph.db`
-    - [ ] Update command descriptions for new-track, implement, review to mention graph integration
-- [ ] Task: Measure - User Manual Verification 'Phase S5: Setup scaffolding + SKILL.md sync' (Protocol in workflow.md)
+- [x] Task: Define acceptance criteria for setup.md §2.9 build-graph offer c5c66dd
+- [x] Task: Edit `references/setup.md` §2.9 to add build-graph install + scan offer (TS-detected only) c5c66dd
+    - [x] Append AGENTS.md rules to project's AGENTS.md (or create one)
+    - [x] Add `graph.db` link to `measure/index.md` under "Architecture & Facts"
+- [x] Task: Edit `SKILL.md` to add "Graph-Aware Mode (optional)" subsection (≤15 lines) c5c66dd
+    - [x] Update directory tree to mention optional `graph.db`
+    - [x] Update command descriptions for new-track, implement, review to mention graph integration
+- [x] Task: Measure - User Manual Verification 'Phase S5: Setup scaffolding + SKILL.md sync' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
 ## Phase S6: Dogfood + retrospective
 _Story ref: spec.md#story-s5 (AC3)_
