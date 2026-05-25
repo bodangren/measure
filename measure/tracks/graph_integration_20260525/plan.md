@@ -1,6 +1,6 @@
 # Implementation Plan — Graph-Aware Measure Workflows
 
-## Phase S1: Graph-aware new-track workflow
+## Phase S1: Graph-aware new-track workflow [checkpoint: 8e8d3fc]
 _Story ref: spec.md#story-s1_
 
 - [x] Task: Define acceptance criteria for §2.2 graph-informed questioning aa591f4
