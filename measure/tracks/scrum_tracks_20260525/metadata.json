@@ -1,12 +1,12 @@
 {
   "track_id": "scrum_tracks_20260525",
   "type": "feature",
-  "status": "in-progress",
+  "status": "completed",
   "created_at": "2026-05-25T09:14:19Z",
-  "updated_at": "2026-05-25T09:49:42Z",
+  "updated_at": "2026-05-25T09:55:00Z",
   "description": "Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks",
   "estimated_tasks": 28,
-  "actual_tasks": null,
+  "actual_tasks": 28,
   "deviation_notes": "",
   "sprint": {
     "goal": "Add lightweight scrum-flavored structure to Measure tracks so feature tracks can optionally behave like a sprint: framed by a sprint goal, decomposed into user stories with Gherkin acceptance criteria, sized with T-shirt estimates, and reported with a rolling velocity",

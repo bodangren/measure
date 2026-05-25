@@ -11,5 +11,5 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [ ] **Track: Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks**
+- [x] **Track: Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks**
   *Link: [./tracks/scrum_tracks_20260525/](./tracks/scrum_tracks_20260525/)*
