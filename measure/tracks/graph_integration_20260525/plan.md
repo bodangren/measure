@@ -26,12 +26,12 @@ _Story ref: spec.md#story-s2_
 ## Phase S3: Graph-aware per-task implementation
 _Story ref: spec.md#story-s3_
 
-- [~] Task: Define acceptance criteria for pre-edit inspect + post-edit update
-- [~] Task: Edit `references/implement.md` §3.3 to add per-task graph protocol
-    - [ ] Pre-edit: `build-graph inspect <Symbol>` for exported targets; record caller count in commit message or git note
-    - [ ] Post-edit decision tree: when to `build-graph update` vs skip (mirrors AGENTS.md rule 5)
-- [~] Task: Cross-reference `workflow.md` Task Workflow section (if it has per-task hooks, add graph protocol there too — additive)
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Graph-aware per-task implementation' (Protocol in workflow.md)
+- [x] Task: Define acceptance criteria for pre-edit inspect + post-edit update c35da50
+- [x] Task: Edit `references/implement.md` §3.3 to add per-task graph protocol c35da50
+    - [x] Pre-edit: `build-graph inspect <Symbol>` for exported targets; record caller count in commit message or git note
+    - [x] Post-edit decision tree: when to `build-graph update` vs skip (mirrors AGENTS.md rule 5)
+- [x] Task: Cross-reference `workflow.md` Task Workflow section (if it has per-task hooks, add graph protocol there too — additive) c35da50
+- [x] Task: Measure - User Manual Verification 'Phase S3: Graph-aware per-task implementation' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
 ## Phase S4: Graph-aware review
 _Story ref: spec.md#story-s4_
