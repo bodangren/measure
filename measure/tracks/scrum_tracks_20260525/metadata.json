@@ -1,0 +1,23 @@
+{
+  "track_id": "scrum_tracks_20260525",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-05-25T09:14:19Z",
+  "updated_at": "2026-05-25T09:14:19Z",
+  "description": "Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks",
+  "estimated_tasks": 28,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "Add lightweight scrum-flavored structure to Measure tracks so feature tracks can optionally behave like a sprint: framed by a sprint goal, decomposed into user stories with Gherkin acceptance criteria, sized with T-shirt estimates, and reported with a rolling velocity",
+    "stories": [
+      { "id": "S1", "title": "Story-shaped specification template", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S2", "title": "Optional sprint metadata on feature tracks", "size": "S", "priority": "Must", "status": "pending" },
+      { "id": "S3", "title": "Velocity & estimation accuracy in status report", "size": "S", "priority": "Must", "status": "pending" },
+      { "id": "S4", "title": "Story-aware plan generation", "size": "S", "priority": "Should", "status": "pending" },
+      { "id": "S5", "title": "Documentation and template parity", "size": "S", "priority": "Should", "status": "pending" }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}
