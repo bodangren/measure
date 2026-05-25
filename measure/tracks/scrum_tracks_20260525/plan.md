@@ -26,10 +26,10 @@ Add an opt-in "Story-shaped spec" mode to `new-track.md` §2.2 that produces a `
     - [x] Document the `### Story S<n>:` block schema in the reference
     - [x] Verify existing "Functional Requirements" remains the structure for Classic mode
 
-- [ ] Task 1.4: Manual verification — round-trip a story-shaped spec
-    - [ ] Hand-write a sample story-shaped spec following the new template
-    - [ ] Verify it is readable, complete, and unambiguous
-    - [ ] Verify the template instructions in new-track.md would reproduce it
+- [x] Task 1.4: Manual verification — round-trip a story-shaped spec
+    - [x] Hand-write a sample story-shaped spec following the new template
+    - [x] Verify it is readable, complete, and unambiguous
+    - [x] Verify the template instructions in new-track.md would reproduce it
 
 - [ ] Task 1.5: Measure - User Manual Verification 'Phase S1: Story-shaped specification template' (Protocol in workflow.md)
 
