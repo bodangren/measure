@@ -103,17 +103,17 @@ _Story ref: spec.md#story-s4_
 
 When the spec uses story-shaped mode, generate one Phase per story (`## Phase S<n>: <story title>`) preserving Contract-First → Test → Implement → Doctor sub-tasks. Classic mode unchanged.
 
-- [x] Task 4.1: Define acceptance criteria for story-aware plan layout
+- [x] Task 4.1: Define acceptance criteria for story-aware plan layout `100e0b2`
     - [x] Specify the heading format: `## Phase S<n>: <story title>` with a `_Story ref: spec.md#story-s<n>_` line below
     - [x] Confirm that inside each story-phase, Contract-First → Test → Implement → Doctor sub-task structure remains
     - [x] Confirm Classic mode produces unchanged plan output
 
-- [x] Task 4.2: Edit `claude-skills/measure/references/new-track.md` §2.3 — branch plan generation
+- [x] Task 4.2: Edit `claude-skills/measure/references/new-track.md` §2.3 — branch plan generation `100e0b2`
     - [x] Add: "If the spec contains a `## Stories` section, generate one Phase per story using `## Phase S<n>: <story title>` headings; otherwise use the existing phase structure"
     - [x] Preserve the Contract-First pipeline instruction for both branches
     - [x] Verify the Phase Completion Verification task is appended to every story-phase as before
 
-- [x] Task 4.3: Verify `status.md` phase parser tolerates both heading formats
+- [x] Task 4.3: Verify `status.md` phase parser tolerates both heading formats `100e0b2`
     - [x] Re-read status.md §3.0 phase identification rule
     - [x] Confirm "top-level markdown headings" covers both `## Phase 1:` and `## Phase S1:`
     - [x] If clarification is needed, add a one-line note that both formats are valid; otherwise leave unchanged
