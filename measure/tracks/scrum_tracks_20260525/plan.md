@@ -152,18 +152,18 @@ _Story ref: (cross-cutting — not tied to a single spec story)_
 
 Use this track itself as the first scrum-shaped track. Verify the full loop end-to-end and capture lessons.
 
-- [ ] Task 6.1: Populate this track's own `metadata.json` with the `sprint` object
-    - [ ] Set `sprint.goal` from spec Overview
-    - [ ] Set `sprint.stories[]` from spec §Stories (S1–S5)
-    - [ ] Mark each story `status` according to plan completion at finalize time
+- [x] Task 6.1: Populate this track's own `metadata.json` with the `sprint` object
+    - [x] Set `sprint.goal` from spec Overview
+    - [x] Set `sprint.stories[]` from spec §Stories (S1–S5)
+    - [x] Mark each story `status` according to plan completion at finalize time
 
-- [ ] Task 6.2: Run `status` and confirm velocity shows this track once complete
-    - [ ] Confirm Velocity line includes this track's actual_tasks
-    - [ ] Confirm Estimation accuracy qualifier renders correctly
+- [x] Task 6.2: Run `status` and confirm velocity shows this track once complete
+    - [x] Confirm Velocity line includes this track's actual_tasks
+    - [x] Confirm Estimation accuracy qualifier renders correctly
 
-- [ ] Task 6.3: Append retrospective entries to `lessons-learned.md`
-    - [ ] Create `measure/lessons-learned.md` from `claude-skills/measure/assets/lessons-learned.md` if absent
-    - [ ] Add at least one entry per section that surfaced naturally (Architecture, Gotchas, Patterns, Planning)
-    - [ ] Verify the file stays within the 50-line budget
+- [x] Task 6.3: Append retrospective entries to `lessons-learned.md`
+    - [x] Create `measure/lessons-learned.md` from `claude-skills/measure/assets/lessons-learned.md` if absent
+    - [x] Add at least one entry per section that surfaced naturally (Architecture, Gotchas, Patterns, Planning)
+    - [x] Verify the file stays within the 50-line budget
 
 - [ ] Task 6.4: Measure - User Manual Verification 'Phase S6: Self-dogfood retrospective' (Protocol in workflow.md)
