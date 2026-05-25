@@ -3,9 +3,9 @@
 ## Phase S1: Graph-aware new-track workflow
 _Story ref: spec.md#story-s1_
 
-- [ ] Task: Define acceptance criteria for §2.2 graph-informed questioning
-    - [ ] Document the one-line skip-note format (reusable across all 5 stories)
-    - [ ] Document the freshness check (`graph.db` mtime <24h)
+- [x] Task: Define acceptance criteria for §2.2 graph-informed questioning
+    - [x] Document the one-line skip-note format (reusable across all 5 stories)
+    - [x] Document the freshness check (`graph.db` mtime <24h)
 - [ ] Task: Edit `references/new-track.md` §2.2 to add Graph Context Probe before questioning
     - [ ] Add freshness check + `build-graph search`/`stats` for the feature area
     - [ ] Add "Brownfield + TS + graph available" branch in questioning guidance
