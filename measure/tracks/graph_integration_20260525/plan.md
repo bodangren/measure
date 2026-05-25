@@ -16,12 +16,12 @@ _Story ref: spec.md#story-s1_
 ## Phase S2: Graph-aware implement context loading
 _Story ref: spec.md#story-s2_
 
-- [~] Task: Define acceptance criteria for §3.2 Load Graph Context
-- [~] Task: Edit `references/implement.md` §3.2 to add step 6 "Load Graph Context"
-    - [ ] Freshness check + skip-note path
-    - [ ] `build-graph stats` once + `build-graph inspect <Symbol>` per exported symbol in spec/plan
-    - [ ] Summarize findings (file paths, callers count) into the implementer's working context
-- [ ] Task: Measure - User Manual Verification 'Phase S2: Graph-aware implement context loading' (Protocol in workflow.md)
+- [x] Task: Define acceptance criteria for §3.2 Load Graph Context 4e7e803
+- [x] Task: Edit `references/implement.md` §3.2 to add step 6 "Load Graph Context" 4e7e803
+    - [x] Freshness check + skip-note path
+    - [x] `build-graph stats` once + `build-graph inspect <Symbol>` per exported symbol in spec/plan
+    - [x] Summarize findings (file paths, callers count) into the implementer's working context
+- [x] Task: Measure - User Manual Verification 'Phase S2: Graph-aware implement context loading' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
 ## Phase S3: Graph-aware per-task implementation
 _Story ref: spec.md#story-s3_
