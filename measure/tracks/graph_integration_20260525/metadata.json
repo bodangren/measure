@@ -1,9 +1,9 @@
 {
   "track_id": "graph_integration_20260525",
   "type": "feature",
-  "status": "new",
+  "status": "in-progress",
   "created_at": "2026-05-25T10:08:00Z",
-  "updated_at": "2026-05-25T10:08:00Z",
+  "updated_at": "2026-05-25T10:35:00Z",
   "description": "Integrate build-graph into Measure new-track, implement, review, and setup workflows",
   "estimated_tasks": 28,
   "actual_tasks": null,
@@ -11,13 +11,13 @@
   "sprint": {
     "goal": "Make build-graph a first-class context source in Measure's new-track, implement, and review workflows so structural questions go to the graph before grep, and graph freshness is preserved across edits",
     "stories": [
-      { "id": "S1", "title": "Graph-aware new-track workflow", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S2", "title": "Graph-aware implement context loading", "size": "S", "priority": "Must", "status": "pending" },
-      { "id": "S3", "title": "Graph-aware per-task implementation", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S4", "title": "Graph-aware review", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S5", "title": "Setup scaffolding + SKILL.md sync + dogfood", "size": "S", "priority": "Should", "status": "pending" }
+      { "id": "S1", "title": "Graph-aware new-track workflow", "size": "M", "priority": "Must", "status": "done" },
+      { "id": "S2", "title": "Graph-aware implement context loading", "size": "S", "priority": "Must", "status": "done" },
+      { "id": "S3", "title": "Graph-aware per-task implementation", "size": "M", "priority": "Must", "status": "done" },
+      { "id": "S4", "title": "Graph-aware review", "size": "M", "priority": "Must", "status": "done" },
+      { "id": "S5", "title": "Setup scaffolding + SKILL.md sync + dogfood", "size": "S", "priority": "Should", "status": "done" }
     ],
-    "demo_notes": null,
-    "retro_ref": null
+    "demo_notes": "All 5 stories shipped with same-region task folding (1.1+1.2+1.3 commits separately as planned; 2.1+2.2 folded; 3.1+3.2+3.3 folded; 4.1+4.2+4.3+4.4+4.5 folded; 5.1+5.2+5.3 folded). Renumbering performed in new-track.md §2.2 (steps 2-7→3-8) and §2.3 (steps 3-5→4-6); no external cross-references break. Backward-compat dry-run against lessons_learned_20260307 and visual_refresh_20260425 confirmed no regressions: every graph step degrades to a one-line skip note when build-graph is missing, graph.db is stale, or the project is non-TS.",
+    "retro_ref": "lessons-learned.md#2026-05-25-graph_integration"
   }
 }
