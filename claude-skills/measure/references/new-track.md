@@ -133,7 +133,17 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - Note relevant patterns in the generated plan.
    - If **Lessons Learned** does not exist, log a warning and continue.
 
-3. Generate **Implementation Plan** (`plan.md`):
+3. **Blast-Radius Probe (optional, TypeScript projects only):** If the Graph Context Probe in §2.2 step 2 succeeded (build-graph available AND graph.db fresh AND project is TS), enrich the upcoming plan with blast-radius data.
+
+   For each exported symbol named in the confirmed **Specification** (function, class, interface, schema), run:
+   ```bash
+   build-graph callers ./graph.db <SymbolName>
+   ```
+   Capture the caller count and the top-N caller file paths (N ≤ 5) per symbol. In the next step, every story-phase that touches one of these symbols MUST include a `_Blast radius:_` line under its heading listing the caller count and top callers.
+
+   **If the §2.2 probe was skipped (any gate failed):** Skip this Blast-Radius Probe silently — no additional note (the §2.2 skip note already informed the user). Generate the plan without `_Blast radius:_` lines.
+
+4. Generate **Implementation Plan** (`plan.md`):
    - Hierarchical structure: Phases → Tasks → Sub-tasks
    - **If `spec_mode = story` (story-shaped plan):**
      - Generate **one Phase per story** in the spec's `## Stories` section. Each phase uses the heading:
@@ -142,6 +152,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
        _Story ref: spec.md#story-s<n>_
        ```
        where `<n>` and `<story title>` match the `### Story S<n>: <title>` heading in `spec.md` exactly.
+     - **If the Blast-Radius Probe (step 3) ran for this phase's exported symbols**, append an italicized line immediately under `_Story ref:_`:
+       ```markdown
+       _Blast radius: <SymbolA> (<n> callers: file1.ts, file2.ts, …), <SymbolB> (<n> callers: …)_
+       ```
      - Inside each story-phase, enforce the Contract-First pipeline as sub-task families:
        1. **Contract & Schema Definition** tasks
        2. **Test** tasks
@@ -158,6 +172,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
        2. **Test:** Write contract/unit tests for the new features.
        3. **Implement:** Implement the service/repo/backend/UI based on the contracts.
        4. **Generate Docs & Doctor:** Run `measure/generate.sh` to update generated facts, and run `measure/doctor.sh` to pass architectural linters.
+     - **If the Blast-Radius Probe (step 3) ran for any phase's exported symbols**, append a `_Blast radius: …_` line under that phase heading using the same format as story-shaped plans.
      - If **Workflow** defines "Phase Completion Verification Protocol", append to each phase:
        ```markdown
        - [ ] Task: Measure - User Manual Verification '<Phase Name>' (Protocol in workflow.md)
@@ -169,14 +184,14 @@ Validate every tool call. If any fails, halt immediately and inform the user.
          - [ ] Export schema from feature root
      ```
 
-4. Present draft for review with embedded content:
+5. Present draft for review with embedded content:
    > "Please review the drafted Implementation Plan below. Does this look correct and cover all the necessary steps?"
    > ```markdown
    > [plan content]
    > ```
    > Options: **Approve** (proceed) / **Revise** (modify implementation steps)
 
-5. Revise until confirmed
+6. Revise until confirmed
 
 ### 2.4 Skill Recommendation (Interactive)
 
