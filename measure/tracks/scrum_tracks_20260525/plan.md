@@ -40,10 +40,10 @@ _Story ref: spec.md#story-s2_
 
 Extend `metadata.json` with an optional `sprint` object. Update setup.md and new-track.md schemas. Ensure all readers tolerate absence.
 
-- [ ] Task 2.1: Define acceptance criteria for the `sprint` metadata schema
-    - [ ] Write the exact JSON shape: `{goal, stories[], demo_notes, retro_ref}`
-    - [ ] Define `stories[]` element shape: `{id, title, size, priority, status}` with allowed values
-    - [ ] Document the rule: `sprint` key present only on story-shaped feature tracks; absent on bug/chore/classic-feature tracks
+- [x] Task 2.1: Define acceptance criteria for the `sprint` metadata schema
+    - [x] Write the exact JSON shape: `{goal, stories[], demo_notes, retro_ref}`
+    - [x] Define `stories[]` element shape: `{id, title, size, priority, status}` with allowed values
+    - [x] Document the rule: `sprint` key present only on story-shaped feature tracks; absent on bug/chore/classic-feature tracks
 
 - [ ] Task 2.2: Update `metadata.json` template in `claude-skills/measure/references/new-track.md` §2.5
     - [ ] Add the `sprint` object as an optional field with inline comment "// omit for bug/chore tracks; optional for features"
