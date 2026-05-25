@@ -72,11 +72,11 @@ _Story ref: spec.md#story-s3_
 
 Add velocity and estimation-accuracy lines to `status.md` Project Health, computed from the last 3 completed feature tracks.
 
-- [ ] Task 3.1: Define acceptance criteria for the velocity calculation
-    - [ ] Specify the filter: completed tracks (`[x]`) of type `feature` with both `estimated_tasks` and `actual_tasks` populated
-    - [ ] Specify ordering: most-recent first by `metadata.json.created_at` (or `updated_at` if present)
-    - [ ] Specify the qualifier thresholds: `under-estimating` if ratio > 1.15, `over-estimating` if ratio < 0.85, `calibrated` otherwise
-    - [ ] Specify fallback strings for <3 tracks and 0 tracks
+- [x] Task 3.1: Define acceptance criteria for the velocity calculation
+    - [x] Specify the filter: completed tracks (`[x]`) of type `feature` with both `estimated_tasks` and `actual_tasks` populated
+    - [x] Specify ordering: most-recent first by `metadata.json.created_at` (or `updated_at` if present)
+    - [x] Specify the qualifier thresholds: `under-estimating` if ratio > 1.15, `over-estimating` if ratio < 0.85, `calibrated` otherwise
+    - [x] Specify fallback strings for <3 tracks and 0 tracks
 
 - [ ] Task 3.2: Edit `claude-skills/measure/references/status.md` §4.0 — extend the Project Health section
     - [ ] Add a "Velocity (last 3 feature tracks)" line under Project Health
