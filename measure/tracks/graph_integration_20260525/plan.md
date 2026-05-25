@@ -13,7 +13,7 @@ _Story ref: spec.md#story-s1_
     - [x] When a phase touches an exported symbol, run `build-graph callers` and append callers list under the phase heading
 - [x] Task: Measure - User Manual Verification 'Phase S1: Graph-aware new-track workflow' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
-## Phase S2: Graph-aware implement context loading
+## Phase S2: Graph-aware implement context loading [checkpoint: 9f60d8e]
 _Story ref: spec.md#story-s2_
 
 - [x] Task: Define acceptance criteria for §3.2 Load Graph Context 4e7e803
