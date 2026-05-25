@@ -15,16 +15,16 @@ Add an opt-in "Story-shaped spec" mode to `new-track.md` §2.2 that produces a `
     - [x] Define the mode-choice prompt wording for §2.2 (label, options, recommendation)
     - [x] Define the backward-compat fallback rule (silent skip when `## Stories` absent)
 
-- [ ] Task 1.2: Edit `claude-skills/measure/references/new-track.md` §2.2 — add mode selection
-    - [ ] Insert a mode-choice step before existing questioning phase (Story-shaped vs Classic)
-    - [ ] For Story-shaped: replace FR-style questions with story enumeration prompts (story title, Connextra triplet, Gherkin AC, Estimate S/M/L/XL, Priority Must/Should/Could)
-    - [ ] For Classic: route to existing FR-list flow unchanged
-    - [ ] Verify the section is additive and does not remove any existing step
+- [x] Task 1.2: Edit `claude-skills/measure/references/new-track.md` §2.2 — add mode selection `34ce469`
+    - [x] Insert a mode-choice step before existing questioning phase (Story-shaped vs Classic)
+    - [x] For Story-shaped: replace FR-style questions with story enumeration prompts (story title, Connextra triplet, Gherkin AC, Estimate S/M/L/XL, Priority Must/Should/Could)
+    - [x] For Classic: route to existing FR-list flow unchanged
+    - [x] Verify the section is additive and does not remove any existing step
 
-- [ ] Task 1.3: Edit `claude-skills/measure/references/new-track.md` §2.2 step 4 — update spec template
-    - [ ] Add optional `## Stories` section to the spec template structure list
-    - [ ] Document the `### Story S<n>:` block schema in the reference
-    - [ ] Verify existing "Functional Requirements" remains the structure for Classic mode
+- [x] Task 1.3: Edit `claude-skills/measure/references/new-track.md` §2.2 step 4 — update spec template `34ce469`
+    - [x] Add optional `## Stories` section to the spec template structure list
+    - [x] Document the `### Story S<n>:` block schema in the reference
+    - [x] Verify existing "Functional Requirements" remains the structure for Classic mode
 
 - [ ] Task 1.4: Manual verification — round-trip a story-shaped spec
     - [ ] Hand-write a sample story-shaped spec following the new template
