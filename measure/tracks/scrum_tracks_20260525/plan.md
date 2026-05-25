@@ -35,7 +35,7 @@ Add an opt-in "Story-shaped spec" mode to `new-track.md` §2.2 that produces a `
 
 ---
 
-## Phase S2: Optional sprint metadata on feature tracks
+## Phase S2: Optional sprint metadata on feature tracks [checkpoint: b840a75]
 _Story ref: spec.md#story-s2_
 
 Extend `metadata.json` with an optional `sprint` object. Update setup.md and new-track.md schemas. Ensure all readers tolerate absence.
@@ -59,11 +59,11 @@ Extend `metadata.json` with an optional `sprint` object. Update setup.md and new
     - [x] Document the rule: if a story was added/removed/re-estimated during implementation, reflect that in `sprint.stories[]` before commit
     - [x] Verify the step gracefully skips when `sprint` key is absent
 
-- [x] Task 2.5: Verify backward compatibility of metadata reads
+- [x] Task 2.5: Verify backward compatibility of metadata reads `67bbeab`
     - [x] Read existing tracks' `metadata.json` (lessons_learned_20260307, visual_refresh_20260425) and confirm new schema treats them as valid (no `sprint` key = OK)
     - [x] Document the read-side rule in implement.md, review.md, and status.md as needed: "treat `sprint` as optional"
 
-- [ ] Task 2.6: Measure - User Manual Verification 'Phase S2: Optional sprint metadata' (Protocol in workflow.md)
+- [x] Task 2.6: Measure - User Manual Verification 'Phase S2: Optional sprint metadata' (Protocol in workflow.md) `b840a75`
 
 ---
 
