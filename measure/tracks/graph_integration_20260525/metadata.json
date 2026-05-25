@@ -1,0 +1,23 @@
+{
+  "track_id": "graph_integration_20260525",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-05-25T10:08:00Z",
+  "updated_at": "2026-05-25T10:08:00Z",
+  "description": "Integrate build-graph into Measure new-track, implement, review, and setup workflows",
+  "estimated_tasks": 28,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "Make build-graph a first-class context source in Measure's new-track, implement, and review workflows so structural questions go to the graph before grep, and graph freshness is preserved across edits",
+    "stories": [
+      { "id": "S1", "title": "Graph-aware new-track workflow", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S2", "title": "Graph-aware implement context loading", "size": "S", "priority": "Must", "status": "pending" },
+      { "id": "S3", "title": "Graph-aware per-task implementation", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S4", "title": "Graph-aware review", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S5", "title": "Setup scaffolding + SKILL.md sync + dogfood", "size": "S", "priority": "Should", "status": "pending" }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}
