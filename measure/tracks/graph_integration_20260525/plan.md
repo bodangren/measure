@@ -55,7 +55,7 @@ _Story ref: spec.md#story-s5_
     - [x] Update command descriptions for new-track, implement, review to mention graph integration
 - [x] Task: Measure - User Manual Verification 'Phase S5: Setup scaffolding + SKILL.md sync' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
-## Phase S6: Dogfood + retrospective
+## Phase S6: Dogfood + retrospective [checkpoint: 2ad96a4]
 _Story ref: spec.md#story-s5 (AC3)_
 
 - [x] Task: Dry-run against `lessons_learned_20260307` and `visual_refresh_20260425` to confirm no regressions 7349583
