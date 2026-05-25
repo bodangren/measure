@@ -10,10 +10,10 @@ _Story ref: spec.md#story-s1_
 
 Add an opt-in "Story-shaped spec" mode to `new-track.md` §2.2 that produces a `## Stories` section with Connextra + Gherkin AC + Estimate + Priority. Classic mode unchanged.
 
-- [ ] Task 1.1: Define acceptance criteria for the story-shaped spec template
-    - [ ] Write out exact section headings, field labels, and ordering for `### Story S<n>:` blocks
-    - [ ] Define the mode-choice prompt wording for §2.2 (label, options, recommendation)
-    - [ ] Define the backward-compat fallback rule (silent skip when `## Stories` absent)
+- [x] Task 1.1: Define acceptance criteria for the story-shaped spec template
+    - [x] Write out exact section headings, field labels, and ordering for `### Story S<n>:` blocks
+    - [x] Define the mode-choice prompt wording for §2.2 (label, options, recommendation)
+    - [x] Define the backward-compat fallback rule (silent skip when `## Stories` absent)
 
 - [ ] Task 1.2: Edit `claude-skills/measure/references/new-track.md` §2.2 — add mode selection
     - [ ] Insert a mode-choice step before existing questioning phase (Story-shaped vs Classic)
