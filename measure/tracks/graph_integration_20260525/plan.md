@@ -23,7 +23,7 @@ _Story ref: spec.md#story-s2_
     - [x] Summarize findings (file paths, callers count) into the implementer's working context
 - [x] Task: Measure - User Manual Verification 'Phase S2: Graph-aware implement context loading' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
-## Phase S3: Graph-aware per-task implementation
+## Phase S3: Graph-aware per-task implementation [checkpoint: 5b8c324]
 _Story ref: spec.md#story-s3_
 
 - [x] Task: Define acceptance criteria for pre-edit inspect + post-edit update c35da50
