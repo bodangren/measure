@@ -40,28 +40,28 @@ _Story ref: spec.md#story-s2_
 
 Extend `metadata.json` with an optional `sprint` object. Update setup.md and new-track.md schemas. Ensure all readers tolerate absence.
 
-- [x] Task 2.1: Define acceptance criteria for the `sprint` metadata schema
+- [x] Task 2.1: Define acceptance criteria for the `sprint` metadata schema `6c82eb1`
     - [x] Write the exact JSON shape: `{goal, stories[], demo_notes, retro_ref}`
     - [x] Define `stories[]` element shape: `{id, title, size, priority, status}` with allowed values
     - [x] Document the rule: `sprint` key present only on story-shaped feature tracks; absent on bug/chore/classic-feature tracks
 
-- [ ] Task 2.2: Update `metadata.json` template in `claude-skills/measure/references/new-track.md` §2.5
-    - [ ] Add the `sprint` object as an optional field with inline comment "// omit for bug/chore tracks; optional for features"
-    - [ ] Add a populate step after spec confirmation: when story-shaped spec was chosen, write `sprint.goal` (from spec overview) and `sprint.stories[]` (from spec's `### Story S<n>:` blocks)
-    - [ ] Verify the JSON is valid and the instructions describe when to populate vs omit
+- [x] Task 2.2: Update `metadata.json` template in `claude-skills/measure/references/new-track.md` §2.5 `13000ea`
+    - [x] Add the `sprint` object as an optional field with inline comment "// omit for bug/chore tracks; optional for features"
+    - [x] Add a populate step after spec confirmation: when story-shaped spec was chosen, write `sprint.goal` (from spec overview) and `sprint.stories[]` (from spec's `### Story S<n>:` blocks)
+    - [x] Verify the JSON is valid and the instructions describe when to populate vs omit
 
-- [ ] Task 2.3: Update `metadata.json` template in `claude-skills/measure/references/setup.md` §3.3
-    - [ ] Add the same optional `sprint` field with the same inline comment
-    - [ ] Verify both setup.md and new-track.md show identical schemas
+- [x] Task 2.3: Update `metadata.json` template in `claude-skills/measure/references/setup.md` §3.3 `13000ea`
+    - [x] Add the same optional `sprint` field with the same inline comment
+    - [x] Verify both setup.md and new-track.md show identical schemas
 
-- [ ] Task 2.4: Update implement.md §3.4 — sync `sprint.stories` on track finalize
-    - [ ] Add a sub-step: if `metadata.json` has a `sprint` key, re-read `spec.md` `## Stories`, and update `sprint.stories[].status` to reflect completion (`done` / `partial` / `dropped`) based on plan task completion
-    - [ ] Document the rule: if a story was added/removed/re-estimated during implementation, reflect that in `sprint.stories[]` before commit
-    - [ ] Verify the step gracefully skips when `sprint` key is absent
+- [x] Task 2.4: Update implement.md §3.4 — sync `sprint.stories` on track finalize `7904d3f`
+    - [x] Add a sub-step: if `metadata.json` has a `sprint` key, re-read `spec.md` `## Stories`, and update `sprint.stories[].status` to reflect completion (`done` / `partial` / `dropped`) based on plan task completion
+    - [x] Document the rule: if a story was added/removed/re-estimated during implementation, reflect that in `sprint.stories[]` before commit
+    - [x] Verify the step gracefully skips when `sprint` key is absent
 
-- [ ] Task 2.5: Verify backward compatibility of metadata reads
-    - [ ] Read existing tracks' `metadata.json` (lessons_learned_20260307, visual_refresh_20260425) and confirm new schema treats them as valid (no `sprint` key = OK)
-    - [ ] Document the read-side rule in implement.md, review.md, and status.md as needed: "treat `sprint` as optional"
+- [x] Task 2.5: Verify backward compatibility of metadata reads
+    - [x] Read existing tracks' `metadata.json` (lessons_learned_20260307, visual_refresh_20260425) and confirm new schema treats them as valid (no `sprint` key = OK)
+    - [x] Document the read-side rule in implement.md, review.md, and status.md as needed: "treat `sprint` as optional"
 
 - [ ] Task 2.6: Measure - User Manual Verification 'Phase S2: Optional sprint metadata' (Protocol in workflow.md)
 
