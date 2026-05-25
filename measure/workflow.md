@@ -29,6 +29,7 @@ All tasks follow a strict lifecycle:
    - For workflow reference files: edit the relevant section in `claude-skills/measure/references/`.
    - For template files: edit the relevant file in `claude-skills/measure/assets/` AND `templates/`.
    - Verify the result matches the acceptance criteria.
+   - **Graph Maintenance (optional, TS projects only):** If a graph baseline was loaded in `implement.md §3.2` and this task changes signatures, imports/exports, schemas, or JSX hierarchy, run `build-graph update ./graph.db <changed-files>` before commit. See `implement.md §3.3` Per-Task Graph Protocol for the full decision tree.
 
 5. **Refactor (Optional but Recommended):**
    - Review the edited file for consistency with surrounding content.

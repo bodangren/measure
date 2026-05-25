@@ -100,6 +100,29 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 2. **Iterate Through Tasks:** You MUST now loop through each task in the track's **Implementation Plan** one by one.
 3. **For Each Task, You MUST:**
    - **Defer to Workflow:** The **Workflow** file is the **single source of truth** for the entire task lifecycle. You MUST now read and execute the procedures defined in the "Task Workflow" section of the **Workflow** file you have in your context. Follow its steps for implementation, testing, and committing precisely.
+   - **Per-Task Graph Protocol (optional, TypeScript projects only):** If §3.2 successfully loaded a graph baseline, apply the following two-part protocol around the task's edits:
+
+     **a) Pre-edit blast-radius check.** If the task will modify an **exported** function, class, interface, or schema:
+     ```bash
+     build-graph inspect ./graph.db <SymbolName>
+     ```
+     Record the caller count (and top-3 caller files when count > 0) in the task's commit message body or git note created in Workflow Task Workflow step 7/8 — e.g., `Graph blast radius: 4 callers (auth/middleware.ts, api/handler.ts, ...)`. This creates an audit trail of intentional breakage.
+
+     **b) Post-edit graph update decision tree.** After the task's edits but **before** moving to the next task:
+     - **Update graph when ANY of these are true:**
+       - Function/class signatures changed (parameters, return type)
+       - Export/import relationships changed (new exports, removed exports, new imports across boundaries)
+       - Schema definitions changed (`defineTable`, `z.object`, `interface`)
+       - JSX component hierarchy changed (new/removed render calls)
+
+       Run:
+       ```bash
+       build-graph update ./graph.db <changed-files...>
+       ```
+       For batches of 5+ files across packages, prefer a full re-scan: `build-graph scan . ./graph.db`.
+     - **Skip update when** the task only changed internal function bodies (no signature/import/export/JSX changes). This mirrors the "When NOT to update" rule in `repo-graph/AGENTS.md`.
+
+     **If §3.2 skipped graph loading (any gate failed):** Skip this protocol silently for every task — no extra skip notes (the §3.2 skip note already informed the user).
 
 ### 3.4 Finalize Track
 
