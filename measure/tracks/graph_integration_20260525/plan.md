@@ -33,7 +33,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task: Cross-reference `workflow.md` Task Workflow section (if it has per-task hooks, add graph protocol there too — additive) c35da50
 - [x] Task: Measure - User Manual Verification 'Phase S3: Graph-aware per-task implementation' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
-## Phase S4: Graph-aware review
+## Phase S4: Graph-aware review [checkpoint: 6ae86b0]
 _Story ref: spec.md#story-s4_
 
 - [x] Task: Define acceptance criteria for §2.2 + §2.3 graph queries 1dfa446
