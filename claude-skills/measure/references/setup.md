@@ -382,9 +382,22 @@ Present the following overview:
      "description": "<description>",
      "estimated_tasks": null,
      "actual_tasks": null,
-     "deviation_notes": ""
+     "deviation_notes": "",
+     "sprint": {
+       "goal": "<sprint goal from spec Overview>",
+       "stories": [
+         { "id": "S1", "title": "<story title>", "size": "S|M|L|XL", "priority": "Must|Should|Could", "status": "pending" }
+       ],
+       "demo_notes": null,
+       "retro_ref": null
+     }
    }
    ```
+
+   **Sprint object rules** (see `references/new-track.md` §2.5 for the full specification):
+   - **Include** the `sprint` key ONLY when `type = "feature"` AND the spec uses story-shaped mode (has a `## Stories` section).
+   - **Omit** the `sprint` key entirely for `bug`, `chore`, or classic-FR-list feature tracks.
+   - Downstream readers must treat absence of `sprint` as classic mode and proceed without warnings.
 6. **Create Track Index:** Create `measure/tracks/<track_id>/index.md` with:
    ```markdown
    # Track <track_id> Context

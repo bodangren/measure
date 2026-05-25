@@ -186,9 +186,24 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      "description": "<Initial user description>",
      "estimated_tasks": null,
      "actual_tasks": null,
-     "deviation_notes": ""
+     "deviation_notes": "",
+     "sprint": {
+       "goal": "<sprint goal from spec Overview>",
+       "stories": [
+         { "id": "S1", "title": "<story title>", "size": "S|M|L|XL", "priority": "Must|Should|Could", "status": "pending" }
+       ],
+       "demo_notes": null,
+       "retro_ref": null
+     }
    }
    ```
+
+   **Sprint object rules:**
+   - **Include** the `sprint` key ONLY when `type = "feature"` AND `spec_mode = story` (the spec has a `## Stories` section).
+   - **Omit** the `sprint` key entirely (do not write `null` or `{}`) for: `bug`, `chore`, or any classic-FR-list feature track.
+   - **Populate from spec:** `sprint.goal` is taken from the spec's Overview (or the explicit Sprint Goal captured in §2.2); each `sprint.stories[]` entry mirrors one `### Story S<n>:` block in `spec.md` (id, title, size, priority all match exactly; status starts as `"pending"`).
+   - **Allowed `status` values:** `pending | in-progress | done | partial | dropped`.
+   - **Downstream readers** must treat the absence of `sprint` as classic mode and proceed without warnings.
 
 5. **Create Track Index:** Create `measure/tracks/<track_id>/index.md` with:
    ```markdown
