@@ -98,7 +98,7 @@ Add velocity and estimation-accuracy lines to `status.md` Project Health, comput
 
 ---
 
-## Phase S4: Story-aware plan generation
+## Phase S4: Story-aware plan generation [checkpoint: 02e6452]
 _Story ref: spec.md#story-s4_
 
 When the spec uses story-shaped mode, generate one Phase per story (`## Phase S<n>: <story title>`) preserving Contract-First → Test → Implement → Doctor sub-tasks. Classic mode unchanged.
@@ -118,7 +118,7 @@ When the spec uses story-shaped mode, generate one Phase per story (`## Phase S<
     - [x] Confirm "top-level markdown headings" covers both `## Phase 1:` and `## Phase S1:`
     - [x] If clarification is needed, add a one-line note that both formats are valid; otherwise leave unchanged
 
-- [ ] Task 4.4: Measure - User Manual Verification 'Phase S4: Story-aware plan generation' (Protocol in workflow.md)
+- [x] Task 4.4: Measure - User Manual Verification 'Phase S4: Story-aware plan generation' (Protocol in workflow.md) `02e6452`
 
 ---
 
