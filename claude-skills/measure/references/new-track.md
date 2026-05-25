@@ -29,7 +29,16 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 1. Announce: "I'll now guide you through a series of questions to build a comprehensive specification (`spec.md`) for this track."
 
-2. **Questioning Phase:** Ask questions to gather details for the `spec.md`. You must batch up to 4 related questions in a single prompt to streamline the process. Tailor questions based on the track type (Feature or Other).
+2. **Choose Spec Format (Mode Selection):** Before any other questions, ask the user how the spec should be structured.
+   - Header: `Spec format`
+   - Question: "How should this track's spec be structured?"
+   - Options:
+     - **Story-shaped spec (Recommended for features)** — Decompose requirements into user stories with Gherkin acceptance criteria, T-shirt sizes, and priorities. Enables sprint metadata and velocity tracking.
+     - **Classic FR list** — Numbered functional requirements (FR-1, FR-2…). Best for bug fixes, chores, and simple refactors.
+   - **Default suggestion:** If the inferred track type is `feature`, recommend Story-shaped. Otherwise recommend Classic.
+   - Record the selection as `spec_mode = story | classic` and use it to branch the remaining steps in this section.
+
+3. **Questioning Phase:** Ask questions to gather details for the `spec.md`. You must batch up to 4 related questions in a single prompt to streamline the process. Tailor questions based on `spec_mode` and the track type.
    - **CRITICAL:** Wait for the user's response after each prompt.
    - **Question Classification:** Before formulating any question, classify its purpose as either "Additive" or "Exclusive Choice":
      - **Additive** (multi-select): For brainstorming and defining scope (e.g., features, goals). Use "(Select all that apply)".
@@ -38,32 +47,59 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - Header: Short label (max 16 chars)
      - Provide 2-3 plausible options based on context, each with a label and description
      - Last option: "Type your own answer"
-   - **For Features:** Ask 3-4 questions about functionality, implementation approach, interactions, inputs/outputs
-   - **For Bugs/Chores:** Ask 2-3 questions about reproduction steps, scope, success criteria
+   - **If `spec_mode = story` (Story-shaped path):**
+     - First, ask for the **Sprint Goal**: a single sentence describing the outcome of completing this track. This becomes the spec's Overview anchor and the `sprint.goal` in metadata.
+     - Then ask the user to enumerate the **user stories** for this track. For each story, gather (batched per story, ≤4 prompts):
+       1. Short title (≤8 words) and the Connextra triplet (`As a <role>`, `I want <capability>`, `So that <outcome>`).
+       2. Gherkin acceptance criteria (1–5 `Given … When … Then …` bullets per story).
+       3. Estimate: `S | M | L | XL` (T-shirt size).
+       4. Priority: `Must | Should | Could`.
+     - Continue until the user signals "no more stories".
+   - **If `spec_mode = classic` (Classic path):**
+     - **For Features:** Ask 3-4 questions about functionality, implementation approach, interactions, inputs/outputs.
+     - **For Bugs/Chores:** Ask 2-3 questions about reproduction steps, scope, success criteria.
    - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do NOT ask generic questions if the answer is already in the files.
    - Confirm your understanding by summarizing before moving to drafting.
 
-3. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
+4. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
    - Check line count with `wc -l`. If over 50 lines, summarize or prune before loading.
    - If the file exists, scan for `Open` items relevant to the feature area.
    - If relevant items are found, present them: "There are open tech debt items that may relate to this track. Would you like to address any of them?"
    - If the file does not exist, skip silently.
 
-4. Draft **Specification** (`spec.md`) with:
+5. Draft **Specification** (`spec.md`) with:
    - Overview
-   - Functional Requirements
+   - **If `spec_mode = story`:** `## Stories` section (one `### Story S<n>: <title>` block per story — see schema below)
+   - **If `spec_mode = classic`:** `## Functional Requirements` section (FR-1, FR-2, …)
    - Non-Functional Requirements (if applicable)
-   - Acceptance Criteria
+   - Acceptance Criteria (track-level)
    - Out of Scope
 
-5. Present draft for review with embedded content:
+   **Story block schema (when `spec_mode = story`):**
+   ```markdown
+   ### Story S<n>: <short title>
+   **As a** <role>
+   **I want** <capability>
+   **So that** <outcome>
+
+   **Acceptance Criteria:**
+   - Given <context>, When <action>, Then <observable outcome>.
+   - Given …, When …, Then ….
+
+   **Estimate:** S | M | L | XL
+   **Priority:** Must | Should | Could
+   ```
+
+   **Backward-compat rule:** Any downstream workflow that reads `spec.md` MUST treat the absence of a `## Stories` section as classic mode and proceed silently — no HALT, no warning, no migration prompt.
+
+6. Present draft for review with embedded content:
    > "Please review the drafted Specification below. Does this accurately capture the requirements?"
    > ```markdown
    > [spec content]
    > ```
    > Options: **Approve** (proceed to planning) / **Revise** (modify requirements)
 
-6. Revise until confirmed
+7. Revise until confirmed
 
 ### 2.3 Plan Generation (**Implementation Plan**)
 
