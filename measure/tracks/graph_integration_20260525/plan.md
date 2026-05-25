@@ -46,11 +46,11 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: Setup scaffolding + SKILL.md sync
 _Story ref: spec.md#story-s5_
 
-- [ ] Task: Define acceptance criteria for setup.md §2.9 build-graph offer
-- [ ] Task: Edit `references/setup.md` §2.9 to add build-graph install + scan offer (TS-detected only)
+- [~] Task: Define acceptance criteria for setup.md §2.9 build-graph offer
+- [~] Task: Edit `references/setup.md` §2.9 to add build-graph install + scan offer (TS-detected only)
     - [ ] Append AGENTS.md rules to project's AGENTS.md (or create one)
     - [ ] Add `graph.db` link to `measure/index.md` under "Architecture & Facts"
-- [ ] Task: Edit `SKILL.md` to add "Graph-Aware Mode (optional)" subsection (≤15 lines)
+- [~] Task: Edit `SKILL.md` to add "Graph-Aware Mode (optional)" subsection (≤15 lines)
     - [ ] Update directory tree to mention optional `graph.db`
     - [ ] Update command descriptions for new-track, implement, review to mention graph integration
 - [ ] Task: Measure - User Manual Verification 'Phase S5: Setup scaffolding + SKILL.md sync' (Protocol in workflow.md)

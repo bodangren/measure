@@ -36,6 +36,17 @@ Feature tracks can opt into a lightweight scrum-style format when creating a new
 
 Sprint Mode is fully opt-in and backward-compatible: classic specs, plans, and metadata files continue to work unchanged.
 
+### Graph-Aware Mode (optional)
+
+When a project's Tech Stack includes TypeScript and `build-graph` (from `repo-graph/`) is on PATH with a fresh `graph.db` (<24h mtime), Measure's workflows automatically enrich themselves with structural facts from the codebase knowledge graph:
+
+- **`new-track`** runs a Graph Context Probe in §2.2 (`build-graph stats` + `search` for feature keywords) so questioning batches cite real symbols, and a Blast-Radius Probe in §2.3 (`build-graph callers` for exported symbols) so each plan phase declares its blast radius.
+- **`implement`** loads a graph baseline in §3.2 (`build-graph stats` + `inspect` for exported symbols in the spec/plan), and applies a Per-Task Graph Protocol in §3.3: pre-edit `inspect` records caller count in the commit; post-edit `update` keeps the graph fresh whenever signatures, imports/exports, schemas, or JSX hierarchy change.
+- **`review`** loads `build-graph callers` for every changed exported symbol in §2.2 and flags **High**-severity findings in §2.3 when a non-additive signature change is not accompanied by caller updates. `Graph Caller Check: [Pass/Fail/Skipped]` appears in the §2.5 report block.
+- **`setup`** §2.9 offers (TS-detected only) to install build-graph, scan the project, and add the standard rules to `AGENTS.md`.
+
+Graph-Aware Mode is fully opt-in: every step emits a one-line `Note: …` and continues if `build-graph` is missing, `graph.db` is stale/absent, or the project isn't TypeScript. No HALT, no breakage.
+
 ## Directory Structure
 
 ```
@@ -56,21 +67,24 @@ measure/
 │       ├── spec.md         # Track specification (Specification) — classic FR list or story-shaped
 │       └── plan.md         # Implementation plan (Implementation Plan)
 └── archive/                # Completed/archived tracks
+
+# Optional, at project root (TS projects only):
+graph.db                    # build-graph SQLite knowledge graph — enables Graph-Aware Mode
 ```
 
 ## Commands
 
 ### Setup
-Initialize Measure in a new or existing project. Read [references/setup.md](references/setup.md) for the full workflow.
+Initialize Measure in a new or existing project. For TypeScript projects, §2.9 offers to install `build-graph` and scaffold a knowledge graph (enables Graph-Aware Mode across new-track, implement, and review). Read [references/setup.md](references/setup.md) for the full workflow.
 
 ### New Track
-Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). Read [references/new-track.md](references/new-track.md) for the full workflow.
+Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). When Graph-Aware Mode is available, runs a Graph Context Probe before questioning and appends blast-radius notes to plan phases. Read [references/new-track.md](references/new-track.md) for the full workflow.
 
 ### Implement
-Execute tasks from a track's plan following the project workflow. Loads project memory (lessons learned, tech debt) before starting, and prompts for retrospective insights before finalizing. Read [references/implement.md](references/implement.md) for the full workflow.
+Execute tasks from a track's plan following the project workflow. Loads project memory (lessons learned, tech debt) before starting, loads graph baseline when Graph-Aware Mode is available, applies a Per-Task Graph Protocol around exported-symbol edits, and prompts for retrospective insights before finalizing. Read [references/implement.md](references/implement.md) for the full workflow.
 
 ### Review
-Review completed work against product guidelines, code styleguides, and the original plan. Checks for recurring gotchas from lessons learned. Read [references/review.md](references/review.md) for the full workflow.
+Review completed work against product guidelines, code styleguides, and the original plan. Checks for recurring gotchas from lessons learned. When Graph-Aware Mode is available, runs `build-graph callers` for every changed exported symbol and flags High-severity findings for un-updated callers of non-additive signature changes. Read [references/review.md](references/review.md) for the full workflow.
 
 ### Doctor (/measure:doctor)
 Run architectural linting and structural checks on the repository (e.g., boundary enforcement, generated doc freshness) to prevent context drift and junk-drawer coding. Read [references/doctor.md](references/doctor.md) for the full workflow.

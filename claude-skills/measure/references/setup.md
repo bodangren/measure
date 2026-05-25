@@ -280,7 +280,21 @@ Present the following overview:
 3. **Implement Doctor (`measure/doctor.sh`):** Write a script that executes the architectural linters installed above. It must fail (exit code != 0) if boundaries are violated. It must also include: `git diff --exit-code measure/generated/ || (echo "Generated docs stale"; exit 1)`.
 4. **Implement Generator (`measure/generate.sh`):** Write a script tailored to the tech stack (e.g., a short Node script using AST or generic bash `grep`/`tree` logic) that maps the `measure_zone` and outputs `measure/generated/architecture.json` and a human-readable `measure/generated/routes.md`.
 5. Make both scripts executable (`chmod +x measure/*.sh`).
-6. Update state: `{"last_successful_step": "2.9_architecture_tools"}`
+6. **Offer build-graph Scaffolding (TypeScript projects only):** If the inferred **Tech Stack** includes TypeScript, offer to install and initialize `build-graph` for graph-aware Measure workflows.
+   - Ask: "I detected TypeScript in your tech stack. Measure can use `build-graph` to query a SQLite knowledge graph of your codebase during new-track, implement, and review steps. Install build-graph and create the initial `graph.db`?"
+   - Options (multi-select):
+     - **Install build-graph + scan now (Recommended)** — Verify `build-graph` is on PATH; if missing, instruct the user to install per `repo-graph/README.md`. Then run `build-graph scan . ./graph.db` from the project root.
+     - **Install build-graph rules in AGENTS.md only** — Skip scanning, but append the build-graph workflow rules (see template below) to `AGENTS.md` (or create one) so future agents know to build/use the graph.
+     - **Skip** — Do nothing; graph-aware Measure steps will emit one-line skip notes.
+   - **If "Install build-graph + scan now":**
+     1. Run `command -v build-graph >/dev/null 2>&1`. If missing, halt this sub-step and tell the user: "build-graph not found on PATH. Install it per `repo-graph/README.md` (`bun run build && cp ./bin/build-graph ~/.local/bin/`), then re-run setup." Move on to step 7.
+     2. Run `build-graph scan . ./graph.db` and verify `graph.db` exists afterward.
+     3. Append `/graph.db` to the project's `.gitignore` (create if missing) — the graph is regenerated, not version-controlled.
+     4. Add a `Knowledge Graph` link to `measure/index.md` under the "Architecture & Facts" group: `- [Knowledge Graph](../graph.db) (regenerate with \`build-graph update ./graph.db <files>\` or full re-scan with \`build-graph scan . ./graph.db\`)`.
+   - **If "Install build-graph rules in AGENTS.md only" OR "Install build-graph + scan now":**
+     - Append (or create) `AGENTS.md` at the project root with the standard build-graph rules block — copy from `repo-graph/AGENTS.md` "Workflow Rules" section verbatim (rules 1-5 + Schema Reference + Common Queries). If `AGENTS.md` already exists and contains a `build-graph` heading, skip to avoid duplication.
+   - **If "Skip":** Proceed silently.
+7. Update state: `{"last_successful_step": "2.9_architecture_tools"}`
 
 ## 2.10 Finalization
 
@@ -302,6 +316,7 @@ Present the following overview:
    - [Generated Architecture](./generated/architecture.json)
    - [Doctor Script](./doctor.sh)
    - [Generate Script](./generate.sh)
+   - [Knowledge Graph](../graph.db) *(optional — present only if §2.9 installed build-graph)*
 
    ## Learning & Continuity
    - [Lessons Learned](./lessons-learned.md)
