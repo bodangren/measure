@@ -29,6 +29,11 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 3. **Check CDP Availability (non-blocking):** Run `command -v browser-harness-js >/dev/null 2>&1`. If found, note that the Browser Runtime Check (section 2.4) is available. If not found, note it as unavailable — this does NOT block the review, but the CDP step will be skipped if frontend changes are detected.
 
+4. **Check build-graph Availability (non-blocking):** Run `command -v build-graph >/dev/null 2>&1` AND check that `graph.db` exists at the project root with mtime <24h. If both pass AND the Tech Stack includes TypeScript, note that the Graph Caller Check (section 2.2 step 4 and 2.3 step 6) is available. If not, note it as unavailable — this does NOT block the review, but graph-aware checks will emit a one-line skip note. Possible skip notes (whichever applies first):
+   - `Note: build-graph not on PATH — skipping Graph Caller Check.`
+   - `Note: graph.db is missing — skipping Graph Caller Check.`
+   - `` Note: graph.db is stale (>24h) — skipping Graph Caller Check. Run `build-graph scan . ./graph.db` to refresh. ``
+
 ## 2.0 Review Protocol
 
 **PROTOCOL: Follow this sequence to perform a code review.**
@@ -66,6 +71,16 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
      - Run diff per file and store findings.
      - Aggregate all file-level findings into the final report.
 
+4. **Load Graph Callers (optional, TypeScript projects only):** If §1.0 step 4 marked build-graph as available, identify every exported symbol (function, class, interface, schema) touched by the diff and load its caller list.
+
+   For each touched exported symbol, run:
+   ```bash
+   build-graph callers ./graph.db <SymbolName>
+   ```
+   Capture caller file paths into a structured map `{symbol → [caller_files]}`. This map is consumed by §2.3 step 6 (Graph Caller Compatibility).
+
+   **If build-graph was marked unavailable in §1.0 step 4:** Skip this step and emit the appropriate one-line skip note (from §1.0 step 4) into the review context. Subsequent §2.3 step 6 will record `Skipped`.
+
 ### 2.3 Analyze and Verify
 
 **Perform the following checks on the retrieved diff:**
@@ -83,6 +98,14 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
    - **Execute the test suite automatically.** Infer the test command based on the codebase (e.g., `npm test`, `pytest`, `go test`). Run it. Analyze output for failures.
 5. **Skill-Specific Checks:**
    - If specific skills are installed, verify compliance with their best practices.
+6. **Graph Caller Compatibility (TypeScript projects only):** Using the `{symbol → [caller_files]}` map loaded in §2.2 step 4, verify that signature/schema changes don't silently break callers.
+   - For each touched exported symbol whose signature changed in the diff (parameters added/removed/renamed, return type changed, interface fields added/removed):
+     - For each caller file in the map, check whether the diff also updates that caller. If the caller is **not** updated AND the signature change is non-additive (would break existing call sites), flag a **High** severity finding:
+       - **File**: caller path
+       - **Context**: "Caller of `<Symbol>` not updated for signature change. Symbol was changed in commit `<sha>` from `<old>` to `<new>`."
+       - **Suggestion**: Update the caller or revert the breaking change to additive-only.
+   - For added/renamed exported symbols, this check is N/A (no existing callers to break).
+   - If §2.2 step 4 was skipped, record `Graph Caller Check: Skipped` for §2.5 and skip this entire bullet.
 
 ### 2.4 Browser Runtime Check (CDP)
 
@@ -246,6 +269,7 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
 - [ ] **Browser Console Errors**: [None/Found] - [Count and summary, or 'Skipped (no frontend changes)']
 - [ ] **Network Errors**: [None/Found] - [Count and summary, or 'Skipped']
 - [ ] **Visual Check**: [Pass/Fail/Skipped] - [Notes on screenshots, or 'Skipped']
+- [ ] **Graph Caller Check**: [Pass/Fail/Skipped] - [Count of breaking-change findings, or 'Skipped (build-graph unavailable / non-TS project)']
 
 ## Findings
 *(Only include this section if issues are found)*

@@ -36,11 +36,11 @@ _Story ref: spec.md#story-s3_
 ## Phase S4: Graph-aware review
 _Story ref: spec.md#story-s4_
 
-- [ ] Task: Define acceptance criteria for §2.2 + §2.3 graph queries
-- [ ] Task: Edit `references/review.md` §1.0 to add a third non-blocking availability check for build-graph (mirrors browser-harness-js check)
-- [ ] Task: Edit `references/review.md` §2.2 to add "Load Graph Callers" step for changed exported symbols
-- [ ] Task: Edit `references/review.md` §2.3 to add caller-compatibility check as a new bullet
-- [ ] Task: Edit `references/review.md` §2.5 Verification Checks block to add `Graph Caller Check: [Pass/Fail/Skipped]`
+- [~] Task: Define acceptance criteria for §2.2 + §2.3 graph queries
+- [~] Task: Edit `references/review.md` §1.0 to add a third non-blocking availability check for build-graph (mirrors browser-harness-js check)
+- [~] Task: Edit `references/review.md` §2.2 to add "Load Graph Callers" step for changed exported symbols
+- [~] Task: Edit `references/review.md` §2.3 to add caller-compatibility check as a new bullet
+- [~] Task: Edit `references/review.md` §2.5 Verification Checks block to add `Graph Caller Check: [Pass/Fail/Skipped]`
 - [ ] Task: Measure - User Manual Verification 'Phase S4: Graph-aware review' (Protocol in workflow.md)
 
 ## Phase S5: Setup scaffolding + SKILL.md sync
