@@ -24,6 +24,18 @@ Spec-driven development framework that organizes AI-assisted software developmen
 - **Tech Debt Registry**: Bounded working-memory file (`tech-debt.md`) tracking known shortcuts and deferred work with severity and status
 - **Universal File Resolution Protocol**: Index-based file lookup that resolves named references (e.g., **Product Definition**) to file paths via `index.md`
 
+### Sprint Mode (optional)
+
+Feature tracks can opt into a lightweight scrum-style format when creating a new track:
+
+- **Spec format choice** in `new-track` §2.2: pick **Story-shaped spec** (user stories with Gherkin acceptance criteria, T-shirt size, priority) or the existing **Classic FR list**.
+- **Stories** become first-class units in `spec.md` under a `## Stories` section. Each story uses the Connextra triplet (`As a … I want … So that …`), Gherkin AC, `Estimate: S|M|L|XL`, `Priority: Must|Should|Could`.
+- **Sprint metadata** is captured in `metadata.json.sprint = {goal, stories[], demo_notes, retro_ref}` for story-shaped feature tracks only (omitted for bug/chore/classic tracks).
+- **Story-aware plans** use `## Phase S<n>: <story title>` headings, one phase per story, preserving the Contract-First sub-task pipeline.
+- **Velocity & estimation accuracy** are reported in `status` under Project Health, computed from the last 3 completed feature tracks.
+
+Sprint Mode is fully opt-in and backward-compatible: classic specs, plans, and metadata files continue to work unchanged.
+
 ## Directory Structure
 
 ```
@@ -40,8 +52,8 @@ measure/
 ├── generated/              # Machine-generated facts (architecture.json, routes.md)
 ├── tracks/                 # Individual track directories
 │   └── <track_id>/
-│       ├── metadata.json   # Track metadata
-│       ├── spec.md         # Track specification (Specification)
+│       ├── metadata.json   # Track metadata (incl. optional sprint object for story-shaped feature tracks)
+│       ├── spec.md         # Track specification (Specification) — classic FR list or story-shaped
 │       └── plan.md         # Implementation plan (Implementation Plan)
 └── archive/                # Completed/archived tracks
 ```
@@ -52,7 +64,7 @@ measure/
 Initialize Measure in a new or existing project. Read [references/setup.md](references/setup.md) for the full workflow.
 
 ### New Track
-Create a new track with spec and plan. Read [references/new-track.md](references/new-track.md) for the full workflow.
+Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). Read [references/new-track.md](references/new-track.md) for the full workflow.
 
 ### Implement
 Execute tasks from a track's plan following the project workflow. Loads project memory (lessons learned, tech debt) before starting, and prompts for retrospective insights before finalizing. Read [references/implement.md](references/implement.md) for the full workflow.
@@ -64,7 +76,7 @@ Review completed work against product guidelines, code styleguides, and the orig
 Run architectural linting and structural checks on the repository (e.g., boundary enforcement, generated doc freshness) to prevent context drift and junk-drawer coding. Read [references/doctor.md](references/doctor.md) for the full workflow.
 
 ### Status
-Display project progress overview including track breakdown and project health indicators. Read [references/status.md](references/status.md) for the full workflow.
+Display project progress overview including track breakdown, project health indicators, and (for projects with completed feature tracks) a rolling velocity and estimation-accuracy ratio. Read [references/status.md](references/status.md) for the full workflow.
 
 ### Revert
 Roll back previous work by track, phase, or task using Git history. Read [references/revert.md](references/revert.md) for the full workflow.

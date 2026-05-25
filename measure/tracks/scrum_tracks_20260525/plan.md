@@ -127,21 +127,21 @@ _Story ref: spec.md#story-s5_
 
 Update SKILL.md to introduce optional Sprint Mode and update product.md success metrics if appropriate. Skip `templates/` parity (directory does not exist in this repo).
 
-- [ ] Task 5.1: Edit `claude-skills/measure/SKILL.md` — add Sprint Mode section
-    - [ ] Add a "Sprint Mode (optional)" subsection under Core Concepts (≤15 lines) describing Stories, sprint metadata, and velocity
-    - [ ] Update the directory structure block to mention that `metadata.json` may contain an optional `sprint` object
-    - [ ] Update the "New Track" command description to mention the mode choice
-    - [ ] Update the "Status" command description to mention velocity reporting
-    - [ ] Verify the additions are concise and link to references
+- [x] Task 5.1: Edit `claude-skills/measure/SKILL.md` — add Sprint Mode section
+    - [x] Add a "Sprint Mode (optional)" subsection under Core Concepts (≤15 lines) describing Stories, sprint metadata, and velocity
+    - [x] Update the directory structure block to mention that `metadata.json` may contain an optional `sprint` object
+    - [x] Update the "New Track" command description to mention the mode choice
+    - [x] Update the "Status" command description to mention velocity reporting
+    - [x] Verify the additions are concise and link to references
 
-- [ ] Task 5.2: Verify documentation cross-references
-    - [ ] Confirm references to `spec.md` Stories section in new-track.md, implement.md
-    - [ ] Confirm references to `sprint` metadata in implement.md, status.md, setup.md, new-track.md
-    - [ ] Fix any broken or missing cross-references
+- [x] Task 5.2: Verify documentation cross-references
+    - [x] Confirm references to `spec.md` Stories section in new-track.md, implement.md
+    - [x] Confirm references to `sprint` metadata in implement.md, status.md, setup.md, new-track.md
+    - [x] Fix any broken or missing cross-references
 
-- [ ] Task 5.3: Note for tech debt — `templates/` parity deferred
-    - [ ] Append to `tech-debt.md` (creating it if absent under §1.x of the spec's setup): "templates/ directory does not exist in this repo; if it is reintroduced, copies of `workflow.md`, `lessons-learned.md`, `tech-debt.md` must be re-synced. Severity: Low. Status: Open."
-    - [ ] Verify the entry follows the existing tech-debt.md row schema
+- [x] Task 5.3: Note for tech debt — `templates/` parity deferred
+    - [x] Append to `tech-debt.md` (creating it if absent under §1.x of the spec's setup): "templates/ directory does not exist in this repo; if it is reintroduced, copies of `workflow.md`, `lessons-learned.md`, `tech-debt.md` must be re-synced. Severity: Low. Status: Open."
+    - [x] Verify the entry follows the existing tech-debt.md row schema
 
 - [ ] Task 5.4: Measure - User Manual Verification 'Phase S5: Documentation and skill sync' (Protocol in workflow.md)
 
