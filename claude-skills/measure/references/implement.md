@@ -73,6 +73,27 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - Read `measure/generated/architecture.json` (if it exists) to map the existing feature domains, contracts, and boundaries.
    - Check if `src/features/_example/` (or similar golden path template) exists, and read its structure to enforce convention-over-configuration during implementation.
 
+6. **Load Graph Context (optional, TypeScript projects only):** If a `build-graph` knowledge graph exists for this project, query it so the implementer starts with an accurate structural map.
+
+   **Availability + freshness gate** (must pass BOTH):
+   - **Availability:** `command -v build-graph >/dev/null 2>&1`
+   - **Freshness:** `graph.db` exists at the project root AND its mtime is within the last 24 hours.
+
+   **If both pass AND the Tech Stack includes TypeScript:**
+   - Run `build-graph stats ./graph.db` once to capture the codebase shape.
+   - For each exported symbol (function, class, interface, schema) named in the track's **Specification** or **Implementation Plan**, run:
+     ```bash
+     build-graph inspect ./graph.db <SymbolName>
+     ```
+   - Summarize each symbol's file path, line range, caller count, and the top callers into the implementer's working context. This becomes the structural baseline used by §3.3 per-task graph protocol.
+
+   **If either check fails (or non-TS project):**
+   - Emit exactly one of these notes to user-visible output and continue without the graph baseline:
+     - `Note: build-graph not on PATH — skipping graph-aware context load.`
+     - `Note: graph.db is missing — skipping graph-aware context load.`
+     - `` Note: graph.db is stale (>24h) — skipping graph-aware context load. Run `build-graph scan . ./graph.db` to refresh. ``
+   - Do NOT HALT.
+
 ### 3.3 Execute Tasks
 
 1. **Announce:** State that you will now execute the tasks from the track's **Implementation Plan** by following the procedures in the **Workflow**.
