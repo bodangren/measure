@@ -91,6 +91,15 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 2. **Update Track Metadata:** Read the track's `metadata.json`.
    - Set `actual_tasks` to the total number of completed tasks in the **Implementation Plan**.
    - If the actual work materially differed from the original plan (e.g., tasks were added, removed, or significantly changed), fill `deviation_notes` with a brief explanation.
+   - **If `metadata.json` contains a `sprint` key** (sprint-shaped track):
+     - Re-read `spec.md` `## Stories` to detect any stories added, removed, or re-estimated during implementation.
+     - For each entry in `sprint.stories[]`, update `status` based on the corresponding plan tasks:
+       - `done` — all plan tasks tagged to this story (e.g., in `## Phase S<n>:`) are `[x]`.
+       - `partial` — some tasks done, some intentionally dropped (record reason in `deviation_notes`).
+       - `dropped` — story removed entirely after track start (record reason in `deviation_notes`).
+     - If new stories were added to `spec.md` mid-track, append matching entries to `sprint.stories[]` (id, title, size, priority, status).
+     - Optionally populate `sprint.demo_notes` with a brief demo summary and `sprint.retro_ref` with a pointer to the lessons-learned entry created in step 1.
+   - **If `metadata.json` does NOT contain a `sprint` key**, skip the sprint sync silently — this is a classic-mode or bug/chore track.
    - Write the updated `metadata.json`.
 
 3. After all tasks in the track's local **Implementation Plan** are completed, update the track's status in the **Tracks Registry** (from `[~]` to `[x]`).
