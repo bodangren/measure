@@ -39,7 +39,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 3.0 Parse and Analyze
 
-1. **Identify Phases**: Top-level markdown headings in each plan
+1. **Identify Phases**: Top-level markdown headings in each plan. Both classic format (`## Phase 1: <name>`) and story-shaped format (`## Phase S<n>: <story title>`) are valid and counted equivalently.
 
 2. **Identify Tasks**: Bullet points under headings with status markers:
    - `[ ]` - Pending

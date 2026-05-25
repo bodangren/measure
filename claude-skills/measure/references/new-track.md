@@ -116,20 +116,38 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 3. Generate **Implementation Plan** (`plan.md`):
    - Hierarchical structure: Phases → Tasks → Sub-tasks
-   - **CRITICAL:** Enforce the strict Contract-First pipeline. The plan MUST include the following phases in order:
-     1. **Contract & Schema Definition:** Update or create strict schemas (e.g., Zod, OpenAPI) and contracts.
-     2. **Test:** Write contract/unit tests for the new features.
-     3. **Implement:** Implement the service/repo/backend/UI based on the contracts.
-     4. **Generate Docs & Doctor:** Run `measure/generate.sh` to update generated facts, and run `measure/doctor.sh` to pass architectural linters.
+   - **If `spec_mode = story` (story-shaped plan):**
+     - Generate **one Phase per story** in the spec's `## Stories` section. Each phase uses the heading:
+       ```markdown
+       ## Phase S<n>: <story title>
+       _Story ref: spec.md#story-s<n>_
+       ```
+       where `<n>` and `<story title>` match the `### Story S<n>: <title>` heading in `spec.md` exactly.
+     - Inside each story-phase, enforce the Contract-First pipeline as sub-task families:
+       1. **Contract & Schema Definition** tasks
+       2. **Test** tasks
+       3. **Implement** tasks
+       4. **Generate Docs & Doctor** tasks
+       For documentation-only or workflow-change tracks where the strict pipeline doesn't literally apply, use the equivalent ordering: Define acceptance criteria → Edit reference/asset files → Verify.
+     - If **Workflow** defines "Phase Completion Verification Protocol", append to each story-phase:
+       ```markdown
+       - [ ] Task: Measure - User Manual Verification 'Phase S<n>: <story title>' (Protocol in workflow.md)
+       ```
+   - **If `spec_mode = classic` (classic plan):**
+     - Use the existing phase structure. The plan MUST include the following phases in order:
+       1. **Contract & Schema Definition:** Update or create strict schemas (e.g., Zod, OpenAPI) and contracts.
+       2. **Test:** Write contract/unit tests for the new features.
+       3. **Implement:** Implement the service/repo/backend/UI based on the contracts.
+       4. **Generate Docs & Doctor:** Run `measure/generate.sh` to update generated facts, and run `measure/doctor.sh` to pass architectural linters.
+     - If **Workflow** defines "Phase Completion Verification Protocol", append to each phase:
+       ```markdown
+       - [ ] Task: Measure - User Manual Verification '<Phase Name>' (Protocol in workflow.md)
+       ```
    - Include `[ ]` status markers for EVERY task and sub-task:
      ```markdown
      - [ ] Task: Define User Model Contract
          - [ ] Update Zod schema for User
          - [ ] Export schema from feature root
-     ```
-   - If **Workflow** defines "Phase Completion Verification Protocol", append to each phase:
-     ```markdown
-     - [ ] Task: Measure - User Manual Verification '<Phase Name>' (Protocol in workflow.md)
      ```
 
 4. Present draft for review with embedded content:
