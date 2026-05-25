@@ -31,6 +31,12 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 3. **Read Track Plans:** For each track in the **Tracks Registry**, resolve and read its **Implementation Plan** (`plan.md`).
 
+4. **Read Track Metadata:** For each track, also resolve and read its `metadata.json` and extract: `type`, `status`, `estimated_tasks`, `actual_tasks`, `created_at`, `updated_at`, and the optional `sprint` object.
+   - **Read-side rules (backward compatibility):**
+     - If `metadata.json` is missing or malformed, skip silently and continue — do NOT HALT.
+     - Treat absence of the `sprint` key as classic mode (no sprint data); never warn the user about this.
+     - Accept both `"completed"` and `"complete"` as valid completed-status values.
+
 ## 3.0 Parse and Analyze
 
 1. **Identify Phases**: Top-level markdown headings in each plan
@@ -115,8 +121,51 @@ Tech Debt:
   Line count:   <line count via `wc -l`, or "N/A">
   Budget:       <OK or OVER_LIMIT (max 50 lines)>
 
+Velocity (last 3 feature tracks):
+  <one of the following, per the rules in section "Velocity Calculation" below>
+  - "<actual_1>, <actual_2>, <actual_3> tasks (avg <mean>)"
+  - "<actual_1>[, <actual_2>] tasks (avg <mean>) (based on <n> track(s) — directional only)"
+  - "not yet available — complete a feature track to start tracking velocity"
+
+Estimation accuracy:
+  <one of the following, omitted entirely when 0 qualifying tracks>
+  - "actual / estimated = <ratio> (<qualifier>)"
+  - "actual / estimated = <ratio> (<qualifier>) (based on <n> track(s) — directional only)"
+
 ═════════════════════════════════════════════════════════════
 ```
+
+## Velocity Calculation
+
+**PROTOCOL: Compute velocity and estimation accuracy from completed feature tracks.**
+
+1. **Filter qualifying tracks** from the metadata collected in §2.0 step 4:
+   - Track is marked `[x]` in the **Tracks Registry**.
+   - `metadata.json.type == "feature"`.
+   - `metadata.json.status` ∈ `{"completed", "complete"}`.
+   - Both `metadata.json.estimated_tasks` and `metadata.json.actual_tasks` are non-null integers.
+   - Skip any track with missing or malformed metadata.
+
+2. **Sort qualifying tracks** most-recent first by `metadata.json.updated_at` if present, else `metadata.json.created_at`.
+
+3. **Take the rolling window** of the first 3 qualifying tracks (the "last 3 feature tracks").
+
+4. **Compute velocity:**
+   - `actuals = [actual_tasks of each track in the window]`
+   - `mean = round(sum(actuals) / len(actuals))`
+
+5. **Compute estimation accuracy:**
+   - `ratios = [actual_tasks / estimated_tasks for each track in the window]`
+   - `ratio = round(mean(ratios), 2)`
+   - Qualifier:
+     - `ratio > 1.15` → `under-estimating`
+     - `ratio < 0.85` → `over-estimating`
+     - `0.85 ≤ ratio ≤ 1.15` → `calibrated`
+
+6. **Render fallback strings** based on window size:
+   - **0 tracks:** Velocity line shows `not yet available — complete a feature track to start tracking velocity`. Estimation accuracy line is **omitted entirely**.
+   - **1–2 tracks:** Both lines include the suffix `(based on <n> track(s) — directional only)`.
+   - **≥3 tracks:** Both lines render without the directional disclaimer.
 
 ## Status Determination Logic
 
