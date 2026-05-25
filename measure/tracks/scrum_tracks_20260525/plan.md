@@ -67,7 +67,7 @@ Extend `metadata.json` with an optional `sprint` object. Update setup.md and new
 
 ---
 
-## Phase S3: Velocity & estimation accuracy in status report
+## Phase S3: Velocity & estimation accuracy in status report [checkpoint: ae676d5]
 _Story ref: spec.md#story-s3_
 
 Add velocity and estimation-accuracy lines to `status.md` Project Health, computed from the last 3 completed feature tracks.
@@ -89,12 +89,12 @@ Add velocity and estimation-accuracy lines to `status.md` Project Health, comput
     - [x] Document the rule: skip silently if `metadata.json` is missing or malformed (do not HALT)
     - [x] Verify the read step is additive to existing track-data reads
 
-- [x] Task 3.4: Manual verification — dry-run velocity on existing data
+- [x] Task 3.4: Manual verification — dry-run velocity on existing data `f26369d`
     - [x] Use existing `lessons_learned_20260307` metadata (`estimated_tasks: 29`, `actual_tasks: 22`)
     - [x] Confirm a single-track report would show: `Velocity: 22 tasks (based on 1 track — directional only)` and `Estimation accuracy: actual/estimated = 0.76 (over-estimating)`
     - [x] Verify the visual_refresh track (no `estimated_tasks`) is excluded correctly
 
-- [ ] Task 3.5: Measure - User Manual Verification 'Phase S3: Velocity & estimation accuracy' (Protocol in workflow.md)
+- [x] Task 3.5: Measure - User Manual Verification 'Phase S3: Velocity & estimation accuracy' (Protocol in workflow.md) `ae676d5`
 
 ---
 
