@@ -11,7 +11,7 @@ _Story ref: spec.md#story-s1_
     - [x] Add "Brownfield + TS + graph available" branch in questioning guidance
 - [x] Task: Edit `references/new-track.md` §2.3 to inject blast-radius notes per story-phase 2b1fdea
     - [x] When a phase touches an exported symbol, run `build-graph callers` and append callers list under the phase heading
-- [ ] Task: Measure - User Manual Verification 'Phase S1: Graph-aware new-track workflow' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: Graph-aware new-track workflow' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
 ## Phase S2: Graph-aware implement context loading
 _Story ref: spec.md#story-s2_
