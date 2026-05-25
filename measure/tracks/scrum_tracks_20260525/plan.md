@@ -72,27 +72,27 @@ _Story ref: spec.md#story-s3_
 
 Add velocity and estimation-accuracy lines to `status.md` Project Health, computed from the last 3 completed feature tracks.
 
-- [x] Task 3.1: Define acceptance criteria for the velocity calculation
+- [x] Task 3.1: Define acceptance criteria for the velocity calculation `e9d47af`
     - [x] Specify the filter: completed tracks (`[x]`) of type `feature` with both `estimated_tasks` and `actual_tasks` populated
     - [x] Specify ordering: most-recent first by `metadata.json.created_at` (or `updated_at` if present)
     - [x] Specify the qualifier thresholds: `under-estimating` if ratio > 1.15, `over-estimating` if ratio < 0.85, `calibrated` otherwise
     - [x] Specify fallback strings for <3 tracks and 0 tracks
 
-- [ ] Task 3.2: Edit `claude-skills/measure/references/status.md` §4.0 — extend the Project Health section
-    - [ ] Add a "Velocity (last 3 feature tracks)" line under Project Health
-    - [ ] Add an "Estimation accuracy" line with ratio and qualifier
-    - [ ] Document the fallback string for `<3` and `0` qualifying tracks
-    - [ ] Verify the new lines are appended (not replacing) and the existing Lessons Learned / Tech Debt lines remain
+- [x] Task 3.2: Edit `claude-skills/measure/references/status.md` §4.0 — extend the Project Health section `2a5a3c2`
+    - [x] Add a "Velocity (last 3 feature tracks)" line under Project Health
+    - [x] Add an "Estimation accuracy" line with ratio and qualifier
+    - [x] Document the fallback string for `<3` and `0` qualifying tracks
+    - [x] Verify the new lines are appended (not replacing) and the existing Lessons Learned / Tech Debt lines remain
 
-- [ ] Task 3.3: Edit `claude-skills/measure/references/status.md` §2.0 — add the read step
-    - [ ] Add a step: "For each track in **Tracks Registry**, also read `metadata.json` and extract `type`, `status`, `estimated_tasks`, `actual_tasks`, `created_at`"
-    - [ ] Document the rule: skip silently if `metadata.json` is missing or malformed (do not HALT)
-    - [ ] Verify the read step is additive to existing track-data reads
+- [x] Task 3.3: Edit `claude-skills/measure/references/status.md` §2.0 — add the read step `2a5a3c2`
+    - [x] Add a step: "For each track in **Tracks Registry**, also read `metadata.json` and extract `type`, `status`, `estimated_tasks`, `actual_tasks`, `created_at`"
+    - [x] Document the rule: skip silently if `metadata.json` is missing or malformed (do not HALT)
+    - [x] Verify the read step is additive to existing track-data reads
 
-- [ ] Task 3.4: Manual verification — dry-run velocity on existing data
-    - [ ] Use existing `lessons_learned_20260307` metadata (`estimated_tasks: 29`, `actual_tasks: 22`)
-    - [ ] Confirm a single-track report would show: `Velocity: 22 tasks (based on 1 track — directional only)` and `Estimation accuracy: actual/estimated = 0.76 (over-estimating)`
-    - [ ] Verify the visual_refresh track (no `estimated_tasks`) is excluded correctly
+- [x] Task 3.4: Manual verification — dry-run velocity on existing data
+    - [x] Use existing `lessons_learned_20260307` metadata (`estimated_tasks: 29`, `actual_tasks: 22`)
+    - [x] Confirm a single-track report would show: `Velocity: 22 tasks (based on 1 track — directional only)` and `Estimation accuracy: actual/estimated = 0.76 (over-estimating)`
+    - [x] Verify the visual_refresh track (no `estimated_tasks`) is excluded correctly
 
 - [ ] Task 3.5: Measure - User Manual Verification 'Phase S3: Velocity & estimation accuracy' (Protocol in workflow.md)
 
