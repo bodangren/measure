@@ -16,5 +16,5 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [ ] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
+- [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
   *Link: [./tracks/graph_integration_20260525/](./tracks/graph_integration_20260525/)*

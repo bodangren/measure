@@ -1,13 +1,13 @@
 {
   "track_id": "graph_integration_20260525",
   "type": "feature",
-  "status": "in-progress",
+  "status": "completed",
   "created_at": "2026-05-25T10:08:00Z",
-  "updated_at": "2026-05-25T10:35:00Z",
+  "updated_at": "2026-05-25T10:45:00Z",
   "description": "Integrate build-graph into Measure new-track, implement, review, and setup workflows",
   "estimated_tasks": 28,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 28,
+  "deviation_notes": "All 5 manual verification tasks deferred to end-of-track per user request (mirrors lessons_learned_20260307 pattern); no scope changes.",
   "sprint": {
     "goal": "Make build-graph a first-class context source in Measure's new-track, implement, and review workflows so structural questions go to the graph before grep, and graph freshness is preserved across edits",
     "stories": [

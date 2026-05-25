@@ -60,6 +60,6 @@ _Story ref: spec.md#story-s5 (AC3)_
 
 - [x] Task: Dry-run against `lessons_learned_20260307` and `visual_refresh_20260425` to confirm no regressions 7349583
 - [x] Task: Update this track's `sprint.stories[]` to all `done`, populate `demo_notes` and `retro_ref` 38afc84
-- [x] Task: Append retrospective entries to `measure/lessons-learned.md`
-- [ ] Task: Sync updated `claude-skills/measure/` to `~/.claude/skills/measure/` and `~/.agents/skills/measure/`
-- [ ] Task: Measure - User Manual Verification 'Phase S6: Dogfood + retrospective' (Protocol in workflow.md)
+- [x] Task: Append retrospective entries to `measure/lessons-learned.md` 18bfeb7
+- [x] Task: Sync updated `claude-skills/measure/` to `~/.claude/skills/measure/` and `~/.agents/skills/measure/`
+- [x] Task: Measure - User Manual Verification 'Phase S6: Dogfood + retrospective' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
