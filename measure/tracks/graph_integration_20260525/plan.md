@@ -6,9 +6,9 @@ _Story ref: spec.md#story-s1_
 - [x] Task: Define acceptance criteria for §2.2 graph-informed questioning aa591f4
     - [x] Document the one-line skip-note format (reusable across all 5 stories)
     - [x] Document the freshness check (`graph.db` mtime <24h)
-- [ ] Task: Edit `references/new-track.md` §2.2 to add Graph Context Probe before questioning
-    - [ ] Add freshness check + `build-graph search`/`stats` for the feature area
-    - [ ] Add "Brownfield + TS + graph available" branch in questioning guidance
+- [x] Task: Edit `references/new-track.md` §2.2 to add Graph Context Probe before questioning f14f5d8
+    - [x] Add freshness check + `build-graph search`/`stats` for the feature area
+    - [x] Add "Brownfield + TS + graph available" branch in questioning guidance
 - [ ] Task: Edit `references/new-track.md` §2.3 to inject blast-radius notes per story-phase
     - [ ] When a phase touches an exported symbol, run `build-graph callers` and append callers list under the phase heading
 - [ ] Task: Measure - User Manual Verification 'Phase S1: Graph-aware new-track workflow' (Protocol in workflow.md)
