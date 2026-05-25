@@ -29,7 +29,25 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 1. Announce: "I'll now guide you through a series of questions to build a comprehensive specification (`spec.md`) for this track."
 
-2. **Choose Spec Format (Mode Selection):** Before any other questions, ask the user how the spec should be structured.
+2. **Graph Context Probe (optional, TypeScript projects only):** Before any questions, check whether the codebase graph is available so questioning can be informed by real structural data.
+
+   **Availability + freshness gate** (must pass BOTH):
+   - **Availability:** `command -v build-graph >/dev/null 2>&1`
+   - **Freshness:** `graph.db` exists at the project root AND its mtime is within the last 24 hours.
+
+   **If both pass AND the Tech Stack includes TypeScript:**
+   - Run `build-graph stats ./graph.db` once to capture the codebase shape.
+   - From the user's track description, extract 1–3 keywords for the feature area and run `build-graph search ./graph.db <keyword>` for each.
+   - Use the results to inform at least one questioning batch (e.g., reference existing modules by name, surface adjacent files, ask whether a found symbol is the right integration point).
+
+   **If either check fails (or non-TS project):**
+   - Emit exactly one of these notes (whichever applies first) to the user-visible output and continue with the classic grep-based path:
+     - `Note: build-graph not on PATH — skipping graph-aware context probe.`
+     - `Note: graph.db is missing — skipping graph-aware context probe.`
+     - `` Note: graph.db is stale (>24h) — skipping graph-aware context probe. Run `build-graph scan . ./graph.db` to refresh. ``
+   - Do NOT HALT.
+
+3. **Choose Spec Format (Mode Selection):** Before any other questions, ask the user how the spec should be structured.
    - Header: `Spec format`
    - Question: "How should this track's spec be structured?"
    - Options:
@@ -38,7 +56,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Default suggestion:** If the inferred track type is `feature`, recommend Story-shaped. Otherwise recommend Classic.
    - Record the selection as `spec_mode = story | classic` and use it to branch the remaining steps in this section.
 
-3. **Questioning Phase:** Ask questions to gather details for the `spec.md`. You must batch up to 4 related questions in a single prompt to streamline the process. Tailor questions based on `spec_mode` and the track type.
+4. **Questioning Phase:** Ask questions to gather details for the `spec.md`. You must batch up to 4 related questions in a single prompt to streamline the process. Tailor questions based on `spec_mode` and the track type.
    - **CRITICAL:** Wait for the user's response after each prompt.
    - **Question Classification:** Before formulating any question, classify its purpose as either "Additive" or "Exclusive Choice":
      - **Additive** (multi-select): For brainstorming and defining scope (e.g., features, goals). Use "(Select all that apply)".
@@ -47,6 +65,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - Header: Short label (max 16 chars)
      - Provide 2-3 plausible options based on context, each with a label and description
      - Last option: "Type your own answer"
+   - **If the Graph Context Probe (step 2) ran successfully:** At least one batch in this Questioning Phase MUST cite a specific finding from `build-graph` results (e.g., "I see `validateToken` is called from 4 files including `auth/middleware.ts` — should the new behavior live there or in a sibling module?"). Generic, codebase-blind questions are forbidden when the graph was available.
    - **If `spec_mode = story` (Story-shaped path):**
      - First, ask for the **Sprint Goal**: a single sentence describing the outcome of completing this track. This becomes the spec's Overview anchor and the `sprint.goal` in metadata.
      - Then ask the user to enumerate the **user stories** for this track. For each story, gather (batched per story, ≤4 prompts):
@@ -61,13 +80,13 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do NOT ask generic questions if the answer is already in the files.
    - Confirm your understanding by summarizing before moving to drafting.
 
-4. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
+5. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
    - Check line count with `wc -l`. If over 50 lines, summarize or prune before loading.
    - If the file exists, scan for `Open` items relevant to the feature area.
    - If relevant items are found, present them: "There are open tech debt items that may relate to this track. Would you like to address any of them?"
    - If the file does not exist, skip silently.
 
-5. Draft **Specification** (`spec.md`) with:
+6. Draft **Specification** (`spec.md`) with:
    - Overview
    - **If `spec_mode = story`:** `## Stories` section (one `### Story S<n>: <title>` block per story — see schema below)
    - **If `spec_mode = classic`:** `## Functional Requirements` section (FR-1, FR-2, …)
@@ -92,14 +111,14 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
    **Backward-compat rule:** Any downstream workflow that reads `spec.md` MUST treat the absence of a `## Stories` section as classic mode and proceed silently — no HALT, no warning, no migration prompt.
 
-6. Present draft for review with embedded content:
+7. Present draft for review with embedded content:
    > "Please review the drafted Specification below. Does this accurately capture the requirements?"
    > ```markdown
    > [spec content]
    > ```
    > Options: **Approve** (proceed to planning) / **Revise** (modify requirements)
 
-7. Revise until confirmed
+8. Revise until confirmed
 
 ### 2.3 Plan Generation (**Implementation Plan**)
 
