@@ -43,7 +43,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task: Edit `references/review.md` §2.5 Verification Checks block to add `Graph Caller Check: [Pass/Fail/Skipped]` 1dfa446
 - [x] Task: Measure - User Manual Verification 'Phase S4: Graph-aware review' (Protocol in workflow.md) — DEFERRED to end of track per user instruction
 
-## Phase S5: Setup scaffolding + SKILL.md sync
+## Phase S5: Setup scaffolding + SKILL.md sync [checkpoint: 779a8ae]
 _Story ref: spec.md#story-s5_
 
 - [x] Task: Define acceptance criteria for setup.md §2.9 build-graph offer c5c66dd
