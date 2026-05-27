@@ -5,19 +5,19 @@ This file tracks all major tracks for the Measure project.
 ---
 
 - [x] **Track: Add lessons-learned memory and tech debt tracking to Measure workflow**
-  *Link: [./tracks/lessons_learned_20260307/](./tracks/lessons_learned_20260307/)*
+  *Link: [./archive/lessons_learned_20260307/](./archive/lessons_learned_20260307/)*
 
-- [x] [Visual Refresh: Define Unique Identity](tracks/visual_refresh_20260425/index.md)
+- [x] [Visual Refresh: Define Unique Identity](archive/visual_refresh_20260425/index.md)
 
 ---
 
 - [x] **Track: Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks**
-  *Link: [./tracks/scrum_tracks_20260525/](./tracks/scrum_tracks_20260525/)*
+  *Link: [./archive/scrum_tracks_20260525/](./archive/scrum_tracks_20260525/)*
 
 ---
 
 - [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
-  *Link: [./tracks/graph_integration_20260525/](./tracks/graph_integration_20260525/)*
+  *Link: [./archive/graph_integration_20260525/](./archive/graph_integration_20260525/)*
 
 ## Upcoming Tracks
 
