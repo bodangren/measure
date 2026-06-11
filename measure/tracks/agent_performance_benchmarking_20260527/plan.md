@@ -6,19 +6,16 @@
 
 > **Pre-Phase-1 gate (test-strategy.md §0):** Phase 1 is blocked until a `docs(tech-stack)` update declaring the bash + `jq` verification layer is committed, and a minimal scripted verification layer exists under `scripts/`. Both are part of this Red-phase commit.
 
-- [x] Task: Build `measure benchmark` CLI
+- [x] Task: Build `measure benchmark` CLI `82b9e67`
   - **Targeted Red (test-strategy §7 P1):** `bin/measure-benchmark --help | diff - <fixtures>/expected/help.txt` — must fail with `command not found` (bin absent at HEAD).
   - **Bounded runner:** `scripts/test-cli-help.sh` (subprocess `diff`, no watch, no aggregate).
-  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
-- [x] Task: Implement isolated temp directory runner for each model
+- [x] Task: Implement isolated temp directory runner for each model `82b9e67`
   - **Targeted Red (test-strategy §1 row 1):** `bin/measure-benchmark run --dry-run --track <fixture>/tracks/mini-feature --models echo --out <tmp>` must exit 0 and write expected file paths.
   - **Bounded runner:** `scripts/test-dry-run.sh`.
-  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
-- [x] Task: Capture: wall clock time, tool call count, test pass rate, lint errors
+- [x] Task: Capture: wall clock time, tool call count, test pass rate, lint errors `82b9e67`
   - **Targeted Red (test-strategy §7 P1 Green contract, executed as Red):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out <tmp> && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' <tmp>/echo.json` — must fail at HEAD (bin absent).
   - **Bounded runner:** `scripts/test-metrics-capture.sh`.
   - **Fake-mode boundary (test-strategy §7):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --out <tmp>` (no `--models`) must `exit 3`. Bounded: `scripts/test-fake-mode-boundary.sh`.
-  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
 
 **Red-command record (fill on Red run):** see "Red run record" appended below.
 
