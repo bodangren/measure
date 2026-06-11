@@ -6,16 +6,19 @@
 
 > **Pre-Phase-1 gate (test-strategy.md §0):** Phase 1 is blocked until a `docs(tech-stack)` update declaring the bash + `jq` verification layer is committed, and a minimal scripted verification layer exists under `scripts/`. Both are part of this Red-phase commit.
 
-- [~] Task: Build `measure benchmark` CLI
+- [x] Task: Build `measure benchmark` CLI
   - **Targeted Red (test-strategy §7 P1):** `bin/measure-benchmark --help | diff - <fixtures>/expected/help.txt` — must fail with `command not found` (bin absent at HEAD).
   - **Bounded runner:** `scripts/test-cli-help.sh` (subprocess `diff`, no watch, no aggregate).
-- [~] Task: Implement isolated temp directory runner for each model
+  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
+- [x] Task: Implement isolated temp directory runner for each model
   - **Targeted Red (test-strategy §1 row 1):** `bin/measure-benchmark run --dry-run --track <fixture>/tracks/mini-feature --models echo --out <tmp>` must exit 0 and write expected file paths.
   - **Bounded runner:** `scripts/test-dry-run.sh`.
-- [~] Task: Capture: wall clock time, tool call count, test pass rate, lint errors
+  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
+- [x] Task: Capture: wall clock time, tool call count, test pass rate, lint errors
   - **Targeted Red (test-strategy §7 P1 Green contract, executed as Red):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out <tmp> && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' <tmp>/echo.json` — must fail at HEAD (bin absent).
   - **Bounded runner:** `scripts/test-metrics-capture.sh`.
   - **Fake-mode boundary (test-strategy §7):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --out <tmp>` (no `--models`) must `exit 3`. Bounded: `scripts/test-fake-mode-boundary.sh`.
+  - **Green commit:** `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
 
 **Red-command record (fill on Red run):** see "Red run record" appended below.
 
@@ -114,10 +117,42 @@ not trip the gate; they remain preserved for the user.
 The next role must:
 
 1. Implement `bin/measure-benchmark` so that all 5 `test-*.sh` exit 0 and `run-tests.sh` reports `5 passed, 0 failed`.
-2. Honor the §7 P1 Green literal: `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out <tmp> && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' <tmp>/echo.json` (exit 0).
+2. Honor the §7 P1 Green literal: `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out /tmp/bm.$$ && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' /tmp/bm.$$/echo.json` (exit 0).
 3. Honor the §7 fake-mode boundary: omitting `--models` must exit 3.
 4. Honor the §4 contract: `--fixtures-dir` flag accepted and documented in `--help`; `measure/benchmarks/<model>.json` is git-ignored (already in place).
 5. On closeout, flip `[~]` → `[x]` and append the first 7 chars of the implementation commit, per `workflow.md` step 9.
+
+---
+
+## Green run record (JR role, 2026-06-11)
+
+### Targeted Green commands run
+
+| # | Source | Command (exact) | Result | Why it's a real Green |
+|---|---|---|---|---|
+| 1 | test-strategy §7 P1 Green literal | `bin/measure-benchmark run --track measure/tracks/agent_performance_benchmarking_20260527/fixtures/tracks/mini-feature --models echo --out /tmp/bm.test && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' /tmp/bm.test/echo.json` | rc=0, jq passes | Binary exists, runs echo adapter, writes JSON with wall_ms>0 and tool_calls as number. |
+| 2 | test-strategy §7 fake-mode boundary | `bin/measure-benchmark run --track measure/tracks/agent_performance_benchmarking_20260527/fixtures/tracks/mini-feature --out /tmp/bm.fake` | rc=3 | Exits 3 with stderr mentioning --models when flag is omitted. |
+| 3 | test-strategy §4 contract | `bin/measure-benchmark --help \| grep -- --fixtures-dir` | rc=0 | --fixtures-dir documented in --help output. |
+
+**Aggregate (bounded, no watch):**
+
+```
+$ bash measure/tracks/agent_performance_benchmarking_20260527/scripts/run-tests.sh
+Running 5 test(s) (pattern: test-*.sh)...
+Summary: 5 passed, 0 failed (5 total)
+runner exit=0
+```
+
+**Fail count: 0/5** — all tests pass. The §7 P1 Green literal passes. The fake-mode boundary exits 3. The --fixtures-dir flag is documented.
+
+### Green commit
+
+- Commit `82b9e67` — `feat(benchmark): implement measure-benchmark CLI harness for Phase 1`
+- 1 file changed: `bin/measure-benchmark` (218 lines, executable bash script)
+
+### build-graph note
+
+`test-strategy.md §6` — project is pure Markdown/JSON (`glob **/*.ts` → 0 hits). **Graph-Aware Mode N/A.** No `graph.db` scan was performed. `build-graph update` not needed.
 
 
 
