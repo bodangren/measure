@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+# measure-benchmark — CLI harness for agent performance benchmarking.
+#
+# Usage: measure-benchmark <command> [options]
+#
+# Commands:
+#   run      Run a track against one or more models and capture metrics
+#   score    Score a captured run against the plan-adherence rubric
+#   report   Generate a Markdown ranking table from captured runs
+
+set -euo pipefail
+
+# Resolve the directory containing this script (follows symlinks).
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Default fixtures directory (can be overridden with --fixtures-dir).
+FIXTURES_DIR="${FIXTURES_DIR:-$REPO_ROOT/measure/tracks/agent_performance_benchmarking_20260527/fixtures}"
+
+# Adapter directory (where model adapters like echo-model.sh live).
+ADAPTERS_DIR="$FIXTURES_DIR/adapters"
+
+# ──────────────────────────────────────────────────────────────────────
+# Help
+# ──────────────────────────────────────────────────────────────────────
+show_help() {
+  cat <<'EOF'
+Usage: measure-benchmark <command> [options]
+
+Commands:
+  run      Run a track against one or more models and capture metrics
+  score    Score a captured run against the plan-adherence rubric
+  report   Generate a Markdown ranking table from captured runs
+
+Options (run):
+  --track <dir>         Path to the track directory (must contain plan.md)
+  --models <list>       Comma-separated model identifiers, or "echo" for the
+                        deterministic plumbing-only fake adapter
+  --out <dir>           Output directory (created if missing)
+  --dry-run             Plan the run but do not invoke any model
+  --fixtures-dir <dir>  Override the fixtures directory (used by tests)
+  -h, --help            Show this help and exit
+
+Exit codes:
+  0  success
+  1  generic failure
+  3  invalid arguments (e.g. empty --models)
+EOF
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Run command
+# ──────────────────────────────────────────────────────────────────────
+cmd_run() {
+  local track="" models="" out="" dry_run=false
+
+  # Parse run-specific arguments.
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --track)
+        track="$2"; shift 2 ;;
+      --models)
+        models="$2"; shift 2 ;;
+      --out)
+        out="$2"; shift 2 ;;
+      --dry-run)
+        dry_run=true; shift ;;
+      --fixtures-dir)
+        FIXTURES_DIR="$2"; ADAPTERS_DIR="$FIXTURES_DIR/adapters"; shift 2 ;;
+      -h|--help)
+        show_help; exit 0 ;;
+      *)
+        echo "measure-benchmark: unknown option: $1" >&2
+        exit 3 ;;
+    esac
+  done
+
+  # Validate required arguments.
+  if [[ -z "$track" ]]; then
+    echo "measure-benchmark: --track is required" >&2
+    exit 3
+  fi
+
+  if [[ ! -d "$track" ]]; then
+    echo "measure-benchmark: track directory does not exist: $track" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "$track/plan.md" ]]; then
+    echo "measure-benchmark: track directory must contain plan.md: $track" >&2
+    exit 1
+  fi
+
+  if [[ -z "$out" ]]; then
+    echo "measure-benchmark: --out is required" >&2
+    exit 3
+  fi
+
+  # Create output directory if it doesn't exist.
+  mkdir -p "$out"
+
+  # Fake-mode boundary: --models must be non-empty.
+  # test-strategy.md §7: "the harness must exit 3 if --models is empty"
+  if [[ -z "$models" ]]; then
+    echo "measure-benchmark: --models is required (use 'echo' for the fake adapter)" >&2
+    exit 3
+  fi
+
+  # Parse comma-separated models.
+  IFS=',' read -ra model_list <<< "$models"
+
+  # Dry-run mode: plan but don't invoke.
+  if [[ "$dry_run" == true ]]; then
+    local plan_tasks
+    plan_tasks=$(grep -cE '^\s*-\s*\[[ x~]\]' "$track/plan.md" 2>/dev/null || echo "0")
+
+    cat > "$out/dry-run.json" <<JSON
+{
+  "track": "$track",
+  "models": $(printf '%s\n' "${model_list[@]}" | jq -R . | jq -s .),
+  "plan_tasks": $plan_tasks,
+  "dry_run": true
+}
+JSON
+    exit 0
+  fi
+
+  # Execute each model adapter.
+  for model in "${model_list[@]}"; do
+    local adapter="$ADAPTERS_DIR/${model}-model.sh"
+
+    if [[ ! -x "$adapter" ]]; then
+      echo "measure-benchmark: adapter not found or not executable: $adapter" >&2
+      exit 1
+    fi
+
+    # Run the adapter in a subshell to capture timing.
+    local start_ms end_ms wall_ms
+    start_ms=$(date +%s%3N 2>/dev/null || python3 -c "import time; print(int(time.time()*1000))")
+
+    # Adapter writes its own JSON to $out/<model>.json.
+    # We capture stdout for tool-call counting.
+    local adapter_stdout
+    adapter_stdout=$("$adapter" "$track" "$out") || {
+      echo "measure-benchmark: adapter $model failed with exit $?" >&2
+      exit 1
+    }
+
+    end_ms=$(date +%s%3N 2>/dev/null || python3 -c "import time; print(int(time.time()*1000))")
+    wall_ms=$((end_ms - start_ms))
+
+    # Count tool calls from adapter stdout (one JSON object per line).
+    local tool_calls
+    tool_calls=$(echo "$adapter_stdout" | wc -l | tr -d ' ')
+
+    # Merge wall_ms and tool_calls into the adapter's JSON output.
+    local model_json="$out/${model}.json"
+    if [[ -f "$model_json" ]]; then
+      # Update existing JSON with actual wall_ms and tool_calls.
+      local tmp_json
+      tmp_json=$(mktemp)
+      jq --argjson wall_ms "$wall_ms" --argjson tool_calls "$tool_calls" \
+        '.wall_ms = $wall_ms | .tool_calls = $tool_calls' \
+        "$model_json" > "$tmp_json"
+      mv "$tmp_json" "$model_json"
+    fi
+  done
+
+  exit 0
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Score command (stub for Phase 1)
+# ──────────────────────────────────────────────────────────────────────
+cmd_score() {
+  echo "measure-benchmark: score command not yet implemented (Phase 2)" >&2
+  exit 1
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Report command (stub for Phase 1)
+# ──────────────────────────────────────────────────────────────────────
+cmd_report() {
+  echo "measure-benchmark: report command not yet implemented (Phase 3)" >&2
+  exit 1
+}
+
+# ──────────────────────────────────────────────────────────────────────
+# Main dispatch
+# ──────────────────────────────────────────────────────────────────────
+if [[ $# -eq 0 ]]; then
+  show_help
+  exit 0
+fi
+
+command="$1"
+shift
+
+case "$command" in
+  run)
+    cmd_run "$@"
+    ;;
+  score)
+    cmd_score "$@"
+    ;;
+  report)
+    cmd_report "$@"
+    ;;
+  -h|--help)
+    show_help
+    exit 0
+    ;;
+  *)
+    echo "measure-benchmark: unknown command: $command" >&2
+    echo "Run 'measure-benchmark --help' for usage." >&2
+    exit 1
+    ;;
+esac
