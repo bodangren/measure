@@ -1,9 +1,82 @@
 # Plan: Agent Performance Benchmarking
 
+> **Red-phase status:** this plan file is updated by the MID role. All Phase 1 tasks are owned by the Red phase until a Green/impl role flips them to `[x]`. See `test-strategy.md` §7 for the targeted Red commands and §0 for the blocking pre-Phase-1 gates.
+
 ## Phase 1: Harness
-- [ ] Task: Build `measure benchmark` CLI
-- [ ] Task: Implement isolated temp directory runner for each model
-- [ ] Task: Capture: wall clock time, tool call count, test pass rate, lint errors
+
+> **Pre-Phase-1 gate (test-strategy.md §0):** Phase 1 is blocked until a `docs(tech-stack)` update declaring the bash + `jq` verification layer is committed, and a minimal scripted verification layer exists under `scripts/`. Both are part of this Red-phase commit.
+
+- [~] Task: Build `measure benchmark` CLI
+  - **Targeted Red (test-strategy §7 P1):** `bin/measure-benchmark --help | diff - <fixtures>/expected/help.txt` — must fail with `command not found` (bin absent at HEAD).
+  - **Bounded runner:** `scripts/test-cli-help.sh` (subprocess `diff`, no watch, no aggregate).
+- [~] Task: Implement isolated temp directory runner for each model
+  - **Targeted Red (test-strategy §1 row 1):** `bin/measure-benchmark run --dry-run --track <fixture>/tracks/mini-feature --models echo --out <tmp>` must exit 0 and write expected file paths.
+  - **Bounded runner:** `scripts/test-dry-run.sh`.
+- [~] Task: Capture: wall clock time, tool call count, test pass rate, lint errors
+  - **Targeted Red (test-strategy §7 P1 Green contract, executed as Red):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out <tmp> && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' <tmp>/echo.json` — must fail at HEAD (bin absent).
+  - **Bounded runner:** `scripts/test-metrics-capture.sh`.
+  - **Fake-mode boundary (test-strategy §7):** `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --out <tmp>` (no `--models`) must `exit 3`. Bounded: `scripts/test-fake-mode-boundary.sh`.
+
+**Red-command record (fill on Red run):** see "Red run record" appended below.
+
+---
+
+## Red run record (MID role, 2026-06-11)
+
+> **Build-graph note:** `test-strategy.md §6` — `which build-graph` present, `ls graph.db` absent, `glob **/*.ts` → 0 hits. **Graph-Aware Mode N/A for this track.** No `graph.db` scan was performed.
+
+### Targeted Red commands run
+
+| # | Source | Command (exact) | Result | Why it's a real Red |
+|---|---|---|---|---|
+| 1 | test-strategy §7 P1 Red (literal) | `bin/measure-benchmark --help \| diff - measure/tracks/agent_performance_benchmarking_20260527/fixtures/expected/help.txt` | rc=1 (binary missing) | `bin/measure-benchmark` does not exist at HEAD. The diff shows the entire golden as "added" because the binary's stdout was empty. |
+| 2 | test-cli-help.sh | `bash scripts/test-cli-help.sh` | exit=1 (FAIL: BIN --help failed) | Same root cause; the test wraps the §7 P1 Red and adds structured stderr. |
+| 3 | test-dry-run.sh | `bash scripts/test-dry-run.sh` | exit=1 (FAIL: run --dry-run exited 127) | `command not found` (exit 127) — harness missing, not a config issue. |
+| 4 | test-metrics-capture.sh | `bash scripts/test-metrics-capture.sh` | exit=1 (FAIL: run exited 127) | Same root cause. The pinned `jq -e '.wall_ms>0 and (.tool_calls\|type=="number")'` is the live-behavior proof; at HEAD it never runs because the harness is absent. |
+| 5 | test-fake-mode-boundary.sh | `bash scripts/test-fake-mode-boundary.sh` | exit=1 (FAIL: exit 127, expected 3) | Same root cause. Test pins the §7 fake-mode boundary contract (must exit 3 on missing `--models`). |
+| 6 | test-fixtures-dir-flag.sh | `bash scripts/test-fixtures-dir-flag.sh` | exit=1 (FAIL: --help exited 127) | Same root cause. Test pins §4 contract (--fixtures-dir flag documented). |
+
+**Aggregate (bounded, no watch):**
+
+```
+$ bash measure/tracks/agent_performance_benchmarking_20260527/scripts/run-tests.sh
+Running 5 test(s) (pattern: test-*.sh)...
+Summary: 0 passed, 5 failed (5 total)
+  Failed: test-cli-help.sh
+  Failed: test-dry-run.sh
+  Failed: test-fake-mode-boundary.sh
+  Failed: test-fixtures-dir-flag.sh
+  Failed: test-metrics-capture.sh
+runner exit=1
+```
+
+**Fail count: 5/5** (every test failed for the expected missing-binary reason; no test was tightened after the fact, no test was a "false Red", no test passed at HEAD). All 5 new tests were added in this commit; the 1 tracked failure from the §7 literal is informational and not double-counted in the runner.
+
+### Pre-Phase-1 gate (test-strategy §0) status
+
+- [x] `docs(tech-stack)` update committing the bash + `jq` verification layer — **in this commit** (see `measure/tech-stack.md` Tooling Exceptions table).
+- [x] Minimal scripted verification layer under `scripts/` — **in this commit** (`lib.sh`, `run-tests.sh`, five `test-*.sh`).
+- [x] `test-strategy.md` untracked in dirty worktree, folded into the test commit (relevant dirty change per AGENTS.md rules).
+
+### Out-of-scope dirty work (preserved, NOT in this commit)
+
+These paths are dirty at MID start but are **unrelated** to this track and remain in the worktree untouched:
+
+- `M AGENTS.md` — small doc tweak (added a "Measure Workflow" subsection).
+- `?? measure/automation-script.sh`, `?? measure/automation-supervisor.py`, `?? measure/runs/` — automation harness, not part of the benchmarking track.
+
+### Hand-off to Green/impl role
+
+The next role must:
+
+1. Implement `bin/measure-benchmark` so that all 5 `test-*.sh` exit 0 and `run-tests.sh` reports `5 passed, 0 failed`.
+2. Honor the §7 P1 Green literal: `bin/measure-benchmark run --track <fixture>/tracks/mini-feature --models echo --out <tmp> && jq -e '.wall_ms>0 and (.tool_calls|type=="number")' <tmp>/echo.json` (exit 0).
+3. Honor the §7 fake-mode boundary: omitting `--models` must exit 3.
+4. Honor the §4 contract: `--fixtures-dir` flag accepted and documented in `--help`; `measure/benchmarks/<model>.json` is git-ignored (already in place).
+5. On closeout, flip `[~]` → `[x]` and append the first 7 chars of the implementation commit, per `workflow.md` step 9.
+
+
+
 
 ## Phase 2: Scoring
 - [ ] Task: Define plan adherence rubric (TDD followed? spec referenced?)

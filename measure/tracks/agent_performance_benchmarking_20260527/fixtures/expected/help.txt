@@ -1,0 +1,20 @@
+Usage: measure-benchmark <command> [options]
+
+Commands:
+  run      Run a track against one or more models and capture metrics
+  score    Score a captured run against the plan-adherence rubric
+  report   Generate a Markdown ranking table from captured runs
+
+Options (run):
+  --track <dir>         Path to the track directory (must contain plan.md)
+  --models <list>       Comma-separated model identifiers, or "echo" for the
+                        deterministic plumbing-only fake adapter
+  --out <dir>           Output directory (created if missing)
+  --dry-run             Plan the run but do not invoke any model
+  --fixtures-dir <dir>  Override the fixtures directory (used by tests)
+  -h, --help            Show this help and exit
+
+Exit codes:
+  0  success
+  1  generic failure
+  3  invalid arguments (e.g. empty --models)
