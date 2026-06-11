@@ -20,7 +20,15 @@ The Claude Skills bundle is a `.skill` zip archive. The Gemini CLI extension use
 
 - **Git**: Version control, audit trail, and revert mechanism. Git notes are used for task summaries attached to commits.
 - **No build tools**: No package managers, compilers, or transpilers. The project is pure Markdown and JSON.
-- **No test runners**: Verification is manual (workflow-guided) rather than automated test suites.
+- **No general-purpose test runners**: Verification is manual (workflow-guided) rather than automated test suites, *except* where a specific track introduces an executable CLI that requires deterministic, repeatable checks. See **Tooling Exceptions** below.
+
+### Tooling Exceptions (track-scoped)
+
+Tracks that introduce a new executable CLI must declare their verification tooling in this section **before** writing tests or implementation. This makes the exception visible to reviewers and to future tracks.
+
+| Track | Introduced CLI(s) | Verification layer | Why an exception is justified |
+|---|---|---|---|
+| `agent_performance_benchmarking_20260527` | `bin/measure-benchmark run` / `bin/measure-benchmark score` / `bin/measure-benchmark report` (new) | **bash + `jq`** assertion scripts under `measure/tracks/agent_performance_benchmarking_20260527/scripts/` | The track's whole purpose is measuring model behavior against a deterministic contract. A workflow-only/manual gate cannot prove a "command not found" Red, cannot diff golden help text, and cannot `jq` a JSON output. The verification layer is itself part of the track deliverable; it is not a project-wide test runner. |
 
 ## Architecture
 
