@@ -209,3 +209,10 @@ __marimo__/
 tmp/
 
 /.gemini/tmp/
+# Measure runtime artifacts
+measure/runs/
+measure/*.log
+measure/output.log
+measure/review-output.log
+measure/opencode-cron.log
+measure/gemini-cron.log
