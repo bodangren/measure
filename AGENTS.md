@@ -39,3 +39,7 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 - **Implementation Plan**: `measure/tracks/<track_id>/plan.md`
 - **Metadata**: `measure/tracks/<track_id>/metadata.json`
 
+
+## Automation Supervisor
+
+Do NOT modify measure/automation-supervisor.py. This file is centrally managed and hardlinked across all projects.
