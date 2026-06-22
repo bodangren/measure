@@ -443,6 +443,46 @@ def non_test_source_changes_since(config: Config, base_sha: str) -> list[str]:
     return result
 
 
+def committed_changes_since(config: Config, base_sha: str) -> list[str]:
+    """Files actually committed between base_sha and HEAD.
+
+    Differs from changed_files_since by ignoring the working tree and the
+    index; only `git diff base_sha..HEAD --name-only` is consulted. This
+    isolates what the agent committed from pre-existing dirty work.
+    """
+    if not base_sha:
+        return []
+    result = git(config, "diff", "--name-only", f"{base_sha}..HEAD")
+    if result.returncode != 0:
+        return []
+    return sorted(line.strip() for line in result.stdout.splitlines() if line.strip())
+
+
+def non_test_committed_changes_since(config: Config, base_sha: str) -> list[str]:
+    """Non-test, non-Measure files the agent committed since base_sha.
+
+    Used by gate_mid to enforce the Red-phase boundary: it inspects the
+    agent's actual commits, not the working tree. This avoids false
+    positives when the worktree was already dirty at role entry (e.g.,
+    pre-existing Green work that the Red role is forbidden to modify).
+    """
+    allowed_suffixes = (
+        ".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx",
+        ".test.js", ".test.jsx", ".spec.js", ".spec.jsx",
+        "_test.go", ".bats",
+    )
+    result = []
+    for path in committed_changes_since(config, base_sha):
+        if path.startswith("measure/"):
+            continue
+        if path.endswith(allowed_suffixes):
+            continue
+        if "/__tests__/" in path or "/tests/" in path or path.startswith("tests/"):
+            continue
+        result.append(path)
+    return result
+
+
 def normalize_repo_path(path: str) -> str:
     return path.replace("\\", "/").lstrip("./")
 
@@ -1191,7 +1231,7 @@ def gate_mid(config: Config, ctx: RoleContext) -> GateResult:
     elif in_progress == 0 and incomplete > 0:
         feedback.append("Expected at least one current phase task to be marked [~] after Red work.")
 
-    non_test_changes = non_test_source_changes_since(config, ctx.pre_head)
+    non_test_changes = non_test_committed_changes_since(config, ctx.pre_head)
     if non_test_changes:
         feedback.append("Mid role changed non-test/non-Measure files, which violates the Red-phase boundary:")
         feedback.extend(f"- {path}" for path in non_test_changes)
@@ -1616,7 +1656,13 @@ def main() -> int:
             "by this phase or if the closeout rule requires the real gate. Commit implementation with a descriptive "
             "Conventional Commit message. Update plan.md: mark completed tasks as [x] only after the targeted Red command "
             "and required live gate are green, and record commit SHAs. If structural "
-            "TypeScript files changed, update graph.db with build-graph update ./graph.db <changed-files> before commit."
+            "TypeScript files changed, update graph.db with build-graph update ./graph.db <changed-files> before commit. "
+            "Closeout boundary: If this phase includes tasks to archive or close the track (e.g., move the track directory "
+            "to 99-archive/ or measure/archive/, update measure/tracks.md to mark the track [x] archived), do NOT execute "
+            "those archive actions yourself. Mark the tasks as [x] in plan.md with commit SHA evidence, and leave the "
+            "physical archive move, tracks.md archive update, metadata.json status change, and closeout manifest to the "
+            "dedicated Measure Closeout Steward that runs after the Final Acceptance Auditor. The Closeout Steward will "
+            "perform the actual closeout once the gpt-5.5 final acceptance audit passes."
             + agent_result_contract("jr")
         )
         supervise_role(config, RoleContext(roles["jr"], phase.track_id, phase.heading, plan_file, strategy_file, phase_dir), jr_prompt)
