@@ -134,6 +134,70 @@ DESIGN.md                   # Visual identity & design system (project root)
 
 ---
 
+## Bundled Agents & Skills
+
+Measure ships with a curated set of role-specific **subagents** and **skills** so the framework can run end-to-end with deterministic contracts instead of relying on a single generalist model.
+
+### Agents (`agents/`)
+
+The `agents/` directory contains subagent definitions that can be invoked from your AI assistant's `task` tool.
+
+**Measure framework agents** — orchestrate the spec-driven TDD lifecycle:
+
+| Agent | Role |
+|-------|------|
+| `measure-strategy` | Creates / refreshes the test strategy before phase execution |
+| `measure-mid-red` | Writes targeted failing tests and plan evidence for the Red phase |
+| `measure-jr-green` | Implements Green-phase behavior after Red tests are committed |
+| `measure-adversarial-testing` | Adds boundary, failure-path, integration, and regression tests |
+| `measure-review-a-correctness` | Reviews for correctness, architecture, and meaningful tests |
+| `measure-review-b-security` | Reviews for security, authorization, validation, and data handling |
+| `measure-review-c-ux-api` | Reviews for UX and API end-to-end contract gaps |
+| `measure-ux-browser-review` | Multimodal browser UX review for user-facing changes |
+| `measure-phase-acceptance` | Independent phase acceptance against spec, plan, tests, and commits |
+| `measure-final-acceptance` | Final track acceptance before closeout or archive |
+| `measure-closeout` | Archives a track and verifies closeout artifacts |
+| `measure-orchestrator-audit` | Audits the orchestrator for anti-patterns |
+
+**Coder agents** — model-routed coding subagents you can delegate to from any phase:
+
+- `coder-deepseek-v4-pro`, `coder-deepseek-v4-flash`
+- `coder-kimi-k2p7`
+- `coder-minimax-m3`
+- `coder-xiaomi-mimo-v2-5`, `coder-xiaomi-mimo-v2-5-pro`
+- `coder-vocengine-ark-code-latest`, `coder-vocengine-glm-5-2`
+- `coder-openrouter-free`
+- `coder-orchestrator` — multi-model dispatch
+
+Each `coder-*` agent is tuned for a specific cost/quality profile (see the agent's frontmatter). Pick the cheapest one whose capability matches the phase.
+
+### Skills (`skills/`)
+
+Bundled skill packs that activate automatically when their triggers match:
+
+| Skill | Purpose |
+|-------|---------|
+| `measure` | The core Measure framework skill |
+| `measure-orchestrator` | Run a track as a coordinated sequence of focused subagents with deterministic inter-phase checks (`scripts/measure_interphase_checks.py`) |
+| `measure-orchestrator-workspace` | Workspace-level orchestration utilities |
+| `build-graph` | Build and query a SQLite knowledge graph of a TypeScript codebase for structural reasoning |
+
+To install the bundled skills:
+
+```bash
+# Claude Code
+cp -r skills/* ~/.claude/skills/
+
+# Shared .agents/skills/ convention (any agent)
+cp -r skills/* ~/.agents/skills/
+```
+
+### Related Projects
+
+- **[repo-graph](https://github.com/bodangren/repo-graph)** — The standalone CLI behind the `build-graph` skill. Scans TypeScript codebases via AST parsing and stores the knowledge graph in SQLite, so agents can answer structural questions ("find all callers of", "what breaks if I change", "trace from X to Y") cheaply.
+
+---
+
 ## Quick Start
 
 ### 1. Install Measure

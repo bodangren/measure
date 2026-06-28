@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "orient-next-phase",
+  "prompt": "Use the Measure orchestrator to inspect this repo, identify the next incomplete phase, and describe exactly which subagent should run first and which mechanical check follows it. Do not edit files.",
+  "assertions": [
+    "Reads or instructs reading measure/index.md, measure/tracks.md, spec.md, and plan.md before acting",
+    "Uses measure_interphase_checks.py status to choose the next phase",
+    "Names one of the ~/.agents/agents/measure-*.md subagents as the first delegated role",
+    "Does not propose editing product files during orientation"
+  ]
+}

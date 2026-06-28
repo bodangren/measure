@@ -1,0 +1,66 @@
+{
+  "skill_name": "measure-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use the Measure orchestrator to inspect this repo, identify the next incomplete phase, and describe exactly which subagent should run first and which mechanical check follows it. Do not edit files.",
+      "expected_output": "A repo-aware orchestration plan that reads Measure routing artifacts, selects the next phase from script output, names the correct opencode subagent_type to invoke, and names the exact inter-phase check command.",
+      "files": [],
+      "expectations": [
+        "Reads or instructs reading measure/index.md, measure/tracks.md, measure/anti-patterns.md, spec.md, and plan.md before acting",
+        "Uses measure_interphase_checks.py status to choose the next phase",
+        "Names one of the registered measure-* opencode subagent types (e.g. measure-mid-red) as the first delegated role",
+        "Does not propose editing product files during orientation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Convert the next Measure phase into delegated work: prepare prompts for Red, Green, and phase acceptance agents, including model-specific agent names and gate commands. Do not run the agents.",
+      "expected_output": "Three role-specific task-tool prompts that target the correct opencode measure-* subagent_type values, preserve write boundaries, require MEASURE_AGENT_RESULT, and include the role-gate commands for Mid, Jr, and Phase Acceptance.",
+      "files": [],
+      "expectations": [
+        "Uses measure-mid-red, measure-jr-green, and measure-phase-acceptance",
+        "Includes baseline SHA and phase heading placeholders",
+        "Requires MEASURE_AGENT_RESULT for each role",
+        "Includes role-gate commands with --role mid-red, --role jr-green, and --role phase-acceptance"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A Measure track claims it is complete. Use the orchestrator skill to verify whether closeout can happen and list the checks that must pass before archiving.",
+      "expected_output": "A closeout verification plan that runs final acceptance first, then validates archive location, active registry removal, metadata, plan SHA evidence, closeout manifest, and configured project gates.",
+      "files": [],
+      "expectations": [
+        "Runs or proposes final acceptance before closeout",
+        "Uses measure-closeout only after acceptance passes",
+        "Names the closeout script command",
+        "Checks archive path, active registry removal, metadata status, completion date, and closeout manifest"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Use the orchestrator to audit the Measure framework itself for anti-patterns. Read measure/anti-patterns.md (or references/anti-pattern-catalog.md) and run the A1–A7 detectors against measure/automation-supervisor.py, tests/*.sh, measure/tracks.md, and measure/tracks/*/plan.md. Do not edit the supervisor.",
+      "expected_output": "An audit report that runs the A1 substring-as-signal, A2 consent-blind, A3 digit-only, A4 vacuous-pass, A5 false-claim, A6 registry overstatement, and A7 over-broad-filter detectors; for each finding cites file:line evidence; recommends guard tests or remediation; preserves the catalog.",
+      "files": [],
+      "expectations": [
+        "Names measure-orchestrator-audit as the delegated subagent type",
+        "Runs the A1 detector with Python docstring stripping",
+        "Runs the A4 detector across tests/mr_p1.sh, mr_p2.sh, mr_p3.sh, mr_p4.sh",
+        "Distinguishes between 'anti-pattern present, no guard test' (blocking) and 'anti-pattern present, guard test in place' (maintenance)",
+        "Does not propose editing measure/automation-supervisor.py in the audit response"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "A Measure plan has a task that the AI cannot complete (Phikul must run the demo course, Cartoon must ship social posts, school director must sign consent). What marker should the JR use, and what should the phase-acceptance auditor verify?",
+      "expected_output": "A description of the [b] (blocked / human-gated) marker with trailing deferred:<owner> field, the is_task_structurally_blocked helper's recognition of [b] and deferred:<owner>, and the verification-checkpoint rule that no fabrication is permitted.",
+      "files": [],
+      "expectations": [
+        "Recommends [b] with deferred:<owner> instead of [~] for human-gated tasks",
+        "Cites the supervisor's is_task_structurally_blocked helper",
+        "Cites the verification-checkpoint rule against fabrication",
+        "Names the failure mode of using [~] (the supervisor counts it as in-progress; if not done, that's a lie)"
+      ]
+    }
+  ]
+}
