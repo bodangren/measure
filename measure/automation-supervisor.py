@@ -161,6 +161,7 @@ AUDIT_RESULT_LIST_FIELDS = (
     "changed_files",
 )
 CLOSEOUT_MANIFEST_NAME = "automation-supervisor-closeout-manifest.json"
+EVIDENCE_GATE_TRACK_ID = "measure_apk_evidence_integrity_gates_20260712"
 
 UX_AUTO_INCLUDE_EXACT = {
     "app/index.html",
@@ -610,6 +611,91 @@ def active_registry_contains_track(config: Config, track_id: str) -> bool:
         return False
     active_section = registry.read_text(encoding="utf-8", errors="ignore").split("## Archived Tracks", 1)[0]
     return re.search(rf"(?<![A-Za-z0-9_.-]){re.escape(track_id)}(?![A-Za-z0-9_.-])", active_section) is not None
+
+
+def track_requires_evidence_gate(config: Config, track_id: str) -> bool:
+    """Checks whether a product track transitively names the integrity gate.
+
+    @param config Supervisor configuration.
+    @param track_id Candidate track identifier.
+    @returns Whether the track is protected by the Phase 4 gate.
+    """
+    if track_id == EVIDENCE_GATE_TRACK_ID:
+        return False
+    if track_id.startswith("apk_"):
+        return True
+    pending = [track_id]
+    visited: set[str] = set()
+    while pending:
+        current = pending.pop()
+        if current == EVIDENCE_GATE_TRACK_ID:
+            return True
+        if current in visited:
+            continue
+        visited.add(current)
+        active = config.measure_dir / "tracks" / current / "metadata.json"
+        archived = config.measure_dir / "archive" / current / "metadata.json"
+        metadata_path = archived if archived.exists() else active
+        try:
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(metadata, dict):
+            continue
+        if "dependencies" in metadata:
+            return True
+        dependencies = metadata.get("depends_on")
+        if isinstance(dependencies, list):
+            pending.extend(item for item in dependencies if isinstance(item, str))
+    return False
+
+
+def run_evidence_gate(config: Config, track_id: str, stage: str) -> GateResult:
+    """Invokes the versioned evidence gate through its subprocess adapter.
+
+    @param config Supervisor configuration.
+    @param track_id Protected track identifier.
+    @param stage Gate stage, either preflight or completion.
+    @returns Supervisor gate result derived only from process output and status.
+    """
+    if not track_requires_evidence_gate(config, track_id):
+        return GateResult(True, [])
+    environment = os.environ.copy()
+    environment["PYTHONPATH"] = str(config.repo_root)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    result = run_command(
+        [
+            sys.executable,
+            "-P",
+            "-m",
+            "measure.evidence_integrity_gates.cli",
+            "supervisor-completion",
+            "--repo",
+            str(config.repo_root),
+            "--track",
+            track_id,
+            "--stage",
+            stage,
+        ],
+        cwd=config.repo_root,
+        env=environment,
+        timeout=config.project_gate_timeout_seconds,
+    )
+    if result.returncode == 0:
+        return GateResult(True, [])
+    try:
+        report = json.loads(result.stdout)
+        blockers = report.get("blockers", []) if isinstance(report, dict) else []
+        feedback = [
+            f"Evidence integrity gate {item.get('code', 'UNKNOWN')}: {item.get('detail', {})}"
+            for item in blockers
+            if isinstance(item, dict)
+        ]
+    except json.JSONDecodeError:
+        feedback = []
+    if not feedback:
+        feedback = [f"Evidence integrity gate command failed: {result.stdout}{result.stderr}"]
+    return GateResult(False, feedback)
 
 
 def closeout_track_dir(config: Config, track_id: str) -> Path:
@@ -1300,6 +1386,9 @@ def gate_jr(config: Config, ctx: RoleContext) -> GateResult:
     if ctx.log_file and not has_agent_result_block(ctx.log_file, config.require_agent_result_block):
         feedback.append("Missing required MEASURE_AGENT_RESULT block.")
 
+    evidence_gate = run_evidence_gate(config, ctx.track_id, "completion")
+    feedback.extend(evidence_gate.feedback)
+
     return GateResult(not feedback, feedback)
 
 
@@ -1397,6 +1486,8 @@ def gate_acceptance(config: Config, ctx: RoleContext) -> GateResult:
                 feedback.append(f"{name} failed: {command}")
     if ctx.log_file and not has_agent_result_block(ctx.log_file, config.require_agent_result_block):
         feedback.append("Missing required MEASURE_AGENT_RESULT block.")
+    evidence_gate = run_evidence_gate(config, ctx.track_id, "completion")
+    feedback.extend(evidence_gate.feedback)
     return GateResult(not feedback, feedback)
 
 
@@ -1555,6 +1646,17 @@ def main() -> int:
 
     phases = discover_phases(config, tracks)
     if not phases:
+        failed = False
+        for track_id in tracks:
+            evidence_gate = run_evidence_gate(config, track_id, "completion")
+            if track_requires_evidence_gate(config, track_id):
+                print(f"Evidence gate status: {'PASS' if evidence_gate.passed else 'BLOCKED'} ({track_id})")
+            if not evidence_gate.passed:
+                failed = True
+                for item in evidence_gate.feedback:
+                    print(f"- {item}", file=sys.stderr)
+        if failed:
+            return 1
         print()
         print("All phases are already complete! Nothing to run.")
         return 0
@@ -1566,9 +1668,19 @@ def main() -> int:
     print_plan(config, tracks, phases, args.start)
     sys.stdout.flush()
     if args.dry_run:
+        failed = False
+        for track_id in tracks:
+            stage = "preflight" if any(phase.track_id == track_id for phase in phases) else "completion"
+            evidence_gate = run_evidence_gate(config, track_id, stage)
+            if track_requires_evidence_gate(config, track_id):
+                print(f"Evidence gate status: {'PASS' if evidence_gate.passed else 'BLOCKED'} ({track_id}, {stage})")
+            if not evidence_gate.passed:
+                failed = True
+                for item in evidence_gate.feedback:
+                    print(f"- {item}", file=sys.stderr)
         print("DRY RUN -- no commands will be executed.")
         print(f"Would start from phase {args.start}.")
-        return 0
+        return 1 if failed else 0
 
     startup_dirty = git_status_porcelain(config).strip()
     if startup_dirty:
@@ -1607,6 +1719,13 @@ def main() -> int:
         safe_phase = sanitize_id(phase.heading)
         phase_dir = config.run_root / config.run_id / safe_track / f"phase-{phase.number}-{safe_phase}"
         phase_base_sha = git_head(config)
+
+        evidence_preflight = run_evidence_gate(config, phase.track_id, "preflight")
+        if not evidence_preflight.passed:
+            print(f"ERROR: Evidence gate preflight blocked {phase.track_id}", file=sys.stderr)
+            for item in evidence_preflight.feedback:
+                print(f"- {item}", file=sys.stderr)
+            return 1
 
         print("==============================================================")
         print(f"  Phase {phase.number} of {len(phases)}: {phase.heading}")
