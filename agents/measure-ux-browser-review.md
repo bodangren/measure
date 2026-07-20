@@ -1,7 +1,7 @@
 ---
 description: Performs evidence-backed browser UX review before phase acceptance without modifying the implementation
 mode: subagent
-model: vocengine-coding/ark-code-latest
+model: xiaomi/mimo-v2.5
 temperature: 0.1
 permission:
   edit: allow

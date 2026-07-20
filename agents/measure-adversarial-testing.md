@@ -1,7 +1,7 @@
 ---
 description: Adds risk-based adversarial tests before phase acceptance and routes exposed implementation defects back to Green
 mode: subagent
-model: vocengine-coding/deepseek-v4-pro
+model: deepseek/deepseek-v4-pro
 temperature: 0.1
 permission:
   edit: allow

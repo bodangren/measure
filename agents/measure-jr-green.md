@@ -1,7 +1,7 @@
 ---
 description: Implements Measure Green-phase behavior after Red tests are committed
 mode: subagent
-model: vocengine-coding/glm-5.2
+model: openai/gpt-5.6-terra
 temperature: 0.1
 permission:
   edit: allow
