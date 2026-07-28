@@ -115,3 +115,13 @@ Roll back previous work by track, phase, or task using Git history. Read [refere
 - **Code Styleguides**: [assets/code_styleguides/](assets/code_styleguides/)
 - **Lessons Learned Template**: [assets/lessons-learned.md](assets/lessons-learned.md)
 - **Tech Debt Template**: [assets/tech-debt.md](assets/tech-debt.md)
+
+## Continuous improvement
+
+When Measure's skill guidance or workflow reveals a problem, or an improvement
+is worth requesting, summarize the observed behavior, expected behavior, and a
+minimal reproduction, then create a GitHub issue with:
+
+```bash
+gh issue create --repo bodangren/measure --title "..." --body "..."
+```
