@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install the Measure skill as hard links so every supported agent location
+# receives the same files without maintaining independent copies.
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd -- "$script_dir/.." && pwd)"
+source_dir="$repo_root/skills/measure"
+
+if [[ ! -d "$source_dir" ]]; then
+  printf 'Measure skill source directory is missing: %s\n' "$source_dir" >&2
+  exit 1
+fi
+
+targets=(
+  "$repo_root/claude-skills/measure"
+  "$HOME/.codex/skills/measure"
+  "$HOME/.agents/skills/measure"
+  "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills/measure"
+  "$HOME/.claude/skills/measure"
+)
+
+link_tree() {
+  local target="$1"
+  local source_path relative_path target_path
+
+  while IFS= read -r -d '' source_path; do
+    relative_path="${source_path#"$source_dir"/}"
+    target_path="$target/$relative_path"
+    mkdir -p -- "$(dirname -- "$target_path")"
+
+    if [[ -e "$target_path" && ! -f "$target_path" ]]; then
+      printf 'Cannot replace non-file target: %s\n' "$target_path" >&2
+      return 1
+    fi
+
+    ln -fT -- "$source_path" "$target_path"
+  done < <(find "$source_dir" -type f -print0)
+}
+
+for target in "${targets[@]}"; do
+  link_tree "$target"
+  printf 'Hard-linked Measure skill: %s\n' "$target"
+done

@@ -10,11 +10,15 @@
 
 | Format | Location | Target Runtime |
 |--------|----------|---------------|
-| Claude Skills bundle | `claude-skills/measure/` | Claude Code (Anthropic) |
+| Canonical shared skill | `skills/measure/` | Hard-link source for Codex, Agents, OpenCode, and Claude |
+| Claude Skills bundle | `claude-skills/measure/` | Hard-linked Claude Code distribution |
 | Gemini CLI extension | `codex-skills/measure/` | Gemini CLI (Google) |
 | Templates | `templates/` | Copied to user projects at setup time |
 
-The Claude Skills bundle is a `.skill` zip archive. The Gemini CLI extension uses the extension protocol defined by Gemini CLI.
+Run `bin/install-measure-skill` after cloning or checking out the repository to
+restore the hard-linked skill distribution. The Claude Skills bundle is a
+`.skill` zip archive. The Gemini CLI extension uses the extension protocol
+defined by Gemini CLI.
 
 ## Tooling
 
@@ -34,10 +38,14 @@ Tracks that introduce a new executable CLI must declare their verification tooli
 
 ```
 measure-repo/
+├── skills/measure/           # Canonical shared-skill source
+│   ├── SKILL.md
+│   ├── references/
+│   └── assets/
 ├── templates/           # Canonical templates copied to user projects at setup
 │   ├── workflow.md
 │   └── code_styleguides/
-├── claude-skills/measure/    # Claude Code skill bundle source
+├── claude-skills/measure/    # Hard-linked Claude Code skill bundle
 │   ├── SKILL.md                # Skill manifest (name, description, trigger)
 │   ├── references/             # Step-by-step command workflows
 │   │   ├── setup.md

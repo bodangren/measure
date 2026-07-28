@@ -103,7 +103,7 @@ Measure works across multiple AI agent environments:
 |----------|--------|-------------|
 | **Claude Code** | `.skill` bundle | `claude skills add /path/to/measure.skill` |
 | **Gemini CLI** | Extension | `gemini extensions install <repo-url> --auto-update` |
-| **Shared Skills** | `.agents/skills/` | Copy `claude-skills/measure/` to your shared skills directory |
+| **Shared Skills** | Codex, Agents, OpenCode, Claude | Run `./bin/install-measure-skill` to hard-link Measure into every supported location |
 
 ---
 
@@ -185,11 +185,11 @@ Bundled skill packs that activate automatically when their triggers match:
 To install the bundled skills:
 
 ```bash
-# Claude Code
-cp -r skills/* ~/.claude/skills/
+# Install Measure into Codex, Agents, OpenCode, and Claude as hard links.
+./bin/install-measure-skill
 
-# Shared .agents/skills/ convention (any agent)
-cp -r skills/* ~/.agents/skills/
+# Install other bundled skills where needed.
+cp -r skills/build-graph skills/measure-orchestrator ~/.agents/skills/
 ```
 
 ### Related Projects
@@ -214,8 +214,13 @@ gemini extensions install <repo-url> --auto-update
 
 **Shared skills (any agent):**
 ```bash
-cp -r claude-skills/measure ~/.agents/skills/
+./bin/install-measure-skill
 ```
+
+The installer treats `skills/measure/` as canonical and hard-links its complete
+tree into the repository's Claude bundle plus Codex, Agents, OpenCode, and
+Claude skill locations. Run it again after cloning or checking out the repo,
+because Git does not preserve hard-link relationships.
 
 ### 2. Set Up Your Project
 

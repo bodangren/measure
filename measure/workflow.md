@@ -26,7 +26,7 @@ All tasks follow a strict lifecycle:
 
 4. **Implement (Green Phase):**
    - Make the minimal changes necessary to satisfy the acceptance criteria.
-   - For workflow reference files: edit the relevant section in `claude-skills/measure/references/`.
+   - For workflow reference files: edit the relevant section in `skills/measure/references/`, then run `bin/install-measure-skill` to refresh the hard-linked distribution copies.
    - For template files: edit the relevant file in `claude-skills/measure/assets/` AND `templates/`.
    - Verify the result matches the acceptance criteria.
    - **Graph Maintenance (optional, TS projects only):** If a graph baseline was loaded in `implement.md §3.2` and this task changes signatures, imports/exports, schemas, or JSX hierarchy, run `build-graph update ./graph.db <changed-files>` before commit. See `implement.md §3.3` Per-Task Graph Protocol for the full decision tree.
