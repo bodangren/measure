@@ -118,10 +118,21 @@ Roll back previous work by track, phase, or task using Git history. Read [refere
 
 ## Continuous improvement
 
-When Measure's skill guidance or workflow reveals a problem, or an improvement
-is worth requesting, summarize the observed behavior, expected behavior, and a
-minimal reproduction, then create a GitHub issue with:
+At the end of every Measure workflow, briefly check whether following this
+skill exposed a concrete defect, ambiguous instruction, missing workflow step,
+or repeatable source of friction in Measure itself. Do not invent issues or
+report problems in the user's project as Measure defects.
+
+When a concrete Measure problem is found:
+
+1. Search open and closed issues in `bodangren/measure` for a duplicate.
+2. If no duplicate exists, summarize the observed behavior, expected behavior,
+   and a minimal reproduction, then create the issue. Do not merely recommend
+   that the user submit it.
+3. Report the created issue URL in the final response. If submission fails,
+   state the command error so the improvement is not silently lost.
 
 ```bash
+gh issue list --repo bodangren/measure --state all --search "<keywords>"
 gh issue create --repo bodangren/measure --title "..." --body "..."
 ```
