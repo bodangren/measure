@@ -5,8 +5,37 @@ model: openai/gpt-5.6-sol
 options:
   reasoningEffort: low
 permission:
-  edit: allow
-  bash: allow
+  edit:
+    "*": deny
+    "measure/runs/**": allow
+    "**/measure/runs/**": allow
+  bash:
+    "*": allow
+    "*git add*": deny
+    "*git am*": deny
+    "*git apply*": deny
+    "*git branch -D*": deny
+    "*git checkout*": deny
+    "*git cherry-pick*": deny
+    "*git clean*": deny
+    "*git commit*": deny
+    "*git merge*": deny
+    "*git push*": deny
+    "*git rebase*": deny
+    "*git reset*": deny
+    "*git restore*": deny
+    "*git stash*": deny
+    "*git switch*": deny
+    "*git tag*": deny
+    "*rm *": deny
+    "*mv *": deny
+    "*cp *": deny
+    "*chmod *": deny
+    "*chown *": deny
+    "*sed -i*": deny
+    "*tee *": deny
+    "*truncate *": deny
+    "*>*": deny
   skill: allow
   task:
     "*": deny

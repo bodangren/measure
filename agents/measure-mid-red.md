@@ -1,7 +1,7 @@
 ---
 description: Handles Measure Red-phase work by writing targeted failing tests and plan evidence
 mode: subagent
-model: kimi-for-coding/k3
+model: minimax-cn-coding-plan/MiniMax-M3
 permission:
   edit: allow
   bash: allow
