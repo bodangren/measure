@@ -1,0 +1,14 @@
+Task: Define plan adherence rubric (TDD followed? spec referenced?)
+
+Summary: Added versioned rubric.json defining a deterministic 0-100 plan-adherence score with TDD, specification traceability, plan execution, and verification dimensions. Defined captured-run input/output contracts and zero-credit missing-evidence policy.
+
+Modified files:
+- measure/tracks/agent_performance_benchmarking_20260527/rubric.json
+- measure/tracks/agent_performance_benchmarking_20260527/plan.md
+- measure/tracks.md
+
+Why: Gives Phase 2 scorer a stable, offline contract for evaluating plan adherence without live git or model access.
+
+Verification:
+- jq rubric validity and weight-total assertions passed.
+- Phase 1 bounded suite: 5 passed, 0 failed.
