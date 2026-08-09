@@ -155,7 +155,11 @@ runner exit=0
 
 
 ## Phase 2: Scoring
-- [ ] Task: Define plan adherence rubric (TDD followed? spec referenced?)
+- [~] Task: Define plan adherence rubric (TDD followed? spec referenced?)
+  - **Acceptance criteria (Red):**
+    - Add a versioned, machine-readable rubric definition at `rubric.json` with a 0–100 score, explicit weights, and the output fields `plan_adherence_score`, `tdd_followed`, and `spec_referenced`.
+    - Define deterministic evidence rules for TDD order, specification references, task completion/order, and verification evidence; missing evidence must not receive credit.
+    - Define the captured-run input contract needed by the scorer without requiring live git or model/API access.
 - [ ] Task: Implement rubric scorer reading plan.md and git log
 - [ ] Task: Store results in `measure/benchmarks/<track_id>/<model>.json`
 

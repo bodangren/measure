@@ -33,6 +33,6 @@ This file tracks all major tracks for the Measure project.
   *Link: [./tracks/multi_project_portfolio_view_20260527/](./tracks/multi_project_portfolio_view_20260527/)*
   *CLI command scanning all projects for consolidated health and pending-track overview.*
 
-- [ ] **Track: Agent Performance Benchmarking**
+- [~] **Track: Agent Performance Benchmarking**
   *Link: [./tracks/agent_performance_benchmarking_20260527/](./tracks/agent_performance_benchmarking_20260527/)*
   *Benchmark different AI models on identical tracks to recommend optimal model per task type.*

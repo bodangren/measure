@@ -1,0 +1,126 @@
+{
+  "rubric_id": "plan_adherence",
+  "version": 1,
+  "description": "Deterministic scoring contract for how closely a model run follows the track plan and specification.",
+  "score": {
+    "field": "plan_adherence_score",
+    "minimum": 0,
+    "maximum": 100,
+    "unit": "points",
+    "rounding": "integer",
+    "formula": "sum of awarded dimension points"
+  },
+  "dimensions": [
+    {
+      "id": "tdd",
+      "field": "tdd_followed",
+      "weight": 40,
+      "evidence": [
+        {
+          "id": "red_before_green",
+          "points": 20,
+          "rule": "A captured test or verification commit with test_status=fail precedes the first implementation commit in commits order."
+        },
+        {
+          "id": "green_after_red",
+          "points": 20,
+          "rule": "A captured test or verification commit with test_status=pass follows the implementation commit and records the command or check that passed."
+        }
+      ],
+      "derived": "tdd_followed is true only when both evidence items are present; otherwise it is false."
+    },
+    {
+      "id": "spec_traceability",
+      "field": "spec_referenced",
+      "weight": 20,
+      "evidence": [
+        {
+          "id": "spec_reference",
+          "points": 20,
+          "rule": "At least one implementation or verification commit records a reference to spec.md, the specification, or an acceptance-criteria identifier in its subject, body, or references list."
+        }
+      ],
+      "derived": "spec_referenced is true when spec_reference is present; otherwise it is false."
+    },
+    {
+      "id": "plan_execution",
+      "field": "plan_execution_score",
+      "weight": 30,
+      "evidence": [
+        {
+          "id": "all_tasks_completed",
+          "points": 20,
+          "rule": "Every task in the captured plan snapshot has final status=x; an empty task list receives zero points."
+        },
+        {
+          "id": "task_order_preserved",
+          "points": 10,
+          "rule": "Completed task ordinals are contiguous and appear in the same order as the plan snapshot; missing or reordered ordinals receive zero points."
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "field": "verification_score",
+      "weight": 10,
+      "evidence": [
+        {
+          "id": "tests_recorded",
+          "points": 5,
+          "rule": "The captured verification object contains a non-empty test command and an explicit pass or fail result."
+        },
+        {
+          "id": "lint_recorded",
+          "points": 5,
+          "rule": "The captured verification object contains a non-empty lint command and an explicit error count."
+        }
+      ]
+    }
+  ],
+  "input_contract": {
+    "source": "captured run artifact; the scorer must not shell out to git, access a live repository, or call a model API",
+    "plan": {
+      "required": true,
+      "type": "object",
+      "required_fields": ["tasks"],
+      "tasks": {
+        "type": "array",
+        "item_required_fields": ["ordinal", "status"],
+        "status_values": ["x", "~", ""]
+      }
+    },
+    "commits": {
+      "required": true,
+      "type": "array",
+      "order": "oldest to newest",
+      "item_required_fields": ["sha", "subject", "kind", "test_status"],
+      "kind_values": ["test", "implementation", "verification", "other"],
+      "test_status_values": ["fail", "pass", "not_run"],
+      "optional_fields": ["body", "files", "references", "command"]
+    },
+    "verification": {
+      "required": true,
+      "type": "object",
+      "required_fields": ["test_command", "test_status", "lint_command", "lint_errors"],
+      "test_status_values": ["pass", "fail"],
+      "lint_errors": "non-negative integer"
+    }
+  },
+  "missing_evidence_policy": "Treat missing, empty, unknown, or not_run evidence as false and award zero points for that evidence item. Do not infer adherence from wall time, tool-call count, commit count, or a successful process exit alone.",
+  "output_contract": {
+    "required_fields": [
+      "plan_adherence_score",
+      "tdd_followed",
+      "spec_referenced",
+      "dimension_scores",
+      "evidence"
+    ],
+    "field_types": {
+      "plan_adherence_score": "integer 0..100",
+      "tdd_followed": "boolean",
+      "spec_referenced": "boolean",
+      "dimension_scores": "object keyed by rubric dimension id",
+      "evidence": "object keyed by evidence id with boolean values"
+    }
+  }
+}
