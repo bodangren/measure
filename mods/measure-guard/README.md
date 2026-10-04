@@ -119,6 +119,14 @@ A source file is a code file that is not a test file. Markdown, JSON, YAML, and 
 
 Limits: the rules use file names and command names, so they block some valid work and miss some tests. A failed command is a `Bash` call with an error result. Use `/measure-off` when a rule blocks valid work.
 
+## Commit guard (strict mode)
+
+In `strict` mode, the mod checks each `Bash` call with `git commit`:
+
+- The first line of the message must have the format `<type>(<scope>): <description>`. The mod reads the message from `-m`, `--message`, and a heredoc (`-m "$(cat <<'EOF' ... EOF)"`). If the mod cannot read the message (`-F`, a variable, or the editor), the commit passes with a note.
+- A commit of files outside `measure/` needs a `[~]` task. A commit of `measure/` files only always passes, so the workflow's own plan and checkpoint commits pass. The files of a commit are the staged files, plus the changed files when the command has `-a` or runs `git add` first.
+- After a commit for a `[~]` task, the agent gets a reminder: add the git note, and record the SHA on the task line in `plan.md`.
+
 ## Commands
 
 | Command | What it does |
