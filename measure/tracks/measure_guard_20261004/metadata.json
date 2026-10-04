@@ -3,10 +3,10 @@
   "type": "feature",
   "status": "in-progress",
   "created_at": "2026-10-04T13:24:50Z",
-  "updated_at": "2026-10-04T14:26:03Z",
+  "updated_at": "2026-10-05T00:00:00Z",
   "description": "measure-guard: a Claude Code mod that shows the Measure plan state and guards edits, commits, and closeouts (from mods/measure-guard/DESIGN.md)",
   "estimated_tasks": 47,
-  "actual_tasks": 47,
+  "actual_tasks": 48,
   "deviation_notes": "Design changes from the brief, recorded in spec.md: (1) the active track is the first [~] track whose plan has a [~] task (the brief's 'first [~] track' denied all edits in this repository); (2) the task goes into conversation notes, not the system prompt (prompt cache); (3) /measure-on was added; (4) a SHA with or without backticks; (5) measure/-only commits pass with no [~] task. Task 1.4 replaced the live smoke test with a fixture sync script (no file access in tests). hooks/load.ts was folded into register.tsx (the $ import rule). All 9 manual verification tasks are deferred to the user ([b] deferred:user); the track stays [~] until the user verifies.",
   "sprint": {
     "goal": "Claude Code follows the Measure Task Workflow, because a mod shows the plan state and stops work that the active plan does not cover.",

@@ -190,3 +190,13 @@ _Story ref: spec.md#story-s9_
     - [x] Add the commit guard section to the README
     - [x] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
 - [b] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md) deferred:user
+
+## Phase F1: Fixes after the live load
+_Source: live use on 2026-10-05. The person could not close the `/measure-status` pane with the close mark or `ctrl+x x` in an inline (not fullscreen) terminal._
+
+- [x] Task F1.1: Status pane close — `/measure-status` toggles the pane, and Escape closes it `64da794`
+    - [x] Acceptance criteria: with the pane closed, `/measure-status` opens it with `closeOnEscape: true` and returns `Opened the Measure status pane.`
+    - [x] Acceptance criteria: with the pane open (`$.ui.panes()` lists `measure-status`), `/measure-status` calls `$.ui.close` and returns `Closed the Measure status pane.`
+    - [x] Test (Red): write the tests in `tests/commands.test.ts` and record the failure
+    - [x] Implement (Green): change the `command.run` hook for `measure-status`
+    - [x] Validate & Docs: run validate, the full test suite, and `tsc`; update the README command table
