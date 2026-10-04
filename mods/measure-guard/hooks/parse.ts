@@ -1,6 +1,6 @@
 // Pure parse functions over the text of the Measure files. No `$` here, so
 // the tests call them directly.
-import type { Marker, Mode, Plan, Snapshot, Task, TrackEntry } from '../types'
+import type { Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
 
 const TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
 const TRACK_LINKED = /^- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
@@ -183,4 +183,24 @@ export const taskNote = (snapshot: Snapshot, mode: Mode): string | null => {
       ? 'The plan has no pending task. Close the track, or add a task to plan.md.'
       : `Next task: ${next.text}. Mark it \`[~]\` in plan.md before you change files outside measure/.`,
   ].join('\n')
+}
+
+/** The count of `[b]` tasks in the plan, with or without an owner. */
+export const blockedCount = (plan: Plan): number => {
+  throw new Error('blockedCount: not implemented')
+}
+
+/** The phase and task numbers of the `[~]` task, else of the first open task. */
+export const position = (plan: Plan): Position => {
+  throw new Error('position: not implemented')
+}
+
+/**
+ * The band text: `Measure · <track> · Phase p/P · Task t/T [~] <task>`, the
+ * `[b]` count, and a warning when 2 or more tracks have `[~]`. Variants for a
+ * parse error, no active track, no `[~]` task, and a plan with all tasks closed.
+ * Null when the project has no measure/ folder.
+ */
+export const bandLine = (snapshot: Snapshot): string | null => {
+  throw new Error('bandLine: not implemented')
 }

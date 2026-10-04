@@ -42,6 +42,19 @@ export type Phase = {
 
 export type Plan = { phases: Phase[] }
 
+/**
+ * Where the plan stands: the 1-based phase and task numbers of the `[~]` task
+ * (else the next open task), and the counts they are out of.
+ */
+export type Position = {
+  phase: number
+  phases: number
+  task: number
+  tasks: number
+  /** The `[~]` task, else the first open task; null when all tasks are closed. */
+  current: Task | null
+}
+
 /** The active track and its parsed plan. */
 export type ActiveTrack = {
   entry: TrackEntry
