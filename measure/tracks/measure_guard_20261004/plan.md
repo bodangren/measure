@@ -38,9 +38,9 @@ _Story ref: spec.md#story-s1_
     - [x] After an `Edit`, `Write`, or `NotebookEdit` call on a Measure file, read the files again and add the task note to the result `context` when the key changed
     - [x] After `session.compact`, clear `notedKey`
     - [x] Run the tests to Green
-- [~] Task 1.6: Validate & Docs
-    - [ ] Run `claude plugin validate` and the full test suite
-    - [ ] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
+- [x] Task 1.6: Validate & Docs `80bd0a2`
+    - [x] Run `claude plugin validate` and the full test suite
+    - [x] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
 - [ ] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md)
 
 ## Phase S2: Progress band above the prompt
