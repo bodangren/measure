@@ -100,7 +100,7 @@ _Story ref: spec.md#story-s4_
     - [x] Add the no-folder section to the README
 - [b] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md) deferred:user
 
-## Phase S5: Status and bypass commands
+## Phase S5: Status and bypass commands [checkpoint: f7747a3]
 _Story ref: spec.md#story-s5_
 
 - [x] Task 5.1: Contract — commands and bypass state `a5650cb`
@@ -121,7 +121,7 @@ _Story ref: spec.md#story-s5_
 ## Phase S6: Closeout guard
 _Story ref: spec.md#story-s6_
 
-- [ ] Task 6.1: Contract — closeout decision
+- [~] Task 6.1: Contract — closeout decision
     - [ ] Lock the S6 acceptance criteria
     - [ ] Declare `applyEdit(toolInput, currentText)`, which gives the new file text for `Edit` and `Write`
     - [ ] Declare `closeoutDecision(state, path, before, after)` for `tracks.md` (a track changes to `[x]`) and `plan.md` (a task in phase N+1 changes to `[~]`)
