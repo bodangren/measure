@@ -82,6 +82,18 @@ Before the user answers, in `guard` and `strict` mode, the mod denies an edit in
 
 Outside a git repository, the mod does nothing.
 
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `/measure-status` | Opens a pane with all tracks, the phases of the active plan (closed tasks and checkpoints), the `[b]` tasks, and the guard state. |
+| `/measure-off` | Turns off all guards for this session. The band shows `guards off for this session`. |
+| `/measure-off repo` | Turns off all guards for this repository, also in later sessions. The mod keeps the choice in `$.store`. |
+| `/measure-on` | Turns on the guards for this session. |
+| `/measure-on repo` | Turns on the guards and removes the repository choice from `$.store`. |
+
+`/measure-off` is the bypass when a guard blocks valid work. Each deny text names it.
+
 ## Parse rules
 
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
