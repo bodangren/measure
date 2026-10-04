@@ -149,9 +149,9 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.3: Implement (Green) — end-of-turn check `4decfc1`
     - [x] Take the snapshot at turn start. Compare it at `classic.Stop`
     - [x] Add the mode branches. In `strict`, return `{ block: reason }`. Set the block count to 0 on a new user prompt
-- [~] Task 7.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the end-of-turn section to the README
+- [x] Task 7.4: Validate & Docs `bcd17b4`
+    - [x] Run validate and the full test suite
+    - [x] Add the end-of-turn section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md)
 
 ## Phase S8: TDD guard
