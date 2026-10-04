@@ -1,6 +1,6 @@
 // Pure guard decisions. Each takes a GuardContext and the call, and returns
 // null to allow it or { deny } with the text the agent reads.
-import type { ClosingTrack, Decision, GuardContext, SetupChoice, Snapshot, TrackClose, TrackEntry } from '../types'
+import type { ClosingTrack, Decision, GuardContext, Mode, Plan, SetupChoice, Snapshot, StopAction, TrackClose, TrackEntry } from '../types'
 import { currentTask, isOpen, joinPath, nextTask, parsePlan, parseTracks, tasksOf } from './parse'
 
 /** The text every deny ends with: the bypass. */
@@ -152,4 +152,42 @@ export const phaseStartDecision = (context: GuardContext, before: string, after:
     }
   }
   return null
+}
+
+/** The most times strict mode keeps one turn open. */
+export const MAX_BLOCKS = 2
+
+/** The lines of `git status --porcelain`, without empty lines. */
+export const statusLinesOf = (porcelain: string): string[] => {
+  throw new Error('statusLinesOf: not implemented')
+}
+
+/**
+ * The paths (relative to the repository root) of the status lines that are
+ * new or changed since the turn start, outside measure/.
+ */
+export const changedDuringTurn = (start: readonly string[], end: readonly string[]): string[] => {
+  throw new Error('changedDuringTurn: not implemented')
+}
+
+/** The texts of the `[x]` tasks with no SHA. */
+export const unshaTasks = (plan: Plan): string[] => {
+  throw new Error('unshaTasks: not implemented')
+}
+
+/**
+ * The end-of-turn problems: a `[x]` task with no SHA that was not one at the
+ * turn start, and files changed during the turn while no task has `[~]`.
+ */
+export const turnProblems = (snapshot: Snapshot, changed: readonly string[], knownUnsha: readonly string[]): string[] => {
+  throw new Error('turnProblems: not implemented')
+}
+
+/**
+ * What to do at the turn end: strict mode keeps the turn open with the
+ * problems as the reason, at most MAX_BLOCKS times; then, and in the other
+ * modes, the mod reports the problems.
+ */
+export const stopAction = (mode: Mode, problems: readonly string[], blocks: number): StopAction => {
+  throw new Error('stopAction: not implemented')
 }

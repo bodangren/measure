@@ -107,6 +107,19 @@ export type ClosingTrack = { entry: TrackEntry; plan: Plan | null }
 /** The closeout guard's answer for tracks.md: the decision, and the `[b]` list on an allow. */
 export type TrackClose = { decision: Decision; note: string | null }
 
+/** What the end-of-turn check keeps from the start of a user turn. */
+export type TurnState = {
+  /** `git status --porcelain` lines at the turn start. */
+  status: string[]
+  /** The texts of the `[x]` tasks with no SHA at the turn start (old ones are not reported). */
+  unsha: string[]
+  /** How many times strict mode kept this turn open. */
+  blocks: number
+}
+
+/** What the end-of-turn check does: keep the turn open (strict), or report. */
+export type StopAction = { block: string | null; report: boolean }
+
 declare module 'claude-code' {
   interface PluginState {
     'measure-guard': {
@@ -117,6 +130,12 @@ declare module 'claude-code' {
       setupChoice: SetupChoice | null
       /** The bypass for this session; `repo` also stands in $.store. */
       guardsOff: GuardsOff
+      /** The end-of-turn state of the running user turn. */
+      turn: TurnState | null
+      /** The problems the last end-of-turn check found; the band shows them. */
+      problems: string[]
+      /** The reminder for the next prompt (guard and strict modes). */
+      reminder: string | null
     }
   }
 }
