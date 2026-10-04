@@ -1,0 +1,16 @@
+Phase verification report: Phase S6: Closeout guard
+Changed files since f7747a3:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/parse.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/band.test.ts
+  mods/measure-guard/test/closeout.test.ts
+  mods/measure-guard/test/commands.test.ts
+  mods/measure-guard/test/edit-guard.test.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 58 pass, 0 fail; tsc passed.
+Acceptance criteria S6: AC1 (close with open tasks denied, list in the deny), AC2 (close with all closed passes, [b] list to the agent), AC3 (phase N+1 start without a checkpoint denied; passes after it), AC4 (advise passes) - each covered by a passing test.
+Steps for the deferred manual check: 1. Load the mod. 2. Ask the agent to mark a track with open tasks [x] in tracks.md, and read the deny. 3. Ask the agent to start a task in the next phase before the checkpoint, and read the deny.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
