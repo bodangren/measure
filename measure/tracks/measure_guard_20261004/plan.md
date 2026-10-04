@@ -128,10 +128,10 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.2: Test (Red) — closeout guard `c1143db`
     - [x] Write tests: deny `[x]` with open tasks (the text lists them), allow with `[b]` + `deferred:<owner>` (the text lists the `[b]` tasks), deny `[b]` with no owner, deny a phase start with no checkpoint, allow in `advise`, a `Write` that replaces the full file
     - [x] Run the tests and record the failure
-- [~] Task 6.3: Implement (Green) — closeout guard
-    - [ ] Hook edits to `tracks.md` and to each linked `plan.md`. Find the plan of the closed track through its link (the closed track can be different from the active track)
-    - [ ] Send the `[b]` list to the agent through the channel from the `plugin-authoring` skill
-- [ ] Task 6.4: Validate & Docs
+- [x] Task 6.3: Implement (Green) — closeout guard `4f0b265`
+    - [x] Hook edits to `tracks.md` and to each linked `plan.md`. Find the plan of the closed track through its link (the closed track can be different from the active track)
+    - [x] Send the `[b]` list to the agent through the channel from the `plugin-authoring` skill
+- [~] Task 6.4: Validate & Docs
     - [ ] Run validate and the full test suite
     - [ ] Add the closeout section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md)
