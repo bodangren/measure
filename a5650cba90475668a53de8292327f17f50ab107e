@@ -1,0 +1,4 @@
+Task 5.1: Contract - commands and bypass state.
+Locked S5 acceptance criteria: (1) /measure-status opens a pane with all tracks, the active plan's phase and task progress, and the [b] tasks; (2) /measure-off: all guards allow all calls for the session, and the band says the guards are off; (3) a new session after /measure-off has the guards on; (4) /measure-off repo keeps the choice in $.store for new sessions in the same repository; (5) /measure-on and /measure-on repo turn the guards on again, and the repo form removes the $.store value.
+Changes: types/index.d.ts (GuardsOff; GuardContext.guardsOff; PluginState guardsOff), hooks/parse.ts (bandLine takes guardsOff; statusLines stub), hooks/guards.ts (offKey 'off:<root>'), hooks/register.tsx (guardContext reads guardsOff). Commands: measure-status, measure-off [repo], measure-on [repo]; pane id measure-status.
+Checks: tsc, validate, and the existing 41 tests pass.
