@@ -79,7 +79,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.4: Validate & Docs `b47f8b5`
     - [x] Run validate and the full test suite
     - [x] Add the edit guard section and the Bash limit to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md) deferred:user
 
 ## Phase S4: Projects with no measure folder
 _Story ref: spec.md#story-s4_
