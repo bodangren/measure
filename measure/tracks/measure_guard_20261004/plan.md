@@ -154,7 +154,7 @@ _Story ref: spec.md#story-s7_
     - [x] Add the end-of-turn section to the README
 - [b] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md) deferred:user
 
-## Phase S8: TDD guard
+## Phase S8: TDD guard [checkpoint: 2d881ea]
 _Story ref: spec.md#story-s8_
 
 - [x] Task 8.1: Contract — Red state `ebc1c78`
@@ -175,7 +175,7 @@ _Story ref: spec.md#story-s8_
 ## Phase S9: Commit guard
 _Story ref: spec.md#story-s9_
 
-- [ ] Task 9.1: Contract — commit decision
+- [~] Task 9.1: Contract — commit decision
     - [ ] Lock the S9 acceptance criteria
     - [ ] Declare `parseCommitCommand(cmd)` for `-m "..."`, `-m '...'`, a heredoc `$(cat <<'EOF' ...)`, `-F <file>`, and `-a`
     - [ ] Declare `commitDecision(state, message, stagedFiles)` with the format `^[a-z]+\([^)]+\): .+`
