@@ -113,9 +113,9 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.3: Implement (Green) — commands `3fbbbdc`
     - [x] Register the 3 commands and the status pane
     - [x] Make every guard check `guardsOff` first. Show "guards off" in the band
-- [~] Task 5.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the commands section to the README
+- [x] Task 5.4: Validate & Docs `8f59a1c`
+    - [x] Run validate and the full test suite
+    - [x] Add the commands section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S5: Status and bypass commands' (Protocol in workflow.md)
 
 ## Phase S6: Closeout guard
