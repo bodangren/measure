@@ -81,7 +81,7 @@ _Story ref: spec.md#story-s3_
     - [x] Add the edit guard section and the Bash limit to the README
 - [b] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md) deferred:user
 
-## Phase S4: Projects with no measure folder
+## Phase S4: Projects with no measure folder [checkpoint: 0e23f31]
 _Story ref: spec.md#story-s4_
 
 - [x] Task 4.1: Contract — setup prompt state `0925bbc`
@@ -103,7 +103,7 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: Status and bypass commands
 _Story ref: spec.md#story-s5_
 
-- [ ] Task 5.1: Contract — commands and bypass state
+- [~] Task 5.1: Contract — commands and bypass state
     - [ ] Lock the S5 acceptance criteria
     - [ ] Add `$.state.guardsOff` (`null | session | repo`) and a `$.store` key for each repository root
     - [ ] Declare `/measure-status`, `/measure-off [repo]`, `/measure-on [repo]`, and `statusPane(state)`
