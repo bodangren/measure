@@ -44,6 +44,22 @@ The active track and the current task change often, so the mod sends them as not
 - When an `Edit`, `Write`, or `NotebookEdit` call in `measure/`, or a `Bash` call, changes the task, the note rides on that tool result.
 - After a compaction, the next prompt gets the note again.
 
+## Progress band
+
+The band above the prompt shows the position in the active plan:
+
+```text
+Measure · <track> · Phase 2/4 · Task 3/7 [~] <task> · [b] 2 · 2 tracks in progress
+```
+
+- `Phase p/P` is the phase of the `[~]` task. If no task has `[~]`, it is the phase of the first open task, and the band adds `no task in progress`.
+- `Task t/T` counts the top-level tasks in that phase.
+- `[b] n` is the count of `[b]` tasks in the plan.
+- `n tracks in progress` shows when 2 or more tracks have `[~]`.
+- If the mod cannot read the Measure files, the band shows the error in yellow, and the guards allow all calls.
+
+The band reads the plan again at each prompt and after each `Edit`, `Write`, or `NotebookEdit` call in `measure/` and each `Bash` call. An edit in an outside editor shows at the next prompt.
+
 ## Parse rules
 
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
