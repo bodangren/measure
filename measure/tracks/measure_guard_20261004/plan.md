@@ -84,11 +84,11 @@ _Story ref: spec.md#story-s3_
 ## Phase S4: Projects with no measure folder
 _Story ref: spec.md#story-s4_
 
-- [~] Task 4.1: Contract — setup prompt state
-    - [ ] Lock the S4 acceptance criteria
-    - [ ] Add `$.state.setupChoice` (`pending | off | setup`) and the git-repository check (`git rev-parse --show-toplevel`)
-    - [ ] Write the deny text that tells the agent to ask the user the same question
-- [ ] Task 4.2: Test (Red) — no measure folder
+- [x] Task 4.1: Contract — setup prompt state `0925bbc`
+    - [x] Lock the S4 acceptance criteria
+    - [x] Add `$.state.setupChoice` (`pending | off | setup`) and the git-repository check (`git rev-parse --show-toplevel`)
+    - [x] Write the deny text that tells the agent to ask the user the same question
+- [~] Task 4.2: Test (Red) — no measure folder
     - [ ] Write tests: band with 2 buttons, deny before a choice in `guard`, no deny in `advise`, pass after `[ Turn off for session ]`, prompt sent after `[ Set up Measure ]`, no band outside git
     - [ ] Run the tests and record the failure
 - [ ] Task 4.3: Implement (Green) — no measure folder
