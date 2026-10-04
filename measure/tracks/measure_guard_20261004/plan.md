@@ -121,11 +121,11 @@ _Story ref: spec.md#story-s5_
 ## Phase S6: Closeout guard
 _Story ref: spec.md#story-s6_
 
-- [~] Task 6.1: Contract — closeout decision
-    - [ ] Lock the S6 acceptance criteria
-    - [ ] Declare `applyEdit(toolInput, currentText)`, which gives the new file text for `Edit` and `Write`
-    - [ ] Declare `closeoutDecision(state, path, before, after)` for `tracks.md` (a track changes to `[x]`) and `plan.md` (a task in phase N+1 changes to `[~]`)
-- [ ] Task 6.2: Test (Red) — closeout guard
+- [x] Task 6.1: Contract — closeout decision `e76321d`
+    - [x] Lock the S6 acceptance criteria
+    - [x] Declare `applyEdit(toolInput, currentText)`, which gives the new file text for `Edit` and `Write`
+    - [x] Declare `closeoutDecision(state, path, before, after)` for `tracks.md` (a track changes to `[x]`) and `plan.md` (a task in phase N+1 changes to `[~]`)
+- [~] Task 6.2: Test (Red) — closeout guard
     - [ ] Write tests: deny `[x]` with open tasks (the text lists them), allow with `[b]` + `deferred:<owner>` (the text lists the `[b]` tasks), deny `[b]` with no owner, deny a phase start with no checkpoint, allow in `advise`, a `Write` that replaces the full file
     - [ ] Run the tests and record the failure
 - [ ] Task 6.3: Implement (Green) — closeout guard
