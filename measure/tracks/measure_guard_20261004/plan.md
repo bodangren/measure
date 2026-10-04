@@ -70,10 +70,10 @@ _Story ref: spec.md#story-s3_
     - [x] Lock the S3 acceptance criteria
     - [x] Declare `editDecision(state, path)`, which returns allow or deny with text. Paths resolve relative to the project root
     - [x] Write the deny text: one next action (mark the next task `[~]`, or create a track) and `/measure-off` as the bypass
-- [~] Task 3.2: Test (Red) — edit guard
-    - [ ] Write tests: deny outside `measure/` with no `[~]` task, deny with no active track, allow inside `measure/`, allow with a `[~]` task, allow in `advise`, allow on `parseError`
-    - [ ] Run the tests and record the failure
-- [ ] Task 3.3: Implement (Green) — edit guard
+- [x] Task 3.2: Test (Red) — edit guard `9574e90`
+    - [x] Write tests: deny outside `measure/` with no `[~]` task, deny with no active track, allow inside `measure/`, allow with a `[~]` task, allow in `advise`, allow on `parseError`
+    - [x] Run the tests and record the failure
+- [~] Task 3.3: Implement (Green) — edit guard
     - [ ] Hook `tool.call` for `Edit`, `Write`, and `NotebookEdit`, and apply `editDecision`
     - [ ] Run the tests to Green
 - [ ] Task 3.4: Validate & Docs
