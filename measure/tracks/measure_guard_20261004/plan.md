@@ -76,9 +76,9 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.3: Implement (Green) — edit guard `efeace3`
     - [x] Hook `tool.call` for `Edit`, `Write`, and `NotebookEdit`, and apply `editDecision`
     - [x] Run the tests to Green
-- [~] Task 3.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the edit guard section and the Bash limit to the README
+- [x] Task 3.4: Validate & Docs `b47f8b5`
+    - [x] Run validate and the full test suite
+    - [x] Add the edit guard section and the Bash limit to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md)
 
 ## Phase S4: Projects with no measure folder
