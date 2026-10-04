@@ -1,0 +1,17 @@
+Verification report: measure-guard Phases S1-S9 (deferred:user) and Phase F1
+Date: 2026-10-05. Session loaded with: claude --continue --plugin-dir ~/Desktop/measure/mods/measure-guard
+Mode: guard (no pluginConfigs entry, so the default).
+
+Checked by the agent in the live session:
+- S1: the prompt and tool-call notes name the active track and the task; "Mode: guard" with no config.
+- S3: Edit of mods/measure-guard/README.md with no [~] task was denied. The deny text gives one action and names /measure-off. Edits inside measure/ passed.
+- S7: a Bash-created file outside measure/ (S7-LIVE-CHECK.md) was reported at the end of the turn, and the next prompt carried the reminder. The file was deleted.
+
+Checked by the user, confirmed with "Yes":
+- S2: the band shows the track and the [b] count.
+- S4: in ~/Desktop/browser-harness (git, no measure/), the band asks the setup question; "Turn off for session" hides it.
+- S5: /measure-off shows "guards off for this session"; /measure-on turns the guards on.
+- F1: /measure-status opens and closes the pane; Escape closes the pane.
+
+Not checked live (the user did not ask for strict mode): S7 strict block, S8 TDD guard, S9 commit guard. The automated suite covers them: claude plugin test -> 87 pass, 0 fail.
+S6: the track closeout edit of tracks.md exercises the closeout guard.
