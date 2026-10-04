@@ -63,7 +63,7 @@ _Story ref: spec.md#story-s2_
     - [x] Add the band section to the README
 - [b] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md) deferred:user
 
-## Phase S3: Edit guard
+## Phase S3: Edit guard [checkpoint: b4fddf2]
 _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Contract — edit decision `d2eabf9`
@@ -84,7 +84,7 @@ _Story ref: spec.md#story-s3_
 ## Phase S4: Projects with no measure folder
 _Story ref: spec.md#story-s4_
 
-- [ ] Task 4.1: Contract — setup prompt state
+- [~] Task 4.1: Contract — setup prompt state
     - [ ] Lock the S4 acceptance criteria
     - [ ] Add `$.state.setupChoice` (`pending | off | setup`) and the git-repository check (`git rev-parse --show-toplevel`)
     - [ ] Write the deny text that tells the agent to ask the user the same question
