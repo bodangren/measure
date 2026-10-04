@@ -1,6 +1,6 @@
 // Pure guard decisions. Each takes a GuardContext and the call, and returns
 // null to allow it or { deny } with the text the agent reads.
-import type { Decision, GuardContext, SetupChoice, Snapshot } from '../types'
+import type { ClosingTrack, Decision, GuardContext, SetupChoice, Snapshot, TrackClose, TrackEntry } from '../types'
 import { currentTask, joinPath, nextTask } from './parse'
 
 /** The text every deny ends with: the bypass. */
@@ -68,3 +68,35 @@ export const SETUP_DENY = `measure-guard: this git repository has no measure/ fo
 
 /** The $.store key that keeps /measure-off repo for a repository root. */
 export const offKey = (root: string): string => `off:${root}`
+
+/** The tool inputs that write a whole file or replace a part of one. */
+export type FileEdit =
+  | { tool: 'Edit'; old_string: string; new_string: string; replace_all?: boolean }
+  | { tool: 'Write'; content: string }
+
+/** The file text after the edit; null when the edit does not apply. */
+export const applyEdit = (edit: FileEdit, text: string): string | null => {
+  throw new Error('applyEdit: not implemented')
+}
+
+/** The tracks that are not `[x]` in `before` and are `[x]` in `after`. */
+export const closedTracks = (before: string, after: string): TrackEntry[] => {
+  throw new Error('closedTracks: not implemented')
+}
+
+/**
+ * The closeout guard for tracks.md (guard and strict): denies a track change
+ * to `[x]` while its plan has an open task (`[ ]`, `[~]`, or `[b]` with no
+ * owner). On an allow, the note lists all `[b]` tasks of the closed plans.
+ */
+export const trackCloseDecision = (context: GuardContext, closing: readonly ClosingTrack[]): TrackClose => {
+  throw new Error('trackCloseDecision: not implemented')
+}
+
+/**
+ * The closeout guard for plan.md (guard and strict): denies a task change to
+ * `[~]` in phase N+1 while the heading of phase N has no `[checkpoint: <sha>]`.
+ */
+export const phaseStartDecision = (context: GuardContext, before: string, after: string): Decision => {
+  throw new Error('phaseStartDecision: not implemented')
+}

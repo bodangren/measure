@@ -99,6 +99,12 @@ export type GuardContext = {
 /** A guard's answer: null allows the call; `deny` refuses it with that text. */
 export type Decision = { deny: string } | null
 
+/** A track that an edit of tracks.md changes to `[x]`, with its plan (null: not found). */
+export type ClosingTrack = { entry: TrackEntry; plan: Plan | null }
+
+/** The closeout guard's answer for tracks.md: the decision, and the `[b]` list on an allow. */
+export type TrackClose = { decision: Decision; note: string | null }
+
 declare module 'claude-code' {
   interface PluginState {
     'measure-guard': {
