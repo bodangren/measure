@@ -46,11 +46,11 @@ _Story ref: spec.md#story-s1_
 ## Phase S2: Progress band above the prompt
 _Story ref: spec.md#story-s2_
 
-- [~] Task 2.1: Contract — band model
-    - [ ] Lock the S2 acceptance criteria
-    - [ ] Declare `bandText(state)`. The current phase is the phase with the `[~]` task, else the first phase with an open task. `Task t/T` counts top-level tasks in the current phase
-    - [ ] Define the band text for a parse error, for an active track with no `[~]` task, and for the warning when 2 or more tracks have `[~]`
-- [ ] Task 2.2: Test (Red) — band
+- [x] Task 2.1: Contract — band model `1b61020`
+    - [x] Lock the S2 acceptance criteria
+    - [x] Declare `bandText(state)`. The current phase is the phase with the `[~]` task, else the first phase with an open task. `Task t/T` counts top-level tasks in the current phase
+    - [x] Define the band text for a parse error, for an active track with no `[~]` task, and for the warning when 2 or more tracks have `[~]`
+- [~] Task 2.2: Test (Red) — band
     - [ ] Write tests for mid-plan text, the `[b]` count, the 2-or-more `[~]` tracks warning, no `[~]` task, all tasks done, and a parse error
     - [ ] Write a test that a change to `plan.md` or `tracks.md` updates `$.state`
     - [ ] Run the tests and record the failure
