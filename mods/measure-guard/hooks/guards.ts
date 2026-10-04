@@ -65,3 +65,6 @@ export const setupBandText = (choice: SetupChoice | null): string | null => {
 
 /** The deny text while the setup question has no answer. */
 export const SETUP_DENY = `measure-guard: this git repository has no measure/ folder. Ask the user: "Do you want to set up Measure, or turn off measure-guard for this session?" The user answers with the buttons [ Set up Measure ] or [ Turn off for session ] above the prompt. Do the edit after the user answers. ${BYPASS}`
+
+/** The $.store key that keeps /measure-off repo for a repository root. */
+export const offKey = (root: string): string => `off:${root}`

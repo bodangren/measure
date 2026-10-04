@@ -18,6 +18,7 @@ import { SETUP_PROMPT, editDecision, needsSetup, setupBandText } from './guards'
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
 const SETUP = { plugin: 'measure-guard', key: 'setupChoice' } as const
+const OFF = { plugin: 'measure-guard', key: 'guardsOff' } as const
 const RULE_ID = 'measure-guard:rule'
 
 /** The plan file of a track folder: the index's plan link, else plan.md. */
@@ -99,6 +100,7 @@ const guardContext = async ($: EngineInterface, mode: Mode): Promise<GuardContex
   snapshot: await current($),
   mode,
   setupChoice: (await $.state.get(SETUP)).value ?? null,
+  guardsOff: (await $.state.get(OFF)).value ?? null,
 })
 
 /** The task note when the track or the task changed since the last note. */

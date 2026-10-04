@@ -85,11 +85,15 @@ export type Snapshot = {
  */
 export type SetupChoice = 'pending' | 'off' | 'setup'
 
-/** What a guard reads: the snapshot, the mode, and the setup answer. */
+/** The bypass: null (guards on), `session` (/measure-off), or `repo` (/measure-off repo). */
+export type GuardsOff = 'session' | 'repo' | null
+
+/** What a guard reads: the snapshot, the mode, the setup answer, and the bypass. */
 export type GuardContext = {
   snapshot: Snapshot | null
   mode: Mode
   setupChoice: SetupChoice | null
+  guardsOff: GuardsOff
 }
 
 /** A guard's answer: null allows the call; `deny` refuses it with that text. */
@@ -103,6 +107,8 @@ declare module 'claude-code' {
       notedKey: string | null
       /** The answer to the setup question; null where no question is asked. */
       setupChoice: SetupChoice | null
+      /** The bypass for this session; `repo` also stands in $.store. */
+      guardsOff: GuardsOff
     }
   }
 }

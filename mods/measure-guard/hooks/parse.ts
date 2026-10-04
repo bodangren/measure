@@ -1,6 +1,6 @@
 // Pure parse functions over the text of the Measure files. No `$` here, so
 // the tests call them directly.
-import type { Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
+import type { GuardsOff, Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
 
 const TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
 const TRACK_LINKED = /^- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
@@ -204,7 +204,7 @@ export const position = (plan: Plan): Position => {
  * parse error, no active track, no `[~]` task, and a plan with all tasks closed.
  * Null when the project has no measure/ folder.
  */
-export const bandLine = (snapshot: Snapshot): string | null => {
+export const bandLine = (snapshot: Snapshot, guardsOff: GuardsOff = null): string | null => {
   if (!snapshot.hasMeasure) return null
   if (snapshot.parseError !== null) {
     return `Measure · cannot read the Measure files: ${snapshot.parseError} · guards allow all calls`
@@ -227,4 +227,13 @@ export const bandLine = (snapshot: Snapshot): string | null => {
   }
   if (snapshot.inProgressCount >= 2) parts.push(`${snapshot.inProgressCount} tracks in progress`)
   return parts.join(' · ')
+}
+
+/**
+ * The lines of the /measure-status pane: every track with its marker, the
+ * phases of the active plan with their closed counts and checkpoints, the
+ * `[b]` tasks, and the bypass state.
+ */
+export const statusLines = (snapshot: Snapshot | null, guardsOff: GuardsOff): string[] => {
+  throw new Error('statusLines: not implemented')
 }
