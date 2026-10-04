@@ -1,0 +1,5 @@
+Task 2.1: Contract - band model.
+Locked S2 acceptance criteria: (1) band text 'Measure · <track> · Phase p/P · Task t/T [~] <task>'; (2) the [b] count; (3) a warning when 2 or more tracks have [~]; (4) an agent edit of plan.md or tracks.md updates the band; (5) a parse error shows in the band and the guards fail open.
+Definitions: the current phase is the phase of the [~] task, else of the first open task; Task t/T counts top-level tasks in that phase. Variants: parse error, no active track, no [~] task (shows the next task and 'no task in progress'), all tasks closed.
+Changes: types/index.d.ts (Position), hooks/parse.ts (blockedCount, position, bandLine stubs).
+Checks: tsc and claude plugin validate passed.
