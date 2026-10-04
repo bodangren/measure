@@ -1,6 +1,7 @@
 import type { EngineInterface, Register, ToolCallInput } from 'claude-code'
 import type { Mode, Plan, Snapshot } from '../types'
 import {
+  bandLine,
   dirname,
   findLink,
   joinPath,
@@ -136,6 +137,23 @@ export const register: Register = (on, options) => {
     if (ran.deny !== undefined || !touchesPlan) return ran
     const note = await pendingNote($, await refresh($), mode)
     return note === null ? ran : { ...ran, context: [...(ran.context ?? []), note] }
+  })
+
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    if (e.props.hasSurvey) return next(e)
+    const snapshot = (await $.state.get(SNAPSHOT)).value
+    const line = snapshot === undefined || snapshot === null ? null : bandLine(snapshot)
+    if (line === null) return next(e)
+    const { Box, Text } = $.ui.resolve(e)
+    const isError = snapshot?.parseError !== null
+
+    return (
+      <Box>
+        <Text dimColor={!isError} color={isError ? 'yellow' : undefined} wrap="truncate-end">
+          {line}
+        </Text>
+      </Box>
+    )
   })
 
   on('session.compact', async ($, e, next) => {

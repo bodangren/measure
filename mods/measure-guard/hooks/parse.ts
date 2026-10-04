@@ -186,13 +186,16 @@ export const taskNote = (snapshot: Snapshot, mode: Mode): string | null => {
 }
 
 /** The count of `[b]` tasks in the plan, with or without an owner. */
-export const blockedCount = (plan: Plan): number => {
-  throw new Error('blockedCount: not implemented')
-}
+export const blockedCount = (plan: Plan): number =>
+  tasksOf(plan).filter(task => task.marker === 'b').length
 
 /** The phase and task numbers of the `[~]` task, else of the first open task. */
 export const position = (plan: Plan): Position => {
-  throw new Error('position: not implemented')
+  const all = plan.phases.flatMap((phase, p) => phase.tasks.map((task, t) => ({ task, p, t })))
+  const at = all.find(one => one.task.marker === '~') ?? all.find(one => isOpen(one.task))
+  const phases = plan.phases.length
+  if (at === undefined) return { phase: phases, phases, task: 0, tasks: 0, current: null }
+  return { phase: at.p + 1, phases, task: at.t + 1, tasks: plan.phases[at.p]?.tasks.length ?? 0, current: at.task }
 }
 
 /**
@@ -202,5 +205,26 @@ export const position = (plan: Plan): Position => {
  * Null when the project has no measure/ folder.
  */
 export const bandLine = (snapshot: Snapshot): string | null => {
-  throw new Error('bandLine: not implemented')
+  if (!snapshot.hasMeasure) return null
+  if (snapshot.parseError !== null) {
+    return `Measure · cannot read the Measure files: ${snapshot.parseError} · guards allow all calls`
+  }
+  const parts = ['Measure']
+  const { active } = snapshot
+  if (active === null) {
+    parts.push('no track in progress')
+  } else {
+    parts.push(active.entry.name)
+    const at = position(active.plan)
+    if (at.current === null) {
+      parts.push('all tasks closed')
+    } else {
+      parts.push(`Phase ${at.phase}/${at.phases}`, `Task ${at.task}/${at.tasks} [${at.current.marker}] ${at.current.text}`)
+      if (at.current.marker !== '~') parts.push('no task in progress')
+    }
+    const blocked = blockedCount(active.plan)
+    if (blocked > 0) parts.push(`[b] ${blocked}`)
+  }
+  if (snapshot.inProgressCount >= 2) parts.push(`${snapshot.inProgressCount} tracks in progress`)
+  return parts.join(' · ')
 }
