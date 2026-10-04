@@ -7,11 +7,11 @@
 ## Phase S1: Plan context in every prompt
 _Story ref: spec.md#story-s1_
 
-- [ ] Task 1.1: Declare the mod in the tech stack (before any test)
-    - [ ] Add a Tooling Exceptions row to `measure/tech-stack.md` for `measure_guard_20261004`: TypeScript mod, `claude plugin test` (`*.test.ts`), `claude plugin validate`
-    - [ ] Add a Distribution Formats row for `mods/measure-guard/` (Claude Code mod, loaded with `--plugin-dir`)
-    - [ ] Add the mod to the Distribution list in `measure/product.md`
-- [ ] Task 1.2: Scaffold the mod
+- [x] Task 1.1: Declare the mod in the tech stack (before any test) `b3f3056`
+    - [x] Add a Tooling Exceptions row to `measure/tech-stack.md` for `measure_guard_20261004`: TypeScript mod, `claude plugin test` (`*.test.ts`), `claude plugin validate`
+    - [x] Add a Distribution Formats row for `mods/measure-guard/` (Claude Code mod, loaded with `--plugin-dir`)
+    - [x] Add the mod to the Distribution list in `measure/product.md`
+- [~] Task 1.2: Scaffold the mod
     - [ ] Load the `plugin-authoring` skill. Confirm `session.start`, `prompt.compose`, `tool.call`, the tool-result event, `AbovePrompt`, `classic.Stop`, `$.state`, `$.store`, toast, pane, and command registration
     - [ ] Confirm that `register.tsx` can import a sibling module. If not, keep all functions in `register.tsx`
     - [ ] Create `.claude-plugin/plugin.json` with the `userConfig` field `mode` (`advise | guard | strict`, default `guard`)
