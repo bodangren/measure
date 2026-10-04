@@ -54,11 +54,11 @@ _Story ref: spec.md#story-s2_
     - [x] Write tests for mid-plan text, the `[b]` count, the 2-or-more `[~]` tracks warning, no `[~]` task, all tasks done, and a parse error
     - [x] Write a test that a change to `plan.md` or `tracks.md` updates `$.state`
     - [x] Run the tests and record the failure
-- [~] Task 2.3: Implement (Green) — band
-    - [ ] Render `bandText` in `AbovePrompt`
-    - [ ] Parse again when `plan.md` or `tracks.md` changes (use the trigger from the `plugin-authoring` skill)
-    - [ ] On a parse error, show the error and set `parseError`, so that all guards fail open
-- [ ] Task 2.4: Validate & Docs
+- [x] Task 2.3: Implement (Green) — band `76c78a7`
+    - [x] Render `bandText` in `AbovePrompt`
+    - [x] Parse again when `plan.md` or `tracks.md` changes (use the trigger from the `plugin-authoring` skill)
+    - [x] On a parse error, show the error and set `parseError`, so that all guards fail open
+- [~] Task 2.4: Validate & Docs
     - [ ] Run validate and the full test suite
     - [ ] Add the band section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md)
