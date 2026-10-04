@@ -1,0 +1,11 @@
+{
+  "track_id": "skill_distribution_repair_20261005",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-10-05T00:00:00Z",
+  "updated_at": "2026-10-05T00:00:00Z",
+  "description": "Skill distribution repair: install the Measure skills and agent roles from main by cron, protect local edits, and remove automation-supervisor.py everywhere",
+  "estimated_tasks": 17,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
