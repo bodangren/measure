@@ -40,6 +40,6 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [ ] **Track: Skill distribution repair: install skills from main by cron, and remove automation-supervisor.py**
+- [~] **Track: Skill distribution repair: install skills from main by cron, and remove automation-supervisor.py**
   *Link: [./tracks/skill_distribution_repair_20261005/](./tracks/skill_distribution_repair_20261005/)*
   *Copies of the skills and agent roles from `main` by cron, with local edit protection. Deletes the superseded supervisor in all projects.*

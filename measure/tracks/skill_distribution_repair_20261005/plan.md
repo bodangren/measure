@@ -4,10 +4,10 @@
 
 ## Phase 1: Inventory and contract
 
-- [ ] Task 1.1: Inventory — the differences between each bundle and each target
-    - [ ] List each file that differs, with the newer side and the date. Write the list to `inventory.md` in this track folder
-    - [ ] Find the second link of each `~/.agents/agents/measure-*.md` file (link count 2), and record what reads it
-- [ ] Task 1.2: Reconcile the local edits (FR-5 precondition)
+- [x] Task 1.1: Inventory — the differences between each bundle and each target `c1f0b7b`
+    - [x] List each file that differs, with the newer side and the date. Write the list to `inventory.md` in this track folder
+    - [b] Find the second link of each `~/.agents/agents/measure-*.md` file (link count 2), and record what reads it deferred:user (the permission system blocked the home-folder search; command in `inventory.md`)
+- [~] Task 1.2: Reconcile the local edits (FR-5 precondition)
     - [ ] Show the user the diff of `~/.agents/skills/measure/references/review.md` and `~/.agents/skills/measure-orchestrator/SKILL.md`, and each other target file that is newer than the source
     - [ ] Copy the edits that the user approves into `skills/`, and commit them
 - [ ] Task 1.3: Contract — tooling exception and installer contract
