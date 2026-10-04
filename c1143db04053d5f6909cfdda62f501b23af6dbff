@@ -1,0 +1,13 @@
+Task 6.2: Test (Red) - closeout guard.
+Tests: test/closeout.test.ts (close with all tasks closed: allowed, [b] list in the result context; close with open tasks: denied, the deny lists them and names /measure-off; [b] with no owner: denied; a Write of the whole tracks.md: denied; advise: allowed; a task [~] in phase 2 with no checkpoint on phase 1: denied, allowed after the checkpoint; a task in the first phase: allowed; applyEdit and closedTracks units).
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) a track with all tasks closed can change to [x], and the agent gets the [b] list [1045.59ms]
+(fail) a track with open tasks cannot change to [x], and the deny lists them [530.29ms]
+(fail) a [b] task with no owner keeps the track open [197.12ms]
+(fail) a Write of the whole tracks.md is checked too [159.35ms]
+(fail) a task in phase N+1 cannot start before phase N has a checkpoint [331.25ms]
+(fail) applyEdit and closedTracks > apply an Edit and a Write [0.88ms]
+(fail) applyEdit and closedTracks > find the tracks that change to [x] [2.76ms]
+ 51 pass
+ 7 fail
+2 tests in the file pass before the guard exists: they check allowed cases (advise, first phase).
