@@ -1,7 +1,6 @@
 // The engine beneath the plugin in a test: a project folder in memory, the
 // session facts, and the bottom of each event the mod calls `next` on.
 import type { On, SessionMessage } from 'claude-code'
-import { mock } from 'claude-code/testing'
 import { BENCHMARK_PLAN, GUARD_PLAN, INDEX, TRACKS } from './fixtures/real'
 
 export const ROOT = '/repo'
@@ -30,7 +29,30 @@ export const BAND = {
   },
 } as const
 
+/** The /measure-status pane, as the engine passes its props. */
+export const STATUS_PANE = {
+  component: 'Pane',
+  requestId: 'measure-status',
+  props: {
+    title: 'Measure status',
+    isFocused: true,
+    bodyColumns: 160,
+    placement: 'dock',
+    scroll: { offset: 0, bodyRows: 40 },
+    view: {},
+  },
+} as const
+
 export const SURFACES = ['terminal', 'desktop'] as const
+
+/** Runs a slash command as the person typing it. */
+export const RUN = (command: string, args = '') =>
+  ({
+    command,
+    args,
+    origin: { kind: 'composer' },
+    presentation: { isFullscreen: true, columns: 160 },
+  }) as const
 
 /** A compaction keeps at least one message: the summary. */
 export const SUMMARY: SessionMessage[] = [{ role: 'user', text: 'summary', toolUses: [] }]
@@ -47,6 +69,10 @@ export type World = {
   files: Record<string, string>
   /** The prompts the mod submitted with $.prompt.submit. */
   submitted: string[]
+  /** The ids of the panes the mod opened. */
+  opened: string[]
+  /** The mod's $.store, across sessions. */
+  store: Record<string, unknown>
 }
 
 /**
@@ -56,10 +82,19 @@ export type World = {
 export const world = (
   on: On,
   files: Record<string, string>,
-  { isRepo = true }: { isRepo?: boolean } = {},
+  { isRepo = true, store = {} }: { isRepo?: boolean; store?: Record<string, unknown> } = {},
 ): World => {
-  const w: World = { files, submitted: [] }
-  mock.store(on)
+  const w: World = { files, submitted: [], opened: [], store: { ...store } }
+  on('store.get', ($, e) => ({ value: w.store[e.key] }))
+  on('store.set', ($, e) => {
+    w.store[e.key] = e.value
+    return { value: undefined }
+  })
+  on('store.delete', ($, e) => {
+    delete w.store[e.key]
+    return { value: undefined }
+  })
+  on('store.keys', () => ({ value: Object.keys(w.store) }))
 
   on('session.root', () => ({ value: ROOT }))
   on('session.cwd', () => ({ value: ROOT }))
@@ -78,6 +113,12 @@ export const world = (
   on('prompt.compose', () => ({ sections: [{ id: 'intro', text: 'base', scope: 'shared' }] }))
   on('classic.UserPromptSubmit', () => ({}))
   on('ui.render', () => ({ type: 'Box', props: {}, children: [] }))
+  on('command.register', ($, e) => ({ value: { command: e.name } }))
+  on('command.run', () => ({ text: '' }))
+  on('ui.open', ($, e) => {
+    w.opened.push(e.id)
+    return { value: { isPlaced: true } }
+  })
   on('prompt.submit', ($, e) => {
     w.submitted.push(e.text)
     return { text: e.text }
