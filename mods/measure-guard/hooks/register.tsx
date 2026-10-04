@@ -21,12 +21,17 @@ import {
   closedTracks,
   editDecision,
   isInside,
+  isTestCommand,
+  isTestFile,
   needsSetup,
   offKey,
   phaseStartDecision,
+  redFor,
   setupBandText,
   statusLinesOf,
   stopAction,
+  taskKey,
+  tddDecision,
   trackCloseDecision,
   turnProblems,
   unshaTasks,
@@ -39,6 +44,7 @@ const OFF = { plugin: 'measure-guard', key: 'guardsOff' } as const
 const TURN = { plugin: 'measure-guard', key: 'turn' } as const
 const PROBLEMS = { plugin: 'measure-guard', key: 'problems' } as const
 const REMINDER = { plugin: 'measure-guard', key: 'reminder' } as const
+const RED = { plugin: 'measure-guard', key: 'red' } as const
 const RULE_ID = 'measure-guard:rule'
 const STATUS_PANE = 'measure-status'
 
@@ -133,6 +139,23 @@ const gitStatus = async ($: EngineInterface, root: string): Promise<string[]> =>
   } catch {
     return []
   }
+}
+
+/**
+ * Keeps the Red phase of the [~] task: a test file edit that ran, and a test
+ * command that failed.
+ */
+const recordRed = async ($: EngineInterface, e: ToolCallInput, isDone: boolean, isFailed: boolean): Promise<void> => {
+  const path = writtenPath(e)
+  const isTestEdit = path !== null && isDone && isTestFile(path)
+  const isFailedTest = e.tool === 'Bash' && isFailed && isTestCommand(e.command)
+  if (!isTestEdit && !isFailedTest) return
+  const red = redFor((await $.state.get(RED)).value ?? null, taskKey(await current($)))
+  await $.state.set(RED, {
+    ...red,
+    testChanged: red.testChanged || isTestEdit,
+    testFailed: red.testFailed || isFailedTest,
+  })
 }
 
 /** The text of a file; empty when it does not exist yet. */
@@ -291,8 +314,11 @@ export const register: Register = (on, options) => {
       const closed = await closeout($, context, e)
       if (closed.decision !== null) return closed.decision
       closeNote = closed.note
+      const tdd = tddDecision(context, (await $.state.get(RED)).value ?? null, path)
+      if (tdd !== null) return tdd
     }
     const ran = await next(e)
+    await recordRed($, e, ran.deny === undefined && ran.isError !== true, ran.isError === true)
     const touchesPlan = e.tool === 'Bash' || (path !== null && isInMeasure(await current($), path))
     if (ran.deny !== undefined || !touchesPlan) return ran
     const done = ran.isError === true ? null : closeNote

@@ -241,30 +241,52 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
 }
 
 
+const TEST_FILES = [
+  /\.(test|spec)\.[cm]?[jt]sx?$/,
+  /(^|\/)test_[^/]+\.(py|sh)$/,
+  /_test\.(py|go|rs|exs?)$/,
+  /_spec\.rb$/,
+  /(^|\/)test-[^/]+\.sh$/,
+  /(^|\/)(tests?|__tests__|spec)\/[^/]+\.(rs|[cm]?[jt]sx?|py|rb|go)$/,
+  /Tests?\.(java|kt|scala|cs|swift)$/,
+]
+
+const CODE_FILE =
+  /\.(bash|c|cc|cjs|cpp|cs|cts|cxx|dart|ex|exs|go|h|hpp|java|js|jsx|kt|kts|lua|m|mjs|mts|php|py|rb|rs|scala|sh|svelte|swift|ts|tsx|vue|zig|zsh)$/i
+
+const TEST_COMMANDS = [
+  /\b(npm|pnpm|yarn|bun)\s+(run\s+)?test\b/,
+  /\b(vitest|jest|mocha|ava|pytest|rspec|phpunit|ctest)\b/,
+  /\bpython3?\s+-m\s+(pytest|unittest)\b/,
+  /\b(go|cargo|deno|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
+  /\bclaude\s+plugin\s+test\b/,
+  /(^|[\s/])test[-_][\w.-]*\.sh\b/,
+]
+
 /** True for a test file by its name: `*.test.ts`, `test_*.py`, `*_test.go`, and similar. */
-export const isTestFile = (path: string): boolean => {
-  throw new Error('isTestFile: not implemented')
-}
+export const isTestFile = (path: string): boolean => TEST_FILES.some(rule => rule.test(path))
+
 
 /** True for a code file that is not a test file; Markdown, JSON, and other data pass. */
-export const isSourceFile = (path: string): boolean => {
-  throw new Error('isSourceFile: not implemented')
-}
+export const isSourceFile = (path: string): boolean => CODE_FILE.test(path) && !isTestFile(path)
+
 
 /** True for a command that runs tests: `npm test`, `vitest`, `pytest`, `go test`, and similar. */
-export const isTestCommand = (command: string): boolean => {
-  throw new Error('isTestCommand: not implemented')
-}
+export const isTestCommand = (command: string): boolean => TEST_COMMANDS.some(rule => rule.test(command))
+
 
 /** The key of the `[~]` task of the active track; null when no task has `[~]`. */
 export const taskKey = (snapshot: Snapshot | null): string | null => {
-  throw new Error('taskKey: not implemented')
+  const active = snapshot?.active ?? null
+  const task = active === null ? null : currentTask(active.plan)
+  return active === null || task === null ? null : `${active.entry.id}|${task.text}`
 }
 
+
 /** The Red state for the task: the kept one when it is the same task, else empty. */
-export const redFor = (red: RedState | null, key: string | null): RedState => {
-  throw new Error('redFor: not implemented')
-}
+export const redFor = (red: RedState | null, key: string | null): RedState =>
+  red !== null && red.taskKey === key ? red : { taskKey: key, testChanged: false, testFailed: false }
+
 
 /**
  * The TDD guard (strict mode): denies an edit of a source file inside the
@@ -272,5 +294,20 @@ export const redFor = (red: RedState | null, key: string | null): RedState => {
  * changed and a test command failed.
  */
 export const tddDecision = (context: GuardContext, red: RedState | null, path: string): Decision => {
-  throw new Error('tddDecision: not implemented')
+  const { snapshot } = context
+  if (context.mode !== 'strict' || context.guardsOff !== null) return null
+  if (snapshot === null || !snapshot.hasMeasure || snapshot.parseError !== null || snapshot.active === null) return null
+  if (!isInside(snapshot.root, path) || isInside(joinPath(snapshot.root, 'measure'), path) || !isSourceFile(path)) return null
+  const task = currentTask(snapshot.active.plan)
+  if (task === null) return null
+  const state = redFor(red, taskKey(snapshot))
+  if (state.testChanged && state.testFailed) return null
+  const missing = [
+    state.testChanged ? null : 'change a test file (for example *.test.ts, test_*.py, *_test.go)',
+    state.testFailed ? null : 'run the tests and see them fail',
+  ].filter(step => step !== null)
+  return {
+    deny: `measure-guard (strict): write a failing test first. The task "${task.text}" has no Red phase yet. Still to do: ${missing.join('; ')}. Then edit ${relative(snapshot, path)}. ${BYPASS}`,
+  }
 }
+
