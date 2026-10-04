@@ -1,0 +1,12 @@
+Task 7.2: Test (Red) - end-of-turn check.
+Tests: test/end-of-turn.test.ts (advise: [x] with no SHA in the band only, old ones not reported, no toast, no reminder; guard: a new dirty file with no [~] task -> band, toast, reminder at the next prompt; files dirty before the turn and measure/ changes are not problems; strict: block, block, then end with a report; strict: a new prompt resets the count; a clean turn has no block; helpers statusLinesOf, changedDuringTurn (rename, quoted path, measure/), unshaTasks). world.ts: mutable porcelain text answered by process.run, toast record, classic.Stop bottom.
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) advise: a task marked [x] with no SHA shows in the band only [1149.39ms]
+(fail) guard: changes with no [~] task give a band line, a toast, and a reminder [514.89ms]
+(fail) strict: the turn stays open twice, then ends with a report [444.88ms]
+(fail) strict: a new prompt starts the block count again [761.45ms]
+(fail) turn helpers > read porcelain lines and the paths that changed in the turn [1.21ms]
+(fail) turn helpers > list the [x] tasks with no SHA [4.14ms]
+ 60 pass
+ 6 fail
+2 tests in the file pass before the check exists: they check the absence of problems.
