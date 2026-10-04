@@ -1,0 +1,81 @@
+{
+  "track_id": "measure_guard_20261004",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-10-04T13:24:50Z",
+  "updated_at": "2026-10-05T00:00:00Z",
+  "description": "measure-guard: a Claude Code mod that shows the Measure plan state and guards edits, commits, and closeouts (from mods/measure-guard/DESIGN.md)",
+  "estimated_tasks": 47,
+  "actual_tasks": 49,
+  "deviation_notes": "Design changes from the brief, recorded in spec.md: (1) the active track is the first [~] track whose plan has a [~] task (the brief's 'first [~] track' denied all edits in this repository); (2) the task goes into conversation notes, not the system prompt (prompt cache); (3) /measure-on was added; (4) a SHA with or without backticks; (5) measure/-only commits pass with no [~] task. Task 1.4 replaced the live smoke test with a fixture sync script (no file access in tests). hooks/load.ts was folded into register.tsx (the $ import rule). The 9 deferred manual verification tasks were verified on 2026-10-05 (git note on ce09fd0); strict mode was covered by the automated tests only. Phase F1 (2 tasks) was added after the live load: /measure-status closes the pane, and Escape closes it.",
+  "sprint": {
+    "goal": "Claude Code follows the Measure Task Workflow, because a mod shows the plan state and stops work that the active plan does not cover.",
+    "stories": [
+      {
+        "id": "S1",
+        "title": "Plan context for the agent",
+        "size": "L",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S2",
+        "title": "Progress band above the prompt",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S3",
+        "title": "Edit guard",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S4",
+        "title": "Projects with no measure folder",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S5",
+        "title": "Status and bypass commands",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S6",
+        "title": "Closeout guard",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S7",
+        "title": "End-of-turn check",
+        "size": "M",
+        "priority": "Should",
+        "status": "done"
+      },
+      {
+        "id": "S8",
+        "title": "TDD guard",
+        "size": "L",
+        "priority": "Should",
+        "status": "done"
+      },
+      {
+        "id": "S9",
+        "title": "Commit guard",
+        "size": "M",
+        "priority": "Should",
+        "status": "done"
+      }
+    ],
+    "demo_notes": "Live load on 2026-10-05 with claude --plugin-dir: context notes, edit guard deny, end-of-turn report, band, setup question, /measure-off, /measure-on, and the status pane toggle.",
+    "retro_ref": "measure/lessons-learned.md#2026-10-04-measure_guard"
+  }
+}

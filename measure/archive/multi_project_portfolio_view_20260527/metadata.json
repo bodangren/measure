@@ -1,0 +1,9 @@
+{
+  "id": "multi_project_portfolio_view_20260527",
+  "title": "Multi-Project Portfolio View",
+  "status": "cancelled",
+  "created": "2026-05-27",
+  "type": "feature",
+  "cancelled_at": "2026-10-05",
+  "cancel_reason": "Fleet Commander owns the multi-project view (Dashboard and Insights tracks). The daily automation that this track feeds stopped in June 2026."
+}

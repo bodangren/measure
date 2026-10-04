@@ -27,6 +27,7 @@ AI coding assistants excel at writing code but lack persistent project context, 
 
 - **Claude Skills**: Packaged as a `.skill` bundle for use with Claude Code (`claude-skills/measure/`)
 - **Gemini CLI Extension**: Published as a Gemini CLI extension (`codex-skills/measure/`)
+- **Claude Code Mod (measure-guard)**: A function-hook plugin (`mods/measure-guard/`) that shows the plan state and guards edits, commits, and closeouts
 
 ## Success Metrics
 

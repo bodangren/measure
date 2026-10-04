@@ -1,0 +1,22 @@
+{
+  "name": "measure-guard",
+  "version": "0.1.0",
+  "description": "Shows the Measure plan state and guards edits, commits, and closeouts against the active plan",
+  "author": {
+    "name": "Daniel Bo"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "mode": {
+      "type": "string",
+      "title": "Guard mode",
+      "description": "advise: context and band only. guard: also the edit, closeout, and end-of-turn checks. strict: also the TDD and commit guards, and the turn stays open until the plan is correct.",
+      "default": "guard",
+      "options": [
+        "advise",
+        "guard",
+        "strict"
+      ]
+    }
+  }
+}
