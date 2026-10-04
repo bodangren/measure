@@ -1,0 +1,6 @@
+Task 1.3: Contract — tooling exception and installer contract
+
+Why: Phase 2 tests and Phase 3 code need one fixed contract, and the tech stack requires the tooling exception before the first test.
+Acceptance criteria: contract.md defines the command line, targets file, stamp file, per-file decisions, exit codes, log, and cron line, each mapped to an FR; tech-stack.md has the row before any test.
+Changes: contract.md (new); tech-stack.md (Tooling Exceptions row); spec.md FR-5 (--adopt for a target with no stamp), FR-7 (exit 3), NFR tool list (tar instead of cp).
+Design notes: content and targets come from the ref with git archive/git show, never from the working tree; in-place writes (cat >) keep hard links; a stamp file per target (.measure-install, sha256sum format) drives local-edit protection; claude-skills/measure and ~/.config/opencode/agents are not targets.
