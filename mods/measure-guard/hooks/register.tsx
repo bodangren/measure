@@ -1,5 +1,5 @@
 import type { EngineInterface, Register, ToolCallInput } from 'claude-code'
-import type { Mode, Plan, Snapshot } from '../types'
+import type { GuardContext, Mode, Plan, Snapshot } from '../types'
 import {
   bandLine,
   dirname,
@@ -17,6 +17,7 @@ import { editDecision } from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
+const SETUP = { plugin: 'measure-guard', key: 'setupChoice' } as const
 const RULE_ID = 'measure-guard:rule'
 
 /** The plan file of a track folder: the index's plan link, else plan.md. */
@@ -93,6 +94,13 @@ const refresh = async ($: EngineInterface): Promise<Snapshot> => {
 const current = async ($: EngineInterface): Promise<Snapshot> =>
   (await $.state.get(SNAPSHOT)).value ?? refresh($)
 
+/** What the guards read: the snapshot, the mode, and the setup answer. */
+const guardContext = async ($: EngineInterface, mode: Mode): Promise<GuardContext> => ({
+  snapshot: await current($),
+  mode,
+  setupChoice: (await $.state.get(SETUP)).value ?? null,
+})
+
 /** The task note when the track or the task changed since the last note. */
 const pendingNote = async ($: EngineInterface, snapshot: Snapshot, mode: Mode): Promise<string | null> => {
   const key = noteKey(snapshot)
@@ -134,7 +142,7 @@ export const register: Register = (on, options) => {
   on('tool.call', async ($, e, next) => {
     const path = writtenPath(e)
     if (path !== null) {
-      const decision = editDecision({ snapshot: await current($), mode }, path)
+      const decision = editDecision(await guardContext($, mode), path)
       if (decision !== null) return decision
     }
     const ran = await next(e)

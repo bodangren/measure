@@ -1,6 +1,6 @@
 // Pure guard decisions. Each takes a GuardContext and the call, and returns
 // null to allow it or { deny } with the text the agent reads.
-import type { Decision, GuardContext, Snapshot } from '../types'
+import type { Decision, GuardContext, SetupChoice, Snapshot } from '../types'
 import { currentTask, joinPath, nextTask } from './parse'
 
 /** The text every deny ends with: the bypass. */
@@ -38,4 +38,21 @@ export const editDecision = (context: GuardContext, path: string): Decision => {
   return {
     deny: `measure-guard: no task in the track "${active.entry.name}" is in progress. Mark the next task \`[~]\` in ${relative(snapshot, active.planPath)}${next === null ? '' : ` (${next.text})`}. Then do the edit again. ${BYPASS}`,
   }
+}
+
+/** The prompt the `[ Set up Measure ]` button sends to the agent. */
+export const SETUP_PROMPT =
+  'Set up Measure in this project: run the Measure setup workflow (the measure skill, "setup").'
+
+/** True for a git repository with no measure/ folder: the mod asks the user. */
+export const needsSetup = (snapshot: Snapshot | null): boolean => {
+  throw new Error('needsSetup: not implemented')
+}
+
+/**
+ * The band text for a repository with no measure/ folder, by the answer;
+ * null when the band shows nothing (no question, or turned off).
+ */
+export const setupBandText = (choice: SetupChoice | null): string | null => {
+  throw new Error('setupBandText: not implemented')
 }

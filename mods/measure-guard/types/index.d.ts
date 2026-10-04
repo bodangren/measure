@@ -79,10 +79,17 @@ export type Snapshot = {
   parseError: string | null
 }
 
-/** What a guard reads: the snapshot and the mode. */
+/**
+ * The user's answer in a git repository with no measure/ folder: `pending`
+ * until a band button is pressed, `off` for the session, or `setup` asked.
+ */
+export type SetupChoice = 'pending' | 'off' | 'setup'
+
+/** What a guard reads: the snapshot, the mode, and the setup answer. */
 export type GuardContext = {
   snapshot: Snapshot | null
   mode: Mode
+  setupChoice: SetupChoice | null
 }
 
 /** A guard's answer: null allows the call; `deny` refuses it with that text. */
@@ -94,6 +101,8 @@ declare module 'claude-code' {
       snapshot: Snapshot | null
       /** The noteKey of the last task note the agent got; null sends the next one. */
       notedKey: string | null
+      /** The answer to the setup question; null where no question is asked. */
+      setupChoice: SetupChoice | null
     }
   }
 }

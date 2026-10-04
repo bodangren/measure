@@ -80,7 +80,7 @@ test('the guard follows the plan: marking a task [~] opens the edits', async ($,
 })
 
 describe('editDecision', () => {
-  const base = { mode: 'guard' as const }
+  const base = { mode: 'guard' as const, setupChoice: null }
   test('allows a path outside the project root', () => {
     const snapshot = {
       root: ROOT, hasMeasure: true, isRepo: true, tracks: [], active: null, inProgressCount: 0, parseError: null,
