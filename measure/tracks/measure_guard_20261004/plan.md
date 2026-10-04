@@ -58,9 +58,9 @@ _Story ref: spec.md#story-s2_
     - [x] Render `bandText` in `AbovePrompt`
     - [x] Parse again when `plan.md` or `tracks.md` changes (use the trigger from the `plugin-authoring` skill)
     - [x] On a parse error, show the error and set `parseError`, so that all guards fail open
-- [~] Task 2.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the band section to the README
+- [x] Task 2.4: Validate & Docs `3b5232d`
+    - [x] Run validate and the full test suite
+    - [x] Add the band section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md)
 
 ## Phase S3: Edit guard
