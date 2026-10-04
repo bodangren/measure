@@ -19,6 +19,9 @@
 - (2026-10-04, measure_guard_20261004) The `claude plugin test` environment has no file, network, or process access, and its `$` has no `store` noun. A test answers each `$` call with its own hooks; fixtures must be `.ts` modules (generate them from real files with a script).
 - (2026-10-04, measure_guard_20261004) A rule like "the active track is the first `[~]` track" breaks when 2 tracks are `[~]`. Check each selection rule against the real `tracks.md` before the spec is final.
 
+- (2026-10-05, measure_guard_20261004) In an inline (not fullscreen) terminal, the pane close mark and `ctrl+x x` did not close a mod pane. Give each pane a command that also closes it, and open it with `closeOnEscape: true`.
+- (2026-10-05, measure_guard_20261004) An interactive session watches a `--plugin-dir` folder: a saved edit reloads the mod at once, and an open pane stays open across the reload. No restart is necessary.
+
 ## Patterns That Worked Well
 
 - (2026-05-25, scrum_tracks_20260525) Self-dogfooding: making the track that introduces a feature *also* be the first user of that feature (story-shaped spec, sprint metadata, velocity datapoint) caught two real issues during execution that pure unit-testing would have missed.
