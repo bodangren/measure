@@ -98,7 +98,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.4: Validate & Docs `a1f8745`
     - [x] Run validate and the full test suite
     - [x] Add the no-folder section to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md) deferred:user
 
 ## Phase S5: Status and bypass commands
 _Story ref: spec.md#story-s5_
