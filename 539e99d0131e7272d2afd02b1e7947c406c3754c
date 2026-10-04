@@ -1,0 +1,5 @@
+Task 1.2: Scaffold the mod.
+Changes: mods/measure-guard/.claude-plugin/plugin.json (userConfig mode: advise|guard|strict, default guard; types contract), hooks/hooks.json, hooks/register.tsx (empty register), types/index.d.ts (empty PluginState entry), DESIGN.md (the approved design brief).
+Confirmed in the plugin-authoring skill (Claude Code 2.1.289): session.start, prompt.compose, tool.call, ui.render AbovePrompt and Pane, classic.Stop, turn.start, prompt.submit, $.state, $.store, $.ui.toast, $.ui.open, $.command.register + command.run. Difference from the plan: there is no separate tool-result event; a tool.call hook reads the result from await next(e). Sibling imports: allowed (import declaration).
+Test environment: no fs, network, or process. Tests answer $.fs and $.session calls with their own hooks; fixtures must be .ts modules.
+Check: claude plugin validate mods/measure-guard passed.
