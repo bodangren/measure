@@ -66,11 +66,11 @@ _Story ref: spec.md#story-s2_
 ## Phase S3: Edit guard
 _Story ref: spec.md#story-s3_
 
-- [~] Task 3.1: Contract — edit decision
-    - [ ] Lock the S3 acceptance criteria
-    - [ ] Declare `editDecision(state, path)`, which returns allow or deny with text. Paths resolve relative to the project root
-    - [ ] Write the deny text: one next action (mark the next task `[~]`, or create a track) and `/measure-off` as the bypass
-- [ ] Task 3.2: Test (Red) — edit guard
+- [x] Task 3.1: Contract — edit decision `d2eabf9`
+    - [x] Lock the S3 acceptance criteria
+    - [x] Declare `editDecision(state, path)`, which returns allow or deny with text. Paths resolve relative to the project root
+    - [x] Write the deny text: one next action (mark the next task `[~]`, or create a track) and `/measure-off` as the bypass
+- [~] Task 3.2: Test (Red) — edit guard
     - [ ] Write tests: deny outside `measure/` with no `[~]` task, deny with no active track, allow inside `measure/`, allow with a `[~]` task, allow in `advise`, allow on `parseError`
     - [ ] Run the tests and record the failure
 - [ ] Task 3.3: Implement (Green) — edit guard
