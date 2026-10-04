@@ -1,0 +1,3 @@
+Task 1.1: Declare the mod in the tech stack.
+Changes: tech-stack.md (Distribution Formats row for mods/measure-guard/, Tooling Exceptions row for measure_guard_20261004: claude plugin test + claude plugin validate), product.md (Distribution list), tracks.md (track marked [~]).
+Why: tech-stack.md requires a track that adds executable code to declare its verification tooling before the first test.
