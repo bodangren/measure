@@ -73,10 +73,10 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.2: Test (Red) — edit guard `9574e90`
     - [x] Write tests: deny outside `measure/` with no `[~]` task, deny with no active track, allow inside `measure/`, allow with a `[~]` task, allow in `advise`, allow on `parseError`
     - [x] Run the tests and record the failure
-- [~] Task 3.3: Implement (Green) — edit guard
-    - [ ] Hook `tool.call` for `Edit`, `Write`, and `NotebookEdit`, and apply `editDecision`
-    - [ ] Run the tests to Green
-- [ ] Task 3.4: Validate & Docs
+- [x] Task 3.3: Implement (Green) — edit guard `efeace3`
+    - [x] Hook `tool.call` for `Edit`, `Write`, and `NotebookEdit`, and apply `editDecision`
+    - [x] Run the tests to Green
+- [~] Task 3.4: Validate & Docs
     - [ ] Run validate and the full test suite
     - [ ] Add the edit guard section and the Bash limit to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md)
