@@ -1,0 +1,13 @@
+Phase verification report: Phase S8: TDD guard
+Changed files since da8f944:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/tdd.test.ts
+  mods/measure-guard/test/world.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 76 pass, 0 fail; tsc passed.
+Acceptance criteria S8: AC1 (source edit denied before Red), AC2 (test file edits pass), AC3 (test change + failed test command opens the edits), AC4 (Markdown and JSON pass), AC5 (a new [~] task resets Red) - each covered by a passing test.
+Steps for the deferred manual check: 1. Load the mod in strict mode in a project with tests. 2. Ask the agent to change a source file first, and read the deny. 3. Let the agent write a failing test and run it, and confirm the source edit then passes.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
