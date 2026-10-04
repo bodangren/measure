@@ -157,31 +157,60 @@ export const phaseStartDecision = (context: GuardContext, before: string, after:
 /** The most times strict mode keeps one turn open. */
 export const MAX_BLOCKS = 2
 
-/** The lines of `git status --porcelain`, without empty lines. */
-export const statusLinesOf = (porcelain: string): string[] => {
-  throw new Error('statusLinesOf: not implemented')
+/** The path of a porcelain line: the new path of a rename, quotes removed. */
+const pathOfStatus = (line: string): string => {
+  const path = line.slice(3)
+  const arrow = path.indexOf(' -> ')
+  const target = arrow === -1 ? path : path.slice(arrow + 4)
+  return target.startsWith('"') && target.endsWith('"') ? target.slice(1, -1) : target
 }
+
+/** The lines of `git status --porcelain`, without empty lines. */
+export const statusLinesOf = (porcelain: string): string[] =>
+  porcelain.split('\n').filter(line => line.trim() !== '')
+
 
 /**
  * The paths (relative to the repository root) of the status lines that are
  * new or changed since the turn start, outside measure/.
  */
 export const changedDuringTurn = (start: readonly string[], end: readonly string[]): string[] => {
-  throw new Error('changedDuringTurn: not implemented')
+  const before = new Set(start)
+  return end
+    .filter(line => !before.has(line))
+    .map(pathOfStatus)
+    .filter(path => path !== 'measure' && !path.startsWith('measure/'))
 }
 
+
 /** The texts of the `[x]` tasks with no SHA. */
-export const unshaTasks = (plan: Plan): string[] => {
-  throw new Error('unshaTasks: not implemented')
-}
+export const unshaTasks = (plan: Plan): string[] =>
+  tasksOf(plan)
+    .filter(task => task.marker === 'x' && task.sha === null)
+    .map(task => task.text)
+
 
 /**
  * The end-of-turn problems: a `[x]` task with no SHA that was not one at the
  * turn start, and files changed during the turn while no task has `[~]`.
  */
 export const turnProblems = (snapshot: Snapshot, changed: readonly string[], knownUnsha: readonly string[]): string[] => {
-  throw new Error('turnProblems: not implemented')
+  if (!snapshot.hasMeasure || snapshot.parseError !== null) return []
+  const problems: string[] = []
+  const { active } = snapshot
+  if (active !== null) {
+    const known = new Set(knownUnsha)
+    for (const text of unshaTasks(active.plan).filter(one => !known.has(one))) {
+      problems.push(`"${text}" is [x] but has no commit SHA. Commit the task, and add the 7-character SHA to its line in plan.md.`)
+    }
+  }
+  if (changed.length > 0 && (active === null || currentTask(active.plan) === null)) {
+    const listed = changed.slice(0, 5).join(', ') + (changed.length > 5 ? `, and ${changed.length - 5} more` : '')
+    problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. Mark the task [~] in plan.md (or create a track), or revert the changes.`)
+  }
+  return problems
 }
+
 
 /**
  * What to do at the turn end: strict mode keeps the turn open with the
@@ -189,5 +218,13 @@ export const turnProblems = (snapshot: Snapshot, changed: readonly string[], kno
  * modes, the mod reports the problems.
  */
 export const stopAction = (mode: Mode, problems: readonly string[], blocks: number): StopAction => {
-  throw new Error('stopAction: not implemented')
+  if (problems.length === 0) return { block: null, report: false }
+  if (mode === 'strict' && blocks < MAX_BLOCKS) {
+    return {
+      block: ['measure-guard (strict): do not end the turn yet. Fix these problems first:', ...problems.map(one => `- ${one}`)].join('\n'),
+      report: false,
+    }
+  }
+  return { block: null, report: true }
 }
+

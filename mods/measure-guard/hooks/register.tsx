@@ -17,6 +17,7 @@ import {
 import {
   SETUP_PROMPT,
   applyEdit,
+  changedDuringTurn,
   closedTracks,
   editDecision,
   isInside,
@@ -24,13 +25,20 @@ import {
   offKey,
   phaseStartDecision,
   setupBandText,
+  statusLinesOf,
+  stopAction,
   trackCloseDecision,
+  turnProblems,
+  unshaTasks,
 } from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
 const SETUP = { plugin: 'measure-guard', key: 'setupChoice' } as const
 const OFF = { plugin: 'measure-guard', key: 'guardsOff' } as const
+const TURN = { plugin: 'measure-guard', key: 'turn' } as const
+const PROBLEMS = { plugin: 'measure-guard', key: 'problems' } as const
+const REMINDER = { plugin: 'measure-guard', key: 'reminder' } as const
 const RULE_ID = 'measure-guard:rule'
 const STATUS_PANE = 'measure-status'
 
@@ -116,6 +124,16 @@ const guardContext = async ($: EngineInterface, mode: Mode): Promise<GuardContex
   setupChoice: (await $.state.get(SETUP)).value ?? null,
   guardsOff: (await $.state.get(OFF)).value ?? null,
 })
+
+/** The `git status --porcelain` lines of the project; none when git fails. */
+const gitStatus = async ($: EngineInterface, root: string): Promise<string[]> => {
+  try {
+    const ran = await $.process.run(['git', 'status', '--porcelain', '--untracked-files=all'], { cwd: root })
+    return ran.exitCode === 0 ? statusLinesOf(ran.stdout) : []
+  } catch {
+    return []
+  }
+}
 
 /** The text of a file; empty when it does not exist yet. */
 const readOrEmpty = async ($: EngineInterface, path: string): Promise<string> =>
@@ -225,8 +243,42 @@ export const register: Register = (on, options) => {
 
   on('classic.UserPromptSubmit', async ($, e, next) => {
     const result = await next(e)
-    const note = await pendingNote($, await refresh($), mode)
-    return note === null ? result : { ...result, additionalContext: [...(result.additionalContext ?? []), note] }
+    const snapshot = await refresh($)
+    if (snapshot.hasMeasure) {
+      await $.state.set(TURN, {
+        status: await gitStatus($, snapshot.root),
+        unsha: snapshot.active === null ? [] : unshaTasks(snapshot.active.plan),
+        blocks: 0,
+      })
+    }
+    const reminder = (await $.state.get(REMINDER)).value ?? null
+    if (reminder !== null) await $.state.set(REMINDER, null)
+    const notes = [reminder, await pendingNote($, snapshot, mode)].filter(note => note !== null)
+    return notes.length === 0 ? result : { ...result, additionalContext: [...(result.additionalContext ?? []), ...notes] }
+  })
+
+  on('classic.Stop', async ($, e, next) => {
+    const result = await next(e)
+    const turn = (await $.state.get(TURN)).value ?? null
+    const snapshot = await refresh($)
+    if (turn === null || !snapshot.hasMeasure || ((await $.state.get(OFF)).value ?? null) !== null) return result
+
+    const changed = changedDuringTurn(turn.status, await gitStatus($, snapshot.root))
+    const problems = turnProblems(snapshot, changed, turn.unsha)
+    await $.state.set(PROBLEMS, problems)
+    const action = stopAction(mode, problems, turn.blocks)
+    if (action.block !== null) {
+      await $.state.set(TURN, { ...turn, blocks: turn.blocks + 1 })
+      return { ...result, block: action.block }
+    }
+    if (action.report && mode !== 'advise') {
+      $.ui.toast(`measure-guard: ${problems[0] ?? ''}`, { timeoutMs: 8000 })
+      await $.state.set(
+        REMINDER,
+        ['measure-guard: at the end of the last turn, these problems were open:', ...problems.map(one => `- ${one}`), 'Fix them before you continue.'].join('\n'),
+      )
+    }
+    return result
   })
 
   on('tool.call', async ($, e, next) => {
@@ -280,13 +332,19 @@ export const register: Register = (on, options) => {
 
     const line = snapshot === null ? null : bandLine(snapshot, (await $.state.get(OFF)).value ?? null)
     if (line === null) return next(e)
+    const problems = (await $.state.get(PROBLEMS)).value ?? []
     const isError = snapshot?.parseError !== null
 
     return (
-      <Box>
+      <Box flexDirection="column">
         <Text dimColor={!isError} color={isError ? 'yellow' : undefined} wrap="truncate-end">
           {line}
         </Text>
+        {problems.length > 0 && (
+          <Text color="yellow" wrap="truncate-end">
+            End of turn: {problems.join(' · ')}
+          </Text>
+        )}
       </Box>
     )
   })
