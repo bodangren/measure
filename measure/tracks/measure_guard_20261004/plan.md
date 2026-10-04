@@ -136,7 +136,7 @@ _Story ref: spec.md#story-s6_
     - [x] Add the closeout section to the README
 - [b] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md) deferred:user
 
-## Phase S7: End-of-turn check
+## Phase S7: End-of-turn check [checkpoint: da8f944]
 _Story ref: spec.md#story-s7_
 
 - [x] Task 7.1: Contract — turn problems `e3cb592`
@@ -157,7 +157,7 @@ _Story ref: spec.md#story-s7_
 ## Phase S8: TDD guard
 _Story ref: spec.md#story-s8_
 
-- [ ] Task 8.1: Contract — Red state
+- [~] Task 8.1: Contract — Red state
     - [ ] Lock the S8 acceptance criteria
     - [ ] Declare `isTestFile` (`*.test.ts(x)`, `*.spec.ts(x)`, `*.test.js`, `test_*.py`, `*_test.py`, `*_test.go`, and similar), `isSourceFile` (code extensions only), and `isTestCommand` (`npm test`, `vitest`, `jest`, `pytest`, `go test`, `cargo test`, `claude plugin test`, `test-*.sh`)
     - [ ] Add `$.state.red` (`taskId`, `testChanged`, `testFailed`)
