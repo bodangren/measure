@@ -1,0 +1,14 @@
+Phase verification report: Phase S2: Progress band above the prompt
+Changed files since ea3ed16:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/parse.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/band.test.ts
+  mods/measure-guard/test/fixtures/plans.ts
+  mods/measure-guard/test/world.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 26 pass, 0 fail; tsc passed.
+Acceptance criteria S2: AC1 (band text, unit and mounted on terminal and desktop), AC2 ([b] count), AC3 (2-track warning), AC4 (band follows Edit calls on plan.md), AC5 (parse error text) - each covered by a passing test.
+Steps for the deferred manual check: 1. Load the mod in this repository. 2. Confirm the band above the prompt shows 'Measure · measure-guard: ... · Phase .../9 · Task ... [~] ...' and '2 tracks in progress'. 3. Ask the agent to mark a task [~] or [x] in plan.md, and confirm that the band changes after the edit.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
