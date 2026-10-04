@@ -152,7 +152,7 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.4: Validate & Docs `bcd17b4`
     - [x] Run validate and the full test suite
     - [x] Add the end-of-turn section to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md) deferred:user
 
 ## Phase S8: TDD guard
 _Story ref: spec.md#story-s8_
