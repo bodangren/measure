@@ -1,0 +1,19 @@
+Task F1.1: Status pane close — /measure-status toggles the pane, and Escape closes it
+
+Why: in an inline (not fullscreen) terminal, the person could not close the
+/measure-status pane with the close mark or ctrl+x x.
+
+Changes:
+- hooks/register.tsx: the measure-status command.run hook checks $.ui.panes().
+  If the pane is open, it calls $.ui.close and returns
+  "Closed the Measure status pane." Else it opens the pane with closeOnEscape: true.
+- tests/world.ts: the test engine answers ui.close and ui.panes, and records
+  the open arguments, the closed ids, and the open panes.
+- tests/commands.test.ts: 2 new tests (open with closeOnEscape; close when open).
+- README.md: the command table says that the command and Escape close the pane.
+
+Red: claude plugin test -> 85 pass, 2 fail
+  - openArgs: Received [{ id: "measure-status", title: "Measure status" }] (no closeOnEscape)
+  - second /measure-status: Received { text: "Opened the Measure status pane." }
+Green: claude plugin test -> 87 pass, 0 fail
+Validate: claude plugin validate -> passed; npx -p typescript tsc -p . -> exit 0
