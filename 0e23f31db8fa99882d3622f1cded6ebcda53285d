@@ -1,0 +1,14 @@
+Phase verification report: Phase S4: Projects with no measure folder
+Changed files since b4fddf2:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/edit-guard.test.ts
+  mods/measure-guard/test/setup.test.ts
+  mods/measure-guard/test/world.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 41 pass, 0 fail; tsc passed.
+Acceptance criteria S4: AC1 (band with 2 buttons on terminal and desktop), AC2 (deny before an answer; advise denies nothing), AC3 (Set up Measure submits the setup prompt), AC4 (Turn off for session lets edits pass and hides the band), AC5 (outside git: no band, no note) - each covered by a passing test.
+Steps for the deferred manual check: 1. Make a new git repository with no measure/ folder and load the mod there. 2. Confirm the band with the 2 buttons. 3. Ask the agent to edit a file, and confirm that the agent asks the question. 4. Press each button in a new session, and confirm the result.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
