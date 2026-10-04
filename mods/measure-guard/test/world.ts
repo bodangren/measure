@@ -79,6 +79,8 @@ export type World = {
   toasts: string[]
   /** The Bash commands that fail (non-zero exit) when the mod lets them run. */
   failing: string[]
+  /** What `git diff --cached --name-only` prints: the staged paths. */
+  staged: string[]
 }
 
 /**
@@ -90,7 +92,7 @@ export const world = (
   files: Record<string, string>,
   { isRepo = true, store = {} }: { isRepo?: boolean; store?: Record<string, unknown> } = {},
 ): World => {
-  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [], failing: [] }
+  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [], failing: [], staged: [] }
   on('store.get', ($, e) => ({ value: w.store[e.key] }))
   on('store.set', ($, e) => {
     w.store[e.key] = e.value
@@ -122,7 +124,8 @@ export const world = (
   on('process.run', ($, e) => ({
     value: {
       exitCode: e.argv[0] === 'git' ? 0 : 127,
-      stdout: e.argv[0] === 'git' && e.argv[1] === 'status' ? w.git : '',
+      stdout:
+        e.argv[0] !== 'git' ? '' : e.argv[1] === 'status' ? w.git : e.argv[1] === 'diff' && e.argv.includes('--cached') ? w.staged.join('\n') : '',
       stderr: '',
       isStdoutTruncated: false,
       isStderrTruncated: false,
@@ -154,6 +157,10 @@ export const world = (
     if (e.tool === 'Write') w.files[e.file_path] = e.content
     if (e.tool === 'Bash' && w.failing.includes(e.command)) {
       return { isError: true, result: 'Exit code 1', text: 'Exit code 1' }
+    }
+    if (e.tool === 'Bash' && /\bgit\s+commit\b/.test(e.command)) {
+      const commit = { sha: 'abc1234def5678', kind: 'committed' }
+      return { result: { stdout: '', stderr: '', interrupted: false, gitOperation: { commit } } as never, text: 'done' }
     }
     return { result: {} as never, text: 'done' }
   })
