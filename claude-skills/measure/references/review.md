@@ -27,7 +27,7 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 2. **Handle Failure:** If ANY of these files are missing, list them, announce: "Measure is not set up. Please run setup first." and HALT.
 
-3. **Check CDP Availability (non-blocking):** Run `command -v browser-harness-js >/dev/null 2>&1`. If found, note that the Browser Runtime Check (section 2.4) is available. If not found, note it as unavailable — this does NOT block the review, but the CDP step will be skipped if frontend changes are detected.
+3. **Check Kimi WebBridge Availability (non-blocking):** Run `~/.kimi-webbridge/bin/kimi-webbridge status`. If the result reports both `running: true` and `extension_connected: true`, note that the Browser Runtime Check (section 2.4) is available. Otherwise, follow the installed `kimi-webbridge` skill's operations guide. If it remains unavailable, note that browser verification will be skipped; this does not block the rest of the review.
 
 4. **Check build-graph Availability (non-blocking):** Run `command -v build-graph >/dev/null 2>&1` AND check that `graph.db` exists at the project root with mtime <24h. If both pass AND the Tech Stack includes TypeScript, note that the Graph Caller Check (section 2.2 step 4 and 2.3 step 6) is available. If not, note it as unavailable — this does NOT block the review, but graph-aware checks will emit a one-line skip note. Possible skip notes (whichever applies first):
    - `Note: build-graph not on PATH — skipping Graph Caller Check.`
@@ -107,140 +107,33 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
    - For added/renamed exported symbols, this check is N/A (no existing callers to break).
    - If §2.2 step 4 was skipped, record `Graph Caller Check: Skipped` for §2.5 and skip this entire bullet.
 
-### 2.4 Browser Runtime Check (CDP)
+### 2.4 Browser Runtime Check (Kimi WebBridge)
 
 **CONDITIONAL:** Only execute this section if the diff touches frontend files (extensions: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`, `.svg`, or any file in directories named `pages/`, `components/`, `views/`, `app/`, `src/app/`, `routes/`). If no frontend files are present in the diff, skip to 2.5.
 
-**PURPOSE:** Complement unit/integration tests with real browser diagnostics — console errors, network failures, visual spot-checks, and DOM verification — using `browser-harness-js` (CDP).
+**PURPOSE:** Complement unit/integration tests with real browser diagnostics — console errors, network failures, visual spot-checks, and DOM verification — using the user's real browser through Kimi WebBridge.
 
 #### 2.4.1 Prerequisites
 
-1. **Verify `browser-harness-js` is available:**
-   ```bash
-   command -v browser-harness-js >/dev/null 2>&1
-   ```
-   If not found, warn: "CDP check skipped: `browser-harness-js` not found on PATH." and skip to 2.5.
+1. Read the installed `kimi-webbridge` `SKILL.md` completely and follow it as the source of truth for browser operations.
+2. Run `~/.kimi-webbridge/bin/kimi-webbridge status`. Continue only when both the daemon and extension are connected. If they remain unavailable after following the skill's operations guide, warn and skip to 2.5.
+3. Detect the dev-server command from `package.json`. Reuse an already-running server when possible. If the review must start one, keep its log under the repository's ignored `.cache/measure-browser/` directory; never use `/tmp` for repository task artifacts.
+4. Infer affected routes from the changed route/page files. If none can be inferred, use `/`.
 
-2. **Detect dev server command** from `package.json`:
-   - Read `package.json` and look for scripts in order: `"dev"`, `"start"`, `"serve"`.
-   - Use the appropriate package manager (`npx`, `pnpx`, `yarn`, `bunx`) based on the lockfile present (`package-lock.json` → `npx`, `pnpm-lock.yaml` → `pnpx`, `bun.lock` → `bunx`, otherwise `npx`).
-   - Record the command as `<pm> run <script>`.
+#### 2.4.2 Collect Diagnostics
 
-3. **Check if dev server is already running:**
-   ```bash
-   curl -sf http://localhost:3000 >/dev/null 2>&1 || curl -sf http://localhost:5173 >/dev/null 2>&1 || curl -sf http://localhost:4173 >/dev/null 2>&1
-   ```
-   - If a server responds, skip starting one and use the existing URL.
-   - If no server responds, start the dev server in the background:
-     ```bash
-     <pm> run <script> &>/tmp/measure-dev-server.log &
-     ```
-     Wait up to 15 seconds for it to become available (poll `curl -sf` on the expected port). If it fails to start, warn and skip to 2.5.
+1. Use one task-specific Kimi WebBridge session for the entire review. On the first navigation, pass `newTab: true` and a clear `group_title`.
+2. Start Kimi WebBridge network capture before navigation.
+3. For each affected route:
+   - Navigate to the route in the same session.
+   - Use `snapshot` to verify the page title, primary heading, `<main>` content, and changed controls or content.
+   - Use `network list` and `network detail` to collect failed requests. Unexpected 4xx/5xx responses are **Medium** findings; failures that break the reviewed flow are **High**.
+   - Use `evaluate` or Kimi WebBridge's `cdp` escape hatch, as documented by the installed skill, to collect uncaught exceptions and console errors. Uncaught exceptions or application errors are **High** findings.
+   - Capture a screenshot to a unique path under `.cache/measure-browser/`, inspect it, and note blank pages, broken layouts, visible error states, or missing critical elements.
+4. Do not type credentials shown in screenshots or invent authentication data. If the route reaches an auth wall, stop that flow and record the required manual verification.
+5. Close the Kimi WebBridge session only when the user requests that its tab group be closed. If the review started a dev server, stop that server before continuing.
 
-#### 2.4.2 Connect and Collect Diagnostics
-
-1. **Connect to Chrome via CDP:**
-   ```bash
-   browser-harness-js 'await session.connect()'
-   ```
-   If this fails with "No running browser with remote debugging detected":
-   - Inform the user: "CDP check requires a running Chrome with remote debugging. Opening chrome://inspect/#remote-debugging — please click **Allow** when prompted."
-   - Run: `xdg-open 'chrome://inspect/#remote-debugging' 2>/dev/null || google-chrome 'chrome://inspect/#remote-debugging' 2>/dev/null`
-   - Retry `session.connect()` with `timeoutMs: 30000`.
-   - If still fails, warn and skip to 2.5.
-
-2. **Identify affected routes:**
-   - Scan the diff for route/page files (e.g., `app/**/page.tsx`, `src/pages/*`, `pages/*`).
-   - Map changed files to their routes (e.g., `app/dashboard/page.tsx` → `/dashboard`).
-   - If no specific routes can be inferred, use `/` (root) as default.
-   - Build a list of URLs to check: `http://localhost:<port><route>` for each route.
-
-3. **For each affected route, run these checks:**
-
-   **a) Navigate to the page:**
-   ```bash
-   browser-harness-js "await session.Page.navigate({url: 'http://localhost:<port><route>'})"
-   ```
-
-   **b) Console errors & warnings:**
-   ```bash
-   browser-harness-js <<'EOF'
-   await session.Runtime.enable()
-   const consoleMessages = []
-   const off = session.onEvent((method, params) => {
-     if (method === 'Runtime.consoleAPICalled' && (params.type === 'error' || params.type === 'warning')) {
-       const args = params.args.map(a => a.value || a.description || '').join(' ')
-       consoleMessages.push({ type: params.type, text: args })
-     }
-     if (method === 'Runtime.exceptionThrown') {
-       consoleMessages.push({ type: 'exception', text: params.exceptionDetails?.text || 'uncaught exception' })
-     }
-   })
-   globalThis._consoleOff = off
-   globalThis._consoleMessages = consoleMessages
-   await new Promise(r => setTimeout(r, 3000))
-   off()
-   return consoleMessages
-   EOF
-   ```
-   Collect and store results. Any `error` or `exception` entries are **High** severity findings.
-
-   **c) Network errors:**
-   ```bash
-   browser-harness-js <<'EOF'
-   await session.Network.enable()
-   const failedRequests = []
-   const off = session.onEvent((method, params) => {
-     if (method === 'Network.responseReceived' && params.response?.status >= 400) {
-       failedRequests.push({ url: params.response.url, status: params.response.status })
-     }
-     if (method === 'Network.loadingFailed') {
-       failedRequests.push({ url: params.requestId, error: params.errorText || 'loading failed' })
-     }
-   })
-   globalThis._netOff = off
-   globalThis._failedRequests = failedRequests
-   await new Promise(r => setTimeout(r, 3000))
-   off()
-   return failedRequests
-   EOF
-   ```
-   Collect and store results. Any 4xx/5xx responses are **Medium** severity findings.
-
-   **d) Screenshot:**
-   ```bash
-   browser-harness-js 'await session.Page.captureScreenshot({format:"png"})'
-   ```
-   Save the screenshot and include it in the review report for visual inspection. Note any obvious visual issues (blank pages, layout breaks, error states visible in the screenshot).
-
-   **e) DOM/visual spot-check:**
-   - For each changed component/page, verify key elements exist:
-   ```bash
-   browser-harness-js <<'EOF'
-   const { root } = await session.DOM.getDocument()
-   const checks = {}
-   const selectors = ['main', 'h1', '[data-testid]']
-   for (const sel of selectors) {
-     try {
-       const { nodeId } = await session.DOM.querySelector({ nodeId: root.nodeId, selector: sel })
-       checks[sel] = nodeId > 0 ? 'found' : 'missing'
-     } catch { checks[sel] = 'error' }
-   }
-   return checks
-   EOF
-   ```
-   - If critical structural elements (like `<main>` or the primary heading) are missing, flag as **Medium** severity.
-
-4. **Cleanup:**
-   ```bash
-   browser-harness-js 'await session.Page.close()' 2>/dev/null
-   ```
-   If the review started the dev server, stop it:
-   ```bash
-   kill %1 2>/dev/null
-   ```
-
-#### 2.4.3 Aggregate CDP Findings
+#### 2.4.3 Aggregate Browser Findings
 
 Combine all diagnostics into a structured summary:
 - **Console Issues:** List errors, warnings, and exceptions per route.
