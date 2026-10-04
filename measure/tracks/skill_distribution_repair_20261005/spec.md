@@ -34,9 +34,9 @@ Decisions from the user (2026-10-05):
   - `~/.config/opencode/agents` is not a target. Its 13 files use another format (a `permissions:` list, no `model:` line), and the installer does not change them. (User decision, 2026-10-05, Task 1.2.)
 - **FR-3:** The installer writes each file in place (`cp`, not rename). An existing hard link to a target file stays.
 - **FR-4:** The installer writes a stamp file in each target: the ref, the commit SHA, the time, and the SHA-256 of each installed file.
-- **FR-5:** Local edit protection: if the hash of a target file is different from the hash in the stamp, the installer does not overwrite that file. It writes a warning, continues with the other files, and exits with code 2.
+- **FR-5:** Local edit protection: if the hash of a target file is different from the hash in the stamp, the installer does not overwrite that file. It writes a warning, continues with the other files, and exits with code 2. A target with no stamp file gets the same protection for each different file, until the user runs `--adopt` once for the first install.
 - **FR-6:** The installer removes a target file only if the stamp lists it and the source no longer has it. It never removes a file that it did not install.
-- **FR-7:** `--check` writes nothing. It reports each file that is missing, different, or locally edited, and exits with 0 (no differences) or 1 (differences).
+- **FR-7:** `--check` writes nothing. It reports each file that is missing, different, or locally edited, and exits with 0 (no differences) or 1 (differences). An error (an unknown ref, a bad targets file, a bad option) exits with 3 in all modes. `contract.md` has the full rules.
 - **FR-8:** `--cron install` adds one crontab line that runs the installer every hour. `--cron remove` removes that line. Both keep all other crontab lines, and running either one twice gives the same result.
 - **FR-9:** Each run appends a summary line to `~/.local/state/measure/install.log`.
 
@@ -57,7 +57,7 @@ Decisions from the user (2026-10-05):
 
 ## Non-Functional Requirements
 
-- The installer is bash with the standard tools (`git`, `cp`, `sha256sum`, `crontab`). No package manager.
+- The installer is bash with the standard tools (`git`, `tar`, `sha256sum`, `crontab`). No package manager.
 - The tests run against a temporary git repository and a temporary `HOME`. They never write to the real home folder.
 
 ## Acceptance Criteria
