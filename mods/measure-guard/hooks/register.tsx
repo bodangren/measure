@@ -11,15 +11,17 @@ import {
   parseTracks,
   ruleSection,
   selectActive,
+  statusLines,
   taskNote,
 } from './parse'
-import { SETUP_PROMPT, editDecision, needsSetup, setupBandText } from './guards'
+import { SETUP_PROMPT, editDecision, needsSetup, offKey, setupBandText } from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
 const SETUP = { plugin: 'measure-guard', key: 'setupChoice' } as const
 const OFF = { plugin: 'measure-guard', key: 'guardsOff' } as const
 const RULE_ID = 'measure-guard:rule'
+const STATUS_PANE = 'measure-status'
 
 /** The plan file of a track folder: the index's plan link, else plan.md. */
 const planPathOf = async ($: EngineInterface, folder: string): Promise<string | null> => {
@@ -125,8 +127,48 @@ export const register: Register = (on, options) => {
   const mode = parseMode(options.mode)
 
   on('session.start', async ($, e, next) => {
-    await refresh($)
+    const snapshot = await refresh($)
+    if ((await $.store.get(offKey(snapshot.root))) === true) await $.state.set(OFF, 'repo')
+    await $.command.register({ name: 'measure-status', description: 'Show the Measure tracks and the plan progress in a pane' })
+    await $.command.register({
+      name: 'measure-off',
+      description: 'Turn off the measure-guard guards for this session, or with "repo" for this repository',
+      argumentHint: '[repo]',
+    })
+    await $.command.register({
+      name: 'measure-on',
+      description: 'Turn on the measure-guard guards again, or with "repo" for this repository',
+      argumentHint: '[repo]',
+    })
     return next(e)
+  })
+
+  on('command.run', { command: 'measure-status' }, async $ => {
+    await refresh($)
+    await $.ui.open({ id: STATUS_PANE, title: 'Measure status' })
+    return { text: 'Opened the Measure status pane.' }
+  })
+
+  on('command.run', { command: 'measure-off' }, async ($, e) => {
+    const isRepo = e.args.trim() === 'repo'
+    await $.state.set(OFF, isRepo ? 'repo' : 'session')
+    if (isRepo) await $.store.set(offKey((await current($)).root), true)
+    return {
+      text: isRepo
+        ? 'measure-guard: the guards are off for this repository. /measure-on repo turns them on.'
+        : 'measure-guard: the guards are off for this session. /measure-on turns them on.',
+    }
+  })
+
+  on('command.run', { command: 'measure-on' }, async ($, e) => {
+    const isRepo = e.args.trim() === 'repo'
+    await $.state.set(OFF, null)
+    if (isRepo) await $.store.delete(offKey((await current($)).root))
+    return {
+      text: isRepo
+        ? 'measure-guard: the guards are on for this repository.'
+        : 'measure-guard: the guards are on for this session.',
+    }
   })
 
   on('prompt.compose', async ($, e, next) => {
@@ -184,7 +226,7 @@ export const register: Register = (on, options) => {
       )
     }
 
-    const line = snapshot === null ? null : bandLine(snapshot)
+    const line = snapshot === null ? null : bandLine(snapshot, (await $.state.get(OFF)).value ?? null)
     if (line === null) return next(e)
     const isError = snapshot?.parseError !== null
 
@@ -193,6 +235,19 @@ export const register: Register = (on, options) => {
         <Text dimColor={!isError} color={isError ? 'yellow' : undefined} wrap="truncate-end">
           {line}
         </Text>
+      </Box>
+    )
+  })
+
+  on('ui.render', { component: 'Pane', requestId: STATUS_PANE }, async ($, e) => {
+    const { Box, Text } = $.ui.resolve(e)
+    const lines = statusLines((await $.state.get(SNAPSHOT)).value ?? null, (await $.state.get(OFF)).value ?? null)
+
+    return (
+      <Box flexDirection="column">
+        {lines.map(line => (
+          <Text wrap="truncate-end">{line}</Text>
+        ))}
       </Box>
     )
   })

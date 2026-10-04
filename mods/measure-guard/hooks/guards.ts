@@ -24,7 +24,7 @@ export const relative = (snapshot: Snapshot, path: string): string =>
  */
 export const editDecision = (context: GuardContext, path: string): Decision => {
   const { snapshot, mode } = context
-  if (mode === 'advise' || snapshot === null) return null
+  if (mode === 'advise' || snapshot === null || context.guardsOff !== null) return null
   if (needsSetup(snapshot)) {
     const isAsking = context.setupChoice === null || context.setupChoice === 'pending'
     return isAsking && isInside(snapshot.root, path) ? { deny: SETUP_DENY } : null

@@ -226,7 +226,16 @@ export const bandLine = (snapshot: Snapshot, guardsOff: GuardsOff = null): strin
     if (blocked > 0) parts.push(`[b] ${blocked}`)
   }
   if (snapshot.inProgressCount >= 2) parts.push(`${snapshot.inProgressCount} tracks in progress`)
+  if (guardsOff === 'session') parts.push('guards off for this session')
+  if (guardsOff === 'repo') parts.push('guards off for this repository')
   return parts.join(' · ')
+}
+
+/** The bypass state in words. */
+export const guardsText = (guardsOff: GuardsOff): string => {
+  if (guardsOff === 'session') return 'off for this session (/measure-on turns them on)'
+  if (guardsOff === 'repo') return 'off for this repository (/measure-on repo turns them on)'
+  return 'on'
 }
 
 /**
@@ -235,5 +244,33 @@ export const bandLine = (snapshot: Snapshot, guardsOff: GuardsOff = null): strin
  * `[b]` tasks, and the bypass state.
  */
 export const statusLines = (snapshot: Snapshot | null, guardsOff: GuardsOff): string[] => {
-  throw new Error('statusLines: not implemented')
+  const lines: string[] = []
+  if (snapshot === null || !snapshot.hasMeasure) {
+    lines.push('This project has no measure/ folder.')
+  } else {
+    if (snapshot.parseError !== null) lines.push(`The Measure files cannot be read: ${snapshot.parseError}`)
+    const { active } = snapshot
+    lines.push('Tracks:')
+    for (const track of snapshot.tracks) {
+      const mark = active?.entry.id === track.id ? ' · active' : ''
+      lines.push(`  [${track.marker}] ${track.name} (${track.folder})${mark}`)
+    }
+    if (active !== null) {
+      lines.push(`Active plan: ${active.planPath.slice(snapshot.root.length + 1)}`)
+      for (const phase of active.plan.phases) {
+        const closed = phase.tasks.filter(task => !isOpen(task)).length
+        const checkpoint = phase.checkpoint === null ? '' : ` · checkpoint ${phase.checkpoint}`
+        lines.push(`  ${phase.title} · ${closed}/${phase.tasks.length} closed${checkpoint}`)
+      }
+      const blocked = tasksOf(active.plan).filter(task => task.marker === 'b')
+      if (blocked.length > 0) {
+        lines.push('Blocked tasks ([b]):')
+        for (const task of blocked) {
+          lines.push(`  [b] ${task.text}${task.deferredOwner === null ? ' (open: no deferred:<owner>)' : ''}`)
+        }
+      }
+    }
+  }
+  lines.push(`Guards: ${guardsText(guardsOff)}`)
+  return lines
 }
