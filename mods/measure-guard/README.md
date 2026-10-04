@@ -91,6 +91,23 @@ In `guard` and `strict` mode, the mod checks each `Edit` or `Write` of `tracks.m
 
 The mod finds the plan of a closed track through the track's link, so the closed track can be a different track from the active track.
 
+## End-of-turn check
+
+When a turn ends, the mod looks for 2 problems:
+
+- A task that changed to `[x]` during the turn and has no commit SHA.
+- Files that changed outside `measure/` during the turn and are not committed, while no task has `[~]`.
+
+The mod takes a snapshot (`git status --porcelain` and the `[x]` tasks with no SHA) when the user submits a prompt. So the check reports only what changed in the turn, not old problems.
+
+| Mode | What the mod does |
+| --- | --- |
+| `advise` | The band shows the problems. |
+| `guard` | The band shows the problems, a toast appears, and the agent gets a reminder at the next prompt. |
+| `strict` | The turn stays open (`classic.Stop` with `{ block }`) until the agent fixes the problems. After 2 blocks, the turn ends, and the mod reports as in `guard` mode. |
+
+Limits: the check assumes that the session root is the repository root. A file that was already dirty before the turn and changes again is not reported.
+
 ## Commands
 
 | Command | What it does |
