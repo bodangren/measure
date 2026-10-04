@@ -164,10 +164,10 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.2: Test (Red) — TDD guard `96209db`
     - [x] Write tests: deny a source edit before Red, allow a test file edit, allow after a test change and a failed test command, allow Markdown and JSON, reset on a task change, no check in `guard`
     - [x] Run the tests and record the failure
-- [~] Task 8.3: Implement (Green) — TDD guard
-    - [ ] Record test file edits from `tool.call`. Record failed test commands from the Bash tool result (exit code other than 0)
-    - [ ] Reset `red` when the `[~]` task changes. Add the strict branch to `editDecision`
-- [ ] Task 8.4: Validate & Docs
+- [x] Task 8.3: Implement (Green) — TDD guard `f99833e`
+    - [x] Record test file edits from `tool.call`. Record failed test commands from the Bash tool result (exit code other than 0)
+    - [x] Reset `red` when the `[~]` task changes. Add the strict branch to `editDecision`
+- [~] Task 8.4: Validate & Docs
     - [ ] Run validate and the full test suite
     - [ ] Add the TDD guard section and the name-based limits to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md)
