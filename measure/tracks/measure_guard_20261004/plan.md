@@ -22,15 +22,15 @@ _Story ref: spec.md#story-s1_
     - [x] In `types/index.d.ts`, define `Marker`, `Task`, `Phase`, `Plan`, `TrackEntry`, and the `$.state` fields `root`, `mode`, `active`, `inProgressCount`, `parseError`
     - [x] Declare `parseTracks`, `parsePlan`, `selectActive`, `isClosed`, and `contextSection` in `hooks/parse.ts`
     - [x] `selectActive` rule: the first `[~]` track whose plan has a `[~]` task, else the first `[~]` track
-- [~] Task 1.4: Test (Red) — parser, rule section, and task note
-    - [ ] Update the contract for the design change (2026-10-04, prompt cache): a fixed `ruleSection`, `noteKey` and `taskNote` in place of `contextSection`, and the `$.state` field `notedKey`
-    - [ ] Generate `test/fixtures/real.ts` from this repository's `measure/` files with `test/fixtures/sync-real.sh` (the test environment has no file access, so fixtures are `.ts` modules; this replaces the live smoke test)
-    - [ ] Add small fixture plans: `[b]` with and without `deferred:<owner>`, SHA with and without backticks, indented sub-tasks, `[checkpoint: <sha>]` headings
-    - [ ] Add a fixture `tracks.md` with 2 `[~]` tracks, where only the second plan has a `[~]` task
-    - [ ] Write tests for both `tracks.md` formats, active-track selection (one `[~]` track, 2 `[~]` tracks, no `[~]` task in any plan), phase-only counting, the `[b]` rule, SHA parse, and default mode
-    - [ ] Write tests: the rule section text is the same for 2 different tasks; a note at prompt submit when the task changed, and no note when it did not; a note in the tool result when an edit changes the task; a note again after a compaction
-    - [ ] Run `claude plugin test mods/measure-guard` and record the failure
-- [ ] Task 1.5: Implement (Green) — parser, session start, rule section, task note
+- [x] Task 1.4: Test (Red) — parser, rule section, and task note `7f6cdec`
+    - [x] Update the contract for the design change (2026-10-04, prompt cache): a fixed `ruleSection`, `noteKey` and `taskNote` in place of `contextSection`, and the `$.state` field `notedKey`
+    - [x] Generate `test/fixtures/real.ts` from this repository's `measure/` files with `test/fixtures/sync-real.sh` (the test environment has no file access, so fixtures are `.ts` modules; this replaces the live smoke test)
+    - [x] Add small fixture plans: `[b]` with and without `deferred:<owner>`, SHA with and without backticks, indented sub-tasks, `[checkpoint: <sha>]` headings
+    - [x] Add a fixture `tracks.md` with 2 `[~]` tracks, where only the second plan has a `[~]` task
+    - [x] Write tests for both `tracks.md` formats, active-track selection (one `[~]` track, 2 `[~]` tracks, no `[~]` task in any plan), phase-only counting, the `[b]` rule, SHA parse, and default mode
+    - [x] Write tests: the rule section text is the same for 2 different tasks; a note at prompt submit when the task changed, and no note when it did not; a note in the tool result when an edit changes the task; a note again after a compaction
+    - [x] Run `claude plugin test mods/measure-guard` and record the failure
+- [~] Task 1.5: Implement (Green) — parser, session start, rule section, task note
     - [ ] Implement the functions in `hooks/parse.ts`
     - [ ] On `session.start`, find `measure/index.md`, resolve the Tracks Registry through the index (default paths as fallback), parse, and keep the result in `$.state`
     - [ ] On `prompt.compose`, add the fixed rule section
