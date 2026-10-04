@@ -1,0 +1,9 @@
+{
+  "id": "agent_performance_benchmarking_20260527",
+  "title": "Agent Performance Benchmarking",
+  "status": "cancelled",
+  "created": "2026-05-27",
+  "type": "feature",
+  "cancelled_at": "2026-10-05",
+  "cancel_reason": "Fleet Commander measure/model-portfolio.md and the Pi harness own model routing. The harness ran only an echo adapter. rubric.json stays in the archive for a later plan-adherence audit."
+}

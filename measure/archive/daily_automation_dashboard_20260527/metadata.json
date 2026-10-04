@@ -1,0 +1,9 @@
+{
+  "id": "daily_automation_dashboard_20260527",
+  "title": "Daily Automation Dashboard",
+  "status": "cancelled",
+  "created": "2026-05-27",
+  "type": "feature",
+  "cancelled_at": "2026-10-05",
+  "cancel_reason": "The daily reports stopped on 2026-06-27, and ~/Desktop/daily-dashboard.html and the ~/Desktop/dashboard project already exist. The plan needs npm, which the Measure tech stack does not allow."
+}

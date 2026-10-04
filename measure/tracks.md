@@ -19,23 +19,18 @@ This file tracks all major tracks for the Measure project.
 - [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
   *Link: [./archive/graph_integration_20260525/](./archive/graph_integration_20260525/)*
 
-## Upcoming Tracks
+## Cancelled Tracks
 
-- [ ] **Track: Daily Automation Dashboard**
-  *Link: [./tracks/daily_automation_dashboard_20260527/](./tracks/daily_automation_dashboard_20260527/)*
-  *Generate styled HTML dashboard from daily summaries with health trends and project timeline.*
+Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
 
-- [ ] **Track: Track Dependency Graph**
-  *Link: [./tracks/track_dependency_graph_20260527/](./tracks/track_dependency_graph_20260527/)*
-  *Add optional dependencies between tracks and generate visual dependency graphs.*
-
-- [ ] **Track: Multi-Project Portfolio View**
-  *Link: [./tracks/multi_project_portfolio_view_20260527/](./tracks/multi_project_portfolio_view_20260527/)*
-  *CLI command scanning all projects for consolidated health and pending-track overview.*
-
-- [ ] **Track: Agent Performance Benchmarking**
-  *Link: [./tracks/agent_performance_benchmarking_20260527/](./tracks/agent_performance_benchmarking_20260527/)*
-  *Benchmark different AI models on identical tracks to recommend optimal model per task type.*
+- Daily Automation Dashboard — the daily reports stopped, and a dashboard already exists.
+  *Link: [./archive/daily_automation_dashboard_20260527/](./archive/daily_automation_dashboard_20260527/)*
+- Track Dependency Graph — no current need, and the CLI breaks the no-build-tools rule.
+  *Link: [./archive/track_dependency_graph_20260527/](./archive/track_dependency_graph_20260527/)*
+- Multi-Project Portfolio View — Fleet Commander owns the multi-project view.
+  *Link: [./archive/multi_project_portfolio_view_20260527/](./archive/multi_project_portfolio_view_20260527/)*
+- Agent Performance Benchmarking — Fleet Commander owns model routing. `rubric.json` stays for a later audit.
+  *Link: [./archive/agent_performance_benchmarking_20260527/](./archive/agent_performance_benchmarking_20260527/)*
 
 ---
 
