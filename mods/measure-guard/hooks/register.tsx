@@ -230,9 +230,6 @@ const writtenPath = (e: ToolCallInput): string | null => {
   return null
 }
 
-const isInMeasure = (snapshot: Snapshot, path: string): boolean =>
-  joinPath(path).startsWith(`${joinPath(snapshot.root, 'measure')}/`)
-
 export const register: Register = (on, options) => {
   const mode = parseMode(options.mode)
 
@@ -358,7 +355,7 @@ export const register: Register = (on, options) => {
     if (ran.isError === true) notes.length = 0
     else if (commitReminderDue) notes.push(commitReminder(commitShaOf(ran.result)))
 
-    const touchesPlan = e.tool === 'Bash' || (path !== null && isInMeasure(await current($), path))
+    const touchesPlan = e.tool === 'Bash' || (path !== null && isInside(joinPath((await current($)).root, 'measure'), path))
     if (touchesPlan) {
       const note = await pendingNote($, await refresh($), mode)
       if (note !== null) notes.push(note)
