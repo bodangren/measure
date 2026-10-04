@@ -1,7 +1,7 @@
 // Pure guard decisions. Each takes a GuardContext and the call, and returns
 // null to allow it or { deny } with the text the agent reads.
 import type { ClosingTrack, Decision, GuardContext, SetupChoice, Snapshot, TrackClose, TrackEntry } from '../types'
-import { currentTask, joinPath, nextTask } from './parse'
+import { currentTask, isOpen, joinPath, nextTask, parsePlan, parseTracks, tasksOf } from './parse'
 
 /** The text every deny ends with: the bypass. */
 export const BYPASS = 'If this block is wrong, the user can run /measure-off.'
@@ -76,12 +76,20 @@ export type FileEdit =
 
 /** The file text after the edit; null when the edit does not apply. */
 export const applyEdit = (edit: FileEdit, text: string): string | null => {
-  throw new Error('applyEdit: not implemented')
+  if (edit.tool === 'Write') return edit.content
+  if (!text.includes(edit.old_string)) return null
+  return edit.replace_all === true
+    ? text.split(edit.old_string).join(edit.new_string)
+    : text.replace(edit.old_string, () => edit.new_string)
 }
+
+/** True when the guards of guard and strict mode apply. */
+const isGuarding = (context: GuardContext): boolean => context.mode !== 'advise' && context.guardsOff === null
 
 /** The tracks that are not `[x]` in `before` and are `[x]` in `after`. */
 export const closedTracks = (before: string, after: string): TrackEntry[] => {
-  throw new Error('closedTracks: not implemented')
+  const was = new Map(parseTracks(before).map(track => [track.id, track.marker]))
+  return parseTracks(after).filter(track => track.marker === 'x' && was.get(track.id) !== 'x')
 }
 
 /**
@@ -90,7 +98,40 @@ export const closedTracks = (before: string, after: string): TrackEntry[] => {
  * owner). On an allow, the note lists all `[b]` tasks of the closed plans.
  */
 export const trackCloseDecision = (context: GuardContext, closing: readonly ClosingTrack[]): TrackClose => {
-  throw new Error('trackCloseDecision: not implemented')
+  if (!isGuarding(context)) return { decision: null, note: null }
+  const problems: string[] = []
+  const blocked: string[] = []
+  for (const { entry, plan } of closing) {
+    if (plan === null) continue
+    const tasks = tasksOf(plan)
+    const open = tasks.filter(isOpen)
+    if (open.length > 0) {
+      const listed = open.slice(0, 10).map(task => {
+        const why = task.marker === 'b' ? ' (needs a deferred:<owner> field)' : ''
+        return `  - [${task.marker}] ${task.text}${why}`
+      })
+      const more = open.length > 10 ? [`  - and ${open.length - 10} more`] : []
+      problems.push(`"${entry.name}" has ${open.length} open task(s):`, ...listed, ...more)
+    }
+    blocked.push(...tasks.filter(task => task.marker === 'b').map(task => `  - [b] ${task.text}`))
+  }
+  if (problems.length > 0) {
+    return {
+      decision: {
+        deny: [
+          'measure-guard: a track can change to [x] only when its plan has no open task.',
+          ...problems,
+          `Close these tasks first. A human-gated task can stay [b] with a deferred:<owner> field. ${BYPASS}`,
+        ].join('\n'),
+      },
+      note: null,
+    }
+  }
+  const note =
+    blocked.length === 0
+      ? null
+      : ['measure-guard: the closed track has these [b] tasks. List them for the user in your report:', ...blocked].join('\n')
+  return { decision: null, note }
 }
 
 /**
@@ -98,5 +139,17 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
  * `[~]` in phase N+1 while the heading of phase N has no `[checkpoint: <sha>]`.
  */
 export const phaseStartDecision = (context: GuardContext, before: string, after: string): Decision => {
-  throw new Error('phaseStartDecision: not implemented')
+  if (!isGuarding(context)) return null
+  const wasActive = new Set(tasksOf(parsePlan(before)).filter(task => task.marker === '~').map(task => task.text))
+  const phases = parsePlan(after).phases
+  for (const [i, phase] of phases.entries()) {
+    const previous = phases[i - 1]
+    if (previous === undefined || previous.checkpoint !== null) continue
+    if (phase.tasks.some(task => task.marker === '~' && !wasActive.has(task.text))) {
+      return {
+        deny: `measure-guard: "${phase.title}" cannot start, because the heading of "${previous.title}" has no [checkpoint: <sha>]. Run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for "${previous.title}" first. ${BYPASS}`,
+      }
+    }
+  }
+  return null
 }

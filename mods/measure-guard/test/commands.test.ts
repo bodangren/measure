@@ -96,6 +96,7 @@ describe('statusLines', () => {
     root: ROOT,
     hasMeasure: true,
     isRepo: true,
+  tracksPath: null,
     tracks: [entry],
     active: { entry, planPath: `${ROOT}/measure/tracks/band_1/plan.md`, plan: parsePlan(BAND_PLAN) },
     inProgressCount: 1,

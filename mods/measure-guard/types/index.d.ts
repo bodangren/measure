@@ -71,6 +71,8 @@ export type Snapshot = {
   hasMeasure: boolean
   /** True when the root is inside a git repository. */
   isRepo: boolean
+  /** Absolute path of the Tracks Registry (tracks.md); null when not found. */
+  tracksPath: string | null
   tracks: TrackEntry[]
   active: ActiveTrack | null
   /** The count of tracks with `[~]`. */

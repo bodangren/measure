@@ -1,5 +1,5 @@
 import type { EngineInterface, Register, ToolCallInput } from 'claude-code'
-import type { GuardContext, Mode, Plan, Snapshot } from '../types'
+import type { ClosingTrack, Decision, GuardContext, Mode, Plan, Snapshot } from '../types'
 import {
   bandLine,
   dirname,
@@ -14,7 +14,18 @@ import {
   statusLines,
   taskNote,
 } from './parse'
-import { SETUP_PROMPT, editDecision, needsSetup, offKey, setupBandText } from './guards'
+import {
+  SETUP_PROMPT,
+  applyEdit,
+  closedTracks,
+  editDecision,
+  isInside,
+  needsSetup,
+  offKey,
+  phaseStartDecision,
+  setupBandText,
+  trackCloseDecision,
+} from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
@@ -41,6 +52,7 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
     root,
     hasMeasure: false,
     isRepo: (await $.session.repo()) !== null,
+    tracksPath: null,
     tracks: [],
     active: null,
     inProgressCount: 0,
@@ -70,7 +82,7 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
       planPaths.set(track.id, path)
     }
 
-    const loaded = { ...base, hasMeasure: true, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
+    const loaded = { ...base, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
     const entry = selectActive(tracks, plans)
     if (entry === null) return loaded
     const plan = plans.get(entry.id)
@@ -104,6 +116,40 @@ const guardContext = async ($: EngineInterface, mode: Mode): Promise<GuardContex
   setupChoice: (await $.state.get(SETUP)).value ?? null,
   guardsOff: (await $.state.get(OFF)).value ?? null,
 })
+
+/** The text of a file; empty when it does not exist yet. */
+const readOrEmpty = async ($: EngineInterface, path: string): Promise<string> =>
+  (await $.fs.exists(path)) ? $.fs.read(path) : ''
+
+/**
+ * The closeout guard for an Edit or Write of tracks.md or a plan.md: the
+ * decision, and the [b] note for an allowed track close.
+ */
+const closeout = async (
+  $: EngineInterface,
+  context: GuardContext,
+  e: ToolCallInput,
+): Promise<{ decision: Decision; note: string | null }> => {
+  const none = { decision: null, note: null }
+  const { snapshot } = context
+  if (e.tool !== 'Edit' && e.tool !== 'Write') return none
+  if (snapshot === null || !snapshot.hasMeasure || !isInside(joinPath(snapshot.root, 'measure'), e.file_path)) return none
+  const path = joinPath(e.file_path)
+  const isRegistry = path === snapshot.tracksPath
+  if (!isRegistry && !path.endsWith('/plan.md')) return none
+
+  const before = await readOrEmpty($, path)
+  const after = applyEdit(e, before)
+  if (after === null) return none
+  if (!isRegistry) return { decision: phaseStartDecision(context, before, after), note: null }
+
+  const closing: ClosingTrack[] = []
+  for (const entry of closedTracks(before, after)) {
+    const planPath = await planPathOf($, joinPath(dirname(path), entry.folder))
+    closing.push({ entry, plan: planPath === null ? null : parsePlan(await $.fs.read(planPath)) })
+  }
+  return trackCloseDecision(context, closing)
+}
 
 /** The task note when the track or the task changed since the last note. */
 const pendingNote = async ($: EngineInterface, snapshot: Snapshot, mode: Mode): Promise<string | null> => {
@@ -185,15 +231,21 @@ export const register: Register = (on, options) => {
 
   on('tool.call', async ($, e, next) => {
     const path = writtenPath(e)
+    let closeNote: string | null = null
     if (path !== null) {
-      const decision = editDecision(await guardContext($, mode), path)
+      const context = await guardContext($, mode)
+      const decision = editDecision(context, path)
       if (decision !== null) return decision
+      const closed = await closeout($, context, e)
+      if (closed.decision !== null) return closed.decision
+      closeNote = closed.note
     }
     const ran = await next(e)
     const touchesPlan = e.tool === 'Bash' || (path !== null && isInMeasure(await current($), path))
     if (ran.deny !== undefined || !touchesPlan) return ran
-    const note = await pendingNote($, await refresh($), mode)
-    return note === null ? ran : { ...ran, context: [...(ran.context ?? []), note] }
+    const done = ran.isError === true ? null : closeNote
+    const notes = [done, await pendingNote($, await refresh($), mode)].filter(note => note !== null)
+    return notes.length === 0 ? ran : { ...ran, context: [...(ran.context ?? []), ...notes] }
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {

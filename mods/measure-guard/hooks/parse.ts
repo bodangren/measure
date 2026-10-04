@@ -110,7 +110,8 @@ export const parsePlan = (md: string): Plan => {
 export const isOpen = (task: Task): boolean =>
   task.marker === ' ' || task.marker === '~' || (task.marker === 'b' && task.deferredOwner === null)
 
-const tasksOf = (plan: Plan): Task[] => plan.phases.flatMap(phase => phase.tasks)
+/** All top-level tasks of the plan, in order. */
+export const tasksOf = (plan: Plan): Task[] => plan.phases.flatMap(phase => phase.tasks)
 
 /** The first `[~]` task of the plan. */
 export const currentTask = (plan: Plan): Task | null =>
