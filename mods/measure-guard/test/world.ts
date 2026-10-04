@@ -45,6 +45,8 @@ export const realFiles = (): Record<string, string> => ({
 
 export type World = {
   files: Record<string, string>
+  /** The prompts the mod submitted with $.prompt.submit. */
+  submitted: string[]
 }
 
 /**
@@ -56,7 +58,7 @@ export const world = (
   files: Record<string, string>,
   { isRepo = true }: { isRepo?: boolean } = {},
 ): World => {
-  const w: World = { files }
+  const w: World = { files, submitted: [] }
   mock.store(on)
 
   on('session.root', () => ({ value: ROOT }))
@@ -76,6 +78,10 @@ export const world = (
   on('prompt.compose', () => ({ sections: [{ id: 'intro', text: 'base', scope: 'shared' }] }))
   on('classic.UserPromptSubmit', () => ({}))
   on('ui.render', () => ({ type: 'Box', props: {}, children: [] }))
+  on('prompt.submit', ($, e) => {
+    w.submitted.push(e.text)
+    return { text: e.text }
+  })
 
   on('tool.call', ($, e) => {
     if (e.tool === 'Edit') {
