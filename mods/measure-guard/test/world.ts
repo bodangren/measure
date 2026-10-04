@@ -77,6 +77,8 @@ export type World = {
   git: string
   /** The toasts the mod showed. */
   toasts: string[]
+  /** The Bash commands that fail (non-zero exit) when the mod lets them run. */
+  failing: string[]
 }
 
 /**
@@ -88,7 +90,7 @@ export const world = (
   files: Record<string, string>,
   { isRepo = true, store = {} }: { isRepo?: boolean; store?: Record<string, unknown> } = {},
 ): World => {
-  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [] }
+  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [], failing: [] }
   on('store.get', ($, e) => ({ value: w.store[e.key] }))
   on('store.set', ($, e) => {
     w.store[e.key] = e.value
@@ -150,6 +152,9 @@ export const world = (
         : text.replace(e.old_string, e.new_string)
     }
     if (e.tool === 'Write') w.files[e.file_path] = e.content
+    if (e.tool === 'Bash' && w.failing.includes(e.command)) {
+      return { isError: true, result: 'Exit code 1', text: 'Exit code 1' }
+    }
     return { result: {} as never, text: 'done' }
   })
 
