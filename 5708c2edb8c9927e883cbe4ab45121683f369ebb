@@ -1,0 +1,5 @@
+Task 9.1: Contract - commit decision.
+Locked S9 acceptance criteria: (1) strict, git commit -m "update stuff": denied with the format <type>(<scope>): <description>; (2) no [~] task and files outside measure/ in the commit: denied; (3) only measure/ files and no [~] task: passes (the workflow's own plan and checkpoint commits); (4) a successful commit for a [~] task: the agent gets a reminder to add the git note and record the SHA.
+Design: parseCommitCommand reads -m/--message (quoted or a word), a heredoc $(cat <<'EOF' ...), -F/--file (message null), -a/--all, and a git add in the same command; a message the guard cannot read passes with a note. The files of the commit are git diff --cached --name-only, plus the changed files of git status when the commit takes changes. The reminder uses the SHA from the Bash result (gitOperation.commit.sha).
+Changes: types/index.d.ts (CommitCommand, CommitCheck), hooks/guards.ts (COMMIT_FORMAT, parseCommitCommand, commitDecision, commitReminder stubs).
+Checks: tsc and validate passed.
