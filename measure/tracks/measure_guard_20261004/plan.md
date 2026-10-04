@@ -103,11 +103,11 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: Status and bypass commands
 _Story ref: spec.md#story-s5_
 
-- [~] Task 5.1: Contract — commands and bypass state
-    - [ ] Lock the S5 acceptance criteria
-    - [ ] Add `$.state.guardsOff` (`null | session | repo`) and a `$.store` key for each repository root
-    - [ ] Declare `/measure-status`, `/measure-off [repo]`, `/measure-on [repo]`, and `statusPane(state)`
-- [ ] Task 5.2: Test (Red) — commands
+- [x] Task 5.1: Contract — commands and bypass state `a5650cb`
+    - [x] Lock the S5 acceptance criteria
+    - [x] Add `$.state.guardsOff` (`null | session | repo`) and a `$.store` key for each repository root
+    - [x] Declare `/measure-status`, `/measure-off [repo]`, `/measure-on [repo]`, and `statusPane(state)`
+- [~] Task 5.2: Test (Red) — commands
     - [ ] Write tests: session off, a new session turns the guards on, `repo` off stays off in a new session, `/measure-on` turns the guards on, `/measure-on repo` clears the store, pane content (tracks, progress, `[b]` list)
     - [ ] Run the tests and record the failure
 - [ ] Task 5.3: Implement (Green) — commands
