@@ -36,5 +36,17 @@ export const selectActive = (
   plans: ReadonlyMap<string, Plan>,
 ): TrackEntry | null => todo('selectActive')
 
-/** The system prompt section; null when the project has no measure/ folder. */
-export const contextSection = (snapshot: Snapshot): string | null => todo('contextSection')
+/**
+ * The fixed system prompt section. Its text never changes in a session, so it
+ * keeps the prompt cache; the changing state goes into notes (taskNote).
+ */
+export const ruleSection = (): string => todo('ruleSection')
+
+/**
+ * What the task note is about: the active track and its `[~]` task. A new key
+ * means a new note. Null when the project has no measure/ folder.
+ */
+export const noteKey = (snapshot: Snapshot): string | null => todo('noteKey')
+
+/** The note with the active track and task; null when there is no note. */
+export const taskNote = (snapshot: Snapshot, mode: Mode): string | null => todo('taskNote')

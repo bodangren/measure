@@ -70,6 +70,8 @@ declare module 'claude-code' {
   interface PluginState {
     'measure-guard': {
       snapshot: Snapshot | null
+      /** The noteKey of the last task note the agent got; null sends the next one. */
+      notedKey: string | null
     }
   }
 }
