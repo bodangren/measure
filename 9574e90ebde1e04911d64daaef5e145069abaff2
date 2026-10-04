@@ -1,0 +1,12 @@
+Task 3.2: Test (Red) - edit guard.
+Tests: test/edit-guard.test.ts (pass with a [~] task; deny with no [~] task, with the plan path, the next action, and /measure-off; Write and NotebookEdit guarded; deny with no [~] track and ask for a track; measure/ always passes; advise passes; marking a task [~] opens the edits; editDecision allows outside the project root, on a parse error, and before the first read).
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) an edit outside measure/ with no [~] task is denied with the next action [118.86ms]
+(fail) Write and NotebookEdit are guarded too [196.09ms]
+(fail) an edit with no track in progress is denied and asks for a track [230.94ms]
+(fail) the guard follows the plan: marking a task [~] opens the edits [130.07ms]
+(fail) editDecision > allows a path outside the project root [0.80ms]
+(fail) editDecision > allows on a parse error and before the first read [0.50ms]
+ 29 pass
+ 6 fail
+3 tests in the file pass before the guard exists: they check the allowed cases.
