@@ -189,4 +189,4 @@ _Story ref: spec.md#story-s9_
     - [x] Run validate and the full test suite
     - [x] Add the commit guard section to the README
     - [x] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
-- [ ] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md) deferred:user
