@@ -185,8 +185,8 @@ _Story ref: spec.md#story-s9_
 - [x] Task 9.3: Implement (Green) — commit guard `f610d62`
     - [x] Hook `tool.call` for Bash `git commit`. Get the staged files with `git diff --cached --name-only` (and the tracked changed files for `-a`)
     - [x] Send the git-note and SHA reminder after a successful commit
-- [~] Task 9.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the commit guard section to the README
-    - [ ] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
+- [x] Task 9.4: Validate & Docs `0fcd5b3`
+    - [x] Run validate and the full test suite
+    - [x] Add the commit guard section to the README
+    - [x] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
 - [ ] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md)
