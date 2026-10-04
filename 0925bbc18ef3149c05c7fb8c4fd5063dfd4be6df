@@ -1,0 +1,4 @@
+Task 4.1: Contract - setup prompt state.
+Locked S4 acceptance criteria: (1) git repository, no measure/: band with [ Set up Measure ] and [ Turn off for session ]; (2) no answer, guard or strict: an edit is denied and the agent must ask the user the same question; (3) [ Set up Measure ] sends a prompt to run the Measure setup workflow; (4) [ Turn off for session ] lets all calls pass for the session; (5) not a git repository: no band and no deny.
+Changes: types/index.d.ts (SetupChoice; GuardContext.setupChoice; PluginState setupChoice), hooks/guards.ts (SETUP_PROMPT, needsSetup and setupBandText stubs), hooks/register.tsx (guardContext helper reads the snapshot, the mode, and the setup answer).
+Checks: tsc, validate, and the existing 35 tests pass.
