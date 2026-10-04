@@ -19,12 +19,16 @@ import {
   applyEdit,
   changedDuringTurn,
   closedTracks,
+  commitDecision,
+  commitReminder,
   editDecision,
   isInside,
   isTestCommand,
   isTestFile,
   needsSetup,
   offKey,
+  parseCommitCommand,
+  pathsOfStatus,
   phaseStartDecision,
   redFor,
   setupBandText,
@@ -156,6 +160,25 @@ const recordRed = async ($: EngineInterface, e: ToolCallInput, isDone: boolean, 
     testChanged: red.testChanged || isTestEdit,
     testFailed: red.testFailed || isFailedTest,
   })
+}
+
+/** The files a commit takes: the staged paths, and the changed paths when it takes changes. */
+const commitFiles = async ($: EngineInterface, root: string, takesChanges: boolean): Promise<string[]> => {
+  let staged: string[] = []
+  try {
+    const ran = await $.process.run(['git', 'diff', '--cached', '--name-only'], { cwd: root })
+    staged = ran.exitCode === 0 ? statusLinesOf(ran.stdout) : []
+  } catch {
+    staged = []
+  }
+  return takesChanges ? [...new Set([...staged, ...pathsOfStatus(await gitStatus($, root))])] : staged
+}
+
+/** The commit SHA in a Bash result (gitOperation.commit.sha); null when absent. */
+const commitShaOf = (result: unknown): string | null => {
+  if (typeof result !== 'object' || result === null || !('gitOperation' in result)) return null
+  const operation = (result as { gitOperation?: { commit?: { sha?: unknown } } }).gitOperation
+  return typeof operation?.commit?.sha === 'string' ? operation.commit.sha : null
 }
 
 /** The text of a file; empty when it does not exist yet. */
@@ -306,23 +329,40 @@ export const register: Register = (on, options) => {
 
   on('tool.call', async ($, e, next) => {
     const path = writtenPath(e)
-    let closeNote: string | null = null
+    const notes: string[] = []
+    let commitReminderDue = false
     if (path !== null) {
       const context = await guardContext($, mode)
       const decision = editDecision(context, path)
       if (decision !== null) return decision
       const closed = await closeout($, context, e)
       if (closed.decision !== null) return closed.decision
-      closeNote = closed.note
+      if (closed.note !== null) notes.push(closed.note)
       const tdd = tddDecision(context, (await $.state.get(RED)).value ?? null, path)
       if (tdd !== null) return tdd
     }
+    const commit = e.tool === 'Bash' && mode === 'strict' ? parseCommitCommand(e.command) : null
+    if (commit !== null) {
+      const context = await guardContext($, mode)
+      const root = context.snapshot?.root ?? (await $.session.root())
+      const staged = await commitFiles($, root, commit.takesChanges)
+      const check = commitDecision(context, commit, staged)
+      if (check.decision !== null) return check.decision
+      if (check.note !== null) notes.push(check.note)
+      commitReminderDue = context.guardsOff === null && taskKey(context.snapshot) !== null
+    }
+
     const ran = await next(e)
-    await recordRed($, e, ran.deny === undefined && ran.isError !== true, ran.isError === true)
+    if (ran.deny !== undefined) return ran
+    await recordRed($, e, ran.isError !== true, ran.isError === true)
+    if (ran.isError === true) notes.length = 0
+    else if (commitReminderDue) notes.push(commitReminder(commitShaOf(ran.result)))
+
     const touchesPlan = e.tool === 'Bash' || (path !== null && isInMeasure(await current($), path))
-    if (ran.deny !== undefined || !touchesPlan) return ran
-    const done = ran.isError === true ? null : closeNote
-    const notes = [done, await pendingNote($, await refresh($), mode)].filter(note => note !== null)
+    if (touchesPlan) {
+      const note = await pendingNote($, await refresh($), mode)
+      if (note !== null) notes.push(note)
+    }
     return notes.length === 0 ? ran : { ...ran, context: [...(ran.context ?? []), ...notes] }
   })
 

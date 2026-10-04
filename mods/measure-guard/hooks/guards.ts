@@ -179,6 +179,9 @@ const pathOfStatus = (line: string): string => {
   return target.startsWith('"') && target.endsWith('"') ? target.slice(1, -1) : target
 }
 
+/** The paths of porcelain lines. */
+export const pathsOfStatus = (lines: readonly string[]): string[] => lines.map(pathOfStatus)
+
 /** The lines of `git status --porcelain`, without empty lines. */
 export const statusLinesOf = (porcelain: string): string[] =>
   porcelain.split('\n').filter(line => line.trim() !== '')
@@ -317,10 +320,25 @@ export const tddDecision = (context: GuardContext, red: RedState | null, path: s
 /** The commit message format: `<type>(<scope>): <description>`. */
 export const COMMIT_FORMAT = /^[a-z]+\([^)]+\)!?: \S/
 
+const GIT_COMMIT = /\bgit\s+(?:-[Cc]\s+\S+\s+)*commit\b/
+const GIT_ADD = /\bgit\s+(?:-[Cc]\s+\S+\s+)*add\b/
+const HEREDOC = /<<-?\s*['"]?(\w+)['"]?\n([\s\S]*?)\n\s*\1\b/
+const MESSAGE = /(?:^|\s)(?:-[a-zA-Z]*m|--message)(?:=|\s+)(?:"((?:[^"\\]|\\.)*)"|'([^']*)'|(\S+))/
+
 /** The `git commit` in a Bash command; null when the command makes no commit. */
 export const parseCommitCommand = (command: string): CommitCommand | null => {
-  throw new Error('parseCommitCommand: not implemented')
+  const match = GIT_COMMIT.exec(command)
+  if (match === null) return null
+  const rest = command.slice(match.index + match[0].length)
+  const heredoc = HEREDOC.exec(rest)
+  const quoted = MESSAGE.exec(rest)
+  const raw = heredoc?.[2] ?? quoted?.[1]?.replace(/\\(.)/g, '$1') ?? quoted?.[2] ?? quoted?.[3] ?? null
+  const message = raw === null ? null : (raw.split('\n').find(line => line.trim() !== '')?.trim() ?? null)
+  const flags = rest.replace(HEREDOC, '').replace(/"(?:[^"\\]|\\.)*"/g, '""').replace(/'[^']*'/g, "''")
+  const takesChanges = GIT_ADD.test(command.slice(0, match.index)) || /(^|\s)(-[a-zA-Z]*a[a-zA-Z]*|--all)(?=\s|$)/.test(flags)
+  return { message: message !== null && message.startsWith('$(') ? null : message, takesChanges }
 }
+
 
 /**
  * The commit guard (strict mode): denies a message not in the format, and a
@@ -328,10 +346,40 @@ export const parseCommitCommand = (command: string): CommitCommand | null => {
  * paths (relative to the repository root) the commit takes.
  */
 export const commitDecision = (context: GuardContext, commit: CommitCommand, staged: readonly string[]): CommitCheck => {
-  throw new Error('commitDecision: not implemented')
+  const none = { decision: null, note: null }
+  const { snapshot } = context
+  if (context.mode !== 'strict' || context.guardsOff !== null) return none
+  if (snapshot === null || !snapshot.hasMeasure || snapshot.parseError !== null) return none
+  if (commit.message !== null && !COMMIT_FORMAT.test(commit.message)) {
+    return {
+      decision: {
+        deny: `measure-guard (strict): the commit message "${commit.message}" is not in the format <type>(<scope>): <description>, for example "feat(parser): Read both entry formats". Use the Commit Guidelines in measure/workflow.md. ${BYPASS}`,
+      },
+      note: null,
+    }
+  }
+  const outside = staged.filter(path => path !== 'measure' && !path.startsWith('measure/'))
+  const task = snapshot.active === null ? null : currentTask(snapshot.active.plan)
+  if (outside.length > 0 && task === null) {
+    const listed = outside.slice(0, 5).join(', ') + (outside.length > 5 ? `, and ${outside.length - 5} more` : '')
+    return {
+      decision: {
+        deny: `measure-guard (strict): no task is in progress, so this commit belongs to no task. It has files outside measure/: ${listed}. Mark the task [~] in plan.md first. ${BYPASS}`,
+      },
+      note: null,
+    }
+  }
+  const note =
+    commit.message === null
+      ? 'measure-guard: could not read the commit message (-F, a variable, or the editor). Make sure that it has the format <type>(<scope>): <description>.'
+      : null
+  return { decision: null, note }
 }
+
 
 /** The reminder after a commit for a `[~]` task: the git note and the SHA in plan.md. */
 export const commitReminder = (sha: string | null): string => {
-  throw new Error('commitReminder: not implemented')
+  const short = sha === null ? null : sha.slice(0, 7)
+  return `measure-guard: the commit ${short ?? '(see git log -1)'} is done. Next steps of the Task Workflow: add the git note (git notes add -m "<task summary>" ${short ?? 'HEAD'}), and record ${short ?? 'the 7-character SHA'} on the task line in plan.md.`
 }
+
