@@ -118,7 +118,7 @@ _Story ref: spec.md#story-s5_
     - [x] Add the commands section to the README
 - [b] Task: Measure - User Manual Verification 'Phase S5: Status and bypass commands' (Protocol in workflow.md) deferred:user
 
-## Phase S6: Closeout guard
+## Phase S6: Closeout guard [checkpoint: c896ec6]
 _Story ref: spec.md#story-s6_
 
 - [x] Task 6.1: Contract — closeout decision `e76321d`
@@ -139,7 +139,7 @@ _Story ref: spec.md#story-s6_
 ## Phase S7: End-of-turn check
 _Story ref: spec.md#story-s7_
 
-- [ ] Task 7.1: Contract — turn problems
+- [~] Task 7.1: Contract — turn problems
     - [ ] Lock the S7 acceptance criteria
     - [ ] Declare `turnProblems(state, changedFiles)` for 2 problems: a `[x]` task with no SHA, and changed files outside `measure/` with no `[~]` task
     - [ ] Add `$.state.turn` (the `git status --porcelain` snapshot at turn start, and the strict block count, max 2)
