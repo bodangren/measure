@@ -39,6 +39,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [ ] **Track: measure-guard: Claude Code mod that guards the Measure workflow**
+- [~] **Track: measure-guard: Claude Code mod that guards the Measure workflow**
   *Link: [./tracks/measure_guard_20261004/](./tracks/measure_guard_20261004/)*
   *Mod that shows the plan state and guards edits, commits, and closeouts.*
