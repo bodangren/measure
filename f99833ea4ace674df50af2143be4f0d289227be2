@@ -1,0 +1,3 @@
+Task 8.3: Implement (Green) - TDD guard.
+Changes: hooks/guards.ts (TEST_FILES, CODE_FILE, TEST_COMMANDS rules; isTestFile, isSourceFile, isTestCommand, taskKey, redFor, tddDecision with the missing steps in the deny text), hooks/register.tsx (RED state; recordRed after each call: a test file edit that ran sets testChanged, a test command with an error result sets testFailed, both for the current task key; tool.call runs tddDecision after the edit and closeout guards).
+Green run: 76 pass, 0 fail. validate and tsc passed.
