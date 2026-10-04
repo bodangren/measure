@@ -134,7 +134,7 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.4: Validate & Docs `528219c`
     - [x] Run validate and the full test suite
     - [x] Add the closeout section to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md) deferred:user
 
 ## Phase S7: End-of-turn check
 _Story ref: spec.md#story-s7_
