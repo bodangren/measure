@@ -1,0 +1,5 @@
+Task 7.1: Contract - turn problems.
+Locked S7 acceptance criteria: (1) a [x] task with no SHA: advise shows it in the band; (2) guard mode, files changed during the turn and no [~] task: band, toast, and a reminder at the next prompt; (3) strict: classic.Stop returns { block: reason } and the turn stays open; (4) strict, still a problem after 2 blocks: the turn ends and the mod reports.
+Design decisions: the turn snapshot is taken at classic.UserPromptSubmit (git status --porcelain --untracked-files=all, and the [x]-with-no-SHA task texts), so old problems before the turn are not reported; 'changed' means a status line that is new at the turn end, so committed files are not reported; paths are relative to the repository root, and measure/ means <root>/measure (the session root is the repository root).
+Changes: types/index.d.ts (TurnState, StopAction; PluginState turn, problems, reminder), hooks/guards.ts (MAX_BLOCKS, statusLinesOf, changedDuringTurn, unshaTasks, turnProblems, stopAction stubs).
+Checks: tsc and validate passed.
