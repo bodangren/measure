@@ -82,6 +82,15 @@ Before the user answers, in `guard` and `strict` mode, the mod denies an edit in
 
 Outside a git repository, the mod does nothing.
 
+## Closeout guard
+
+In `guard` and `strict` mode, the mod checks each `Edit` or `Write` of `tracks.md` and of a `plan.md` in `measure/`:
+
+- **Track close.** A track can change to `[x]` only when its plan has no open task. An open task is `[ ]`, `[~]`, or `[b]` with no `deferred:<owner>` field. The deny text lists the open tasks. When the close passes, the agent gets a list of all `[b]` tasks of the plan, to put in its report.
+- **Phase start.** A task in phase N+1 can change to `[~]` only when the heading of phase N has `[checkpoint: <sha>]`.
+
+The mod finds the plan of a closed track through the track's link, so the closed track can be a different track from the active track.
+
 ## Commands
 
 | Command | What it does |
