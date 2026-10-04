@@ -161,10 +161,10 @@ _Story ref: spec.md#story-s8_
     - [x] Lock the S8 acceptance criteria
     - [x] Declare `isTestFile` (`*.test.ts(x)`, `*.spec.ts(x)`, `*.test.js`, `test_*.py`, `*_test.py`, `*_test.go`, and similar), `isSourceFile` (code extensions only), and `isTestCommand` (`npm test`, `vitest`, `jest`, `pytest`, `go test`, `cargo test`, `claude plugin test`, `test-*.sh`)
     - [x] Add `$.state.red` (`taskId`, `testChanged`, `testFailed`)
-- [~] Task 8.2: Test (Red) — TDD guard
-    - [ ] Write tests: deny a source edit before Red, allow a test file edit, allow after a test change and a failed test command, allow Markdown and JSON, reset on a task change, no check in `guard`
-    - [ ] Run the tests and record the failure
-- [ ] Task 8.3: Implement (Green) — TDD guard
+- [x] Task 8.2: Test (Red) — TDD guard `96209db`
+    - [x] Write tests: deny a source edit before Red, allow a test file edit, allow after a test change and a failed test command, allow Markdown and JSON, reset on a task change, no check in `guard`
+    - [x] Run the tests and record the failure
+- [~] Task 8.3: Implement (Green) — TDD guard
     - [ ] Record test file edits from `tool.call`. Record failed test commands from the Bash tool result (exit code other than 0)
     - [ ] Reset `red` when the `[~]` task changes. Add the strict branch to `editDecision`
 - [ ] Task 8.4: Validate & Docs
