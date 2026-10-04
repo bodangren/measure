@@ -13,6 +13,7 @@ import {
   selectActive,
   taskNote,
 } from './parse'
+import { editDecision } from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
@@ -131,8 +132,12 @@ export const register: Register = (on, options) => {
   })
 
   on('tool.call', async ($, e, next) => {
-    const ran = await next(e)
     const path = writtenPath(e)
+    if (path !== null) {
+      const decision = editDecision({ snapshot: await current($), mode }, path)
+      if (decision !== null) return decision
+    }
+    const ran = await next(e)
     const touchesPlan = e.tool === 'Bash' || (path !== null && isInMeasure(await current($), path))
     if (ran.deny !== undefined || !touchesPlan) return ran
     const note = await pendingNote($, await refresh($), mode)
