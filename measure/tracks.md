@@ -35,7 +35,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 ---
 
 - [x] **Track: measure-guard: Claude Code mod that guards the Measure workflow**
-  *Link: [./tracks/measure_guard_20261004/](./tracks/measure_guard_20261004/)*
+  *Link: [./archive/measure_guard_20261004/](./archive/measure_guard_20261004/)*
   *Mod that shows the plan state and guards edits, commits, and closeouts.*
 
 ---
