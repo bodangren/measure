@@ -1,0 +1,12 @@
+Task 8.2: Test (Red) - TDD guard.
+Tests: test/tdd.test.ts (strict: source edit before Red denied with the task; test file edit passes; a test change alone, or a failed non-test command, is not enough; a test change and a failed npm test open the source edits; Markdown and JSON pass; the next [~] task starts Red again; guard mode has no TDD guard; name rules for test files, source files, and test commands). world.ts: failing Bash commands return an error result.
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) strict: a source edit before the Red phase is denied [776.74ms]
+(fail) strict: a test change alone, or a failed command that is no test, is not enough [356.65ms]
+(fail) strict: the next task starts the Red phase again [169.11ms]
+(fail) name rules > test files [1.03ms]
+(fail) name rules > source files [0.65ms]
+(fail) name rules > test commands [0.72ms]
+ 70 pass
+ 6 fail
+4 tests in the file pass before the guard exists: they check allowed cases.
