@@ -71,6 +71,17 @@ The deny text tells the agent the next action: mark the next task `[~]` (with th
 
 Limit: the guard does not see file writes through `Bash` (`sed -i`, `cat >`). The end-of-turn check finds these changes.
 
+## Projects with no measure/ folder
+
+In a git repository with no `measure/` folder, the band asks a question with 2 buttons:
+
+- `[ Set up Measure ]` sends a prompt to the agent to run the Measure `setup` workflow. The guards then allow all edits, so the setup can write its files.
+- `[ Turn off for session ]` turns off the mod for the session, and the band hides.
+
+Before the user answers, in `guard` and `strict` mode, the mod denies an edit inside the project and tells the agent to ask the user the same question. In `advise` mode, the band shows the question and the mod denies nothing.
+
+Outside a git repository, the mod does nothing.
+
 ## Parse rules
 
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
