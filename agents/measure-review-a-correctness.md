@@ -1,7 +1,10 @@
 ---
 description: Independently audits Measure phase correctness, architecture, callers, and test meaning without modifying the implementation
 mode: subagent
-model: kimi-for-coding/kimi-for-coding
+steps: 40
+model: kimi-for-coding/k3
+options:
+  reasoningEffort: max
 permission:
   edit:
     "*": deny

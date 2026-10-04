@@ -1,7 +1,8 @@
 ---
 description: Independently audits applicable Measure security, authorization, validation, and data risks without modifying the implementation
 mode: subagent
-model: openai/gpt-5.6-sol
+steps: 40
+model: coding-plan/deepseek-v4-pro
 temperature: 0.1
 options:
   reasoningEffort: high

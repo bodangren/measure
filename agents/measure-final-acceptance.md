@@ -1,7 +1,10 @@
 ---
 description: Performs immutable-HEAD final Measure acceptance after all phase gates and remediation, before closeout
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M3
+steps: 56
+model: kimi-for-coding/k3
+options:
+  reasoningEffort: max
 temperature: 0.1
 permission:
   edit:

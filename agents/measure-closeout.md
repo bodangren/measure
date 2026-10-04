@@ -1,7 +1,8 @@
 ---
 description: Performs the only post-acceptance mutations by archiving a Measure track and maintaining registry and closeout evidence
 mode: subagent
-model: openai/gpt-5.6-luna
+steps: 40
+model: opencode-go/deepseek-v4-flash
 temperature: 0.1
 options:
   reasoningEffort: medium

@@ -1,7 +1,10 @@
 ---
 description: Performs evidence-backed browser UX review before phase acceptance without modifying the implementation
 mode: subagent
-model: xiaomi/mimo-v2.5
+steps: 48
+model: minimax-cn-coding-plan/MiniMax-M3
+options:
+  reasoningEffort: high
 temperature: 0.1
 permission:
   edit:

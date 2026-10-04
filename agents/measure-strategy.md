@@ -1,7 +1,10 @@
 ---
 description: Creates a risk-based Measure test strategy and assigns applicable review gates before phase execution
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M3
+steps: 48
+model: kimi-for-coding/k3
+options:
+  reasoningEffort: high
 temperature: 0.1
 permission:
   edit: allow

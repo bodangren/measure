@@ -1,7 +1,8 @@
 ---
 description: Adds risk-based adversarial tests before phase acceptance and routes exposed implementation defects back to Green
 mode: subagent
-model: deepseek/deepseek-v4-pro
+steps: 48
+model: minimax-cn-coding-plan/MiniMax-M3
 temperature: 0.1
 permission:
   edit: allow

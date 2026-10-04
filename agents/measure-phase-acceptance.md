@@ -1,7 +1,8 @@
 ---
 description: Performs immutable-HEAD Measure phase acceptance after reviews, adversarial tests, UX review, and remediation
 mode: subagent
-model: openai/gpt-5.6-terra
+steps: 48
+model: opencode-go/gpt-5.6-luna
 temperature: 0.1
 options:
   reasoningEffort: high

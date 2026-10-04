@@ -1,7 +1,8 @@
 ---
 description: Audits changed Measure orchestration infrastructure or performs scheduled anti-pattern review with revision-bound evidence
 mode: all
-model: openai/gpt-5.6-sol
+steps: 56
+model: coding-plan/deepseek-v4-pro
 options:
   reasoningEffort: low
 permission:

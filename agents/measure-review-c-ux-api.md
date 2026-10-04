@@ -1,7 +1,10 @@
 ---
 description: Independently audits applicable Measure API, route, and user-flow contract wiring without duplicating visual or adversarial review
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M3
+steps: 40
+model: coding-plan/glm-latest
+options:
+  reasoningEffort: high
 temperature: 0.1
 permission:
   edit:

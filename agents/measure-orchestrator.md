@@ -5,7 +5,9 @@ description: >-
   to this agent when supervising a Measure track or coordinating work that may
   need either the full Measure workflow or a clearly isolated one-off coding lane.
 mode: primary
-model: minimax-cn-coding-plan/MiniMax-M3
+model: coding-plan/doubao-seed-evolving
+options:
+  reasoningEffort: xhigh
 color: primary
 permission:
   edit: deny

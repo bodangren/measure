@@ -1,7 +1,10 @@
 ---
 description: Handles Measure Red-phase work by writing targeted failing tests and plan evidence
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M3
+steps: 48
+model: opencode-go/gpt-5.6-luna
+options:
+  reasoningEffort: max
 permission:
   edit: allow
   bash: allow
