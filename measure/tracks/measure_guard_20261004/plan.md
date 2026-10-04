@@ -61,7 +61,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Validate & Docs `3b5232d`
     - [x] Run validate and the full test suite
     - [x] Add the band section to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md) deferred:user
 
 ## Phase S3: Edit guard
 _Story ref: spec.md#story-s3_
