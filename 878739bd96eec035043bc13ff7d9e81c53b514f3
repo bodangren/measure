@@ -1,0 +1,13 @@
+Task 2.2: Test (Red) - band.
+Tests: test/band.test.ts (bandLine: mid-plan text and [b] count, 2-track warning, no [~] task, all tasks closed, parse error, no active track, no measure/; mounted band on terminal and desktop with the real plan, before and after Edit calls that move [~] from Task 1.4 to Task 1.5; no band outside a Measure project). Fixtures: BAND_PLAN, DONE_PLAN. world.ts: BAND props, SURFACES, ui.render bottom.
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) bandLine > shows the phase, the task, and the [b] count [6.16ms]
+(fail) bandLine > warns when 2 or more tracks have [~] [1.87ms]
+(fail) bandLine > shows the next task when no task has [~] [0.83ms]
+(fail) bandLine > says so when all tasks are closed [0.72ms]
+(fail) bandLine > shows a parse error and that the guards allow all calls [0.78ms]
+(fail) bandLine > shows no track in progress, and nothing without measure/ [1.04ms]
+(fail) the band shows the real plan and follows an edit of plan.md [248.64ms]
+ 19 pass
+ 7 fail
+The test 'no band outside a Measure project' passes; it checks an absence.
