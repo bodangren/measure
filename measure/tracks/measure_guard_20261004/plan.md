@@ -170,7 +170,7 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.4: Validate & Docs `3144f14`
     - [x] Run validate and the full test suite
     - [x] Add the TDD guard section and the name-based limits to the README
-- [ ] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md) deferred:user
 
 ## Phase S9: Commit guard
 _Story ref: spec.md#story-s9_
