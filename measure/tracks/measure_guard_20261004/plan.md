@@ -41,7 +41,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.6: Validate & Docs `80bd0a2`
     - [x] Run `claude plugin validate` and the full test suite
     - [x] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
-- [ ] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md)
+- [b] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md) deferred:user
 
 ## Phase S2: Progress band above the prompt
 _Story ref: spec.md#story-s2_
