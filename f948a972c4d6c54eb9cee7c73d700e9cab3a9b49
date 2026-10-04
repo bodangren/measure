@@ -1,0 +1,13 @@
+Phase verification report: Phase S9: Commit guard
+Changed files since 2d881ea:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/commit.test.ts
+  mods/measure-guard/test/world.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 85 pass, 0 fail; tsc passed. Live load in this repository passed (task note and rule section seen by the model).
+Acceptance criteria S9: AC1 (bad format denied, also in a heredoc), AC2 (no [~] task and files outside measure/ denied, also with git add in the same command), AC3 (measure/-only commit passes), AC4 (reminder with git notes add, the SHA, and plan.md) - each covered by a passing test.
+Steps for the deferred manual check: 1. Load the mod in strict mode. 2. Ask the agent to commit with a bad message, and read the deny. 3. Let the agent commit for a [~] task, and confirm the reminder.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
