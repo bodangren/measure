@@ -73,6 +73,10 @@ export type World = {
   opened: string[]
   /** The mod's $.store, across sessions. */
   store: Record<string, unknown>
+  /** What `git status --porcelain` prints now. */
+  git: string
+  /** The toasts the mod showed. */
+  toasts: string[]
 }
 
 /**
@@ -84,7 +88,7 @@ export const world = (
   files: Record<string, string>,
   { isRepo = true, store = {} }: { isRepo?: boolean; store?: Record<string, unknown> } = {},
 ): World => {
-  const w: World = { files, submitted: [], opened: [], store: { ...store } }
+  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [] }
   on('store.get', ($, e) => ({ value: w.store[e.key] }))
   on('store.set', ($, e) => {
     w.store[e.key] = e.value
@@ -113,6 +117,20 @@ export const world = (
   on('prompt.compose', () => ({ sections: [{ id: 'intro', text: 'base', scope: 'shared' }] }))
   on('classic.UserPromptSubmit', () => ({}))
   on('ui.render', () => ({ type: 'Box', props: {}, children: [] }))
+  on('process.run', ($, e) => ({
+    value: {
+      exitCode: e.argv[0] === 'git' ? 0 : 127,
+      stdout: e.argv[0] === 'git' && e.argv[1] === 'status' ? w.git : '',
+      stderr: '',
+      isStdoutTruncated: false,
+      isStderrTruncated: false,
+    },
+  }))
+  on('ui.toast', ($, e) => {
+    w.toasts.push(e.text)
+    return { value: undefined }
+  })
+  on('classic.Stop', () => ({}))
   on('command.register', ($, e) => ({ value: { command: e.name } }))
   on('command.run', () => ({ text: '' }))
   on('ui.open', ($, e) => {
