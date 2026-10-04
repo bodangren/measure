@@ -1,0 +1,3 @@
+Task 6.3: Implement (Green) - closeout guard.
+Changes: types/index.d.ts (Snapshot.tracksPath), hooks/parse.ts (tasksOf exported), hooks/guards.ts (applyEdit, closedTracks, trackCloseDecision with the open-task list and the [b] note, phaseStartDecision), hooks/register.tsx (closeout(): reads tracks.md or a plan.md before an Edit or Write, applies the edit, finds each closed track's plan through its link, and denies or passes; the [b] note rides on the tool result when the edit succeeded). Tests: tracksPath added to the Snapshot literals.
+Green run: 58 pass, 0 fail. validate and tsc passed.
