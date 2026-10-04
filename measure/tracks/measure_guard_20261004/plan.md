@@ -131,9 +131,9 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.3: Implement (Green) — closeout guard `4f0b265`
     - [x] Hook edits to `tracks.md` and to each linked `plan.md`. Find the plan of the closed track through its link (the closed track can be different from the active track)
     - [x] Send the `[b]` list to the agent through the channel from the `plugin-authoring` skill
-- [~] Task 6.4: Validate & Docs
-    - [ ] Run validate and the full test suite
-    - [ ] Add the closeout section to the README
+- [x] Task 6.4: Validate & Docs `528219c`
+    - [x] Run validate and the full test suite
+    - [x] Add the closeout section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md)
 
 ## Phase S7: End-of-turn check
