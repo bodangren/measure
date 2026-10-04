@@ -43,7 +43,7 @@ _Story ref: spec.md#story-s1_
     - [x] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
 - [b] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md) deferred:user
 
-## Phase S2: Progress band above the prompt
+## Phase S2: Progress band above the prompt [checkpoint: 7dd90c1]
 _Story ref: spec.md#story-s2_
 
 - [x] Task 2.1: Contract — band model `1b61020`
@@ -66,7 +66,7 @@ _Story ref: spec.md#story-s2_
 ## Phase S3: Edit guard
 _Story ref: spec.md#story-s3_
 
-- [ ] Task 3.1: Contract — edit decision
+- [~] Task 3.1: Contract — edit decision
     - [ ] Lock the S3 acceptance criteria
     - [ ] Declare `editDecision(state, path)`, which returns allow or deny with text. Paths resolve relative to the project root
     - [ ] Write the deny text: one next action (mark the next task `[~]`, or create a track) and `/measure-off` as the bypass
