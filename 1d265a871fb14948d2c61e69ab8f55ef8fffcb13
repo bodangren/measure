@@ -1,0 +1,4 @@
+Task 1.3: Contract - parser and state types.
+Locked S1 acceptance criteria: (1) tracks.md entries in both formats are read; (2) with 2 [~] tracks where only the second plan has a [~] task, the second track is active; (3) only top-level checkbox lines under '## Phase' headings are tasks, and a [b] task with no deferred:<owner> is open; (4) prompt.compose adds a section with the track, the task, and the Task Workflow rule; (5) no mode value means guard.
+Changes: types/index.d.ts (Marker, Mode, TrackEntry, Task, Phase, Plan, ActiveTrack, Snapshot; PluginState measure-guard.snapshot), hooks/parse.ts (parseMode, joinPath, findLink, parseTracks, parsePlan, isOpen, currentTask, selectActive, contextSection as stubs), hooks/load.ts (loadSnapshot stub).
+Checks: claude plugin validate passed; tsc (scratchpad tsconfig with the engine type file) passed.
