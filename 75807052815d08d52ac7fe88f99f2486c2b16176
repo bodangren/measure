@@ -1,0 +1,13 @@
+Task 4.2: Test (Red) - no measure folder.
+Tests: test/setup.test.ts (band with the question and 2 buttons on terminal and desktop; deny before an answer with 'Ask the user' and both labels; advise shows the band and denies nothing; Turn off for session -> edits pass and the band hides; Set up Measure -> SETUP_PROMPT submitted and edits pass; outside git with a measure/ folder -> no band, no note). world.ts records submitted prompts (prompt.submit bottom).
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) the band asks the setup question with 2 buttons [830.98ms]
+(fail) before an answer, an edit is denied and the agent must ask the user [259.68ms]
+(fail) advise mode shows the question and denies nothing [240.60ms]
+(fail) [ Turn off for session ] lets the edits pass and hides the band [227.44ms]
+  HooksError: press: no Button of measure-guard keyed "off" is drawn in this AbovePrompt on the terminal surface
+(fail) [ Set up Measure ] sends the setup prompt and lets the edits pass [391.59ms]
+  HooksError: press: no Button of measure-guard keyed "setup" is drawn in this AbovePrompt on the terminal surface
+(fail) outside a git repository the mod does nothing [190.98ms]
+ 35 pass
+ 6 fail
