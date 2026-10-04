@@ -1,0 +1,12 @@
+Phase verification report: Phase S3: Edit guard
+Changed files since 7dd90c1:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/edit-guard.test.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 35 pass, 0 fail; tsc passed.
+Acceptance criteria S3: AC1 (deny with no [~] task and with no [~] track; Edit, Write, NotebookEdit), AC2 (deny text: next task or create a track), AC3 (measure/ passes), AC4 ([~] task passes; marking [~] opens the edits), AC5 (advise passes) - each covered by a passing test.
+Steps for the deferred manual check: 1. Load the mod in a copy of a Measure project where no task has [~]. 2. Ask the agent to edit a source file, and confirm the deny text. 3. Ask the agent to mark a task [~], and confirm the edit then passes.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
