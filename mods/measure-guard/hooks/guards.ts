@@ -1,6 +1,18 @@
 // Pure guard decisions. Each takes a GuardContext and the call, and returns
 // null to allow it or { deny } with the text the agent reads.
-import type { ClosingTrack, Decision, GuardContext, Mode, Plan, SetupChoice, Snapshot, StopAction, TrackClose, TrackEntry } from '../types'
+import type {
+  ClosingTrack,
+  Decision,
+  GuardContext,
+  Mode,
+  Plan,
+  RedState,
+  SetupChoice,
+  Snapshot,
+  StopAction,
+  TrackClose,
+  TrackEntry,
+} from '../types'
 import { currentTask, isOpen, joinPath, nextTask, parsePlan, parseTracks, tasksOf } from './parse'
 
 /** The text every deny ends with: the bypass. */
@@ -228,3 +240,37 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
   return { block: null, report: true }
 }
 
+
+/** True for a test file by its name: `*.test.ts`, `test_*.py`, `*_test.go`, and similar. */
+export const isTestFile = (path: string): boolean => {
+  throw new Error('isTestFile: not implemented')
+}
+
+/** True for a code file that is not a test file; Markdown, JSON, and other data pass. */
+export const isSourceFile = (path: string): boolean => {
+  throw new Error('isSourceFile: not implemented')
+}
+
+/** True for a command that runs tests: `npm test`, `vitest`, `pytest`, `go test`, and similar. */
+export const isTestCommand = (command: string): boolean => {
+  throw new Error('isTestCommand: not implemented')
+}
+
+/** The key of the `[~]` task of the active track; null when no task has `[~]`. */
+export const taskKey = (snapshot: Snapshot | null): string | null => {
+  throw new Error('taskKey: not implemented')
+}
+
+/** The Red state for the task: the kept one when it is the same task, else empty. */
+export const redFor = (red: RedState | null, key: string | null): RedState => {
+  throw new Error('redFor: not implemented')
+}
+
+/**
+ * The TDD guard (strict mode): denies an edit of a source file inside the
+ * project and outside measure/ until, for the `[~]` task, a test file
+ * changed and a test command failed.
+ */
+export const tddDecision = (context: GuardContext, red: RedState | null, path: string): Decision => {
+  throw new Error('tddDecision: not implemented')
+}

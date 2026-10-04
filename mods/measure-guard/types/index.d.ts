@@ -107,6 +107,14 @@ export type ClosingTrack = { entry: TrackEntry; plan: Plan | null }
 /** The closeout guard's answer for tracks.md: the decision, and the `[b]` list on an allow. */
 export type TrackClose = { decision: Decision; note: string | null }
 
+/** The Red phase of the `[~]` task (strict mode): a test file changed and a test command failed. */
+export type RedState = {
+  /** The task the state belongs to (taskKey); a different task starts from empty. */
+  taskKey: string | null
+  testChanged: boolean
+  testFailed: boolean
+}
+
 /** What the end-of-turn check keeps from the start of a user turn. */
 export type TurnState = {
   /** `git status --porcelain` lines at the turn start. */
@@ -136,6 +144,8 @@ declare module 'claude-code' {
       problems: string[]
       /** The reminder for the next prompt (guard and strict modes). */
       reminder: string | null
+      /** The Red phase of the `[~]` task, for the TDD guard. */
+      red: RedState | null
     }
   }
 }
