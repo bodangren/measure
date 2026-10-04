@@ -1,0 +1,3 @@
+Task 3.3: Implement (Green) - edit guard.
+Changes: hooks/guards.ts (isInside, relative, editDecision with deny texts: no track -> create or mark a track; no [~] task -> mark the next task [~] in <plan path> (<next task>); both end with the /measure-off bypass), hooks/register.tsx (tool.call: the decision runs before next for Edit, Write, NotebookEdit).
+Green run: 35 pass, 0 fail. validate and tsc passed.
