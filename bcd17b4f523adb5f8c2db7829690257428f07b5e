@@ -1,0 +1,3 @@
+Task 7.4: Validate & Docs.
+Changes: README.md (End-of-turn check: the 2 problems, the turn snapshot, the behavior by mode, the limits).
+Checks: claude plugin validate passed; claude plugin test 66 pass, 0 fail.
