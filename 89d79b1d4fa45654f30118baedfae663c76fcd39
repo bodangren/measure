@@ -1,0 +1,7 @@
+Task 1.2: Reconcile the local edits (FR-5 precondition)
+
+Why: the installer will overwrite target files from main. 2 target files had newer edits that main did not have, so the repository must take them first.
+Acceptance criteria: each approved target edit is equal (cmp) to the repository file; the spec records each decision; no target file is newer than main except the OpenCode agents, which are no longer a target.
+User decisions (2026-10-05): review.md -> Kimi WebBridge version; measure-orchestrator SKILL.md -> report-only reviews; ~/.config/opencode/agents -> left out of the installer.
+Changes: skills/measure/references/review.md and claude-skills/measure/references/review.md (copied from ~/.agents, 2026-08-10); skills/measure-orchestrator/SKILL.md (copied from ~/.agents, 2026-08-13); spec.md FR-2 and the decisions list.
+Check: cmp equal for all 3 files; review.md has no CDP or browser-harness text.
