@@ -159,6 +159,7 @@ claude plugin validate mods/measure-guard
 claude plugin test mods/measure-guard
 ```
 
-- The test environment has no file access. `test/world.ts` gives the mod a project folder in memory.
-- `test/fixtures/real.ts` holds copies of this repository's Measure files. To refresh the copies, run `test/fixtures/sync-real.sh`.
+- After the engine loads the mod once (`--plugin-dir`), `tsc -p mods/measure-guard` type-checks the hooks and the tests. The root `tsconfig.json` extends the types the engine writes to `.claude-plugin/types/`.
+- The test environment has no file access. `tests/world.ts` gives the mod a project folder in memory.
+- `tests/fixtures/real.ts` holds copies of this repository's Measure files. To refresh the copies, run `tests/fixtures/sync-real.sh`.
 - A function that uses `$` must be in `hooks/register.tsx`. The engine does not follow `$` across an import. `hooks/parse.ts` holds only pure functions.
