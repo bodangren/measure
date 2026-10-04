@@ -91,11 +91,11 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.2: Test (Red) — no measure folder `7580705`
     - [x] Write tests: band with 2 buttons, deny before a choice in `guard`, no deny in `advise`, pass after `[ Turn off for session ]`, prompt sent after `[ Set up Measure ]`, no band outside git
     - [x] Run the tests and record the failure
-- [~] Task 4.3: Implement (Green) — no measure folder
-    - [ ] Detect the git repository and the missing folder at `session.start`
-    - [ ] Add the 2 band buttons. `[ Set up Measure ]` sends a prompt to run the Measure `setup` workflow
-    - [ ] Add the `pending` branch to `editDecision`
-- [ ] Task 4.4: Validate & Docs
+- [x] Task 4.3: Implement (Green) — no measure folder `07fb9ae`
+    - [x] Detect the git repository and the missing folder at `session.start`
+    - [x] Add the 2 band buttons. `[ Set up Measure ]` sends a prompt to run the Measure `setup` workflow
+    - [x] Add the `pending` branch to `editDecision`
+- [~] Task 4.4: Validate & Docs
     - [ ] Run validate and the full test suite
     - [ ] Add the no-folder section to the README
 - [ ] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md)
