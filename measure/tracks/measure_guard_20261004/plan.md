@@ -157,11 +157,11 @@ _Story ref: spec.md#story-s7_
 ## Phase S8: TDD guard
 _Story ref: spec.md#story-s8_
 
-- [~] Task 8.1: Contract — Red state
-    - [ ] Lock the S8 acceptance criteria
-    - [ ] Declare `isTestFile` (`*.test.ts(x)`, `*.spec.ts(x)`, `*.test.js`, `test_*.py`, `*_test.py`, `*_test.go`, and similar), `isSourceFile` (code extensions only), and `isTestCommand` (`npm test`, `vitest`, `jest`, `pytest`, `go test`, `cargo test`, `claude plugin test`, `test-*.sh`)
-    - [ ] Add `$.state.red` (`taskId`, `testChanged`, `testFailed`)
-- [ ] Task 8.2: Test (Red) — TDD guard
+- [x] Task 8.1: Contract — Red state `ebc1c78`
+    - [x] Lock the S8 acceptance criteria
+    - [x] Declare `isTestFile` (`*.test.ts(x)`, `*.spec.ts(x)`, `*.test.js`, `test_*.py`, `*_test.py`, `*_test.go`, and similar), `isSourceFile` (code extensions only), and `isTestCommand` (`npm test`, `vitest`, `jest`, `pytest`, `go test`, `cargo test`, `claude plugin test`, `test-*.sh`)
+    - [x] Add `$.state.red` (`taskId`, `testChanged`, `testFailed`)
+- [~] Task 8.2: Test (Red) — TDD guard
     - [ ] Write tests: deny a source edit before Red, allow a test file edit, allow after a test change and a failed test command, allow Markdown and JSON, reset on a task change, no check in `guard`
     - [ ] Run the tests and record the failure
 - [ ] Task 8.3: Implement (Green) — TDD guard
