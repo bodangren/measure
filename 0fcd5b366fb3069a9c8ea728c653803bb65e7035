@@ -1,0 +1,15 @@
+Task 9.4: Validate & Docs.
+Changes: README.md (Commit guard section: the format, the message forms, task ownership, measure/-only commits, the reminder).
+Checks: claude plugin validate passed; claude plugin test 85 pass, 0 fail.
+Live load: claude -p --plugin-dir ./mods/measure-guard in this repository (mode guard). The model quoted:
+**1. Notes from measure-guard that came with this prompt**
+
+One note came with this prompt. The harness labeled it "UserPromptSubmit hook additional context". The note text is:
+
+> measure-guard (Mode: guard)
+> Active track: measure-guard: Claude Code mod that guards the Measure workflow (measure/tracks/measure_guard_20261004/).
+> Current task: [~] Task 9.4: Validate & Docs
+
+**2. First line of the system prompt section "Measure workflow (measure-guard)"**
+
+I have this section. The first line is:
