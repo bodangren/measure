@@ -1,0 +1,3 @@
+Task 9.3: Implement (Green) - commit guard.
+Changes: hooks/guards.ts (GIT_COMMIT, GIT_ADD, HEREDOC, MESSAGE rules; parseCommitCommand, commitDecision, commitReminder, pathsOfStatus), hooks/register.tsx (commitFiles: git diff --cached --name-only plus the git status paths when the commit takes changes; commitShaOf reads gitOperation.commit.sha; the tool.call hook now collects every note (close [b] list, commit note, commit reminder, task note) in one list and drops the guard notes when the call failed).
+Green run: 85 pass, 0 fail. validate and tsc passed.
