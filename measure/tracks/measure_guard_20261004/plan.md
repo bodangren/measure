@@ -172,7 +172,7 @@ _Story ref: spec.md#story-s8_
     - [x] Add the TDD guard section and the name-based limits to the README
 - [b] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md) deferred:user
 
-## Phase S9: Commit guard
+## Phase S9: Commit guard [checkpoint: f948a97]
 _Story ref: spec.md#story-s9_
 
 - [x] Task 9.1: Contract — commit decision `5708c2e`
