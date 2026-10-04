@@ -1,0 +1,4 @@
+Task 2.3: Implement (Green) - band.
+Changes: hooks/parse.ts (blockedCount, position, bandLine), hooks/register.tsx (ui.render AbovePrompt: reads the snapshot from $.state, so each refresh redraws it; yields to a survey; dim text, yellow on a parse error, truncate-end).
+Refresh triggers: session start, each prompt submit, and each Edit/Write/NotebookEdit in measure/ or Bash call. An edit in an outside editor shows at the next prompt.
+Green run: 26 pass, 0 fail. validate and tsc passed.
