@@ -10,7 +10,7 @@ The mod has a `userConfig` field `mode` with the values `advise`, `guard`, and `
 
 | Feature | Story | advise | guard | strict |
 | --- | --- | --- | --- | --- |
-| Context section | S1 | yes | yes | yes |
+| Context rule and task note | S1 | yes | yes | yes |
 | Progress band | S2 | yes | yes | yes |
 | Edit guard | S3 | no | yes | yes |
 | No `measure/` folder prompt | S4 | band only | yes | yes |
@@ -36,16 +36,16 @@ All stories use these rules.
 
 ## Stories
 
-### Story S1: Plan context in every prompt
+### Story S1: Plan context for the agent
 **As a** developer who uses Claude Code in a Measure project
 **I want** the agent to see the active track and the current task in its system prompt
 **So that** the agent continues the planned task after a restart or a compaction
 
 **Acceptance Criteria:**
-- Given `tracks.md` has entries in both formats, When the session starts, Then the mod reads all entries.
-- Given 2 `[~]` tracks and only the plan of the second track has a `[~]` task, When the mod selects the active track, Then it selects the second track.
+- Given `tracks.md` has entries in both formats and 2 `[~]` tracks, where only the plan of the second track has a `[~]` task, When the session starts, Then the mod reads all entries and selects the second track as the active track.
 - Given a `plan.md` with checkbox lines in a `## Red run record` section, indented sub-tasks, and a `[b]` task with no `deferred:<owner>` field, When the mod counts open tasks, Then it counts only the top-level lines under `## Phase ...` headings, and the `[b]` task counts as open.
-- Given an active track with a `[~]` task, When the prompt is composed, Then the system prompt has a section with the track, the task, and the rule "follow the Task Workflow in `measure/workflow.md`".
+- Given a project with a `measure/` folder, When the system prompt is composed, Then it has a fixed section with the rule "follow the Task Workflow in `measure/workflow.md`", and the section text stays the same when the task changes.
+- Given the active track or the `[~]` task changed since the last note, or a compaction occurred, When the user submits a prompt or a tool call changes the plan, Then the mod adds a note with the track and the task to the conversation.
 - Given no `mode` value in `userConfig`, When the mod loads, Then the mode is `guard`.
 
 **Estimate:** L
@@ -170,6 +170,7 @@ All stories use these rules.
 
 ## Non-Functional Requirements
 
+- **Prompt cache:** The system prompt section is fixed text. The mod sends the changing state (track, task, end-of-turn reminders) as notes in the conversation, so a task change does not reset the prompt cache. (Design change 2026-10-04: the brief put the track and the task in the system prompt.)
 - **Fail open:** When the mod cannot parse a Measure file, the mod shows the error and allows all calls. A parse error never blocks work.
 - **One next action:** Each deny text gives the agent one clear action, and names `/measure-off` as the bypass.
 - **Real test data:** Parser tests use copies of this repository's `measure/` files as real data. Small fixture plans cover the edge cases.

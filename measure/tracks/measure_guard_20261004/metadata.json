@@ -11,7 +11,7 @@
   "sprint": {
     "goal": "Claude Code follows the Measure Task Workflow, because a mod shows the plan state and stops work that the active plan does not cover.",
     "stories": [
-      { "id": "S1", "title": "Plan context in every prompt", "size": "L", "priority": "Must", "status": "pending" },
+      { "id": "S1", "title": "Plan context for the agent", "size": "L", "priority": "Must", "status": "pending" },
       { "id": "S2", "title": "Progress band above the prompt", "size": "M", "priority": "Must", "status": "pending" },
       { "id": "S3", "title": "Edit guard", "size": "M", "priority": "Must", "status": "pending" },
       { "id": "S4", "title": "Projects with no measure folder", "size": "M", "priority": "Must", "status": "pending" },

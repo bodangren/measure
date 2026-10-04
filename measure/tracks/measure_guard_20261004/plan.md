@@ -4,7 +4,7 @@
 > Red evidence: each Test task runs `claude plugin test mods/measure-guard`, and the git note of the commit records the failure output.
 > Plugin names: Task 1.2 confirms the event and API names in the `plugin-authoring` skill. If a name is different, use the skill's name and record the difference in the git note.
 
-## Phase S1: Plan context in every prompt
+## Phase S1: Plan context for the agent
 _Story ref: spec.md#story-s1_
 
 - [x] Task 1.1: Declare the mod in the tech stack (before any test) `b3f3056`
@@ -22,22 +22,26 @@ _Story ref: spec.md#story-s1_
     - [x] In `types/index.d.ts`, define `Marker`, `Task`, `Phase`, `Plan`, `TrackEntry`, and the `$.state` fields `root`, `mode`, `active`, `inProgressCount`, `parseError`
     - [x] Declare `parseTracks`, `parsePlan`, `selectActive`, `isClosed`, and `contextSection` in `hooks/parse.ts`
     - [x] `selectActive` rule: the first `[~]` track whose plan has a `[~]` task, else the first `[~]` track
-- [~] Task 1.4: Test (Red) — parser and context section
-    - [ ] Copy this repository's `measure/tracks.md` and the benchmarking `plan.md` (it has `## Red run record` and `## Green run record` sections) into `test/fixtures/real/`, so later plan edits do not break the tests
+- [~] Task 1.4: Test (Red) — parser, rule section, and task note
+    - [ ] Update the contract for the design change (2026-10-04, prompt cache): a fixed `ruleSection`, `noteKey` and `taskNote` in place of `contextSection`, and the `$.state` field `notedKey`
+    - [ ] Generate `test/fixtures/real.ts` from this repository's `measure/` files with `test/fixtures/sync-real.sh` (the test environment has no file access, so fixtures are `.ts` modules; this replaces the live smoke test)
     - [ ] Add small fixture plans: `[b]` with and without `deferred:<owner>`, SHA with and without backticks, indented sub-tasks, `[checkpoint: <sha>]` headings
     - [ ] Add a fixture `tracks.md` with 2 `[~]` tracks, where only the second plan has a `[~]` task
-    - [ ] Write tests for both `tracks.md` formats, active-track selection (one `[~]` track, 2 `[~]` tracks, no `[~]` task in any plan), phase-only counting, the `[b]` rule, SHA parse, default mode, and the context section text
-    - [ ] Add a smoke test that parses the live `measure/` folder with no error
+    - [ ] Write tests for both `tracks.md` formats, active-track selection (one `[~]` track, 2 `[~]` tracks, no `[~]` task in any plan), phase-only counting, the `[b]` rule, SHA parse, and default mode
+    - [ ] Write tests: the rule section text is the same for 2 different tasks; a note at prompt submit when the task changed, and no note when it did not; a note in the tool result when an edit changes the task; a note again after a compaction
     - [ ] Run `claude plugin test mods/measure-guard` and record the failure
-- [ ] Task 1.5: Implement (Green) — parser, session start, context section
+- [ ] Task 1.5: Implement (Green) — parser, session start, rule section, task note
     - [ ] Implement the functions in `hooks/parse.ts`
     - [ ] On `session.start`, find `measure/index.md`, resolve the Tracks Registry through the index (default paths as fallback), parse, and keep the result in `$.state`
-    - [ ] On `prompt.compose`, add the section with the track, the task, and the Task Workflow rule
+    - [ ] On `prompt.compose`, add the fixed rule section
+    - [ ] On `classic.UserPromptSubmit`, add the task note as `additionalContext` when `noteKey` differs from `notedKey`
+    - [ ] After an `Edit`, `Write`, or `NotebookEdit` call on a Measure file, read the files again and add the task note to the result `context` when the key changed
+    - [ ] After `session.compact`, clear `notedKey`
     - [ ] Run the tests to Green
 - [ ] Task 1.6: Validate & Docs
     - [ ] Run `claude plugin validate` and the full test suite
-    - [ ] Create `mods/measure-guard/README.md` with the mode table, the live-load command, and the parse rules
-- [ ] Task: Measure - User Manual Verification 'Phase S1: Plan context in every prompt' (Protocol in workflow.md)
+    - [ ] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
+- [ ] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md)
 
 ## Phase S2: Progress band above the prompt
 _Story ref: spec.md#story-s2_
