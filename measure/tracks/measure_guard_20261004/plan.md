@@ -30,15 +30,15 @@ _Story ref: spec.md#story-s1_
     - [x] Write tests for both `tracks.md` formats, active-track selection (one `[~]` track, 2 `[~]` tracks, no `[~]` task in any plan), phase-only counting, the `[b]` rule, SHA parse, and default mode
     - [x] Write tests: the rule section text is the same for 2 different tasks; a note at prompt submit when the task changed, and no note when it did not; a note in the tool result when an edit changes the task; a note again after a compaction
     - [x] Run `claude plugin test mods/measure-guard` and record the failure
-- [~] Task 1.5: Implement (Green) — parser, session start, rule section, task note
-    - [ ] Implement the functions in `hooks/parse.ts`
-    - [ ] On `session.start`, find `measure/index.md`, resolve the Tracks Registry through the index (default paths as fallback), parse, and keep the result in `$.state`
-    - [ ] On `prompt.compose`, add the fixed rule section
-    - [ ] On `classic.UserPromptSubmit`, add the task note as `additionalContext` when `noteKey` differs from `notedKey`
-    - [ ] After an `Edit`, `Write`, or `NotebookEdit` call on a Measure file, read the files again and add the task note to the result `context` when the key changed
-    - [ ] After `session.compact`, clear `notedKey`
-    - [ ] Run the tests to Green
-- [ ] Task 1.6: Validate & Docs
+- [x] Task 1.5: Implement (Green) — parser, session start, rule section, task note `4f02889`
+    - [x] Implement the functions in `hooks/parse.ts`
+    - [x] On `session.start`, find `measure/index.md`, resolve the Tracks Registry through the index (default paths as fallback), parse, and keep the result in `$.state`
+    - [x] On `prompt.compose`, add the fixed rule section
+    - [x] On `classic.UserPromptSubmit`, add the task note as `additionalContext` when `noteKey` differs from `notedKey`
+    - [x] After an `Edit`, `Write`, or `NotebookEdit` call on a Measure file, read the files again and add the task note to the result `context` when the key changed
+    - [x] After `session.compact`, clear `notedKey`
+    - [x] Run the tests to Green
+- [~] Task 1.6: Validate & Docs
     - [ ] Run `claude plugin validate` and the full test suite
     - [ ] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
 - [ ] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md)
