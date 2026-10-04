@@ -11,13 +11,13 @@ _Story ref: spec.md#story-s1_
     - [x] Add a Tooling Exceptions row to `measure/tech-stack.md` for `measure_guard_20261004`: TypeScript mod, `claude plugin test` (`*.test.ts`), `claude plugin validate`
     - [x] Add a Distribution Formats row for `mods/measure-guard/` (Claude Code mod, loaded with `--plugin-dir`)
     - [x] Add the mod to the Distribution list in `measure/product.md`
-- [~] Task 1.2: Scaffold the mod
-    - [ ] Load the `plugin-authoring` skill. Confirm `session.start`, `prompt.compose`, `tool.call`, the tool-result event, `AbovePrompt`, `classic.Stop`, `$.state`, `$.store`, toast, pane, and command registration
-    - [ ] Confirm that `register.tsx` can import a sibling module. If not, keep all functions in `register.tsx`
-    - [ ] Create `.claude-plugin/plugin.json` with the `userConfig` field `mode` (`advise | guard | strict`, default `guard`)
-    - [ ] Create `hooks/hooks.json` (`{ "modules": ["./register.tsx"] }`) and an empty `hooks/register.tsx`
-    - [ ] Run `claude plugin validate mods/measure-guard`
-- [ ] Task 1.3: Contract — parser and state types
+- [x] Task 1.2: Scaffold the mod `539e99d`
+    - [x] Load the `plugin-authoring` skill. Confirm `session.start`, `prompt.compose`, `tool.call`, the tool-result event, `AbovePrompt`, `classic.Stop`, `$.state`, `$.store`, toast, pane, and command registration
+    - [x] Confirm that `register.tsx` can import a sibling module. If not, keep all functions in `register.tsx`
+    - [x] Create `.claude-plugin/plugin.json` with the `userConfig` field `mode` (`advise | guard | strict`, default `guard`)
+    - [x] Create `hooks/hooks.json` (`{ "modules": ["./register.tsx"] }`) and an empty `hooks/register.tsx`
+    - [x] Run `claude plugin validate mods/measure-guard`
+- [~] Task 1.3: Contract — parser and state types
     - [ ] Lock the S1 acceptance criteria in the task note
     - [ ] In `types/index.d.ts`, define `Marker`, `Task`, `Phase`, `Plan`, `TrackEntry`, and the `$.state` fields `root`, `mode`, `active`, `inProgressCount`, `parseError`
     - [ ] Declare `parseTracks`, `parsePlan`, `selectActive`, `isClosed`, and `contextSection` in `hooks/parse.ts`
