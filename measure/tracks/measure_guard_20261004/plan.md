@@ -17,12 +17,12 @@ _Story ref: spec.md#story-s1_
     - [x] Create `.claude-plugin/plugin.json` with the `userConfig` field `mode` (`advise | guard | strict`, default `guard`)
     - [x] Create `hooks/hooks.json` (`{ "modules": ["./register.tsx"] }`) and an empty `hooks/register.tsx`
     - [x] Run `claude plugin validate mods/measure-guard`
-- [~] Task 1.3: Contract — parser and state types
-    - [ ] Lock the S1 acceptance criteria in the task note
-    - [ ] In `types/index.d.ts`, define `Marker`, `Task`, `Phase`, `Plan`, `TrackEntry`, and the `$.state` fields `root`, `mode`, `active`, `inProgressCount`, `parseError`
-    - [ ] Declare `parseTracks`, `parsePlan`, `selectActive`, `isClosed`, and `contextSection` in `hooks/parse.ts`
-    - [ ] `selectActive` rule: the first `[~]` track whose plan has a `[~]` task, else the first `[~]` track
-- [ ] Task 1.4: Test (Red) — parser and context section
+- [x] Task 1.3: Contract — parser and state types `1d265a8`
+    - [x] Lock the S1 acceptance criteria in the task note
+    - [x] In `types/index.d.ts`, define `Marker`, `Task`, `Phase`, `Plan`, `TrackEntry`, and the `$.state` fields `root`, `mode`, `active`, `inProgressCount`, `parseError`
+    - [x] Declare `parseTracks`, `parsePlan`, `selectActive`, `isClosed`, and `contextSection` in `hooks/parse.ts`
+    - [x] `selectActive` rule: the first `[~]` track whose plan has a `[~]` task, else the first `[~]` track
+- [~] Task 1.4: Test (Red) — parser and context section
     - [ ] Copy this repository's `measure/tracks.md` and the benchmarking `plan.md` (it has `## Red run record` and `## Green run record` sections) into `test/fixtures/real/`, so later plan edits do not break the tests
     - [ ] Add small fixture plans: `[b]` with and without `deferred:<owner>`, SHA with and without backticks, indented sub-tasks, `[checkpoint: <sha>]` headings
     - [ ] Add a fixture `tracks.md` with 2 `[~]` tracks, where only the second plan has a `[~]` task
