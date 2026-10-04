@@ -1,0 +1,5 @@
+Task 3.1: Contract - edit decision.
+Locked S3 acceptance criteria: (1) guard mode, no active track or no [~] task: Edit/Write/NotebookEdit outside measure/ is denied; (2) the deny text says to mark the next task [~] or to create a track; (3) edits inside measure/ pass in every mode; (4) a [~] task lets edits pass; (5) advise mode lets edits pass.
+Scope decision: the guard checks only paths inside the project root (the session root); a write outside the project (a scratch folder, another repository) passes. A parse error passes (fail open).
+Changes: types/index.d.ts (GuardContext, Decision), hooks/guards.ts (BYPASS text, editDecision stub).
+Checks: tsc and validate passed.
