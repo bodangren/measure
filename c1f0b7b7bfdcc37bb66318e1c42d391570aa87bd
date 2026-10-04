@@ -1,0 +1,6 @@
+Task 1.1: Inventory — the differences between each bundle and each target
+
+Why: the installer contract (Task 1.3) and the reconcile step (Task 1.2) need the real state of each target.
+Changes: measure/tracks/skill_distribution_repair_20261005/inventory.md (new). A read-only script compared git blob hashes on main (2892fc5) with each target file.
+Results: skills/measure: ~/.claude 1 different (SKILL.md, source newer), ~/.agents 2 different (SKILL.md source newer; references/review.md target newer). measure-orchestrator: ~/.agents SKILL.md target newer. build-graph: same. agents: ~/.agents/agents 13 same; ~/.config/opencode/agents 13 different, in another format (no model:, permissions: list).
+Deferred: the search for the second hard link of ~/.agents/agents/measure-*.md was blocked by the permission system. The user owns it (deferred:user).
