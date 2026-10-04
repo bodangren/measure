@@ -45,3 +45,33 @@ export const PLAN_ACTIVE_TASK = `## Phase 1: A
 
 - [~] Task: Doing the work
 `
+
+/** 4 phases; the [~] task is task 3 of 7 in phase 2; 2 [b] tasks. */
+export const BAND_PLAN = `## Phase 1: One [checkpoint: 1111111]
+
+- [x] Task: Done \`aaaaaaa\`
+
+## Phase 2: Two
+
+- [x] Task: First \`bbbbbbb\`
+- [b] Task: Second deferred:user
+- [~] Task: Third
+- [ ] Task: Fourth
+- [ ] Task: Fifth
+- [b] Task: Sixth
+- [ ] Task: Seventh
+
+## Phase 3: Three
+
+- [ ] Task: Later
+
+## Phase 4: Four
+
+- [ ] Task: Last
+`
+
+export const DONE_PLAN = `## Phase 1: A [checkpoint: 1234567]
+
+- [x] Task: Done \`1234567\`
+- [b] Task: Human check deferred:user
+`

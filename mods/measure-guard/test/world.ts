@@ -17,6 +17,21 @@ export const COMPOSE = {
 
 export const START = { cwd: ROOT, surface: 'terminal', isInteractive: true } as const
 
+/** The props of the band above the prompt, as the engine passes them. */
+export const BAND = {
+  component: 'AbovePrompt',
+  props: {
+    hasSurvey: false,
+    isWorking: false,
+    maxRows: 10,
+    bodyColumns: 160,
+    scroll: { offset: 0, bodyRows: 10 },
+    view: {},
+  },
+} as const
+
+export const SURFACES = ['terminal', 'desktop'] as const
+
 /** A compaction keeps at least one message: the summary. */
 export const SUMMARY: SessionMessage[] = [{ role: 'user', text: 'summary', toolUses: [] }]
 
@@ -60,6 +75,7 @@ export const world = (
   on('session.compact', () => ({ messages: [...SUMMARY] }))
   on('prompt.compose', () => ({ sections: [{ id: 'intro', text: 'base', scope: 'shared' }] }))
   on('classic.UserPromptSubmit', () => ({}))
+  on('ui.render', () => ({ type: 'Box', props: {}, children: [] }))
 
   on('tool.call', ($, e) => {
     if (e.tool === 'Edit') {
