@@ -1,0 +1,5 @@
+Task 1.5: Implement (Green) - parser, session start, rule section, task note.
+Changes: hooks/parse.ts (parseMode, joinPath, dirname, findLink, parseTracks, parsePlan, isOpen, currentTask, nextTask, selectActive, ruleSection, noteKey, taskNote); hooks/register.tsx (loadSnapshot and planPathOf; hooks: session.start refresh, prompt.compose fixed rule section 'measure-guard:rule' with scope session, classic.UserPromptSubmit task note in additionalContext, tool.call note in result context after Edit/Write/NotebookEdit in measure/ or Bash, session.compact clears notedKey). hooks/load.ts removed.
+Engine rule found: a function that takes $ must be declared in the hooks module file; $ is never passed across an import. So loadSnapshot lives in register.tsx; parse.ts stays pure.
+Parse errors (unknown tracks.md format, no plan for the active track, a plan with no Phase heading, a read failure) set parseError; the note says the guards allow all calls.
+Green run: claude plugin test mods/measure-guard -> 18 pass, 0 fail. claude plugin validate -> passed. tsc -> passed.
