@@ -1,0 +1,5 @@
+Task 6.1: Contract - closeout decision.
+Locked S6 acceptance criteria: (1) guard mode, a plan with an open task: a change of the track line to [x] in tracks.md is denied and lists the open tasks; (2) all tasks [x] or [b] with deferred:<owner>: the change passes, and the agent gets the list of [b] tasks; (3) the heading of phase N has no [checkpoint: <sha>]: a task change to [~] in phase N+1 is denied; (4) advise mode lets the change pass.
+Design: the hook reads the file, applies the Edit or Write (applyEdit), and compares before and after. A track's plan is found through its link (the closed track can differ from the active track). A started task is a task that is [~] after the edit and was not [~] before, matched by its text.
+Changes: types/index.d.ts (ClosingTrack, TrackClose), hooks/guards.ts (FileEdit, applyEdit, closedTracks, trackCloseDecision, phaseStartDecision stubs).
+Checks: tsc and validate passed.
