@@ -41,7 +41,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.6: Validate & Docs `80bd0a2`
     - [x] Run `claude plugin validate` and the full test suite
     - [x] Create `mods/measure-guard/README.md` with the mode table, the live-load command, the parse rules, and the prompt-cache design
-- [b] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S1: Plan context for the agent' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S2: Progress band above the prompt [checkpoint: 7dd90c1]
 _Story ref: spec.md#story-s2_
@@ -61,7 +61,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Validate & Docs `3b5232d`
     - [x] Run validate and the full test suite
     - [x] Add the band section to the README
-- [b] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S2: Progress band above the prompt' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S3: Edit guard [checkpoint: b4fddf2]
 _Story ref: spec.md#story-s3_
@@ -79,7 +79,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.4: Validate & Docs `b47f8b5`
     - [x] Run validate and the full test suite
     - [x] Add the edit guard section and the Bash limit to the README
-- [b] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S3: Edit guard' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S4: Projects with no measure folder [checkpoint: 0e23f31]
 _Story ref: spec.md#story-s4_
@@ -98,7 +98,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.4: Validate & Docs `a1f8745`
     - [x] Run validate and the full test suite
     - [x] Add the no-folder section to the README
-- [b] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S4: Projects with no measure folder' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S5: Status and bypass commands [checkpoint: f7747a3]
 _Story ref: spec.md#story-s5_
@@ -116,7 +116,7 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.4: Validate & Docs `8f59a1c`
     - [x] Run validate and the full test suite
     - [x] Add the commands section to the README
-- [b] Task: Measure - User Manual Verification 'Phase S5: Status and bypass commands' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S5: Status and bypass commands' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S6: Closeout guard [checkpoint: c896ec6]
 _Story ref: spec.md#story-s6_
@@ -134,7 +134,7 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.4: Validate & Docs `528219c`
     - [x] Run validate and the full test suite
     - [x] Add the closeout section to the README
-- [b] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S6: Closeout guard' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S7: End-of-turn check [checkpoint: da8f944]
 _Story ref: spec.md#story-s7_
@@ -152,7 +152,7 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.4: Validate & Docs `bcd17b4`
     - [x] Run validate and the full test suite
     - [x] Add the end-of-turn section to the README
-- [b] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S7: End-of-turn check' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S8: TDD guard [checkpoint: 2d881ea]
 _Story ref: spec.md#story-s8_
@@ -170,7 +170,7 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.4: Validate & Docs `3144f14`
     - [x] Run validate and the full test suite
     - [x] Add the TDD guard section and the name-based limits to the README
-- [b] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S8: TDD guard' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase S9: Commit guard [checkpoint: f948a97]
 _Story ref: spec.md#story-s9_
@@ -189,7 +189,7 @@ _Story ref: spec.md#story-s9_
     - [x] Run validate and the full test suite
     - [x] Add the commit guard section to the README
     - [x] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
-- [b] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md) deferred:user
+- [x] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase F1: Fixes after the live load
 _Source: live use on 2026-10-05. The person could not close the `/measure-status` pane with the close mark or `ctrl+x x` in an inline (not fullscreen) terminal._
@@ -200,3 +200,4 @@ _Source: live use on 2026-10-05. The person could not close the `/measure-status
     - [x] Test (Red): write the tests in `tests/commands.test.ts` and record the failure
     - [x] Implement (Green): change the `command.run` hook for `measure-status`
     - [x] Validate & Docs: run validate, the full test suite, and `tsc`; update the README command table
+- [x] Task: Measure - User Manual Verification 'Phase F1: Fixes after the live load' (Protocol in workflow.md) verified:user 2026-10-05
