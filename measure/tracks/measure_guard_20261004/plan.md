@@ -179,10 +179,10 @@ _Story ref: spec.md#story-s9_
     - [x] Lock the S9 acceptance criteria
     - [x] Declare `parseCommitCommand(cmd)` for `-m "..."`, `-m '...'`, a heredoc `$(cat <<'EOF' ...)`, `-F <file>`, and `-a`
     - [x] Declare `commitDecision(state, message, stagedFiles)` with the format `^[a-z]+\([^)]+\): .+`
-- [~] Task 9.2: Test (Red) — commit guard
-    - [ ] Write tests: bad format denied, no `[~]` with files outside `measure/` denied, `measure/`-only commit allowed, reminder after a successful commit, a message the guard cannot parse is allowed with a note, no check in `guard`
-    - [ ] Run the tests and record the failure
-- [ ] Task 9.3: Implement (Green) — commit guard
+- [x] Task 9.2: Test (Red) — commit guard `1192da0`
+    - [x] Write tests: bad format denied, no `[~]` with files outside `measure/` denied, `measure/`-only commit allowed, reminder after a successful commit, a message the guard cannot parse is allowed with a note, no check in `guard`
+    - [x] Run the tests and record the failure
+- [~] Task 9.3: Implement (Green) — commit guard
     - [ ] Hook `tool.call` for Bash `git commit`. Get the staged files with `git diff --cached --name-only` (and the tracked changed files for `-a`)
     - [ ] Send the git-note and SHA reminder after a successful commit
 - [ ] Task 9.4: Validate & Docs
