@@ -60,6 +60,17 @@ Measure · <track> · Phase 2/4 · Task 3/7 [~] <task> · [b] 2 · 2 tracks in p
 
 The band reads the plan again at each prompt and after each `Edit`, `Write`, or `NotebookEdit` call in `measure/` and each `Bash` call. An edit in an outside editor shows at the next prompt.
 
+## Edit guard
+
+In `guard` and `strict` mode, the mod denies an `Edit`, `Write`, or `NotebookEdit` call when all of these are true:
+
+- The file is inside the project root and outside `measure/`.
+- No track has `[~]`, or the active plan has no `[~]` task.
+
+The deny text tells the agent the next action: mark the next task `[~]` (with the plan path and the task), or create a track. Edits inside `measure/` always pass, so the agent can always update the plan. Files outside the project root (for example a scratch folder) also pass. If the mod cannot read the Measure files, all edits pass.
+
+Limit: the guard does not see file writes through `Bash` (`sed -i`, `cat >`). The end-of-turn check finds these changes.
+
 ## Parse rules
 
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
