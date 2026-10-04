@@ -1,0 +1,13 @@
+Task 5.2: Test (Red) - commands.
+Tests: test/commands.test.ts (/measure-off: calls pass, band says off for this session, store untouched; /measure-on after /measure-off: deny again; /measure-off repo: store off:<root> = true; a new session with that store value: guards off and band says off for this repository; a new session without it: guards on; /measure-on repo: store value removed, deny again; /measure-status: pane opened and drawn with the real tracks and the phase progress; statusLines: tracks, phases with closed counts and checkpoints, [b] tasks with and without an owner, guards line).
+world.ts: answers store.get/set/delete/keys from a map the tests read (the test engine has no $.store noun), command.register, command.run, ui.open (records pane ids); STATUS_PANE props and RUN helper.
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) /measure-off lets every call pass for the session and shows it in the band [476.59ms]
+(fail) /measure-off repo keeps the choice in the store [91.60ms]
+(fail) a new session in a repository turned off keeps the guards off [77.72ms]
+(fail) /measure-on repo removes the choice from the store [426.32ms]
+(fail) /measure-status opens a pane with the tracks, the progress, and the [b] tasks [356.97ms]
+(fail) statusLines > lists the phases with closed counts and checkpoints, the [b] tasks, and the guards [2.75ms]
+ 43 pass
+ 6 fail
+The 2 passing tests in the file check that the guards are on (the default).
