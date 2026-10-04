@@ -1,0 +1,5 @@
+Task 8.1: Contract - Red state.
+Locked S8 acceptance criteria: (1) strict, a [~] task with no test file change and no failed test command: a source edit is denied with 'write a failing test first'; (2) foo.test.ts, test_foo.py, foo_test.go edits pass as test files; (3) after a test file change and a failed test command in the [~] task, source edits pass; (4) Markdown and JSON pass (only code files are source files); (5) a different [~] task starts the Red state from empty.
+Design: a failed test command is a Bash call whose command matches isTestCommand and whose result is an error (non-zero exit). The Red state belongs to taskKey (track id + task text).
+Changes: types/index.d.ts (RedState; PluginState red), hooks/guards.ts (isTestFile, isSourceFile, isTestCommand, taskKey, redFor, tddDecision stubs).
+Checks: tsc and validate passed.
