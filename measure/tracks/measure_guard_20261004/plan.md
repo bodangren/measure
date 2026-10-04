@@ -175,11 +175,11 @@ _Story ref: spec.md#story-s8_
 ## Phase S9: Commit guard
 _Story ref: spec.md#story-s9_
 
-- [~] Task 9.1: Contract — commit decision
-    - [ ] Lock the S9 acceptance criteria
-    - [ ] Declare `parseCommitCommand(cmd)` for `-m "..."`, `-m '...'`, a heredoc `$(cat <<'EOF' ...)`, `-F <file>`, and `-a`
-    - [ ] Declare `commitDecision(state, message, stagedFiles)` with the format `^[a-z]+\([^)]+\): .+`
-- [ ] Task 9.2: Test (Red) — commit guard
+- [x] Task 9.1: Contract — commit decision `5708c2e`
+    - [x] Lock the S9 acceptance criteria
+    - [x] Declare `parseCommitCommand(cmd)` for `-m "..."`, `-m '...'`, a heredoc `$(cat <<'EOF' ...)`, `-F <file>`, and `-a`
+    - [x] Declare `commitDecision(state, message, stagedFiles)` with the format `^[a-z]+\([^)]+\): .+`
+- [~] Task 9.2: Test (Red) — commit guard
     - [ ] Write tests: bad format denied, no `[~]` with files outside `measure/` denied, `measure/`-only commit allowed, reminder after a successful commit, a message the guard cannot parse is allowed with a note, no check in `guard`
     - [ ] Run the tests and record the failure
 - [ ] Task 9.3: Implement (Green) — commit guard
