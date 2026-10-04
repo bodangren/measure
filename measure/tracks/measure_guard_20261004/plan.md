@@ -143,10 +143,10 @@ _Story ref: spec.md#story-s7_
     - [x] Lock the S7 acceptance criteria
     - [x] Declare `turnProblems(state, changedFiles)` for 2 problems: a `[x]` task with no SHA, and changed files outside `measure/` with no `[~]` task
     - [x] Add `$.state.turn` (the `git status --porcelain` snapshot at turn start, and the strict block count, max 2)
-- [~] Task 7.2: Test (Red) — end-of-turn check
-    - [ ] Write tests: each problem, changes inside `measure/` only, files that were dirty before the turn, `advise` (band), `guard` (band, toast, reminder), `strict` (block, block, then end the turn and report)
-    - [ ] Run the tests and record the failure
-- [ ] Task 7.3: Implement (Green) — end-of-turn check
+- [x] Task 7.2: Test (Red) — end-of-turn check `3a39626`
+    - [x] Write tests: each problem, changes inside `measure/` only, files that were dirty before the turn, `advise` (band), `guard` (band, toast, reminder), `strict` (block, block, then end the turn and report)
+    - [x] Run the tests and record the failure
+- [~] Task 7.3: Implement (Green) — end-of-turn check
     - [ ] Take the snapshot at turn start. Compare it at `classic.Stop`
     - [ ] Add the mode branches. In `strict`, return `{ block: reason }`. Set the block count to 0 on a new user prompt
 - [ ] Task 7.4: Validate & Docs
