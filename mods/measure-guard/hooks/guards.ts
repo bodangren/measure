@@ -24,7 +24,12 @@ export const relative = (snapshot: Snapshot, path: string): string =>
  */
 export const editDecision = (context: GuardContext, path: string): Decision => {
   const { snapshot, mode } = context
-  if (mode === 'advise' || snapshot === null || !snapshot.hasMeasure || snapshot.parseError !== null) return null
+  if (mode === 'advise' || snapshot === null) return null
+  if (needsSetup(snapshot)) {
+    const isAsking = context.setupChoice === null || context.setupChoice === 'pending'
+    return isAsking && isInside(snapshot.root, path) ? { deny: SETUP_DENY } : null
+  }
+  if (!snapshot.hasMeasure || snapshot.parseError !== null) return null
   if (!isInside(snapshot.root, path) || isInside(joinPath(snapshot.root, 'measure'), path)) return null
 
   const { active } = snapshot
@@ -45,14 +50,18 @@ export const SETUP_PROMPT =
   'Set up Measure in this project: run the Measure setup workflow (the measure skill, "setup").'
 
 /** True for a git repository with no measure/ folder: the mod asks the user. */
-export const needsSetup = (snapshot: Snapshot | null): boolean => {
-  throw new Error('needsSetup: not implemented')
-}
+export const needsSetup = (snapshot: Snapshot | null): boolean =>
+  snapshot !== null && snapshot.isRepo && !snapshot.hasMeasure
 
 /**
  * The band text for a repository with no measure/ folder, by the answer;
  * null when the band shows nothing (no question, or turned off).
  */
 export const setupBandText = (choice: SetupChoice | null): string | null => {
-  throw new Error('setupBandText: not implemented')
+  if (choice === null || choice === 'pending') return 'Measure · this repository has no measure/ folder.'
+  if (choice === 'setup') return 'Measure · setup requested.'
+  return null
 }
+
+/** The deny text while the setup question has no answer. */
+export const SETUP_DENY = `measure-guard: this git repository has no measure/ folder. Ask the user: "Do you want to set up Measure, or turn off measure-guard for this session?" The user answers with the buttons [ Set up Measure ] or [ Turn off for session ] above the prompt. Do the edit after the user answers. ${BYPASS}`

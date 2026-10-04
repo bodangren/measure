@@ -13,7 +13,7 @@ import {
   selectActive,
   taskNote,
 } from './parse'
-import { editDecision } from './guards'
+import { SETUP_PROMPT, editDecision, needsSetup, setupBandText } from './guards'
 
 const SNAPSHOT = { plugin: 'measure-guard', key: 'snapshot' } as const
 const NOTED = { plugin: 'measure-guard', key: 'notedKey' } as const
@@ -44,7 +44,7 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
     parseError: null,
   }
   const measure = joinPath(root, 'measure')
-  if (!(await $.fs.exists(measure))) return base
+  if (!base.isRepo || !(await $.fs.exists(measure))) return base
 
   try {
     const index = joinPath(measure, 'index.md')
@@ -154,10 +154,36 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     if (e.props.hasSurvey) return next(e)
-    const snapshot = (await $.state.get(SNAPSHOT)).value
-    const line = snapshot === undefined || snapshot === null ? null : bandLine(snapshot)
+    const snapshot = (await $.state.get(SNAPSHOT)).value ?? null
+    const { Box, Button, Text } = $.ui.resolve(e)
+
+    if (needsSetup(snapshot)) {
+      const choice = (await $.state.get(SETUP)).value ?? 'pending'
+      const text = setupBandText(choice)
+      if (text === null) return next(e)
+      return (
+        <Box gap={1}>
+          <Text>{text}</Text>
+          {choice === 'pending' && (
+            <Button
+              key="setup"
+              label="Set up Measure"
+              variant="primary"
+              onPress={async () => {
+                await $.state.set(SETUP, 'setup')
+                void $.prompt.submit({ text: SETUP_PROMPT })
+              }}
+            />
+          )}
+          {choice === 'pending' && (
+            <Button key="off" label="Turn off for session" onPress={() => $.state.set(SETUP, 'off')} />
+          )}
+        </Box>
+      )
+    }
+
+    const line = snapshot === null ? null : bandLine(snapshot)
     if (line === null) return next(e)
-    const { Box, Text } = $.ui.resolve(e)
     const isError = snapshot?.parseError !== null
 
     return (
