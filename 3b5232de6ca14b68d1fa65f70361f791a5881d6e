@@ -1,0 +1,3 @@
+Task 2.4: Validate & Docs.
+Changes: README.md (Progress band section: the text format, the phase and task numbers, the [b] count, the multi-track warning, parse errors, and the refresh triggers).
+Checks: claude plugin validate passed; claude plugin test 26 pass, 0 fail.
