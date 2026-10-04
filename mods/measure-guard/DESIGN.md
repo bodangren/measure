@@ -1,7 +1,8 @@
 # measure-guard: Design Brief
 
-Status: approved design, not yet built. Use this brief as the input for a Measure
-`new-track` (spec and plan). Agreed on 2026-10-04.
+Status: built in track `measure_guard_20261004` (2026-10-04). The spec of that
+track records the changes from this brief. `README.md` describes the final behavior.
+Agreed on 2026-10-04.
 
 ## Goal
 
