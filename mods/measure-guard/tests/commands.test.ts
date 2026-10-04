@@ -90,6 +90,23 @@ test('/measure-status opens a pane with the tracks, the progress, and the [b] ta
   await ui.unmount()
 })
 
+test('/measure-status opens the pane so that Escape closes it', async ($, on) => {
+  const w = world(on, realFiles())
+  await $.session.start(START)
+  expect(await $.command.run(RUN('measure-status'))).toMatchObject({ text: 'Opened the Measure status pane.' })
+  expect(w.openArgs).toEqual([{ id: 'measure-status', title: 'Measure status', closeOnEscape: true }])
+})
+
+test('/measure-status closes the pane when it is open', async ($, on) => {
+  const w = world(on, realFiles())
+  await $.session.start(START)
+  await $.command.run(RUN('measure-status'))
+  expect(await $.command.run(RUN('measure-status'))).toMatchObject({ text: 'Closed the Measure status pane.' })
+  expect(w.closed).toEqual(['measure-status'])
+  expect(w.panes).toEqual([])
+  expect(w.opened).toEqual(['measure-status'])
+})
+
 describe('statusLines', () => {
   const entry: TrackEntry = { line: 0, marker: '~', name: 'Band work', id: 'band_1', folder: 'tracks/band_1' }
   const snapshot: Snapshot = {

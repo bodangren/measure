@@ -250,9 +250,15 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
+  // A toggle: the close mark and ctrl+x x can fail in an inline pane, so the
+  // command that opens the pane also closes it, and so does Escape.
   on('command.run', { command: 'measure-status' }, async $ => {
+    if ((await $.ui.panes()).some(pane => pane.id === STATUS_PANE)) {
+      await $.ui.close({ id: STATUS_PANE })
+      return { text: 'Closed the Measure status pane.' }
+    }
     await refresh($)
-    await $.ui.open({ id: STATUS_PANE, title: 'Measure status' })
+    await $.ui.open({ id: STATUS_PANE, title: 'Measure status', closeOnEscape: true })
     return { text: 'Opened the Measure status pane.' }
   })
 

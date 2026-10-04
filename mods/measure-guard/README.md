@@ -131,7 +131,7 @@ In `strict` mode, the mod checks each `Bash` call with `git commit`:
 
 | Command | What it does |
 | --- | --- |
-| `/measure-status` | Opens a pane with all tracks, the phases of the active plan (closed tasks and checkpoints), the `[b]` tasks, and the guard state. |
+| `/measure-status` | Opens a pane with all tracks, the phases of the active plan (closed tasks and checkpoints), the `[b]` tasks, and the guard state. If the pane is open, the command closes it. Escape also closes the pane. |
 | `/measure-off` | Turns off all guards for this session. The band shows `guards off for this session`. |
 | `/measure-off repo` | Turns off all guards for this repository, also in later sessions. The mod keeps the choice in `$.store`. |
 | `/measure-on` | Turns on the guards for this session. |

@@ -1,6 +1,6 @@
 // The engine beneath the plugin in a test: a project folder in memory, the
 // session facts, and the bottom of each event the mod calls `next` on.
-import type { On, SessionMessage } from 'claude-code'
+import type { On, PaneOpenArgs, SessionMessage } from 'claude-code'
 import { BENCHMARK_PLAN, GUARD_PLAN, INDEX, TRACKS } from './fixtures/real'
 
 export const ROOT = '/repo'
@@ -71,6 +71,12 @@ export type World = {
   submitted: string[]
   /** The ids of the panes the mod opened. */
   opened: string[]
+  /** The arguments of each $.ui.open, in order. */
+  openArgs: PaneOpenArgs[]
+  /** The ids of the panes the mod closed. */
+  closed: string[]
+  /** The ids of the panes open now. */
+  panes: string[]
   /** The mod's $.store, across sessions. */
   store: Record<string, unknown>
   /** What `git status --porcelain` prints now. */
@@ -92,7 +98,19 @@ export const world = (
   files: Record<string, string>,
   { isRepo = true, store = {} }: { isRepo?: boolean; store?: Record<string, unknown> } = {},
 ): World => {
-  const w: World = { files, submitted: [], opened: [], store: { ...store }, git: '', toasts: [], failing: [], staged: [] }
+  const w: World = {
+    files,
+    submitted: [],
+    opened: [],
+    openArgs: [],
+    closed: [],
+    panes: [],
+    store: { ...store },
+    git: '',
+    toasts: [],
+    failing: [],
+    staged: [],
+  }
   on('store.get', ($, e) => ({ value: w.store[e.key] }))
   on('store.set', ($, e) => {
     w.store[e.key] = e.value
@@ -140,8 +158,18 @@ export const world = (
   on('command.run', () => ({ text: '' }))
   on('ui.open', ($, e) => {
     w.opened.push(e.id)
+    w.openArgs.push(e)
+    if (!w.panes.includes(e.id)) w.panes.push(e.id)
     return { value: { isPlaced: true } }
   })
+  on('ui.close', ($, e) => {
+    w.closed.push(e.id)
+    w.panes = w.panes.filter(id => id !== e.id)
+    return { value: undefined }
+  })
+  on('ui.panes', () => ({
+    value: w.panes.map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),
+  }))
   on('prompt.submit', ($, e) => {
     w.submitted.push(e.text)
     return { text: e.text }
