@@ -4,7 +4,7 @@
 > Red evidence: each Test task runs `claude plugin test mods/measure-guard`, and the git note of the commit records the failure output.
 > Plugin names: Task 1.2 confirms the event and API names in the `plugin-authoring` skill. If a name is different, use the skill's name and record the difference in the git note.
 
-## Phase S1: Plan context for the agent
+## Phase S1: Plan context for the agent [checkpoint: ea3ed16]
 _Story ref: spec.md#story-s1_
 
 - [x] Task 1.1: Declare the mod in the tech stack (before any test) `b3f3056`
@@ -46,7 +46,7 @@ _Story ref: spec.md#story-s1_
 ## Phase S2: Progress band above the prompt
 _Story ref: spec.md#story-s2_
 
-- [ ] Task 2.1: Contract — band model
+- [~] Task 2.1: Contract — band model
     - [ ] Lock the S2 acceptance criteria
     - [ ] Declare `bandText(state)`. The current phase is the phase with the `[~]` task, else the first phase with an open task. `Task t/T` counts top-level tasks in the current phase
     - [ ] Define the band text for a parse error, for an active track with no `[~]` task, and for the warning when 2 or more tracks have `[~]`
