@@ -1,0 +1,3 @@
+Task 5.3: Implement (Green) - commands.
+Changes: hooks/parse.ts (guardsText, statusLines; bandLine adds 'guards off for this session|repository'), hooks/guards.ts (editDecision allows all calls while guardsOff is set; this also covers the setup question), hooks/register.tsx (session.start registers measure-status, measure-off [repo], measure-on [repo] and reads the store value off:<root> into guardsOff 'repo'; command.run hooks; Pane 'measure-status' draws statusLines and redraws on each state write).
+Green run: 49 pass, 0 fail. validate and tsc passed.
