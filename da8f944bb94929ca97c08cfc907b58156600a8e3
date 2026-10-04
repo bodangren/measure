@@ -1,0 +1,13 @@
+Phase verification report: Phase S7: End-of-turn check
+Changed files since c896ec6:
+  measure/tracks/measure_guard_20261004/plan.md
+  mods/measure-guard/README.md
+  mods/measure-guard/hooks/guards.ts
+  mods/measure-guard/hooks/register.tsx
+  mods/measure-guard/test/end-of-turn.test.ts
+  mods/measure-guard/test/world.ts
+  mods/measure-guard/types/index.d.ts
+Automated checks: claude plugin validate passed; claude plugin test 66 pass, 0 fail; tsc passed.
+Acceptance criteria S7: AC1 (advise: band only), AC2 (guard: band, toast, reminder), AC3 (strict: block), AC4 (strict: after 2 blocks the turn ends with a report) - each covered by a passing test; also old problems and measure/ changes are not reported, and a new prompt resets the count.
+Steps for the deferred manual check: 1. Load the mod in strict mode. 2. Ask the agent to mark a task [x] with no SHA, and confirm the turn stays open with the reason. 3. In guard mode, change a file with no [~] task, and confirm the toast and the reminder.
+Manual verification: deferred to the end of the track by the user (task marked [b] deferred:user).
