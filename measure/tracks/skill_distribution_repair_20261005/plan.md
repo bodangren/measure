@@ -10,10 +10,10 @@
 - [x] Task 1.2: Reconcile the local edits (FR-5 precondition) `89d79b1`
     - [x] Show the user the diff of `~/.agents/skills/measure/references/review.md` and `~/.agents/skills/measure-orchestrator/SKILL.md`, and each other target file that is newer than the source
     - [x] Copy the edits that the user approves into `skills/`, and commit them (Kimi WebBridge review, report-only orchestrator reviews; OpenCode agents left out)
-- [~] Task 1.3: Contract — tooling exception and installer contract
-    - [ ] Add a row for this track to the Tooling Exceptions table in `tech-stack.md` (bash test scripts) before any test
-    - [ ] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md)
+- [x] Task 1.3: Contract — tooling exception and installer contract `5c003a8`
+    - [x] Add a row for this track to the Tooling Exceptions table in `tech-stack.md` (bash test scripts) before any test
+    - [x] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
+- [~] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md)
 
 ## Phase 2: Test (Red)
 
