@@ -108,6 +108,17 @@ The mod takes a snapshot (`git status --porcelain` and the `[x]` tasks with no S
 
 Limits: the check assumes that the session root is the repository root. A file that was already dirty before the turn and changes again is not reported.
 
+## TDD guard (strict mode)
+
+In `strict` mode, the mod denies an edit of a source file until the `[~]` task has a Red phase:
+
+1. A test file changed (for example `*.test.ts`, `*.spec.tsx`, `test_*.py`, `*_test.go`, `tests/*.rs`, `test-*.sh`).
+2. A test command failed (for example `npm test`, `vitest`, `pytest`, `go test`, `cargo test`, `claude plugin test`).
+
+A source file is a code file that is not a test file. Markdown, JSON, YAML, and other data files always pass. When a different task changes to `[~]`, the Red phase starts again from empty.
+
+Limits: the rules use file names and command names, so they block some valid work and miss some tests. A failed command is a `Bash` call with an error result. Use `/measure-off` when a rule blocks valid work.
+
 ## Commands
 
 | Command | What it does |
