@@ -107,10 +107,10 @@ _Story ref: spec.md#story-s5_
     - [x] Lock the S5 acceptance criteria
     - [x] Add `$.state.guardsOff` (`null | session | repo`) and a `$.store` key for each repository root
     - [x] Declare `/measure-status`, `/measure-off [repo]`, `/measure-on [repo]`, and `statusPane(state)`
-- [~] Task 5.2: Test (Red) — commands
-    - [ ] Write tests: session off, a new session turns the guards on, `repo` off stays off in a new session, `/measure-on` turns the guards on, `/measure-on repo` clears the store, pane content (tracks, progress, `[b]` list)
-    - [ ] Run the tests and record the failure
-- [ ] Task 5.3: Implement (Green) — commands
+- [x] Task 5.2: Test (Red) — commands `8e5e84f`
+    - [x] Write tests: session off, a new session turns the guards on, `repo` off stays off in a new session, `/measure-on` turns the guards on, `/measure-on repo` clears the store, pane content (tracks, progress, `[b]` list)
+    - [x] Run the tests and record the failure
+- [~] Task 5.3: Implement (Green) — commands
     - [ ] Register the 3 commands and the status pane
     - [ ] Make every guard check `guardsOff` first. Show "guards off" in the band
 - [ ] Task 5.4: Validate & Docs
