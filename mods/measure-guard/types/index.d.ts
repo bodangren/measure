@@ -79,6 +79,15 @@ export type Snapshot = {
   parseError: string | null
 }
 
+/** What a guard reads: the snapshot and the mode. */
+export type GuardContext = {
+  snapshot: Snapshot | null
+  mode: Mode
+}
+
+/** A guard's answer: null allows the call; `deny` refuses it with that text. */
+export type Decision = { deny: string } | null
+
 declare module 'claude-code' {
   interface PluginState {
     'measure-guard': {
