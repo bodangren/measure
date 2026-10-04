@@ -1,0 +1,69 @@
+# measure-guard
+
+measure-guard is a Claude Code mod (a plugin of function hooks). It makes the agent follow the Measure workflow. The mod reads the Measure files of the project, tells the agent the active task, and stops work that the active plan does not cover.
+
+Source of the design: [DESIGN.md](./DESIGN.md). Track: `measure/tracks/measure_guard_20261004/`.
+
+## Load the mod
+
+For one session:
+
+```bash
+claude --plugin-dir ~/Desktop/measure/mods/measure-guard
+```
+
+To set the mode, open `/config` and change the `measure-guard` row `Guard mode`. You can also set the value in `settings.json`:
+
+```json
+{ "pluginConfigs": { "measure-guard": { "options": { "mode": "strict" } } } }
+```
+
+## Modes
+
+The `mode` option has the values `advise`, `guard`, and `strict`. The default is `guard`.
+
+| Feature | advise | guard | strict |
+| --- | --- | --- | --- |
+| Rule section and task note | yes | yes | yes |
+| Progress band | yes | yes | yes |
+| Edit guard | no | yes | yes |
+| No `measure/` folder prompt | band only | yes | yes |
+| Commands | yes | yes | yes |
+| Closeout guard | no | yes | yes |
+| End-of-turn check | band only | band, toast, reminder | turn stays open (2 attempts) |
+| TDD guard | no | no | yes |
+| Commit guard | no | no | yes |
+
+## Rule section and task note
+
+The mod adds one fixed section to the system prompt, `measure-guard:rule`. The section tells the agent to follow the Task Workflow in `measure/workflow.md`. Its text never changes, so the prompt cache stays valid.
+
+The active track and the current task change often, so the mod sends them as notes in the conversation:
+
+- When the user submits a prompt, the mod adds a note (`additionalContext`) if the track or the task changed since the last note.
+- When an `Edit`, `Write`, or `NotebookEdit` call in `measure/`, or a `Bash` call, changes the task, the note rides on that tool result.
+- After a compaction, the next prompt gets the note again.
+
+## Parse rules
+
+- Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
+- `measure/tracks.md` entries can have two formats:
+  - `- [~] **Track: <name>**` with a next line `*Link: [./tracks/<id>/](./tracks/<id>/)*`
+  - `- [x] [<name>](archive/<id>/index.md)`
+- The active track is the first `[~]` track whose plan has a `[~]` task. If no plan has a `[~]` task, the active track is the first `[~]` track.
+- In `plan.md`, a task is a checkbox line with no indent under a `## Phase ...` heading. Indented lines are sub-tasks. Checkbox lines in other `##` sections are not tasks.
+- A completed task line ends with a 7-character SHA, with or without backticks.
+- A phase is checkpointed when its heading has `[checkpoint: <sha>]`.
+- The mod finds `tracks.md` through the **Tracks Registry** link in `measure/index.md`, and a plan through the plan link in the track's `index.md`. If a link is missing, the mod uses the default paths.
+- If the mod cannot read the Measure files, it reports the error and the guards allow all calls.
+
+## Development
+
+```bash
+claude plugin validate mods/measure-guard
+claude plugin test mods/measure-guard
+```
+
+- The test environment has no file access. `test/world.ts` gives the mod a project folder in memory.
+- `test/fixtures/real.ts` holds copies of this repository's Measure files. To refresh the copies, run `test/fixtures/sync-real.sh`.
+- A function that uses `$` must be in `hooks/register.tsx`. The engine does not follow `$` across an import. `hooks/parse.ts` holds only pure functions.
