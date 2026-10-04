@@ -1,0 +1,3 @@
+Task 7.3: Implement (Green) - end-of-turn check.
+Changes: hooks/guards.ts (statusLinesOf, pathOfStatus, changedDuringTurn, unshaTasks, turnProblems, stopAction), hooks/register.tsx (gitStatus via $.process.run git status --porcelain --untracked-files=all; classic.UserPromptSubmit keeps the turn snapshot, sets the block count to 0, and delivers the reminder before the task note; classic.Stop finds the problems, keeps a strict turn open at most 2 times with { block }, else reports: toast and a reminder in guard and strict; the band draws the problems in yellow under the plan line).
+Green run: 66 pass, 0 fail. validate and tsc passed.
