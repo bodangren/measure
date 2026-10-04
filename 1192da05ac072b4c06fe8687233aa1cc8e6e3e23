@@ -1,0 +1,13 @@
+Task 9.2: Test (Red) - commit guard.
+Tests: test/commit.test.ts (strict: bad format denied; source files with no [~] task denied with the paths; measure/-only commit passes; git add in the same command counts the changed files; a heredoc commit for a [~] task passes with a reminder (git notes add, the SHA, plan.md); a heredoc message not in the format denied; -F passes with a note; guard mode has no commit guard; parseCommitCommand forms). world.ts: git diff --cached answers the staged paths; a git commit Bash call returns gitOperation.commit.sha.
+Red run: claude plugin test mods/measure-guard -> exit 1.
+(fail) strict: a message not in the format is denied [1102.53ms]
+(fail) strict: a commit of source files with no [~] task is denied [635.99ms]
+(fail) strict: git add in the same command counts the changed files [486.31ms]
+(fail) strict: a commit for a [~] task passes and reminds the agent of the note and the SHA [487.57ms]
+(fail) strict: a heredoc message not in the format is denied [386.36ms]
+(fail) strict: a message from a file passes with a note [499.52ms]
+(fail) parseCommitCommand > reads the message forms and the flags [0.94ms]
+ 78 pass
+ 7 fail
+2 tests in the file pass before the guard exists: they check allowed cases.
