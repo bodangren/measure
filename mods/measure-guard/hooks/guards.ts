@@ -2,6 +2,8 @@
 // null to allow it or { deny } with the text the agent reads.
 import type {
   ClosingTrack,
+  CommitCheck,
+  CommitCommand,
   Decision,
   GuardContext,
   Mode,
@@ -311,3 +313,25 @@ export const tddDecision = (context: GuardContext, red: RedState | null, path: s
   }
 }
 
+
+/** The commit message format: `<type>(<scope>): <description>`. */
+export const COMMIT_FORMAT = /^[a-z]+\([^)]+\)!?: \S/
+
+/** The `git commit` in a Bash command; null when the command makes no commit. */
+export const parseCommitCommand = (command: string): CommitCommand | null => {
+  throw new Error('parseCommitCommand: not implemented')
+}
+
+/**
+ * The commit guard (strict mode): denies a message not in the format, and a
+ * commit of files outside measure/ while no task has `[~]`. `staged` holds the
+ * paths (relative to the repository root) the commit takes.
+ */
+export const commitDecision = (context: GuardContext, commit: CommitCommand, staged: readonly string[]): CommitCheck => {
+  throw new Error('commitDecision: not implemented')
+}
+
+/** The reminder after a commit for a `[~]` task: the git note and the SHA in plan.md. */
+export const commitReminder = (sha: string | null): string => {
+  throw new Error('commitReminder: not implemented')
+}

@@ -115,6 +115,17 @@ export type RedState = {
   testFailed: boolean
 }
 
+/** A `git commit` in a Bash command. */
+export type CommitCommand = {
+  /** The first line of the message; null when the guard cannot read it (`-F`, the editor). */
+  message: string | null
+  /** True when the commit also takes changed tracked files (`-a`), or the command runs `git add` first. */
+  takesChanges: boolean
+}
+
+/** The commit guard's answer: the decision, and a note for the agent on an allow. */
+export type CommitCheck = { decision: Decision; note: string | null }
+
 /** What the end-of-turn check keeps from the start of a user turn. */
 export type TurnState = {
   /** `git status --porcelain` lines at the turn start. */
