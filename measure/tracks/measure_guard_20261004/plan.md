@@ -191,7 +191,7 @@ _Story ref: spec.md#story-s9_
     - [x] Do a live load in this repository with `claude --plugin-dir ~/Desktop/measure/mods/measure-guard` for the track acceptance criteria
 - [x] Task: Measure - User Manual Verification 'Phase S9: Commit guard' (Protocol in workflow.md) verified:user 2026-10-05
 
-## Phase F1: Fixes after the live load
+## Phase F1: Fixes after the live load [checkpoint: ce09fd0]
 _Source: live use on 2026-10-05. The person could not close the `/measure-status` pane with the close mark or `ctrl+x x` in an inline (not fullscreen) terminal._
 
 - [x] Task F1.1: Status pane close — `/measure-status` toggles the pane, and Escape closes it `64da794`
