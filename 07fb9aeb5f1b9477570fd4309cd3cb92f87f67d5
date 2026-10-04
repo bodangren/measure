@@ -1,0 +1,3 @@
+Task 4.3: Implement (Green) - no measure folder.
+Changes: hooks/guards.ts (needsSetup, setupBandText, SETUP_DENY; editDecision denies inside the project root until the user answers, in guard and strict), hooks/register.tsx (loadSnapshot: outside a git repository the mod reads nothing, so it does nothing; AbovePrompt draws the question with [ Set up Measure ] (primary; sets setupChoice 'setup' and submits SETUP_PROMPT) and [ Turn off for session ] (sets 'off'; the band hides)).
+Green run: 41 pass, 0 fail. validate and tsc passed.
