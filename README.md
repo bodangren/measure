@@ -2,273 +2,224 @@
 
 **Measure twice, code once.**
 
-Measure is a spec-driven development framework for AI-assisted software projects. It organizes work into structured, trackable units called **tracks** — each with a specification and a phased implementation plan — so your AI coding assistant writes code that actually matches your intent.
+Measure keeps AI coding agents on plan. Every change starts as a written spec, becomes a task in a phased plan, and ends as a tested commit that you can trace and revert.
 
-> Measure is a community fork of [Google's Conductor framework](https://github.com/gemini-cli-extensions/conductor) for Gemini CLI, extended with persistent memory, skills integration, design workflows, and multi-agent support.
+Measure is a set of agent skills, agent roles, and a Claude Code mod. It stores your project context in a `measure/` folder inside your repository, so each new agent session starts with the same knowledge as the last one.
 
----
-
-## Why Measure?
-
-AI coding assistants are great at writing code, but terrible at remembering context. Without structure, every session starts from zero. Style guides drift. Tech stack decisions get ignored. Features wander off-spec. And when something breaks, reverting means hunting through commit hashes instead of rolling back a logical unit of work.
-
-Measure fixes this by treating project context as a first-class artifact. It lives in your repo, versioned alongside your code, so every agent interaction starts with deep, persistent project awareness.
+> Measure is a community fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), extended with project memory, multi-agent orchestration, and live guard rails in Claude Code.
 
 ---
 
-## The Workflow
+## Why use Measure?
 
-Every piece of work follows the same lifecycle:
+- **Context that survives sessions.** Your product definition, tech stack, workflow, and style guides live in `measure/`, next to your code. Agents read them before they plan or write anything.
+- **Plans that agents follow.** Each unit of work is a *track* with a `spec.md` and a phased `plan.md`. Agents work task by task: a failing test first, then the code, then one commit with a git note.
+- **Checkpoints with a human in the loop.** At the end of each phase, the agent stops, gives you a verification plan, and waits for your "yes".
+- **Memory across tracks.** `lessons-learned.md` and `tech-debt.md` carry gotchas and shortcuts into the next track. Both stay under 50 lines, so they stay useful.
+- **Rollback by meaning.** Revert a whole track, a phase, or one task, not a list of commit hashes.
+- **Guard rails you can see.** In Claude Code, the measure-guard mod shows the plan position above the prompt and stops edits that no task covers.
+
+---
+
+## How it works
+
+```mermaid
+flowchart LR
+    S["Setup<br/>product, tech stack,<br/>workflow, style guides"] --> N["New track<br/>spec.md + plan.md"]
+    N --> I["Implement<br/>Red test → Green code →<br/>commit + git note"]
+    I --> C{"Phase done?"}
+    C -- "no" --> I
+    C -- "yes" --> V["Checkpoint<br/>you verify the phase"]
+    V --> R["Review<br/>against spec and guides"]
+    R --> A["Archive<br/>track closed"]
+    A -. "lessons-learned.md<br/>tech-debt.md" .-> N
+```
+
+1. **Setup** defines the project once.
+2. **New track** turns a request into a spec and a plan, with acceptance criteria and tasks.
+3. **Implement** runs the plan. Each task is one Red–Green cycle and one commit.
+4. **Review** checks the result against the spec, the style guides, and the lessons from earlier tracks.
+5. **Archive** closes the track. The retrospective feeds the project memory for the next track.
+
+---
+
+## Quick start
+
+### 1. Install the skills
+
+```bash
+git clone https://github.com/bodangren/measure.git
+cd measure
+./bin/install-measure-skill
+```
+
+The installer copies the skills and the agent roles from the `main` branch into `~/.claude/skills`, `~/.agents/skills`, and `~/.agents/agents`. It skips a location whose parent folder does not exist.
+
+If you already have an older copy of Measure in those folders, run `./bin/install-measure-skill --check` first. Then run `./bin/install-measure-skill --adopt` once to replace the old files.
+
+### 2. Keep it current (optional)
+
+```bash
+./bin/install-measure-skill --cron install
+```
+
+This adds one hourly cron job that installs from `main`. Your other cron jobs stay as they are. A checked-out feature branch never reaches your agents, because the installer always reads `main`, not the working tree.
+
+### 3. Set up your project
+
+In your project, ask your agent:
 
 ```
-Context → Spec & Plan → Implement → Review
+/measure setup
 ```
 
-1. **Setup** — Define your product, tech stack, workflow, and style guides once.
-2. **New Track** — Write a spec and break the work into phased tasks.
-3. **Implement** — Your agent executes the plan, checkpoint by checkpoint.
-4. **Review** — Verify against the spec, style guides, and product goals.
+Measure interviews you about the product, the tech stack, and your workflow, then writes the `measure/` folder. It can also show 3 design directions from [getdesign.md](https://getdesign.md) as a tabbed HTML preview.
+
+### 4. Run your first track
+
+```
+/measure new-track "Add OAuth login with Google and GitHub"
+/measure implement
+/measure review
+```
+
+Review the spec and the plan before you run `implement`. You can also use plain words: "measure status", "create a track for …", "revert the last phase".
+
+### 5. Add the guard rails (Claude Code, optional)
+
+```bash
+claude --plugin-dir /path/to/measure/mods/measure-guard
+```
 
 ---
 
-## Commands: When to Use What
+## Commands
 
-Measure provides six commands. Each maps to a specific phase of the development lifecycle.
-
-### `/measure:setup` — Project Onboarding
-**When:** Once per project, or when resurrecting a project that lacks context.  
-**What it does:** Scaffolds the `measure/` directory with product definition, tech stack, workflow, style guides, and design preferences. Optionally generates a visual design preview by fetching getdesign.md and rendering three recommended aesthetics as a tabbed HTML preview.  
-**Artifact:** `measure/product.md`, `measure/tech-stack.md`, `measure/workflow.md`, `measure/design-preview.html` (if using getdesign.md), `DESIGN.md` (in project root), etc.
-
-### `/measure:newTrack` — Planning
-**When:** You have a new feature, bug, or chore to tackle.  
-**What it does:** Guides you through writing a `spec.md` (requirements & acceptance criteria) and a `plan.md` (phased tasks with TDD checkpoints). Loads lessons-learned and tech-debt from previous tracks to surface gotchas early.  
-**Artifact:** `measure/tracks/<track_id>/spec.md`, `measure/tracks/<track_id>/plan.md`, `measure/tracks/<track_id>/metadata.json`
-
-### `/measure:implement` — Execution
-**When:** A track's plan is approved and you're ready to build.  
-**What it does:** The agent works through `plan.md` task by task, following your project's workflow (e.g., TDD: write test → fail → implement → pass). Loads project memory before starting and prompts for retrospective insights before finalizing.  
-**Artifact:** Updated `measure/tracks/<track_id>/plan.md` (checked-off tasks), synchronized context files.
-
-### `/measure:review` — Quality Gate
-**When:** A track (or phase) is complete and you want to verify quality before merging.  
-**What it does:** Checks the implementation against product guidelines, code style guides, the original spec, and recurring gotchas from `lessons-learned.md`. Can auto-commit fixes.  
-**Artifact:** Review notes, potential fix commits, updated plan status.
-
-### `/measure:status` — Progress Check
-**When:** You want a quick overview of where things stand.  
-**What it does:** Reads `measure/tracks.md` and active track plans to show completion percentages, current phase, project health indicators (memory artifacts age, open tech debt), and upcoming work.
-
-### `/measure:revert` — Safe Rollback
-**When:** Something went wrong and you need to undo work at a logical level.  
-**What it does:** Analyzes git history (or jj) to understand which commits belong to a track, phase, or task. Reverts the logical unit rather than raw commit hashes.  
-**Artifact:** Clean working tree with targeted rollback.
+| Command | Use it when | Result |
+| --- | --- | --- |
+| `setup` | You start a project, or a project has no `measure/` folder. | `measure/` with product, guidelines, tech stack, workflow, style guides, and an index. |
+| `new-track` | You have a feature, a bug, or a chore. | `measure/tracks/<id>/` with `spec.md`, `plan.md`, and `metadata.json`. |
+| `implement` | A plan is approved. | Tasks done in order, one commit and git note each, phase checkpoints. |
+| `review` | A phase or a track is done. | Findings against the spec, the guidelines, and the known gotchas. |
+| `status` | You want to see where things stand. | Track and task progress, project health, velocity, and estimate accuracy. |
+| `revert` | Work must be undone. | The commits of one track, phase, or task, reverted as a unit. |
+| `doctor` | You want a structure check. | Architecture lint results and generated-doc freshness. |
 
 ---
 
-## Skills Integration
+## measure-guard: guard rails in Claude Code
 
-Measure doesn't just manage your project — it activates relevant **external skills** based on your tech stack.
+`mods/measure-guard/` is a Claude Code mod that makes the plan visible and stops work that the plan does not cover.
 
-During setup and new-track creation, Measure analyzes your project's dependencies and keywords, then recommends skills from the catalog (Firebase, DevOps, OWASP, etc.). When you approve, the agent loads those skills into context, giving you deep, domain-specific expertise without manual configuration.
+- **Plan band:** above the prompt, a band shows `Measure · <track> · Phase 2/4 · Task 3/7 [~] <task>` and the number of blocked tasks.
+- **Agent context:** the agent gets a note with the active track and task at each change. The system prompt stays fixed, so the prompt cache stays warm.
+- **Edit guard:** an edit outside `measure/` is stopped until a task is marked `[~]`.
+- **Closeout guard:** a track cannot close while its plan has open tasks.
+- **End-of-turn check:** finds done tasks with no commit SHA, and changed files that no task covers.
+- **Strict mode:** adds a TDD guard (a failing test before source edits) and a commit guard (message format, task ownership).
 
-| Skill Domain | Example Triggers |
-|-------------|------------------|
-| **Firebase** | `firebase`, `firestore`, `auth` dependencies |
-| **DevOps / GCP** | `terraform`, `gcloud`, `skaffold` |
-| **Security** | OWASP signals based on file patterns and dependencies |
+| Mode | What it does |
+| --- | --- |
+| `advise` | Shows the band and the agent context. Stops nothing. |
+| `guard` (default) | Adds the edit guard, the closeout guard, and the end-of-turn check. |
+| `strict` | Adds the TDD guard and the commit guard. The turn stays open until the plan is correct. |
 
-Skills are loaded from the shared `.agents/skills/` convention, so they work across Claude Code, Gemini CLI, and any compatible agent.
+Commands: `/measure-status` opens or closes a status pane. `/measure-off` and `/measure-on` turn the guards off and on for the session; add `repo` to keep the choice for the repository.
 
----
-
-## Features
-
-- **📋 Tracks** — Structured units of work (features, bugs, chores) with `spec.md` and `plan.md`
-- **🧠 Persistent Memory** — `lessons-learned.md` and `tech-debt.md` accumulate knowledge across tracks
-- **🎨 Visual Design Preview** — Tabbed HTML preview of 3 getdesign.md aesthetics during setup
-- **🛠️ Skills Integration** — Auto-detect project tech and activate relevant agent skills
-- **🔍 Universal File Resolution** — Index-based protocol so agents always find the right file
-- **🔄 VCS-Agnostic Revert** — Roll back by track, phase, or task (Git + Jujutsu support)
-- **📐 Plan Mode Support** — Native integration with agent plan-mode tools for safe planning
-- **✅ Quality Gates** — Review against style guides, product guidelines, and the original plan
+To load the mod in every session, set `CLAUDE_CODE_PLUGIN_DIRS` to the mod folder in the `env` block of `~/.claude/settings.json`. Details: [`mods/measure-guard/README.md`](mods/measure-guard/README.md).
 
 ---
 
-## Supported Platforms
-
-Measure works across multiple AI agent environments:
-
-| Platform | Format | Installation |
-|----------|--------|-------------|
-| **Claude Code** | `.skill` bundle | `claude skills add /path/to/measure.skill` |
-| **Gemini CLI** | Extension | `gemini extensions install <repo-url> --auto-update` |
-| **Shared Skills** | Codex, Agents, OpenCode, Claude | Run `./bin/install-measure-skill` to hard-link Measure into every supported location |
-
----
-
-## Generated Artifacts
-
-Measure scaffolds a `measure/` directory in your project root, plus a design definition at the project root:
+## What Measure adds to your project
 
 ```
 measure/
+├── index.md                # File index that agents use to find each document
 ├── product.md              # Product vision and features
-├── product-guidelines.md   # Brand, voice, and design standards
-├── tech-stack.md          # Technology choices and rationale
-├── workflow.md            # Development workflow and quality gates
-├── design-preview.html    # Visual comparison of 3 getdesign.md aesthetics
-├── lessons-learned.md     # Curated project memory (≤50 lines)
-├── tech-debt.md           # Known shortcuts and deferred work
-├── index.md               # Universal File Resolution index
-├── tracks.md              # Master list of all tracks
-├── code_styleguides/      # Language-specific style guides
-└── tracks/
-    └── <track_id>/
-        ├── spec.md        # Track specification
-        ├── plan.md        # Implementation plan
-        └── metadata.json  # Track metadata
-
-DESIGN.md                   # Visual identity & design system (project root)
+├── product-guidelines.md   # Voice, tone, and design standards
+├── tech-stack.md           # Technology choices and the reasons for them
+├── workflow.md             # Task lifecycle, quality gates, commit rules
+├── tracks.md               # Registry of all tracks
+├── lessons-learned.md      # Project memory (50 lines or less)
+├── tech-debt.md            # Known shortcuts (50 lines or less)
+├── code_styleguides/       # Style guides for each language
+├── tracks/<track_id>/      # spec.md, plan.md, metadata.json for each track
+└── archive/                # Closed tracks
 ```
 
 ---
 
-## Bundled Agents & Skills
+## Optional features
 
-Measure ships with a curated set of role-specific **subagents** and **skills** so the framework can run end-to-end with deterministic contracts instead of relying on a single generalist model.
-
-### Agents (`agents/`)
-
-The `agents/` directory contains subagent definitions that can be invoked from your AI assistant's `task` tool.
-
-**Measure framework agents** — orchestrate the spec-driven TDD lifecycle:
-
-| Agent | Role |
-|-------|------|
-| `measure-strategy` | Creates / refreshes the test strategy before phase execution |
-| `measure-mid-red` | Writes targeted failing tests and plan evidence for the Red phase |
-| `measure-jr-green` | Implements Green-phase behavior after Red tests are committed |
-| `measure-adversarial-testing` | Adds boundary, failure-path, integration, and regression tests |
-| `measure-review-a-correctness` | Reviews for correctness, architecture, and meaningful tests |
-| `measure-review-b-security` | Reviews for security, authorization, validation, and data handling |
-| `measure-review-c-ux-api` | Reviews for UX and API end-to-end contract gaps |
-| `measure-ux-browser-review` | Multimodal browser UX review for user-facing changes |
-| `measure-phase-acceptance` | Independent phase acceptance against spec, plan, tests, and commits |
-| `measure-final-acceptance` | Final track acceptance before closeout or archive |
-| `measure-closeout` | Archives a track and verifies closeout artifacts |
-| `measure-orchestrator-audit` | Audits the orchestrator for anti-patterns |
-
-**Coder agents** — model-routed coding subagents you can delegate to from any phase:
-
-- `coder-deepseek-v4-pro`, `coder-deepseek-v4-flash`
-- `coder-kimi-k2p7`
-- `coder-minimax-m3`
-- `coder-xiaomi-mimo-v2-5`, `coder-xiaomi-mimo-v2-5-pro`
-- `coder-vocengine-ark-code-latest`, `coder-vocengine-glm-5-2`
-- `coder-openrouter-free`
-- `coder-orchestrator` — multi-model dispatch
-
-Each `coder-*` agent is tuned for a specific cost/quality profile (see the agent's frontmatter). Pick the cheapest one whose capability matches the phase.
-
-### Skills (`skills/`)
-
-Bundled skill packs that activate automatically when their triggers match:
-
-| Skill | Purpose |
-|-------|---------|
-| `measure` | The core Measure framework skill |
-| `measure-orchestrator` | Run a track as a coordinated sequence of focused subagents with deterministic inter-phase checks (`scripts/measure_interphase_checks.py`) |
-| `measure-orchestrator-workspace` | Workspace-level orchestration utilities |
-| `build-graph` | Build and query a SQLite knowledge graph of a TypeScript codebase for structural reasoning |
-
-To install the bundled skills:
-
-```bash
-# Install Measure into Codex, Agents, OpenCode, and Claude as hard links.
-./bin/install-measure-skill
-
-# Install other bundled skills where needed.
-cp -r skills/build-graph skills/measure-orchestrator ~/.agents/skills/
-```
-
-### Related Projects
-
-- **[repo-graph](https://github.com/bodangren/repo-graph)** — The standalone CLI behind the `build-graph` skill. Scans TypeScript codebases via AST parsing and stores the knowledge graph in SQLite, so agents can answer structural questions ("find all callers of", "what breaks if I change", "trace from X to Y") cheaply.
+- **Sprint mode.** Write a feature spec as user stories with Gherkin acceptance criteria, T-shirt sizes, and priorities. `status` then reports velocity and estimate accuracy over the last 3 tracks.
+- **Graph-aware mode.** In TypeScript projects with a fresh [repo-graph](https://github.com/bodangren/repo-graph) database, planning and review use the call graph: the blast radius of each phase, and a check for callers that a signature change breaks.
+- **Skill recommendations.** During setup and new-track, Measure suggests agent skills that match your dependencies.
+- **Grill-me interviews.** Setup and new-track can ask hard follow-up questions until the spec has no open ambiguity.
 
 ---
 
-## Quick Start
+## Multi-agent orchestration
 
-### 1. Install Measure
+For larger tracks, the `measure-orchestrator` skill runs a track as a sequence of focused roles. Each role has its own model, its own permissions, and a fixed result contract. Deterministic checks run between the phases.
 
-**Claude Code:**
-```bash
-claude skills add /path/to/claude-skills/measure
-```
+| Role | Job |
+| --- | --- |
+| `measure-orchestrator` | Runs the sequence and routes the handoffs. |
+| `measure-strategy` | Writes the test strategy before a phase starts. |
+| `measure-mid-red` | Writes the failing tests (Red). |
+| `measure-jr-green` | Writes the code that makes them pass (Green). |
+| `measure-review-a-correctness` | Reviews correctness, architecture, and test quality. |
+| `measure-review-b-security` | Reviews security, authorization, and data handling. |
+| `measure-review-c-ux-api` | Reviews UX and API contracts end to end. |
+| `measure-adversarial-testing` | Attacks the implementation with boundary and failure-path tests. |
+| `measure-ux-browser-review` | Checks user-facing changes in a real browser. |
+| `measure-phase-acceptance` | Accepts or rejects a phase against the spec, plan, tests, and commits. |
+| `measure-final-acceptance` | Accepts the whole track before closeout. |
+| `measure-closeout` | Archives the track and checks the closeout record. |
+| `measure-orchestrator-audit` | Audits the framework itself for known anti-patterns. |
 
-**Gemini CLI:**
-```bash
-gemini extensions install <repo-url> --auto-update
-```
-
-**Shared skills (any agent):**
-```bash
-./bin/install-measure-skill
-```
-
-The installer treats `skills/measure/` as canonical and hard-links its complete
-tree into the repository's Claude bundle plus Codex, Agents, OpenCode, and
-Claude skill locations. Run it again after cloning or checking out the repo,
-because Git does not preserve hard-link relationships.
-
-### 2. Set Up Your Project
-
-```bash
-/measure:setup
-```
-
-Measure will guide you through defining your product, tech stack, and workflow preferences. If you opt for getdesign.md recommendations, you'll get a `measure/design-preview.html` with 3 tabbed design options to review in your browser.
-
-### 3. Start Your First Track
-
-```bash
-/measure:newTrack "Add OAuth login with Google and GitHub"
-```
-
-Review the generated spec and plan, then:
-
-```bash
-/measure:implement
-```
-
-### 4. Review and Iterate
-
-```bash
-/measure:review
-```
+Review and audit roles only report. The orchestrator sends each finding back to the Green role with its evidence, and a fix makes older reviews invalid, so the reviews run again.
 
 ---
 
-## Origin & Attribution
+## The installer in detail
 
-Measure started as a fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), the spec-driven development framework built for Gemini CLI. We've preserved the core philosophy — **Context → Spec & Plan → Implement** — while extending it with:
+`bin/install-measure-skill` reads the bundles and `bin/install-targets.tsv` from a git ref (default `main`) and copies them to each target:
 
-- Persistent project memory (lessons-learned, tech-debt)
-- Cross-platform skill packaging (Claude Code, Gemini CLI, shared skills)
-- Visual design preview with getdesign.md integration
-- Plan mode policies and safe execution boundaries
-- VCS abstraction beyond Git
-- An expanded skills catalog with auto-activation
+| Bundle | Targets |
+| --- | --- |
+| `skills/measure` | `~/.claude/skills/measure`, `~/.agents/skills/measure` |
+| `skills/measure-orchestrator` | `~/.agents/skills/measure-orchestrator` |
+| `skills/build-graph` | `~/.claude/skills/build-graph`, `~/.agents/skills/build-graph` |
+| `agents/measure-*.md` | `~/.agents/agents` |
 
-If you're coming from Conductor, the core concepts (tracks, specs, plans, workflow) are identical. The command namespace has moved from `/conductor:*` to `/measure:*`, and the scaffold directory from `conductor/` to `measure/`.
+- **Your edits are safe.** Each target gets a `.measure-install` stamp with the hash of each installed file. If you edit an installed file, the installer keeps your version, logs a warning, and exits with 2.
+- **Hard links stay.** Files are written in place, so a file that another folder links to stays linked.
+- **Removed files are cleaned up.** A file that `main` no longer has is removed, but only if the installer installed it.
+
+| Option | Effect |
+| --- | --- |
+| `--check` | Report each difference. Write nothing. Exit 0 (none) or 1. |
+| `--adopt` | Also replace files that no stamp covers, for example an old install. |
+| `--ref <ref>` | Install from another branch or tag. |
+| `--cron install` / `--cron remove` | Add or remove the hourly job. |
+
+The log is `~/.local/state/measure/install.log`.
+
+---
+
+## Origin
+
+Measure started as a fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), the spec-driven framework for Gemini CLI. It keeps Conductor's core idea, **Context → Spec & Plan → Implement**, and adds project memory, sprint and graph-aware modes, multi-agent orchestration, the measure-guard mod, and an installer that keeps every agent on the same version.
+
+If you come from Conductor: tracks, specs, plans, and the workflow work the same way. The folder is `measure/` instead of `conductor/`.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or pull request.
+Open an issue or a pull request at [bodangren/measure](https://github.com/bodangren/measure). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-Apache License 2.0
+Apache License 2.0. See [LICENSE](LICENSE).
