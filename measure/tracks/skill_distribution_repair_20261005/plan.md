@@ -15,7 +15,7 @@
     - [x] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
 - [x] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md) verified:user 2026-10-05 `a7e8351`
 
-## Phase 2: Test (Red)
+## Phase 2: Test (Red) [checkpoint: a4675db]
 
 - [x] Task 2.1: Write the installer tests under `scripts/` in this track folder `8a1b748`
     - [x] Install from `main`: the targets match `main` (FR-1, FR-2)
@@ -26,11 +26,11 @@
     - [x] `--check` writes nothing and exits with 0 or 1 (FR-7)
     - [x] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
 - [x] Task 2.2: Run the tests and record the failures in the git note (9 of 9 fail) `8a1b748`
-- [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05
+- [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05 `a4675db`
 
 ## Phase 3: Implement (Green)
 
-- [ ] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9)
+- [~] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9)
 - [ ] Task 3.2: Add `--cron install` and `--cron remove` (FR-8)
 - [ ] Task 3.3: Run the installer on this machine
     - [ ] Run `--check` and show the user the result before the first install
