@@ -7,7 +7,7 @@
 > The catalog is consulted by:
 > - `measure-strategy` (test strategy must defend against relevant anti-patterns)
 > - `measure-mid-red` (test authoring rules)
-> - `measure-jr-green` (Green implementation must not reintroduce A1–A7)
+> - `measure-jr-green` (Green implementation must not reintroduce A2–A7)
 > - `measure-phase-acceptance` (acceptance criteria)
 > - `measure-final-acceptance` (pre-closeout audit)
 > - `measure-orchestrator-audit` (catalog is the audit's primary input)
@@ -15,37 +15,10 @@
 
 ---
 
-## A1 — Substring-as-structured-signal in supervisor
+## A1 — Substring-as-structured-signal in supervisor (retired)
 
-**Class:** orchestrator heuristic bypass
-**Caught:** 2026-06-24 review of last-72h commits vs. measure phase state
-**Detection:**
-```bash
-# Use Python to strip docstrings before matching (the false-positive on docstring
-# mentions is itself a known failure mode of grep-based detection).
-python3 -c '
-import re
-src = open("measure/automation-supervisor.py").read()
-code = re.sub(r"\"\"\".*?\"\"\"", "", src, flags=re.DOTALL)
-code = re.sub(r"'"'"'"'.*?'"'"'"'", "", code, flags=re.DOTALL)
-matches = re.findall(r"\"deferred\"[[:space:]]+in[[:space:]]+task\.lower\(\)", code)
-print(len(matches), "substring-match occurrences")
-'
-```
-
-**Symptoms:** A `[~]` task with the substring "deferred" in its prose is silently dropped
-from the incomplete-task count. Tracks can mark a task `[~]` *without* doing the work
-and the supervisor still reports "complete."
-
-**Fix:** Replace the substring check with a structured-signal helper
-(`is_task_structurally_blocked(task)` in `measure/automation-supervisor.py`) that
-recognizes:
-- `[b]` (blocked / human-gated) checkbox state
-- trailing `deferred:<owner>` field
-
-A free-text occurrence of "deferred" no longer drops a task from the incomplete count.
-
-**Guard:** `tests/mir_p1.sh` A1 in the `measure_integrity_remediation_20260624` track.
+**Retired 2026-10-05.** This entry checked `measure/automation-supervisor.py`, which was removed
+(track `skill_distribution_repair_20261005`). The number stays reserved, so A2–A10 keep their numbers.
 
 ---
 
@@ -186,22 +159,10 @@ gets silently dropped.
 
 ---
 
-## A8 — `[ ]` (space) marker ambiguity (legacy)
+## A8 — `[ ]` (space) marker ambiguity (legacy) (retired)
 
-**Class:** supervisor regex accepts too many markers
-**Caught:** 2026-06-24 review (post-supervisor fix)
-**Detection:**
-```bash
-rg -nE 'r"\^\- \[\([ ~x\]\)\]' measure/automation-supervisor.py
-```
-
-**Symptoms:** The supervisor's task regex `r"^- \[([ ~x])\] (.+)"` accepts a space
-character. A `[ ]` (space) marker is counted as in-progress.
-
-**Fix:** Standardize on `r"^- \[([~xb])\] (.+)"`; the supervisor's incomplete-count
-predicate should be `status in ("~", "b") and not is_task_structurally_blocked(task)`.
-
-**Guard:** Static check in `measure-orchestrator-audit`.
+**Retired 2026-10-05.** This entry checked `measure/automation-supervisor.py`, which was removed
+(track `skill_distribution_repair_20261005`). The number stays reserved, so A2–A10 keep their numbers.
 
 ---
 

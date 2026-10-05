@@ -50,8 +50,8 @@ In this case:
   - `deferred:closeout-steward` for archive moves, `tracks.md` registry updates,
     `metadata.json` status changes
   - `deferred:repo-owner` for AGENTS.md rule changes or other policy decisions
-- The supervisor's `is_task_structurally_blocked` helper recognizes `[b]` markers and
-  `(deferred:<owner>)` fields. The task is preserved as "human-gated, not complete" — which
+- Measure tools read a `[b]` marker with a `(deferred:<owner>)` field as a structural
+  block. The task is preserved as "human-gated, not complete" — which
   is the correct state, not a bypass.
 - Document the block in the handoff to the next role (phase-acceptance or final-acceptance).
 
@@ -59,7 +59,6 @@ In this case:
 
 Before committing, check the diff against `measure/anti-patterns.md`:
 
-- A1: do not reintroduce a substring heuristic in `measure/automation-supervisor.py`.
 - A5: do not write "all checks pass" or "PASS=N, FAIL=0" in plan task text unless the
   test actually exits 0.
 - A6: do not write "X was resolved" in `measure/tracks.md` unless the corresponding

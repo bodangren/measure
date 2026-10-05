@@ -51,11 +51,8 @@ Verify every current-phase task and applicable acceptance criterion against impl
 
 ## Specific things to verify
 
-Always verify A5 against current-phase plan claims. Verify A1, A3, A4, A6, and A7 only when the exact phase diff changed their corresponding framework surface: supervisor logic, contract tests, filters, or the tracks registry. Product-only phases must not fail because of unrelated framework state; `measure-orchestrator-audit` owns scheduled and framework-wide auditing.
+Always verify A5 against current-phase plan claims. Verify A3, A4, A6, and A7 only when the exact phase diff changed their corresponding framework surface: contract tests, filters, or the tracks registry. Product-only phases must not fail because of unrelated framework state; `measure-orchestrator-audit` owns scheduled and framework-wide auditing.
 
-- **A1 (substring-as-signal):** the supervisor's task regex matches `[~xb]` (not the
-  legacy `[ ~x]`); the `is_task_structurally_blocked` helper is present and recognizes
-   `[b]` and trailing `(deferred:<owner>)`.
 - **A3 (digit-only "count"):** any "count" or "baseline" assertion uses a labeled
   integer parse, not `rg -q '[0-9]+'`.
 - **A4 (vacuous-pass):** a "markers consistent" check fails on a phase with 0 `[x]`
@@ -67,7 +64,7 @@ Always verify A5 against current-phase plan claims. Verify A1, A3, A4, A6, and A
 - **A7 (over-broad filter):** banned-term filters don't drop real hits.
 
 If any of these are present, the phase is not truly complete. Either fix the
-implementation/test, fix the supervisor, or fix the plan text — do not paper over the
+implementation/test or fix the plan text — do not paper over the
 finding with a "we'll fix it later" note.
 
 This is a gate-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact. Any blocker fails acceptance and routes to the owning role; acceptance must be rerun against the resulting new HEAD. End with the required `MEASURE_AGENT_RESULT` block.

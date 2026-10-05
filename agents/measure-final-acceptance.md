@@ -54,8 +54,6 @@ Verify every non-deferred task and acceptance criterion, changed callers/contrac
 Before passing final acceptance, run the `measure-orchestrator-audit` check list against
 the track. Specifically:
 
-- **A1:** if the track introduced any supervisor change, verify the change does not
-  reintroduce a substring heuristic.
 - **A5:** verify every "PASS=N, FAIL=0" or "all checks pass" claim in `plan.md` matches
   reality.
 - **A6:** verify the `measure/tracks.md` registry note accurately reflects the

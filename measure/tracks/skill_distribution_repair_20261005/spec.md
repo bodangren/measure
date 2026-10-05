@@ -43,12 +43,13 @@ Decisions from the user (2026-10-05):
 
 ### Supervisor removal
 
-- **FR-10:** In this repository, remove `measure/automation-supervisor.py`, the "Automation Supervisor" section of `AGENTS.md`, and the `measure/runs/` line in `.gitignore`.
-- **FR-11:** Update the supervisor references in `agents/*.md` and `skills/measure-orchestrator/`. If a reference names a file that the Pi harness still uses, ask the user before changing it.
+- **FR-10:** In this repository, remove `measure/automation-supervisor.py` and the "Automation Supervisor" section of `AGENTS.md`. Keep the `measure/runs/` line in `.gitignore` and the `measure/runs/**` permissions in the role files: the Pi harness writes its run records there. (Changed in Task 4.1.)
+- **FR-11:** Update the supervisor references in `agents/*.md` and `skills/measure-orchestrator/`. If a reference names a file that the Pi harness still uses, ask the user before changing it. User decisions (Task 4.1): remove the supervisor-specific audit checks (catalog entries A1 and A8 stay as retired numbers), and keep the file name `automation-supervisor-closeout-manifest.json`.
 - **FR-12:** In each other project and worktree that has `measure/automation-supervisor.py`, delete the file and the `AGENTS.md` section, and commit only those paths on the current branch.
   - Skip a repository that has a merge, rebase, or cherry-pick in progress. Report it.
   - If `AGENTS.md` has other uncommitted changes, commit only the deletion of the file. Report the `AGENTS.md` line for a manual fix.
   - If the file is untracked, delete it, and commit only the `AGENTS.md` change.
+  - Skip `fleet-commander`: its test `pivot/src/orchestrator/guards/noSecondScheduler.test.ts` asserts that the file exists. A Fleet track must change that test first. (User decision, Task 4.1.)
 - **FR-13:** Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`. Keep the 201 `automation-supervisor-*-manifest.json` files in track archives as history.
 
 ### Documentation

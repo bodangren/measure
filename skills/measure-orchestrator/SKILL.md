@@ -1,6 +1,6 @@
 ---
 name: measure-orchestrator
-description: Orchestrate Measure track execution with dedicated subagents, role-specific models, TDD handoffs, audit contracts, and deterministic inter-phase checks. Use this skill whenever the user asks to run Measure automation, supervise a Measure track or phase, replace measure-supervisor.py, delegate Red/Green/review/acceptance/closeout work to subagents, verify phase gates, or archive completed Measure tracks.
+description: Orchestrate Measure track execution with dedicated subagents, role-specific models, TDD handoffs, audit contracts, and deterministic inter-phase checks. Use this skill whenever the user asks to run Measure automation, supervise a Measure track or phase, delegate Red/Green/review/acceptance/closeout work to subagents, verify phase gates, or archive completed Measure tracks.
 ---
 
 # Measure Orchestrator
@@ -27,18 +27,15 @@ Every plan uses these three markers:
 - `[b]` — blocked / human-gated (with trailing `deferred:<owner>` field)
 
 The legacy `[ ]` (space) marker is **deprecated**. Some plans still use it for
-"deferred" or "not started" but the supervisor no longer treats space as in-progress
-(supervisor regex is `r"^- \[([~xb])\] (.+)"`). When a plan has `[ ]` (space) markers,
+"deferred" or "not started". When a plan has `[ ]` (space) markers,
 reclassify them to `[b]` with `deferred:<owner>` per the verification-checkpoint rule.
 
-The supervisor's `is_task_structurally_blocked(task)` helper in
-`measure/automation-supervisor.py` recognizes:
+A task is blocked only by structure:
 - `[b]` checkbox state
 - trailing `deferred:<owner>` field (e.g. `… — deferred:phikul`)
 
-A free-text occurrence of the word "deferred" no longer drops a task from the
-incomplete count (this is **anti-pattern A1**, the highest-priority orchestrator
-anti-pattern; see `references/anti-pattern-catalog.md`).
+A free-text occurrence of the word "deferred" does not drop a task from the
+incomplete count.
 
 ## `tests/_lib/` Template (deferred — see `tech-debt.md`)
 
@@ -90,7 +87,7 @@ the rest." Verify `[b]` markers in the plan are intentional before declaring suc
 
 Run roles in this order. Strategy, Mid, and Jr are sequential. Review A/B/C can run in
 parallel after Jr commits Green work if their write scopes are clear. The audit role
-runs at any point in the cycle (recommended: weekly + on every supervisor change). Final
+runs at any point in the cycle (recommended: weekly). Final
 Acceptance must pass before Closeout.
 
 1. `measure-strategy`
@@ -102,12 +99,12 @@ Acceptance must pass before Closeout.
 7. `measure-phase-acceptance`
 8. `measure-adversarial-testing`
 9. `measure-ux-browser-review` when applicable
-10. `measure-orchestrator-audit` (anytime; recommended after every supervisor change)
+10. `measure-orchestrator-audit` (anytime; recommended weekly)
 11. `measure-final-acceptance`
 12. `measure-closeout`
 
 The `measure-orchestrator-audit` role is the only one that audits the *framework* itself
-(supervisor, test scripts, plan truthfulness). Other audit roles audit the
+(test scripts, plan truthfulness). Other audit roles audit the
 *implementation* of a specific track. The two are complementary.
 
 ## Delegation
