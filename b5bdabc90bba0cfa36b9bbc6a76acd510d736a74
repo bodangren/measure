@@ -1,0 +1,8 @@
+Task 4.1: This repository (FR-10, FR-11)
+
+Why: the user confirmed on 2026-10-05 that Fleet Commander and the Pi harness supersede automation-supervisor.py.
+Changes: measure/automation-supervisor.py deleted; AGENTS.md 'Automation Supervisor' section removed; agents/measure-{orchestrator-audit,phase-acceptance,jr-green,mid-red,final-acceptance,adversarial-testing,review-a-correctness}.md: supervisor checks and wording removed ([b] + deferred:<owner> rules kept, now worded as 'Measure tools read ... as a structural block'); skills/measure-orchestrator/SKILL.md, references/anti-pattern-catalog.md (A1 and A8 retired, numbers kept), evals/evals.json (A1 and supervisor expectations removed; JSON valid).
+Kept on purpose: automation-supervisor-closeout-manifest.json name (closeout role, SKILL.md, measure_interphase_checks.py); .gitignore measure/runs/ and the measure/runs/** role permissions (the Pi harness writes run records there, e.g. pi-measure-harness/measure/runs/harness_reload_20260806.json).
+Evidence for the decisions: pi-measure-harness/lib/grammar.mjs has CANONICAL_REGEX and isTaskStructurallyBlocked (its own port); fleet-commander noSecondScheduler.test.ts:182 asserts the supervisor file exists (so Task 4.2 skips fleet-commander).
+User decisions: remove the A1 supervisor checks; keep the manifest name; skip fleet-commander. Recorded in spec.md FR-10, FR-11, FR-12.
+Process note: a first commit attempt failed at git add (the deletion was already staged), and this note was attached to fd3d654 by mistake; that note was removed.
