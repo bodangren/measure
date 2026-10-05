@@ -13,7 +13,7 @@
 - [x] Task 1.3: Contract — tooling exception and installer contract `5c003a8`
     - [x] Add a row for this track to the Tooling Exceptions table in `tech-stack.md` (bash test scripts) before any test
     - [x] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
-- [x] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md) verified:user 2026-10-05
+- [x] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md) verified:user 2026-10-05 `a7e8351`
 
 ## Phase 2: Test (Red)
 
@@ -25,8 +25,8 @@
     - [x] A file removed from the source is removed from the target; a file that the installer did not install stays (FR-6)
     - [x] `--check` writes nothing and exits with 0 or 1 (FR-7)
     - [x] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
-- [x] Task 2.2: Run the tests and record the failures in the git note `8a1b748` (9 of 9 fail; record in the git note)
-- [~] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md)
+- [x] Task 2.2: Run the tests and record the failures in the git note (9 of 9 fail) `8a1b748`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase 3: Implement (Green)
 
