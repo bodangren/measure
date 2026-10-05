@@ -1,0 +1,4 @@
+Verification report: Phase 3 (Implement, Green), skill_distribution_repair_20261005
+Date: 2026-10-05. Changed files since a4675db: bin/install-measure-skill (rewrite), bin/install-targets.tsv (new), spec.md FR-5, contract.md (unstamped per file), install-record.md, plan.md.
+Agent checks: run-tests.sh -> 9 passed, 0 failed (note on fd4d837); merged into main (96feda1); --check 3 unstamped -> --adopt written=3 -> --check exit 0; both installed SKILL.md files have the Continuous improvement section; crontab diff = 1 added line; second --cron install = no change; pi-measure-harness role files unchanged.
+User check: confirmed with 'yes' (crontab, --check, log; first cron run at minute 17).
