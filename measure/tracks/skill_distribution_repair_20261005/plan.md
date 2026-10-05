@@ -17,16 +17,16 @@
 
 ## Phase 2: Test (Red)
 
-- [ ] Task 2.1: Write the installer tests under `scripts/` in this track folder
-    - [ ] Install from `main`: the targets match `main` (FR-1, FR-2)
-    - [ ] A commit on a feature branch does not change the targets (FR-1)
-    - [ ] An existing hard link to a target file stays after an install (FR-3)
-    - [ ] A local edit stays, the log has a warning, and the exit code is 2 (FR-5, FR-9)
-    - [ ] A file removed from the source is removed from the target; a file that the installer did not install stays (FR-6)
-    - [ ] `--check` writes nothing and exits with 0 or 1 (FR-7)
-    - [ ] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
-- [ ] Task 2.2: Run the tests and record the failures in the git note
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md)
+- [x] Task 2.1: Write the installer tests under `scripts/` in this track folder `8a1b748`
+    - [x] Install from `main`: the targets match `main` (FR-1, FR-2)
+    - [x] A commit on a feature branch does not change the targets (FR-1)
+    - [x] An existing hard link to a target file stays after an install (FR-3)
+    - [x] A local edit stays, the log has a warning, and the exit code is 2 (FR-5, FR-9)
+    - [x] A file removed from the source is removed from the target; a file that the installer did not install stays (FR-6)
+    - [x] `--check` writes nothing and exits with 0 or 1 (FR-7)
+    - [x] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
+- [x] Task 2.2: Run the tests and record the failures in the git note `8a1b748` (9 of 9 fail; record in the git note)
+- [~] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md)
 
 ## Phase 3: Implement (Green)
 
