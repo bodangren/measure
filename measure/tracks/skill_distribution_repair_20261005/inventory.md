@@ -76,10 +76,15 @@ Source: `main` at `2892fc5`.
 4. **Absent targets.** `~/.codex/skills/measure`, `~/.config/opencode/skills/measure`, and `~/.claude/skills/measure-orchestrator` do not exist. The old installer would create the first 2.
 5. **No extra files.** No target has a file that `main` does not have.
 
-## Open: the second hard link of `~/.agents/agents/measure-*.md`
+## Result: the second hard link of `~/.agents/agents/measure-*.md`
 
-`~/.agents/agents/measure-closeout.md` has a link count of 2. The permission system blocked the search of the home folder for the other link. Status: deferred to the user. To find it, run:
+The user ran the search on 2026-10-05 (the permission system blocked it for the agent):
 
-    find ~ -xdev -samefile ~/.agents/agents/measure-closeout.md 2>/dev/null
+    find ~ -xdev -samefile ~/.agents/agents/measure-closeout.md
+    /home/daniebo/.agents/agents/measure-closeout.md
+    /home/daniebo/Desktop/pi-measure-harness/agents/measure-closeout.md
 
-FR-3 (write in place) keeps this link in all cases.
+- `pi-measure-harness` tracks the same 13 `agents/measure-*.md` files in git. The last commit for them is `7d3bdfe` (2026-07-20).
+- All 13 files show as modified (uncommitted) in `pi-measure-harness`. The change of 2026-10-04 in this repository reached that working tree through the hard links.
+- With FR-3 (write in place), each later change to `agents/` on `main` also becomes an uncommitted change in `pi-measure-harness`.
+- Only `measure-closeout.md` was checked. The other 12 files probably have the same link, because they show the same uncommitted change.
