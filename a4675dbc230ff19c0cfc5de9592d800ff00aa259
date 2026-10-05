@@ -1,0 +1,4 @@
+Verification report: Phase 2 (Test, Red), skill_distribution_repair_20261005
+Date: 2026-10-05. Changed files since a7e8351: the track scripts/ folder (lib.sh, run-tests.sh, 9 test-*.sh), contract.md (tools through PATH; HOME rule), plan.md.
+Agent checks: run-tests.sh -> 0 passed, 9 failed, each at an assertion for a missing contract behavior (record in the git note of 8a1b748); no change to the real home folder or the real crontab; no leftover temporary worlds.
+User check: confirmed with 'yes' (run the suite; local-edit and adopt behavior; the ~/.codex skip rule exists only in the test world).
