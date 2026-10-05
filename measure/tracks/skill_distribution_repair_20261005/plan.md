@@ -35,7 +35,7 @@
 - [x] Task 3.3: Run the installer on this machine `7d43626`
     - [x] Run `--check` and show the user the result before the first install
     - [x] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs (merged to `main` first: `96feda1`)
-- [~] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase 4: Remove the supervisor
 
