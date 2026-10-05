@@ -37,7 +37,7 @@
     - [x] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs (merged to `main` first: `96feda1`)
 - [x] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md) verified:user 2026-10-05 `70771ec`
 
-## Phase 4: Remove the supervisor
+## Phase 4: Remove the supervisor [checkpoint: 9e3424c]
 
 - [x] Task 4.1: This repository (FR-10, FR-11) `b5bdabc`
     - [x] Delete `measure/automation-supervisor.py` and the `AGENTS.md` section (the `.gitignore` line `measure/runs/` stays: the Pi harness writes run records there)
@@ -47,11 +47,11 @@
     - [x] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
     - [x] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
     - [x] Report each repository that was skipped, and why
-- [x] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md) verified:user 2026-10-05
+- [x] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md) verified:user 2026-10-05 `9e3424c`
 
 ## Phase 5: Docs and closeout
 
-- [ ] Task 5.1: Update `tech-stack.md`, `product.md`, `README.md`, and `tech-debt.md` (FR-14, FR-15)
+- [~] Task 5.1: Update `tech-stack.md`, `product.md`, `README.md`, and `tech-debt.md` (FR-14, FR-15)
 - [ ] Task 5.2: After the merge to `main`, confirm the acceptance criteria
     - [ ] After one cron run, `--check` exits with 0, and `~/.claude/skills/measure/SKILL.md` has the "Continuous improvement" section
     - [ ] Ask the user, then close issue #1 in `bodangren/measure` with a link to the commit
