@@ -1,0 +1,6 @@
+Task 3.3: Run the installer on this machine
+
+Why: the agents must run the skills from main; the cron job keeps them equal.
+Steps: merged chore/skill-distribution into main (96feda1, --no-ff, temporary worktree, so this checkout stayed on the branch); --check (3 unstamped: 2 old SKILL.md, 1 old review.md; shown to the user, who chose merge, adopt, cron); --adopt (written=3, exit 0); --check (exit 0); --cron install twice (1 line added, then no change).
+Result: both installed SKILL.md files have the Continuous improvement section (issue #1 content). Crontab diff: 1 added line only. Log: 1 summary line, exit=0. pi-measure-harness role files unchanged (already equal).
+Record: measure/tracks/skill_distribution_repair_20261005/install-record.md.
