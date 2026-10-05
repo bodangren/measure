@@ -1,0 +1,5 @@
+Verification report: Phase 4 (Remove the supervisor), skill_distribution_repair_20261005
+Date: 2026-10-05. Changed files since 70771ec: measure/automation-supervisor.py (deleted), AGENTS.md, 7 agents/*.md, skills/measure-orchestrator/ (SKILL.md, anti-pattern catalog, evals.json), spec.md, plan.md, removal-record.md.
+Agent checks: no supervisor reference left in agents/, skills/, AGENTS.md except the kept manifest name and the 2 'Retired' catalog notes; evals.json is valid JSON; 26 commits in other checkouts each touch only the expected paths; 3 AGENTS.md diffs checked; only fleet-commander keeps the file; ~/.local/bin/measure-supervisor deleted.
+Open for the user: ka-math-companion/AGENTS.md line 13 (file has other uncommitted changes).
+User check: confirmed with 'yes'.
