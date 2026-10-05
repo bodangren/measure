@@ -1,0 +1,7 @@
+Task 4.2: The other projects and worktrees (FR-12, FR-13)
+
+Why: the supervisor is superseded; the user asked to delete it everywhere.
+Process: read-only survey (branch, file state, AGENTS.md form and status, operation in progress, hooks) -> list shown to the user -> approved 'Proceed as listed' -> one script that rechecked the state, built the new AGENTS.md text before deleting anything, used git rm + git commit --only, and restored the paths on any failure.
+Result: 26 commits (12 one-line sections, 1 long section in advantage-pr, 8 single lines in ra-math-advantage and the Reading Advantage checkouts and worktrees, 5 file-only, 1 AGENTS.md-only in bus-math-v2); ka-math-companion: untracked copy deleted, AGENTS.md line left for the user (other uncommitted changes); fleet-commander skipped (its test asserts the file); mediarr/measure/automation-supervisor.md deleted; ~/.local/bin/measure-supervisor deleted. 0 failures, 0 hook rejections. No push.
+Verification: every commit has only the expected paths; 3 AGENTS.md diffs checked by hand; only fleet-commander still has the file.
+Record: measure/tracks/skill_distribution_repair_20261005/removal-record.md (per-checkout SHAs and branches).
