@@ -110,3 +110,5 @@ Each run, except `--check`, appends 1 line to `~/.local/state/measure/install.lo
 - The comment `# measure-skill-install` identifies the line. `--cron install` and `--cron remove` change only that line and keep all other lines. Running either twice gives the same crontab. (FR-8)
 - The path is the absolute path of the script when `--cron install` runs. If the repository moves, run `--cron install` again.
 - The script uses only `/usr/bin` and `/bin` tools (`git`, `tar`, `sha256sum`, `crontab`, `mktemp`, `date`), so the short cron `PATH` is sufficient.
+- The script calls each tool by name through `PATH`, never by an absolute path. The tests put a fake `crontab` first on `PATH`, so a test never changes the real crontab.
+- All paths under `~` come from `HOME`. The tests set `HOME` to a temporary folder.
