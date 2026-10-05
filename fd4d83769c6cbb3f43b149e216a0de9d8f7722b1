@@ -1,0 +1,19 @@
+Task 3.1: Rewrite bin/install-measure-skill (FR-1 to FR-7, FR-9); Task 3.2: Add --cron install and --cron remove (FR-8). Folded: both change one script.
+
+Why: the hard-link installer copied the working tree, broke on each git checkout, and had no protection for local edits.
+Changes:
+- bin/install-measure-skill: full rewrite to contract.md. git -c tar.umask=0022 archive of the ref (modes 644/755 for any git config); targets file read from the ref; all parsing before any write (errors exit 3, nothing written); in-place writes (cat >) keep inodes and hard links; .measure-install stamp per target; local-edit and unstamped protection (exit 2) with --adopt; stale removal of installed files only; --check (exit 0/1, no writes, no log); --cron install|remove changes only the line that ends with '# measure-skill-install'; log at ~/.local/state/measure/install.log.
+- bin/install-targets.tsv (new): 6 targets from contract.md.
+- spec.md FR-5 and contract.md: 'unstamped' is per file (no stamp line), so --adopt still works after a first run wrote a stamp.
+Green fix: the first run failed test-install-from-main (mode 775) because git archive uses tar.umask=0002 by default.
+Green record, command: measure/tracks/skill_distribution_repair_20261005/scripts/run-tests.sh
+[PASS] test-branch-isolation
+[PASS] test-check
+[PASS] test-cron
+[PASS] test-errors
+[PASS] test-hard-link
+[PASS] test-install-from-main
+[PASS] test-local-edit
+[PASS] test-stale-removal
+[PASS] test-unstamped-adopt
+Summary: 9 passed, 0 failed (9 total)
