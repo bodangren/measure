@@ -10,16 +10,16 @@
 
 | Format | Location | Target Runtime |
 |--------|----------|---------------|
-| Canonical shared skill | `skills/measure/` | Hard-link source for Codex, Agents, OpenCode, and Claude |
-| Claude Skills bundle | `claude-skills/measure/` | Hard-linked Claude Code distribution |
-| Gemini CLI extension | `codex-skills/measure/` | Gemini CLI (Google) |
-| Templates | `templates/` | Copied to user projects at setup time |
-| Claude Code mod | `mods/measure-guard/` | Claude Code function-hook plugin, loaded with `claude --plugin-dir` |
+| Canonical shared skill | `skills/measure/` | Installed from `main` into `~/.claude/skills/measure` and `~/.agents/skills/measure` |
+| Orchestration skills and roles | `skills/measure-orchestrator/`, `skills/build-graph/`, `agents/measure-*.md` | Installed from `main` into `~/.agents/` (and `~/.claude/skills/build-graph`) |
+| Claude Skills bundle | `claude-skills/measure/` | A copy of `skills/measure/` for `claude skills add`; the Definition of Done keeps it equal |
+| Claude Code mod | `mods/measure-guard/` | Claude Code function-hook plugin, loaded with `claude --plugin-dir` or `CLAUDE_CODE_PLUGIN_DIRS` |
 
-Run `bin/install-measure-skill` after cloning or checking out the repository to
-restore the hard-linked skill distribution. The Claude Skills bundle is a
-`.skill` zip archive. The Gemini CLI extension uses the extension protocol
-defined by Gemini CLI.
+`bin/install-measure-skill` reads the bundles and `bin/install-targets.tsv` from
+`main` (never from the working tree) and copies them into each target in place.
+A stamp file in each target protects local edits. `--cron install` adds an hourly
+job, and `--check` reports differences without a write. The contract is in the
+`skill_distribution_repair_20261005` track folder.
 
 ## Tooling
 
@@ -45,22 +45,24 @@ measure-repo/
 │   ├── SKILL.md
 │   ├── references/
 │   └── assets/
-├── templates/           # Canonical templates copied to user projects at setup
-│   ├── workflow.md
-│   └── code_styleguides/
-├── claude-skills/measure/    # Hard-linked Claude Code skill bundle
-│   ├── SKILL.md                # Skill manifest (name, description, trigger)
-│   ├── references/             # Step-by-step command workflows
-│   │   ├── setup.md
-│   │   ├── new-track.md
-│   │   ├── implement.md
-│   │   ├── review.md
-│   │   ├── status.md
-│   │   └── revert.md
-│   └── assets/                 # Files the skill copies into user projects
-│       ├── workflow.md
-│       └── code_styleguides/
-└── codex-skills/measure/     # Gemini CLI extension source (parallel structure)
+├── skills/measure-orchestrator/  # Multi-agent orchestration skill
+├── skills/build-graph/       # Knowledge-graph skill (repo-graph CLI)
+├── agents/                   # 13 measure-* role definitions
+├── bin/install-measure-skill # Installer (reads main; cron-capable)
+├── bin/install-targets.tsv   # Bundle-to-target map for the installer
+├── mods/measure-guard/       # Claude Code mod
+└── claude-skills/measure/    # Copy of skills/measure for claude skills add
+    ├── SKILL.md                # Skill manifest (name, description, trigger)
+    ├── references/             # Step-by-step command workflows
+    │   ├── setup.md
+    │   ├── new-track.md
+    │   ├── implement.md
+    │   ├── review.md
+    │   ├── status.md
+    │   └── revert.md
+    └── assets/                 # Files the skill copies into user projects
+        ├── workflow.md
+        └── code_styleguides/
 ```
 
 ## Versioning

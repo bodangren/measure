@@ -75,9 +75,9 @@ Phikul). In this case:
 
 - Do NOT fabricate (no fake rows, no invented dates, no made-up outreach).
 - Mark the task `[b]` with a trailing `(deferred:<owner>)` field
-  (e.g. `- [b] T-X.1 — ... (deferred:phikul)`). The supervisor's
-  `is_task_structurally_blocked` helper recognizes this and preserves the
-  human-gated state without inflating completion.
+  (e.g. `- [b] T-X.1 — ... (deferred:phikul)`). Measure tools read
+  this as a structural block, which preserves the human-gated state without
+  inflating completion.
 - Note the block in the Red report and in the handoff to the next role.
 
 End with the required `MEASURE_AGENT_RESULT` block. Set its `baseline_sha` field to the supplied `phase_base_sha`, and identify this role, track, phase, resulting HEAD, commits, tests, files, and exact remaining failures.

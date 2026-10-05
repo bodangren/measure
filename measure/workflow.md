@@ -26,8 +26,7 @@ All tasks follow a strict lifecycle:
 
 4. **Implement (Green Phase):**
    - Make the minimal changes necessary to satisfy the acceptance criteria.
-   - For workflow reference files: edit the relevant section in `skills/measure/references/`, then run `bin/install-measure-skill` to refresh the hard-linked distribution copies.
-   - For template files: edit the relevant file in `claude-skills/measure/assets/` AND `templates/`.
+   - For skill files: edit the file in `skills/measure/` (the canonical source), then copy it to the same path in `claude-skills/measure/`. The hourly installer job installs the change from `main` after the merge.
    - Verify the result matches the acceptance criteria.
    - **Graph Maintenance (optional, TS projects only):** If a graph baseline was loaded in `implement.md §3.2` and this task changes signatures, imports/exports, schemas, or JSX hierarchy, run `build-graph update ./graph.db <changed-files>` before commit. See `implement.md §3.3` Per-Task Graph Protocol for the full decision tree.
 
@@ -109,21 +108,23 @@ Before marking any task complete, verify:
 - [ ] Terminology matches the product guidelines
 - [ ] No existing workflow steps were unintentionally removed or reordered
 - [ ] File names and section references are correct
-- [ ] Both `claude-skills/` and `templates/` copies are updated if a template was changed
+- [ ] `diff -r skills/measure claude-skills/measure` shows no difference if a skill file was changed
 
 ## Development Commands
 
 ### Verify File Structure
 ```bash
 # List all Measure skill files
-find claude-skills/measure -type f | sort
-find templates -type f | sort
+find skills/measure -type f | sort
 ```
 
 ### Check for Inconsistencies
 ```bash
-# Compare template copies
-diff claude-skills/measure/assets/workflow.md templates/workflow.md
+# Compare the skill source and the Claude bundle copy
+diff -r skills/measure claude-skills/measure
+
+# Compare the installed copies with main (writes nothing)
+bin/install-measure-skill --check
 ```
 
 ### Git Workflow
@@ -171,7 +172,7 @@ A task is complete when:
 
 1. All file edits satisfy the acceptance criteria
 2. Changes are consistent with product guidelines (tone, formatting, terminology)
-3. Both skill copies updated if a template was changed (`claude-skills/` and `templates/`)
+3. `skills/measure/` and `claude-skills/measure/` are equal if a skill file was changed
 4. Changes committed with a proper message
 5. Git note with task summary attached to the commit
 6. `plan.md` updated with `[x]` status and commit SHA

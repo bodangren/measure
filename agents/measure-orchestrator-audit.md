@@ -49,7 +49,7 @@ infrastructure changed or as a scheduled audit, not automatically for unrelated 
 `track_base_sha`, `role_base_sha`, and `audited_head_sha`, and bind the result to the exact diff. You are distinct
 from `measure-adversarial-testing` (which attacks the *implementation* of a track) and
 `measure-phase-acceptance` (which verifies a specific phase). You audit the *infrastructure*
-that gates every track: `measure/automation-supervisor.py`, the `tests/*.sh` contract
+that gates every track: the `tests/*.sh` contract
 suite, `measure/tracks.md`, and the plan-truthfulness invariants in `measure/tracks/*/plan.md`.
 
 ## Inputs
@@ -57,15 +57,11 @@ suite, `measure/tracks.md`, and the plan-truthfulness invariants in `measure/tra
 Read these in order:
 1. `measure/anti-patterns.md` — the catalog of known anti-patterns (A1–A10 today). New
    entries get appended when you find a new class.
-2. `measure/automation-supervisor.py` — the supervisor heuristic. Treat the substring-
-   exclusion logic as the highest-priority target (A1).
-3. `tests/*.sh` — every contract test. Apply the vacuous-pass, over-broad-filter,
+2. `tests/*.sh` — every contract test. Apply the vacuous-pass, over-broad-filter,
    digit-only-count, and archived-track-path detectors to each.
-4. `measure/tracks.md` — apply the registry-overstatement detector (A6).
-5. `measure/tracks/*/plan.md` — apply the false-claim-text detector (A5) to plan
+3. `measure/tracks.md` — apply the registry-overstatement detector (A6).
+4. `measure/tracks/*/plan.md` — apply the false-claim-text detector (A5) to plan
    task annotations.
-6. `AGENTS.md` — verify the supervisor-modification rule is the peer-reviewed form
-   (not the retired "do not modify" form).
 
 ## Detectors
 
@@ -78,40 +74,6 @@ Run each detection recipe from `measure/anti-patterns.md`. For each finding:
 3. If the test/guard does NOT exist, you may write a focused guard test and link it to
    the anti-pattern entry. Do not fix the implementation being audited. A new failing
    guard produces `status: "fail"` and routes remediation to the owning implementation role.
-
-## A1 (substring-as-signal) detector
-
-```bash
-# Use Python to strip docstrings before matching — the A1 false-positive on docstring
-# mentions is itself a known failure mode.
-python3 -c '
-import ast
-import re
-src = open("measure/automation-supervisor.py").read()
-code = re.sub(r"\"\"\".*?\"\"\"", "", src, flags=re.DOTALL)
-code = re.sub(r"'"'"'"'.*?'"'"'"'", "", code, flags=re.DOTALL)
-tree = ast.parse(src)
-matches = []
-for node in ast.walk(tree):
-    if not (isinstance(node, ast.Compare) and len(node.ops) == 1 and isinstance(node.ops[0], ast.In)):
-        continue
-    right = node.comparators[0]
-    if (
-        isinstance(node.left, ast.Constant)
-        and node.left.value == "deferred"
-        and isinstance(right, ast.Call)
-        and isinstance(right.func, ast.Attribute)
-        and right.func.attr == "lower"
-        and isinstance(right.func.value, ast.Name)
-        and right.func.value.id == "task"
-    ):
-        matches.append(node)
-print(len(matches), "substring-match occurrences")
-'
-```
-
-If the count is > 0, the A1 anti-pattern is reintroduced. Verify the
-`is_task_structurally_blocked` helper is still present and recognized.
 
 ## A2 (consent-blind publish gate) detector
 
@@ -179,15 +141,6 @@ rg -n \
 
 Any hit is an over-broad filter. Replace with file path + policy-disclaimer markers only.
 
-## A8 (marker ambiguity) detector
-
-```bash
-# Detect the legacy 3-marker regex.
-rg -n -e '\(\[[^]]* [^]]*\]\)' measure/automation-supervisor.py
-```
-
-The correct form is `r"^- \[([~xb])\] (.+)"` (drop the space, add `b`).
-
 ## A9 (archived-track path) detector
 
 ```bash
@@ -245,10 +198,6 @@ The fix is a pre-commit hook that runs `bash measure/generate.sh` and stages the
 
 ## Boundaries
 
-- Do NOT modify `measure/automation-supervisor.py` to "fix" a finding. Report the finding
-  in the audit result; let the orchestrator's Mid + Jr cycle fix the supervisor. Per
-  `AGENTS.md` (peer-reviewed component), supervisor changes go through a separate commit
-  flow.
 - Do NOT modify plan task markers (the `[b]`-flip, the `[x]`-flip). Report the marker
   state in the audit; let the orchestrator's plan-update role handle marker changes.
 - Do NOT archive tracks. Report archive readiness; let `measure-closeout` execute the
@@ -257,8 +206,6 @@ The fix is a pre-commit hook that runs `bash measure/generate.sh` and stages the
 ## When to run
 
 - **Weekly** (recommended cadence — catches regressions before they compound).
-- **On every `measure/automation-supervisor.py` change** (the supervisor is the
-  orchestrator's most-likely-regression target).
 - **On every new `tests/*.sh` file** (the new test should be tested for vacuous-pass and
   over-broad-filter patterns before commit).
 - **On every `measure/tracks.md` change** (registry overstatement detector fires here).

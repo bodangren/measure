@@ -28,31 +28,31 @@
 - [x] Task 2.2: Run the tests and record the failures in the git note (9 of 9 fail) `8a1b748`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05 `a4675db`
 
-## Phase 3: Implement (Green)
+## Phase 3: Implement (Green) [checkpoint: 70771ec]
 
 - [x] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9) `fd4d837`
 - [x] Task 3.2: Add `--cron install` and `--cron remove` (FR-8) (folded into the 3.1 commit) `fd4d837`
-- [~] Task 3.3: Run the installer on this machine
-    - [ ] Run `--check` and show the user the result before the first install
-    - [ ] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md)
+- [x] Task 3.3: Run the installer on this machine `7d43626`
+    - [x] Run `--check` and show the user the result before the first install
+    - [x] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs (merged to `main` first: `96feda1`)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md) verified:user 2026-10-05 `70771ec`
 
-## Phase 4: Remove the supervisor
+## Phase 4: Remove the supervisor [checkpoint: 9e3424c]
 
-- [ ] Task 4.1: This repository (FR-10, FR-11)
-    - [ ] Delete `measure/automation-supervisor.py`, the `AGENTS.md` section, and the `.gitignore` line `measure/runs/`
-    - [ ] Update the references in `agents/*.md` and `skills/measure-orchestrator/`. Ask the user about each reference that the Pi harness may still use
-- [ ] Task 4.2: The other projects and worktrees (FR-12, FR-13)
-    - [ ] Show the user the list of repositories, branches, and the action for each before any change
-    - [ ] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
-    - [ ] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
-    - [ ] Report each repository that was skipped, and why
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md)
+- [x] Task 4.1: This repository (FR-10, FR-11) `b5bdabc`
+    - [x] Delete `measure/automation-supervisor.py` and the `AGENTS.md` section (the `.gitignore` line `measure/runs/` stays: the Pi harness writes run records there)
+    - [x] Update the references in `agents/*.md` and `skills/measure-orchestrator/`. Ask the user about each reference that the Pi harness may still use
+- [x] Task 4.2: The other projects and worktrees (FR-12, FR-13) `8cdb7ee`
+    - [x] Show the user the list of repositories, branches, and the action for each before any change
+    - [x] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
+    - [x] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
+    - [x] Report each repository that was skipped, and why
+- [x] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md) verified:user 2026-10-05 `9e3424c`
 
 ## Phase 5: Docs and closeout
 
-- [ ] Task 5.1: Update `tech-stack.md`, `product.md`, `README.md`, and `tech-debt.md` (FR-14, FR-15)
-- [ ] Task 5.2: After the merge to `main`, confirm the acceptance criteria
+- [x] Task 5.1: Update `tech-stack.md`, `product.md`, `README.md`, and `tech-debt.md` (FR-14, FR-15) `f8f6014`
+- [~] Task 5.2: After the merge to `main`, confirm the acceptance criteria
     - [ ] After one cron run, `--check` exits with 0, and `~/.claude/skills/measure/SKILL.md` has the "Continuous improvement" section
     - [ ] Ask the user, then close issue #1 in `bodangren/measure` with a link to the commit
 - [ ] Task: Measure - User Manual Verification 'Phase 5: Docs and closeout' (Protocol in workflow.md)

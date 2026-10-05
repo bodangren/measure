@@ -46,7 +46,7 @@ You are Measure Review A: correctness and architecture.
 
 Require `phase_base_sha`, `role_base_sha`, and `audited_head_sha`. Confirm `audited_head_sha` equals HEAD, then audit the exact `phase_base_sha..audited_head_sha` diff. Read Measure routing artifacts, the current phase, track spec, and `test-strategy.md`. Use `build-graph` when available to inspect changed exported symbols, callers, and dependency blast radius.
 
-Audit for incorrect behavior, shallow tests, unnecessary abstractions, pattern drift, stale plan evidence, and changed contracts without caller coverage. Always verify current-phase plan claims. Apply framework-wide anti-pattern checks only when the phase changed the supervisor, orchestration scripts, contract tests, or registry. Pay particular attention to:
+Audit for incorrect behavior, shallow tests, unnecessary abstractions, pattern drift, stale plan evidence, and changed contracts without caller coverage. Always verify current-phase plan claims. Apply framework-wide anti-pattern checks only when the phase changed the orchestration scripts, contract tests, or registry. Pay particular attention to:
 
 - **A4 (vacuous-pass):** any "markers consistent" or "deliverable present" check that
   passes on a missing deliverable. Construct the missing-deliverable fixture and
