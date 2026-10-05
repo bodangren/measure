@@ -1,0 +1,6 @@
+Verification report: Phase 1 (Inventory and contract), skill_distribution_repair_20261005
+Date: 2026-10-05. Changed files since main (2892fc5): claude-skills/measure/references/review.md, skills/measure/references/review.md, skills/measure-orchestrator/SKILL.md, measure/tech-stack.md, measure/tracks.md, and the track folder (inventory.md, contract.md, spec.md, plan.md, metadata.json).
+Agent checks: each approved local edit is equal (cmp) to the repository file; review.md has no CDP or browser-harness text; tech-stack.md has the tooling exception row before any test.
+User checks (confirmed 'Yes, checkpoint it'): inventory findings, contract decisions (targets file read from main, --adopt for the first install, claude-skills/measure not a target, hourly cron at minute 17, log path), review.md 2.4 Kimi WebBridge, report-only orchestrator reviews.
+User decision: this repository is the source of agents/measure-*.md. In-place installs into ~/.agents/agents also change ~/Desktop/pi-measure-harness/agents/ (hard links); the user commits them there. Recorded in spec.md and contract.md.
+Hard-link search: run by the user (the permission system blocked it for the agent).
