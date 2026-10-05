@@ -1,0 +1,5 @@
+Verification report: Phase 5 (Docs and closeout), skill_distribution_repair_20261005
+Date: 2026-10-05. Changed files since 9e3424c: README.md (rewrite), measure/tech-stack.md, measure/product.md, measure/workflow.md, measure/tech-debt.md, plan.md.
+Agent checks: run-tests.sh 9 passed, 0 failed; diff -r skills/measure claude-skills/measure is empty; 1 cron line with the measure-skill-install marker; bin/install-measure-skill --check exit 0 at main 74fa8a6; both installed SKILL.md files have "## Continuous improvement"; remaining automation-supervisor.py names are history notes only (tech-debt Resolved row, 2 Retired catalog notes, measure-guard DESIGN.md, a test fixture).
+Outward actions: merge 74fa8a6 pushed to origin/main (eac1c97..74fa8a6); issue #1 closed with user approval.
+User check: README on GitHub and issue #1, confirmed with 'yes'.
