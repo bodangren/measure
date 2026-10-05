@@ -10,6 +10,7 @@
 
 - <a id="2026-10-04-measure_guard"></a>(2026-10-04, measure_guard_20261004) Keep the system prompt fixed and send changing state (track, task, reminders) as conversation notes. A system prompt that changes with each task resets the prompt cache.
 - (2026-10-04, measure_guard_20261004) Claude Code mods: a function that uses `$` must be in the hooks module file; the engine does not follow `$` across an import. Put pure logic in imported modules and the `$` calls in `register.tsx`.
+- <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree, so a checked-out feature branch never reaches the agents. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
 
 ## Recurring Gotchas
 
@@ -21,6 +22,8 @@
 
 - (2026-10-05, measure_guard_20261004) In an inline (not fullscreen) terminal, the pane close mark and `ctrl+x x` did not close a mod pane. Give each pane a command that also closes it, and open it with `closeOnEscape: true`.
 - (2026-10-05, measure_guard_20261004) An interactive session watches a `--plugin-dir` folder: a saved edit reloads the mod at once, and an open pane stays open across the reload. No restart is necessary.
+- (2026-10-05, skill_distribution_repair_20261005) `git archive` applies `tar.umask` (default 0002), so extracted files are 664 or 775. Use `git -c tar.umask=0022 archive` to get the modes that git records.
+- (2026-10-05, skill_distribution_repair_20261005) `~/.agents/agents` files are hard links to `pi-measure-harness/agents/`. Write in place (`cat src > dst`), never `cp`, `mv`, or `rm`, or the link breaks. An install shows in the Pi harness as uncommitted changes.
 
 ## Patterns That Worked Well
 
