@@ -53,6 +53,6 @@
 
 - [x] Task 5.1: Update `tech-stack.md`, `product.md`, `README.md`, and `tech-debt.md` (FR-14, FR-15) `f8f6014`
 - [~] Task 5.2: After the merge to `main`, confirm the acceptance criteria
-    - [ ] After one cron run, `--check` exits with 0, and `~/.claude/skills/measure/SKILL.md` has the "Continuous improvement" section
+    - [x] After one cron run, `--check` exits with 0, and `~/.claude/skills/measure/SKILL.md` has the "Continuous improvement" section (manual run at 04:38Z on user request, same code path as cron: written=10 kept=0 exit=0; `--check` exit 0 at 74fa8a6)
     - [ ] Ask the user, then close issue #1 in `bodangren/measure` with a link to the commit
 - [ ] Task: Measure - User Manual Verification 'Phase 5: Docs and closeout' (Protocol in workflow.md)
