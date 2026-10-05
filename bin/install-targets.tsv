@@ -1,0 +1,9 @@
+# Install targets for bin/install-measure-skill. The installer reads this file
+# from the ref (default: main), not from the working tree.
+# bundle	target	files
+skills/measure	~/.claude/skills/measure	*
+skills/measure	~/.agents/skills/measure	*
+skills/measure-orchestrator	~/.agents/skills/measure-orchestrator	*
+skills/build-graph	~/.claude/skills/build-graph	*
+skills/build-graph	~/.agents/skills/build-graph	*
+agents	~/.agents/agents	measure-*.md

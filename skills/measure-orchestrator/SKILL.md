@@ -124,9 +124,12 @@ Measure subagent type (e.g. `measure-jr-green`, `measure-mid-red`, `measure-revi
 - relevant gate commands from the environment (`RED_TEST_COMMAND`, `GREEN_TEST_COMMAND`,
   `PROJECT_LINT`, `PROJECT_CHECKS`, `PROJECT_TESTS`, `PROJECT_DEV_URL`)
 
-Every subagent may edit, because reviewers and auditors are expected to fix proven
-blockers before returning. Preserve unrelated user work and do not revert changes made by
-other agents.
+Review and audit roles are report-only for implementation defects.
+They may write only their required result artifact and role log. They must not modify production code, tests, or implementation plans to fix findings.
+The orchestrator must route implementation findings back to `measure-jr-green` with exact evidence and a bounded remediation brief.
+Any remediation commit invalidates review artifacts bound to an older HEAD, so fresh applicable reviews must run.
+The Green role updates `measure/lessons-learned.md` only when the finding yields durable, reusable project knowledge and the project memory limit permits it.
+Preserve unrelated user work and do not revert changes made by other agents.
 
 ## Inter-Phase Checks
 

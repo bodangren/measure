@@ -2,37 +2,37 @@
 
 > Source: `spec.md` (classic FR list). Work on the branch `chore/skill-distribution`. The cron job installs from `main`, so the result reaches the agents after the merge.
 
-## Phase 1: Inventory and contract
+## Phase 1: Inventory and contract [checkpoint: a7e8351]
 
-- [ ] Task 1.1: Inventory — the differences between each bundle and each target
-    - [ ] List each file that differs, with the newer side and the date. Write the list to `inventory.md` in this track folder
-    - [ ] Find the second link of each `~/.agents/agents/measure-*.md` file (link count 2), and record what reads it
-- [ ] Task 1.2: Reconcile the local edits (FR-5 precondition)
-    - [ ] Show the user the diff of `~/.agents/skills/measure/references/review.md` and `~/.agents/skills/measure-orchestrator/SKILL.md`, and each other target file that is newer than the source
-    - [ ] Copy the edits that the user approves into `skills/`, and commit them
-- [ ] Task 1.3: Contract — tooling exception and installer contract
-    - [ ] Add a row for this track to the Tooling Exceptions table in `tech-stack.md` (bash test scripts) before any test
-    - [ ] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md)
+- [x] Task 1.1: Inventory — the differences between each bundle and each target `c1f0b7b`
+    - [x] List each file that differs, with the newer side and the date. Write the list to `inventory.md` in this track folder
+    - [x] Find the second link of each `~/.agents/agents/measure-*.md` file (link count 2), and record what reads it (the user ran the search: `pi-measure-harness/agents/`; result in `inventory.md`)
+- [x] Task 1.2: Reconcile the local edits (FR-5 precondition) `89d79b1`
+    - [x] Show the user the diff of `~/.agents/skills/measure/references/review.md` and `~/.agents/skills/measure-orchestrator/SKILL.md`, and each other target file that is newer than the source
+    - [x] Copy the edits that the user approves into `skills/`, and commit them (Kimi WebBridge review, report-only orchestrator reviews; OpenCode agents left out)
+- [x] Task 1.3: Contract — tooling exception and installer contract `5c003a8`
+    - [x] Add a row for this track to the Tooling Exceptions table in `tech-stack.md` (bash test scripts) before any test
+    - [x] Define the targets file format, the stamp file format, the modes, and the exit codes (0, 1, 2) in `contract.md` in this track folder
+- [x] Task: Measure - User Manual Verification 'Phase 1: Inventory and contract' (Protocol in workflow.md) verified:user 2026-10-05 `a7e8351`
 
-## Phase 2: Test (Red)
+## Phase 2: Test (Red) [checkpoint: a4675db]
 
-- [ ] Task 2.1: Write the installer tests under `scripts/` in this track folder
-    - [ ] Install from `main`: the targets match `main` (FR-1, FR-2)
-    - [ ] A commit on a feature branch does not change the targets (FR-1)
-    - [ ] An existing hard link to a target file stays after an install (FR-3)
-    - [ ] A local edit stays, the log has a warning, and the exit code is 2 (FR-5, FR-9)
-    - [ ] A file removed from the source is removed from the target; a file that the installer did not install stays (FR-6)
-    - [ ] `--check` writes nothing and exits with 0 or 1 (FR-7)
-    - [ ] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
-- [ ] Task 2.2: Run the tests and record the failures in the git note
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md)
+- [x] Task 2.1: Write the installer tests under `scripts/` in this track folder `8a1b748`
+    - [x] Install from `main`: the targets match `main` (FR-1, FR-2)
+    - [x] A commit on a feature branch does not change the targets (FR-1)
+    - [x] An existing hard link to a target file stays after an install (FR-3)
+    - [x] A local edit stays, the log has a warning, and the exit code is 2 (FR-5, FR-9)
+    - [x] A file removed from the source is removed from the target; a file that the installer did not install stays (FR-6)
+    - [x] `--check` writes nothing and exits with 0 or 1 (FR-7)
+    - [x] `--cron install` and `--cron remove` keep the other crontab lines and are idempotent, with a fake `crontab` on `PATH` (FR-8)
+- [x] Task 2.2: Run the tests and record the failures in the git note (9 of 9 fail) `8a1b748`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05 `a4675db`
 
 ## Phase 3: Implement (Green)
 
-- [ ] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9)
-- [ ] Task 3.2: Add `--cron install` and `--cron remove` (FR-8)
-- [ ] Task 3.3: Run the installer on this machine
+- [x] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9) `fd4d837`
+- [x] Task 3.2: Add `--cron install` and `--cron remove` (FR-8) (folded into the 3.1 commit) `fd4d837`
+- [~] Task 3.3: Run the installer on this machine
     - [ ] Run `--check` and show the user the result before the first install
     - [ ] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md)
