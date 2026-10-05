@@ -32,10 +32,10 @@
 
 - [x] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9) `fd4d837`
 - [x] Task 3.2: Add `--cron install` and `--cron remove` (FR-8) (folded into the 3.1 commit) `fd4d837`
-- [~] Task 3.3: Run the installer on this machine
-    - [ ] Run `--check` and show the user the result before the first install
-    - [ ] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md)
+- [x] Task 3.3: Run the installer on this machine `7d43626`
+    - [x] Run `--check` and show the user the result before the first install
+    - [x] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs (merged to `main` first: `96feda1`)
+- [~] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md)
 
 ## Phase 4: Remove the supervisor
 
