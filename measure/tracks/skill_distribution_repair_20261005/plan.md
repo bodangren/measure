@@ -2,7 +2,7 @@
 
 > Source: `spec.md` (classic FR list). Work on the branch `chore/skill-distribution`. The cron job installs from `main`, so the result reaches the agents after the merge.
 
-## Phase 1: Inventory and contract
+## Phase 1: Inventory and contract [checkpoint: a7e8351]
 
 - [x] Task 1.1: Inventory — the differences between each bundle and each target `c1f0b7b`
     - [x] List each file that differs, with the newer side and the date. Write the list to `inventory.md` in this track folder
