@@ -42,12 +42,12 @@
 - [x] Task 4.1: This repository (FR-10, FR-11) `b5bdabc`
     - [x] Delete `measure/automation-supervisor.py` and the `AGENTS.md` section (the `.gitignore` line `measure/runs/` stays: the Pi harness writes run records there)
     - [x] Update the references in `agents/*.md` and `skills/measure-orchestrator/`. Ask the user about each reference that the Pi harness may still use
-- [~] Task 4.2: The other projects and worktrees (FR-12, FR-13)
-    - [ ] Show the user the list of repositories, branches, and the action for each before any change
-    - [ ] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
-    - [ ] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
-    - [ ] Report each repository that was skipped, and why
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md)
+- [x] Task 4.2: The other projects and worktrees (FR-12, FR-13) `8cdb7ee`
+    - [x] Show the user the list of repositories, branches, and the action for each before any change
+    - [x] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
+    - [x] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
+    - [x] Report each repository that was skipped, and why
+- [~] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md)
 
 ## Phase 5: Docs and closeout
 
