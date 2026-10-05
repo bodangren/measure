@@ -19,6 +19,7 @@ Decisions from the user (2026-10-05):
 - **Install source:** a cron job copies from the `main` branch every hour. A feature branch never reaches the agents.
 - **Supervisor removal:** in each project, commit only the removed paths on the branch that is checked out. Do not push.
 - **Local edits (Task 1.2):** the repository takes the 2 newer target edits: `review.md` section 2.4 uses Kimi WebBridge, and the `measure-orchestrator` review roles are report-only. The OpenCode agents are not a target.
+- **Role files (Phase 1 verification):** this repository is the source of `agents/measure-*.md`. `~/.agents/agents` is hard-linked to `~/Desktop/pi-measure-harness/agents/`, so each in-place install also changes that working tree. The user commits those changes in `pi-measure-harness`.
 
 ## Functional Requirements
 

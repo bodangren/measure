@@ -45,6 +45,7 @@ agents	~/.agents/agents	measure-*.md
 - `files` is a bash pattern on the path relative to the bundle. `*` also matches `/`.
 - Each target folder has 1 bundle only. A second line for the same target is an error (exit 3).
 - If the parent of a target folder does not exist, the installer skips that target with a note. If only the target folder is missing, the installer creates it. (FR-2)
+- `~/.agents/agents` shares each `measure-*.md` file (hard link) with `~/Desktop/pi-measure-harness/agents/`. The in-place write keeps the link, so an install also changes that working tree. This is intended: this repository is the source (spec decisions).
 - Not a target: `claude-skills/measure` in the repository (git tracks it, and the Definition of Done keeps it equal to `skills/measure`), and `~/.config/opencode/agents` (another format, see `spec.md`).
 
 ## Stamp file
