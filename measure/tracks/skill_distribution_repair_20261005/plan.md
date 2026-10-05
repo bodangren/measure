@@ -47,7 +47,7 @@
     - [x] For each repository: delete the file and the `AGENTS.md` section, and commit only those paths on the current branch. Do not push
     - [x] Delete `~/.local/bin/measure-supervisor` and `mediarr/measure/automation-supervisor.md`
     - [x] Report each repository that was skipped, and why
-- [~] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 4: Remove the supervisor' (Protocol in workflow.md) verified:user 2026-10-05
 
 ## Phase 5: Docs and closeout
 
