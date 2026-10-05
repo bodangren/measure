@@ -1,0 +1,18 @@
+Task 2.1: Write the installer tests; Task 2.2: Run the tests and record the failures
+
+Why: Phase 3 rewrites bin/install-measure-skill. Each contract rule needs a failing test first.
+Files: measure/tracks/skill_distribution_repair_20261005/scripts/ (lib.sh, run-tests.sh, 9 test-*.sh); contract.md (tools through PATH; HOME rule).
+Safety: each test sets HOME and XDG_* inside a mktemp world and stops if HOME is outside it; a fake crontab is first on PATH; GIT_CONFIG_NOSYSTEM and a world .gitconfig (no signing). After the run: no ~/.local/state/measure, no ~/.codex/skills/measure, 0 marker lines in the real crontab, 0 leftover worlds.
+Test fixes before the record: test-hard-link asserts the target file before ln; test-stale-removal asserts that the target is not a hard link into the repository working tree (the old installer made such links, so the test edit changed the repository file).
+
+Red record (old hard-link installer), command: measure/tracks/skill_distribution_repair_20261005/scripts/run-tests.sh
+[FAIL] test-branch-isolation: content of <world>/home/.claude/skills/measure/SKILL.md: expected [skill v1], got [skill uncommitted]
+[FAIL] test-check: expected exit 1, got 0
+[FAIL] test-cron: cron lines after the first install: expected [1], got []
+[FAIL] test-errors: expected exit 3, got 0
+[FAIL] test-hard-link: expected file: <world>/home/.agents/agents/measure-a.md
+[FAIL] test-install-from-main: expected file: <world>/home/.claude/skills/measure/.measure-install
+[FAIL] test-local-edit: expected exit 2, got 0
+[FAIL] test-stale-removal: the target file is a hard link into the repository working tree
+[FAIL] test-unstamped-adopt: expected exit 2, got 0
+Summary: 0 passed, 9 failed (9 total)
