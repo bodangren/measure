@@ -28,18 +28,18 @@
 - [x] Task 2.2: Run the tests and record the failures in the git note (9 of 9 fail) `8a1b748`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Test (Red)' (Protocol in workflow.md) verified:user 2026-10-05 `a4675db`
 
-## Phase 3: Implement (Green)
+## Phase 3: Implement (Green) [checkpoint: 70771ec]
 
 - [x] Task 3.1: Rewrite `bin/install-measure-skill`: `git archive`, the targets file, in-place copy, stamp file, local edit protection, stale file removal, `--check` (FR-1 to FR-7, FR-9) `fd4d837`
 - [x] Task 3.2: Add `--cron install` and `--cron remove` (FR-8) (folded into the 3.1 commit) `fd4d837`
 - [x] Task 3.3: Run the installer on this machine `7d43626`
     - [x] Run `--check` and show the user the result before the first install
     - [x] Run the install, then `--cron install`. Confirm that `crontab -l` keeps the 3 existing jobs (merged to `main` first: `96feda1`)
-- [x] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md) verified:user 2026-10-05
+- [x] Task: Measure - User Manual Verification 'Phase 3: Implement (Green)' (Protocol in workflow.md) verified:user 2026-10-05 `70771ec`
 
 ## Phase 4: Remove the supervisor
 
-- [ ] Task 4.1: This repository (FR-10, FR-11)
+- [~] Task 4.1: This repository (FR-10, FR-11)
     - [ ] Delete `measure/automation-supervisor.py`, the `AGENTS.md` section, and the `.gitignore` line `measure/runs/`
     - [ ] Update the references in `agents/*.md` and `skills/measure-orchestrator/`. Ask the user about each reference that the Pi harness may still use
 - [ ] Task 4.2: The other projects and worktrees (FR-12, FR-13)
