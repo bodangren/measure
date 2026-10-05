@@ -1,0 +1,9 @@
+Task 5.1: Update tech-stack.md, product.md, README.md, and tech-debt.md (FR-14, FR-15)
+
+Why: the docs described hard-link installs, a Gemini CLI extension (codex-skills/), a templates/ mirror, and retired coder-* agents; none of these exist now. The user asked for a README rewrite and a push (2026-10-05).
+Changes:
+- README.md: full rewrite (marketing-readme structure, adapted: no app, so no screenshots; inline Mermaid workflow). Facts checked against the repository: 13 agents/measure-* roles; commands from skills/measure/SKILL.md (setup, new-track, implement, review, status, revert, doctor); getdesign.md in setup.md; no jj support in revert.md (claim removed); measure-guard features and modes from its spec and plugin.json; installer targets from bin/install-targets.tsv. Local links checked.
+- tech-stack.md: Distribution Formats table and install paragraph (install from main, stamp, --check, --cron); Architecture tree (no templates/ or codex-skills/).
+- product.md: Distribution list (no Gemini CLI extension).
+- workflow.md: templates/ parity language replaced by skills/measure == claude-skills/measure and --check.
+- tech-debt.md: supervisor regex item and templates/ item -> Resolved.
