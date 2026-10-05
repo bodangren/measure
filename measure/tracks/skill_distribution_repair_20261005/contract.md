@@ -20,7 +20,7 @@ bin/install-measure-skill --cron install | --cron remove
 | (none) | Install every bundle in the targets file from the ref. | FR-1 |
 | `--ref <ref>` | The git ref to install from. Default: `main`. | FR-1 |
 | `--check` | Write nothing. Report each file that is missing, different, locally edited, or stale. | FR-7 |
-| `--adopt` | First install only: in a target that has no stamp file, overwrite each different file. | FR-5 |
+| `--adopt` | Also overwrite each different file that has no line in the stamp (normally at the first install). | FR-5 |
 | `--cron install` | Add the cron line. If it exists, do nothing. | FR-8 |
 | `--cron remove` | Remove the cron line. If it does not exist, do nothing. | FR-8 |
 
@@ -75,7 +75,7 @@ The source is the file in the ref. The stamp hash is the hash in `.measure-insta
 | Target equals source | Do nothing. | (equal) | FR-1 |
 | Target differs; target equals stamp hash | Overwrite in place. | `different` | FR-3 |
 | Target differs; stamp has another hash | Keep it. Warn. Exit 2 at the end. | `local-edit` | FR-5 |
-| Target differs; no stamp file in the target | Keep it. Warn. Exit 2. With `--adopt`: overwrite in place. | `unstamped` | FR-5 |
+| Target differs; the stamp has no line for it, or there is no stamp | Keep it. Warn. Exit 2. With `--adopt`: overwrite in place. | `unstamped` | FR-5 |
 | In stamp, not in source; target equals stamp hash | Remove it. | `stale` | FR-6 |
 | In stamp, not in source; target differs from stamp | Keep it. Warn. Exit 2. | `local-edit` | FR-5, FR-6 |
 | In target, not in stamp, not in source | Never touch it. | (not reported) | FR-6 |

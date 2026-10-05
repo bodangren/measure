@@ -1,45 +1,284 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install the Measure skill as hard links so every supported agent location
-# receives the same files without maintaining independent copies.
+# Install the Measure skills and agent roles from a git ref (default: main)
+# into the folders that bin/install-targets.tsv lists. The bundles and the
+# targets file come from the ref, never from the working tree, so a checked-out
+# feature branch never reaches the agents.
+#
+# Each target gets a stamp file (.measure-install) with the hash of each
+# installed file. A target file that differs from its stamp hash is a local
+# edit: the installer keeps it, warns, and exits with 2. Files are written in
+# place, so hard links to them stay.
+#
+# Usage:
+#   install-measure-skill [--ref <ref>] [--check | --adopt]
+#   install-measure-skill --cron install | --cron remove
+#
+# Exit codes: 0 success (or no differences with --check), 1 differences
+# (--check only), 2 files kept because of local edits, 3 error (nothing written).
+# Contract: measure/tracks/skill_distribution_repair_20261005/contract.md
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+script_path="$script_dir/$(basename -- "${BASH_SOURCE[0]}")"
 repo_root="$(cd -- "$script_dir/.." && pwd)"
-source_dir="$repo_root/skills/measure"
+targets_file="bin/install-targets.tsv"
+stamp_name=".measure-install"
+log_file="$HOME/.local/state/measure/install.log"
+cron_marker="# measure-skill-install"
 
-if [[ ! -d "$source_dir" ]]; then
-  printf 'Measure skill source directory is missing: %s\n' "$source_dir" >&2
-  exit 1
-fi
-
-targets=(
-  "$repo_root/claude-skills/measure"
-  "$HOME/.codex/skills/measure"
-  "$HOME/.agents/skills/measure"
-  "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills/measure"
-  "$HOME/.claude/skills/measure"
-)
-
-link_tree() {
-  local target="$1"
-  local source_path relative_path target_path
-
-  while IFS= read -r -d '' source_path; do
-    relative_path="${source_path#"$source_dir"/}"
-    target_path="$target/$relative_path"
-    mkdir -p -- "$(dirname -- "$target_path")"
-
-    if [[ -e "$target_path" && ! -f "$target_path" ]]; then
-      printf 'Cannot replace non-file target: %s\n' "$target_path" >&2
-      return 1
-    fi
-
-    ln -fT -- "$source_path" "$target_path"
-  done < <(find "$source_dir" -type f -print0)
+die() {
+  printf 'install-measure-skill: %s\n' "$*" >&2
+  exit 3
 }
 
-for target in "${targets[@]}"; do
-  link_tree "$target"
-  printf 'Hard-linked Measure skill: %s\n' "$target"
+usage() {
+  sed -n '14,16p' "$script_path" | sed 's/^# \{0,1\}//'
+}
+
+# Shows a path under HOME as ~/...
+show() { printf '%s' "${1/#"$HOME"/\~}"; }
+
+sha_of() { sha256sum -- "$1" | cut -d' ' -f1; }
+
+# --- Options -----------------------------------------------------------------
+
+ref="main"
+mode="install"
+cron_action=""
+while (($#)); do
+  case "$1" in
+    --ref)
+      [[ $# -ge 2 && -n "$2" ]] || die "--ref needs a value"
+      ref="$2"
+      shift 2
+      ;;
+    --check | --adopt)
+      [[ "$mode" == "install" ]] || die "use only one of --check and --adopt"
+      mode="${1#--}"
+      shift
+      ;;
+    --cron)
+      [[ $# -ge 2 ]] || die "--cron needs install or remove"
+      cron_action="$2"
+      shift 2
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *) die "unknown option: $1" ;;
+  esac
 done
+
+# --- Cron ----------------------------------------------------------------------
+
+# Changes only the line that ends with the marker; keeps every other line.
+cron_change() {
+  local line current others
+  line="17 * * * * $script_path >/dev/null 2>>\"\$HOME/.local/state/measure/install.log\" $cron_marker"
+  current="$(crontab -l 2>/dev/null)" || current=""
+  others="$(printf '%s\n' "$current" | grep -v -- "$cron_marker\$" || true)"
+  case "$1" in
+    install)
+      if [[ "$(printf '%s\n' "$current" | grep -c -- "$cron_marker\$" || true)" == 1 ]] &&
+        printf '%s\n' "$current" | grep -qxF -- "$line"; then
+        echo "The cron line is already installed."
+        return 0
+      fi
+      mkdir -p -- "$(dirname -- "$log_file")"
+      { [[ -n "$others" ]] && printf '%s\n' "$others"; printf '%s\n' "$line"; } | crontab -
+      echo "Installed the cron line: $line"
+      ;;
+    remove)
+      if ! printf '%s\n' "$current" | grep -q -- "$cron_marker\$"; then
+        echo "No cron line to remove."
+        return 0
+      fi
+      if [[ -n "$others" ]]; then printf '%s\n' "$others" | crontab -; else printf '' | crontab -; fi
+      echo "Removed the cron line."
+      ;;
+    *) die "--cron needs install or remove, not: $1" ;;
+  esac
+}
+
+if [[ -n "$cron_action" ]]; then
+  cron_change "$cron_action"
+  exit 0
+fi
+
+# --- Read the ref and the targets file (no writes before this is complete) -----
+
+git -C "$repo_root" rev-parse --git-dir >/dev/null 2>&1 || die "not a git repository: $repo_root"
+commit="$(git -C "$repo_root" rev-parse --verify --quiet "$ref^{commit}")" || die "unknown ref: $ref"
+short="$(git -C "$repo_root" rev-parse --short=7 "$commit")"
+targets_text="$(git -C "$repo_root" show "$commit:$targets_file" 2>/dev/null)" ||
+  die "$targets_file is missing in $ref"
+
+bundles=() targets=() patterns=()
+declare -A seen_target=()
+line_no=0
+while IFS= read -r line || [[ -n "$line" ]]; do
+  line_no=$((line_no + 1))
+  [[ -z "${line//[[:space:]]/}" || "$line" == \#* ]] && continue
+  IFS=$'\t' read -r bundle target pattern extra <<<"$line"
+  [[ -n "$bundle" && -n "$target" && -n "$pattern" && -z "${extra:-}" ]] ||
+    die "$targets_file line $line_no: expected 3 tab-separated fields"
+  target="${target/#\~/$HOME}"
+  [[ -z "${seen_target[$target]:-}" ]] || die "$targets_file line $line_no: a second line for $(show "$target")"
+  seen_target[$target]=1
+  git -C "$repo_root" cat-file -e "$commit:$bundle" 2>/dev/null ||
+    die "$targets_file line $line_no: $bundle is missing in $ref"
+  bundles+=("$bundle") targets+=("$target") patterns+=("$pattern")
+done <<<"$targets_text"
+[[ ${#targets[@]} -gt 0 ]] || die "$targets_file has no targets"
+
+export_dir="$(mktemp -d)"
+trap 'rm -rf -- "$export_dir"' EXIT
+mapfile -t unique_bundles < <(printf '%s\n' "${bundles[@]}" | sort -u)
+# tar.umask=0022 gives the modes that git records (644 or 755), for any git configuration.
+git -C "$repo_root" -c tar.umask=0022 archive "$commit" -- "${unique_bundles[@]}" | tar -x -C "$export_dir" ||
+  die "git archive failed for $ref"
+
+# --- Install, check, or adopt each target ---------------------------------------
+
+written=0 removed=0 kept=0 differences=0
+warnings=()
+
+warn() { # kind path
+  warnings+=("warn $1 $(show "$2")")
+  printf 'warn: %s %s\n' "$1" "$(show "$2")" >&2
+}
+
+report() { # kind path (--check only)
+  differences=$((differences + 1))
+  printf '%s %s\n' "$1" "$(show "$2")"
+}
+
+# Writes the source over the target in place (the inode and hard links stay),
+# then sets the target mode to the source mode.
+put() {
+  local src="$1" dst="$2" src_mode
+  mkdir -p -- "$(dirname -- "$dst")"
+  cat -- "$src" >"$dst"
+  src_mode="$(stat -c %a -- "$src")"
+  [[ "$(stat -c %a -- "$dst")" == "$src_mode" ]] || chmod "$src_mode" -- "$dst"
+}
+
+# Removes the empty folders between a removed file and the target folder.
+prune_dirs() {
+  local dir target="$2"
+  dir="$(dirname -- "$1")"
+  while [[ "$dir" != "$target" && "$dir" == "$target"/* ]] && rmdir -- "$dir" 2>/dev/null; do
+    dir="$(dirname -- "$dir")"
+  done
+}
+
+for i in "${!targets[@]}"; do
+  bundle="${bundles[$i]}" target="${targets[$i]}" pattern="${patterns[$i]}"
+  src_dir="$export_dir/$bundle"
+  if [[ ! -d "$(dirname -- "$target")" ]]; then
+    echo "skip $(show "$target"): $(show "$(dirname -- "$target")") does not exist"
+    continue
+  fi
+
+  # The source files that match the pattern.
+  declare -A source_files=()
+  while IFS= read -r -d '' path; do
+    rel="${path#"$src_dir"/}"
+    # shellcheck disable=SC2053 # the pattern is a glob on purpose
+    [[ "$rel" == $pattern ]] && source_files[$rel]=1
+  done < <(find "$src_dir" -type f -print0)
+
+  # The stamp: the hash of each file at its last install.
+  declare -A stamped=()
+  if [[ -f "$target/$stamp_name" ]]; then
+    while IFS= read -r line; do
+      [[ "$line" =~ ^file\ ([0-9a-f]{64})\ \ (.+)$ ]] && stamped[${BASH_REMATCH[2]}]="${BASH_REMATCH[1]}"
+    done <"$target/$stamp_name"
+  fi
+
+  declare -A new_stamp=()
+  mapfile -t rels < <(printf '%s\n' "${!source_files[@]}" | sort)
+  for rel in "${rels[@]}"; do
+    [[ -n "$rel" ]] || continue
+    src="$src_dir/$rel" dst="$target/$rel"
+    src_hash="$(sha_of "$src")"
+    if [[ ! -e "$dst" ]]; then
+      if [[ "$mode" == check ]]; then report missing "$dst"; continue; fi
+      put "$src" "$dst"
+      written=$((written + 1)) new_stamp[$rel]="$src_hash"
+      continue
+    fi
+    dst_hash="$(sha_of "$dst")"
+    if [[ "$dst_hash" == "$src_hash" ]]; then
+      if [[ "$mode" != check ]]; then
+        src_mode="$(stat -c %a -- "$src")"
+        [[ "$(stat -c %a -- "$dst")" == "$src_mode" ]] || chmod "$src_mode" -- "$dst"
+      fi
+      new_stamp[$rel]="$src_hash"
+    elif [[ -n "${stamped[$rel]:-}" && "$dst_hash" == "${stamped[$rel]}" ]]; then
+      if [[ "$mode" == check ]]; then report different "$dst"; continue; fi
+      put "$src" "$dst"
+      written=$((written + 1)) new_stamp[$rel]="$src_hash"
+    elif [[ -n "${stamped[$rel]:-}" ]]; then
+      if [[ "$mode" == check ]]; then report local-edit "$dst"; continue; fi
+      warn local-edit "$dst"
+      kept=$((kept + 1)) new_stamp[$rel]="${stamped[$rel]}"
+    elif [[ "$mode" == adopt ]]; then
+      put "$src" "$dst"
+      written=$((written + 1)) new_stamp[$rel]="$src_hash"
+    else
+      if [[ "$mode" == check ]]; then report unstamped "$dst"; continue; fi
+      warn unstamped "$dst"
+      kept=$((kept + 1))
+    fi
+  done
+
+  # Files that the installer installed and the source no longer has.
+  for rel in "${!stamped[@]}"; do
+    [[ -z "${source_files[$rel]:-}" ]] || continue
+    dst="$target/$rel"
+    [[ -f "$dst" ]] || continue
+    if [[ "$(sha_of "$dst")" == "${stamped[$rel]}" ]]; then
+      if [[ "$mode" == check ]]; then report stale "$dst"; continue; fi
+      rm -f -- "$dst"
+      prune_dirs "$dst" "$target"
+      removed=$((removed + 1))
+    else
+      if [[ "$mode" == check ]]; then report local-edit "$dst"; continue; fi
+      warn local-edit "$dst"
+      kept=$((kept + 1)) new_stamp[$rel]="${stamped[$rel]}"
+    fi
+  done
+
+  if [[ "$mode" != check ]]; then
+    {
+      echo "# measure install stamp v1"
+      echo "ref $ref"
+      echo "commit $commit"
+      echo "installed_at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      echo "bundle $bundle"
+      for rel in "${!new_stamp[@]}"; do printf 'file %s  %s\n' "${new_stamp[$rel]}" "$rel"; done | sort -k3
+    } >"$target/$stamp_name"
+    echo "installed $(show "$target") from $ref ($short)"
+  fi
+  unset source_files stamped new_stamp
+done
+
+if [[ "$mode" == check ]]; then
+  if ((differences > 0)); then exit 1; fi
+  echo "No differences: every target matches $ref ($short)."
+  exit 0
+fi
+
+status=0
+((kept == 0)) || status=2
+mkdir -p -- "$(dirname -- "$log_file")"
+{
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  for w in "${warnings[@]}"; do echo "$now $w"; done
+  echo "$now ref=$ref commit=$short written=$written removed=$removed kept=$kept exit=$status"
+} >>"$log_file"
+echo "written=$written removed=$removed kept=$kept"
+exit "$status"
