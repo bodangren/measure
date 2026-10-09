@@ -116,6 +116,10 @@ If reverting an entire track:
    - `- [ ] **Track: <Description>**` (new format)
    - `## [ ] Track: <Description>` (legacy format)
 4. Add this SHA to revert list
+5. **Track set member:** If the track's `metadata.json` has a `set` key, the creation commit is the track set commit. It also created the other members, the set overview, and maybe the index link. Remove the SHA from the revert list, and ask:
+   > "Track '<track_id>' is a member of the track set '<set.id>'. Its creation commit also created <n> other tracks. How should I remove it?"
+   - **Remove only this member (Recommended):** In §5.0, after the other reverts, delete the track folder and its section in the **Tracks Registry**, and set its **Status** cell in the set overview to `removed`. Remove its ID from the `set.depends_on` of every other member, and from the **Depends on** cells of the overview. Commit: `chore(measure): Remove track '<track_description>' from set '<set.id>'`. Name this removal step in the §4.0 summary.
+   - **Revert the whole creation commit:** Add the SHA back to the list. Name every track and file that the commit created in the §4.0 summary.
 
 ### 3.4 Compile Final List
 
@@ -174,6 +178,7 @@ If revert fails due to merge conflict:
 3. If not correctly reset:
    - Edit file to fix status
    - Commit correction
+4. **Track set member:** If the track's `metadata.json` has a `set` key and the track still exists, set its **Status** cell in the set overview to match its **Tracks Registry** marker: `[ ]` is `new`, `[~]` is `in_progress`, `[x]` is `completed`. If the overview **Status** is `completed` and the member is not, set it to `in_progress`. Commit the change with the correction in step 3, or alone: `chore(measure): Sync set overview after revert`.
 
 ### 5.4 Announce Completion
 

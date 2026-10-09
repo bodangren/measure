@@ -220,6 +220,6 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
 1. **Context Check:** If NOT reviewing a specific track, SKIP this entire section.
 
 2. Ask: "Review complete. What would you like to do with track '<track_name>'?"
-   - **Archive:** Ensure `measure/archive/` exists, move track folder, remove from **Tracks Registry**, commit: `chore(measure): Archive track '<track_name>'`.
+   - **Archive:** Ensure `measure/archive/` exists, move track folder, remove from **Tracks Registry**, commit: `chore(measure): Archive track '<track_name>'`. If the track's `metadata.json` has a `set` key, also change its link in the set overview from `../tracks/<track_id>/` to `../archive/<track_id>/`, and stage the overview with the commit.
    - **Delete:** Confirm: "WARNING: This is an irreversible deletion. Proceed?" If yes, delete folder, remove from **Tracks Registry**, commit: `chore(measure): Delete track '<track_name>'`.
    - **Skip:** Leave track as is.
