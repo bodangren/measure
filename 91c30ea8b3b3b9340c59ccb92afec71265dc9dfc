@@ -1,0 +1,3 @@
+Task 1.1 (track_sets_20261009): acceptance criteria for the track set path.
+Files: measure/tracks/track_sets_20261009/acceptance.md
+Why: issue #4. The criteria fix the detection rule and the two review gates before any skill edit.
