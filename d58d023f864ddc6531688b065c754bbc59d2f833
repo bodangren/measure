@@ -1,0 +1,3 @@
+Task 4.3 (track_sets_20261009): bundle parity and cross-reference audit.
+Files: claude-skills/measure/SKILL.md, claude-skills/measure/references/{new-track,new-track-set,implement,review,revert}.md
+Why: the workflow quality gate requires identical copies. claude-skills/measure.skill (a zip) was not rebuilt; it has not changed since the rebrand and the gate does not cover it.
