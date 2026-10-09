@@ -1,0 +1,3 @@
+Task 5.2 (track_sets_20261009): corrections from three review rounds.
+Files: skills/measure/SKILL.md, skills/measure/references/{new-track-set,new-track,implement,review,revert}.md, the claude-skills copies, measure/tracks/track_sets_20261009/{spec.md,dry-run.md,reviews/run-2-recheck.md,reviews/run-3-final-check.md}
+Why: run 1 found 5 Blocking ambiguities; run 2 found 1 Blocking problem in the corrections; run 3 found 1 Blocking sentence. dry-run.md maps each finding to its correction. diff -r skills/measure claude-skills/measure is empty.
