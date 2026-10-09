@@ -1,0 +1,3 @@
+Task 3.1 (track_sets_20261009): acceptance criteria for Phase S3.
+Files: measure/tracks/track_sets_20261009/acceptance.md
+Why: issue #4. revert §3.3 reverts the creation commit of a track; for a set member that commit holds the whole set, so a silent revert would remove every member. The criteria add a choice there.
