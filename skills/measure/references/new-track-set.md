@@ -153,7 +153,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - <a question that a member must answer, with the member that owns it>
    ```
    - The **Track** link is relative to the overview. After an archive it becomes `../archive/<track_id>/`.
-   - **Status** values for the set and for each member: `new`, `in_progress`, `completed` (the `metadata.json` status values).
+   - **Status** values for the set and for each member: `new`, `in_progress`, `completed` (the `metadata.json` status values). A member that `revert` removes from the set has the status `removed`.
    - Write each shared decision once, here. Member specs link to it and do not copy it.
 
 4. **Write Each Member:** For each member, in order:
@@ -209,7 +209,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - `implement` §3.1 and §3.4: update the member status and the set status in the overview.
    - `implement` §3.2 step 7: reads the overview as track context.
    - `implement` §5.0 and `review` §3.3: change the member link in the overview after an archive.
-   - `revert` §4.0: sets the member status in the overview after a track revert.
+   - `revert` §3.3 step 5: removes one member without a revert of the set commit.
+   - `revert` §5.3 step 4: sets the member status in the overview after a revert.
 
 3. **Complete dependency:** A dependency is complete when its registry entry is `[x]`, or when its folder is in `measure/archive/`.
 
