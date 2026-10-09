@@ -22,7 +22,7 @@ _Story ref: spec.md#story-s1_
 ## Phase S2: Set overview and member metadata
 _Story ref: spec.md#story-s2_
 
-- [ ] Task 2.1: Define acceptance criteria for the overview template, the `set` key, and the order rule
+- [x] Task 2.1: Define acceptance criteria for the overview template, the `set` key, and the order rule `97dfa21`
 - [ ] Task 2.2: Write `new-track-set.md` section 2.9 (artifacts: IDs, overview template, index link, member files, `set` schema, registry line, verification, one commit) and section 3.0 (read-side rules)
 - [ ] Task 2.3: Add the optional `set` key note to the `metadata.json` schema in `new-track.md` §2.5
 - [ ] Task: Measure - User Manual Verification 'Phase S2: Set overview and member metadata' (Protocol in workflow.md)
