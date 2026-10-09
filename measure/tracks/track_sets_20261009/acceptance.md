@@ -38,3 +38,43 @@ The question (exclusive choice):
 
 - Exactly two Approve/Revise gates: gate 1 (§2.5) and gate 2 (§2.7). A Revise answer repeats the same gate; it does not add a gate.
 - The agent shows no per-member Approve/Revise for members that the template produces without a structural change.
+
+## Task 2.1: The overview, the `set` key, and the order rule
+
+### Location
+
+- Resolve **Track Sets Directory** through the index. If the index has no such link, use `measure/sets/`, create it, and add a link labeled **Track Sets Directory** to `./sets/` next to the **Tracks Directory** link in `measure/index.md`. The skill has no default-path list, so the index link is the record.
+- The overview file is `<Track Sets Directory>/<set_id>.md`. `set_id` is `<shortname>_YYYYMMDD` and differs from every member track ID.
+
+### Overview template (section 2.9 step 3)
+
+Headings, in this order: `# Track Set: <set title>`, a fact list (Set ID, Status, Created, Goal), `## Shared Decisions` (table: Date, Question, Decision), `## Members` (table: Order, Track, Type, Scope, Depends on, Status), `## Shared Rules`, `## Open Questions`.
+
+- The Track cell links the track folder relative to the overview: `../tracks/<track_id>/`, or `../archive/<track_id>/` after an archive.
+- Status values for the set and for each member: `new`, `in_progress`, `completed`. These are the `metadata.json` status values.
+
+### `set` key in member `metadata.json`
+
+```json
+"set": { "id": "<set_id>", "order": 1, "depends_on": ["<track_id>"] }
+```
+
+- Present only on members. Absent on standalone tracks. Not written as `null` or `{}`.
+- `depends_on` is an array (empty when there is no dependency).
+- Order rule: each `depends_on` entry is a member with a lower `order`, or a track outside the set. No tool checks this; section 2.9 verifies it once at creation.
+
+### Member files
+
+- `spec.md`: a `## Track Set` section directly after the overview section, with the set title, a link to the overview, the order, the dependencies, and one sentence: the shared decisions in the overview apply to this track.
+- `index.md`: one more link, `[Track Set](<relative path to the overview>)`. From `measure/tracks/<id>/` the path is `../../sets/<set_id>.md`; the same path works after an archive to `measure/archive/<id>/`.
+- Registry: members in order, each in its own `---` section, with one more line under the link: `*Set: <set title> (`<set_id>`), order <n>*`.
+
+### Verification and commit (section 2.9 steps 8 and 9)
+
+- Every member folder has `index.md`, `spec.md`, `plan.md`, and `metadata.json`; every `metadata.json` parses as JSON; every `depends_on` ID exists in the **Tracks Directory** or `measure/archive/`, and obeys the order rule.
+- One commit with explicit paths: `chore(measure): Add track set '<set title>' (<n> tracks)`.
+
+### Read-side rules (section 3.0)
+
+- A track without `set` is a standalone track. No workflow warns about the absence.
+- A missing overview file, or a member that the overview does not list, is a warning, never a HALT.
