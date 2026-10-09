@@ -48,6 +48,12 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 4. **Handle No Selection:** If no track is selected, inform the user and await further instructions.
 
+5. **Check Set Dependencies (track sets only):** Read the selected track's `metadata.json`. If it has no `set` key, or `set.depends_on` is empty, skip this step silently.
+   - A dependency is complete when its entry in the **Tracks Registry** is `[x]`, or when its folder is in `measure/archive/`.
+   - If one or more dependencies are not complete, ask: "Track '<track_id>' depends on <open track IDs>, which are not complete. Start it anyway?"
+     - **Start anyway:** Continue with §3.0.
+     - **Choose another track:** Return to step 3.
+
 ## 3.0 Track Implementation
 
 **PROTOCOL: Execute the selected track.**
@@ -57,6 +63,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 1. Announce which track you're beginning to implement.
 2. Update status to 'In Progress' in the **Tracks Registry** file:
    - Find the specific heading for the track and replace `[ ]` with `[~]`.
+   - **Track set member:** If the track's `metadata.json` has a `set` key, open the set overview (`<Track Sets Directory>/<set.id>.md`). Set the track's **Status** cell in the **Members** table to `in_progress`. If the overview **Status** is `new`, set it to `in_progress`. If the overview is missing, follow [new-track-set.md](new-track-set.md) §3.0 step 4.
 
 ### 3.2 Load Context
 
@@ -93,6 +100,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - `Note: graph.db is missing — skipping graph-aware context load.`
      - `` Note: graph.db is stale (>24h) — skipping graph-aware context load. Run `build-graph scan . ./graph.db` to refresh. ``
    - Do NOT HALT.
+
+7. **Load Set Context (track sets only):** If the track's `metadata.json` has a `set` key, resolve the **Track Sets Directory** and read `<set.id>.md`. Apply its **Shared Decisions** and **Shared Rules** as requirements of this track, together with the **Specification**. If the overview is missing, follow [new-track-set.md](new-track-set.md) §3.0 step 4. If there is no `set` key, skip this step silently.
 
 ### 3.3 Execute Tasks
 
@@ -147,7 +156,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - Write the updated `metadata.json`.
 
 3. After all tasks in the track's local **Implementation Plan** are completed, update the track's status in the **Tracks Registry** (from `[~]` to `[x]`).
-4. **Commit Changes:** Stage the **Tracks Registry** file, `metadata.json`, and any updated memory files. Commit with the message `chore(measure): Mark track '<track_description>' as complete`.
+   - **Track set member:** If `metadata.json` has a `set` key, set the track's **Status** cell in the set overview to `completed`. If every member in the **Members** table is now `completed` (or `removed`), set the overview **Status** to `completed`.
+4. **Commit Changes:** Stage the **Tracks Registry** file, `metadata.json`, the set overview (if changed in step 3), and any updated memory files. Commit with the message `chore(measure): Mark track '<track_description>' as complete`.
 5. Announce that the track is fully complete and the tracks file has been updated.
 
 ## 4.0 Verify Architecture & Generate Docs
@@ -190,7 +200,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      1. Ensure `measure/archive/` exists.
      2. Move the track's folder from its current location to `measure/archive/<track_id>`.
      3. Remove the track's section from the **Tracks Registry**.
-     4. Stage the registry and archive. Commit: `chore(measure): Archive track '<track_description>'`.
+        - **Track set member:** If the track's `metadata.json` has a `set` key, change the track's link in the set overview from `../tracks/<track_id>/` to `../archive/<track_id>/`.
+     4. Stage the registry, the archive, and the set overview (if changed). Commit: `chore(measure): Archive track '<track_description>'`.
      5. Announce: "Track '<track_description>' has been successfully archived."
    - **Delete:**
      1. Warn: "WARNING: This will permanently delete the track folder and all its contents. This action cannot be undone. Are you sure?"
