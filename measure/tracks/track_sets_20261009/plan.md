@@ -52,6 +52,6 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: Dry run against a real set
 _Story ref: spec.md#story-s5_
 
-- [ ] Task 5.1: A fresh agent follows `new-track-set.md` for the Riven Lands request (read-only, output to a scratch folder) and reports its artifact list and every guess
-- [ ] Task 5.2: Correct the reference for each ambiguity; record the report and the corrections in `dry-run.md`; copy to `claude-skills/measure/`
+- [x] Task 5.1: A fresh agent follows `new-track-set.md` for the Riven Lands request (read-only, output to a scratch folder) and reports its artifact list and every guess `e44b893`
+- [~] Task 5.2: Correct the reference for each ambiguity; record the report and the corrections in `dry-run.md`; copy to `claude-skills/measure/`
 - [ ] Task: Measure - User Manual Verification 'Phase S5: Dry run against a real set' (Protocol in workflow.md)
