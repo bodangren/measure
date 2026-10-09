@@ -270,6 +270,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Allowed `status` values:** `pending | in-progress | done | partial | dropped`.
    - **Downstream readers** must treat the absence of `sprint` as classic mode and proceed without warnings.
 
+   **Set object rule:** Do NOT write a `set` key here. Only the track set workflow ([new-track-set.md](new-track-set.md) §2.9 step 4) writes `set = {id, order, depends_on}` for the members of a track set. Readers treat the absence of `set` as a standalone track, with no warning.
+
 5. **Create Track Index:** Create `measure/tracks/<track_id>/index.md` with:
    ```markdown
    # Track <track_id> Context
