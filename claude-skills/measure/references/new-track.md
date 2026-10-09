@@ -24,6 +24,19 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 1. Check if user provided a description
 2. If not, ask: "Please provide a brief description of the track (feature, bug fix, chore, etc.)"
 3. Infer track type from description (Feature vs Bug/Chore/Refactor) - do NOT ask user to classify
+4. **Detect a Track Set:** Offer a track set when one of these is true:
+   - The user asks for more than one track (for example "a set of tracks", "tracks for each", "one track per").
+   - The scope splits into 3 or more units of work that each close on their own acceptance criteria (for example one per module, service, family, or game).
+
+   If neither is true, do not ask; continue with §2.2. Otherwise ask (Exclusive Choice):
+   - Header: `Track scope`
+   - Question: "This request covers several units of work. Should I create one track or a track set?"
+   - Options:
+     - **Track set (Recommended)** — Several tracks from one set of shared decisions, with an overview page, two review gates, and one commit.
+     - **One track** — One spec and one plan for the whole request.
+     - Type your own answer
+   - On **Track set**: read [new-track-set.md](new-track-set.md), follow it, and stop this workflow.
+   - On **One track**: continue with §2.2.
 
 ### 2.2 Interactive Specification Gathering (**Specification**)
 
@@ -256,6 +269,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Populate from spec:** `sprint.goal` is taken from the spec's Overview (or the explicit Sprint Goal captured in §2.2); each `sprint.stories[]` entry mirrors one `### Story S<n>:` block in `spec.md` (id, title, size, priority all match exactly; status starts as `"pending"`).
    - **Allowed `status` values:** `pending | in-progress | done | partial | dropped`.
    - **Downstream readers** must treat the absence of `sprint` as classic mode and proceed without warnings.
+
+   **Set object rule:** Do NOT write a `set` key here. Only the track set workflow ([new-track-set.md](new-track-set.md) §2.9 step 4, and §3.0 step 5 when a track joins a set later) writes `set = {id, order, depends_on}` for the members of a track set. Readers treat the absence of `set` as a standalone track, with no warning.
 
 5. **Create Track Index:** Create `measure/tracks/<track_id>/index.md` with:
    ```markdown

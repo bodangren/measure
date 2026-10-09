@@ -12,6 +12,8 @@
 - (2026-10-04, measure_guard_20261004) Claude Code mods: a function that uses `$` must be in the hooks module file; the engine does not follow `$` across an import. Put pure logic in imported modules and the `$` calls in `register.tsx`.
 - <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree, so a checked-out feature branch never reaches the agents. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
 
+- <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working. The order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
+
 ## Recurring Gotchas
 
 - (2026-05-25, scrum_tracks_20260525) When inserting a new step mid-list in a numbered reference doc (e.g., `new-track.md §2.2`), prior step references in *other* docs may silently drift. Audit cross-references after any §X step-number change.
@@ -25,6 +27,8 @@
 - (2026-10-05, skill_distribution_repair_20261005) `git archive` applies `tar.umask` (default 0002), so extracted files are 664 or 775. Use `git -c tar.umask=0022 archive` to get the modes that git records.
 - (2026-10-05, skill_distribution_repair_20261005) `~/.agents/agents` files are hard links to `pi-measure-harness/agents/`. Write in place (`cat src > dst`), never `cp`, `mv`, or `rm`, or the link breaks. An install shows in the Pi harness as uncommitted changes.
 
+- (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys, or the project doctor rejects the files. Read a cited workflow before you state what it does: one correction said that `new-track` copies project keys, and it does not.
+
 ## Patterns That Worked Well
 
 - (2026-05-25, scrum_tracks_20260525) Self-dogfooding: making the track that introduces a feature *also* be the first user of that feature (story-shaped spec, sprint metadata, velocity datapoint) caught two real issues during execution that pure unit-testing would have missed.
@@ -32,6 +36,8 @@
 - (2026-05-25, graph_integration_20260525) Same-region task folding (planned consecutive tasks that touch one doc collapsed into one commit) reduced 16 commits to 5 feature commits across S2-S5 with zero loss of traceability — every folded commit message names the folded task numbers.
 
 - (2026-10-04, measure_guard_20261004) Two scratch scripts (task done: commit, git note, SHA in plan.md, next task `[~]`; phase done: checkpoint commit, report note, `[checkpoint: <sha>]`) made the per-task ceremony cheap across 47 tasks.
+
+- (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds. The first agent follows it for a real request and lists every guess. Each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1. Each round found a problem that the corrections of the round before had added.
 
 ## Planning Improvements
 

@@ -19,6 +19,14 @@ This file tracks all major tracks for the Measure project.
 - [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
   *Link: [./archive/graph_integration_20260525/](./archive/graph_integration_20260525/)*
 
+---
+
+- [x] **Track: Track sets: create a related set of tracks in one pass (issue #4)**
+  *Link: [./archive/track_sets_20261009/](./archive/track_sets_20261009/)*
+  *One questioning phase, one overview page, two review gates, and a dependency record for a related set of tracks. Three fresh-agent reviews.*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.

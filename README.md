@@ -99,6 +99,7 @@ claude --plugin-dir /path/to/measure/mods/measure-guard
 | --- | --- | --- |
 | `setup` | You start a project, or a project has no `measure/` folder. | `measure/` with product, guidelines, tech stack, workflow, style guides, and an index. |
 | `new-track` | You have a feature, a bug, or a chore. | `measure/tracks/<id>/` with `spec.md`, `plan.md`, and `metadata.json`. |
+| `new-track` (track set) | You have a program of related work, for example one track per module. | Several tracks from one questioning phase, an overview in `measure/sets/<id>.md`, and one commit. |
 | `implement` | A plan is approved. | Tasks done in order, one commit and git note each, phase checkpoints. |
 | `review` | A phase or a track is done. | Findings against the spec, the guidelines, and the known gotchas. |
 | `status` | You want to see where things stand. | Track and task progress, project health, velocity, and estimate accuracy. |
@@ -152,6 +153,7 @@ measure/
 ## Optional features
 
 - **Sprint mode.** Write a feature spec as user stories with Gherkin acceptance criteria, T-shirt sizes, and priorities. `status` then reports velocity and estimate accuracy over the last 3 tracks.
+- **Track sets.** Plan a program of related tracks in one pass: one questioning phase, one overview page with the shared decisions and the order, two review gates, and a dependency record that `implement` checks.
 - **Graph-aware mode.** In TypeScript projects with a fresh [repo-graph](https://github.com/bodangren/repo-graph) database, planning and review use the call graph: the blast radius of each phase, and a check for callers that a signature change breaks.
 - **Skill recommendations.** During setup and new-track, Measure suggests agent skills that match your dependencies.
 - **Grill-me interviews.** Setup and new-track can ask hard follow-up questions until the spec has no open ambiguity.
