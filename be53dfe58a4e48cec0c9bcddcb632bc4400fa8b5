@@ -1,0 +1,3 @@
+Task 4.1 (track_sets_20261009): SKILL.md.
+Files: skills/measure/SKILL.md
+Why: the skill description decides when an agent loads Measure; a request for a set of tracks must trigger it, and the Commands list must point to new-track-set.md.
