@@ -1,0 +1,4 @@
+Verification report: Phase S3: Keep a set current, track_sets_20261009
+Date: 2026-10-09. Changed files: skills/measure/references/implement.md, review.md, revert.md, new-track-set.md (§3.0 step 2), acceptance.md.
+Agent checks: Dependency and start-gate check, overview status sync, archive link, revert guard for the set commit, Remove a member for revert and delete.
+User check: the owner did not review this phase separately. The owner said 'ok, finish it and merge to main when done' and later 'push it and close issue 4' (2026-10-09). Independent checks: three fresh-agent reviews, recorded in dry-run.md and reviews/.
