@@ -1,0 +1,4 @@
+Verification report: Phase S4: Documentation and bundle parity, track_sets_20261009
+Date: 2026-10-09. Changed files: skills/measure/SKILL.md, README.md, measure/product.md, claude-skills/measure/*.
+Agent checks: diff -r skills/measure claude-skills/measure is empty; every section citation resolves; no new broken link.
+User check: the owner did not review this phase separately. The owner said 'ok, finish it and merge to main when done' and later 'push it and close issue 4' (2026-10-09). Independent checks: three fresh-agent reviews, recorded in dry-run.md and reviews/.
