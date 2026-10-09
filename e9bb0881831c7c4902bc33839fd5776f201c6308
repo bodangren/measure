@@ -1,0 +1,3 @@
+Task 3.3 (track_sets_20261009): review and revert set steps.
+Files: skills/measure/references/review.md, skills/measure/references/revert.md, skills/measure/references/new-track-set.md
+Why: the creation commit of a set member holds every member, the overview, and the index link. Before this change, a track revert of one member would remove the whole set without a warning.
