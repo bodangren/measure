@@ -53,9 +53,9 @@ A request for several related tracks (for example "one track per module") can cr
 
 - **Entry:** `new-track` §2.1 step 4 offers a track set when the user asks for more than one track or the scope splits into 3 or more units that close separately. The workflow is [references/new-track-set.md](references/new-track-set.md).
 - **One questioning phase** for the shared decisions (scope and order, split rule, shared decisions, start gate), and **two review gates**: the set overview, then one sample per template group plus every unique member.
-- **Set overview** `measure/sets/<set_id>.md`: the goal, the dated shared decisions, and the member table (order, depends on, status). Members link to it and do not copy it.
+- **Set overview** `measure/sets/<set_id>.md`: the goal, the start gate, the dated shared decisions with their sources, and the member table (order, depends on, status). Members link to it and do not copy it.
 - **Members are ordinary tracks** with an optional `metadata.json.set = {id, order, depends_on[]}`. A dependency has a lower order or is outside the set, so no cycle is possible.
-- `implement` warns about open dependencies and keeps the overview status current. `revert` asks before it reverts the commit that created the whole set.
+- `implement` asks about an unmet start gate, warns about open dependencies, and keeps the overview status current. `revert` asks before it reverts the commit that created the whole set.
 
 Track sets are opt-in: a track without a `set` key is a standalone track, and no workflow warns about it.
 

@@ -38,7 +38,7 @@ This track adds an opt-in **track set** path. A track set is a group of ordinary
 **So that** the order, the dependencies, and the shared decisions have one source
 
 **Acceptance Criteria:**
-- Given a new set, When the agent creates its artifacts, Then `measure/sets/<set_id>.md` holds the goal, the dated shared decisions, the member table (order, track, type, scope, depends on, status), the shared rules, and the open questions.
+- Given a new set, When the agent creates its artifacts, Then `measure/sets/<set_id>.md` holds the goal, the start gate, the dated shared decisions with their sources, the member table (order, track, type, scope, depends on, status), and the open questions.
 - Given the first set in a project, When the agent creates `measure/sets/`, Then `measure/index.md` gets a **Track Sets Directory** link.
 - Given each member, When the agent writes `metadata.json`, Then it has `set = {id, order, depends_on[]}`, and every `depends_on` entry names a track with a lower order or a track outside the set.
 - Given each member, When the agent writes `spec.md` and the registry entry, Then the spec has a `## Track Set` section that links the overview, and the registry entry has a `*Set:*` line under its link.
@@ -54,6 +54,7 @@ This track adds an opt-in **track set** path. A track set is a group of ordinary
 
 **Acceptance Criteria:**
 - Given a selected track with `set.depends_on` entries that are not complete, When `implement` selects it, Then it names the open dependencies and asks for confirmation before it starts.
+- Given a set with a start gate that is not marked met, When `implement` selects a member, Then it asks whether the gate is met and records the date of a yes in the overview.
 - Given a member track, When `implement` loads context, Then it also reads the set overview.
 - Given a member track that starts or completes, When `implement` updates the registry, Then it updates the member's status cell in the overview, and marks the set complete when every member is done.
 - Given a member track that is archived (implement or review) or reverted, When the workflow changes the registry, Then it updates the member's link or status in the overview.

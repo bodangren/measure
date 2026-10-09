@@ -48,11 +48,13 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 4. **Handle No Selection:** If no track is selected, inform the user and await further instructions.
 
-5. **Check Set Dependencies (track sets only):** Read the selected track's `metadata.json`. If it has no `set` key, or `set.depends_on` is empty, skip this step silently.
-   - A dependency is complete when its entry in the **Tracks Registry** is `[x]`, or when its folder is in `measure/archive/`.
-   - If one or more dependencies are not complete, ask: "Track '<track_id>' depends on <open track IDs>, which are not complete. Start it anyway?"
-     - **Start anyway:** Continue with §3.0.
-     - **Choose another track:** Return to step 3.
+5. **Check the Track Set (track sets only):** Read the selected track's `metadata.json`. If it has no `set` key, skip this step silently. Otherwise read the set overview (`<Track Sets Directory>/<set.id>.md`); if it is missing, follow [new-track-set.md](new-track-set.md) §3.0 step 4.
+   1. **Start gate:** If the overview's **Start gate** is not `none` and has no `(met YYYY-MM-DD)` mark, ask: "The track set '<set.id>' has the start gate: <condition>. Is it met?"
+      - **Yes:** Write ` (met YYYY-MM-DD)` after the condition in the overview, with today's date. Continue with item 2.
+      - **No:** Return to step 3.
+   2. **Dependencies:** A dependency in `set.depends_on` is complete when its entry in the **Tracks Registry** is `[x]`, or when its folder is in `measure/archive/`. If one or more dependencies are not complete, ask: "Track '<track_id>' depends on <open track IDs>, which are not complete. Start it anyway?"
+      - **Start anyway:** Continue with §3.0.
+      - **Choose another track:** Return to step 3.
 
 ## 3.0 Track Implementation
 
@@ -101,7 +103,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - `` Note: graph.db is stale (>24h) — skipping graph-aware context load. Run `build-graph scan . ./graph.db` to refresh. ``
    - Do NOT HALT.
 
-7. **Load Set Context (track sets only):** If the track's `metadata.json` has a `set` key, resolve the **Track Sets Directory** and read `<set.id>.md`. Apply its **Shared Decisions** and **Shared Rules** as requirements of this track, together with the **Specification**. If the overview is missing, follow [new-track-set.md](new-track-set.md) §3.0 step 4. If there is no `set` key, skip this step silently.
+7. **Load Set Context (track sets only):** If the track's `metadata.json` has a `set` key, resolve the **Track Sets Directory** and read `<set.id>.md`. Apply its **Shared Decisions** as requirements of this track, together with the **Specification**. If the overview is missing, follow [new-track-set.md](new-track-set.md) §3.0 step 4. If there is no `set` key, skip this step silently.
 
 ### 3.3 Execute Tasks
 
@@ -206,6 +208,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Delete:**
      1. Warn: "WARNING: This will permanently delete the track folder and all its contents. This action cannot be undone. Are you sure?"
      2. If confirmed: Delete the track folder, remove from **Tracks Registry**, commit: `chore(measure): Delete track '<track_description>'`.
+        - **Track set member:** Before you delete the folder, read its `metadata.json`. If it has a `set` key, apply **Remove a member** in [new-track-set.md](new-track-set.md) §3.0 step 5, and stage the changed files with the delete commit.
      3. Announce: "Track '<track_description>' has been permanently deleted."
      4. If denied: Announce: "Deletion cancelled."
    - **Skip:** Announce: "Okay, the completed track will remain in your tracks file for now."
