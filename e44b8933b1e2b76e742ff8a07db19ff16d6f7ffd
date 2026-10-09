@@ -1,0 +1,3 @@
+Task 5.1 (track_sets_20261009): dry run, run 1.
+Files: measure/tracks/track_sets_20261009/reviews/run-1-report.md
+Why: workflow text must be unambiguous to an agent that reads it fresh (product guidelines). The agent did not see the 16 tracks made by hand in advantage-forge e3173ca7, so its reading was not anchored.
