@@ -1,0 +1,3 @@
+Task 3.2 (track_sets_20261009): implement.md set steps.
+Files: skills/measure/references/implement.md
+Why: issue #4 asks for a dependency record; a record that no workflow reads is drift. The check is a warning with a choice, not a block, because Measure runs one active track at a time and the user decides the order.
