@@ -1,0 +1,4 @@
+Verification report: Phase S2: Set overview and member metadata, track_sets_20261009
+Date: 2026-10-09. Changed files: skills/measure/references/new-track-set.md (§2.9, §3.0), skills/measure/references/new-track.md (§2.5 Set object rule), acceptance.md.
+Agent checks: Overview template, set key with the order rule, index link, registry line, verification, one commit.
+User check: the owner did not review this phase separately. The owner said 'ok, finish it and merge to main when done' and later 'push it and close issue 4' (2026-10-09). Independent checks: three fresh-agent reviews, recorded in dry-run.md and reviews/.
