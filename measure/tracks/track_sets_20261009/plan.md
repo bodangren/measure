@@ -29,13 +29,13 @@ _Story ref: spec.md#story-s2_
 
 ---
 
-## Phase S3: Keep a set current during implement, archive, and revert
+## Phase S3: Keep a set current during implement, archive, and revert [checkpoint: 2f7bcf3]
 _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Define acceptance criteria for the dependency warning and the overview updates `50d7fe0`
 - [x] Task 3.2: Edit `implement.md`: dependency check in §2.0, overview load in §3.2, status sync in §3.1 and §3.4, link update in the §5.0 archive `8b8ed37`
 - [x] Task 3.3: Edit `review.md` §3.3 (archive link) and `revert.md` (overview status after a revert) `e9bb088`
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Keep a set current' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S3: Keep a set current' (Protocol in workflow.md) verified:owner-delegated 2026-10-09 `2f7bcf3`
 
 ---
 
