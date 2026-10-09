@@ -78,3 +78,19 @@ Headings, in this order: `# Track Set: <set title>`, a fact list (Set ID, Status
 
 - A track without `set` is a standalone track. No workflow warns about the absence.
 - A missing overview file, or a member that the overview does not list, is a warning, never a HALT.
+
+## Task 3.1: Set data in implement, review, and revert
+
+Every new step applies only when the track's `metadata.json` has a `set` key. Without it, the step does nothing and shows nothing. No existing step is renumbered: new steps go at the end of a list or as sub-bullets.
+
+| Place | Change |
+| --- | --- |
+| `implement` §2.0, new step 5 | **Check Set Dependencies.** For each `set.depends_on` ID that is not complete (registry `[x]` or folder in `measure/archive/`), ask "Track `<id>` depends on `<ids>`, which are not complete. Start it anyway?" with **Start anyway** and **Choose another track** (back to step 3). |
+| `implement` §3.1 step 2, sub-bullet | Member status `in_progress` in the overview; set status `in_progress` if it is `new`. |
+| `implement` §3.2, new step 7 | **Load Set Context.** Read the overview; apply its shared decisions and shared rules. A missing overview follows `new-track-set.md` §3.0 step 4. |
+| `implement` §3.4 step 3, sub-bullet; step 4 | Member status `completed`; set status `completed` when every member is `completed`. Step 4 stages the overview. |
+| `implement` §5.0 Archive, sub-bullet | The member link in the overview changes to `../archive/<track_id>/`; the archive commit stages the overview. |
+| `review` §3.3 Archive | The same link change. |
+| `revert` §3.3, new step 5 | **Track set member.** The creation commit of a member also created the other members, the overview, and the index link. Do not add it silently. Ask: **Remove only this member** (Recommended: a new commit deletes its folder and registry section and sets its overview row to `removed`) or **Revert the whole creation commit** (removes the set). |
+| `revert` §5.3, new step 4 | After a revert, the member's overview status matches its registry marker: `[ ]` is `new`, `[~]` is `in_progress`, `[x]` is `completed`. |
+| `new-track-set.md` §3.0 step 2 | Names the real places: `revert` §3.3 and §5.3 (not §4.0). Adds `removed` as a member status. |
