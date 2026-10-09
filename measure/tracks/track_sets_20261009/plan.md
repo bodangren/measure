@@ -14,7 +14,7 @@ _Story ref: spec.md#story-s1_
     - [x] Write the detection rule (when to offer a set) and the exact question with its options
     - [x] Write the section list of `new-track-set.md` and the two review gates
 - [x] Task 1.2: Write `skills/measure/references/new-track-set.md` sections 1.0 to 2.8 (setup, questioning, member list, spec format, overview gate, tech debt, templates and sample gate, skills) `c48ef5e`
-- [ ] Task 1.3: Add the set detection step at the end of `new-track.md` §2.1 (no renumbering)
+- [x] Task 1.3: Add the set detection step at the end of `new-track.md` §2.1 (no renumbering) `2fb7115`
 - [ ] Task: Measure - User Manual Verification 'Phase S1: Track set path in new-track' (Protocol in workflow.md)
 
 ---
