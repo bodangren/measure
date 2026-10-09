@@ -22,7 +22,8 @@ This file tracks all major tracks for the Measure project.
 ---
 
 - [x] **Track: Track sets: create a related set of tracks in one pass (issue #4)**
-  *Link: [./tracks/track_sets_20261009/](./tracks/track_sets_20261009/)*
+  *Link: [./archive/track_sets_20261009/](./archive/track_sets_20261009/)*
+  *One questioning phase, one overview page, two review gates, and a dependency record for a related set of tracks. Three fresh-agent reviews.*
 
 ---
 
