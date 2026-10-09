@@ -44,7 +44,7 @@ _Story ref: spec.md#story-s4_
 
 - [x] Task 4.1: Edit `SKILL.md`: description triggers, "Track Sets (optional)" subsection, `sets/` in the directory tree, "New Track Set" command `be53dfe`
 - [x] Task 4.2: Edit `README.md` (commands table, optional features) and `measure/product.md` (key features) `f16ea7e`
-- [ ] Task 4.3: Copy the changed skill files to `claude-skills/measure/`; `diff -r skills/measure claude-skills/measure` shows no difference; audit cross-references (§ numbers, file names)
+- [x] Task 4.3: Copy the changed skill files to `claude-skills/measure/`; `diff -r skills/measure claude-skills/measure` shows no difference; audit cross-references (§ numbers, file names) `d58d023`
 - [ ] Task: Measure - User Manual Verification 'Phase S4: Documentation and bundle parity' (Protocol in workflow.md)
 
 ---
