@@ -3,7 +3,7 @@ name: measure
 description: |
   Spec-driven development framework for AI-assisted software projects. Measure organizes work into "tracks" (features, bugs, chores) with specs and phased plans, adding persistent memory (lessons-learned, tech-debt), skills integration, and plan-mode policies.
 
-  Use this skill whenever the user is doing structured software development with an AI assistant — even if they don't say "Measure" or "tracks." Triggers on: setting up projects ("measure setup", "set up project", "initialize"), planning features ("new track", "create track", "plan feature", "write a spec", "break into tasks"), implementing work ("implement", "work on track", "execute plan", "build this feature"), reviewing code ("review", "code review", "verify track", "check my work"), checking progress ("measure status", "show progress", "what's left"), reverting work ("revert", "undo track", "rollback", "go back"), or any mention of spec-driven development, TDD, or structured AI coding.
+  Use this skill whenever the user is doing structured software development with an AI assistant — even if they don't say "Measure" or "tracks." Triggers on: setting up projects ("measure setup", "set up project", "initialize"), planning features ("new track", "create track", "plan feature", "write a spec", "break into tasks"), planning a program of related tracks ("track set", "a set of tracks", "one track per module"), implementing work ("implement", "work on track", "execute plan", "build this feature"), reviewing code ("review", "code review", "verify track", "check my work"), checking progress ("measure status", "show progress", "what's left"), reverting work ("revert", "undo track", "rollback", "go back"), or any mention of spec-driven development, TDD, or structured AI coding.
 ---
 
 # Measure
@@ -47,6 +47,18 @@ When a project's Tech Stack includes TypeScript and `build-graph` (from `repo-gr
 
 Graph-Aware Mode is fully opt-in: every step emits a one-line `Note: …` and continues if `build-graph` is missing, `graph.db` is stale/absent, or the project isn't TypeScript. No HALT, no breakage.
 
+### Track Sets (optional)
+
+A request for several related tracks (for example "one track per module") can create them in one pass:
+
+- **Entry:** `new-track` §2.1 step 4 offers a track set when the user asks for more than one track or the scope splits into 3 or more units that close separately. The workflow is [references/new-track-set.md](references/new-track-set.md).
+- **One questioning phase** for the shared decisions (scope and order, split rule, shared decisions, start gate), and **two review gates**: the set overview, then one sample per template group plus every unique member.
+- **Set overview** `measure/sets/<set_id>.md`: the goal, the dated shared decisions, and the member table (order, depends on, status). Members link to it and do not copy it.
+- **Members are ordinary tracks** with an optional `metadata.json.set = {id, order, depends_on[]}`. A dependency has a lower order or is outside the set, so no cycle is possible.
+- `implement` warns about open dependencies and keeps the overview status current. `revert` asks before it reverts the commit that created the whole set.
+
+Track sets are opt-in: a track without a `set` key is a standalone track, and no workflow warns about it.
+
 ## Directory Structure
 
 ```
@@ -66,6 +78,7 @@ measure/
 │       ├── metadata.json   # Track metadata (incl. optional sprint object for story-shaped feature tracks)
 │       ├── spec.md         # Track specification (Specification) — classic FR list or story-shaped
 │       └── plan.md         # Implementation plan (Implementation Plan)
+├── sets/                   # Track set overviews, <set_id>.md (optional; Track Sets Directory)
 └── archive/                # Completed/archived tracks
 
 # Optional, at project root (TS projects only):
@@ -79,6 +92,9 @@ Initialize Measure in a new or existing project. For TypeScript projects, §2.9 
 
 ### New Track
 Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). When Graph-Aware Mode is available, runs a Graph Context Probe before questioning and appends blast-radius notes to plan phases. Read [references/new-track.md](references/new-track.md) for the full workflow.
+
+### New Track Set
+Create several related tracks in one pass from one set of shared decisions: one questioning phase, a set overview, two review gates, member templates, a dependency record, and one commit. `new-track` routes here when a request implies several tracks. Read [references/new-track-set.md](references/new-track-set.md) for the full workflow.
 
 ### Implement
 Execute tasks from a track's plan following the project workflow. Loads project memory (lessons learned, tech debt) before starting, loads graph baseline when Graph-Aware Mode is available, applies a Per-Task Graph Protocol around exported-symbol edits, and prompts for retrospective insights before finalizing. Read [references/implement.md](references/implement.md) for the full workflow.
