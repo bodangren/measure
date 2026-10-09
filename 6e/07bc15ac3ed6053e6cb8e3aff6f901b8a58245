@@ -1,0 +1,4 @@
+Verification report: Phase S1: Track set path in new-track, track_sets_20261009
+Date: 2026-10-09. Changed files: skills/measure/references/new-track-set.md (sections 1.0 to 2.8), skills/measure/references/new-track.md (§2.1 step 4), acceptance.md.
+Agent checks: Detection step asks only for a multi-track request; the new reference has one questioning phase and two review gates.
+User check: the owner did not review this phase separately. The owner said 'ok, finish it and merge to main when done' and later 'push it and close issue 4' (2026-10-09). Independent checks: three fresh-agent reviews, recorded in dry-run.md and reviews/.
