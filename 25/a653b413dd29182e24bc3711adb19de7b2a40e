@@ -1,0 +1,4 @@
+Verification report: Phase S5: Dry run against a real set, track_sets_20261009
+Date: 2026-10-09. Changed files: skills/measure/references/*.md, claude-skills copies, spec.md, dry-run.md, reviews/.
+Agent checks: Three fresh-agent reviews: run 1 21 findings (5 Blocking), run 2 1 Blocking in the corrections, run 3 1 Blocking sentence; all corrected; finding 10 filed as issue #5.
+User check: the owner did not review this phase separately. The owner said 'ok, finish it and merge to main when done' and later 'push it and close issue 4' (2026-10-09). Independent checks: three fresh-agent reviews, recorded in dry-run.md and reviews/.
