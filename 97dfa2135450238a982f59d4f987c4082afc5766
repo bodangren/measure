@@ -1,0 +1,3 @@
+Task 2.1 (track_sets_20261009): acceptance criteria for section 2.9 and section 3.0 of new-track-set.md.
+Files: measure/tracks/track_sets_20261009/acceptance.md
+Why: issue #4 asks for one overview page and a dependency record. The skill has no default-path list, so the index link is the record of the sets directory.
