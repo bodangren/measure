@@ -33,6 +33,7 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 - **Product Guidelines**: `measure/product-guidelines.md`
 - **Tracks Registry**: `measure/tracks.md`
 - **Tracks Directory**: `measure/tracks/`
+- **Track Sets Directory**: `measure/sets/` (optional; created by the first track set)
 
 **Standard Default Paths (Track):**
 - **Specification**: `measure/tracks/<track_id>/spec.md`

@@ -1,23 +1,53 @@
 {
   "track_id": "track_sets_20261009",
   "type": "feature",
-  "status": "new",
+  "status": "completed",
   "created_at": "2026-10-09T12:38:48Z",
-  "updated_at": "2026-10-09T12:38:48Z",
+  "updated_at": "2026-10-09T15:30:00Z",
   "description": "Track sets: create a related set of tracks in one pass (issue #4)",
   "estimated_tasks": 19,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 19,
+  "deviation_notes": "Task 5.2 grew into three fresh-agent review rounds (21 findings, then 10 new problems and a Delete gap, then 1). The corrections added a start-gate check to implement \u00a72.0 step 5, removed the Shared Rules section (one Shared Decisions table with sources), added project metadata keys and a generate-and-doctor check to the set workflow, and one Remove a member rule that revert and the implement and review Delete steps use. Finding 10 (fixed phase names for non-code work) is a new-track limit, filed as issue #5. The owner did not review the phases separately: the owner said 'finish it and merge to main when done' and 'push it and close issue 4'.",
   "sprint": {
     "goal": "A user can ask for a related set of tracks and get them in one pass: one shared questioning phase, one overview page, two review gates, a member template, a dependency record, and one commit.",
     "stories": [
-      { "id": "S1", "title": "Track set path in new-track", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S2", "title": "Set overview and member metadata", "size": "S", "priority": "Must", "status": "pending" },
-      { "id": "S3", "title": "Keep a set current during implement, archive, and revert", "size": "S", "priority": "Must", "status": "pending" },
-      { "id": "S4", "title": "Documentation and bundle parity", "size": "S", "priority": "Should", "status": "pending" },
-      { "id": "S5", "title": "Dry run against a real set", "size": "S", "priority": "Should", "status": "pending" }
+      {
+        "id": "S1",
+        "title": "Track set path in new-track",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S2",
+        "title": "Set overview and member metadata",
+        "size": "S",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S3",
+        "title": "Keep a set current during implement, archive, and revert",
+        "size": "S",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S4",
+        "title": "Documentation and bundle parity",
+        "size": "S",
+        "priority": "Should",
+        "status": "done"
+      },
+      {
+        "id": "S5",
+        "title": "Dry run against a real set",
+        "size": "S",
+        "priority": "Should",
+        "status": "done"
+      }
     ],
-    "demo_notes": null,
-    "retro_ref": null
+    "demo_notes": "A fresh agent followed new-track-set.md for the Riven Lands request in advantage-forge and produced an overview, a family sample, and a member list in a scratch folder. Two more fresh agents checked the corrections. dry-run.md maps every finding to its correction.",
+    "retro_ref": "lessons-learned.md#2026-10-09-track_sets"
   }
 }
