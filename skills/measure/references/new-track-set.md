@@ -111,3 +111,110 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 ### 2.8 Skill Recommendation
 
 1. Apply `new-track` §2.4 and §2.4.1 once for the set, with keywords from the set goal and the approved samples.
+
+### 2.9 Create Artifacts
+
+1. **Check Names:**
+   - List the **Tracks Directory**, `measure/archive/`, and the **Track Sets Directory** (step 2) if it exists.
+   - Write the set ID: `<shortname>_YYYYMMDD`. It must differ from every member track ID.
+   - If a member track ID matches an existing track folder, or the set ID matches an existing overview, HALT and suggest a different short name.
+
+2. **Resolve the Track Sets Directory:** Resolve **Track Sets Directory** with the **Universal File Resolution Protocol**. If the index has no such link:
+   1. Use `measure/sets/` and create it.
+   2. Add a link labeled **Track Sets Directory** to `./sets/` in `measure/index.md`, next to the **Tracks Directory** link and in the same format.
+
+3. **Write the Set Overview:** Create `<Track Sets Directory>/<set_id>.md`:
+   ```markdown
+   # Track Set: <set title>
+
+   - **Set ID:** `<set_id>`
+   - **Status:** new
+   - **Created:** YYYY-MM-DD
+   - **Goal:** <set goal>
+
+   ## Shared Decisions
+
+   | Date | Question | Decision |
+   | --- | --- | --- |
+   | YYYY-MM-DD | <topic from §2.2> | <the user's answer> |
+
+   ## Members
+
+   | Order | Track | Type | Scope | Depends on | Status |
+   | --- | --- | --- | --- | --- | --- |
+   | 1 | [<track_id>](../tracks/<track_id>/) | feature | <one line> | — | new |
+
+   ## Shared Rules
+
+   - <a rule that applies to every member, for example a quality bar or a naming rule>
+
+   ## Open Questions
+
+   - <a question that a member must answer, with the member that owns it>
+   ```
+   - The **Track** link is relative to the overview. After an archive it becomes `../archive/<track_id>/`.
+   - **Status** values for the set and for each member: `new`, `in_progress`, `completed` (the `metadata.json` status values).
+   - Write each shared decision once, here. Member specs link to it and do not copy it.
+
+4. **Write Each Member:** For each member, in order:
+   1. Create `measure/tracks/<track_id>/`.
+   2. Write `spec.md` and `plan.md` from §2.7. Directly after the spec's overview section, add:
+      ```markdown
+      ## Track Set
+
+      This track is member <order> of the track set [<set title>](<path to the overview>). Depends on: <track IDs, or "none">. The shared decisions and shared rules in the set overview apply to this track.
+      ```
+      The path to the overview from a track folder is `../../sets/<set_id>.md` for the default directories. The same path works after an archive to `measure/archive/<track_id>/`.
+   3. Write `index.md` in the format of `new-track` §2.5 step 5, with one more line: `- [Track Set](<path to the overview>)`.
+   4. Write `metadata.json` with the schema and the `sprint` rules of `new-track` §2.5 step 4, and add the `set` key:
+      ```json
+      "set": {
+        "id": "<set_id>",
+        "order": 1,
+        "depends_on": []
+      }
+      ```
+      - `depends_on` lists the track IDs from §2.3. Use an empty array when there is none.
+      - Set `estimated_tasks` to the number of top-level tasks in the member's `plan.md` (`new-track` §2.5 step 8).
+
+5. **Update the Tracks Registry:** Append each member in order:
+   ```markdown
+
+   ---
+
+   - [ ] **Track: <member description>**
+     *Link: [./tracks/<track_id>/](./tracks/<track_id>/)*
+     *Set: <set title> (`<set_id>`), order <n>*
+   ```
+
+6. **Verify:** Run each check. If a check fails, correct the artifact and run the check again. Do NOT commit until every check passes.
+   - Each member folder has `index.md`, `spec.md`, `plan.md`, and `metadata.json`.
+   - Each `metadata.json` parses as JSON (for example `python3 -m json.tool <file>` or `jq . <file>`).
+   - Each `depends_on` ID is a folder in the **Tracks Directory** or `measure/archive/`, and is a member with a lower order or a track outside the set.
+   - The overview's member table lists each member once, in the order of the registry.
+
+7. **Commit Changes:** Stage only these paths, by name: the overview, `measure/index.md` (if changed), the **Tracks Registry**, and each member folder. Commit with message `chore(measure): Add track set '<set title>' (<n> tracks)`.
+
+8. **Announce:**
+   > "Track set '<set title>' has been created with <n> tracks. The overview is `<path>`. Start with track '<first track_id>' by running `implement <first track_id>`."
+
+## 3.0 Read-Side Rules for Track Sets
+
+**PROTOCOL: How other workflows treat set data.**
+
+1. **Optional key:** A track without a `set` key in `metadata.json` is a standalone track. No workflow warns about the absence.
+
+2. **Workflows that use set data:**
+   - `implement` §2.0 step 5: warns when a dependency is not complete.
+   - `implement` §3.1 and §3.4: update the member status and the set status in the overview.
+   - `implement` §3.2 step 7: reads the overview as track context.
+   - `implement` §5.0 and `review` §3.3: change the member link in the overview after an archive.
+   - `revert` §4.0: sets the member status in the overview after a track revert.
+
+3. **Complete dependency:** A dependency is complete when its registry entry is `[x]`, or when its folder is in `measure/archive/`.
+
+4. **Missing overview data:** If the overview file is missing, or its member table does not list the track, warn once: "The set overview `<path>` does not list track `<track_id>`. I will continue without it." Then continue. Never HALT because of set data.
+
+5. **Change a set later:**
+   - **Add a member:** Run `new-track` for it. Then add the `set` key, the `## Track Set` section, the index link, the `*Set:*` registry line, and a row in the overview. The order rule of §2.3 applies.
+   - **Change a shared decision:** Add a dated row to **Shared Decisions** in the overview. Do not copy the decision into member specs.
