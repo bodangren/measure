@@ -1,0 +1,23 @@
+{
+  "track_id": "track_sets_20261009",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-10-09T12:38:48Z",
+  "updated_at": "2026-10-09T12:38:48Z",
+  "description": "Track sets: create a related set of tracks in one pass (issue #4)",
+  "estimated_tasks": 19,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "A user can ask for a related set of tracks and get them in one pass: one shared questioning phase, one overview page, two review gates, a member template, a dependency record, and one commit.",
+    "stories": [
+      { "id": "S1", "title": "Track set path in new-track", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S2", "title": "Set overview and member metadata", "size": "S", "priority": "Must", "status": "pending" },
+      { "id": "S3", "title": "Keep a set current during implement, archive, and revert", "size": "S", "priority": "Must", "status": "pending" },
+      { "id": "S4", "title": "Documentation and bundle parity", "size": "S", "priority": "Should", "status": "pending" },
+      { "id": "S5", "title": "Dry run against a real set", "size": "S", "priority": "Should", "status": "pending" }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}
