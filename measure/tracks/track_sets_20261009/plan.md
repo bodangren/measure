@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ---
 
-## Phase S1: Track set path in new-track
+## Phase S1: Track set path in new-track [checkpoint: 6e07bc1]
 _Story ref: spec.md#story-s1_
 
 - [x] Task 1.1: Define acceptance criteria for the track set path `91c30ea`
@@ -15,7 +15,7 @@ _Story ref: spec.md#story-s1_
     - [x] Write the section list of `new-track-set.md` and the two review gates
 - [x] Task 1.2: Write `skills/measure/references/new-track-set.md` sections 1.0 to 2.8 (setup, questioning, member list, spec format, overview gate, tech debt, templates and sample gate, skills) `c48ef5e`
 - [x] Task 1.3: Add the set detection step at the end of `new-track.md` §2.1 (no renumbering) `2fb7115`
-- [ ] Task: Measure - User Manual Verification 'Phase S1: Track set path in new-track' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: Track set path in new-track' (Protocol in workflow.md) verified:owner-delegated 2026-10-09 `6e07bc1`
 
 ---
 
