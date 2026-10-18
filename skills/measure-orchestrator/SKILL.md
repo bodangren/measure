@@ -86,9 +86,11 @@ the rest." Verify `[b]` markers in the plan are intentional before declaring suc
 ## Role Order
 
 Run roles in this order. Strategy, Mid, and Jr are sequential. Review A/B/C can run in
-parallel after Jr commits Green work if their write scopes are clear. The audit role
-runs at any point in the cycle (recommended: weekly). Final
-Acceptance must pass before Closeout.
+parallel after Jr commits Green work if their write scopes are clear. A remediation
+commit after a review sends the phase back to Review A/B/C on the new HEAD. Adversarial
+testing and UX review run on the reviewed HEAD. Phase acceptance runs last, on an
+immutable HEAD. The audit role runs at any point in the cycle (recommended: weekly).
+Final Acceptance must pass before Closeout.
 
 1. `measure-strategy`
 2. `measure-mid-red`
@@ -96,9 +98,9 @@ Acceptance must pass before Closeout.
 4. `measure-review-a-correctness`
 5. `measure-review-b-security`
 6. `measure-review-c-ux-api`
-7. `measure-phase-acceptance`
-8. `measure-adversarial-testing`
-9. `measure-ux-browser-review` when applicable
+7. `measure-adversarial-testing`
+8. `measure-ux-browser-review` when applicable
+9. `measure-phase-acceptance`
 10. `measure-orchestrator-audit` (anytime; recommended weekly)
 11. `measure-final-acceptance`
 12. `measure-closeout`
@@ -118,8 +120,16 @@ Measure subagent type (e.g. `measure-jr-green`, `measure-mid-red`, `measure-revi
 - phase heading (or "track setup" / "track review" where appropriate)
 - baseline SHA (`git rev-parse HEAD` at role start)
 - result JSON path for audit roles (where the audit JSON must be written)
+- log path for the role's `MEASURE_AGENT_RESULT` block (the file that `role-gate --log-file` reads)
 - relevant gate commands from the environment (`RED_TEST_COMMAND`, `GREEN_TEST_COMMAND`,
   `PROJECT_LINT`, `PROJECT_CHECKS`, `PROJECT_TESTS`, `PROJECT_DEV_URL`)
+
+Put result and log paths inside the role's write scope. Audit roles may edit only
+`measure/runs/**`, so use `measure/runs/<track>/<role>-<short-head>.json` and
+`measure/runs/<track>/<role>-<short-head>.log`. The role writes both files; the
+orchestrator never writes them. Tell each audit role to write its artifact first, with a
+provisional verdict, and to refine it after, so a role that reaches its step limit still
+leaves a valid artifact.
 
 Review and audit roles are report-only for implementation defects.
 They may write only their required result artifact and role log. They must not modify production code, tests, or implementation plans to fix findings.
@@ -127,6 +137,23 @@ The orchestrator must route implementation findings back to `measure-jr-green` w
 Any remediation commit invalidates review artifacts bound to an older HEAD, so fresh applicable reviews must run.
 The Green role updates `measure/lessons-learned.md` only when the finding yields durable, reusable project knowledge and the project memory limit permits it.
 Preserve unrelated user work and do not revert changes made by other agents.
+
+## Model Selection
+
+Pass a model on every role spawn. Role files do not pin a model. The host's orchestrator
+agent file keeps the role-to-model table, because plans and quotas differ per host.
+
+- Red and Green use different model families.
+- An auditor uses a family other than the family whose work it audits.
+- Review A and Review B use different families.
+- Phase acceptance uses a family other than Red. Final acceptance uses a family other
+  than Review A and phase acceptance.
+- Put planning, review, and acceptance roles on the strongest models. Put Green and
+  mechanical roles on high-quota models.
+- When the host reports plan quota, check it before a role on a capped plan.
+- Before the first real use of a new model, spawn it once with a one-line task.
+- Use metered models only with explicit user approval.
+- Record each substitution as a deviation in the handoff and the final report.
 
 ## Inter-Phase Checks
 

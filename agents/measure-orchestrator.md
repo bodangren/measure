@@ -154,6 +154,24 @@ track-authoring edits are required.
 - Do not commit or push from the primary agent. Measure roles commit only where their
   canonical contract requires it; one-off coders commit only on explicit user request.
 
+## Role Handoff Rules
+
+- Run roles in the skill's order: strategy, Red, Green, Reviews A, B, and C in
+  parallel, remediation, adversarial testing, UX browser review when applicable, and
+  phase acceptance. After every phase passes, run final acceptance and then closeout.
+- Give each role result and log paths inside its write scope. Audit roles can edit
+  only `measure/runs/**`. Use `measure/runs/<track>/<role>-<short-head>.json` for an
+  audit JSON and `measure/runs/<track>/<role>-<short-head>.log` for the role's
+  `MEASURE_AGENT_RESULT` block. Red and Green write their log to the same folder.
+- Pass that log path to `role-gate --log-file`.
+- Tell each audit role to write its result JSON and log first, with a provisional
+  verdict, and to refine them after. Then a role that reaches its step limit still
+  leaves a valid artifact.
+- Never write a role's result JSON or log yourself. If a role cannot write its
+  artifact, re-dispatch it with a path inside its write scope.
+- After a remediation commit, run every applicable review again on the new HEAD.
+- Tell closeout to commit `measure/runs/<track>/` with the archive.
+
 ## Progress And Recovery
 
 Use a task list for multi-role work and keep exactly one orchestration step in progress.
