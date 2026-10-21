@@ -21,7 +21,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Docs: README sections "Snapshot" and "State file" `63b4500`
 - [b] Task: Measure - User Manual Verification 'Phase S2: Project snapshot and plugin state' (Protocol in workflow.md) deferred:owner
 
-## Phase S3: Rule and task note
+## Phase S3: Rule and task note [checkpoint: 7fb76d1]
 _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Contract: `src/hooks/context.ts` (`contextHook`, `promptHook`, `compactionHook`, `afterToolNote`) with a fake context type `tests/fake.ts`; the "Measure rule" section text in `agents/measure-orchestrator.md` `db1bd1b`
