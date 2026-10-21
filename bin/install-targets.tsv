@@ -7,3 +7,8 @@ skills/measure-orchestrator	~/.agents/skills/measure-orchestrator	*
 skills/build-graph	~/.claude/skills/build-graph	*
 skills/build-graph	~/.agents/skills/build-graph	*
 agents	~/.agents/agents	measure-*.md
+# OpenCode 2: the plugin package (without its tests), its workflow commands, and the Measure agents.
+# The pattern is a bash extglob (the installer enables extglob): everything but tests/.
+plugins/opencode-measure-guard	~/.config/opencode/plugins/opencode-measure-guard	!(tests/*)
+plugins/opencode-measure-guard/commands	~/.config/opencode/commands	measure-*.md
+agents	~/.config/opencode/agents	measure-*.md
