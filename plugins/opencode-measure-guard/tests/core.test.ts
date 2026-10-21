@@ -46,7 +46,7 @@ describe('parse', () => {
   test('the band and the note name the active track and task', () => {
     const snapshot = snapshotOf(parsePlan(PLAN))
     const band = bandLine(snapshot, null)
-    expect(band).toContain('opencode_plugin_20261021')
+    expect(band).toContain('OpenCode plugin: measure-guard')
     expect(band).toContain('Phase ')
     expect(taskNote(snapshot, 'guard')).toContain('[~]')
     expect(statusLines(snapshot, null).length).toBeGreaterThan(2)
