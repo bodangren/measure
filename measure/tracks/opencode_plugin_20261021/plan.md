@@ -37,13 +37,13 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.2: Red: `tests/edit-guard.test.ts` (deny without `[~]`, pass with `[~]`, pass in advise, pass inside `measure/`, setup deny without `measure/`, bypass) and `tests/closeout.test.ts` (track close deny and pass with `[b]` note, phase start deny) `107a583`
 - [x] Task 4.3: Green: implement `beforeTool` for the edit and closeout guards; wire `tool.hook("execute.before")` `ea997e1`
 - [x] Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note `faff85c`
-- [~] Task 4.5: Docs: README "Guards" section (edit, closeout)
+- [x] Task 4.5: Docs: README "Guards" section (edit, closeout) `e9a5e5d`
 - [b] Task: Measure - User Manual Verification 'Phase S4: Edit guard and closeout guard' (Protocol in workflow.md) deferred:owner
 
 ## Phase S5: TDD guard and commit guard (strict)
 _Story ref: spec.md#story-s5_
 
-- [ ] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output)
+- [~] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output)
 - [ ] Task 5.2: Red: `tests/tdd.test.ts` and `tests/commit.test.ts`
 - [ ] Task 5.3: Green: implement the strict guards in `src/hooks/tools.ts`
 - [ ] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits
