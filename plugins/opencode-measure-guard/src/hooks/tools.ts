@@ -38,7 +38,8 @@ export const writtenPaths = (tool: string, input: unknown, root: string): string
       .filter((path): path is string => path !== null && path !== '')
       .map(path => absolute(path, root))
   }
-  const path = text(fields.filePath)
+  // OpenCode 2.0 names the field `path`; the 1.x docs and some builds name it `filePath`.
+  const path = text(fields.path) ?? text(fields.filePath)
   return path === null || path === '' ? [] : [absolute(path, root)]
 }
 

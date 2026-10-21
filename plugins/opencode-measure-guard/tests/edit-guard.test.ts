@@ -25,6 +25,7 @@ describe('writtenPaths', () => {
     expect(writtenPaths('edit', { filePath: '/r/a.ts', oldString: 'a', newString: 'b' }, '/r')).toEqual(['/r/a.ts'])
     expect(writtenPaths('write', { filePath: 'src/a.ts', content: '' }, '/r')).toEqual(['/r/src/a.ts'])
     expect(writtenPaths('multiedit', { filePath: '/r/a.ts', edits: [] }, '/r')).toEqual(['/r/a.ts'])
+    expect(writtenPaths('write', { path: 'b.txt', content: '' }, '/r')).toEqual(['/r/b.txt'])
     expect(writtenPaths('read', { filePath: '/r/a.ts' }, '/r')).toEqual([])
     expect(writtenPaths('edit', { nope: 1 }, '/r')).toEqual([])
   })

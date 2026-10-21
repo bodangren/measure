@@ -4,6 +4,7 @@
   "description": "Measure guard rails for OpenCode 2: plan state, task notes, edit, closeout, TDD, and commit guards, commands, and a terminal band",
   "type": "module",
   "license": "Apache-2.0",
+  "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
     "./tui": "./src/tui.tsx"

@@ -16,6 +16,7 @@ Decisions made for this track (the owner set the goal with `/goal` and was not a
 6. **Mode option:** `advise`, `guard`, `strict` (default `guard`), read from the plugin options in `opencode.json` (`plugins: [{ "package": "...", "options": { "mode": "strict" } }]`), else from the environment variable `MEASURE_GUARD_MODE`.
 7. **Strict end-of-turn check:** OpenCode has no hook that keeps a turn open. In `strict` mode the plugin sends a follow-up prompt to the session with the open problems, at most 2 times per user turn. In `guard` mode it sends a synthetic reminder message that the next turn sees.
 8. **Installed agents are not overwritten.** `~/.config/opencode/agents/measure-*.md` on this machine differ from `agents/` in the repo (local edits, newer than the repo). The installer gets the target, and its stamp protection keeps the local files and warns; the owner runs `--adopt` when they want the repo versions.
+9. **Entry file in the plugins folder.** OpenCode 2.0.32 loads the direct `.ts` files of `~/.config/opencode/plugins/`; a package folder with a `package.json` there is not loaded (live check, Task 4.4). The installer copies the package to `~/.config/opencode/plugins/opencode-measure-guard/` and the file `entry/measure-guard.ts` to `~/.config/opencode/plugins/measure-guard.ts`; the entry file re-exports the server plugin. The live checks go through the service HTTP API (`POST /api/session`, `POST /api/session/<id>/prompt`) because `opencode run` hung on this machine during the check with and without the plugin.
 
 ## Stories
 
