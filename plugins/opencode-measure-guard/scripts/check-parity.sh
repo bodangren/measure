@@ -23,6 +23,6 @@ out=out.replace("// The measure-guard contract: the parse model of the Measure f
 sys.stdout.write(out)
 PY
 )
-if [ "$expected" != "$(cat "$TYPES")" ]; then echo "parity: $CORE/types.ts differs from $MOD/types/index.d.ts (without the declare module block)"; status=1; fi
+if [ "$expected" != "$(cat "$TYPES")" ]; then echo "parity: $TYPES differs from $MOD/types/index.d.ts (without the declare module block)"; status=1; fi
 [ $status -eq 0 ] && echo "parity: ok"
 exit $status
