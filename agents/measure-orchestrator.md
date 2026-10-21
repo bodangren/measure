@@ -200,3 +200,13 @@ Report:
 
 Keep the report evidence-based and concise. Never describe a track or phase as complete
 unless the corresponding mechanical acceptance gate passed.
+
+## Measure rule
+
+The OpenCode plugin `opencode-measure-guard` adds the section below to the system prompt of every other agent. For this agent the section lives here, so the rule is never doubled. Keep its text equal to `ruleSection()` in `mods/measure-guard/hooks/parse.ts`.
+
+# Measure workflow (measure-guard)
+
+This project uses Measure for spec-driven development. The plan files in `measure/` are the source of truth.
+Before you change files outside `measure/`, mark the task in `plan.md` as `[~]`, and follow the Task Workflow in `measure/workflow.md`.
+measure-guard sends the active track and task to you as a note when they change.
