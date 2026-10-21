@@ -83,5 +83,5 @@ _Story ref: spec.md#story-s9_
 - [x] Task 9.1: Contract: the three new rows of `bin/install-targets.tsv` and the exclusion of `tests/` and `node_modules/` from the plugin bundle `5786f5c`
 - [x] Task 9.2: Red: installer test `measure/archive/skill_distribution_repair_20261005/scripts/`-style script for the new rows (temp HOME, temp repo), kept at `plugins/opencode-measure-guard/tests/install.sh` `bf72b5e`
 - [x] Task 9.3: Green: the rows, the installer change if the bundle needs an exclusion, `bin/install-measure-skill --check` lists the targets `9efaae4`
-- [~] Task 9.4: Docs: `README.md` (repo) section "OpenCode plugin", `measure/tech-stack.md` Distribution Formats row, `CHANGELOG.md`, `measure/lessons-learned.md` and `measure/tech-debt.md` entries from the retrospective
+- [x] Task 9.4: Docs: `README.md` (repo) section "OpenCode plugin", `measure/tech-stack.md` Distribution Formats row, `CHANGELOG.md`, `measure/lessons-learned.md` and `measure/tech-debt.md` entries from the retrospective `ec20b09`
 - [b] Task: Measure - User Manual Verification 'Phase S9: Installer targets and documents' (Protocol in workflow.md) deferred:owner
