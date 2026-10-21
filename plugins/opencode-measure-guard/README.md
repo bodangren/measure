@@ -32,6 +32,18 @@ bash plugins/opencode-measure-guard/scripts/check-parity.sh   # exits 1 and name
 
 Change the mod first, then copy. The Claude Code mod never imports from this folder.
 
+## Snapshot
+
+`src/snapshot.ts` reads the project into a `Snapshot` (the type of the mod): `index.md` for the Tracks Registry link, `tracks.md`, and the plan of every `[~]` track; the active track is the first `[~]` track whose plan has a `[~]` task, else the first `[~]` track. A project outside a git work tree or without `measure/` gives `hasMeasure: false`. A tracks file in no known format or an active track without a plan gives `parseError`, and every guard then allows all calls. `gitStatus(root)` returns the `git status --porcelain --untracked-files=all` lines for the end-of-turn check.
+
+## State
+
+`src/state.ts` keeps one `SessionState` per OpenCode session (task note key, setup answer, turn state, problems, reminder, Red state). The bypass is per project root: `/measure-off` keeps `session` in memory, `/measure-off repo` stores `off:<root>` in the plugin storage so it survives a restart. The guard mode comes from the plugin options (`plugins: [{ "package": "opencode-measure-guard", "options": { "mode": "strict" } }]`), else from `MEASURE_GUARD_MODE`, else `guard`.
+
+### State file
+
+The server writes `~/.local/state/measure/opencode-guard/<16 hex of sha1(root)>.json` with `{ root, mode, guardsOff, problems, updatedAt }` after every end-of-turn check and bypass change. The terminal plugin reads it to show the bypass and the open problems; it never writes it.
+
 ## Checks
 
 ```bash
