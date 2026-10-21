@@ -18,13 +18,13 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.1: Contract: `src/snapshot.ts` (`loadSnapshot(root)`, `planPathOf`, `gitStatus(root)`), `src/state.ts` (session records, bypass store, state file path and writer), `src/options.ts` (`modeFrom(options, env)`) `73760f5`
 - [x] Task 2.2: Red: `tests/snapshot.test.ts` (temp project from the real fixtures; no `measure/`; parse error) and `tests/state.test.ts` (session record, bypass, state file round trip) `054aa2d`
 - [x] Task 2.3: Green: implement snapshot, state, and options `fd45481`
-- [~] Task 2.4: Docs: README sections "Snapshot" and "State file"
+- [x] Task 2.4: Docs: README sections "Snapshot" and "State file" `63b4500`
 - [b] Task: Measure - User Manual Verification 'Phase S2: Project snapshot and plugin state' (Protocol in workflow.md) deferred:owner
 
 ## Phase S3: Rule and task note
 _Story ref: spec.md#story-s3_
 
-- [ ] Task 3.1: Contract: `src/hooks/context.ts` (`contextHook`, `promptHook`, `compactionHook`, `afterToolNote`) with a fake context type `tests/fake.ts`; the "Measure rule" section text in `agents/measure-orchestrator.md`
+- [~] Task 3.1: Contract: `src/hooks/context.ts` (`contextHook`, `promptHook`, `compactionHook`, `afterToolNote`) with a fake context type `tests/fake.ts`; the "Measure rule" section text in `agents/measure-orchestrator.md`
 - [ ] Task 3.2: Red: `tests/context.test.ts` (rule appended for `build`, skipped for `measure-orchestrator`, nothing without `measure/`; note on changed task; note after compaction)
 - [ ] Task 3.3: Green: implement the hooks and wire them in `src/index.ts`; add the rule section to `agents/measure-orchestrator.md`
 - [ ] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change
