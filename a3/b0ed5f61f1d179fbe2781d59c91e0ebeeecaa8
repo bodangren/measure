@@ -7,3 +7,9 @@ Task 1.4 (Green): src/core/parse.ts and src/core/guards.ts are byte copies of mo
  1 fail
  10 expect() calls
 Ran 4 tests across 1 file. [203.00ms]
+
+Correction after Task 1.4: the Green run had one failing expectation (the band shows the track name). Fixed in the next commit; bun test now passes:
+ 4 pass
+ 0 fail
+ 13 expect() calls
+Ran 4 tests across 1 file. [46.00ms]
