@@ -1,0 +1,6 @@
+Task 1.3 (Red): tests/core.test.ts imports src/core/parse.ts and guards.ts and checks tracks.md, the track plan, the band, the note, and the edit decision. Failing output:
+
+ 0 pass
+ 1 fail
+ 1 error
+Ran 1 test across 1 file. [19.04s]
