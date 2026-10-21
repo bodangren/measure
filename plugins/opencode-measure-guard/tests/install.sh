@@ -32,7 +32,8 @@ git -C "$REPO" init -q -b main
 rsync -a --exclude node_modules --exclude bun.lock "$PLUGIN_DIR/" "$REPO/plugins/opencode-measure-guard/"
 printf 'role a1\n' >"$REPO/agents/measure-a.md"
 printf 'not a measure role\n' >"$REPO/agents/other.md"
-grep -E '^(plugins/opencode-measure-guard|agents\t~/.config/opencode)' "$REPO_ROOT/bin/install-targets.tsv" >"$REPO/bin/install-targets.tsv" ||
+TAB="$(printf '\t')"
+grep -E "^(plugins/opencode-measure-guard|agents${TAB}~/.config/opencode)" "$REPO_ROOT/bin/install-targets.tsv" >"$REPO/bin/install-targets.tsv" ||
   fail "bin/install-targets.tsv has no OpenCode rows"
 cp "$INSTALLER" "$REPO/bin/install-measure-skill"
 chmod 755 "$REPO/bin/install-measure-skill"
@@ -81,7 +82,12 @@ assert_rc 2
 [[ "$(cat "$AGENTS_T/measure-a.md")" == "my local edit" ]] || fail "the local agent edit was overwritten"
 assert_out "measure-a.md"
 
-# 5. --adopt replaces it.
+# 5. A file with no stamp (an older copy) is kept too; --adopt replaces it.
+rm "$AGENTS_T/.measure-install"
+run
+assert_rc 2
+[[ "$(cat "$AGENTS_T/measure-a.md")" == "my local edit" ]] || fail "the unstamped agent was overwritten"
+assert_out "unstamped .*measure-a.md"
 run --adopt
 assert_rc 0
 [[ "$(cat "$AGENTS_T/measure-a.md")" == "role a2" ]] || fail "--adopt did not replace the agent"

@@ -182,13 +182,16 @@ for i in "${!targets[@]}"; do
     continue
   fi
 
-  # The source files that match the pattern.
+  # The source files that match the pattern (a bash glob; extglob forms such as
+  # !(tests/*) are allowed, so a bundle can leave its tests out).
   declare -A source_files=()
+  shopt -s extglob
   while IFS= read -r -d '' path; do
     rel="${path#"$src_dir"/}"
     # shellcheck disable=SC2053 # the pattern is a glob on purpose
     [[ "$rel" == $pattern ]] && source_files[$rel]=1
   done < <(find "$src_dir" -type f -print0)
+  shopt -u extglob
 
   # The stamp: the hash of each file at its last install.
   declare -A stamped=()
