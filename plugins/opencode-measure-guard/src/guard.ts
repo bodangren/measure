@@ -19,7 +19,9 @@ import {
   tddDecision,
   trackCloseDecision,
 } from './core/guards'
-import { loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
+import { gitStatus, loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
+import { endTurn, startTurn } from './hooks/turn'
+import type { IdleAction } from './hooks/turn'
 import { writeStateFile } from './state'
 import type { Bypass, SessionState, Sessions } from './state'
 import type { ClosingTrack, Decision, GuardContext, Mode, Snapshot } from './types'
@@ -104,15 +106,37 @@ export class Guard {
     event.system.push({ type: 'text', text: ruleSection() })
   }
 
-  /** Appends the task note to the prompt text when the track or the task changed. */
+  /** Starts the turn, and appends the reminder and the task note to the prompt text. */
   async onPrompt(event: PromptEvent): Promise<void> {
     const snapshot = await this.refresh()
     const session = this.session(event.sessionID)
+    session.turn = snapshot.hasMeasure ? startTurn(snapshot, await gitStatus(this.root)) : null
     const reminder = session.reminder
     session.reminder = null
     const notes = [reminder, await this.pendingNote(event.sessionID, snapshot)].filter((note): note is string => note !== null)
     if (notes.length === 0) return
     event.prompt.text = `${event.prompt.text}\n\n${notes.join('\n\n')}`
+  }
+
+  /**
+   * The end-of-turn check on `session.idle`: the problems go to the state
+   * file; the action says what index.ts sends to the session. A follow-up
+   * counts on the turn; a reminder is kept for the next prompt and ends the turn.
+   */
+  async onIdle(sessionID: string): Promise<IdleAction> {
+    const session = this.session(sessionID)
+    if (session.turn === null) return { kind: 'none', problems: [] }
+    const snapshot = await this.refresh()
+    const guardsOff = (await this.bypass.get(this.root)) !== null
+    const action = endTurn(this.mode, session.turn, snapshot, await gitStatus(this.root), guardsOff)
+    session.problems = action.problems
+    await this.publish(action.problems)
+    if (action.kind === 'follow-up') session.turn = { ...session.turn, blocks: session.turn.blocks + 1 }
+    else {
+      session.turn = null
+      if (action.kind === 'remind') session.reminder = action.text
+    }
+    return action
   }
 
   /** Adds the task note to the compaction request, and sends it again after the compaction. */

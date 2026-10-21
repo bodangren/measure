@@ -97,7 +97,11 @@ describe('end of turn on the guard', () => {
     expect((await guard.onIdle('ses_1')).kind).toBe('follow-up')
     expect((await guard.onIdle('ses_1')).kind).toBe('remind')
     expect((await guard.onIdle('ses_1')).kind).toBe('none')
+    // The next prompt starts from the current status: stray.ts is known, a new file is a new problem.
     await guard.onPrompt(prompt())
+    expect((await guard.onIdle('ses_1')).kind).toBe('none')
+    await guard.onPrompt(prompt())
+    writeFileSync(join(root, 'stray2.ts'), 'x')
     expect((await guard.onIdle('ses_1')).kind).toBe('follow-up')
   })
 
