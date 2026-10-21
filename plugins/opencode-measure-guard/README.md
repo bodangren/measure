@@ -44,6 +44,12 @@ Change the mod first, then copy. The Claude Code mod never imports from this fol
 
 The server writes `~/.local/state/measure/opencode-guard/<16 hex of sha1(root)>.json` with `{ root, mode, guardsOff, problems, updatedAt }` after every end-of-turn check and bypass change. The terminal plugin reads it to show the bypass and the open problems; it never writes it.
 
+## Context
+
+- **Rule.** The fixed text of `ruleSection()` goes into the system prompt through the session `context` hook, as one appended system part, for every agent except `measure-orchestrator`. That agent carries the same text in its prompt body (`agents/measure-orchestrator.md`, section "Measure rule"), so the rule is never doubled. The text never changes in a session, so the prompt cache stays valid.
+- **Task note.** The `prompt` hook appends `taskNote()` (active track, `[~]` task, or the next action) to the user's prompt text when the track or the task changed since the last note of that session. A pending end-of-turn reminder rides on the same prompt.
+- **Compaction.** The `compaction` hook adds the task note to the compaction request and clears the note key, so the first prompt after the compaction gets the note again.
+
 ## Checks
 
 ```bash
