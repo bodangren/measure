@@ -1,0 +1,11 @@
+Task 4.4 live check (OpenCode 2.0.32, service at 127.0.0.1:49374, model coding-plan/glm-5.3-flash).
+Install: rsync of the package to ~/.config/opencode/plugins/opencode-measure-guard/ plus entry/measure-guard.ts as ~/.config/opencode/plugins/measure-guard.ts.
+Log: msg="loading plugin" id=/home/daniebo/.config/opencode/plugins/measure-guard.ts (05:44:00Z); no "failed to load plugin".
+Finding: a package folder with package.json in plugins/ is not loaded; a direct .ts file is. Recorded as decision 9 in spec.md.
+Finding: `opencode run` hung on this machine with and without the plugin (no session created; `opencode debug` fine), so the check went through the HTTP API: POST /api/session {location:{directory}}, POST /api/session/<id>/prompt {text}, GET /api/session/<id>/message.
+Project: temp git repo with a copy of measure/ and no [~] task. Prompt: "Write a file hello.txt with the text hi. ... If a tool call is denied, quote the deny text verbatim and stop."
+Tool call: write {path: hello.txt} -> execute.before threw; hello.txt was not created.
+Deny text (verbatim): measure-guard: no task in the track "OpenCode plugin: measure-guard for OpenCode 2, with agents, commands, a terminal band, and installer targets" is in progress. Mark the next task `[~]` in measure/tracks/opencode_plugin_20261021/plan.md (Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note). Then do the edit again. If this block is wrong, the user can run /measure-off.
+Agent reply: "The tool call was denied. Deny text, verbatim: > measure-guard: no task in the track ..." (session ses_ea304ccf4ffeIAGRrg1oW23d01).
+Also seen live: the prompt hook appended the task note to the user text, and the context hook ran for agent build.
+Checks: bun test 37 pass; parity ok.
