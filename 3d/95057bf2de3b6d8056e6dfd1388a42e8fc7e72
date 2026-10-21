@@ -1,0 +1,1 @@
+Task 5.4: README Guards section gains the TDD guard, the commit guard, where notes go (content vs output), and the known limits (unrecognised test commands, commits by other tools, in-memory Red state).
