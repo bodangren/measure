@@ -1,0 +1,12 @@
+Task 3.2 (Red): tests/context.test.ts (rule text in the orchestrator agent file, rule appended for build and skipped for measure-orchestrator, nothing without measure/, note on the first prompt and on a task change, per-session notes, compaction carries the note), tests/fake.ts makeGuard. Failing output:
+(fail) rule section > the measure-orchestrator agent file carries the rule text [197.84ms]
+(fail) rule section > the context hook appends the rule for other agents and skips the orchestrator [777.97ms]
+(fail) rule section > no rule without measure/ [32.33ms]
+(fail) task note > the first prompt gets the note; the next one does not; a task change sends it again [16.19ms]
+(fail) task note > each session gets its own note [29.57ms]
+(fail) task note > no note without measure/ [49.96ms]
+(fail) task note > a compaction carries the note and the next prompt gets it again [25.45ms]
+(fail) pendingNote > returns the note once per key [14.40ms]
+ 1 pass
+ 8 fail
+Ran 9 tests across 1 file. [4.34s]
