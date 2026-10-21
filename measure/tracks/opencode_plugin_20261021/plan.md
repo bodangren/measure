@@ -36,8 +36,8 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.1: Contract: `src/hooks/tools.ts` (`writtenPath(tool, input)`, `applyEditInput`, `beforeTool`, `afterTool`), deny by throwing `Error(deny)`; the tool names and input fields (`edit`: `filePath`, `oldString`, `newString`; `write`: `filePath`, `content`; `apply_patch`: `patchText`; `multiedit`: `filePath`, `edits`) `93fb41b`
 - [x] Task 4.2: Red: `tests/edit-guard.test.ts` (deny without `[~]`, pass with `[~]`, pass in advise, pass inside `measure/`, setup deny without `measure/`, bypass) and `tests/closeout.test.ts` (track close deny and pass with `[b]` note, phase start deny) `107a583`
 - [x] Task 4.3: Green: implement `beforeTool` for the edit and closeout guards; wire `tool.hook("execute.before")` `ea997e1`
-- [~] Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note
-- [ ] Task 4.5: Docs: README "Guards" section (edit, closeout)
+- [x] Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note `faff85c`
+- [~] Task 4.5: Docs: README "Guards" section (edit, closeout)
 - [b] Task: Measure - User Manual Verification 'Phase S4: Edit guard and closeout guard' (Protocol in workflow.md) deferred:owner
 
 ## Phase S5: TDD guard and commit guard (strict)
