@@ -92,6 +92,24 @@ The difference to the Claude Code mod: the mod blocks the Stop hook and holds th
 
 Live check (Task 6.3): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself.
 
+## Commands
+
+The server plugin adds three commands through `command.transform`:
+
+| Command | Effect |
+| --- | --- |
+| `/measure-off [repo]` | Turns the guards off for this session; with `repo`, for this repository (kept in the plugin storage across restarts). |
+| `/measure-on [repo]` | Turns them on again for the given scope. |
+| `/measure-guard` | Replies with the status lines: the tracks, the active task or the next action, the `[b]` count, and the guard state. |
+
+A reply is a synthetic message with `resume: false`. OpenCode delivers it with the next user prompt, so the agent reads it at its next turn; the terminal band shows the bypass state at once through the state file. The command list of the service (`GET /api/command`) shows the three names.
+
+The folder `commands/` holds the eight Measure workflow commands as markdown files for `~/.config/opencode/commands/`: `measure-setup`, `measure-new-track`, `measure-implement`, `measure-review`, `measure-status`, `measure-revert`, `measure-doctor` (each loads the `measure` skill and runs the named workflow from its `references/` folder with `$ARGUMENTS`), and `measure-orchestrate` (agent `measure-orchestrator`, loads the `measure-orchestrator` skill). The descriptions are quoted strings, because they hold a colon.
+
+## Tool
+
+`measure_status` (added through `tool.transform`, no parameters) returns the status lines and the task note as text, so an agent can ask for the plan position instead of reading `tracks.md` and `plan.md`. Live check: the model called it through OpenCode's code mode (`tools.measure_status()`) and quoted the tracks, the active track, and the next task.
+
 ## Checks
 
 ```bash
