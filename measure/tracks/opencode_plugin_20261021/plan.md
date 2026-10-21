@@ -77,7 +77,7 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.5: Docs: README "Terminal" section `cb248a2`
 - [b] Task: Measure - User Manual Verification 'Phase S8: Terminal band and status pane' (Protocol in workflow.md) deferred:owner
 
-## Phase S9: Installer targets and documents
+## Phase S9: Installer targets and documents [checkpoint: 09a38e1]
 _Story ref: spec.md#story-s9_
 
 - [x] Task 9.1: Contract: the three new rows of `bin/install-targets.tsv` and the exclusion of `tests/` and `node_modules/` from the plugin bundle `5786f5c`
