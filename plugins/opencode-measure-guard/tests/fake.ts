@@ -4,7 +4,10 @@ import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { Guard } from '../src/guard'
+import { Bypass, Sessions } from '../src/state'
 import type { Storage } from '../src/state'
+import type { Mode } from '../src/types'
 
 export const REPO = join(import.meta.dir, '..', '..', '..')
 export const TRACK = 'opencode_plugin_20261021'
@@ -38,6 +41,10 @@ export const withMeasure = async (root: string, options: MeasureOptions = {}): P
   }
   return root
 }
+
+/** A Guard over a project root with a fresh storage, sessions, and a temp state folder. */
+export const makeGuard = (root: string, mode: Mode = 'guard'): Guard =>
+  new Guard(root, mode, new Sessions(), new Bypass(fakeStorage()), mkdtempSync(join(tmpdir(), 'measure-guard-state-')))
 
 /** The plugin storage as a map. */
 export const fakeStorage = (): Storage & { map: Map<string, unknown> } => {
