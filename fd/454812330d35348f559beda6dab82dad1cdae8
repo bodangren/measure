@@ -1,0 +1,1 @@
+Task 2.3 (Green): src/snapshot.ts (Node fs + git execFile; same selection rules as the mod), src/state.ts (Sessions, Bypass over the plugin storage, state file under ~/.local/state/measure/opencode-guard), src/options.ts (modeFrom). bun test: 15 pass.
