@@ -8,7 +8,7 @@ Track: `measure/tracks/opencode_plugin_20261021/` (spec and plan). The decision 
 
 ```
 plugins/opencode-measure-guard/
-├── package.json          # exports "." (server) and "./tui" (terminal); dev-only type deps
+├── package.json          # name, scripts, dev-only type deps (the host does not read its exports)
 ├── tsconfig.json
 ├── src/
 │   ├── index.ts          # server plugin: Plugin.define({ id: "measure.guard" })
@@ -17,7 +17,8 @@ plugins/opencode-measure-guard/
 │   └── core/
 │       ├── parse.ts      # copy of mods/measure-guard/hooks/parse.ts
 │       └── guards.ts     # copy of mods/measure-guard/hooks/guards.ts
-├── entry/measure-guard.ts # the file the installer puts into ~/.config/opencode/plugins/ (see Install)
+├── index.ts              # server entry (re-exports src/index.ts); the host resolves <folder>/index
+├── tui.ts                # terminal entry (re-exports src/tui.tsx); the host resolves <folder>/tui
 ├── commands/             # markdown commands installed into ~/.config/opencode/commands
 ├── scripts/check-parity.sh
 └── tests/                # bun test
@@ -25,15 +26,13 @@ plugins/opencode-measure-guard/
 
 ## Install
 
-OpenCode 2.0.32 loads the direct `.ts` files of `~/.config/opencode/plugins/`. A package folder with a `package.json` in that folder is not loaded. The install therefore has two parts:
+The plugin host of OpenCode 2.0.32 loads a folder under `~/.config/opencode/plugins/` through the files `<folder>/server` or `<folder>/index` (the server plugin) and `<folder>/tui` (the terminal plugin). It does not read `package.json` exports for a local folder, so the package keeps `index.ts` and `tui.ts` at its root. The install is one copy:
 
 ```
-~/.config/opencode/plugins/
-├── measure-guard.ts          # copy of entry/measure-guard.ts; re-exports ./opencode-measure-guard/src/index.ts
-└── opencode-measure-guard/   # copy of this folder without tests/ and node_modules/
+~/.config/opencode/plugins/opencode-measure-guard/   # this folder without tests/ and node_modules/
 ```
 
-The service log (`~/.local/share/opencode/log/opencode.log`) shows `loading plugin id=.../plugins/measure-guard.ts` after the copy; the service watches the file and reloads it on change. OpenCode provides `@opencode/plugin` at runtime, so the copy needs no `bun install`.
+The service log (`~/.local/share/opencode/log/opencode.log`) shows `loading plugin id=.../plugins/opencode-measure-guard entrypoint=.../opencode-measure-guard/index` after the copy; the service watches the files and reloads them on change. OpenCode provides `@opencode/plugin` at runtime, so the copy needs no `bun install`.
 
 ## Parity rule
 
