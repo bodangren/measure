@@ -74,13 +74,13 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.2: Red: `tests/tui-model.test.ts` (band line, yellow on parse error, problems line, setup text without `measure/`, refresh decision) `a36a432`
 - [x] Task 8.3: Green: implement `model.ts` and `tui.tsx` `31ec969`
 - [x] Task 8.4: Load check: with the package installed, start the terminal through the running service under a pseudo-terminal for 20 s; the log shows `loading plugin` for the tui entry and no `failed to load plugin`; record the result in the git note `9d3a454`
-- [~] Task 8.5: Docs: README "Terminal" section
+- [x] Task 8.5: Docs: README "Terminal" section `cb248a2`
 - [b] Task: Measure - User Manual Verification 'Phase S8: Terminal band and status pane' (Protocol in workflow.md) deferred:owner
 
 ## Phase S9: Installer targets and documents
 _Story ref: spec.md#story-s9_
 
-- [ ] Task 9.1: Contract: the three new rows of `bin/install-targets.tsv` and the exclusion of `tests/` and `node_modules/` from the plugin bundle
+- [~] Task 9.1: Contract: the three new rows of `bin/install-targets.tsv` and the exclusion of `tests/` and `node_modules/` from the plugin bundle
 - [ ] Task 9.2: Red: installer test `measure/archive/skill_distribution_repair_20261005/scripts/`-style script for the new rows (temp HOME, temp repo), kept at `plugins/opencode-measure-guard/tests/install.sh`
 - [ ] Task 9.3: Green: the rows, the installer change if the bundle needs an exclusion, `bin/install-measure-skill --check` lists the targets
 - [ ] Task 9.4: Docs: `README.md` (repo) section "OpenCode plugin", `measure/tech-stack.md` Distribution Formats row, `CHANGELOG.md`, `measure/lessons-learned.md` and `measure/tech-debt.md` entries from the retrospective
