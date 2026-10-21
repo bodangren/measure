@@ -1,0 +1,5 @@
+Phase S8 verification report.
+Tasks: 8.1 198ab9c (contract), 8.2 a36a432 (Red: 11 tests), 8.3 31ec969 (Green), 8.4 9d3a454 (load check), 8.5 (README). Fix commit during the phase: fbb76b0 (root entry files; the host resolves <folder>/index and <folder>/tui).
+Checks: bun test 84 pass (11 files); tsc ok (the .tsx compiles against @opentui/solid); parity ok.
+Live: the terminal loaded 13 plugins without a failed-to-load line and rendered the dim band 'Measure · OpenCode plugin: measure-guard for OpenCode 2, ...' above the prompt, plus the sidebar Measure block (screen capture in the scratchpad).
+Not verified: the /measure-guard select dialog and the warn colour (need key input and a parse error in a live project); both have unit coverage of the model.
