@@ -72,8 +72,8 @@ _Story ref: spec.md#story-s8_
 
 - [x] Task 8.1: Contract: `src/tui/model.ts` (pure: `bandModel(snapshot, state)` → lines and colors, `sidebarLines`, refresh rule by mtime) and `src/tui.tsx` (slots `prompt.footer.status`, `sidebar.content`, keymap command `/measure-guard`, refresh on events and timer) `198ab9c`
 - [x] Task 8.2: Red: `tests/tui-model.test.ts` (band line, yellow on parse error, problems line, setup text without `measure/`, refresh decision) `a36a432`
-- [~] Task 8.3: Green: implement `model.ts` and `tui.tsx`
-- [ ] Task 8.4: Load check: with the package installed, start the terminal through the running service under a pseudo-terminal for 20 s; the log shows `loading plugin` for the tui entry and no `failed to load plugin`; record the result in the git note
+- [x] Task 8.3: Green: implement `model.ts` and `tui.tsx` `31ec969`
+- [~] Task 8.4: Load check: with the package installed, start the terminal through the running service under a pseudo-terminal for 20 s; the log shows `loading plugin` for the tui entry and no `failed to load plugin`; record the result in the git note
 - [ ] Task 8.5: Docs: README "Terminal" section
 - [b] Task: Measure - User Manual Verification 'Phase S8: Terminal band and status pane' (Protocol in workflow.md) deferred:owner
 
