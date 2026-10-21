@@ -16,8 +16,8 @@ _Story ref: spec.md#story-s1_
 _Story ref: spec.md#story-s2_
 
 - [x] Task 2.1: Contract: `src/snapshot.ts` (`loadSnapshot(root)`, `planPathOf`, `gitStatus(root)`), `src/state.ts` (session records, bypass store, state file path and writer), `src/options.ts` (`modeFrom(options, env)`) `73760f5`
-- [~] Task 2.2: Red: `tests/snapshot.test.ts` (temp project from the real fixtures; no `measure/`; parse error) and `tests/state.test.ts` (session record, bypass, state file round trip)
-- [ ] Task 2.3: Green: implement snapshot, state, and options
+- [x] Task 2.2: Red: `tests/snapshot.test.ts` (temp project from the real fixtures; no `measure/`; parse error) and `tests/state.test.ts` (session record, bypass, state file round trip) `054aa2d`
+- [~] Task 2.3: Green: implement snapshot, state, and options
 - [ ] Task 2.4: Docs: README sections "Snapshot" and "State file"
 - [b] Task: Measure - User Manual Verification 'Phase S2: Project snapshot and plugin state' (Protocol in workflow.md) deferred:owner
 
