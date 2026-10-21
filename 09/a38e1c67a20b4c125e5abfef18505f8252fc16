@@ -1,0 +1,4 @@
+Phase S9 verification report.
+Tasks: 9.1 5786f5c (rows), 9.2 bf72b5e (Red: tests/install.sh), 9.3 9efaae4 (extglob in the installer; test PASS; archived installer tests 9 passed; --check on this machine lists the new targets), 9.4 (docs).
+Checks: bash plugins/opencode-measure-guard/tests/install.sh PASS; archived installer suite 9 passed; ./bin/install-measure-skill --check exit 1 with the expected unstamped and missing entries.
+Not done on this machine: the install itself (the owner's local agent edits would be kept with warnings; --adopt is the owner's call).
