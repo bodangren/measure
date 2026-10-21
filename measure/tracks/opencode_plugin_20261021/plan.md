@@ -12,7 +12,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands) `1dd67d2`
 - [b] Task: Measure - User Manual Verification 'Phase S1: Package skeleton and shared core' (Protocol in workflow.md) deferred:owner
 
-## Phase S2: Project snapshot and plugin state
+## Phase S2: Project snapshot and plugin state [checkpoint: 1f6a55e]
 _Story ref: spec.md#story-s2_
 
 - [x] Task 2.1: Contract: `src/snapshot.ts` (`loadSnapshot(root)`, `planPathOf`, `gitStatus(root)`), `src/state.ts` (session records, bypass store, state file path and writer), `src/options.ts` (`modeFrom(options, env)`) `73760f5`
