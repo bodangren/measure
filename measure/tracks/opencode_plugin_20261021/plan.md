@@ -53,8 +53,8 @@ _Story ref: spec.md#story-s5_
 _Story ref: spec.md#story-s6_
 
 - [x] Task 6.1: Contract: `src/hooks/turn.ts` (`startTurn(sessionID, snapshot)`, `endTurn(sessionID)` → `{ problems, action }`, follow-up and reminder texts), event loop over `ctx.event.subscribe()` for `session.idle` `2ec89ff`
-- [~] Task 6.2: Red: `tests/end-of-turn.test.ts` (advise: no action; guard: synthetic reminder; strict: follow-up twice then reminder; bypass: nothing; state file written)
-- [ ] Task 6.3: Green: implement `turn.ts`, the event loop in `src/index.ts`, the synthetic message and the follow-up prompt through `ctx.session`
+- [x] Task 6.2: Red: `tests/end-of-turn.test.ts` (advise: no action; guard: synthetic reminder; strict: follow-up twice then reminder; bypass: nothing; state file written) `77fe1fe`
+- [~] Task 6.3: Green: implement `turn.ts`, the event loop in `src/index.ts`, the synthetic message and the follow-up prompt through `ctx.session`
 - [ ] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod
 - [b] Task: Measure - User Manual Verification 'Phase S6: End-of-turn check' (Protocol in workflow.md) deferred:owner
 
