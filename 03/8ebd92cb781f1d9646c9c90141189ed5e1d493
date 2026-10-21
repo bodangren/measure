@@ -1,0 +1,5 @@
+Phase S5 verification report.
+Tasks: 5.1 41fefd8 (contract), 5.2 b746c22 (Red: 17 tests, 13 failing), 5.3 4d59eb5 (Green), 5.4 (README).
+Checks: bun test 54 pass (8 files); bun x tsc --noEmit ok; parity ok.
+Live: the shell tool result shape was probed live (metadata {status, truncated, exit}, text in content); the strict guards themselves were verified by the unit tests only (the story has no live criterion). The commit tests run real git in a temp repository.
+Deviations: notes go into result.content (and output when a string) instead of output only, because the shell tool leaves output empty.
