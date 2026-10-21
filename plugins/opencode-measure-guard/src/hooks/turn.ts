@@ -35,9 +35,15 @@ export const endTurn = (mode: Mode, turn: TurnState | null, snapshot: Snapshot, 
   return { kind: 'none', problems }
 }
 
+/** The first line of a follow-up prompt; the prompt hook keeps the turn open when it sees it. */
+export const FOLLOW_UP_HEAD = 'measure-guard (strict): do not end the turn yet.'
+
+/** True for a prompt the plugin sent itself as a follow-up (strict mode). */
+export const isFollowUp = (text: string): boolean => text.startsWith(FOLLOW_UP_HEAD)
+
 /** The follow-up prompt text (strict mode): the problems and the instruction to fix them now. */
 export const followUpText = (problems: readonly string[]): string =>
-  ['measure-guard (strict): do not end the turn yet. Fix these problems first:', ...problems.map(one => `- ${one}`)].join('\n')
+  [`${FOLLOW_UP_HEAD} Fix these problems first:`, ...problems.map(one => `- ${one}`)].join('\n')
 
 /** The reminder text for the synthetic message and the next prompt (guard mode, or strict after the follow-ups). */
 export const reminderText = (problems: readonly string[]): string =>

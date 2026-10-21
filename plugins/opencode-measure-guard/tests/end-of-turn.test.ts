@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { MAX_BLOCKS } from '../src/core/guards'
-import { endTurn, followUpText, reminderText, startTurn } from '../src/hooks/turn'
+import { endTurn, followUpText, isFollowUp, reminderText, startTurn } from '../src/hooks/turn'
 import type { PromptEvent } from '../src/hooks/types'
 import { readStateFile } from '../src/state'
 import { TRACK, makeGuard, tempProject, withMeasure } from './fake'
@@ -103,6 +103,21 @@ describe('end of turn on the guard', () => {
     await guard.onPrompt(prompt())
     writeFileSync(join(root, 'stray2.ts'), 'x')
     expect((await guard.onIdle('ses_1')).kind).toBe('follow-up')
+  })
+
+  test('strict: the follow-up prompt itself keeps the turn, so the count and the problems stay', async () => {
+    const root = await project('none')
+    const guard = makeGuard(root, 'strict')
+    const first = await turnWithChange(guard, root)
+    expect(first.kind).toBe('follow-up')
+    expect(isFollowUp(first.kind === 'follow-up' ? first.text : '')).toBe(true)
+    // OpenCode runs the prompt hook for the follow-up prompt too.
+    await guard.onPrompt(prompt('ses_1', first.kind === 'follow-up' ? first.text : ''))
+    expect((await guard.onIdle('ses_1')).kind).toBe('follow-up')
+    await guard.onPrompt(prompt('ses_1', followUpText(['p'])))
+    const third = await guard.onIdle('ses_1')
+    expect(third.kind).toBe('remind')
+    expect(third.problems[0]).toContain('stray.ts')
   })
 
   test('an idle without a prompt, the bypass, or a session of another project does nothing', async () => {

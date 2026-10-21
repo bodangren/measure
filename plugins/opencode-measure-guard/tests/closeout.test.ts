@@ -59,10 +59,15 @@ describe('phase start', () => {
   test('a task of the next phase cannot start while the previous phase has no checkpoint', async () => {
     const root = await withMeasure(await tempProject())
     const planPath = join(root, 'measure/tracks', TRACK, 'plan.md')
-    const plan = readFileSync(planPath, 'utf8').replace(/ \[checkpoint: [0-9a-f]+\]/g, '')
+    // No checkpoints and no task started: starting Task 2.1 needs the Phase S1 checkpoint.
+    const plan = readFileSync(planPath, 'utf8')
+      .replace(/ \[checkpoint: [0-9a-f]+\]/g, '')
+      .split('\n')
+      .map(l => (/^- \[[x~]\] Task \d/.test(l) ? `- [ ] ${l.slice(6).replace(/ `[0-9a-f]{7}`$/, '')}` : l))
+      .join('\n')
     writeFileSync(planPath, plan)
     const guard = makeGuard(root)
-    const line = plan.split('\n').find(l => l.startsWith('- [ ] Task 9.1:'))
+    const line = plan.split('\n').find(l => l.startsWith('- [ ] Task 2.1:'))
     expect(line).toBeDefined()
     await expect(guard.onToolBefore(before(planPath, line as string, (line as string).replace('[ ]', '[~]')))).rejects.toThrow(/checkpoint/)
   })

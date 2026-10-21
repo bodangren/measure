@@ -1,14 +1,16 @@
 // S1: the shared core parses this repository's Measure files and decides like the mod.
 import { describe, expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
+import { fixturePlan, fixtureTracks } from './fake'
 import { join } from 'node:path'
 import { bandLine, parsePlan, parseTracks, position, selectActive, statusLines, taskNote } from '../src/core/parse'
 import { editDecision } from '../src/core/guards'
 import type { GuardContext, Plan, Snapshot } from '../src/types'
 
 const REPO = join(import.meta.dir, '..', '..', '..')
-const TRACKS = readFileSync(join(REPO, 'measure/tracks.md'), 'utf8')
-const PLAN = readFileSync(join(REPO, 'measure/tracks/opencode_plugin_20261021/plan.md'), 'utf8')
+// The fixtures: the real files with this track in progress and one [~] task, whatever the repository state.
+const TRACKS = fixtureTracks()
+const PLAN = fixturePlan()
 
 const snapshotOf = (plan: Plan): Snapshot => {
   const tracks = parseTracks(TRACKS)

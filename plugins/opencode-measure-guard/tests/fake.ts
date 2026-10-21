@@ -28,16 +28,36 @@ export type MeasureOptions = {
   dropPlan?: boolean
 }
 
-/** Copies measure/index.md, tracks.md, and the active track's plan into the project. */
+/** The real tracks.md with this plugin's track in progress, whatever its state in the repository. */
+export const fixtureTracks = (): string => {
+  const text = readFileSync(join(REPO, 'measure/tracks.md'), 'utf8')
+  const lines = text.split('\n')
+  const at = lines.findIndex((line, index) => line.startsWith('- [') && (lines[index + 1] ?? '').includes(`/${TRACK}/`))
+  if (at >= 0) lines[at] = `- [~] ${lines[at]?.slice(6) ?? ''}`
+  return lines.join('\n')
+}
+
+/** The real plan with exactly one [~] task (the first top-level task), whatever its state in the repository. */
+export const fixturePlan = (): string => {
+  const lines = readFileSync(join(REPO, 'measure/tracks', TRACK, 'plan.md'), 'utf8').split('\n')
+  let marked = false
+  return lines
+    .map(line => {
+      if (!line.startsWith('- [') || !/^- \[[ x~]\] Task \d/.test(line)) return line
+      if (marked) return line.startsWith('- [~]') ? `- [ ] ${line.slice(6)}` : line
+      marked = true
+      return `- [~] ${line.slice(6).replace(/ `[0-9a-f]{7}`$/, '')}`
+    })
+    .join('\n')
+}
+
+/** Copies measure/index.md, tracks.md, and the active track's plan into the project (fixtures with one [~] task). */
 export const withMeasure = async (root: string, options: MeasureOptions = {}): Promise<string> => {
   mkdirSync(join(root, 'measure', 'tracks', TRACK), { recursive: true })
   copyFileSync(join(REPO, 'measure/index.md'), join(root, 'measure/index.md'))
-  writeFileSync(join(root, 'measure/tracks.md'), options.tracks ?? readFileSync(join(REPO, 'measure/tracks.md'), 'utf8'))
+  writeFileSync(join(root, 'measure/tracks.md'), options.tracks ?? fixtureTracks())
   if (!options.dropPlan) {
-    writeFileSync(
-      join(root, 'measure/tracks', TRACK, 'plan.md'),
-      options.plan ?? readFileSync(join(REPO, 'measure/tracks', TRACK, 'plan.md'), 'utf8'),
-    )
+    writeFileSync(join(root, 'measure/tracks', TRACK, 'plan.md'), options.plan ?? fixturePlan())
   }
   return root
 }

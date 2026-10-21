@@ -20,7 +20,7 @@ import {
   trackCloseDecision,
 } from './core/guards'
 import { gitStatus, loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
-import { endTurn, startTurn } from './hooks/turn'
+import { endTurn, isFollowUp, startTurn } from './hooks/turn'
 import type { IdleAction } from './hooks/turn'
 import { writeStateFile } from './state'
 import type { Bypass, SessionState, Sessions } from './state'
@@ -106,8 +106,13 @@ export class Guard {
     event.system.push({ type: 'text', text: ruleSection() })
   }
 
-  /** Starts the turn, and appends the reminder and the task note to the prompt text. */
+  /**
+   * Starts the turn, and appends the reminder and the task note to the prompt
+   * text. The plugin's own follow-up prompt (strict mode) keeps the running
+   * turn and its count, so the next idle sees the same problems.
+   */
   async onPrompt(event: PromptEvent): Promise<void> {
+    if (isFollowUp(event.prompt.text)) return
     const snapshot = await this.refresh()
     const session = this.session(event.sessionID)
     session.turn = snapshot.hasMeasure ? startTurn(snapshot, await gitStatus(this.root)) : null
