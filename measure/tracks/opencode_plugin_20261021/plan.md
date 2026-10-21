@@ -27,13 +27,13 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.1: Contract: `src/hooks/context.ts` (`contextHook`, `promptHook`, `compactionHook`, `afterToolNote`) with a fake context type `tests/fake.ts`; the "Measure rule" section text in `agents/measure-orchestrator.md` `db1bd1b`
 - [x] Task 3.2: Red: `tests/context.test.ts` (rule appended for `build`, skipped for `measure-orchestrator`, nothing without `measure/`; note on changed task; note after compaction) `5017d25`
 - [x] Task 3.3: Green: implement the hooks and wire them in `src/index.ts`; add the rule section to `agents/measure-orchestrator.md` `999f073`
-- [~] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change
+- [x] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change `25302c8`
 - [b] Task: Measure - User Manual Verification 'Phase S3: Rule and task note' (Protocol in workflow.md) deferred:owner
 
 ## Phase S4: Edit guard and closeout guard
 _Story ref: spec.md#story-s4_
 
-- [ ] Task 4.1: Contract: `src/hooks/tools.ts` (`writtenPath(tool, input)`, `applyEditInput`, `beforeTool`, `afterTool`), deny by throwing `Error(deny)`; the tool names and input fields (`edit`: `filePath`, `oldString`, `newString`; `write`: `filePath`, `content`; `apply_patch`: `patchText`; `multiedit`: `filePath`, `edits`)
+- [~] Task 4.1: Contract: `src/hooks/tools.ts` (`writtenPath(tool, input)`, `applyEditInput`, `beforeTool`, `afterTool`), deny by throwing `Error(deny)`; the tool names and input fields (`edit`: `filePath`, `oldString`, `newString`; `write`: `filePath`, `content`; `apply_patch`: `patchText`; `multiedit`: `filePath`, `edits`)
 - [ ] Task 4.2: Red: `tests/edit-guard.test.ts` (deny without `[~]`, pass with `[~]`, pass in advise, pass inside `measure/`, setup deny without `measure/`, bypass) and `tests/closeout.test.ts` (track close deny and pass with `[b]` note, phase start deny)
 - [ ] Task 4.3: Green: implement `beforeTool` for the edit and closeout guards; wire `tool.hook("execute.before")`
 - [ ] Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note
