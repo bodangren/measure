@@ -9,13 +9,13 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.2: Contract: `package.json`, `tsconfig.json`, `.gitignore` (node_modules), `src/core/types.ts` (copy without the `declare module` block), `scripts/check-parity.sh` `0d5f935`
 - [x] Task 1.3: Red: `tests/core.test.ts` imports `parse.ts` and `guards.ts` from `src/core/` and parses this repo's `measure/` files (fails: files missing) `2cb19df`
 - [x] Task 1.4: Green: copy `parse.ts` and `guards.ts` into `src/core/`; `check-parity.sh` exits 0; `bun test` passes `a3b0ed5`
-- [~] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands)
+- [x] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands) `1dd67d2`
 - [b] Task: Measure - User Manual Verification 'Phase S1: Package skeleton and shared core' (Protocol in workflow.md) deferred:owner
 
 ## Phase S2: Project snapshot and plugin state
 _Story ref: spec.md#story-s2_
 
-- [ ] Task 2.1: Contract: `src/snapshot.ts` (`loadSnapshot(root)`, `planPathOf`, `gitStatus(root)`), `src/state.ts` (session records, bypass store, state file path and writer), `src/options.ts` (`modeFrom(options, env)`)
+- [~] Task 2.1: Contract: `src/snapshot.ts` (`loadSnapshot(root)`, `planPathOf`, `gitStatus(root)`), `src/state.ts` (session records, bypass store, state file path and writer), `src/options.ts` (`modeFrom(options, env)`)
 - [ ] Task 2.2: Red: `tests/snapshot.test.ts` (temp project from the real fixtures; no `measure/`; parse error) and `tests/state.test.ts` (session record, bypass, state file round trip)
 - [ ] Task 2.3: Green: implement snapshot, state, and options
 - [ ] Task 2.4: Docs: README sections "Snapshot" and "State file"
