@@ -61,8 +61,8 @@ _Story ref: spec.md#story-s6_
 ## Phase S7: Commands and the status tool
 _Story ref: spec.md#story-s7_
 
-- [~] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/`
-- [ ] Task 7.2: Red: `tests/commands.test.ts` (off/on session and repo, status reply, tool output) and a test that every markdown command has a description and names its workflow
+- [x] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/` `90955b3`
+- [~] Task 7.2: Red: `tests/commands.test.ts` (off/on session and repo, status reply, tool output) and a test that every markdown command has a description and names its workflow
 - [ ] Task 7.3: Green: implement the commands and the tool; write the markdown commands; wire `command.transform` and `tool.transform`
 - [ ] Task 7.4: Docs: README "Commands" and "Tool" sections
 - [b] Task: Measure - User Manual Verification 'Phase S7: Commands and the status tool' (Protocol in workflow.md) deferred:owner
