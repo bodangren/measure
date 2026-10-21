@@ -3,11 +3,11 @@
   "type": "feature",
   "status": "completed",
   "created_at": "2026-10-21T04:48:00Z",
-  "updated_at": "2026-10-21T06:38:45Z",
+  "updated_at": "2026-10-21T06:53:35Z",
   "description": "OpenCode plugin: measure-guard for OpenCode 2 (server and terminal parts), Measure agents, commands, installer targets, and documents",
   "estimated_tasks": 48,
-  "actual_tasks": 39,
-  "deviation_notes": "39 of the 48 plan tasks are done; the 9 'User Manual Verification' tasks stay [b] deferred:owner. Deviations: the live checks used the service HTTP API because `opencode run` hung on this machine (decision 9); the install layout changed twice (plugins-folder entry file, then root index.ts and tui.ts, after reading the host's resolver); the end-of-turn check triggers on session.execution.* events because session.idle never reached the plugin (decision 10); guard-mode reminders and command replies are synthetic messages with resume: false, delivered with the next prompt; notes go into result.content because the shell tool leaves output empty; `multiedit` does not exist in 2.0.32 but stays in the tool list. Four fix commits outside the task list (test type, turn-end events, root entries, closeout test type).",
+  "actual_tasks": 48,
+  "deviation_notes": "All 48 plan tasks are done; the 9 'User Manual Verification' tasks were verified by the agent under the goal directive (live runs recorded in their git notes), the owner can re-run the steps. Deviations: the live checks used the service HTTP API because `opencode run` hung on this machine (decision 9); the install layout changed twice (plugins-folder entry file, then root index.ts and tui.ts, after reading the host's resolver); the end-of-turn check triggers on session.execution.* events because session.idle never reached the plugin (decision 10); guard-mode reminders and command replies are synthetic messages with resume: false, delivered with the next prompt; notes go into result.content because the shell tool leaves output empty; `multiedit` does not exist in 2.0.32 but stays in the tool list. Four fix commits outside the task list (test type, turn-end events, root entries, closeout test type). After the track close: the strict follow-up prompt restarted the turn (fixed, ee9f3c3), the band lines wrapped (fixed, truncate), and the strict and dialog paths were verified live.",
   "sprint": {
     "goal": "An OpenCode user gets the same Measure guard rails as a Claude Code user: the plan state is visible, work outside the active plan is stopped, the Measure commands and roles are one keystroke away, and the installer keeps every copy current.",
     "stories": [
