@@ -1,0 +1,5 @@
+Phase S7 verification report.
+Tasks: 7.1 90955b3 (contract + eight markdown commands), 7.2 59331f9 (Red: 9 tests), 7.3 (Green), 7.4 (README).
+Checks: bun test 73 pass (10 files); tsc ok; parity ok.
+Live: the service lists the three commands; the command route ran them and the state file followed; the replies arrive as synthetic messages with the next prompt; measure_status works through code mode.
+Finding: a synthetic message with resume: false is queued until the next prompt, so a command reply is not visible at once in the transcript; the terminal band (S8) shows the bypass state from the state file.
