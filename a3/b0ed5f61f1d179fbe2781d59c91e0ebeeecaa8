@@ -1,0 +1,9 @@
+Task 1.4 (Green): src/core/parse.ts and src/core/guards.ts are byte copies of mods/measure-guard/hooks/*.ts; check-parity.sh exits 0; bun test passes:
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/core.test.ts:49:18)
+(fail) parse > the band and the note name the active track and task [27.67ms]
+
+ 3 pass
+ 1 fail
+ 10 expect() calls
+Ran 4 tests across 1 file. [203.00ms]
