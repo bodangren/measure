@@ -1,0 +1,6 @@
+Phase S6 verification report.
+Tasks: 6.1 2ec89ff (contract), 6.2 77fe1fe (Red: 10 tests), 6.3 904c18d (Green) + fix commit (turn-end events, resume false), 6.4 (README).
+Checks: bun test 64 pass (9 files); tsc ok; parity ok.
+Live (guard mode, temp project without a [~] task): a file created during the turn gave the state file problem 'Files changed outside measure/ while no task is in progress: stray.txt ...' and a synthetic reminder message that OpenCode delivered with the next prompt (sessions ses_ea2eab079ffeJXMq06t5CGAYZ3 and the next prompt in it).
+Findings: session.idle is not delivered to plugin subscriptions in 2.0.32; the execution-end events are. A resuming synthetic message makes the agent act on the reminder (it removed the file); resume: false fixes that.
+Not verified live: strict mode follow-up prompts (unit tests only; the mechanism ctx.session.prompt is the same call the HTTP check uses).
