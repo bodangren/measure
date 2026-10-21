@@ -1,0 +1,1 @@
+Task 2.1: Contract. src/snapshot.ts (planPathOf, isGitRepo, gitStatus, loadSnapshot), src/state.ts (SessionState, Sessions, Bypass over a Storage subset, offKey, StateFile, stateFilePath, writeStateFile, readStateFile), src/options.ts (modeFrom). Bodies throw 'not implemented' until Task 2.3.
