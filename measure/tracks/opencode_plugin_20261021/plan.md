@@ -46,13 +46,13 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output) `41fefd8`
 - [x] Task 5.2: Red: `tests/tdd.test.ts` and `tests/commit.test.ts` `b746c22`
 - [x] Task 5.3: Green: implement the strict guards in `src/hooks/tools.ts` `4d59eb5`
-- [~] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits
+- [x] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits `3d95057`
 - [b] Task: Measure - User Manual Verification 'Phase S5: TDD guard and commit guard (strict)' (Protocol in workflow.md) deferred:owner
 
 ## Phase S6: End-of-turn check
 _Story ref: spec.md#story-s6_
 
-- [ ] Task 6.1: Contract: `src/hooks/turn.ts` (`startTurn(sessionID, snapshot)`, `endTurn(sessionID)` → `{ problems, action }`, follow-up and reminder texts), event loop over `ctx.event.subscribe()` for `session.idle`
+- [~] Task 6.1: Contract: `src/hooks/turn.ts` (`startTurn(sessionID, snapshot)`, `endTurn(sessionID)` → `{ problems, action }`, follow-up and reminder texts), event loop over `ctx.event.subscribe()` for `session.idle`
 - [ ] Task 6.2: Red: `tests/end-of-turn.test.ts` (advise: no action; guard: synthetic reminder; strict: follow-up twice then reminder; bypass: nothing; state file written)
 - [ ] Task 6.3: Green: implement `turn.ts`, the event loop in `src/index.ts`, the synthetic message and the follow-up prompt through `ctx.session`
 - [ ] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod
