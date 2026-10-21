@@ -30,7 +30,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change `25302c8`
 - [b] Task: Measure - User Manual Verification 'Phase S3: Rule and task note' (Protocol in workflow.md) deferred:owner
 
-## Phase S4: Edit guard and closeout guard
+## Phase S4: Edit guard and closeout guard [checkpoint: 4cb7746]
 _Story ref: spec.md#story-s4_
 
 - [x] Task 4.1: Contract: `src/hooks/tools.ts` (`writtenPath(tool, input)`, `applyEditInput`, `beforeTool`, `afterTool`), deny by throwing `Error(deny)`; the tool names and input fields (`edit`: `filePath`, `oldString`, `newString`; `write`: `filePath`, `content`; `apply_patch`: `patchText`; `multiedit`: `filePath`, `edits`) `93fb41b`
