@@ -1,0 +1,17 @@
+Task 4.2 (Red): tests/edit-guard.test.ts (writtenPaths, input mapping, pass with [~], deny without, measure/, advise, bypass, setup deny once per session, apply_patch) and tests/closeout.test.ts (track close deny and pass with the [b] note, phase start deny, task note after a plan edit, no note on a failed call). Failing output:
+(fail) writtenPaths > edit, write, and multiedit name filePath; relative paths resolve against the root [0.40ms]
+(fail) writtenPaths > apply_patch names every file of the patch [0.13ms]
+(fail) fileEditOf, applyMultiEdit, commandOf > maps the OpenCode inputs to the core edits [0.21ms]
+(fail) edit guard > an edit outside measure/ with a [~] task passes [13.08ms]
+(fail) edit guard > an edit outside measure/ with no [~] task is denied with the next action [5.78ms]
+(fail) edit guard > edits inside measure/, in advise mode, and with the bypass pass [8.37ms]
+(fail) edit guard > a repository without measure/ gets the setup deny once per session [4.93ms]
+(fail) edit guard > an apply_patch that touches a file outside measure/ is guarded too [6.06ms]
+(fail) track close > a track with open tasks cannot change to [x] [5.47ms]
+(fail) track close > a track with only closed and owner-deferred tasks closes, and the [b] list rides on the output [6.96ms]
+(fail) phase start > a task of the next phase cannot start while the previous phase has no checkpoint [7.28ms]
+(fail) notes after a call > a plan edit that changes the task sends the task note on the output [24.43ms]
+(fail) notes after a call > a failed call gets no note [5.21ms]
+ 0 pass
+ 13 fail
+Ran 13 tests across 2 files. [145.00ms]
