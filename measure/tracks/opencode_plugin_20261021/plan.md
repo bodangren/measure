@@ -25,8 +25,8 @@ _Story ref: spec.md#story-s2_
 _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Contract: `src/hooks/context.ts` (`contextHook`, `promptHook`, `compactionHook`, `afterToolNote`) with a fake context type `tests/fake.ts`; the "Measure rule" section text in `agents/measure-orchestrator.md` `db1bd1b`
-- [~] Task 3.2: Red: `tests/context.test.ts` (rule appended for `build`, skipped for `measure-orchestrator`, nothing without `measure/`; note on changed task; note after compaction)
-- [ ] Task 3.3: Green: implement the hooks and wire them in `src/index.ts`; add the rule section to `agents/measure-orchestrator.md`
+- [x] Task 3.2: Red: `tests/context.test.ts` (rule appended for `build`, skipped for `measure-orchestrator`, nothing without `measure/`; note on changed task; note after compaction) `5017d25`
+- [~] Task 3.3: Green: implement the hooks and wire them in `src/index.ts`; add the rule section to `agents/measure-orchestrator.md`
 - [ ] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change
 - [b] Task: Measure - User Manual Verification 'Phase S3: Rule and task note' (Protocol in workflow.md) deferred:owner
 
