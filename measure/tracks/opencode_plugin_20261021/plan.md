@@ -10,7 +10,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.3: Red: `tests/core.test.ts` imports `parse.ts` and `guards.ts` from `src/core/` and parses this repo's `measure/` files (fails: files missing) `2cb19df`
 - [x] Task 1.4: Green: copy `parse.ts` and `guards.ts` into `src/core/`; `check-parity.sh` exits 0; `bun test` passes `a3b0ed5`
 - [x] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands) `1dd67d2`
-- [b] Task: Measure - User Manual Verification 'Phase S1: Package skeleton and shared core' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S1: Package skeleton and shared core' (Protocol in workflow.md) `877337d`
 
 ## Phase S2: Project snapshot and plugin state [checkpoint: 1f6a55e]
 _Story ref: spec.md#story-s2_
@@ -19,7 +19,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.2: Red: `tests/snapshot.test.ts` (temp project from the real fixtures; no `measure/`; parse error) and `tests/state.test.ts` (session record, bypass, state file round trip) `054aa2d`
 - [x] Task 2.3: Green: implement snapshot, state, and options `fd45481`
 - [x] Task 2.4: Docs: README sections "Snapshot" and "State file" `63b4500`
-- [b] Task: Measure - User Manual Verification 'Phase S2: Project snapshot and plugin state' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S2: Project snapshot and plugin state' (Protocol in workflow.md) `2d42bc0`
 
 ## Phase S3: Rule and task note [checkpoint: 7fb76d1]
 _Story ref: spec.md#story-s3_
@@ -28,7 +28,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.2: Red: `tests/context.test.ts` (rule appended for `build`, skipped for `measure-orchestrator`, nothing without `measure/`; note on changed task; note after compaction) `5017d25`
 - [x] Task 3.3: Green: implement the hooks and wire them in `src/index.ts`; add the rule section to `agents/measure-orchestrator.md` `999f073`
 - [x] Task 3.4: Docs: README "Context" section; CHANGELOG entry for the agent prompt change `25302c8`
-- [b] Task: Measure - User Manual Verification 'Phase S3: Rule and task note' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S3: Rule and task note' (Protocol in workflow.md) `82fa317`
 
 ## Phase S4: Edit guard and closeout guard [checkpoint: 4cb7746]
 _Story ref: spec.md#story-s4_
@@ -38,7 +38,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.3: Green: implement `beforeTool` for the edit and closeout guards; wire `tool.hook("execute.before")` `ea997e1`
 - [x] Task 4.4: Live check: install the plugin into `~/.config/opencode/plugins/`, run one `opencode run` in a temp project without a `[~]` task, record the deny text from the tool result in the git note `faff85c`
 - [x] Task 4.5: Docs: README "Guards" section (edit, closeout) `e9a5e5d`
-- [b] Task: Measure - User Manual Verification 'Phase S4: Edit guard and closeout guard' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S4: Edit guard and closeout guard' (Protocol in workflow.md) `2919538`
 
 ## Phase S5: TDD guard and commit guard (strict) [checkpoint: 038ebd9]
 _Story ref: spec.md#story-s5_
@@ -47,7 +47,7 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.2: Red: `tests/tdd.test.ts` and `tests/commit.test.ts` `b746c22`
 - [x] Task 5.3: Green: implement the strict guards in `src/hooks/tools.ts` `4d59eb5`
 - [x] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits `3d95057`
-- [b] Task: Measure - User Manual Verification 'Phase S5: TDD guard and commit guard (strict)' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S5: TDD guard and commit guard (strict)' (Protocol in workflow.md) `b7d5756`
 
 ## Phase S6: End-of-turn check [checkpoint: ffa9cba]
 _Story ref: spec.md#story-s6_
@@ -56,7 +56,7 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.2: Red: `tests/end-of-turn.test.ts` (advise: no action; guard: synthetic reminder; strict: follow-up twice then reminder; bypass: nothing; state file written) `77fe1fe`
 - [x] Task 6.3: Green: implement `turn.ts`, the event loop in `src/index.ts`, the synthetic message and the follow-up prompt through `ctx.session` `904c18d`
 - [x] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod `bab2f6d`
-- [b] Task: Measure - User Manual Verification 'Phase S6: End-of-turn check' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S6: End-of-turn check' (Protocol in workflow.md) `9bb8c5b`
 
 ## Phase S7: Commands and the status tool [checkpoint: 1da03ad]
 _Story ref: spec.md#story-s7_
@@ -65,7 +65,7 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.2: Red: `tests/commands.test.ts` (off/on session and repo, status reply, tool output) and a test that every markdown command has a description and names its workflow `59331f9`
 - [x] Task 7.3: Green: implement the commands and the tool; write the markdown commands; wire `command.transform` and `tool.transform` `aac69a2`
 - [x] Task 7.4: Docs: README "Commands" and "Tool" sections `0496c78`
-- [b] Task: Measure - User Manual Verification 'Phase S7: Commands and the status tool' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S7: Commands and the status tool' (Protocol in workflow.md) `a3cd8a4`
 
 ## Phase S8: Terminal band and status pane [checkpoint: 866a8f5]
 _Story ref: spec.md#story-s8_
@@ -75,7 +75,7 @@ _Story ref: spec.md#story-s8_
 - [x] Task 8.3: Green: implement `model.ts` and `tui.tsx` `31ec969`
 - [x] Task 8.4: Load check: with the package installed, start the terminal through the running service under a pseudo-terminal for 20 s; the log shows `loading plugin` for the tui entry and no `failed to load plugin`; record the result in the git note `9d3a454`
 - [x] Task 8.5: Docs: README "Terminal" section `cb248a2`
-- [b] Task: Measure - User Manual Verification 'Phase S8: Terminal band and status pane' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S8: Terminal band and status pane' (Protocol in workflow.md) `5f2c718`
 
 ## Phase S9: Installer targets and documents [checkpoint: 09a38e1]
 _Story ref: spec.md#story-s9_
@@ -84,4 +84,4 @@ _Story ref: spec.md#story-s9_
 - [x] Task 9.2: Red: installer test `measure/archive/skill_distribution_repair_20261005/scripts/`-style script for the new rows (temp HOME, temp repo), kept at `plugins/opencode-measure-guard/tests/install.sh` `bf72b5e`
 - [x] Task 9.3: Green: the rows, the installer change if the bundle needs an exclusion, `bin/install-measure-skill --check` lists the targets `9efaae4`
 - [x] Task 9.4: Docs: `README.md` (repo) section "OpenCode plugin", `measure/tech-stack.md` Distribution Formats row, `CHANGELOG.md`, `measure/lessons-learned.md` and `measure/tech-debt.md` entries from the retrospective `ec20b09`
-- [b] Task: Measure - User Manual Verification 'Phase S9: Installer targets and documents' (Protocol in workflow.md) deferred:owner
+- [x] Task: Measure - User Manual Verification 'Phase S9: Installer targets and documents' (Protocol in workflow.md) `a64c01f`
