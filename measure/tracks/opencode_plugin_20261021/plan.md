@@ -40,7 +40,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.5: Docs: README "Guards" section (edit, closeout) `e9a5e5d`
 - [b] Task: Measure - User Manual Verification 'Phase S4: Edit guard and closeout guard' (Protocol in workflow.md) deferred:owner
 
-## Phase S5: TDD guard and commit guard (strict)
+## Phase S5: TDD guard and commit guard (strict) [checkpoint: 038ebd9]
 _Story ref: spec.md#story-s5_
 
 - [x] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output) `41fefd8`
