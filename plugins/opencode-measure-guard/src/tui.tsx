@@ -104,7 +104,7 @@ export default Plugin.define({
           <box flexDirection="column">
             <For each={lines()}>
               {line => (
-                <text attributes={attributesOf(line.tone)} fg={line.tone === 'warn' ? context.theme.warning : undefined}>
+                <text wrapMode="none" truncate attributes={attributesOf(line.tone)} fg={line.tone === 'warn' ? context.theme.warning : undefined}>
                   {line.text}
                 </text>
               )}
@@ -118,7 +118,7 @@ export default Plugin.define({
       onMount(() => void refresh())
       return (
         <box flexDirection="column">
-          <For each={sidebarLines(view().snapshot, view().state)}>{line => <text>{line}</text>}</For>
+          <For each={sidebarLines(view().snapshot, view().state)}>{line => <text wrapMode="none" truncate>{line}</text>}</For>
         </box>
       )
     }

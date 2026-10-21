@@ -89,7 +89,7 @@ What happens then depends on the mode:
 
 The difference to the Claude Code mod: the mod blocks the Stop hook and holds the turn open; OpenCode has no hook that keeps a turn open, so strict mode sends a new prompt instead. Each follow-up ends in a new turn-end event, which counts on the same turn until a user prompt starts the next one. The bypass skips the check. Every plugin instance (one per project directory) sees every event; the check does nothing for a session whose prompt hook did not run in that instance.
 
-Live check (Task 6.3): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself.
+Live check (Task 6.3, and strict after the track close): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself. In strict mode the same change gave two follow-up prompts, each answered by the agent, then the reminder; the plugin's own follow-up prompt does not restart the turn.
 
 ## Commands
 
@@ -119,7 +119,7 @@ The folder `commands/` holds the eight Measure workflow commands as markdown fil
 
 The band refreshes on a 5 s timer, on `file.edited` and the turn-end events of the event stream, and only reads the files again when an mtime changed. The state file belongs to the server plugin; the terminal plugin never writes it.
 
-Load check (Task 8.4, OpenCode 2.0.32): the terminal started under a pseudo-terminal in a project with `measure/`; the log shows `plugin reconciliation completed ... plugins=13` for the terminal and no `failed to load plugin`; the screen capture holds the dim band line `Measure · OpenCode plugin: measure-guard for OpenCode 2, ...`.
+Load check (Task 8.4, OpenCode 2.0.32): the terminal started under a pseudo-terminal in a project with `measure/`; the log shows `plugin reconciliation completed ... plugins=13` for the terminal and no `failed to load plugin`; the screen capture holds the dim band line `Measure · OpenCode plugin: measure-guard for OpenCode 2, ...` and the `End of turn:` line. Typing `/measure-guard` and Enter twice (the first Enter takes the completion) opened the `Measure` dialog with `Tracks:` and `Active plan`. The band lines are truncated to one row each (`wrapMode="none"`, `truncate`).
 
 ## Checks
 
