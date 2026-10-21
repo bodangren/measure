@@ -1,6 +1,10 @@
 // The plugin's state: one record per session, the bypass per root (session level
 // in memory, repository level in the plugin storage), and the state file that
 // the terminal plugin reads.
+import { createHash } from 'node:crypto'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import type { GuardsOff, Mode, RedState, SetupChoice, TurnState } from './types'
 
 /** What the hooks keep for one session. */
@@ -43,41 +47,75 @@ export const offKey = (root: string): string => `off:${root}`
 
 /** Per-session records, created on first use. */
 export class Sessions {
-  sessionOf(_sessionID: string): SessionState {
-    throw new Error('not implemented')
+  private readonly records = new Map<string, SessionState>()
+
+  sessionOf(sessionID: string): SessionState {
+    const found = this.records.get(sessionID)
+    if (found !== undefined) return found
+    const made: SessionState = {
+      sessionID,
+      agent: null,
+      notedKey: null,
+      setupChoice: null,
+      turn: null,
+      problems: [],
+      reminder: null,
+      red: null,
+    }
+    this.records.set(sessionID, made)
+    return made
   }
+
   /** Forgets a session (session.deleted). */
-  forget(_sessionID: string): void {
-    throw new Error('not implemented')
+  forget(sessionID: string): void {
+    this.records.delete(sessionID)
   }
 }
 
 /** The bypass for a root: `session` (in memory), `repo` (storage), or null. */
 export class Bypass {
-  constructor(_storage: Storage) {}
-  async get(_root: string): Promise<GuardsOff> {
-    throw new Error('not implemented')
+  private readonly session = new Set<string>()
+
+  constructor(private readonly storage: Storage) {}
+
+  async get(root: string): Promise<GuardsOff> {
+    if ((await this.storage.get(offKey(root))) === true) return 'repo'
+    return this.session.has(root) ? 'session' : null
   }
+
   /** Sets the bypass; `repo` is kept in the storage. */
-  async set(_root: string, _value: 'session' | 'repo'): Promise<void> {
-    throw new Error('not implemented')
+  async set(root: string, value: 'session' | 'repo'): Promise<void> {
+    if (value === 'repo') await this.storage.set(offKey(root), true)
+    else this.session.add(root)
   }
+
   /** Clears the session bypass, and with `repo` also the stored one. */
-  async clear(_root: string, _scope: 'session' | 'repo'): Promise<void> {
-    throw new Error('not implemented')
+  async clear(root: string, scope: 'session' | 'repo'): Promise<void> {
+    this.session.delete(root)
+    if (scope === 'repo') await this.storage.remove(offKey(root))
   }
 }
+
+const DEFAULT_BASE = (): string => join(homedir(), '.local', 'state', 'measure', 'opencode-guard')
 
 /** `<base>/<sha1 of root>.json`; base defaults to ~/.local/state/measure/opencode-guard. */
-export const stateFilePath = (_root: string, _base?: string): string => {
-  throw new Error('not implemented')
-}
+export const stateFilePath = (root: string, base: string = DEFAULT_BASE()): string =>
+  join(base, `${createHash('sha1').update(root).digest('hex').slice(0, 16)}.json`)
 
-export const writeStateFile = async (_file: StateFile, _base?: string): Promise<string> => {
-  throw new Error('not implemented')
+export const writeStateFile = async (file: StateFile, base: string = DEFAULT_BASE()): Promise<string> => {
+  await mkdir(base, { recursive: true })
+  const path = stateFilePath(file.root, base)
+  await writeFile(path, JSON.stringify(file, null, 1))
+  return path
 }
 
 /** The state file of a root; null when it does not exist or cannot be parsed. */
-export const readStateFile = async (_root: string, _base?: string): Promise<StateFile | null> => {
-  throw new Error('not implemented')
+export const readStateFile = async (root: string, base: string = DEFAULT_BASE()): Promise<StateFile | null> => {
+  try {
+    const parsed: unknown = JSON.parse(await readFile(stateFilePath(root, base), 'utf8'))
+    if (typeof parsed !== 'object' || parsed === null || !('root' in parsed) || !('problems' in parsed)) return null
+    return parsed as StateFile
+  } catch {
+    return null
+  }
 }
