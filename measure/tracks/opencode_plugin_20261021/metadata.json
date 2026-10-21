@@ -1,0 +1,27 @@
+{
+  "track_id": "opencode_plugin_20261021",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-10-21T04:48:00Z",
+  "updated_at": "2026-10-21T04:48:00Z",
+  "description": "OpenCode plugin: measure-guard for OpenCode 2 (server and terminal parts), Measure agents, commands, installer targets, and documents",
+  "estimated_tasks": 48,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "An OpenCode user gets the same Measure guard rails as a Claude Code user: the plan state is visible, work outside the active plan is stopped, the Measure commands and roles are one keystroke away, and the installer keeps every copy current.",
+    "stories": [
+      { "id": "S1", "title": "Package skeleton and shared core", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S2", "title": "Project snapshot and plugin state", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S3", "title": "Rule and task note", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S4", "title": "Edit guard and closeout guard", "size": "L", "priority": "Must", "status": "pending" },
+      { "id": "S5", "title": "TDD guard and commit guard (strict)", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S6", "title": "End-of-turn check", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S7", "title": "Commands and the status tool", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S8", "title": "Terminal band and status pane", "size": "L", "priority": "Must", "status": "pending" },
+      { "id": "S9", "title": "Installer targets and documents", "size": "M", "priority": "Must", "status": "pending" }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}
