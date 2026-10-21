@@ -8,8 +8,8 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.1: Declare the verification tooling in `measure/tech-stack.md` (Tooling Exceptions row) and add `plugins/opencode-measure-guard/` to the Architecture tree `d7544db`
 - [x] Task 1.2: Contract: `package.json`, `tsconfig.json`, `.gitignore` (node_modules), `src/core/types.ts` (copy without the `declare module` block), `scripts/check-parity.sh` `0d5f935`
 - [x] Task 1.3: Red: `tests/core.test.ts` imports `parse.ts` and `guards.ts` from `src/core/` and parses this repo's `measure/` files (fails: files missing) `2cb19df`
-- [~] Task 1.4: Green: copy `parse.ts` and `guards.ts` into `src/core/`; `check-parity.sh` exits 0; `bun test` passes
-- [ ] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands)
+- [x] Task 1.4: Green: copy `parse.ts` and `guards.ts` into `src/core/`; `check-parity.sh` exits 0; `bun test` passes `a3b0ed5`
+- [~] Task 1.5: Docs: `plugins/opencode-measure-guard/README.md` skeleton (layout, parity rule, test commands)
 - [b] Task: Measure - User Manual Verification 'Phase S1: Package skeleton and shared core' (Protocol in workflow.md) deferred:owner
 
 ## Phase S2: Project snapshot and plugin state
