@@ -2,7 +2,9 @@
 // guard decisions before and after a call. Pure helpers here; the Guard class
 // runs them with the snapshot and the session.
 import { joinPath } from '../core/parse'
+import { pathsOfStatus } from '../core/guards'
 import type { FileEdit } from '../core/guards'
+import { gitLines, gitStatus } from '../snapshot'
 
 /** The file tools of OpenCode 2 and the fields of their inputs. */
 export const EDIT_TOOLS = ['edit', 'write', 'multiedit', 'apply_patch'] as const
@@ -107,7 +109,10 @@ export type ToolResultLike = { output?: unknown; content?: unknown; metadata?: R
  * `metadata.exitCode` when numeric; null when none is there.
  */
 export const exitCodeOf = (result: ToolResultLike | null): number | null => {
-  throw new Error(`not implemented: exitCodeOf(${result === null})`)
+  const metadata = result?.metadata
+  if (metadata === undefined) return null
+  const code = metadata.exit ?? metadata.exitCode
+  return typeof code === 'number' ? code : null
 }
 
 /**
@@ -115,18 +120,41 @@ export const exitCodeOf = (result: ToolResultLike | null): number | null => {
  * the shell call's exit code is not 0.
  */
 export const callFailed = (status: 'completed' | 'error', result: ToolResultLike | null): boolean => {
-  throw new Error(`not implemented: callFailed(${status}, ${result === null})`)
+  if (status === 'error') return true
+  const code = exitCodeOf(result)
+  return code !== null && code !== 0
 }
 
 /** The text of a tool result the model reads: `output` when a string, else the text parts of `content`. */
 export const resultText = (result: ToolResultLike | null): string => {
-  throw new Error(`not implemented: resultText(${result === null})`)
+  if (result === null) return ''
+  if (typeof result.output === 'string') return result.output
+  const content = result.content
+  if (typeof content === 'string') return content
+  if (!Array.isArray(content)) return ''
+  return content
+    .map(part => (typeof part === 'object' && part !== null && typeof (part as { text?: unknown }).text === 'string' ? (part as { text: string }).text : null))
+    .filter((text): text is string => text !== null)
+    .join('\n')
+}
+
+/**
+ * Appends notes where the model reads the result: the `content` string or
+ * parts when present, else the `output` string, else a new `content` string.
+ * A string `output` gets the notes too, so both views agree.
+ */
+export const appendResult = (result: ToolResultLike, notes: readonly string[]): void => {
+  if (notes.length === 0) return
+  const block = notes.join('\n\n')
+  const content = result.content
+  if (Array.isArray(content)) result.content = [...content, { type: 'text', text: block }]
+  else if (typeof content === 'string') result.content = content === '' ? block : `${content}\n\n${block}`
+  if (typeof result.output === 'string') result.output = appendNotes(result.output, notes)
+  else if (result.content === undefined) result.content = block
 }
 
 /** The commit SHA in the output of `git commit` (`[<branch> <sha>] <subject>`); null when absent. */
-export const commitShaOf = (text: string): string | null => {
-  throw new Error(`not implemented: commitShaOf(${text.length})`)
-}
+export const commitShaOf = (text: string): string | null => /^\[[^\]\n]* ([0-9a-f]{7,40})\]/m.exec(text)?.[1] ?? null
 
 /**
  * The files a commit takes, relative to the root: the staged paths (`git diff
@@ -134,5 +162,6 @@ export const commitShaOf = (text: string): string | null => {
  * add` before it), the changed and untracked paths too.
  */
 export const commitFiles = async (root: string, takesChanges: boolean): Promise<string[]> => {
-  throw new Error(`not implemented: commitFiles(${root}, ${takesChanges})`)
+  const staged = await gitLines(['diff', '--cached', '--name-only'], root)
+  return takesChanges ? [...new Set([...staged, ...pathsOfStatus(await gitStatus(root))])] : staged
 }

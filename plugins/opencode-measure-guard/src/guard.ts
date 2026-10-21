@@ -2,12 +2,40 @@
 // snapshot cache, the sessions, the bypass, and the hook handlers. index.ts
 // wires the handlers to the OpenCode hooks; the tests call them directly.
 import { dirname, joinPath, noteKey, parsePlan, ruleSection, taskNote } from './core/parse'
-import { SETUP_DENY, applyEdit, closedTracks, editDecision, isInside, phaseStartDecision, trackCloseDecision } from './core/guards'
+import {
+  SETUP_DENY,
+  applyEdit,
+  closedTracks,
+  commitDecision,
+  commitReminder,
+  editDecision,
+  isInside,
+  isTestCommand,
+  isTestFile,
+  parseCommitCommand,
+  phaseStartDecision,
+  redFor,
+  taskKey,
+  tddDecision,
+  trackCloseDecision,
+} from './core/guards'
 import { loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
 import { writeStateFile } from './state'
 import type { Bypass, SessionState, Sessions } from './state'
 import type { ClosingTrack, Decision, GuardContext, Mode, Snapshot } from './types'
-import { SETUP_DENY_OPENCODE, appendNotes, applyMultiEdit, fileEditOf, isShellTool, writtenPaths } from './hooks/tools'
+import {
+  SETUP_DENY_OPENCODE,
+  appendResult,
+  applyMultiEdit,
+  callFailed,
+  commandOf,
+  commitFiles,
+  commitShaOf,
+  fileEditOf,
+  isShellTool,
+  resultText,
+  writtenPaths,
+} from './hooks/tools'
 import type { CompactionEvent, ContextEvent, PromptEvent, ToolAfterEvent, ToolBeforeEvent } from './hooks/types'
 import { readFile } from 'node:fs/promises'
 
@@ -21,6 +49,8 @@ export class Guard {
   private snapshot: Snapshot | null = null
   /** Notes an allowed call earned in the before hook, by call id, for the after hook. */
   private readonly callNotes = new Map<string, string[]>()
+  /** The ids of the allowed commit calls of a `[~]` task, which get the commit reminder. */
+  private readonly commitCalls = new Set<string>()
 
   constructor(
     readonly root: string,
@@ -102,7 +132,9 @@ export class Guard {
     const session = this.session(event.sessionID)
     session.agent = event.agent
     const paths = writtenPaths(event.tool, event.input, this.root)
-    if (paths.length === 0) return
+    const command = isShellTool(event.tool) ? commandOf(event.input) : null
+    const commit = command !== null && this.mode === 'strict' ? parseCommitCommand(command) : null
+    if (paths.length === 0 && commit === null) return
     const context = await this.guardContext(event.sessionID)
     const notes: string[] = []
     for (const path of paths) {
@@ -110,6 +142,13 @@ export class Guard {
       const closed = await this.closeout(context, event.tool, event.input, path)
       this.deny(closed.decision)
       if (closed.note !== null) notes.push(closed.note)
+      this.deny(tddDecision(context, session.red, path))
+    }
+    if (commit !== null) {
+      const check = commitDecision(context, commit, await commitFiles(this.root, commit.takesChanges))
+      this.deny(check.decision)
+      if (check.note !== null) notes.push(check.note)
+      if (context.guardsOff === null && taskKey(context.snapshot) !== null) this.commitCalls.add(event.id)
     }
     if (notes.length > 0) this.callNotes.set(event.id, notes)
   }
@@ -118,14 +157,31 @@ export class Guard {
   async onToolAfter(event: ToolAfterEvent): Promise<void> {
     const notes = this.callNotes.get(event.id) ?? []
     this.callNotes.delete(event.id)
-    if (event.status !== 'completed') return
+    const commitDue = this.commitCalls.delete(event.id)
+    const result = event.status === 'completed' ? event.result : null
+    const failed = callFailed(event.status, result)
     const paths = writtenPaths(event.tool, event.input, this.root)
+    await this.recordRed(event, paths, failed)
+    if (result === null) return
+    if (failed) notes.length = 0
+    else if (commitDue) notes.push(commitReminder(commitShaOf(resultText(result))))
     const touchesPlan = isShellTool(event.tool) || paths.some(path => isInside(joinPath(this.root, 'measure'), path))
     if (touchesPlan) {
       const note = await this.pendingNote(event.sessionID, await this.refresh())
       if (note !== null) notes.push(note)
     }
-    if (notes.length > 0) event.result.output = appendNotes(event.result.output, notes)
+    appendResult(result, notes)
+  }
+
+  /** Keeps the Red phase of the `[~]` task: a test file edit that ran, and a test command that failed. */
+  private async recordRed(event: ToolAfterEvent, paths: readonly string[], failed: boolean): Promise<void> {
+    const command = isShellTool(event.tool) ? commandOf(event.input) : null
+    const isTestEdit = !failed && paths.some(isTestFile)
+    const isFailedTest = failed && command !== null && isTestCommand(command)
+    if (!isTestEdit && !isFailedTest) return
+    const session = this.session(event.sessionID)
+    const red = redFor(session.red, taskKey(await this.current()))
+    session.red = { ...red, testChanged: red.testChanged || isTestEdit, testFailed: red.testFailed || isFailedTest }
   }
 
   private deny(decision: Decision): void {

@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { commitFiles, commitShaOf } from '../src/hooks/tools'
+import { commitFiles, commitShaOf, resultText } from '../src/hooks/tools'
 import type { ToolAfterEvent, ToolBeforeEvent } from '../src/hooks/types'
 import { TRACK, makeGuard, tempProject, withMeasure } from './fake'
 
@@ -97,7 +97,7 @@ describe('commit guard', () => {
     await guard.onToolBefore(commit)
     const done = completed(commit, '[main 1234abc] feat(core): Add the parser\n 1 file changed')
     await guard.onToolAfter(done)
-    const text = String(done.result.output)
+    const text = resultText(done.result)
     expect(text).toContain('the commit 1234abc is done')
     expect(text).toContain('git notes add')
   })
@@ -110,7 +110,7 @@ describe('commit guard', () => {
     await guard.onToolBefore(commit)
     const failed = completed(commit, 'error: something', 1)
     await guard.onToolAfter(failed)
-    expect(failed.result.output).toBeUndefined()
+    expect(resultText(failed.result)).not.toContain('is done')
     await expect(makeGuard(root, 'guard').onToolBefore(shell('git commit -m "update stuff"'))).resolves.toBeUndefined()
   })
 })

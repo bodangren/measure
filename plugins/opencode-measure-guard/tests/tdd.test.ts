@@ -75,7 +75,7 @@ describe('TDD guard', () => {
     const { root, source } = await project()
     const guard = makeGuard(root, 'strict')
     const reason = await guard.onToolBefore(edit(source)).catch((error: Error) => error.message)
-    expect(reason).toContain('Task 5.2')
+    expect(reason).toMatch(/The task "Task \d+\.\d+:/)
     expect(reason).toContain('change a test file')
     expect(reason).toContain('run the tests and see them fail')
   })

@@ -51,6 +51,13 @@ export const gitStatus = async (root: string): Promise<string[]> => {
   return ran.code === 0 ? statusLinesOf(ran.stdout) : []
 }
 
+/** The non-empty output lines of a git command in `root`; none when git fails. */
+export const gitLines = async (args: string[], root: string): Promise<string[]> => {
+  if (!(await exists(root))) return []
+  const ran = await git(args, root)
+  return ran.code === 0 ? ran.stdout.split('\n').filter(line => line.trim() !== '') : []
+}
+
 /** Reads index.md, tracks.md, and the plans of the `[~]` tracks under `<root>/measure/`. */
 export const loadSnapshot = async (root: string): Promise<Snapshot> => {
   const base: Snapshot = {
