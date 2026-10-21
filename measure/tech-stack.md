@@ -14,7 +14,7 @@
 | Orchestration skills and roles | `skills/measure-orchestrator/`, `skills/build-graph/`, `agents/measure-*.md` | Installed from `main` into `~/.agents/` (and `~/.claude/skills/build-graph`) |
 | Claude Skills bundle | `claude-skills/measure/` | A copy of `skills/measure/` for `claude skills add`; the Definition of Done keeps it equal |
 | Claude Code mod | `mods/measure-guard/` | Claude Code function-hook plugin, loaded with `claude --plugin-dir` or `CLAUDE_CODE_PLUGIN_DIRS` |
-| OpenCode plugin | `plugins/opencode-measure-guard/` | OpenCode 2 server and terminal plugin package, installed from `main` into `~/.config/opencode/plugins/opencode-measure-guard`; its `commands/` into `~/.config/opencode/commands`; `agents/measure-*.md` into `~/.config/opencode/agents` |
+| OpenCode plugin | `plugins/opencode-measure-guard/` | OpenCode 2 server and terminal plugin package (root entries `index.ts` and `tui.ts`; the host loads the folder, not `package.json` exports), installed from `main` into `~/.config/opencode/plugins/opencode-measure-guard` without `tests/`; its `commands/` into `~/.config/opencode/commands`; `agents/measure-*.md` into `~/.config/opencode/agents` |
 
 `bin/install-measure-skill` reads the bundles and `bin/install-targets.tsv` from
 `main` (never from the working tree) and copies them into each target in place.

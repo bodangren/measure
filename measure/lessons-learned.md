@@ -12,6 +12,8 @@
 - (2026-10-04, measure_guard_20261004) Claude Code mods: a function that uses `$` must be in the hooks module file; the engine does not follow `$` across an import. Put pure logic in imported modules and the `$` calls in `register.tsx`.
 - <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree, so a checked-out feature branch never reaches the agents. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
 
+- <a id="2026-10-21-opencode_plugin"></a>(2026-10-21, opencode_plugin_20261021) Port a harness mod by copying its pure modules with a parity gate (byte diff in CI), and keep every harness call in a thin adapter; the OpenCode plugin reused the mod's guards and parser unchanged.
+- (2026-10-21, opencode_plugin_20261021) When a harness has no hook that holds a turn open, send the problems as a non-resuming synthetic message (delivered with the next prompt) and, in strict mode, as a bounded follow-up prompt; a resuming message makes the agent act on it by itself.
 - <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working. The order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
 
 ## Recurring Gotchas
@@ -27,6 +29,7 @@
 - (2026-10-05, skill_distribution_repair_20261005) `git archive` applies `tar.umask` (default 0002), so extracted files are 664 or 775. Use `git -c tar.umask=0022 archive` to get the modes that git records.
 - (2026-10-05, skill_distribution_repair_20261005) `~/.agents/agents` files are hard links to `pi-measure-harness/agents/`. Write in place (`cat src > dst`), never `cp`, `mv`, or `rm`, or the link breaks. An install shows in the Pi harness as uncommitted changes.
 
+- (2026-10-21, opencode_plugin_20261021) Probe the live OpenCode host before writing to a documented shape: 2.0.32 loads a plugin folder through `<folder>/index` and `<folder>/tui` (not `package.json` exports), `write` names its file `path`, `shell` returns `content` plus `metadata.exit`, `session.idle` never reaches a plugin subscription (the `session.execution.*` events do), and `opencode run` can hang while the HTTP API (`POST /api/session`, `.../prompt`) works.
 - (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys, or the project doctor rejects the files. Read a cited workflow before you state what it does: one correction said that `new-track` copies project keys, and it does not.
 
 ## Patterns That Worked Well

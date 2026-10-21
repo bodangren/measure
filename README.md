@@ -53,7 +53,7 @@ cd measure
 ./bin/install-measure-skill
 ```
 
-The installer copies the skills and the agent roles from the `main` branch into `~/.claude/skills`, `~/.agents/skills`, and `~/.agents/agents`. It skips a location whose parent folder does not exist.
+The installer copies the skills and the agent roles from the `main` branch into `~/.claude/skills`, `~/.agents/skills`, and `~/.agents/agents`, and the OpenCode plugin, commands, and agents into `~/.config/opencode/`. It skips a location whose parent folder does not exist.
 
 If you already have an older copy of Measure in those folders, run `./bin/install-measure-skill --check` first. Then run `./bin/install-measure-skill --adopt` once to replace the old files.
 
@@ -85,11 +85,15 @@ Measure interviews you about the product, the tech stack, and your workflow, the
 
 Review the spec and the plan before you run `implement`. You can also use plain words: "measure status", "create a track for …", "revert the last phase".
 
-### 5. Add the guard rails (Claude Code, optional)
+### 5. Add the guard rails (optional)
+
+Claude Code:
 
 ```bash
 claude --plugin-dir /path/to/measure/mods/measure-guard
 ```
+
+OpenCode 2: the installer of step 1 puts the plugin into `~/.config/opencode/plugins/opencode-measure-guard` when `~/.config/opencode/plugins` exists. See [OpenCode plugin](#opencode-plugin-guard-rails-in-opencode-2).
 
 ---
 
@@ -128,6 +132,27 @@ claude --plugin-dir /path/to/measure/mods/measure-guard
 Commands: `/measure-status` opens or closes a status pane. `/measure-off` and `/measure-on` turn the guards off and on for the session; add `repo` to keep the choice for the repository.
 
 To load the mod in every session, set `CLAUDE_CODE_PLUGIN_DIRS` to the mod folder in the `env` block of `~/.claude/settings.json`. Details: [`mods/measure-guard/README.md`](mods/measure-guard/README.md).
+
+---
+
+## OpenCode plugin: guard rails in OpenCode 2
+
+`plugins/opencode-measure-guard/` is the OpenCode 2 counterpart of the mod. It decides with the same code (byte copies of the mod's pure modules, checked by a parity script) and adds what OpenCode offers:
+
+- **Rule and task notes:** the Measure rule goes into the system prompt of every agent except `measure-orchestrator`, which carries it in its own prompt. The active track and task ride on the user prompt when they change.
+- **Guards:** the edit guard, the closeout guard, and in strict mode the TDD and commit guards, on the `edit`, `write`, `apply_patch`, and `shell` tools. A deny is the error text of the tool call.
+- **End-of-turn check:** after each turn, a synthetic reminder (guard mode) or a follow-up prompt (strict mode, at most 2 per turn) lists done tasks with no SHA and changed files that no task covers.
+- **Commands:** `/measure-off`, `/measure-on`, `/measure-guard`, and the eight workflow commands `/measure-setup`, `/measure-new-track`, `/measure-implement`, `/measure-review`, `/measure-status`, `/measure-revert`, `/measure-doctor`, `/measure-orchestrate`.
+- **Tool:** `measure_status` gives an agent the plan position as text.
+- **Terminal band:** `Measure · <track> · Phase 2/4 · Task 3/7 [~] <task>` above the prompt, a Measure block in the sidebar, and `/measure-guard` as a dialog. The band is in the terminal only; the web and desktop clients get the commands and the tool.
+
+| Mode | How to set it | What it does |
+| --- | --- | --- |
+| `advise` | `MEASURE_GUARD_MODE=advise`, or `"options": { "mode": "advise" }` on the plugin entry of `opencode.json` | Rule, notes, band, and the state file. Stops nothing. |
+| `guard` (default) | | Adds the edit guard, the closeout guard, and the end-of-turn reminder. |
+| `strict` | | Adds the TDD guard, the commit guard, and the follow-up prompts. OpenCode has no hook that holds a turn open, so the follow-up prompt replaces the mod's held turn. |
+
+Install: `./bin/install-measure-skill` (step 1) when `~/.config/opencode/plugins` exists; the service loads the folder at once and logs `loading plugin`. Details: [`plugins/opencode-measure-guard/README.md`](plugins/opencode-measure-guard/README.md).
 
 ---
 
@@ -193,7 +218,9 @@ Review and audit roles only report. The orchestrator sends each finding back to 
 | `skills/measure` | `~/.claude/skills/measure`, `~/.agents/skills/measure` |
 | `skills/measure-orchestrator` | `~/.agents/skills/measure-orchestrator` |
 | `skills/build-graph` | `~/.claude/skills/build-graph`, `~/.agents/skills/build-graph` |
-| `agents/measure-*.md` | `~/.agents/agents` |
+| `agents/measure-*.md` | `~/.agents/agents`, `~/.config/opencode/agents` |
+| `plugins/opencode-measure-guard` (without `tests/`) | `~/.config/opencode/plugins/opencode-measure-guard` |
+| `plugins/opencode-measure-guard/commands/measure-*.md` | `~/.config/opencode/commands` |
 
 - **Your edits are safe.** Each target gets a `.measure-install` stamp with the hash of each installed file. If you edit an installed file, the installer keeps your version, logs a warning, and exits with 2.
 - **Hard links stay.** Files are written in place, so a file that another folder links to stays linked.
