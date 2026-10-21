@@ -58,7 +58,7 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod `bab2f6d`
 - [b] Task: Measure - User Manual Verification 'Phase S6: End-of-turn check' (Protocol in workflow.md) deferred:owner
 
-## Phase S7: Commands and the status tool
+## Phase S7: Commands and the status tool [checkpoint: 1da03ad]
 _Story ref: spec.md#story-s7_
 
 - [x] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/` `90955b3`
