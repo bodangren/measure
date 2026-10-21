@@ -1,0 +1,1 @@
+Task 4.5: README gains an Install section (entry file + package folder layout under ~/.config/opencode/plugins/, log line to expect) and a Guards section (edit guard, closeout guard, task note after a call, deny by thrown Error, live check summary). The Layout tree lists entry/measure-guard.ts.
