@@ -46,6 +46,12 @@ export const withMeasure = async (root: string, options: MeasureOptions = {}): P
 export const makeGuard = (root: string, mode: Mode = 'guard'): Guard =>
   new Guard(root, mode, new Sessions(), new Bypass(fakeStorage()), mkdtempSync(join(tmpdir(), 'measure-guard-state-')))
 
+/** A Guard with its fake storage in reach (for the repo-level bypass tests). */
+export const makeGuardWithStorage = (root: string, mode: Mode = 'guard'): { guard: Guard; storage: Storage & { map: Map<string, unknown> } } => {
+  const storage = fakeStorage()
+  return { guard: new Guard(root, mode, new Sessions(), new Bypass(storage), mkdtempSync(join(tmpdir(), 'measure-guard-state-'))), storage }
+}
+
 /** The plugin storage as a map. */
 export const fakeStorage = (): Storage & { map: Map<string, unknown> } => {
   const map = new Map<string, unknown>()

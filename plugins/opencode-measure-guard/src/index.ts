@@ -2,7 +2,9 @@
 // this file from ~/.config/opencode/plugins/opencode-measure-guard (package
 // export ".") and provides @opencode/plugin at runtime.
 import { Plugin } from '@opencode/plugin'
+import { argsOf, measureCommands } from './commands'
 import { Guard } from './guard'
+import { STATUS_TOOL_DESCRIPTION, STATUS_TOOL_ID, STATUS_TOOL_INPUT, statusText } from './tool'
 import { modeFrom } from './options'
 import { Bypass, Sessions } from './state'
 import type { CompactionEvent, ContextEvent, PromptEvent, ToolAfterEvent, ToolBeforeEvent } from './hooks/types'
@@ -21,6 +23,37 @@ export default Plugin.define({
     await ctx.session.hook('compaction', event => guard.onCompaction(event as unknown as CompactionEvent))
     await ctx.tool.hook('execute.before', event => guard.onToolBefore(event as unknown as ToolBeforeEvent))
     await ctx.tool.hook('execute.after', event => guard.onToolAfter(event as unknown as ToolAfterEvent))
+
+    // The plugin commands reply with a synthetic message that does not start an agent loop.
+    await ctx.command.transform(editor => {
+      for (const command of measureCommands()) {
+        editor.add({
+          name: command.name,
+          description: command.description,
+          execute: async input => {
+            const sessionID = input.sessionID as string
+            await command.execute({
+              sessionID,
+              args: argsOf(command.name, input.prompt.text),
+              guard,
+              reply: async text => {
+                await ctx.session.synthetic({ sessionID, text, description: 'measure-guard', resume: false })
+              },
+            })
+          },
+        })
+      }
+    })
+
+    // The status tool for the agent.
+    await ctx.tool.transform(editor => {
+      editor.add({
+        name: STATUS_TOOL_ID,
+        description: STATUS_TOOL_DESCRIPTION,
+        input: STATUS_TOOL_INPUT,
+        execute: async () => ({ content: await statusText(guard) }),
+      })
+    })
 
     // The end-of-turn check on the turn-end events of the subscription.
     void watchIdle(ctx, guard)

@@ -76,7 +76,7 @@ export class Sessions {
 export class Bypass {
   private readonly session = new Set<string>()
 
-  constructor(private readonly storage: Storage) {}
+  constructor(readonly storage: Storage) {}
 
   async get(root: string): Promise<GuardsOff> {
     if ((await this.storage.get(offKey(root))) === true) return 'repo'

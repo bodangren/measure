@@ -1,5 +1,6 @@
 // The `measure_status` tool: the status lines and the task note as text, so an
 // agent can ask for the plan position instead of reading the Measure files.
+import { statusLines, taskNote } from './core/parse'
 import type { Guard } from './guard'
 
 /** The tool's id as OpenCode lists it. */
@@ -14,5 +15,8 @@ export const STATUS_TOOL_INPUT = { type: 'object', properties: {}, additionalPro
 
 /** The text the tool returns: the status lines, then the task note when there is one. */
 export const statusText = async (guard: Guard): Promise<string> => {
-  throw new Error(`not implemented: statusText(${guard.root})`)
+  const snapshot = await guard.refresh()
+  const lines = statusLines(snapshot, await guard.bypass.get(guard.root))
+  const note = taskNote(snapshot, guard.mode)
+  return note === null ? lines.join('\n') : `${lines.join('\n')}\n\n${note}`
 }

@@ -7,7 +7,7 @@ import type { CommandRun } from '../src/commands'
 import { offKey } from '../src/core/guards'
 import { STATUS_TOOL_ID, STATUS_TOOL_INPUT, statusText } from '../src/tool'
 import type { Guard } from '../src/guard'
-import { makeGuard, tempProject, withMeasure } from './fake'
+import { makeGuard, makeGuardWithStorage, tempProject, withMeasure } from './fake'
 
 const COMMANDS_DIR = join(import.meta.dir, '..', 'commands')
 const WORKFLOWS = ['setup', 'new-track', 'implement', 'review', 'status', 'revert', 'doctor', 'orchestrate']
@@ -46,22 +46,22 @@ describe('command helpers', () => {
 describe('/measure-off and /measure-on', () => {
   test('off for the session sets the bypass in memory only; on clears it', async () => {
     const root = await withMeasure(await tempProject())
-    const guard = makeGuard(root)
+    const { guard, storage } = makeGuardWithStorage(root)
     expect((await runCommand(guard, 'measure-off'))[0]).toContain('off for this session')
     expect(await guard.bypass.get(root)).toBe('session')
-    expect(guard.bypass.storage.map.has(offKey(root))).toBe(false)
+    expect(storage.map.has(offKey(root))).toBe(false)
     expect((await runCommand(guard, 'measure-on'))[0]).toContain('on again')
     expect(await guard.bypass.get(root)).toBeNull()
   })
 
   test('off for the repo keeps the choice in the storage; on repo removes it', async () => {
     const root = await withMeasure(await tempProject())
-    const guard = makeGuard(root)
+    const { guard, storage } = makeGuardWithStorage(root)
     await runCommand(guard, 'measure-off', 'repo')
-    expect(guard.bypass.storage.map.get(offKey(root))).toBe(true)
+    expect(storage.map.get(offKey(root))).toBe(true)
     expect(await guard.bypass.get(root)).toBe('repo')
     await runCommand(guard, 'measure-on', 'repo')
-    expect(guard.bypass.storage.map.has(offKey(root))).toBe(false)
+    expect(storage.map.has(offKey(root))).toBe(false)
     expect((await runCommand(guard, 'measure-on', 'repo'))[0]).toContain('were not off')
   })
 
@@ -110,7 +110,8 @@ describe('the markdown commands', () => {
       const text = readFileSync(join(COMMANDS_DIR, `measure-${workflow}.md`), 'utf8')
       const match = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(text)
       expect(match).not.toBeNull()
-      const [, front, body] = match as RegExpExecArray
+      const front = match?.[1] ?? ''
+      const body = match?.[2] ?? ''
       const description = /^description: (.*)$/m.exec(front)?.[1] ?? ''
       expect(description.length).toBeGreaterThan(10)
       // A plain YAML scalar must not hold ": "; a quoted one may.
