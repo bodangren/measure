@@ -95,3 +95,44 @@ export const appendNotes = (output: unknown, notes: readonly string[]): unknown 
   if (output === undefined || output === null) return block
   return `${JSON.stringify(output)}\n\n${block}`
 }
+
+// ---- S5: TDD guard and commit guard (strict) ----------------------------------
+
+/** What a tool result looks like to the shell helpers (`output`, `content`, `metadata` of the after event). */
+export type ToolResultLike = { output?: unknown; content?: unknown; metadata?: Record<string, unknown> }
+
+/**
+ * The exit code of a shell call from the tool result: `metadata.exit` (the
+ * `shell` tool of OpenCode 2.0, seen live: `{ status, truncated, exit }`) or
+ * `metadata.exitCode` when numeric; null when none is there.
+ */
+export const exitCodeOf = (result: ToolResultLike | null): number | null => {
+  throw new Error(`not implemented: exitCodeOf(${result === null})`)
+}
+
+/**
+ * True when a finished call failed: the after event has status `error`, or
+ * the shell call's exit code is not 0.
+ */
+export const callFailed = (status: 'completed' | 'error', result: ToolResultLike | null): boolean => {
+  throw new Error(`not implemented: callFailed(${status}, ${result === null})`)
+}
+
+/** The text of a tool result the model reads: `output` when a string, else the text parts of `content`. */
+export const resultText = (result: ToolResultLike | null): string => {
+  throw new Error(`not implemented: resultText(${result === null})`)
+}
+
+/** The commit SHA in the output of `git commit` (`[<branch> <sha>] <subject>`); null when absent. */
+export const commitShaOf = (text: string): string | null => {
+  throw new Error(`not implemented: commitShaOf(${text.length})`)
+}
+
+/**
+ * The files a commit takes, relative to the root: the staged paths (`git diff
+ * --cached --name-only`) and, when the command takes changes (`-a` or a `git
+ * add` before it), the changed and untracked paths too.
+ */
+export const commitFiles = async (root: string, takesChanges: boolean): Promise<string[]> => {
+  throw new Error(`not implemented: commitFiles(${root}, ${takesChanges})`)
+}
