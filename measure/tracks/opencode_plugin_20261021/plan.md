@@ -2,7 +2,7 @@
 
 Track: `opencode_plugin_20261021`. Spec: [spec.md](./spec.md). Each story-phase follows the Contract-First pipeline: acceptance criteria and contract, Red (failing test), Green (implementation), Docs, deferred manual verification.
 
-## Phase S1: Package skeleton and shared core
+## Phase S1: Package skeleton and shared core [checkpoint: eef6f8f]
 _Story ref: spec.md#story-s1_
 
 - [x] Task 1.1: Declare the verification tooling in `measure/tech-stack.md` (Tooling Exceptions row) and add `plugins/opencode-measure-guard/` to the Architecture tree `d7544db`
