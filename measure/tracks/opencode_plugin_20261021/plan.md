@@ -67,7 +67,7 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.4: Docs: README "Commands" and "Tool" sections `0496c78`
 - [b] Task: Measure - User Manual Verification 'Phase S7: Commands and the status tool' (Protocol in workflow.md) deferred:owner
 
-## Phase S8: Terminal band and status pane
+## Phase S8: Terminal band and status pane [checkpoint: 866a8f5]
 _Story ref: spec.md#story-s8_
 
 - [x] Task 8.1: Contract: `src/tui/model.ts` (pure: `bandModel(snapshot, state)` → lines and colors, `sidebarLines`, refresh rule by mtime) and `src/tui.tsx` (slots `prompt.footer.status`, `sidebar.content`, keymap command `/measure-guard`, refresh on events and timer) `198ab9c`
