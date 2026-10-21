@@ -1,0 +1,1 @@
+Task 3.1: Contract. src/hooks/types.ts (structural shapes of the OpenCode 2.0 session and tool hook events: ContextEvent, PromptEvent, CompactionEvent, ToolBeforeEvent, ToolAfterEvent), src/guard.ts (Guard with refresh, current, onContext, onPrompt, onCompaction, pendingNote; NOTE_MARK; RULE_AGENT = measure-orchestrator per spec decision 1). Bodies throw until Task 3.3.
