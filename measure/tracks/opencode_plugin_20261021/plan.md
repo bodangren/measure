@@ -43,8 +43,8 @@ _Story ref: spec.md#story-s4_
 ## Phase S5: TDD guard and commit guard (strict)
 _Story ref: spec.md#story-s5_
 
-- [~] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output)
-- [ ] Task 5.2: Red: `tests/tdd.test.ts` and `tests/commit.test.ts`
+- [x] Task 5.1: Contract: `recordRed` from `execute.after` of `bash`/`shell` (exit code from the tool result metadata, else the output text), `commitFiles(root, takesChanges)`, `commitShaOf(output)` (parse `[<branch> <sha>]` from the output) `41fefd8`
+- [~] Task 5.2: Red: `tests/tdd.test.ts` and `tests/commit.test.ts`
 - [ ] Task 5.3: Green: implement the strict guards in `src/hooks/tools.ts`
 - [ ] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits
 - [b] Task: Measure - User Manual Verification 'Phase S5: TDD guard and commit guard (strict)' (Protocol in workflow.md) deferred:owner
