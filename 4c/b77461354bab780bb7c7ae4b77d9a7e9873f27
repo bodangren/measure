@@ -1,0 +1,7 @@
+Phase S4 verification report.
+Tasks: 4.1 93fb41b (contract), 4.2 107a583 (Red: 13 tests), 4.3 ea997e1 (Green: edit guard, closeout guard, tool hooks), 4.4 faff85c (live deny check; note holds the deny text), 4.5 e9a5e5d (README Install and Guards). Extra fix commit after 4.5: closeout test typed for tsc.
+Checks: bun test 37 pass (6 files); bun x tsc --noEmit -p . ok after bun install (358 packages); parity ok; service log shows loading plugin for ~/.config/opencode/plugins/measure-guard.ts and no failed-to-load line.
+Live: write hello.txt in a project without a [~] task was denied with the editDecision text; file not created; agent quoted the deny text (session ses_ea304ccf4ffeIAGRrg1oW23d01).
+Findings: (1) a package folder with package.json under plugins/ is not loaded by OpenCode 2.0.32; a direct .ts entry file is (spec decision 9, entry/measure-guard.ts). (2) opencode run hung on this machine during the check with and without the plugin; the HTTP API worked (scratchpad http-run.py). (3) the write tool names its file path (not filePath); writtenPaths reads both.
+Deviation from the task text: the live check used the HTTP API instead of opencode run.
+Not verified: multiedit (the tool does not exist in 2.0.32) and apply_patch live; both have unit tests.
