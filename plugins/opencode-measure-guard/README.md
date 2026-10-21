@@ -78,6 +78,20 @@ Known limits of the strict guards: a test run inside a script the guard does not
 
 Live check (Task 4.4, OpenCode 2.0.32, model `coding-plan/glm-5.3-flash`): a `write` of `hello.txt` in a project with no `[~]` task failed with `measure-guard: no task in the track "..." is in progress. Mark the next task ...`, the file was not created, and the agent quoted the deny text.
 
+## End of turn
+
+The `prompt` hook records the turn start: the `git status --porcelain` lines and the `[x]` tasks without a SHA. The plugin watches `ctx.event.subscribe()` for the turn-end events `session.execution.succeeded`, `session.execution.failed`, and `session.execution.interrupted` (OpenCode 2.0.32 delivers these durable events to a plugin; the ephemeral `session.idle` never arrived in the live check, it is accepted too, and two events within one second count as one). On that event it computes the problems from the status lines at idle and the fresh snapshot (`turnProblems()` of the core): a `[x]` task that lost its SHA during the turn, or files changed outside `measure/` while no task has `[~]`. The problems go to the state file every time, also when the list is empty.
+
+What happens then depends on the mode:
+
+- **advise**: nothing more.
+- **guard**: a synthetic message with the problems goes into the session (`ctx.session.synthetic` with `resume: false`, so the agent does not start a new loop on it); OpenCode delivers it with the next user prompt. When the synthetic call fails, the same reminder rides on the next prompt text instead.
+- **strict**: a follow-up prompt with the problems (`ctx.session.prompt`) keeps the agent working, at most `MAX_BLOCKS` (2) times per user turn; then the reminder as in guard mode.
+
+The difference to the Claude Code mod: the mod blocks the Stop hook and holds the turn open; OpenCode has no hook that keeps a turn open, so strict mode sends a new prompt instead. Each follow-up ends in a new turn-end event, which counts on the same turn until a user prompt starts the next one. The bypass skips the check. Every plugin instance (one per project directory) sees every event; the check does nothing for a session whose prompt hook did not run in that instance.
+
+Live check (Task 6.3): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself.
+
 ## Checks
 
 ```bash
