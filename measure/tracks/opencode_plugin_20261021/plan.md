@@ -49,7 +49,7 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.4: Docs: README "Guards" section (TDD, commit) and the known limits `3d95057`
 - [b] Task: Measure - User Manual Verification 'Phase S5: TDD guard and commit guard (strict)' (Protocol in workflow.md) deferred:owner
 
-## Phase S6: End-of-turn check
+## Phase S6: End-of-turn check [checkpoint: ffa9cba]
 _Story ref: spec.md#story-s6_
 
 - [x] Task 6.1: Contract: `src/hooks/turn.ts` (`startTurn(sessionID, snapshot)`, `endTurn(sessionID)` → `{ problems, action }`, follow-up and reminder texts), event loop over `ctx.event.subscribe()` for `session.idle` `2ec89ff`
