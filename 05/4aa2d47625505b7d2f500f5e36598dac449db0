@@ -1,0 +1,6 @@
+Task 2.2 (Red): tests/snapshot.test.ts (real project copy in a temp git repo, no measure/, unknown tracks format, missing plan, planPathOf, git helpers), tests/state.test.ts (sessions, bypass with a fake storage, state file round trip, modeFrom), tests/fake.ts helpers. Failing output:
+(fail) modeFrom > option, then environment, then guard [0.20ms]
+
+ 0 pass
+ 11 fail
+Ran 11 tests across 2 files. [432.00ms]
