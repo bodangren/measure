@@ -1,0 +1,1 @@
+Band and sidebar text lines use wrapMode none and truncate (the long task text wrapped over many rows in the live terminal). README records the strict live run (two follow-ups, then the reminder) and the /measure-guard dialog run (the 'Measure' dialog with Tracks: and Active plan after the slash completion). Tech debt item narrowed to multiedit.
