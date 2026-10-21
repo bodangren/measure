@@ -1,27 +1,81 @@
 {
   "track_id": "opencode_plugin_20261021",
   "type": "feature",
-  "status": "new",
+  "status": "completed",
   "created_at": "2026-10-21T04:48:00Z",
-  "updated_at": "2026-10-21T04:48:00Z",
+  "updated_at": "2026-10-21T06:38:45Z",
   "description": "OpenCode plugin: measure-guard for OpenCode 2 (server and terminal parts), Measure agents, commands, installer targets, and documents",
   "estimated_tasks": 48,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 39,
+  "deviation_notes": "39 of the 48 plan tasks are done; the 9 'User Manual Verification' tasks stay [b] deferred:owner. Deviations: the live checks used the service HTTP API because `opencode run` hung on this machine (decision 9); the install layout changed twice (plugins-folder entry file, then root index.ts and tui.ts, after reading the host's resolver); the end-of-turn check triggers on session.execution.* events because session.idle never reached the plugin (decision 10); guard-mode reminders and command replies are synthetic messages with resume: false, delivered with the next prompt; notes go into result.content because the shell tool leaves output empty; `multiedit` does not exist in 2.0.32 but stays in the tool list. Four fix commits outside the task list (test type, turn-end events, root entries, closeout test type).",
   "sprint": {
     "goal": "An OpenCode user gets the same Measure guard rails as a Claude Code user: the plan state is visible, work outside the active plan is stopped, the Measure commands and roles are one keystroke away, and the installer keeps every copy current.",
     "stories": [
-      { "id": "S1", "title": "Package skeleton and shared core", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S2", "title": "Project snapshot and plugin state", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S3", "title": "Rule and task note", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S4", "title": "Edit guard and closeout guard", "size": "L", "priority": "Must", "status": "pending" },
-      { "id": "S5", "title": "TDD guard and commit guard (strict)", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S6", "title": "End-of-turn check", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S7", "title": "Commands and the status tool", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S8", "title": "Terminal band and status pane", "size": "L", "priority": "Must", "status": "pending" },
-      { "id": "S9", "title": "Installer targets and documents", "size": "M", "priority": "Must", "status": "pending" }
+      {
+        "id": "S1",
+        "title": "Package skeleton and shared core",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S2",
+        "title": "Project snapshot and plugin state",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S3",
+        "title": "Rule and task note",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S4",
+        "title": "Edit guard and closeout guard",
+        "size": "L",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S5",
+        "title": "TDD guard and commit guard (strict)",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S6",
+        "title": "End-of-turn check",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S7",
+        "title": "Commands and the status tool",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S8",
+        "title": "Terminal band and status pane",
+        "size": "L",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S9",
+        "title": "Installer targets and documents",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      }
     ],
-    "demo_notes": null,
-    "retro_ref": null
+    "demo_notes": "Live on OpenCode 2.0.32: a write without a [~] task was denied with the editDecision text; the prompt carried the task note; a file changed during a turn produced the end-of-turn reminder and the state file; /measure-off, /measure-on, /measure-guard replied; measure_status answered through code mode; the terminal showed the band above the prompt; the installer test and --check list the new targets.",
+    "retro_ref": "measure/lessons-learned.md#2026-10-21-opencode_plugin"
   }
 }
