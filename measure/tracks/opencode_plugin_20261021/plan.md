@@ -64,13 +64,13 @@ _Story ref: spec.md#story-s7_
 - [x] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/` `90955b3`
 - [x] Task 7.2: Red: `tests/commands.test.ts` (off/on session and repo, status reply, tool output) and a test that every markdown command has a description and names its workflow `59331f9`
 - [x] Task 7.3: Green: implement the commands and the tool; write the markdown commands; wire `command.transform` and `tool.transform` `aac69a2`
-- [~] Task 7.4: Docs: README "Commands" and "Tool" sections
+- [x] Task 7.4: Docs: README "Commands" and "Tool" sections `0496c78`
 - [b] Task: Measure - User Manual Verification 'Phase S7: Commands and the status tool' (Protocol in workflow.md) deferred:owner
 
 ## Phase S8: Terminal band and status pane
 _Story ref: spec.md#story-s8_
 
-- [ ] Task 8.1: Contract: `src/tui/model.ts` (pure: `bandModel(snapshot, state)` → lines and colors, `sidebarLines`, refresh rule by mtime) and `src/tui.tsx` (slots `prompt.footer.status`, `sidebar.content`, keymap command `/measure-guard`, refresh on events and timer)
+- [~] Task 8.1: Contract: `src/tui/model.ts` (pure: `bandModel(snapshot, state)` → lines and colors, `sidebarLines`, refresh rule by mtime) and `src/tui.tsx` (slots `prompt.footer.status`, `sidebar.content`, keymap command `/measure-guard`, refresh on events and timer)
 - [ ] Task 8.2: Red: `tests/tui-model.test.ts` (band line, yellow on parse error, problems line, setup text without `measure/`, refresh decision)
 - [ ] Task 8.3: Green: implement `model.ts` and `tui.tsx`
 - [ ] Task 8.4: Load check: with the package installed, start the terminal through the running service under a pseudo-terminal for 20 s; the log shows `loading plugin` for the tui entry and no `failed to load plugin`; record the result in the git note
