@@ -109,6 +109,18 @@ The folder `commands/` holds the eight Measure workflow commands as markdown fil
 
 `measure_status` (added through `tool.transform`, no parameters) returns the status lines and the task note as text, so an agent can ask for the plan position instead of reading `tracks.md` and `plan.md`. Live check: the model called it through OpenCode's code mode (`tools.measure_status()`) and quoted the tracks, the active track, and the next task.
 
+## Terminal
+
+`src/tui.tsx` is the terminal plugin (`measure.guard.tui`, loaded from `tui.ts` at the package root). It reads the Measure files and the state file of the terminal's project directory itself and renders:
+
+- **The band** in `prompt.footer.status`: `bandLine()` dim (the track, `Phase p/P`, `Task t/T [~] <task>`, the `[b]` count, the bypass), in the theme's warning colour when the Measure files cannot be read, and below it `End of turn: <problems>` from the state file when the last check found problems. In a git repository without `measure/` the band says so and names `/measure-setup` and `/measure-off`.
+- **The sidebar block** in `sidebar.content`: a `Measure` title and the status lines (tracks, active plan phases, `[b]` tasks, guard state).
+- **`/measure-guard`** in the terminal (slash completion and the palette): a select dialog with the status lines.
+
+The band refreshes on a 5 s timer, on `file.edited` and the turn-end events of the event stream, and only reads the files again when an mtime changed. The state file belongs to the server plugin; the terminal plugin never writes it.
+
+Load check (Task 8.4, OpenCode 2.0.32): the terminal started under a pseudo-terminal in a project with `measure/`; the log shows `plugin reconciliation completed ... plugins=13` for the terminal and no `failed to load plugin`; the screen capture holds the dim band line `Measure · OpenCode plugin: measure-guard for OpenCode 2, ...`.
+
 ## Checks
 
 ```bash
