@@ -55,13 +55,13 @@ _Story ref: spec.md#story-s6_
 - [x] Task 6.1: Contract: `src/hooks/turn.ts` (`startTurn(sessionID, snapshot)`, `endTurn(sessionID)` → `{ problems, action }`, follow-up and reminder texts), event loop over `ctx.event.subscribe()` for `session.idle` `2ec89ff`
 - [x] Task 6.2: Red: `tests/end-of-turn.test.ts` (advise: no action; guard: synthetic reminder; strict: follow-up twice then reminder; bypass: nothing; state file written) `77fe1fe`
 - [x] Task 6.3: Green: implement `turn.ts`, the event loop in `src/index.ts`, the synthetic message and the follow-up prompt through `ctx.session` `904c18d`
-- [~] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod
+- [x] Task 6.4: Docs: README "End of turn" section with the strict-mode difference to the mod `bab2f6d`
 - [b] Task: Measure - User Manual Verification 'Phase S6: End-of-turn check' (Protocol in workflow.md) deferred:owner
 
 ## Phase S7: Commands and the status tool
 _Story ref: spec.md#story-s7_
 
-- [ ] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/`
+- [~] Task 7.1: Contract: `src/commands.ts` (three command definitions and their reply texts), `src/tool.ts` (`measure_status` tool definition), the eight markdown commands in `commands/`
 - [ ] Task 7.2: Red: `tests/commands.test.ts` (off/on session and repo, status reply, tool output) and a test that every markdown command has a description and names its workflow
 - [ ] Task 7.3: Green: implement the commands and the tool; write the markdown commands; wire `command.transform` and `tool.transform`
 - [ ] Task 7.4: Docs: README "Commands" and "Tool" sections
