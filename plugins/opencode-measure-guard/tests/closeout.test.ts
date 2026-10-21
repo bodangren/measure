@@ -3,6 +3,9 @@ import { describe, expect, test } from 'bun:test'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { ToolAfterEvent, ToolBeforeEvent } from '../src/hooks/types'
+
+/** A completed call, so the tests can read `result`. */
+type CompletedEvent = ToolAfterEvent & { status: 'completed' }
 import { TRACK, makeGuard, tempProject, withMeasure } from './fake'
 
 const before = (filePath: string, oldString: string, newString: string, id = 'call_1'): ToolBeforeEvent => ({
@@ -14,7 +17,7 @@ const before = (filePath: string, oldString: string, newString: string, id = 'ca
   input: { filePath, oldString, newString },
 })
 
-const after = (event: ToolBeforeEvent, output = 'done'): ToolAfterEvent => ({
+const after = (event: ToolBeforeEvent, output = 'done'): CompletedEvent => ({
   tool: event.tool,
   sessionID: event.sessionID,
   agent: event.agent,
