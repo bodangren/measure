@@ -2,8 +2,14 @@
 // file to the lines of the band and the sidebar, and the refresh rule. The
 // terminal plugin (src/tui.tsx) reads the files and renders; the tests call
 // these functions directly.
+import { bandLine, joinPath, statusLines } from '../core/parse'
+import { needsSetup, setupBandText } from '../core/guards'
 import type { Snapshot } from '../types'
 import type { StateFile } from '../state'
+
+/** The state file counts only when it belongs to the snapshot's root. */
+const stateFor = (snapshot: Snapshot | null, state: StateFile | null): StateFile | null =>
+  snapshot !== null && state !== null && state.root === snapshot.root ? state : null
 
 /** How a band line is drawn. */
 export type Tone = 'dim' | 'plain' | 'warn'
@@ -21,17 +27,32 @@ export type BandModel = { lines: BandLine[] } | null
  * outside a repository.
  */
 export const bandModel = (snapshot: Snapshot | null, state: StateFile | null): BandModel => {
-  throw new Error(`not implemented: bandModel(${snapshot === null}, ${state === null})`)
+  if (snapshot === null) return null
+  if (needsSetup(snapshot)) {
+    const text = setupBandText('pending')
+    return text === null ? null : { lines: [{ text: `${text} /measure-setup sets it up; /measure-off turns the guards off for this session.`, tone: 'plain' }] }
+  }
+  const own = stateFor(snapshot, state)
+  const line = bandLine(snapshot, own?.guardsOff ?? null)
+  if (line === null) return null
+  const lines: BandLine[] = [{ text: line, tone: snapshot.parseError !== null ? 'warn' : 'dim' }]
+  const problems = own?.problems ?? []
+  if (problems.length > 0) lines.push({ text: `End of turn: ${problems.join(' · ')}`, tone: 'warn' })
+  return { lines }
 }
 
 /** The lines of the sidebar block: a "Measure" title and `statusLines()` with the bypass from the state file. */
-export const sidebarLines = (snapshot: Snapshot | null, state: StateFile | null): string[] => {
-  throw new Error(`not implemented: sidebarLines(${snapshot === null}, ${state === null})`)
-}
+export const sidebarLines = (snapshot: Snapshot | null, state: StateFile | null): string[] => [
+  'Measure',
+  ...statusLines(snapshot, stateFor(snapshot, state)?.guardsOff ?? null),
+]
 
 /** The files whose mtime drives a refresh: the Measure files of the snapshot and the state file. */
 export const watchedPaths = (root: string, snapshot: Snapshot | null, statePath: string): string[] => {
-  throw new Error(`not implemented: watchedPaths(${root}, ${snapshot === null}, ${statePath})`)
+  const paths = [joinPath(root, 'measure', 'index.md'), snapshot?.tracksPath ?? joinPath(root, 'measure', 'tracks.md')]
+  if (snapshot?.active !== null && snapshot?.active !== undefined) paths.push(snapshot.active.planPath)
+  paths.push(statePath)
+  return paths
 }
 
 /** A map of path to mtime (ms); a missing file is 0. */
@@ -39,7 +60,9 @@ export type Mtimes = Record<string, number>
 
 /** True when a watched file changed, appeared, or disappeared since the last read. */
 export const needsRefresh = (seen: Mtimes, now: Mtimes): boolean => {
-  throw new Error(`not implemented: needsRefresh(${Object.keys(seen).length}, ${Object.keys(now).length})`)
+  const keys = new Set([...Object.keys(seen), ...Object.keys(now)])
+  for (const key of keys) if (seen[key] !== now[key]) return true
+  return false
 }
 
 /** The event types of the OpenCode stream after which the band reads the files again. */

@@ -37,7 +37,7 @@ describe('bandModel', () => {
   })
 
   test('a parse error turns the band line to warn', async () => {
-    const root = await withMeasure(await tempProject(), { tracks: 'no track lines here\n' })
+    const root = await withMeasure(await tempProject(), { tracks: '# Tracks\n\n- [~] Track with no link\n' })
     const band = bandModel(await loadSnapshot(root), null)
     expect(band?.lines[0]?.tone).toBe('warn')
     expect(band?.lines[0]?.text).toContain('cannot read the Measure files')
