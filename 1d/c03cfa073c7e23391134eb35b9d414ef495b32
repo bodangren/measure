@@ -1,0 +1,8 @@
+F14 (Review C review-c-s3-33f608d.json, routed by the orchestrator): under set -uo pipefail, a condition printf '%s\n' "$x" | grep -q... can fail when grep -q exits early and printf gets a broken pipe. In a negative check the race gives a false pass. This commit replaces each such condition (23 in total) with grep -q... -- PATTERN <<< "$x". No pattern, message, or check count changed. Value pipelines $(... | head -n 1 ...) did not change. The script measure/runs/spec_review_gate_20261030/adversarial-s3-herestring.py applied the change.
+Totals before -> after:
+test_s1_standard.sh: 16 checks (PASS=16, FAIL=0) -> 16 checks (PASS=16, FAIL=0)
+test_s1_new_track.sh: 41 checks (PASS=41, FAIL=0) -> 41 checks (PASS=41, FAIL=0)
+test_s1_adversarial.sh: 103 checks (PASS=103, FAIL=0) -> 103 checks (PASS=103, FAIL=0)
+test_s2_role_docs.sh: 52 checks (PASS=52, FAIL=0) -> 52 checks (PASS=52, FAIL=0)
+test_s3_dispositions_docs.sh: 71 checks (PASS=71, FAIL=0) -> 71 checks (PASS=71, FAIL=0)
+Stress: 300 runs (xargs -P 16) of test_s3_dispositions_docs.sh after the change all gave 71 checks (PASS=71, FAIL=0).
