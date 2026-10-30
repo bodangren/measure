@@ -1,0 +1,4 @@
+Task 1.1: Contract: Tooling Exceptions row for spec_review_gate_20261030.
+Summary: declared the role-gate spec-review CLI, the dispositions: check, and the verification layer (bash contract tests, python3 unittest, run.sh) in measure/tech-stack.md.
+Files: measure/tech-stack.md.
+Why: the tech stack requires a track to declare its test tooling before it writes tests (Tooling Exceptions rule).
