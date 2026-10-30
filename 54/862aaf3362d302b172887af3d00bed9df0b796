@@ -1,0 +1,7 @@
+S1 review remediation round 2, F1 to F5. Files: skills/measure/references/new-track.md §2.5 step 9, skills/measure/references/spec-review.md, and byte-identical copies in claude-skills/measure/.
+F1 fixed (sub-step 8): the approval question now has Header, Question, and Options lines in the §2.2 format. Options: Approve the commit / Stop / Type your own answer. It says 'Wait for the user's response.' and 'Step 10 runs only after the user approves the commit.'
+F2 fixed (sub-step 4): the author checks the returned text for a secret value (a key, a token, a password). When one occurs, the author replaces the value with its file and line. The sentence 'Write the returned text' keeps the meaning otherwise unchanged.
+F3 fixed: sub-step 5 and sub-step 8 use the same Options format as §2.2 (Header, Question, Options, Type your own answer).
+F4 fixed (spec-review.md Re-Review Limit): 'at most one re-review' is plain text, not in backticks.
+F5 fixed (spec-review.md not-run form): blank lines separate the title, Author model:, and the not-run line. The Red tests still pass, so the change stayed.
+Verification: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> 2 suites (PASS=2, FAIL=0), 41 and 16 checks pass. The full runner gives the same result. diff -r skills/measure claude-skills/measure -> empty. test_s1_new_track.sh reports 'steps 1 to 8 equal the track base'. No test file changed. No S1 contract string or Red test string was removed.
