@@ -1,0 +1,5 @@
+Adversarial testing S1 (role base ff361ff). Added tests/spec_review_gate/test_s1_adversarial.sh: 103 checks (PASS=103, FAIL=0).
+Part 1 probes copies of run.sh: zero match, non-suite match, patterns with '..' or '/', shell syntax in a pattern, one failing suite among three passing suites, exit 7 and a killed suite, a false summary line, names with a space, .py import and syntax errors, duplicate patterns, default patterns, the pattern '*.sh' that selects run.sh, and a run from /.
+Part 2 mutates copies of the S1 inputs. Each mutation turns its target check from PASS to FAIL (A4, A7, A3, A5), after a baseline copy gives PASS.
+Sensitivity: four broken runner copies (no '..' filter, no dedup, exit 0 on failure, no .py) each fail this suite.
+Gate: bash tests/spec_review_gate/run.sh exit 0, 3 suites (PASS=3, FAIL=0); bun test plugins/opencode-measure-guard exit 0, 85 pass, 0 fail.
