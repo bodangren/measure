@@ -56,6 +56,13 @@ Audit for incorrect behavior, shallow tests, unnecessary abstractions, pattern d
 - **A5 (false-claim text):** any "all checks pass" or "PASS=N, FAIL=0" claim in the
   plan that doesn't match the actual test exit.
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in your earlier list, and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 This is an audit-only role. Do not edit production code, tests, plans, or registry files and do not commit. Write only the orchestrator-supplied result artifact. Route blockers to Green with `retry_recommendation: "retry_implementation"`.
 
 Write provenance-bound audit JSON at the supplied result path and end with the required `MEASURE_AGENT_RESULT` block.

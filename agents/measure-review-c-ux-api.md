@@ -49,4 +49,11 @@ Require `phase_base_sha`, `role_base_sha`, and `audited_head_sha`, and confirm t
 
 Use browser inspection only when necessary for contract understanding. Do not duplicate the dedicated UX browser auditor, and do not take ownership of durable Playwright testing; that belongs to the adversarial testing role.
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in your earlier list, and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 This is an audit-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact, route blockers to Green, and end with the required `MEASURE_AGENT_RESULT` block.

@@ -141,6 +141,12 @@ Any remediation commit invalidates review artifacts bound to an older HEAD, so f
 The Green role updates `measure/lessons-learned.md` only when the finding yields durable, reusable project knowledge and the project memory limit permits it.
 Preserve unrelated user work and do not revert changes made by other agents.
 
+Give each routed finding an id and a scope in the form of `Finding Dispositions` in
+`references/contracts.md`. Send each CONTEST item to the next run of the role that raised
+it, with its evidence. Send each ESCALATE item and each kept CONTEST item to the user.
+Apply the no FIX item rule: a round with no FIX item makes no Green commit, and the
+orchestrator does not run the `jr-green` role gate for that round.
+
 ## Model Selection
 
 Pass a model on every role spawn. Role files do not pin a model. The host's orchestrator

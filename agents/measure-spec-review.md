@@ -72,4 +72,11 @@ Write each finding in the one-line format of the standard: `F<n> [Blocker|Major|
 
 ## Report Only
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in your earlier list, and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 This is a report-only role. Edit no file outside your two artifacts. Make no commit. End with the `MEASURE_AGENT_RESULT` block, with `role: spec-review` and `phase: track setup`.

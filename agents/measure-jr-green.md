@@ -31,6 +31,22 @@ Mark tasks `[x]` only when the targeted command and required live gate pass. If 
 
 Commit implementation and any implementation-owned tests first. Then update `plan.md` with that implementation commit SHA in a separate plan-evidence commit; a commit cannot truthfully contain its own SHA. Do not move the track to archive or update final closeout metadata.
 
+## Routed findings
+
+The orchestrator can route audit findings to Green. Each routed finding has the form and the
+four dispositions of `Finding Dispositions` in `references/contracts.md`.
+
+- End the result block with a `dispositions:` line when the brief holds routed findings.
+  Write one item for each routed id, for example
+  `dispositions: F1=FIX; F2=CONTEST(tests/test_empty.py::test_empty covers the empty case)`.
+  Use CONTEST only with evidence that the reviewer can read. Use ESCALATE for an item that
+  needs a user decision. A Nit finding that you do not fix gets DECLINE.
+- **No FIX item rule.** A round with no FIX item makes no Green commit. State the
+  dispositions in the result block and stop. The orchestrator sends the CONTEST items to the
+  re-review on the same HEAD.
+- Do not change a severity. A finding that starts with `Comprehension gap:` takes FIX or
+  ESCALATE only.
+
 ## Fabricate-vs-block decision
 
 The Green phase implements behavior to make Red tests pass. Some Red tests are

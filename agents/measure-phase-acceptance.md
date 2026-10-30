@@ -67,4 +67,11 @@ If any of these are present, the phase is not truly complete. Either fix the
 implementation/test or fix the plan text — do not paper over the
 finding with a "we'll fix it later" note.
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in your earlier list, and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 This is a gate-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact. Any blocker fails acceptance and routes to the owning role; acceptance must be rerun against the resulting new HEAD. End with the required `MEASURE_AGENT_RESULT` block.
