@@ -1,0 +1,9 @@
+Review B remediation for Phase S2 at 882f068 (phase base ccdaae2).
+
+F1 [Blocker] SPEC_REVIEW_FINDING_RE had no end anchor and validate_spec_review_payload used re.match. Fix: reject a finding when len(finding.splitlines()) != 1, and use SPEC_REVIEW_FINDING_RE.fullmatch. The message stays 'spec-review finding has an invalid format: <finding>'.
+
+F2 [Blocker] the scope rule stripped each path of 'git diff --name-only'. Fix: run 'git diff --name-only --no-renames -z <baseline>..HEAD', split the output on NUL, drop only the empty last item, and do not strip. The gate keeps the git-error message and one '- <path>' line per path.
+
+Probe F1 (audit-result in a temporary folder, GIT_CONFIG_GLOBAL=/dev/null, GIT_CONFIG_NOSYSTEM=1): before the fix, nonblocking_findings ['F1 [Major] x: y<sep>F2 [Blocker] z: real blocker'] with status pass gave exit 0 and 'PASS: audit result is valid' for LF, CR, and U+2028. After the fix, each gave exit 1 and the invalid-format message. A single-line [Major] finding still gave exit 0.
+
+Probe F2 (role-gate in a temporary git repository): before the fix, the path ' measure/runs/x' gave exit 0, and the path U+3000+'measure/runs/x' with core.quotePath=false gave exit 0. After the fix, each gave exit 1 and '- <path>' with the exact path. Before the fix, 'measure/runs/demo_track/<u umlaut>.txt' gave exit 1; after the fix it gave exit 0. The paths src/a.py and src/b.py gave exit 1 with two '- <path>' lines. The baseline '^<sha>' gave the git-error message.
