@@ -80,6 +80,8 @@ ROLE_ALIASES = {
 }
 
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
+DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
+DISPOSITIONS_PREFIX = "dispositions:"
 
 
 @dataclass(frozen=True)
@@ -413,6 +415,69 @@ def has_agent_result(log_path: str) -> bool:
     return "MEASURE_AGENT_RESULT" in text and "END_MEASURE_AGENT_RESULT" in text
 
 
+def dispositions_feedback(log_path: str) -> list[str]:
+    """Validate the optional `dispositions:` line of the last result block (S3).
+
+    The line is optional. Without the line, this returns no feedback. The value `none` is
+    valid. Any other value is a `;`-separated list of items. Each item must match the whole
+    item pattern after `strip()`, and the text of CONTEST and ESCALATE needs a non-space
+    character. The log splits on LF only, so a CR or another separator cannot hide an
+    invalid item inside the line.
+    """
+    if not log_path:
+        return []
+    path = Path(log_path)
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
+        text = handle.read()
+    lines = text.split("\n")
+    start = -1
+    for index, line in enumerate(lines):
+        if line.strip() == "MEASURE_AGENT_RESULT":
+            start = index
+    if start < 0:
+        return []
+    end = -1
+    for index in range(start + 1, len(lines)):
+        if lines[index].strip() == "END_MEASURE_AGENT_RESULT":
+            end = index
+            break
+    if end < 0:
+        return []
+    value = ""
+    found = False
+    for line in lines[start + 1 : end]:
+        stripped = line.strip()
+        if stripped.startswith(DISPOSITIONS_PREFIX):
+            value = stripped[len(DISPOSITIONS_PREFIX) :].strip()
+            found = True
+            break
+    if not found or value == "none":
+        return []
+    feedback: list[str] = []
+    seen: set[str] = set()
+    for raw in value.split(";"):
+        item = raw.strip()
+        if not item:
+            feedback.append("invalid dispositions line: empty item")
+            continue
+        match = DISPOSITIONS_ITEM_RE.fullmatch(item)
+        if not match:
+            feedback.append(f"invalid dispositions line: {item}")
+            continue
+        text_value = match.group(3)
+        if text_value is not None and not text_value.strip():
+            feedback.append(f"invalid dispositions line: {item}")
+            continue
+        finding_id = item.split("=", 1)[0]
+        if finding_id in seen:
+            feedback.append(f"invalid dispositions line: duplicate finding id {finding_id}")
+            continue
+        seen.add(finding_id)
+    return feedback
+
+
 def gate_command(repo: Path, label: str, command: str, *, expect_failure: bool = False, required: bool = True) -> list[str]:
     if not command:
         return [f"{label} is required but unset"] if required else []
@@ -560,6 +625,9 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
 
     if not has_agent_result(args.log_file):
         feedback.append("missing MEASURE_AGENT_RESULT block")
+
+    if args.log_file and Path(args.log_file).exists():
+        feedback.extend(dispositions_feedback(args.log_file))
 
     if role == "strategy":
         strategy = measure_dir(repo) / "tracks" / args.track / "test-strategy.md"
