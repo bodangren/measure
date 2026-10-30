@@ -418,7 +418,7 @@ def has_agent_result(log_path: str) -> bool:
 
 
 def dispositions_feedback(log_path: str) -> list[str]:
-    """Validate the optional `dispositions:` line of the last complete result block (S3).
+    """Validate the optional `dispositions:` line of the last result block (S3).
 
     The line is optional. Without the line, this returns no feedback. The value `none` is
     valid. Any other value is a `;`-separated list of items. Each item must match the whole
@@ -426,10 +426,11 @@ def dispositions_feedback(log_path: str) -> list[str]:
     character. The log splits on LF only, so a CR or another separator cannot hide an
     invalid item inside the line.
 
-    Only a complete block counts. A start line counts when a later line is exactly
-    `END_MEASURE_AGENT_RESULT` with no other start line between the two. A stray start
-    line without an end line therefore cannot hide the block before it. The block holds
-    one dispositions line at most, and a second line fails the check.
+    The block ends at the last `END_MEASURE_AGENT_RESULT` line. It starts at the first
+    `MEASURE_AGENT_RESULT` line after the previous end line, or after the top of the file
+    when no earlier end line exists. Every `dispositions:` line in that range is read, so a
+    second start line inside the block cannot hide an invalid line above it. A log without
+    an end line gives no feedback.
     """
     if not log_path:
         return []
@@ -440,19 +441,24 @@ def dispositions_feedback(log_path: str) -> list[str]:
         text = handle.read()
     lines = text.split("\n")
     starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
-    start = -1
-    end = -1
-    for position, index in enumerate(starts):
-        limit = starts[position + 1] if position + 1 < len(starts) else len(lines)
-        for probe in range(index + 1, limit):
-            if lines[probe].strip() == AGENT_RESULT_END:
-                start = index
-                end = probe
-                break
-    if start < 0:
+    ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
+    last_end = -1
+    for index in ends:
+        if any(start < index for start in starts):
+            last_end = index
+    if last_end < 0:
         return []
+    starts_before_end = [start for start in starts if start < last_end]
+    if not starts_before_end:
+        return []
+    earlier_ends = [index for index in ends if index < starts_before_end[-1]]
+    floor = earlier_ends[-1] if earlier_ends else -1
+    block_starts = [start for start in starts if floor < start < last_end]
+    if not block_starts:
+        return []
+    start = block_starts[0]
     values: list[str] = []
-    for line in lines[start + 1 : end]:
+    for line in lines[start + 1 : last_end]:
         stripped = line.strip()
         if stripped.startswith(DISPOSITIONS_PREFIX):
             values.append(stripped[len(DISPOSITIONS_PREFIX) :].strip())

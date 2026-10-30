@@ -115,22 +115,24 @@ Write `dispositions: none` when the role gets routed findings and marks none of 
 
 - `FIX` and `DECLINE` take no text. `CONTEST(<evidence>)` and `ESCALATE(<reason>)` need non-empty text without `;`.
 - Items are separated by `;`. An empty value, an empty item, a repeated id, or a word in lowercase fails the `role-gate` check with `invalid dispositions line`.
-- The check reads only the last complete result block of the log. A stray `MEASURE_AGENT_RESULT` line without a later `END_MEASURE_AGENT_RESULT` does not start a block.
+- The check reads only the last result block of the log. The block ends at the last `END_MEASURE_AGENT_RESULT` line.
+- The block starts at the first `MEASURE_AGENT_RESULT` line after the previous `END_MEASURE_AGENT_RESULT` line, or after the first line of the log when no earlier end line exists.
+- The check reads every `dispositions:` line in that range, so a second start line inside the block cannot hide a line above it. A log with no end line gives no feedback.
 - The block holds one dispositions line. A second dispositions line fails the check with `invalid dispositions line: more than one dispositions line`.
-- A line after `END_MEASURE_AGENT_RESULT` does not count.
+- A `dispositions:` line after the block end does not count.
 
-**Worked example.** The orchestrator routes two findings to Green, `F1` and `F2`. Green fixes `F1` and contests `F2` with a test as the evidence:
+**Worked example.** The orchestrator routes three findings to Green, `F1`, `F2`, and `F3`. Green fixes `F1` and contests `F2` and `F3` with a test as the evidence:
 
 ```markdown
 MEASURE_AGENT_RESULT
 role: jr-green
 status: complete
 ...
-dispositions: F1=FIX; F2=CONTEST(tests/test_empty.py::test_empty covers the empty case)
+dispositions: F1=FIX; F2=CONTEST(tests/test_empty.py::test_empty covers the empty case); F3=CONTEST(tests/test_retry.py::test_retry covers the retry case)
 END_MEASURE_AGENT_RESULT
 ```
 
-The re-review reads the evidence and withdraws `F2`. It keeps its own `F3` and reports:
+The re-review reads the evidence and withdraws `F2`. It keeps the routed item `F3` and reports:
 
 ```json
 "evidence": ["F2 withdrawn: tests/test_empty.py::test_empty covers the empty case"],
@@ -144,5 +146,5 @@ A re-review runs on the new HEAD. The next run of the role that raised a finding
 - To keep an item, the reviewer writes the routed finding text plus ` | CONTEST kept: <reason>` in that run's result, in the same list that held the finding before (`blocking_findings` or `nonblocking_findings`), and sets `retry_recommendation: escalate_human`.
 - The orchestrator sends each ESCALATE item and each kept CONTEST item to the user.
 
-**No FIX item.** A round with no FIX item makes no Green commit. The orchestrator does not run the `jr-green` role gate for that round. It checks that the result block has a disposition for each routed id. Then it sends the CONTEST items to the re-review on the same HEAD. The next review therefore runs on the same HEAD, and it handles each CONTEST item the same way as in a round with a new commit.
+**No FIX item.** A round with no FIX item makes no Green commit. The orchestrator does not run the `jr-green` role gate for that round. It checks that the result block has a disposition for each routed id. Then it sends the CONTEST items to the re-review on the same HEAD. It handles each CONTEST item the same way as in a round with a new commit.
 
