@@ -9,6 +9,7 @@
 * **spec review:** `new-track` now runs one fresh subagent against the new standard `references/spec-review.md` before the track commit. The step writes `spec-review.md` in the track folder and adds it to the track index. Track `spec_review_gate_20261030`.
 * **spec review role:** the new report-only `measure-spec-review` subagent reviews `spec.md` and `plan.md` once per track, before the first strategy role. `role-gate --role spec-review` checks the paraphrase, the finding format, the verdict, and the commit scope. Track `spec_review_gate_20261030`.
 * **installer:** `bin/install-targets.tsv` rows for the OpenCode plugin (without `tests/`), its commands, and the agents under `~/.config/opencode/`; the pattern column accepts bash extglob forms such as `!(tests/*)`.
+* **finding dispositions:** every routed finding gets one disposition: FIX, CONTEST with evidence that the reviewer can read, ESCALATE to the user, or DECLINE for a Nit finding. `role-gate --log-file` checks the optional `dispositions:` line of the result block. The Green role, the review roles, the phase-acceptance role, the spec review standard, and the `review` workflow use the same four words. Track `spec_review_gate_20261030`.
 
 ## [0.4.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.4.0...conductor-v0.4.1) (2026-03-11)
 

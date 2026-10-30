@@ -206,7 +206,7 @@ For larger tracks, the `measure-orchestrator` skill runs a track as a sequence o
 | `measure-closeout` | Archives the track and checks the closeout record. |
 | `measure-orchestrator-audit` | Audits the framework itself for known anti-patterns. |
 
-Review and audit roles only report. The orchestrator sends each finding back to the Green role with its evidence, and a fix makes older reviews invalid, so the reviews run again.
+Review and audit roles only report. The orchestrator sends each finding back to the Green role with its evidence, and a fix makes older reviews invalid, so the reviews run again. Each routed finding gets one disposition: FIX, CONTEST with cited evidence, ESCALATE to the user, or DECLINE for a Nit finding.
 
 ---
 
