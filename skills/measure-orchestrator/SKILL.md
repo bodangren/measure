@@ -5,7 +5,7 @@ description: Orchestrate Measure track execution with dedicated subagents, role-
 
 # Measure Orchestrator
 
-Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are already registered as opencode subagent types — invoke them with the `task` tool's `subagent_type` parameter. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
+Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-spec-review`, `measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are already registered as opencode subagent types — invoke them with the `task` tool's `subagent_type` parameter. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
 
 ## Anti-Patterns Registry
 
@@ -92,6 +92,7 @@ testing and UX review run on the reviewed HEAD. Phase acceptance runs last, on a
 immutable HEAD. The audit role runs at any point in the cycle (recommended: weekly).
 Final Acceptance must pass before Closeout.
 
+0. `measure-spec-review` (once per track, phase "track setup", before the first `measure-strategy`)
 1. `measure-strategy`
 2. `measure-mid-red`
 3. `measure-jr-green`
@@ -104,6 +105,8 @@ Final Acceptance must pass before Closeout.
 10. `measure-orchestrator-audit` (anytime; recommended weekly)
 11. `measure-final-acceptance`
 12. `measure-closeout`
+
+Spec review gate: run `measure-spec-review` once per track, before the first `measure-strategy`. Skip the role when the plan already has an `[x]` task, or when `measure/runs/<track>/` already holds a passing `spec-review-*.json`. On a fail, the role returns `retry_recommendation: escalate_human`. The user or a build session then revises and commits `spec.md` or `plan.md`, and the orchestrator runs the role one more time. A re-run happens only after a committed revision of `spec.md` or `plan.md`. After a second fail, the user accepts the remaining findings as risks or stops the run. On a pass, list the Major findings in the next update to the user and continue.
 
 The `measure-orchestrator-audit` role is the only one that audits the *framework* itself
 (test scripts, plan truthfulness). Other audit roles audit the
@@ -144,6 +147,10 @@ Pass a model on every role spawn. Role files do not pin a model. The host's orch
 agent file keeps the role-to-model table, because plans and quotas differ per host.
 
 - Red and Green use different model families.
+- The spec reviewer uses a family other than the family that wrote spec.md and plan.md.
+  Read the `Author model:` line of `measure/tracks/<track>/spec-review.md`. When that line
+  is absent or `unknown`, use a family other than the family of the host build agent, and
+  record the assumption as a deviation.
 - An auditor uses a family other than the family whose work it audits.
 - Review A and Review B use different families.
 - Phase acceptance uses a family other than Red. Final acceptance uses a family other
@@ -160,6 +167,7 @@ agent file keeps the role-to-model table, because plans and quotas differ per ho
 Run the checker after each role. Treat failures as feedback for the next attempt.
 
 ```bash
+python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track TRACK --phase "track setup" --baseline BASE_SHA --result-file RESULT.json --log-file LOG
 python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role mid-red --track TRACK --phase "Phase 2: Test" --baseline BASE_SHA --log-file LOG
 python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track TRACK --phase "Phase 2: Test" --baseline BASE_SHA --result-file RESULT.json --log-file LOG
 python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track TRACK

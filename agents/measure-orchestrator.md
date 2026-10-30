@@ -156,7 +156,8 @@ track-authoring edits are required.
 
 ## Role Handoff Rules
 
-- Run roles in the skill's order: strategy, Red, Green, Reviews A, B, and C in
+- Run roles in the skill's order: spec review once per track before the first strategy,
+  then strategy, Red, Green, Reviews A, B, and C in
   parallel, remediation, adversarial testing, UX browser review when applicable, and
   phase acceptance. After every phase passes, run final acceptance and then closeout.
 - Give each role result and log paths inside its write scope. Audit roles can edit

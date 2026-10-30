@@ -59,3 +59,25 @@ UX audits add:
   }
 }
 ```
+
+## Spec Review JSON
+
+Spec review audits add this object to the audit schema above. Both fields must be non-empty strings:
+
+```json
+{
+  "paraphrase": {
+    "proposes": "What this track proposes, in 2 to 5 sentences.",
+    "current_system": "How the current system works, per this spec, in 2 to 5 sentences."
+  }
+}
+```
+
+Write each finding in one line: `F<n> [Blocker|Major|Nit] <scope>: <description> Rationale: <rationale>`.
+
+- Put each Blocker finding in `blocking_findings`. Put each Major finding and each Nit finding in `nonblocking_findings`.
+- Write `status: "pass"` only when `blocking_findings` is empty.
+- Write `status: "fail"` only with `retry_recommendation: "escalate_human"`.
+- Use `retry_recommendation: "none"` on pass and `"infrastructure_retry"` on inconclusive.
+
+The `role-gate --role spec-review` check also requires `--baseline`. The baseline must resolve to a commit, and every committed file in `<baseline>..HEAD` must start with `measure/runs/`.
