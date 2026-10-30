@@ -1,0 +1,13 @@
+Task 1.2: Red: runner and S1 contract tests.
+Files: tests/spec_review_gate/run.sh, test_s1_standard.sh, test_s1_new_track.sh.
+Red command: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> exit 1, "=== spec_review_gate: 2 suites (PASS=0, FAIL=2) ===".
+Runner is working infrastructure: 'test_none_*.sh' -> exit 1, "no suites matched", "0 suites (PASS=0, FAIL=0)".
+test_s1_standard.sh: 16 checks, PASS=2, FAIL=14.
+ FAIL (skills/measure/references/spec-review.md does not exist): file exists; line 1 title; EGM URL and Apache-2.0 intro; eight headings in order; Reviewer Input strings; Paraphrase First strings; Zoom-Out Check phrases; Zero-Decision Check five kinds; Severity strings; Finding Format line, Comprehension gap, term rule; Re-Review Limit strings; Report Layout template lines; not-run line; edge copy without '## Severity' (cannot build the copy, standard missing).
+ PASS: tech-stack.md row for spec_review_gate_20261030 (Task 1.1 deliverable); harness self-test of the order function (2 good fixtures accepted, 5 bad rejected).
+test_s1_new_track.sh: 41 checks, PASS=22, FAIL=19.
+ FAIL (step 9 absent in new-track.md section 2.5): step 9 line; step 10 line; step 11 line; step order 6<9<10<11; step 9 block non-empty; 9 step-9 marker strings (standard path, report path, index line, not-run message, Never run..., at most one re-review, Author model:, no-history sentence, step 10); sub-step order; numbering 1-11 (11 occurs 0 times, 10 numbered lines).
+ FAIL (SKILL.md not updated): New Track paragraph lacks references/spec-review.md; Directory Structure lacks spec-review.md; exact spec-review.md line missing.
+ PASS (guards that hold at Red and must hold at Green): section 2.5 exists; steps 1-8 equal track base 7d72b40; step 5 block has no spec-review; new-track-set.md has no spec-review and keeps section 2.5 steps 4, 5, 8; diff -r skills/measure claude-skills/measure empty; runner checks (exists, no-match exit 1 and message, summary N=X+Y, mixed exit 1, sorted order, pattern select, default .sh+.py, import error is FAIL, file name with space, pattern outside folder runs nothing).
+No failure comes from a harness defect. A mock Green in a temporary copy of the repository gave 41/41 and 16/16 PASS (the mock was deleted).
+Design decisions: the S1 tests do not assert the S1 Author Response forms ('- F<n>: fixed', 'not fixed —'), because S3 replaces them. Section-scoped, fence-aware greps; labeled integers; non-empty block assertions before every negative check.
