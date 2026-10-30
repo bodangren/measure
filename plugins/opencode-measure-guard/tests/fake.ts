@@ -1,4 +1,4 @@
-// Test helpers: a temporary git project with this repository's Measure files,
+// Test helpers: a temporary git project with the frozen Measure files,
 // and a fake plugin storage.
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
@@ -10,6 +10,7 @@ import type { Storage } from '../src/state'
 import type { Mode } from '../src/types'
 
 export const REPO = join(import.meta.dir, '..', '..', '..')
+export const FIXTURES = join(import.meta.dir, 'fixtures')
 export const TRACK = 'opencode_plugin_20261021'
 
 /** A new git repository in a temp folder. */
@@ -28,18 +29,18 @@ export type MeasureOptions = {
   dropPlan?: boolean
 }
 
-/** The real tracks.md with this plugin's track in progress, whatever its state in the repository. */
+/** The frozen tracks.md with this plugin's track in progress, whatever its state in the repository. */
 export const fixtureTracks = (): string => {
-  const text = readFileSync(join(REPO, 'measure/tracks.md'), 'utf8')
+  const text = readFileSync(join(FIXTURES, 'tracks.md'), 'utf8')
   const lines = text.split('\n')
   const at = lines.findIndex((line, index) => line.startsWith('- [') && (lines[index + 1] ?? '').includes(`/${TRACK}/`))
   if (at >= 0) lines[at] = `- [~] ${lines[at]?.slice(6) ?? ''}`
   return lines.join('\n')
 }
 
-/** The real plan with exactly one [~] task (the first top-level task), whatever its state in the repository. */
+/** The frozen plan with exactly one [~] task (the first top-level task), whatever its state in the repository. */
 export const fixturePlan = (): string => {
-  const lines = readFileSync(join(REPO, 'measure/tracks', TRACK, 'plan.md'), 'utf8').split('\n')
+  const lines = readFileSync(join(FIXTURES, 'plan.md'), 'utf8').split('\n')
   let marked = false
   return lines
     .map(line => {
@@ -54,7 +55,7 @@ export const fixturePlan = (): string => {
 /** Copies measure/index.md, tracks.md, and the active track's plan into the project (fixtures with one [~] task). */
 export const withMeasure = async (root: string, options: MeasureOptions = {}): Promise<string> => {
   mkdirSync(join(root, 'measure', 'tracks', TRACK), { recursive: true })
-  copyFileSync(join(REPO, 'measure/index.md'), join(root, 'measure/index.md'))
+  copyFileSync(join(FIXTURES, 'index.md'), join(root, 'measure/index.md'))
   writeFileSync(join(root, 'measure/tracks.md'), options.tracks ?? fixtureTracks())
   if (!options.dropPlan) {
     writeFileSync(join(root, 'measure/tracks', TRACK, 'plan.md'), options.plan ?? fixturePlan())

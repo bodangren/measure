@@ -21,9 +21,9 @@ const snapshotOf = (plan: Plan): Snapshot => {
     root: REPO,
     hasMeasure: true,
     isRepo: true,
-    tracksPath: join(REPO, 'measure/tracks.md'),
+    tracksPath: `${REPO}/measure/tracks.md`,
     tracks,
-    active: { entry, planPath: join(REPO, 'measure/tracks/opencode_plugin_20261021/plan.md'), plan },
+    active: { entry, planPath: `${REPO}/measure/tracks/opencode_plugin_20261021/plan.md`, plan },
     inProgressCount: tracks.filter(t => t.marker === '~').length,
     parseError: null,
   }

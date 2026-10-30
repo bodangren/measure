@@ -2,7 +2,7 @@
 
 An OpenCode 2 plugin that makes the agent follow the Measure workflow. It is the OpenCode counterpart of the Claude Code mod `mods/measure-guard/`: it reads the Measure files of the project, shows the plan position, sends the active task to the agent, and stops work that the active plan does not cover.
 
-Track: `measure/tracks/opencode_plugin_20261021/` (spec and plan). The decision log is in the spec.
+Track: `measure/archive/opencode_plugin_20261021/` (spec and plan). The decision log is in the spec.
 
 ## Layout
 
