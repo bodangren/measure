@@ -50,7 +50,7 @@ measure-repo/
 │   └── assets/
 ├── skills/measure-orchestrator/  # Multi-agent orchestration skill
 ├── skills/build-graph/       # Knowledge-graph skill (repo-graph CLI)
-├── agents/                   # 13 measure-* role definitions
+├── agents/                   # 14 measure-* role definitions
 ├── bin/install-measure-skill # Installer (reads main; cron-capable)
 ├── bin/install-targets.tsv   # Bundle-to-target map for the installer
 ├── mods/measure-guard/       # Claude Code mod

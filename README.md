@@ -192,6 +192,7 @@ For larger tracks, the `measure-orchestrator` skill runs a track as a sequence o
 | Role | Job |
 | --- | --- |
 | `measure-orchestrator` | Runs the sequence and routes the handoffs. |
+| `measure-spec-review` | Reviews spec.md and plan.md before Red starts: a paraphrase, a zoom-out check, and a zero-decision check. |
 | `measure-strategy` | Writes the test strategy before a phase starts. |
 | `measure-mid-red` | Writes the failing tests (Red). |
 | `measure-jr-green` | Writes the code that makes them pass (Green). |

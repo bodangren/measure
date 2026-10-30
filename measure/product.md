@@ -28,7 +28,7 @@ AI coding assistants excel at writing code but lack persistent project context, 
 
 - **Measure skill**: `skills/measure/`, installed from `main` into `~/.claude/skills` and the shared `~/.agents/skills` folder by `bin/install-measure-skill` (an hourly cron job keeps the copies current)
 - **Claude Skills bundle**: `claude-skills/measure/`, a copy of `skills/measure/` for `claude skills add`
-- **Orchestration**: the `measure-orchestrator` skill and 13 role definitions in `agents/`, installed by the same installer
+- **Orchestration**: the `measure-orchestrator` skill and 14 role definitions in `agents/`, installed by the same installer
 - **Claude Code Mod (measure-guard)**: A function-hook plugin (`mods/measure-guard/`) that shows the plan state and guards edits, commits, and closeouts
 
 ## Success Metrics
