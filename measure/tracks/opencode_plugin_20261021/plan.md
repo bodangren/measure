@@ -85,3 +85,7 @@ _Story ref: spec.md#story-s9_
 - [x] Task 9.3: Green: the rows, the installer change if the bundle needs an exclusion, `bin/install-measure-skill --check` lists the targets `9efaae4`
 - [x] Task 9.4: Docs: `README.md` (repo) section "OpenCode plugin", `measure/tech-stack.md` Distribution Formats row, `CHANGELOG.md`, `measure/lessons-learned.md` and `measure/tech-debt.md` entries from the retrospective `ec20b09`
 - [x] Task: Measure - User Manual Verification 'Phase S9: Installer targets and documents' (Protocol in workflow.md) `a64c01f`
+
+## Phase R1: Review remediation
+
+- [~] Task R1.1: Freeze the test fixtures, so the tests do not read live track files (review.md, High finding)
