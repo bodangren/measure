@@ -53,4 +53,12 @@ When applicable, inspect the real flow in browser. Review visual hierarchy, spac
 
 This is an audit-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact and route blockers to Green.
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in this run's result, in the same list that
+held the finding before (`blocking_findings` or `nonblocking_findings`), and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 Write the required UX audit result JSON and end with `MEASURE_AGENT_RESULT`.

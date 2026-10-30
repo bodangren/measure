@@ -66,7 +66,7 @@ The scope names the section of `spec.md` or `plan.md` that the finding concerns.
 
 ## Re-Review Limit
 
-A review has at most one re-review. A second round runs only when `spec.md` or `plan.md` changed after the first round. After the second round, each remaining Blocker and Major finding goes to this section of the report, and the user decides:
+A review has at most one re-review. A second round runs when `spec.md` or `plan.md` changed after the first round, and also when an Author Response has a `CONTEST` item, even when neither file changed. In the second case the reviewer withdraws or keeps each CONTEST item. After the second round, each remaining Blocker and Major finding goes to this section of the report, and the user decides:
 
 ```markdown
 ## Accepted Risks

@@ -99,6 +99,8 @@ The owner gives each routed finding one of four dispositions:
 - **ESCALATE**: the evidence is outside the files that the reviewer can read, for example a team rule or a call. The user decides.
 - **DECLINE**: the owner declines a Nit finding. DECLINE is not valid for a Blocker finding or a Major finding.
 
+`skills/measure/references/review.md` uses the scale Critical, High, Medium, Low; there DECLINE applies only to Low, the lowest level, as Nit is the lowest level here.
+
 "Intentional" or "by design" without a cited record is not evidence.
 
 The owner does not change a severity. A dispute of a Blocker finding is therefore a CONTEST. A finding whose description starts with `Comprehension gap:` takes FIX or ESCALATE only.
@@ -118,7 +120,7 @@ Write `dispositions: none` when the role gets routed findings and marks none of 
 A re-review runs on the new HEAD. The next run of the role that raised a finding receives each CONTEST item with its evidence.
 
 - To withdraw an item, the reviewer omits the finding and adds the `evidence` entry `F<n> withdrawn: <what the reviewer checked>`.
-- To keep an item, the reviewer writes the routed finding text plus ` | CONTEST kept: <reason>` in its earlier list and sets `retry_recommendation: escalate_human`.
+- To keep an item, the reviewer writes the routed finding text plus ` | CONTEST kept: <reason>` in that run's result, in the same list that held the finding before (`blocking_findings` or `nonblocking_findings`), and sets `retry_recommendation: escalate_human`.
 - The orchestrator sends each ESCALATE item and each kept CONTEST item to the user.
 
 **No FIX item.** A round with no FIX item makes no Green commit. The orchestrator does not run the `jr-green` role gate for that round. It checks that the result block has a disposition for each routed id. Then it sends the CONTEST items to the re-review on the same HEAD.

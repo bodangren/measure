@@ -52,7 +52,8 @@ Use browser inspection only when necessary for contract understanding. Do not du
 A re-review receives each CONTEST item of your earlier findings. For each item, either
 withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
 `evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
-text plus ` | CONTEST kept: <reason>` in your earlier list, and set
+text plus ` | CONTEST kept: <reason>` in this run's result, in the same list that
+held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 `retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
 ESCALATE item to the user.
 

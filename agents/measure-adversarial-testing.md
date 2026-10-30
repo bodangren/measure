@@ -30,4 +30,12 @@ Try to disprove correctness with boundary, failure-path, integration, concurrenc
 - **A5 (false-claim text):** if `plan.md` claims "all checks pass" or "PASS=N, FAIL=0",
   verify the cited test actually exits 0.
 
+A re-review receives each CONTEST item of your earlier findings. For each item, either
+withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
+`evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding
+text plus ` | CONTEST kept: <reason>` in this run's result, in the same list that
+held the finding before (`blocking_findings` or `nonblocking_findings`), and set
+`retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
+ESCALATE item to the user.
+
 Own durable Playwright coverage when browser automation is needed. Add valuable tests, but do not fix production behavior exposed by those tests. Commit useful tests, return `status: "fail"`, and route implementation defects to Green. Any subsequent implementation commit invalidates this result and requires the relevant adversarial gate to rerun. Write provenance-bound audit JSON and end with `MEASURE_AGENT_RESULT`.

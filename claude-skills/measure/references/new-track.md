@@ -310,8 +310,16 @@ Validate every tool call. If any fails, halt immediately and inform the user.
         - Type your own answer
       Wait for the user's response.
    6. Apply the picked fixes to `spec.md` and `plan.md`. The author (the main agent) writes the `### Author Response` lines: one line for each finding, in the form that the standard gives: `FIX`, `CONTEST(<evidence>)`, `ESCALATE(<reason>)`, or `DECLINE`. Nit findings get `DECLINE` unless the user picks them.
-   7. When `spec.md` or `plan.md` changed, run one second round with a new fresh subagent. Give it the same paths and the Round 1 findings with the author responses. Give it each CONTEST item with its evidence, and give it each ESCALATE item. The author (the main agent) writes the `## Round 2` heading. Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line. Append the returned sections under that heading, and show the result to the user.
-   8. There is at most one re-review. Ask the user to approve the commit or to stop.
+   7. When `spec.md` or `plan.md` changed, or when a finding has a `CONTEST` disposition, run one second round with a new fresh subagent, even when neither file changed. Give it the same paths and the Round 1 findings with the author responses. Give it each CONTEST item with its evidence, and give it each ESCALATE item. The reviewer withdraws or keeps each CONTEST item. The author (the main agent) writes the `## Round 2` heading. Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line. Append the returned sections under that heading, and show the result to the user.
+   8. There is at most one re-review. Show the user each ESCALATE item and each CONTEST item that the reviewer kept. Ask the user to decide each item.
+      - Header: `Spec review dispositions`
+      - Question: "Should I fix each item, or accept it as a risk?"
+      - Options:
+        - **Fix the selected items** — Apply the user's picks to `spec.md` and `plan.md`.
+        - **Accept the selected items as risks** — Record the items under `## Accepted Risks`.
+        - Type your own answer
+      Wait for the user's response.
+      Ask the user to approve the commit or to stop.
       - Header: `Spec review commit`
       - Question: "Do you approve the commit?"
       - Options:
