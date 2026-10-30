@@ -57,3 +57,9 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: OpenCode plugin: measure-guard for OpenCode 2, with agents, commands, a terminal band, and installer targets**
   *Link: [./archive/opencode_plugin_20261021/](./archive/opencode_plugin_20261021/)*
   *Server and terminal plugin package `plugins/opencode-measure-guard/`, shared core by copy with a parity gate, the rule in the `measure-orchestrator` agent.*
+
+---
+
+- [ ] **Track: Spec review gate, finding dispositions, and doc drift check**
+  *Link: [./tracks/spec_review_gate_20261030/](./tracks/spec_review_gate_20261030/)*
+  *A fresh-agent review of each spec and plan, a spec review role with a checker gate, four finding dispositions, and a weekly doc drift check. Ideas from Google's Elephant-Goldfish Model.*
