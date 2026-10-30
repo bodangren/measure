@@ -46,6 +46,8 @@ The orchestrator dispatched this track creation with a full brief and no user qu
 24. **Drift scope.** The drift detector reads each track in `measure/archive/` and in `measure/tracks/` whose status is `done`, `completed`, or `complete`. The completion date is the `completed` field, or else the date part of `updated_at`. A track that completed in the 30 days before the audit date is in scope. Cancelled tracks are out of scope.
 25. **Catalog count text.** S4 changes each "A1–A10" count text in the orchestrator skill and the role files to "A1–A11", so that the files agree with the catalog.
 26. **Story S2 title without backticks.** The title is "The measure-spec-review orchestrator role". The phase heading is the `--phase` value of `role-gate`, and backticks in a shell argument need extra quotes.
+27. **Unresolvable `--baseline` for `spec-review`.** The `spec-review` gate fails closed. Before the scope rule, the `spec-review` block runs `git rev-parse --verify --quiet <value>^{commit}`. When the value does not resolve to a commit, the message is `--baseline does not resolve to a commit: <value>`, and the gate fails. Without this check, `committed_files` returns an empty list when `git diff` fails, and the scope rule passes. The S1 strategy (`measure/runs/spec_review_gate_20261030/strategy-7d72b40.log`) listed this choice as option (b). The blocks of the other roles do not change.
+28. **No-subagent path of `new-track` step 9.** Sub-step 2 goes to the step 10 commit without a new question, by design. The user already approved the spec and the plan in the earlier steps of `new-track`. The report records the line `Spec review: not run (no subagent tool)`. This decision answers the CONFIRM question of Review C at `ff361ff` (`measure/runs/spec_review_gate_20261030/review-c-s1-ff361ff.json`). No file changes.
 
 ## Stories
 
@@ -72,7 +74,7 @@ The orchestrator dispatched this track creation with a full brief and no user qu
 **Acceptance Criteria:**
 - Given `agents/measure-spec-review.md`, When I read it, Then it is a report-only subagent that can edit only `measure/runs/**`, has the same bash denies as `measure-review-a-correctness`, denies `task`, reads the standard from `~/.agents/skills/measure/references/spec-review.md` (fallback `skills/measure/references/spec-review.md`), and writes `measure/runs/<track>/spec-review-<short-head>.json` and `.log`, provisional artifact first.
 - Given a spec review audit JSON with a non-empty `paraphrase.proposes` and `paraphrase.current_system`, no Blocker, and no commit outside `measure/runs/` since `--baseline`, When `role-gate --role spec-review` runs, Then it passes; the aliases `spec_review` and `measure-spec-review` give the same result.
-- Given an empty paraphrase field, a Blocker, a finding in the wrong format, a missing `--baseline`, or a commit outside `measure/runs/`, When `role-gate --role spec-review` runs, Then it exits 1 and names the problem.
+- Given an empty paraphrase field, a Blocker, a finding in the wrong format, a missing `--baseline`, a `--baseline` that does not resolve to a commit, or a commit outside `measure/runs/`, When `role-gate --role spec-review` runs, Then it exits 1 and names the problem.
 - Given the orchestrator skill, When I read it, Then the role list, Role Order step 0, the model rule for the spec reviewer, and `references/contracts.md` describe the role; the repository orchestrator agent, the `measure-orchestrate` command, `README.md`, `product.md`, and `tech-stack.md` agree.
 
 **Estimate:** L
