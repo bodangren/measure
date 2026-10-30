@@ -4,7 +4,7 @@ test_checker.py: 28 tests, FAILED (failures=12). The 20 SpecReviewRoleGateTest c
 
 test_s3_dispositions_docs.sh: 71 checks (PASS=4, FAIL=67). Each failure is a missing S3 deliverable:
 - contracts.md has no `## Finding Dispositions` section (19 checks: heading order, routed form, six scope names, four bullets, evidence sentence, `dispositions: none`, the line form, `| CONTEST kept:`, `withdrawn:`, `Comprehension gap:`, `no FIX item`).
-- measure-jr-green.md has no `## Routed findings` section (5 checks).
+- measure-jr-green.md has no `## Routed findings` section (6 checks).
 - The five audit roles lack `withdrawn:` and `| CONTEST kept:` and the paragraph before the closing role paragraph (4 checks each for review A, B, C, and phase acceptance; 3 checks for spec-review, whose `escalate_human` check passes).
 - Orchestrator SKILL.md Delegation lacks `Finding Dispositions`, `ESCALATE`, and `no FIX item` (3 checks).
 - review.md lacks the `### F<n> [Critical/High/Medium/Low] Description of Issue` heading and item `3. **Record Dispositions:**` (6 checks).
