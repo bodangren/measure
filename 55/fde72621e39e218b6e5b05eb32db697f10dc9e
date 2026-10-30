@@ -1,0 +1,5 @@
+Task 1.4: Green: spec review step in new-track and SKILL.md.
+Files: skills/measure/references/new-track.md, skills/measure/SKILL.md, and byte-identical copies in claude-skills/measure/.
+Change: §2.5 gets step 9 'Spec Review (fresh subagent)' with nine sub-steps. The old step 9 is now '10. **Commit Changes:**'. The old step 10 is now '11. Announce completion:'. Steps 1 to 8 are byte-equal to 7d72b40. SKILL.md '### New Track' names references/spec-review.md. The Directory Structure block gets the exact spec-review.md line between spec.md and plan.md.
+Verification: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> 2 suites (PASS=2, FAIL=0); test_s1_new_track.sh 41 checks (PASS=41, FAIL=0); test_s1_standard.sh 16 checks (PASS=16, FAIL=0). diff -r skills/measure claude-skills/measure -> empty.
+Guard: new-track-set.md does not change. Its §2.5 step 4, 5, and 8 citations still hold.
