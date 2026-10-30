@@ -426,11 +426,14 @@ def dispositions_feedback(log_path: str) -> list[str]:
     character. The log splits on LF only, so a CR or another separator cannot hide an
     invalid item inside the line.
 
-    The block ends at the last `END_MEASURE_AGENT_RESULT` line. It starts at the first
-    `MEASURE_AGENT_RESULT` line after the previous end line, or after the top of the file
-    when no earlier end line exists. Every `dispositions:` line in that range is read, so a
-    second start line inside the block cannot hide an invalid line above it. A log without
-    an end line gives no feedback.
+    The block ends at the last `END_MEASURE_AGENT_RESULT` line that has a
+    `MEASURE_AGENT_RESULT` line above it. It starts at the first
+    `MEASURE_AGENT_RESULT` line after the last `END_MEASURE_AGENT_RESULT` line that comes
+    before the last start line of the block, or at the first start line of the log when no
+    such end line exists. Every `dispositions:` line in that range is read, so a second
+    start line inside the block cannot hide an invalid line above it. A log without an end
+    line gives no feedback. Each line list is scanned a fixed number of times, so the cost
+    grows linearly with the number of log lines.
     """
     if not log_path:
         return []
@@ -443,9 +446,11 @@ def dispositions_feedback(log_path: str) -> list[str]:
     starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
     ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
     last_end = -1
-    for index in ends:
-        if any(start < index for start in starts):
-            last_end = index
+    if starts:
+        first_start = starts[0]
+        for index in ends:
+            if first_start < index:
+                last_end = index
     if last_end < 0:
         return []
     starts_before_end = [start for start in starts if start < last_end]

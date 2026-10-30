@@ -115,8 +115,8 @@ Write `dispositions: none` when the role gets routed findings and marks none of 
 
 - `FIX` and `DECLINE` take no text. `CONTEST(<evidence>)` and `ESCALATE(<reason>)` need non-empty text without `;`.
 - Items are separated by `;`. An empty value, an empty item, a repeated id, or a word in lowercase fails the `role-gate` check with `invalid dispositions line`.
-- The check reads only the last result block of the log. The block ends at the last `END_MEASURE_AGENT_RESULT` line.
-- The block starts at the first `MEASURE_AGENT_RESULT` line after the previous `END_MEASURE_AGENT_RESULT` line, or after the first line of the log when no earlier end line exists.
+- The check reads only the last result block of the log. The block ends at the last `END_MEASURE_AGENT_RESULT` line that has a `MEASURE_AGENT_RESULT` line above it.
+- The block starts at the first `MEASURE_AGENT_RESULT` line after the last `END_MEASURE_AGENT_RESULT` line that comes before the last start line of the block, or at the first start line of the log when no such end line exists.
 - The check reads every `dispositions:` line in that range, so a second start line inside the block cannot hide a line above it. A log with no end line gives no feedback.
 - The block holds one dispositions line. A second dispositions line fails the check with `invalid dispositions line: more than one dispositions line`.
 - A `dispositions:` line after the block end does not count.
