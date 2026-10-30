@@ -408,10 +408,11 @@ def passing_audit_feedback(path: Path, role: str) -> list[str]:
 
 
 def has_agent_result(log_path: str) -> bool:
+    """A missing path, a folder, or another non-file path counts as no log."""
     if not log_path:
         return True
     path = Path(log_path)
-    if not path.exists():
+    if not path.is_file():
         return False
     text = path.read_text(encoding="utf-8", errors="ignore")
     return "MEASURE_AGENT_RESULT" in text and "END_MEASURE_AGENT_RESULT" in text
@@ -432,13 +433,14 @@ def dispositions_feedback(log_path: str) -> list[str]:
     before the last start line of the block, or at the first start line of the log when no
     such end line exists. Every `dispositions:` line in that range is read, so a second
     start line inside the block cannot hide an invalid line above it. A log without an end
-    line gives no feedback. Each line list is scanned a fixed number of times, so the cost
+    line gives no feedback. A path that is not a file, such as a folder, gives no feedback.
+    Each line list is scanned a fixed number of times, so the cost
     grows linearly with the number of log lines.
     """
     if not log_path:
         return []
     path = Path(log_path)
-    if not path.exists():
+    if not path.is_file():
         return []
     with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
         text = handle.read()
