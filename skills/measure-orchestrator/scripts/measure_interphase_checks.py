@@ -353,8 +353,8 @@ def validate_spec_review_payload(payload: dict[str, object]) -> list[str]:
             for finding in values:
                 if not isinstance(finding, str):
                     continue
-                match = SPEC_REVIEW_FINDING_RE.match(finding)
-                if not match:
+                match = SPEC_REVIEW_FINDING_RE.fullmatch(finding)
+                if not match or len(finding.splitlines()) != 1:
                     feedback.append(f"spec-review finding has an invalid format: {finding}")
                 else:
                     valid.append((match.group(1), finding))
@@ -633,13 +633,16 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                 if resolved.returncode != 0:
                     feedback.append(f"--baseline does not resolve to a commit: {args.baseline}")
                 else:
-                    listed = git(repo, "diff", "--name-only", "--no-renames", f"{args.baseline}..HEAD")
+                    listed = git(repo, "diff", "--name-only", "--no-renames", "-z", f"{args.baseline}..HEAD")
                     if listed.returncode != 0:
                         lines = listed.stdout.splitlines()
                         line = lines[0] if lines else ""
                         feedback.append(f"spec-review could not list committed files: {line}")
                     else:
-                        paths = sorted(item.strip() for item in listed.stdout.splitlines() if item.strip())
+                        paths = listed.stdout.split("\0")
+                        if paths and paths[-1] == "":
+                            paths.pop()
+                        paths.sort()
                         outside = [path for path in paths if not path.startswith("measure/runs/")]
                         if outside:
                             feedback.append("spec-review committed files outside measure/runs/")
