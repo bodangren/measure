@@ -22,7 +22,7 @@ Track: `spec_review_gate_20261030`. Spec: [spec.md](./spec.md). Each story-phase
 | S4 | `bash tests/spec_review_gate/run.sh 'test_s4_*.sh'` |
 | All (Green gate of each phase, after the phase command) | `bash tests/spec_review_gate/run.sh` and `diff -r skills/measure claude-skills/measure` |
 
-## Phase S1: Spec review standard and the new-track review step
+## Phase S1: Spec review standard and the new-track review step [checkpoint: 4f1f290]
 _Story ref: spec.md#story-s1_
 
 **Contract (acceptance criteria).**
