@@ -71,3 +71,14 @@ I recommend we fix the important issue I found before moving forward. The archiv
 ## Open Questions
 
 - None taken from defaults. The live service checks and the browser check were skipped per the review brief.
+
+## Remediation
+
+The High finding is fixed by commit `e90486d`. The plugin tests now read frozen copies in `plugins/opencode-measure-guard/tests/fixtures/` (source commit `a64c01f`). No test reads a live track path.
+
+Re-run results:
+
+- `bun test plugins/opencode-measure-guard`: exit 0 (85 pass, 0 fail).
+- `bun x tsc --noEmit -p plugins/opencode-measure-guard`: exit 0.
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh`: exit 0.
+- `grep -rn "join(REPO, 'measure" plugins/opencode-measure-guard/tests`: no output.
