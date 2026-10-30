@@ -167,7 +167,7 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
 ## Findings
 *(Only include this section if issues are found)*
 
-### [Critical/High/Medium/Low] Description of Issue
+### F<n> [Critical/High/Medium/Low] Description of Issue
 - **File**: `path/to/file` (Lines L<Start>-L<End>)
 - **Context**: [Why is this an issue?]
 - **Suggestion**:
@@ -189,6 +189,11 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
    - **Apply Fixes:** Automatically apply the suggested code changes. After applying, if any findings were **Critical** or **High** severity, offer: "Would you like to log the root cause of these findings to `lessons-learned.md` under 'Recurring Gotchas'?" If yes, append an entry with the date and track ID.
    - **Manual Fix:** Stop for user to fix manually.
    - **Complete Track:** Proceed to cleanup ignoring warnings.
+3. **Record Dispositions:** Give each finding one of four dispositions. The user or the implementer picks the disposition.
+   - **FIX**: the code, the test, or the document changes.
+   - **CONTEST**: the owner cites evidence that the reviewer can read, such as a file path and a symbol, a test, or a recorded decision. A CONTEST item goes back to the reviewer, who withdraws it or keeps it. The user decides a kept item.
+   - **ESCALATE**: the evidence is outside the files that the reviewer can read. The user decides.
+   - **DECLINE**: the user or the implementer declines a Low finding. DECLINE is only valid for a Low finding.
 
 ### 3.2 Commit Review Changes
 

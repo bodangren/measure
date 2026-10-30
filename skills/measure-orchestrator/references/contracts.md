@@ -81,3 +81,45 @@ Write each finding in one line: `F<n> [Blocker|Major|Nit] <scope>: <description>
 - Use `retry_recommendation: "none"` on pass and `"infrastructure_retry"` on inconclusive.
 
 The `role-gate --role spec-review` check also requires `--baseline`. The baseline must resolve to a commit, and every committed file in `<baseline>..HEAD` must start with `measure/runs/`.
+
+## Finding Dispositions
+
+The orchestrator routes an audit finding to the role that owns the fix. Each routed finding has one id, and the form is:
+
+`F<n> [Blocker|Major|Nit] <scope>: <text>`
+
+- The id is unique in the phase. A spec review finding keeps its own id, severity, and scope.
+- A blocking finding of another audit role becomes `[Blocker]`. A nonblocking finding becomes `[Nit]`. The scope is the role name: `review-a`, `review-b`, `review-c`, `adversarial-testing`, `ux-browser-review`, or `phase-acceptance`.
+- The owner of a code finding or a test finding is Green. The owner of a `spec.md` finding or a `plan.md` finding is the user or a build session.
+
+The owner gives each routed finding one of four dispositions:
+
+- **FIX**: the owner changes the code, the test, or the document. Green commits the change.
+- **CONTEST**: the owner cites evidence that the reviewer can read. The evidence is a file path and a symbol, a test, or a decision that `spec.md`, `plan.md`, `tech-stack.md`, or `test-strategy.md` records.
+- **ESCALATE**: the evidence is outside the files that the reviewer can read, for example a team rule or a call. The user decides.
+- **DECLINE**: the owner declines a Nit finding. DECLINE is not valid for a Blocker finding or a Major finding.
+
+"Intentional" or "by design" without a cited record is not evidence.
+
+The owner does not change a severity. A dispute of a Blocker finding is therefore a CONTEST. A finding whose description starts with `Comprehension gap:` takes FIX or ESCALATE only.
+
+The role adds the optional dispositions line below the result block:
+
+```
+dispositions: F1=FIX; F2=CONTEST(<evidence>); F3=ESCALATE(<reason>); F4=DECLINE
+```
+
+Write `dispositions: none` when the role gets routed findings and marks none of them. The line is required when the brief of the role held routed findings. The Agent Result Block template does not change.
+
+- `FIX` and `DECLINE` take no text. `CONTEST(<evidence>)` and `ESCALATE(<reason>)` need non-empty text without `;`.
+- Items are separated by `;`. An empty value, an empty item, a repeated id, or a word in lowercase fails the `role-gate` check with `invalid dispositions line`.
+- The check reads only the last result block of the log. A line after `END_MEASURE_AGENT_RESULT` does not count.
+
+A re-review runs on the new HEAD. The next run of the role that raised a finding receives each CONTEST item with its evidence.
+
+- To withdraw an item, the reviewer omits the finding and adds the `evidence` entry `F<n> withdrawn: <what the reviewer checked>`.
+- To keep an item, the reviewer writes the routed finding text plus ` | CONTEST kept: <reason>` in its earlier list and sets `retry_recommendation: escalate_human`.
+- The orchestrator sends each ESCALATE item and each kept CONTEST item to the user.
+
+**No FIX item.** A round with no FIX item makes no Green commit. The orchestrator does not run the `jr-green` role gate for that round. It checks that the result block has a disposition for each routed id. Then it sends the CONTEST items to the re-review on the same HEAD.
+

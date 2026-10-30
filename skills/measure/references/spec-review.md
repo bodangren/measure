@@ -75,6 +75,17 @@ A review has at most one re-review. A second round runs only when `spec.md` or `
 
 The author writes the `## Accepted Risks` lines only after the user approves the commit. Until then, the remaining findings stay in the round sections.
 
+## Finding Dispositions
+
+The author of the spec gives each finding one of four dispositions:
+
+- **FIX**: the author changes `spec.md` or `plan.md` as the finding asks.
+- **CONTEST**: the author cites a record that the reviewer can read. The record is a file path and a symbol, a test, or a decision in `spec.md`, `plan.md`, `tech-stack.md`, or `test-strategy.md`. A claim of "intentional" or "by design" without a record is not evidence.
+- **ESCALATE**: the record is outside the files that the reviewer can read. The user decides.
+- **DECLINE**: the author declines a Nit finding. DECLINE is not valid for a Blocker finding or a Major finding.
+
+A finding whose description starts with `Comprehension gap:` cannot be contested. It takes FIX or ESCALATE only. The author does not change a severity, so a dispute of a Blocker finding is a CONTEST.
+
 ## Report Layout
 
 The reviewer returns only the three `###` subsections of one round:
@@ -83,7 +94,7 @@ The reviewer returns only the three `###` subsections of one round:
 - `### How the current system works, per this spec`
 - `### Findings`
 
-The author writes the other lines of this template, and writes the returned text without changes:
+The author writes the other lines of this template, and writes the returned text without changes, except that the author replaces a secret value with its file and line:
 
 ```markdown
 # Spec Review: <track_id>
@@ -105,7 +116,7 @@ Reviewer: <subagent type and model, or unknown>
 - F1 [Blocker] <scope>: <description> Rationale: <rationale>
 
 ### Author Response
-- F1: fixed
+- F1: FIX
 
 ## Round 2
 <the same subsections, only when a re-review ran>
@@ -125,10 +136,12 @@ The author (the main agent) writes these lines:
 
 The reviewer writes only the three `###` subsections of one round.
 
-A round without findings has the line `- None` under `### Findings`. The Author Response has one line for each finding, in one of these two S1 forms:
+A round without findings has the line `- None` under `### Findings`. The Author Response has one line for each finding, in one of these four forms:
 
-- `- F<n>: fixed`
-- `- F<n>: not fixed — <reason of the user>`
+- `- F<n>: FIX`
+- `- F<n>: CONTEST(<evidence>)`
+- `- F<n>: ESCALATE(<reason>)`
+- `- F<n>: DECLINE`
 
 A harness without a subagent tool writes this not-run form instead:
 
