@@ -196,7 +196,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.2: Green: add `dispositions_feedback` to the checker and call it from `cmd_role_gate`, as the contract states. 7d4a745
 - [x] Task 3.3: Green: add `## Finding Dispositions` to `contracts.md`. Update `spec-review.md`, `new-track.md` step 9, and `review.md` as the contract states. In the `## Report Layout` section of `spec-review.md`, write `without changes, except that the author replaces a secret value with its file and line`. In sub-step 7 of `new-track.md` step 9, write `Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line.` Copy the changed `skills/measure/` files to `claude-skills/measure/`. 6b158b1
 - [x] Task 3.4: Green: update `agents/measure-jr-green.md`, the five audit role files, and the Delegation section of `skills/measure-orchestrator/SKILL.md` as the contract states. 34d1775
-- [~] Task 3.5: Docs and checks: in the "## Multi-agent orchestration" section of `README.md`, add one sentence on the four dispositions after "Review and audit roles only report." Add a `CHANGELOG.md` line. Run the S3 command and the full runner.
+- [x] Task 3.5: Docs and checks: in the "## Multi-agent orchestration" section of `README.md`, add one sentence on the four dispositions after "Review and audit roles only report." Add a `CHANGELOG.md` line. Run the S3 command and the full runner. 94dfcef
 
 ## Phase S4: Doc drift check in the weekly audit
 _Story ref: spec.md#story-s4_
