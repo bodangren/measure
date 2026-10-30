@@ -74,7 +74,12 @@ ROLE_ALIASES = {
     "measure-final-acceptance": "final-acceptance",
     "closeout": "closeout",
     "measure-closeout": "closeout",
+    "spec-review": "spec-review",
+    "spec_review": "spec-review",
+    "measure-spec-review": "spec-review",
 }
+
+SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
 
 
 @dataclass(frozen=True)
@@ -304,6 +309,8 @@ def validate_audit_payload(payload: object, role: str) -> list[str]:
         feedback.append("use blocking_findings and nonblocking_findings, not legacy findings")
     if role == "ux-browser-review":
         feedback.extend(validate_ux_payload(payload))
+    if role == "spec-review":
+        feedback.extend(validate_spec_review_payload(payload))
     return feedback
 
 
@@ -325,6 +332,45 @@ def validate_ux_payload(payload: dict[str, object]) -> list[str]:
         feedback.append("applicable UX audit must include screenshot, accessibility, or interaction evidence")
     if applicability == "not_applicable" and payload.get("webbridge_status") != "not_run":
         feedback.append("not_applicable UX audit must record webbridge_status=not_run")
+    return feedback
+
+
+def validate_spec_review_payload(payload: dict[str, object]) -> list[str]:
+    feedback: list[str] = []
+    paraphrase = payload.get("paraphrase")
+    if not isinstance(paraphrase, dict):
+        feedback.append("paraphrase must be an object with proposes and current_system")
+    else:
+        for field in ("proposes", "current_system"):
+            value = paraphrase.get(field)
+            if not isinstance(value, str) or not value.strip():
+                feedback.append(f"paraphrase.{field} must be a non-empty string")
+    findings: dict[str, list[tuple[str, str]]] = {}
+    for field in ("blocking_findings", "nonblocking_findings"):
+        values = payload.get(field)
+        valid: list[tuple[str, str]] = []
+        if isinstance(values, list):
+            for finding in values:
+                if not isinstance(finding, str):
+                    continue
+                match = SPEC_REVIEW_FINDING_RE.match(finding)
+                if not match:
+                    feedback.append(f"spec-review finding has an invalid format: {finding}")
+                else:
+                    valid.append((match.group(1), finding))
+        findings[field] = valid
+    for severity, finding in findings["blocking_findings"]:
+        if severity != "Blocker":
+            feedback.append(f"blocking_findings may contain only [Blocker] findings: {finding}")
+    for severity, finding in findings["nonblocking_findings"]:
+        if severity == "Blocker":
+            feedback.append(f"nonblocking_findings may contain only [Major] or [Nit] findings: {finding}")
+    status = payload.get("status")
+    blocking = payload.get("blocking_findings")
+    if status == "pass" and isinstance(blocking, list) and blocking:
+        feedback.append("spec-review status pass requires empty blocking_findings")
+    if status == "fail" and payload.get("retry_recommendation") != "escalate_human":
+        feedback.append("spec-review status fail requires retry_recommendation escalate_human")
     return feedback
 
 
@@ -552,6 +598,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         "ux-browser-review",
         "final-acceptance",
         "closeout",
+        "spec-review",
     }:
         if not args.result_file:
             feedback.append("--result-file is required for audit roles")
@@ -578,6 +625,25 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             feedback.extend(gate_command(repo, "PROJECT_TESTS", os.environ.get("PROJECT_TESTS", "")))
         if role == "closeout":
             feedback.extend(closeout_feedback(repo, args.track))
+        if role == "spec-review":
+            if not args.baseline:
+                feedback.append("--baseline is required for spec-review")
+            else:
+                resolved = git(repo, "rev-parse", "--verify", "--quiet", f"{args.baseline}^{{commit}}")
+                if resolved.returncode != 0:
+                    feedback.append(f"--baseline does not resolve to a commit: {args.baseline}")
+                else:
+                    listed = git(repo, "diff", "--name-only", "--no-renames", f"{args.baseline}..HEAD")
+                    if listed.returncode != 0:
+                        lines = listed.stdout.splitlines()
+                        line = lines[0] if lines else ""
+                        feedback.append(f"spec-review could not list committed files: {line}")
+                    else:
+                        paths = sorted(item.strip() for item in listed.stdout.splitlines() if item.strip())
+                        outside = [path for path in paths if not path.startswith("measure/runs/")]
+                        if outside:
+                            feedback.append("spec-review committed files outside measure/runs/")
+                            feedback.extend(f"- {path}" for path in outside)
 
     if feedback:
         for item in feedback:
