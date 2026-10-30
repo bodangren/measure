@@ -17,7 +17,7 @@ AI coding assistants excel at writing code but lack persistent project context, 
 ## Key Features
 
 - **Setup**: Bootstraps a project with product definition, tech stack, workflow, and style guides as managed artifacts
-- **New Track**: Interactive spec and plan generation for features, bugs, and chores via guided questions
+- **New Track**: Interactive spec and plan generation for features, bugs, and chores via guided questions, with an independent spec review before the track commit
 - **Track Sets**: Several related tracks from one set of shared decisions, with one overview page, two review gates, and a dependency record
 - **Implement**: TDD-driven task execution following the project's defined workflow, with phase checkpoints
 - **Review**: Code review against project standards, style guides, and the original plan

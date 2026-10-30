@@ -102,7 +102,7 @@ OpenCode 2: the installer of step 1 puts the plugin into `~/.config/opencode/plu
 | Command | Use it when | Result |
 | --- | --- | --- |
 | `setup` | You start a project, or a project has no `measure/` folder. | `measure/` with product, guidelines, tech stack, workflow, style guides, and an index. |
-| `new-track` | You have a feature, a bug, or a chore. | `measure/tracks/<id>/` with `spec.md`, `plan.md`, and `metadata.json`. |
+| `new-track` | You have a feature, a bug, or a chore. | `measure/tracks/<id>/` with `spec.md`, `plan.md`, `spec-review.md`, and `metadata.json`. |
 | `new-track` (track set) | You have a program of related work, for example one track per module. | Several tracks from one questioning phase, an overview in `measure/sets/<id>.md`, and one commit. |
 | `implement` | A plan is approved. | Tasks done in order, one commit and git note each, phase checkpoints. |
 | `review` | A phase or a track is done. | Findings against the spec, the guidelines, and the known gotchas. |
