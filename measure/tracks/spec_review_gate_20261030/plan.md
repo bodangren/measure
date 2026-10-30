@@ -197,6 +197,7 @@ _Story ref: spec.md#story-s3_
   - Review remediation F1–F6 (Review B F1–F3, Review C F7–F9): 011b92c; last complete block, one dispositions line per block
   - Review remediation F1–F4 (Review B F1, Review C F10–F12): 213407f; block range from the first start line after the previous end line; F11 contested
   - Review remediation F1–F3 (Review B nonblocking items 1, 4, 5): 478b723; linear block selection, exact range text, 213407f note corrected
+  - Adversarial remediation F1 (folder as --log-file): 8e5de63; is_file() in has_agent_result and dispositions_feedback
 - [x] Task 3.3: Green: add `## Finding Dispositions` to `contracts.md`. Update `spec-review.md`, `new-track.md` step 9, and `review.md` as the contract states. In the `## Report Layout` section of `spec-review.md`, write `without changes, except that the author replaces a secret value with its file and line`. In sub-step 7 of `new-track.md` step 9, write `Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line.` Copy the changed `skills/measure/` files to `claude-skills/measure/`. 6b158b1
 - [x] Task 3.4: Green: update `agents/measure-jr-green.md`, the five audit role files, and the Delegation section of `skills/measure-orchestrator/SKILL.md` as the contract states. 34d1775
   - Review remediation F1–F6 (Review C): 53ecfcc; F6 contested (install state)
