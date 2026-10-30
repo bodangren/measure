@@ -1,7 +1,7 @@
 {
   "track_id": "spec_review_gate_20261030",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-10-30T13:35:38Z",
   "updated_at": "2026-10-30T13:35:38Z",
   "description": "Spec review gate, finding dispositions, and doc drift check: a fresh-subagent review of spec.md and plan.md in new-track, a measure-spec-review orchestrator role with a checker gate, four dispositions for routed review findings, and a doc drift detector in the weekly audit. Ideas adapted from Google's Elephant-Goldfish Model (Apache-2.0).",

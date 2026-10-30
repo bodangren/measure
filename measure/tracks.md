@@ -60,6 +60,6 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [ ] **Track: Spec review gate, finding dispositions, and doc drift check**
+- [~] **Track: Spec review gate, finding dispositions, and doc drift check**
   *Link: [./tracks/spec_review_gate_20261030/](./tracks/spec_review_gate_20261030/)*
   *A fresh-agent review of each spec and plan, a spec review role with a checker gate, four finding dispositions, and a weekly doc drift check. Ideas from Google's Elephant-Goldfish Model.*
