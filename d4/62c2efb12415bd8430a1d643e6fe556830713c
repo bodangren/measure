@@ -1,0 +1,4 @@
+Task 1.5: Docs and checks for the spec review step.
+Files: measure/product.md (New Track feature line names the independent spec review), README.md (the new-track row lists spec-review.md), CHANGELOG.md (one Unreleased Features line).
+Verification: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> exit 0, '=== spec_review_gate: 2 suites (PASS=2, FAIL=0) ==='. bash tests/spec_review_gate/run.sh -> exit 0, same summary. diff -r skills/measure claude-skills/measure -> exit 0, no output. python3 ... measure_interphase_checks.py ux-paths --repo . --baseline 65c7925 -> no output (browser review not applicable). git diff 7d72b40 -- skills/measure/references/new-track-set.md -> empty.
+Gate note: measure/doctor.sh does not exist in this repository. The test strategy names the test commands as the live gate.
