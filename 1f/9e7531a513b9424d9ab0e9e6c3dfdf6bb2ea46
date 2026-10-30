@@ -1,0 +1,5 @@
+Task 1.3: Green: spec review standard.
+Files: skills/measure/references/spec-review.md, claude-skills/measure/references/spec-review.md (byte-identical copy).
+Content: the EGM credit with the URL and Apache-2.0; the eight level-2 sections in contract order (Reviewer Input, Paraphrase First, Zoom-Out Check, Zero-Decision Check, Severity, Finding Format, Re-Review Limit, Report Layout); the no-history sentence; the five zero-decision kinds; the Decision 11 severity rules; the literal finding line; the S1 Author Response forms 'fixed' and 'not fixed — <reason of the user>'; the not-run form.
+Verification: bash tests/spec_review_gate/test_s1_standard.sh -> 16 checks (PASS=16, FAIL=0). diff -r skills/measure claude-skills/measure -> empty.
+Note: the full S1 command still fails on test_s1_new_track.sh until Task 1.4 changes §2.5 of new-track.md and SKILL.md.
