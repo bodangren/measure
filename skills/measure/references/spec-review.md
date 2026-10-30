@@ -12,6 +12,8 @@ The reviewer gets no conversation history. The reviewer reads these inputs:
 
 The reviewer can search and read the repository. The reviewer needs the repository to check the claims of the spec about the current system, reuse, and placement (spec Decision 7).
 
+The reviewer does not quote a secret value (a key, a token, a password) in the report, because the author commits the report. The reviewer names the file and the line instead.
+
 ## Paraphrase First
 
 Before any finding, the reviewer writes two sections:
@@ -71,6 +73,8 @@ A review has `at most one re-review`. A second round runs only when `spec.md` or
 - F<n>: <finding text> (accepted by the user on <YYYY-MM-DD>)
 ```
 
+The author writes the `## Accepted Risks` lines only after the user approves the commit. Until then, the remaining findings stay in the round sections.
+
 ## Report Layout
 
 The reviewer returns only the three `###` subsections of one round:
@@ -109,6 +113,17 @@ Reviewer: <subagent type and model, or unknown>
 ## Accepted Risks
 - F<n>: <finding text> (accepted by the user on <YYYY-MM-DD>)
 ```
+
+The author (the main agent) writes these lines:
+
+- `Author model:` (the model id that the harness reports for this session, or `unknown`)
+- `Date:`
+- `Reviewer:` (the subagent type and the model id that it was given, or `unknown`)
+- the `## Round 2` heading
+- the `### Author Response` lines
+- `## Accepted Risks`
+
+The reviewer writes only the three `###` subsections of one round.
 
 A round without findings has the line `- None` under `### Findings`. The Author Response has one line for each finding, in one of these two S1 forms:
 
