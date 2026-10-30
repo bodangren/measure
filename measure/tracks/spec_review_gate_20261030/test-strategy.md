@@ -1,23 +1,27 @@
 # Test Strategy: Spec review gate, finding dispositions, and doc drift check
 
 Track: `spec_review_gate_20261030`. Spec: [spec.md](./spec.md). Plan: [plan.md](./plan.md).
-Written at `role_base_sha` `7d72b40` for Phase S1. Refreshed at `role_base_sha` `1c24539` for Phase S2. It covers all four phases. Later phases need only a refresh commit.
+Written at `role_base_sha` `7d72b40` for Phase S1. Refreshed at `role_base_sha` `1c24539` for Phase S2, and at `role_base_sha` `25b9064` for Phase S3. It covers all four phases. Later phases need only a refresh commit.
 
-The S2 refresh changes: the S2 section (spec Decision 27 closes the old open item), the S2 adversarial probes, the S2 review scopes, a new open item on renames, the S1 lessons (section 10), and the S3 strings from the amendment at `1c24539`.
+The S3 refresh changes: the S3 section (targeted Red command, Red evidence rules, full Review B and Review C scopes, the S3 adversarial probes, the backward-compatibility probe), the S2 status (accepted, rename gap closed), the environment facts at `25b9064`, the guardrails of the parser, and the S2 lessons (section 10). S4 does not change.
 
 The "Rules for every phase" section and the "Test commands" table of `plan.md` are binding. This strategy adds gates, ownership, risk, review applicability, and anti-pattern defenses. It does not change a contract block.
 
 ## 1. Environment facts
 
-- **measure-guard denies edits outside `measure/`.** The OpenCode plugin allows an edit outside `measure/` only when `measure/tracks.md` marks a track `[~]` and `plan.md` marks a task `[~]`. At `1c24539`, the track line is `- [~]`, and no task is `[~]`.
-- **Red must set the task marker before it writes `tests/`.** In S2, Red marks Task 2.1 `[~]` in `plan.md` first. In S1, Red also changed the track line; that step is complete.
-- **The guard also blocks remediation rounds.** When every phase task is `[x]`, Green cannot edit outside `measure/`. In S1, Green set the task `[~]` only in the working tree, made the edits, and restored `[x]` with the SHA before each commit. Use the same method in S2 remediation. No commit may carry the temporary `[~]`.
+- **measure-guard denies edits outside `measure/`.** The OpenCode plugin allows an edit outside `measure/` only when `measure/tracks.md` marks a track `[~]` and `plan.md` marks a task `[~]`. At `25b9064`, the track line is `- [~]`, and no task is `[~]`.
+- **Red must set the task marker before it writes `tests/`.** In S3, Red marks Task 3.1 `[~]` in `plan.md` first. In S1, Red also changed the track line; that step is complete.
+- **Adversarial testing also meets the guard.** When no task is `[~]`, a role that must write `tests/` writes its draft under `measure/runs/spec_review_gate_20261030/` and moves it with the shell (S2 lesson). The role states the move in `handoff`.
+- **The guard also blocks remediation rounds.** When every phase task is `[x]`, Green cannot edit outside `measure/`. In S1, Green set the task `[~]` only in the working tree, made the edits, and restored `[x]` with the SHA before each commit. Use the same method in S2 and S3 remediation. No commit may carry the temporary `[~]`.
 - **The cron job installs from `main` every hour.** Each commit goes live in `~/.agents/` and `~/.config/opencode/`. The orchestrator gates use `~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py`, so the gate checker can change during S2 and S3. Record the output of `bin/install-measure-skill --check` when a gate result is not consistent with the repository checker.
 - **The tests use the repository checker.** Every Python test runs `$ROOT/skills/measure-orchestrator/scripts/measure_interphase_checks.py`. No test reads the installed copy in `~/.agents/`.
 - **`measure/doctor.sh` does not exist** at `7d72b40`. See section 7.
 - **`measure/runs/` is in `.gitignore`.** No role commits a run artifact.
 - **Baselines at `7d72b40`:** `diff -r skills/measure claude-skills/measure` is empty, `check-parity.sh` prints `parity: ok`, and `bun test plugins/opencode-measure-guard` gives `85 pass, 0 fail`.
 - **Baselines at `1c24539`:** `bash tests/spec_review_gate/run.sh` gives `3 suites (PASS=3, FAIL=0)` (`test_s1_adversarial.sh`, `test_s1_new_track.sh`, `test_s1_standard.sh`). `bun test plugins/opencode-measure-guard` gives `85 pass, 0 fail`. The host has Python 3.14.4 and git 2.53.0.
+- **Baselines at `25b9064`** (run by this refresh): `bash tests/spec_review_gate/run.sh` gives `6 suites (PASS=6, FAIL=0)`. The S2 suites are `test_checker.py` (class `SpecReviewRoleGateTest`), `test_s2_role_docs.sh`, and `test_s2_adversarial.sh` (96 checks). `bun test plugins/opencode-measure-guard` gives `85 pass, 0 fail`. Adversarial testing in S2 saw one flake in `test_s1_adversarial.sh` that did not repeat. A second flake is a finding.
+- **Run logs at `25b9064`:** `measure/runs/` holds 37 `*.log` files; 28 have an exact `MEASURE_AGENT_RESULT` line and an exact `END_MEASURE_AGENT_RESULT` line. `measure/archive/` holds 0 `*.log` files. One log has a `dispositions:` line: `jr-green-s2-r3.log` with `dispositions: F1=FIX; F2=FIX`.
+- **The S2 checkpoint is not in `plan.md` yet.** The `## Phase S2` heading has no `[checkpoint: ...]`. The orchestrator records it (phase acceptance at `25b9064`).
 - **The checker inherits the git configuration of the host.** `git()` in the checker adds no `-c` option. Thus `diff.renames` and `core.quotePath` change the output of `committed_files`. Each S2 fixture and probe sets `GIT_CONFIG_GLOBAL=/dev/null` and `GIT_CONFIG_NOSYSTEM=1`, so the result does not depend on the host.
 - **This track cannot use `measure-spec-review` on itself.** The role does not exist before S2. After S2, the skip rule of spec Decision 14 applies, because the plan has `[x]` tasks.
 
@@ -25,7 +29,7 @@ The "Rules for every phase" section and the "Test commands" table of `plan.md` a
 
 - **S1:** run `git rev-parse HEAD` directly after the commit `measure(strategy): Test strategy for track 'Spec review gate'` lands. Do this before Red makes its first edit. That SHA is the S1 `phase_base_sha`.
 - **S2, S3, S4:** the strategy role commits a refresh of this file at the start of each phase. Run `git rev-parse HEAD` directly after that refresh commit, before Red starts. That SHA is the `phase_base_sha` of the phase.
-- **S2 now:** the S2 refresh commit is `measure(strategy): Refresh the test strategy for Phase S2`. Its parent is `1c24539`. Capture `phase_base_sha` with `git rev-parse HEAD` directly after this commit lands, before Red marks Task 2.1 `[~]`. Do not use `1c24539`, `4f1f290`, or any S1 SHA.
+- **S3 now:** the S3 refresh commit is `measure(strategy): Refresh the test strategy for Phase S3`. Its parent is `25b9064`. Capture `phase_base_sha` with `git rev-parse HEAD` directly after this commit lands, before Red marks Task 3.1 `[~]`. When the orchestrator records the S2 checkpoint in `plan.md` after this commit, capture `phase_base_sha` after that checkpoint commit. Do this still before Red marks Task 3.1 `[~]`. Both commits change only `measure/`. Do not use `25b9064`, `ccdaae2`, or any SHA of S1 or S2.
 - Do not use `7d72b40` or a SHA of an earlier phase as `phase_base_sha`. This file contains no `phase_base_sha` value.
 
 ## 3. Task ownership and gate markers
@@ -73,7 +77,7 @@ python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py ux-path
 
 `7d72b40` here is the track base of spec acceptance criterion 4, not a `phase_base_sha`. The `ux-paths` line must print nothing. Output from it means a UX-relevant file changed, and browser review becomes applicable.
 
-**Intentionally red aggregate.** No suite is intentionally red at a Green gate or at a closeout gate. Each phase adds its suites only in its own Red task. In S2, the S1 suites (including `test_s1_adversarial.sh`) must stay green at Red, at Green, and at closeout. A failing S1 suite at S2 Red is a regression, not Red evidence. Thus `RUN` with the default patterns fails only between the Red commit and the Green commit of the current phase. In S3, `test_checker.py` holds the green `SpecReviewRoleGateTest` and the red `DispositionsLineTest`, so the file fails as one suite at Red. No test may skip a check, mark it as expected to fail, or add a `skip-aggregate` header. `bun test plugins/opencode-measure-guard` stays at `0 fail` in every phase.
+**Intentionally red aggregate.** No suite is intentionally red at a Green gate or at a closeout gate. Each phase adds its suites only in its own Red task. In S2, the S1 suites (including `test_s1_adversarial.sh`) must stay green at Red, at Green, and at closeout. A failing S1 suite at S2 Red is a regression, not Red evidence. Thus `RUN` with the default patterns fails only between the Red commit and the Green commit of the current phase. In S3, `test_checker.py` holds the green `SpecReviewRoleGateTest` and the red `DispositionsLineTest`, so the file fails as one suite at Red. The Red git note must show that each `SpecReviewRoleGateTest` case still passes (`python3 -m unittest -v` output). At S3 Red, `test_s1_*.sh`, `test_s2_role_docs.sh`, and `test_s2_adversarial.sh` must pass; a failure there is a regression. At S3 Red, `RUN` with the default patterns gives 7 suites with exactly 2 failures: `test_checker.py` and `test_s3_dispositions_docs.sh`. No test may skip a check, mark it as expected to fail, or add a `skip-aggregate` header. `bun test plugins/opencode-measure-guard` stays at `0 fail` in every phase.
 
 ## 5. Phase strategies
 
@@ -98,6 +102,8 @@ python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py ux-path
 | Bundle equality | A5 | Run `diff -r skills/measure claude-skills/measure` and require exit 0. | The check fails on any byte difference. |
 
 ### Phase S2: The measure-spec-review orchestrator role
+
+**Status:** accepted at `25b9064` (`measure/runs/spec_review_gate_20261030/phase-acceptance-s2-25b9064.json`). Plan amendment `ccdaae2` closed the rename gap (spec Decision 29, `--no-renames`). Remediation `b955a3e` made multi-line findings invalid (`fullmatch` and a `splitlines()` check). It also made the scope check read NUL-separated paths (`-z`) without `strip()`. The text below is the S2 record. The "Open item (rename gap)" and the rename "Report" row are closed: `test_s2_adversarial.sh` asserts exit 1 and the old path.
 
 - **Risk:** `high`. The checker decides a gate, and the new role file sets agent permissions. A defect lets a track start Red on a failed review, or gives a report-only role write access.
 - **Targeted Red command:** `bash tests/spec_review_gate/run.sh 'test_s2_*.sh' test_checker.py`. It must exit 1. At Red, the checker prints `unknown role 'spec-review'` for each `spec-review` case. Each Python case asserts its own message, so that output fails each case for the correct reason.
@@ -159,25 +165,76 @@ The suite passes at its commit. A probe marked "Report" never asserts the defect
 
 ### Phase S3: Finding dispositions
 
-- **Risk:** `high`. `dispositions_feedback` runs for every role when `--log-file` is given. A defect breaks the gates of every orchestrated track in each project after the cron install.
-- **Review B (security):** applicable, short scope. Check that the parser cannot read outside `--log-file`, and that a crafted log (very long line, nested parentheses, non-UTF-8 bytes) does not crash the checker.
-- **Review C (UX/API):** applicable. Check the `dispositions:` syntax, the message prefix `invalid dispositions line: `, and the agreement of the four words across the roles, `review.md`, and the standard.
-- **Adversarial testing:** applicable. Probes: CRLF line ends; an indented `dispositions:` line; `MEASURE_AGENT_RESULT` as a substring inside a `handoff:` value; a last start line without an `END_MEASURE_AGENT_RESULT` after it; `CONTEST(a(b))`; `;` inside the evidence; a non-breaking space as the only evidence; `F1=FIX ;F2=DECLINE`. The contract does not define the case without an end line. Adversarial testing reports the result and routes a crash as a finding.
-- **Browser review:** not applicable. There is no UI.
-- **Live behavior proof:** `DispositionsLineTest` runs the real `role-gate --role jr-green` in a temporary repository with real logs. That is live proof of the parser. The role prose and the re-review rules are agent prose; the contract tests prove only strings.
-- **Changed-contract risks:** the Agent Result Block template must not change (12 lines). Existing logs without the line must pass. The S1 form `not fixed —` goes away from the standard and from `new-track.md`. The amendment at `1c24539` changes one Report Layout sentence and adds a Round 2 secret check to sub-step 7; the S1 suites must still pass after these edits.
-- **Adversarial suite:** `tests/spec_review_gate/test_s3_adversarial.sh`, with the rules of the S2 adversarial suite.
+- **Risk:** `high`. `dispositions_feedback` runs for every role when `--log-file` is given. A defect breaks the gates of every orchestrated track in each project after the cron install. A fail-open defect lets a Green round with a bad `dispositions:` line pass its gate.
+- **Targeted Red command:** `bash tests/spec_review_gate/run.sh 'test_s3_*.sh' test_checker.py`. It must exit 1. At Red, the checker ignores the `dispositions:` line. Thus each invalid-line case exits 0 and fails, and each valid-line case passes.
+- **Green gate:** the S3 `GREEN_TEST_COMMAND` of section 4. **Closeout gate:** the block of section 4 with `--baseline <phase_base_sha>` on the immutable HEAD.
+- **Red evidence must name the reason.** Each `DispositionsLineTest` invalid case fails because the output lacks `invalid dispositions line`. A case that fails for another reason (a missing fixture file, `could not find phase`, a non-zero `GREEN_TEST_COMMAND`) is a false Red. The `test_s3_dispositions_docs.sh` failures each name one missing S3 string. The edge checks `not fixed —` absent and `writes the returned text without changes:` absent fail at Red, because the S1 text still has both strings. The 12-line template check passes at Red.
+- **Fixture control case (A4).** The no-line case (exit 0 and `PASS: jr-green gate passed`) is the control. It proves that the fixture passes every other jr-green check. Each invalid case also asserts that each `FAIL:` line of the output starts with `FAIL: invalid dispositions line`. Thus an exit 1 from a fixture defect cannot count as a parser rejection.
+- **Review B (security):** applicable, full scope on the parser and its call. The question: can the parser make a gate pass that must fail, or fail a valid old log?
+  - Fail open: check that `dispositions_feedback` catches no exception and returns no empty list on an error. Check that its feedback is added to `feedback` and does not replace it or return early. A log with a valid line and a failing `GREEN_TEST_COMMAND` must still exit 1.
+  - Every role: check that the call is outside the role branches of `cmd_role_gate`, so `strategy`, `mid-red`, the audit roles, and `spec-review` also run it.
+  - Block selection: check the last-block rule, a last start line without an end line after it, a start line embedded in another line, and the effect of `str.splitlines()` against `split("\n")`. `Path.read_text` changes a lone CR to `\n`; `str.splitlines()` also splits on U+2028, U+0085, `\x0b`, `\x0c`, and `\x1c` to `\x1e`. Each choice can split one `dispositions:` line into two.
+  - Read path: check that the parser reads only `--log-file`, opens no other path, and runs no shell. Check the read mode. `has_agent_result` reads with `errors="ignore"`. A strict read gives a traceback on a log that the gate accepted before S3.
+  - Cost: check the cost of the duplicate check. A list scan per item is quadratic. S2 found the same class (QUADRATIC).
+  - Report each result of the adversarial "Report" rows with a severity. Route a fail-open result as a Blocker.
+- **Review C (UX/API):** applicable. Compare the contract text of the four dispositions in each of these files:
+  - `skills/measure-orchestrator/references/contracts.md` (`## Finding Dispositions`, the line syntax, the re-review rules, the no-FIX rule);
+  - `agents/measure-jr-green.md` (`## Routed findings`);
+  - the five audit roles: `measure-review-a-correctness.md`, `measure-review-b-security.md`, `measure-review-c-ux-api.md`, `measure-phase-acceptance.md`, `measure-spec-review.md`;
+  - `skills/measure/references/review.md` (§2.5 heading, §3.1 item 3);
+  - `skills/measure/references/spec-review.md` (`## Finding Dispositions`, the Author Response lines, the Report Layout sentence);
+  - `skills/measure/references/new-track.md` step 9 (sub-steps 6 and 7, the Round 2 secret check);
+  - `skills/measure-orchestrator/SKILL.md` "## Delegation".
+  - Check that each file uses the four words in uppercase, with the same meaning. DECLINE is for Nit in the Measure severity scale and for Low in `review.md` (spec Decision 21). Check that no file allows CONTEST or DECLINE for a `Comprehension gap:` finding. Check that the `contracts.md` example line passes the checker. Check that each message names the bad item or the duplicate id. Check that the README sentence and the CHANGELOG line agree with `contracts.md`.
+- **Adversarial testing:** applicable, full scope on the parser. The suite is `tests/spec_review_gate/test_s3_adversarial.sh`. It uses the fixture rules of S2. The probes are in the table "S3 adversarial probes" below.
+- **Browser review:** not applicable. There is no UI, and no UX-relevant path changes. Set `UX_REQUIRED=never`.
+- **Live behavior proof:** `DispositionsLineTest` runs the real `role-gate --role jr-green` in a temporary repository with real log files. That is live proof of the parser. The backward-compatibility probe runs the real checker on the real logs of this host. The role prose, the re-review rules, and the no-FIX round rule are agent prose. The contract tests prove only the strings. Phase acceptance must read the Green role and one audit role, and confirm that an agent can apply each disposition without a guess.
+- **Changed-contract risks:**
+  - The Agent Result Block template must not change (12 lines). The `dispositions:` line is optional and goes below the template.
+  - Existing logs without the line must pass (spec NFR). The log `measure/runs/spec_review_gate_20261030/jr-green-s2-r3.log` already has `dispositions: F1=FIX; F2=FIX`. It must pass.
+  - The S1 form `not fixed —` goes away from `spec-review.md` and `new-track.md`, in `skills/measure/` and in `claude-skills/measure/`.
+  - Amendment `1c24539`: the Report Layout sentence becomes `The author writes the other lines of this template, and writes the returned text without changes, except that the author replaces a secret value with its file and line:`. Sub-step 7 of step 9 gets, directly before `Append the returned sections under that heading, and show the result to the user.`, the two sentences `Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line.` The S1 suites must still pass after these edits. Check that no S1 check matches the old sentence `writes the returned text without changes:`.
+  - `review.md` §2.5 heading becomes `### F<n> [Critical/High/Medium/Low] Description of Issue`. §3.1 gets item `3. **Record Dispositions:**`. Check that later items of §3.1 renumber and that no other file cites the old item numbers.
+  - The S2 suites pass no `--log-file`. They prove that the parser does not run without `--log-file`. They must stay green.
 
 | Test group | Defends against | Defense | Falsification condition |
 | --- | --- | --- | --- |
-| Invalid lines (each exit 1) | A4 | Assert exit 1 and `invalid dispositions line` in the output. The duplicate case also asserts `duplicate finding id F1`. | Each case fails when the gate exits 0, or when the message is absent. At Red, the old checker exits 0, so these cases fail. |
+| Control case (no `dispositions:` line) | A4 | Assert exit 0 and `PASS: jr-green gate passed`. | The case fails when the fixture fails another jr-green check. Then each invalid case is suspect. |
+| Invalid lines (each exit 1) | A4 | Assert exit 1, `invalid dispositions line`, and no `FAIL:` line without that prefix. The duplicate case also asserts `duplicate finding id F1`. | Each case fails when the gate exits 0, when the message is absent, or when another check also fails. At Red, the old checker exits 0, so these cases fail. |
 | Valid lines (each exit 0) | A4 | Assert exit 0 and `PASS: jr-green gate passed`. These cases pass at Red. They prove at Green that the parser does not reject valid input. | Each case fails when the new parser rejects a valid line. |
-| Last-block rule | A4 | Two blocks: the first has `F1=bad`, the last has `none`. A `F1=bad` line after `END_MEASURE_AGENT_RESULT`. Both exit 0. | Each case fails when the parser reads the first block or text after the end line. Pair each with an invalid line inside the last block to show that the parser reads that block. |
+| Last-block rule | A4 | Two blocks: the first has `dispositions: F1=bad`, the last has `dispositions: none`. A `dispositions: F1=bad` line after `END_MEASURE_AGENT_RESULT`. Both exit 0. | Each case fails when the parser reads the first block or text after the end line. The invalid cases put the line inside the last block, so they show that the parser reads that block. |
 | Result block template | A4 | Extract the first `text` code block of `contracts.md`. Require it non-empty. Count 12 lines from `MEASURE_AGENT_RESULT` to `END_MEASURE_AGENT_RESULT`. | The check fails when the block is absent, has a `dispositions` line, or has another line count. |
 | `not fixed —` absent | A4, A7 | Use `grep -rF 'not fixed —' skills agents`. First assert that both folders exist and hold files. | The check fails when a folder is empty or missing, or when one file contains the string. |
-| Doc strings in the six role files, the skill, `review.md`, and the standard | A7 | Use `grep -F` per file, per string. Check the `Delegation` strings only inside that section. | Each check fails when one file lacks one string. |
+| Doc strings in the six role files, the skill, `review.md`, and the standard | A7 | Use `grep -F` per file, per string. Check the `Delegation` strings only from `## Delegation` to the next `## ` heading. Check the §3.1 words only inside §3.1. | Each check fails when one file lacks one string, or when a string occurs only outside its section. |
 | Secret check strings (amendment `1c24539`) | A4, A7 | Search the Report Layout string only from `## Report Layout` to the end of the standard. Search the Round 2 strings only in the step 9 line that matches `^   7\. `. Require each extract non-empty first. Assert that the standard lacks `writes the returned text without changes:`. | Each check fails when an extract is empty, when a string occurs only outside its block, or when the old sentence remains. |
 | Bundle equality | A5 | `diff -r skills/measure claude-skills/measure` exits 0. | The check fails on any difference. |
+
+**S3 adversarial probes.** The suite `test_s3_adversarial.sh` uses the jr-green fixture of Task 3.1 (`GREEN_TEST_COMMAND=true`) unless a row names another role. The "Contract" and "Report" rules of the S2 probes apply. A `Traceback` in any probe is a finding. Each probe writes the log as bytes (Python `write_bytes`), so the probe controls each CR, NUL, and non-UTF-8 byte.
+
+| Probe group | Inputs (the `dispositions:` value, or the log shape) | Expected result | Defends against |
+| --- | --- | --- | --- |
+| Line ends | the whole log in CRLF with `dispositions: none`; CRLF with `F1=FIX; F2=DECLINE` | Contract (spec NFR, `strip()` rule): exit 0. | A4 |
+| Embedded CR | `F1=FIX\rF2=CONTEST()`; `F1=FIX\r; F2=DECLINE` | Report. `Path.read_text` changes a lone CR to a line end, so the text after CR can leave the line. | A4 |
+| Unicode line separators | `F1=FIX F2=CONTEST()`; `F1=FIX\u0085F2=bad`; a `handoff:` value `x MEASURE_AGENT_RESULT` before a real block | Report. The result depends on `splitlines()` against `split("\n")`. Record which items the parser read. | A4 |
+| NUL | `F1=FIX\x00`; `F2=CONTEST(\x00)` | `F1=FIX\x00`: contract, exit 1. `CONTEST(\x00)`: report (NUL is not a space character). | A4 |
+| `;` inside parentheses | `F2=CONTEST(a; b)`; `F3=ESCALATE(x;)` | Contract (spec Decision 18): exit 1 with `invalid dispositions line`. | A4, A7 |
+| Nested and unbalanced parentheses | `F2=CONTEST(a(b))`; `F2=CONTEST(a)b)`; `F2=CONTEST((a)` | Contract (the plan regex `\((.+)\)$`): exit 0. | A4 |
+| Spaces | `F1=FIX ;F2=DECLINE`; `  F1=FIX  `; `F2=CONTEST( )`; `F2=CONTEST(​)`; `dispositions:none`; `dispositions:    ` | First two: contract, exit 0. U+00A0: contract, exit 1 (Python treats it as a space). The other three: report. | A4 |
+| Id forms | `F01=FIX`; `F１=FIX` (full-width digit); `f1=FIX`; `F1=Fix`; `F1 = FIX`; `F1=FIX; F1=FIX` | Contract: exit 1. The duplicate case prints `duplicate finding id F1`. | A4 |
+| Very long input | one line with 50,000 items `F<n>=FIX`; one `CONTEST(` item with 5 MB of evidence; 50,000 items with one duplicate at the end | Contract: exit 0, exit 0, exit 1. Report the time of each run. A run above 5 seconds is a finding (quadratic duplicate check). The probe timeout is 120 seconds. | A4 |
+| Several blocks | the last block valid and an earlier block invalid; the last block invalid and an earlier block valid; two `dispositions:` lines in the last block (`none`, then `F1=bad`) | Contract: exit 0, exit 1, exit 0 (the first `dispositions:` line counts). | A4 |
+| Unclosed last start line | a full block with `dispositions: F1=bad`, then one more `MEASURE_AGENT_RESULT` line with no end line after it | Report. A literal reading of the contract finds no block and gives exit 0. That hides the invalid line. Route the result to the user as an ESCALATE item. | A4 |
+| Start line as a substring | `handoff: see MEASURE_AGENT_RESULT` inside the block; an indented `  dispositions: F1=bad` line | First: contract, exit 0 (not an exact line). Indented line: report. | A4, A7 |
+| Log not UTF-8 | bytes `\xff\xfe` outside the block, with a valid block; the same bytes inside the `dispositions:` line | First: contract (spec NFR; `has_agent_result` accepts this log at `25b9064`), exit 0. Second: report. | A4, A5 |
+| Log is a folder; log is missing | `--log-file <tmp>/dir`; `--log-file <tmp>/none.log` | Report for the folder (`has_agent_result` gives a traceback before S3; the gate fails closed). Missing file: contract, exit 1 with `missing MEASURE_AGENT_RESULT block` and no `invalid dispositions line`. | A4 |
+| Every role | the invalid value `F1=fix` with `--role strategy`, `mid-red`, `review-a`, and `spec-review` | Contract (the call is for every role): each output contains `invalid dispositions line`. Other `FAIL:` lines are allowed. | A4 |
+| Fail-open order | a valid line and `GREEN_TEST_COMMAND=false` | Contract: exit 1 with the `GREEN_TEST_COMMAND` failure. | A4 |
+| Documented example | the `dispositions:` example line of `contracts.md`, extracted with `grep -F 'dispositions: F1=FIX; F2=CONTEST('` | Contract: exactly one line found, and the gate exits 0 on it. | A4, A5 |
+| Backward compatibility, frozen corpus | blocks in the shape of the S1 and S2 logs, written by the suite: no `dispositions:` line; `dispositions: F1=FIX; F2=FIX`; a log with a JSON summary above the block | Contract: exit 0 with `PASS: jr-green gate passed`. | A4, A5 |
+| Backward compatibility, live corpus | every `*.log` under `$ROOT/measure/runs/` and `$ROOT/measure/archive/*/`, given as `--log-file` to the jr-green fixture; the suite reads each log and writes nothing to it | Contract: no output has `invalid dispositions line` or `Traceback`. Each log with an exact `MEASURE_AGENT_RESULT` line and an exact `END_MEASURE_AGENT_RESULT` line exits 0. At `25b9064` this host has 37 logs under `measure/runs/` (28 with both exact lines) and 0 under `measure/archive/`. The check fails when `measure/runs/` exists and holds 0 logs. Print the counts. | A4, A5 |
+| Sensitivity | copies of the checker with one defect each: the first block, not the last; no duplicate check; `re.match` without the end anchor; `re.IGNORECASE`; no `strip()` of each item; the call only in the jr-green branch; no call at all | Each broken copy makes at least one probe fail. | A4 |
+
+`measure/runs/` is in `.gitignore`. On a fresh clone the folder does not exist. Then the live-corpus check prints one PASS line that names the absent folder, and the frozen corpus carries the backward-compatibility proof. This is the only conditional check of the suite. The adversarial JSON records the counts of the host run.
 
 ### Phase S4: Doc drift check in the weekly audit
 
@@ -244,14 +301,21 @@ UX_REQUIRED=never
 - The checker uses the Python standard library only. No new import outside the standard library.
 - `validate_spec_review_payload` is called only from `validate_audit_payload`, in the form of `validate_ux_payload`. No second copy of the rules goes into `cmd_role_gate`.
 - `dispositions_feedback` reads only the `--log-file` path. It does not change `has_agent_result`.
+- `dispositions_feedback` reads the log in the same mode as `has_agent_result` (`encoding="utf-8", errors="ignore"`). Then a log that passed before S3 cannot give a decode traceback. The plan does not state the mode, so a strict read is a Review B finding, not a contract break.
+- `cmd_role_gate` calls `dispositions_feedback` once, after the `has_agent_result` check and outside the role branches. It adds the messages to `feedback`. It catches no exception.
+- The duplicate check uses a `set`, not a list scan.
 - No change to an existing audit JSON field or to the Agent Result Block template.
 - `skills/measure/references/new-track-set.md` and `claude-skills/measure.skill` do not change.
 - Each commit keeps the installed files consistent: a file or a checker role lands before the first file that names it.
 - Green does not edit `tests/spec_review_gate/` except to fix a harness defect that Red confirms. A Green test edit is a finding for Review A.
 
-## 10. Lessons from S1 (binding for S2 to S4)
+## 10. Lessons from S1 and S2 (binding for S3 and S4)
 
 - **Remediation under the guard.** See section 1. Green sets the task `[~]` only in the working tree, and each commit carries `[x]` with the SHA. The Green log states this in `handoff`.
 - **Audit artifact format.** Each audit JSON list field holds strings only. A finding is one string, not an object. Each audit log holds one full block from `MEASURE_AGENT_RESULT` to `END_MEASURE_AGENT_RESULT`. `role-gate` fails a log without both lines.
 - **Adversarial suites.** Adversarial testing commits `tests/spec_review_gate/test_s<n>_adversarial.sh`. The runner selects it with the phase pattern `test_s<n>_*.sh` and with the default patterns. Thus it runs in the phase closeout gate and in every later gate. The suite must pass at its commit (see the S2 probe rules).
-- **Runner tech debt.** `measure/tech-debt.md` records SELF, SYMLINK, PYGLOB, MKTEMP, and PYZERO. S2 does not change `run.sh`. The S2 suites avoid these cases: no suite name has a glob character, and each bash suite checks `mktemp -d`.
+- **Runner tech debt.** `measure/tech-debt.md` records SELF, SYMLINK, PYGLOB, MKTEMP, and PYZERO. S2 and S3 do not change `run.sh`. The S2 and S3 suites avoid these cases: no suite name has a glob character, and each bash suite checks `mktemp -d`.
+- **Parsers need text-edge probes (S2).** Review B found two real bypasses in the S2 checker: a multi-line finding and whitespace stripping of paths. Each new parser gets probes for CR, U+2028, NUL, leading and trailing spaces, non-UTF-8 bytes, a folder in place of a file, very long input with a time limit, and several blocks. Section 5 lists the S3 probes.
+- **Sensitivity copies (S2).** Each adversarial suite runs broken copies of the checker, and each copy must fail at least one probe. The S2 suite used 10 copies. The S3 suite uses the 7 copies of section 5.
+- **Model availability (S2).** The Muse model failed to start two times for phase acceptance. Opus 5.5 took its place, and the log recorded the deviation. When a role model fails to start two times, the orchestrator picks a model of another family and records the deviation in `handoff`. The orchestrator does not wait.
+- **Drafts under the guard (S2).** See section 1. Adversarial testing wrote its suite under `measure/runs/` and moved it into `tests/spec_review_gate/`. Only the moved file goes into the commit.
