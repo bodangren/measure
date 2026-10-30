@@ -1,0 +1,9 @@
+S1 review remediation R1 to R7. Files: skills/measure/references/new-track.md §2.5 step 9, skills/measure/references/spec-review.md, and byte-identical copies in claude-skills/measure/.
+R1 fixed (new-track.md sub-step 3): the subagent gets no secrets, credentials, tokens, or environment values. The Product Definition, Tech Stack, and Workflow are 'the absolute paths of'.
+R2 fixed (spec-review.md Reviewer Input): the reviewer does not quote a secret value (a key, a token, a password) in the report, because the author commits the report. It names the file and the line instead.
+R3 fixed (sub-step 2): the exact user message is 'This harness cannot start a fresh subagent, so the spec review did not run. I recorded this in spec-review.md.' Then step 10 runs with no wait.
+R4 fixed (sub-step 5): Options line 'Fix the selected findings' / 'Fix none' / Type your own answer, and 'Wait for the user's response.'
+R5 fixed (sub-step 8 and spec-review.md Re-Review Limit): a stop ends the workflow without a commit, the track files stay on disk uncommitted, and the agent tells the user. The Accepted Risks lines come only after the commit approval; until then the findings stay in the round sections.
+R6 fixed (sub-step 4, 6, 7 and spec-review.md Report Layout): the author (the main agent) writes Author model:, Date:, Reviewer: (subagent type and the model id it was given, or unknown), the Round 2 heading, the Author Response lines, and Accepted Risks. The reviewer writes only the three '###' subsections of one round.
+R7 fixed (sub-step 8): 'at most one re-review' is plain text, and the exact phrase stays.
+Verification: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> 2 suites (PASS=2, FAIL=0); full runner -> same; diff -r skills/measure claude-skills/measure -> empty. test_s1_new_track.sh reports 'steps 1 to 8 equal the track base'. No tests file changed. No contract string was removed.
