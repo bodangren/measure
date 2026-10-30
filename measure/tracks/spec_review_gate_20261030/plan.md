@@ -102,6 +102,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.3: Green: write `skills/measure/references/spec-review.md` as the contract states, and copy it to `claude-skills/measure/references/spec-review.md`. 1f9e753
 - [x] Task 1.4: Green: add step 9 to §2.5 of `skills/measure/references/new-track.md` and renumber steps 10 and 11. Update the "### New Track" paragraph and the Directory Structure block of `skills/measure/SKILL.md`. Copy both files to `claude-skills/measure/`. 55fde72
   - Review remediation R1–R7: a3600f8
+  - Review remediation F1–F5: 54862aa
 - [x] Task 1.5: Docs and checks: change the New Track line of `measure/product.md` to name the independent spec review. Add `spec-review.md` to the `new-track` output in the command table of `README.md`. Add a line under "## Unreleased" / "### Features" of `CHANGELOG.md`. Run the S1 command and the full runner. d462c2e
 
 ## Phase S2: The measure-spec-review orchestrator role
