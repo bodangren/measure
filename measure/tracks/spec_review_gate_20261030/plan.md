@@ -156,7 +156,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.2: Green: change `skills/measure-orchestrator/scripts/measure_interphase_checks.py` as the contract states (aliases, `SPEC_REVIEW_FINDING_RE`, `validate_spec_review_payload`, the `spec-review` block in `cmd_role_gate`). 33cafee
 - [x] Task 2.3: Green: write `agents/measure-spec-review.md` as the contract states. b8e82e0
 - [x] Task 2.4: Green: update `skills/measure-orchestrator/SKILL.md`, `skills/measure-orchestrator/references/contracts.md`, `agents/measure-orchestrator.md`, and `plugins/opencode-measure-guard/commands/measure-orchestrate.md` as the contract states. 2b1ed94
-- [~] Task 2.5: Docs and checks: add the README role row. Change the role count in `measure/product.md` and `measure/tech-stack.md` to 14. Add a `CHANGELOG.md` line. Run the S2 command, the full runner, and `bun test plugins/opencode-measure-guard/tests/commands.test.ts`.
+- [x] Task 2.5: Docs and checks: add the README role row. Change the role count in `measure/product.md` and `measure/tech-stack.md` to 14. Add a `CHANGELOG.md` line. Run the S2 command, the full runner, and `bun test plugins/opencode-measure-guard/tests/commands.test.ts`. ddbf3cf
 
 ## Phase S3: Finding dispositions
 _Story ref: spec.md#story-s3_
