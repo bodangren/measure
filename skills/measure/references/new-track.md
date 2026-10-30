@@ -296,7 +296,18 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 8. **Populate `estimated_tasks`:** Count the total number of top-level tasks in the finalized `plan.md` and write that value into `metadata.json` as `estimated_tasks`.
 
-9. **Commit Changes:** Stage the **Tracks Registry** and all new track files. Commit with message `chore(measure): Add new track '<track_description>'`.
+9. **Spec Review (fresh subagent):** Run one independent review of `spec.md` and `plan.md` before the track commit.
+   1. Resolve the standard as `references/spec-review.md` in the base directory of this skill.
+   2. When the harness has no tool that starts a subagent with a fresh context, tell the user. Write the not-run form to `measure/tracks/<track_id>/spec-review.md`, and add the line `- [Spec Review](./spec-review.md)` to the track `index.md`. The not-run form holds the line `Spec review: not run (no subagent tool)`. Then go to step 10. Never run the review in this context.
+   3. Spawn one fresh subagent. Give the subagent the absolute paths of the standard, `spec.md`, and `plan.md`. Give it the resolved Product Definition, Tech Stack, and Workflow. Give the subagent no conversation history, no answers from the questioning phase, and no summary of your own.
+   4. Write the returned text without changes below the header lines of the Report Layout in `measure/tracks/<track_id>/spec-review.md`. Set `Author model:` to the model id that the harness reports for this session, or `unknown`. Add the line `- [Spec Review](./spec-review.md)` to the track `index.md`.
+   5. Show the user the two paraphrase sections and each Blocker and Major finding. Ask the user to compare the paraphrase with the intent and to pick the findings to fix.
+   6. Apply the picked fixes to `spec.md` and `plan.md`. Write one Author Response line, in the form that the standard gives, for each finding. Nit findings get `not fixed — Nit` unless the user picks them.
+   7. When `spec.md` or `plan.md` changed, run one second round with a new fresh subagent. Give it the same paths and the Round 1 findings with the author responses. Append its sections under `## Round 2`, and show the result to the user.
+   8. There is `at most one re-review`. Write each remaining Blocker and Major finding under `## Accepted Risks` of the report. Ask the user to approve the commit or to stop.
+   9. When the plan changed, count the top-level tasks again and update `estimated_tasks`.
 
-10. Announce completion:
+10. **Commit Changes:** Stage the **Tracks Registry** and all new track files. Commit with message `chore(measure): Add new track '<track_description>'`.
+
+11. Announce completion:
     > "New track '<track_id>' has been created and added to the tracks file. You can now start implementation by running `implement`."

@@ -77,6 +77,7 @@ measure/
 │   └── <track_id>/
 │       ├── metadata.json   # Track metadata (incl. optional sprint object for story-shaped feature tracks)
 │       ├── spec.md         # Track specification (Specification) — classic FR list or story-shaped
+│       ├── spec-review.md  # Spec review report (fresh subagent)
 │       └── plan.md         # Implementation plan (Implementation Plan)
 ├── sets/                   # Track set overviews, <set_id>.md (optional; Track Sets Directory)
 └── archive/                # Completed/archived tracks
@@ -91,7 +92,7 @@ graph.db                    # build-graph SQLite knowledge graph — enables Gra
 Initialize Measure in a new or existing project. For TypeScript projects, §2.9 offers to install `build-graph` and scaffold a knowledge graph (enables Graph-Aware Mode across new-track, implement, and review). Read [references/setup.md](references/setup.md) for the full workflow.
 
 ### New Track
-Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). When Graph-Aware Mode is available, runs a Graph Context Probe before questioning and appends blast-radius notes to plan phases. Read [references/new-track.md](references/new-track.md) for the full workflow.
+Create a new track with spec and plan. Offers a choice between **Story-shaped spec** (recommended for features — Connextra + Gherkin AC + T-shirt size + priority) and **Classic FR list** (recommended for bugs/chores). When Graph-Aware Mode is available, runs a Graph Context Probe before questioning and appends blast-radius notes to plan phases. Before the track commit, one fresh subagent reviews `spec.md` and `plan.md` against [references/spec-review.md](references/spec-review.md). Read [references/new-track.md](references/new-track.md) for the full workflow.
 
 ### New Track Set
 Create several related tracks in one pass from one set of shared decisions: one questioning phase, a set overview, two review gates, member templates, a dependency record, and one commit. `new-track` routes here when a request implies several tracks. Read [references/new-track-set.md](references/new-track-set.md) for the full workflow.
