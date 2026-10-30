@@ -36,7 +36,8 @@ Commit implementation and any implementation-owned tests first. Then update `pla
 The orchestrator can route audit findings to Green. Each routed finding has the form and the
 four dispositions of `Finding Dispositions` in `references/contracts.md`.
 
-- End the result block with a `dispositions:` line when the brief holds routed findings.
+- Put the `dispositions:` line inside the result block, before `END_MEASURE_AGENT_RESULT`, when
+  the brief holds routed findings.
   Write one item for each routed id, for example
   `dispositions: F1=FIX; F2=CONTEST(tests/test_empty.py::test_empty covers the empty case)`.
   Use CONTEST only with evidence that the reviewer can read. Use ESCALATE for an item that

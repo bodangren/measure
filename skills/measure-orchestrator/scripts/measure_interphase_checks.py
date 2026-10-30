@@ -82,6 +82,8 @@ ROLE_ALIASES = {
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
 DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
 DISPOSITIONS_PREFIX = "dispositions:"
+AGENT_RESULT_START = "MEASURE_AGENT_RESULT"
+AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
 
 
 @dataclass(frozen=True)
@@ -416,13 +418,18 @@ def has_agent_result(log_path: str) -> bool:
 
 
 def dispositions_feedback(log_path: str) -> list[str]:
-    """Validate the optional `dispositions:` line of the last result block (S3).
+    """Validate the optional `dispositions:` line of the last complete result block (S3).
 
     The line is optional. Without the line, this returns no feedback. The value `none` is
     valid. Any other value is a `;`-separated list of items. Each item must match the whole
     item pattern after `strip()`, and the text of CONTEST and ESCALATE needs a non-space
     character. The log splits on LF only, so a CR or another separator cannot hide an
     invalid item inside the line.
+
+    Only a complete block counts. A start line counts when a later line is exactly
+    `END_MEASURE_AGENT_RESULT` with no other start line between the two. A stray start
+    line without an end line therefore cannot hide the block before it. The block holds
+    one dispositions line at most, and a second line fails the check.
     """
     if not log_path:
         return []
@@ -432,28 +439,29 @@ def dispositions_feedback(log_path: str) -> list[str]:
     with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
         text = handle.read()
     lines = text.split("\n")
+    starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
     start = -1
-    for index, line in enumerate(lines):
-        if line.strip() == "MEASURE_AGENT_RESULT":
-            start = index
+    end = -1
+    for position, index in enumerate(starts):
+        limit = starts[position + 1] if position + 1 < len(starts) else len(lines)
+        for probe in range(index + 1, limit):
+            if lines[probe].strip() == AGENT_RESULT_END:
+                start = index
+                end = probe
+                break
     if start < 0:
         return []
-    end = -1
-    for index in range(start + 1, len(lines)):
-        if lines[index].strip() == "END_MEASURE_AGENT_RESULT":
-            end = index
-            break
-    if end < 0:
-        return []
-    value = ""
-    found = False
+    values: list[str] = []
     for line in lines[start + 1 : end]:
         stripped = line.strip()
         if stripped.startswith(DISPOSITIONS_PREFIX):
-            value = stripped[len(DISPOSITIONS_PREFIX) :].strip()
-            found = True
-            break
-    if not found or value == "none":
+            values.append(stripped[len(DISPOSITIONS_PREFIX) :].strip())
+    if len(values) > 1:
+        return ["invalid dispositions line: more than one dispositions line"]
+    if not values:
+        return []
+    value = values[0]
+    if value == "none":
         return []
     feedback: list[str] = []
     seen: set[str] = set()
