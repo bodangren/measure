@@ -1,0 +1,7 @@
+Adversarial testing S2 (role_base_sha a670ab5, phase_base_sha ccdaae2).
+Suite: tests/spec_review_gate/test_s2_adversarial.sh. 19 probe groups (G01-G19) and a sensitivity group (G20, 10 broken checker copies).
+Result at this commit: bash tests/spec_review_gate/test_s2_adversarial.sh exits 0, 96 checks (PASS=96, FAIL=0).
+Remediation regressions: G06 (second [Blocker] line after LF, CR, CRLF, U+2028, U+2029, NEL) and G16 (leading space, TAB, U+3000, measure/runsX paths; non-ASCII name below measure/runs/demo_track/).
+Contract change used: plan amendment ccdaae2 (a rename into measure/runs/ fails and names the old path) replaces the Report row of the strategy.
+Draft written under measure/runs/ and moved into tests/ with the shell, because measure-guard blocks writes outside measure/ when no task is [~].
+PROJECT_TESTS: bash tests/spec_review_gate/run.sh -> 6 suites (PASS=6, FAIL=0); bun test plugins/opencode-measure-guard -> 85 pass, 0 fail.
