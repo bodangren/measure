@@ -51,7 +51,7 @@ flat() { printf '%s\n' "$1" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g'; }
 in_text() {
   echo "=== $1 ==="
   if blank "$2"; then fail "$1: the searched text is missing or empty"
-  elif printf '%s\n' "$2" | grep -qF -- "$3"; then pass "$1"
+  elif grep -qF -- "$3" <<< "$2"; then pass "$1"
   else fail "$1: missing [$3]"; fi
 }
 
@@ -96,7 +96,7 @@ fi
 fm_line() {
   echo "=== frontmatter: $1 ==="
   if blank "$FM"; then fail "frontmatter is missing"
-  elif printf '%s\n' "$FM" | grep -qxF -- "$1"; then pass "frontmatter line [$1]"
+  elif grep -qxF -- "$1" <<< "$FM"; then pass "frontmatter line [$1]"
   else fail "frontmatter lacks the line [$1]"; fi
 }
 fm_line 'mode: subagent'
@@ -279,14 +279,14 @@ else
   bad=""
   for name in $NAMES; do
     out=$(env -i PATH="$PATH" python3 -I "$CHECKER" audit-result --role "$name" --file /nonexistent 2>&1)
-    if printf '%s\n' "$out" | grep -qF -- 'unknown role'; then bad+=" [$name]"; fi
+    if grep -qF -- 'unknown role' <<< "$out"; then bad+=" [$name]"; fi
   done
   if [ -z "$bad" ]; then pass "no unknown role among: $(echo $NAMES)"; else fail "unknown role for:$bad"; fi
 fi
 
 echo "=== edge: the skill names spec-review in a --role example ==="
 if blank "$NAMES"; then fail "no --role name found in the orchestrator skill"
-elif printf '%s\n' "$NAMES" | grep -qxF -- 'spec-review'; then pass "--role spec-review occurs in the skill"
+elif grep -qxF -- 'spec-review' <<< "$NAMES"; then pass "--role spec-review occurs in the skill"
 else fail "the skill has no --role spec-review example"; fi
 
 echo "=== edge: no stale role count of 13 ==="

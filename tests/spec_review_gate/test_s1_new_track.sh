@@ -43,7 +43,7 @@ line_of() {
 # in_block LABEL BLOCK STRING: pass when BLOCK holds STRING
 in_block() {
   echo "=== $1 ==="
-  if printf '%s\n' "$2" | grep -qF -- "$3"; then pass "$1"; else fail "$1: missing [$3]"; fi
+  if grep -qF -- "$3" <<< "$2"; then pass "$1"; else fail "$1: missing [$3]"; fi
 }
 
 # ---------------------------------------------------------------------------
@@ -155,9 +155,9 @@ if [ -n "${S25//[[:space:]]/}" ]; then
 fi
 if [ -z "${S5//[[:space:]]/}" ]; then
   fail "step 5 block is missing or empty"
-elif ! printf '%s\n' "$S5" | grep -qF -- '[Specification](./spec.md)'; then
+elif ! grep -qF -- '[Specification](./spec.md)' <<< "$S5"; then
   fail "step 5 block is not the index template (no '[Specification](./spec.md)')"
-elif printf '%s\n' "$S5" | grep -qF -- 'spec-review'; then
+elif grep -qF -- 'spec-review' <<< "$S5"; then
   fail "step 5 index template contains 'spec-review'"
 else
   pass "step 5 block is non-empty and has no 'spec-review'"
@@ -191,7 +191,7 @@ echo "=== SKILL.md New Track paragraph names the standard ==="
 NEWSEC="$(section "$SK" '### New Track' '^###? ')"
 if [ -z "${NEWSEC//[[:space:]]/}" ]; then
   fail "SKILL.md has no non-empty '### New Track' section"
-elif printf '%s\n' "$NEWSEC" | grep -qF -- 'references/spec-review.md'; then
+elif grep -qF -- 'references/spec-review.md' <<< "$NEWSEC"; then
   pass "New Track paragraph contains references/spec-review.md"
 else
   fail "New Track paragraph lacks references/spec-review.md"
@@ -201,7 +201,7 @@ DIRSEC="$(section "$SK" '## Directory Structure' '^## ')"
 echo "=== SKILL.md Directory Structure block lists spec-review.md ==="
 if [ -z "${DIRSEC//[[:space:]]/}" ]; then
   fail "SKILL.md has no non-empty '## Directory Structure' section"
-elif printf '%s\n' "$DIRSEC" | grep -qF -- 'spec-review.md'; then
+elif grep -qF -- 'spec-review.md' <<< "$DIRSEC"; then
   pass "Directory Structure block contains spec-review.md"
 else
   fail "Directory Structure block lacks spec-review.md"
@@ -272,7 +272,7 @@ out=$(bash "$RUNNER" 'test_none_*.sh' 2>&1)
 rc=$?
 if [ "$rc" -ne 1 ]; then
   fail "runner exit code is $rc for a pattern that matches nothing, expected 1"
-elif ! printf '%s\n' "$out" | grep -qxF -- 'no suites matched'; then
+elif ! grep -qxF -- 'no suites matched' <<< "$out"; then
   fail "runner output lacks the line 'no suites matched'"
 else
   msg_ln=$(printf '%s\n' "$out" | grep -nxF -- 'no suites matched' | head -n 1 | cut -d: -f1)
@@ -313,7 +313,7 @@ out=$(bash "$S/run.sh" 'test_a*.sh' 2>&1)
 rc=$?
 if [ "$rc" -ne 0 ]; then fail "pattern test_a*.sh exits $rc, expected 0"; else pass "pattern test_a*.sh exits 0"; fi
 summary_check "pattern summary" "$out" 1 1 0
-if printf '%s\n' "$out" | grep -qxF -- 'SUITE-BBB'; then fail "pattern test_a*.sh also ran test_b.sh"; else pass "pattern test_a*.sh did not run test_b.sh"; fi
+if grep -qxF -- 'SUITE-BBB' <<< "$out"; then fail "pattern test_a*.sh also ran test_b.sh"; else pass "pattern test_a*.sh did not run test_b.sh"; fi
 
 echo "=== runner: default patterns run .sh and .py suites ==="
 new_sandbox defaults
@@ -351,7 +351,7 @@ S="$SB/tests/spec_review_gate"
 printf '#!/usr/bin/env bash\necho SUITE-SPACE\nexit 0\n' > "$S/test_with space.sh"
 out=$(bash "$S/run.sh" 2>&1)
 rc=$?
-if [ "$rc" -eq 0 ] && printf '%s\n' "$out" | grep -qxF -- 'SUITE-SPACE'; then pass "suite 'test_with space.sh' ran"; else fail "suite with a space did not run (exit $rc)"; fi
+if [ "$rc" -eq 0 ] && grep -qxF -- 'SUITE-SPACE' <<< "$out"; then pass "suite 'test_with space.sh' ran"; else fail "suite with a space did not run (exit $rc)"; fi
 summary_check "space summary" "$out" 1 1 0
 
 echo "=== runner: a pattern outside the suite folder runs nothing ==="

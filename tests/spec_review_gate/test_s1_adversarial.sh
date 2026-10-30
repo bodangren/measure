@@ -56,7 +56,7 @@ rc_check() {
 }
 
 # has_line TEXT LINE: TEXT holds LINE as a whole line
-has_line() { printf '%s\n' "$1" | grep -qxF -- "$2"; }
+has_line() { grep -qxF -- "$2" <<< "$1"; }
 
 # runner_sandbox NAME: prints the suite folder of a new tree with a copy of the runner
 runner_sandbox() {
@@ -223,7 +223,7 @@ out=$(bash "$S/run.sh" 2>&1); rc=$?
 rc_check "import and syntax errors" "$rc" 1
 summary_check "import and syntax errors summary" "$out" 4 2 2
 for f in test_imp.py test_syn.py; do
-  if printf '%s\n' "$out" | grep -qF -- "--- suite result: FAIL: $f "; then pass "$f is reported as FAIL"; else fail "$f is not reported as FAIL"; fi
+  if grep -qF -- "--- suite result: FAIL: $f " <<< "$out"; then pass "$f is reported as FAIL"; else fail "$f is not reported as FAIL"; fi
 done
 
 echo "=== runner: a failing .py test fails the suite ==="
@@ -255,7 +255,7 @@ printf '#!/usr/bin/env bash\nexit 0\n' > "$S/test_a.sh"
 out=$(bash "$S/run.sh" 2>&1); rc=$?
 rc_check "default patterns" "$rc" 0
 summary_check "default patterns summary" "$out" 1 1 0
-if printf '%s\n' "$out" | grep -qF -- '--- suite: run.sh ---'; then fail "default patterns selected run.sh"; else pass "default patterns did not select run.sh"; fi
+if grep -qF -- '--- suite: run.sh ---' <<< "$out"; then fail "default patterns selected run.sh"; else pass "default patterns did not select run.sh"; fi
 
 echo "=== runner: a pattern that selects run.sh ends, and N = PASS + FAIL ==="
 if command -v timeout > /dev/null 2>&1; then

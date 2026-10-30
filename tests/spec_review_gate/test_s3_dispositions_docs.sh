@@ -53,7 +53,7 @@ flat() { printf '%s\n' "$1" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g'; }
 in_text() {
   echo "=== $1 ==="
   if blank "$2"; then fail "$1: the searched text is missing or empty"
-  elif printf '%s\n' "$2" | grep -qF -- "$3"; then pass "$1"
+  elif grep -qF -- "$3" <<< "$2"; then pass "$1"
   else fail "$1: missing [$3]"; fi
 }
 
@@ -154,7 +154,7 @@ in_flat 'orchestrator SKILL.md Delegation: no FIX item' "$DELEG" 'no FIX item'
 echo "=== review.md: finding heading of section 2.5 has the F<n> id ==="
 S25="$(section "$REVIEW_MD" '### 2.5 Output Findings' '^### |^## ')"
 if blank "$S25"; then fail "review.md has no non-empty '### 2.5 Output Findings' section"
-elif printf '%s\n' "$S25" | grep -qxF -- '### F<n> [Critical/High/Medium/Low] Description of Issue'; then pass "section 2.5 has the heading '### F<n> [Critical/High/Medium/Low] Description of Issue'"
+elif grep -qxF -- '### F<n> [Critical/High/Medium/Low] Description of Issue' <<< "$S25"; then pass "section 2.5 has the heading '### F<n> [Critical/High/Medium/Low] Description of Issue'"
 else fail "section 2.5 lacks the line '### F<n> [Critical/High/Medium/Low] Description of Issue'"; fi
 
 S31="$(section "$REVIEW_MD" '### 3.1 Review Decision' '^### |^## ')"
@@ -226,7 +226,7 @@ TEMPLATE="$(awk '
 ' "$CONTRACTS" 2>/dev/null)"
 EXPECT_TEMPLATE=$'MEASURE_AGENT_RESULT\nrole: <role>\nstatus: complete|blocked|partial\ntrack: <track id>\nphase: <phase heading or track setup/review>\ncommits: <short shas or none>\ntests_run: <commands and pass/fail result>\nfiles_changed: <brief list>\nplan_updates: <brief summary>\nknown_failures: <none or exact remaining failures>\nhandoff: <what the next role or orchestrator should know>\nEND_MEASURE_AGENT_RESULT'
 if blank "$TEMPLATE"; then fail "contracts.md has no 'text' code block"
-elif printf '%s\n' "$TEMPLATE" | grep -qF -- 'dispositions'; then fail "the template has a dispositions line"
+elif grep -qF -- 'dispositions' <<< "$TEMPLATE"; then fail "the template has a dispositions line"
 elif [ "$(printf '%s\n' "$TEMPLATE" | wc -l)" -ne 12 ]; then fail "the template has $(printf '%s\n' "$TEMPLATE" | wc -l) lines, expected 12"
 elif [ "$TEMPLATE" = "$EXPECT_TEMPLATE" ]; then pass "the template has the same 12 lines and no dispositions line"
 else fail "the template differs from the 12 expected lines"; fi

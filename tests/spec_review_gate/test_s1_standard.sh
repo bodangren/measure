@@ -79,7 +79,7 @@ sec_check() {
     return
   fi
   for s in "$@"; do
-    printf '%s\n' "$sec" | grep -qF -- "$s" || missing+=" [$s]"
+    grep -qF -- "$s" <<< "$sec" || missing+=" [$s]"
   done
   if [ -z "$missing" ]; then pass "$label"; else fail "$label: missing in '$heading':$missing"; fi
 }
@@ -95,7 +95,7 @@ sec_check_i() {
     return
   fi
   for s in "$@"; do
-    printf '%s\n' "$sec" | grep -qiF -- "$s" || missing+=" [$s]"
+    grep -qiF -- "$s" <<< "$sec" || missing+=" [$s]"
   done
   if [ -z "$missing" ]; then pass "$label"; else fail "$label: missing in '$heading':$missing"; fi
 }
@@ -115,7 +115,7 @@ if [ -z "${intro//[[:space:]]/}" ]; then
 else
   miss=""
   for s in 'https://github.com/google/elephant-goldfish-model' 'Apache-2.0'; do
-    printf '%s\n' "$intro" | grep -qF -- "$s" || miss+=" [$s]"
+    grep -qF -- "$s" <<< "$intro" || miss+=" [$s]"
   done
   if [ -z "$miss" ]; then pass "intro credits EGM with the URL and Apache-2.0"; else fail "intro lacks:$miss"; fi
 fi
@@ -183,7 +183,7 @@ else
   else
     miss=""
     for s in 'role-gate --role spec-review' 'dispositions:' 'tests/spec_review_gate/run.sh'; do
-      printf '%s\n' "$row" | grep -qF -- "$s" || miss+=" [$s]"
+      grep -qF -- "$s" <<< "$row" || miss+=" [$s]"
     done
     if [ -z "$miss" ]; then pass "Tooling Exceptions row for spec_review_gate_20261030 is complete"; else fail "row lacks:$miss"; fi
   fi
@@ -205,7 +205,7 @@ else
     fail "copy removed $removed lines, expected exactly 1 ('## Severity')"
   elif reason=$(order_check "$TMP/no-severity.md"); then
     fail "order check returned PASS for a copy without '## Severity'"
-  elif printf '%s\n' "$reason" | grep -qF -- '## Severity'; then
+  elif grep -qF -- '## Severity' <<< "$reason"; then
     pass "order check reports FAIL for the copy: $reason"
   else
     fail "order check failed for the wrong reason: $reason"
