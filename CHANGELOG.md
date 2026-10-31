@@ -13,6 +13,7 @@
 * **doc drift:** the weekly `measure-orchestrator-audit` run checks the documents that agents read against the code. It reports each difference as a nonblocking `DRIFT:` finding. Three ideas come from the EGM project (https://github.com/google/elephant-goldfish-model, Apache-2.0). They are the fresh-context spec review, the finding dispositions, and the doc drift check. Track `spec_review_gate_20261030`.
 * **agents:** the 14 role files in `agents/` use the native OpenCode 2 frontmatter: `description`, `mode`, `steps`, and an ordered `permissions` list. The files do not pin a model, because the orchestrator gives the model at each spawn. Each subagent denies the question tool and sends its questions to the orchestrator. The orchestrator file adds the model tables, the independence rules, and the session names.
 * **skills:** the 11 longer files of `skills/measure/` and `claude-skills/measure/` start with a `## Contents` list.
+* **skill doctor fixes:** the `measure` description has 462 characters (it had 1052, over the 1024 limit), and the `build-graph` description has 337 characters. The `measure` skill links each code style guide file. The `measure-orchestrator` skill starts with a `## Quick start` section and names no harness tool. Checks: npm `skill-doctor` 0.1.0 and the Claude Code `/skill-doctor` report. Track `skill_doctor_fixes_20261031`.
 
 ## [0.4.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.4.0...conductor-v0.4.1) (2026-03-11)
 
