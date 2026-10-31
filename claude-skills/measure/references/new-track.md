@@ -2,6 +2,18 @@
 
 Create a new track with spec and plan through interactive specification gathering.
 
+## Contents
+
+- Prerequisites
+- 1.0 Setup Check
+- 2.0 Track Initialization
+  - 2.1 Get Track Description
+  - 2.2 Interactive Specification Gathering
+  - 2.3 Plan Generation
+  - 2.4 Skill Recommendation
+    - 2.4.1 Skill Reload Confirmation
+  - 2.5 Create Artifacts
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

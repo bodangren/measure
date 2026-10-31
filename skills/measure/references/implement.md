@@ -2,6 +2,19 @@
 
 Execute tasks from a track's plan following the TDD workflow.
 
+## Contents
+
+- Prerequisites
+- 1.0 Setup Check
+- 2.0 Track Selection
+- 3.0 Track Implementation
+  - 3.1 Initialize
+  - 3.2 Load Context
+  - 3.3 Execute Tasks
+  - 3.4 Finalize Track
+- 4.0 Verify Architecture & Generate Docs
+- 5.0 Track Cleanup
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

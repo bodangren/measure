@@ -2,6 +2,16 @@
 
 Display project progress overview including completed, in-progress, and pending tasks.
 
+## Contents
+
+- Prerequisites
+- 1.0 Setup Check
+- 2.0 Read Project Data
+- 3.0 Parse and Analyze
+- 4.0 Generate Status Report
+- Velocity Calculation
+- Status Determination Logic
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

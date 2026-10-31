@@ -6,6 +6,22 @@ A **track set** is a group of ordinary tracks. Each member has its own `spec.md`
 
 Use this workflow when `new-track` §2.1 step 4 routes here, or when the user asks for a track set by name. For one unit of work, use `new-track`.
 
+## Contents
+
+- Prerequisites
+- 1.0 Setup Check
+- 2.0 Set Initialization
+  - 2.1 Confirm the Set Goal
+  - 2.2 Shared Questioning
+  - 2.3 Draft the Member List
+  - 2.4 Choose Spec Formats
+  - 2.5 Draft the Set Overview (Review Gate 1)
+  - 2.6 Surface Relevant Tech Debt
+  - 2.7 Draft Member Templates and Samples (Review Gate 2)
+  - 2.8 Skill Recommendation
+  - 2.9 Create Artifacts
+- 3.0 Read-Side Rules for Track Sets
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

@@ -2,6 +2,26 @@
 
 Revert previous work by analyzing Git history and reverting associated commits.
 
+## Contents
+
+- Scope
+- Prerequisites
+- 1.0 Setup Check
+- 2.0 Target Selection
+  - If User Provided Target
+  - If No Target Provided
+- 3.0 Git Reconciliation
+  - 3.1 Identify Implementation Commits
+  - 3.2 Identify Plan-Update Commits
+  - 3.3 Track Creation Commit (Track Revert Only)
+  - 3.4 Compile Final List
+- 4.0 Execution Plan Confirmation
+- 5.0 Execution
+  - 5.1 Execute Reverts
+  - 5.2 Handle Conflicts
+  - 5.3 Verify Plan State
+  - 5.4 Announce Completion
+
 ## Scope
 
 Your defined scope is to revert the logical units of work tracked by Measure (Tracks, Phases, and Tasks). You achieve this by first guiding the user to confirm their intent, then investigating the Git history to find all real-world commit(s) associated with that work, and finally presenting a clear execution plan before any action is taken.

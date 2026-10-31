@@ -2,6 +2,38 @@
 
 This guide summarizes key recommendations from the official Effective Dart documentation, covering style, documentation, language usage, and API design principles. Adhering to these guidelines promotes consistent, readable, and maintainable Dart code.
 
+## Contents
+
+- 1. Style
+  - 1.1 Identifiers
+  - 1.2 Ordering
+  - 1.3 Formatting
+- 2. Documentation
+  - 2.1 Comments
+  - 2.2 Doc Comments
+  - 2.3 Markdown
+  - 2.4 Writing
+- 3. Usage
+  - 3.1 Libraries
+  - 3.2 Null Safety
+  - 3.3 Strings
+  - 3.4 Collections
+  - 3.5 Functions
+  - 3.6 Variables
+  - 3.7 Members
+  - 3.8 Constructors
+  - 3.9 Error Handling
+  - 3.10 Asynchrony
+- 4. API Design
+  - 4.1 Names
+  - 4.2 Libraries
+  - 4.3 Classes and Mixins
+  - 4.4 Constructors
+  - 4.5 Members
+  - 4.6 Types
+  - 4.7 Parameters
+  - 4.8 Equality
+
 ## 1. Style
 
 ### 1.1. Identifiers

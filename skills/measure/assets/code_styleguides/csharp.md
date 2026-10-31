@@ -2,6 +2,16 @@
 
 This document summarizes key rules and best practices from the Google C# Style Guide.
 
+## Contents
+
+1. Naming Conventions
+2. Formatting Rules
+3. Declaration Order
+4. Language Features
+5. Best Practices
+6. File Organization
+7. Parameters and Returns
+
 ## 1. Naming Conventions
 - **PascalCase:** For class names, method names, constants, properties, namespaces, and public fields.
   - Example: `MyClass`, `GetValue()`, `MaxValue`

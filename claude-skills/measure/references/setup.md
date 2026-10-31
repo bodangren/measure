@@ -2,6 +2,34 @@
 
 Initialize Measure in a new or existing project.
 
+## Contents
+
+- Prerequisites
+- 1.0 Pre-Initialization
+  - 1.1 Welcome Overview
+  - 1.2 Project Audit
+- 2.0 Project Discovery
+  - Detect Project Maturity
+  - Resume Fast-Forward Check
+  - Brownfield Workflow
+  - Greenfield Workflow
+- 2.1 Product Definition
+- 2.2 Product Guidelines
+- 2.3 Design Definition
+- 2.4 Tech Stack
+- 2.5 Code Styleguides
+- 2.6 Workflow
+- 2.7 Memory Artifacts
+- 2.8 Select Skills
+  - 2.8.1 Skill Reload Confirmation
+- 2.9 Scaffold Architecture Tools
+- 2.10 Finalization
+- 3.0 Initial Track Generation
+  - 3.1 Product Requirements (Greenfield only)
+  - 3.2 Propose Initial Track
+  - 3.3 Create Track Artifacts
+  - 3.4 Finalize
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

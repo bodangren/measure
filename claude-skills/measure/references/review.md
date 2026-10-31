@@ -2,6 +2,26 @@
 
 Review the implementation of a track or a set of changes against the project's standards, design guidelines, and the original plan.
 
+## Contents
+
+- Prerequisites
+- Persona
+- 1.0 Setup Check
+- 2.0 Review Protocol
+  - 2.1 Identify Scope
+  - 2.2 Retrieve Context
+  - 2.3 Analyze and Verify
+  - 2.4 Browser Runtime Check
+    - 2.4.1 Prerequisites
+    - 2.4.2 Collect Diagnostics
+    - 2.4.3 Aggregate Browser Findings
+  - 2.5 Output Findings
+- Review Report template
+- 3.0 Completion Phase
+  - 3.1 Review Decision
+  - 3.2 Commit Review Changes
+  - 3.3 Track Cleanup
+
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.

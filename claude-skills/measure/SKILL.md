@@ -10,6 +10,16 @@ description: |
 
 Spec-driven development framework that organizes AI-assisted software development into structured, trackable units of work.
 
+## Contents
+
+- [Core Concepts](#core-concepts): Sprint Mode, Graph-Aware Mode, Track Sets
+- [Directory Structure](#directory-structure)
+- [Commands](#commands): Setup, New Track, New Track Set, Implement, Review, Doctor, Status, Revert
+- [Task Status Markers](#task-status-markers)
+- [Key Principles](#key-principles)
+- [Assets](#assets)
+- [Continuous improvement](#continuous-improvement)
+
 **Core Rule:**
 - **Human docs explain why.** (e.g., `product.md`, `tech-stack.md`)
 - **Generated docs describe what currently exists.** (e.g., `generated/architecture.json`, `generated/routes.md`)

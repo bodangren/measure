@@ -1,5 +1,37 @@
 # Project Workflow
 
+## Contents
+
+- Guiding Principles
+- Task Workflow
+  - Standard Task Workflow
+  - Phase Completion Verification and Checkpointing Protocol
+  - Quality Gates
+- Development Commands
+  - Setup
+  - Daily Development
+  - Before Committing
+- Testing Requirements
+  - Unit Testing
+  - Integration Testing
+  - Mobile Testing
+- Code Review Process
+  - Self-Review Checklist
+- Commit Guidelines
+  - Message Format
+  - Types
+  - Examples
+- Definition of Done
+- Emergency Procedures
+  - Critical Bug in Production
+  - Data Loss
+  - Security Breach
+- Deployment Workflow
+  - Pre-Deployment Checklist
+  - Deployment Steps
+  - Post-Deployment
+- Continuous Improvement
+
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
