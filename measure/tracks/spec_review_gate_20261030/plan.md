@@ -253,4 +253,5 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.3: Green: add the doc drift detector and the count changes to `agents/measure-orchestrator-audit.md`. Change the count in `agents/measure-strategy.md`. Update `skills/measure-orchestrator/SKILL.md` as the contract states. 4879740
   - Review remediation F1–F6 (Review C F1–F5, Review B N2): 89e3bea; F1, F4, F5 contested
   - Review remediation F1–F7 (Review A F1–F4, Review C F7–F8, Review B N4): bee2313; F1 contested, F3 declined
+  - Review remediation F1–F4 (Review A F1 and F5, Review C F1 and F2 at 8f584ba): b82e6eb, 81ed610; F2 contested
 - [x] Task 4.4: Docs and checks: add the `CHANGELOG.md` line with the EGM credit. Change the README audit row. Run the S4 command, the full runner, and `diff -r skills/measure claude-skills/measure`. 05bfc2e
