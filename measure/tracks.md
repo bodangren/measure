@@ -60,13 +60,12 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [~] **Track: Skill doctor fixes for the Measure skills**
-  *Link: [./tracks/skill_doctor_fixes_20261031/](./tracks/skill_doctor_fixes_20261031/)*
-
----
-
 ## Archived Tracks
 
 - [x] **Track: Spec review gate, finding dispositions, and doc drift check**
   *Link: [./archive/spec_review_gate_20261030/](./archive/spec_review_gate_20261030/)*
   *A fresh-agent review of each spec and plan, a spec review role with a checker gate, four finding dispositions, and a weekly doc drift check. Ideas from Google's Elephant-Goldfish Model.*
+
+- [x] **Track: Skill doctor fixes for the Measure skills**
+  *Link: [./archive/skill_doctor_fixes_20261031/](./archive/skill_doctor_fixes_20261031/)*
+  *Fixes for the findings of npm `skill-doctor` 0.1.0 and the Claude Code `/skill-doctor` report: shorter `measure` and `build-graph` descriptions, style guide file links, and an orchestrator quick start.*
