@@ -3,7 +3,7 @@
   "type": "feature",
   "status": "done",
   "created_at": "2026-10-30T13:35:38Z",
-  "updated_at": "2026-10-31T05:46:44Z",
+  "updated_at": "2026-10-31T05:57:37Z",
   "completed": "2026-10-31",
   "description": "Spec review gate, finding dispositions, and doc drift check: a fresh-subagent review of spec.md and plan.md in new-track, a measure-spec-review orchestrator role with a checker gate, four dispositions for routed review findings, and a doc drift detector in the weekly audit. Ideas adapted from Google's Elephant-Goldfish Model (Apache-2.0).",
   "estimated_tasks": 19,
@@ -17,28 +17,28 @@
         "title": "Spec review standard and the new-track review step",
         "size": "M",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S2",
         "title": "The measure-spec-review orchestrator role",
         "size": "L",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S3",
         "title": "Finding dispositions",
         "size": "M",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S4",
         "title": "Doc drift check in the weekly audit",
         "size": "M",
         "priority": "Should",
-        "status": "pending"
+        "status": "done"
       }
     ],
     "demo_notes": null,
