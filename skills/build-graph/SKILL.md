@@ -1,7 +1,7 @@
 ---
 name: build-graph
 description: |
-  Build and query a SQLite knowledge graph of a TypeScript codebase. Use this skill whenever the user wants to understand code structure, find dependencies, trace call paths, search for functions or classes, analyze a codebase's architecture, or map relationships between code entities. Triggers on: "find all callers of", "what uses this", "trace from X to Y", "search for function", "codebase graph", "dependency map", "understand this project", "what breaks if I change", "find implementations of", or any task involving code navigation, dependency analysis, or architectural understanding of TypeScript code. Always use this skill when working on large or legacy codebases where the agent needs structural context.
+  Build and query a SQLite knowledge graph of a TypeScript codebase: symbols, imports, callers, and call paths. Use it when the user wants to find callers ("find all callers of", "what uses this"), trace a path ("trace from X to Y"), find a symbol, check what a change breaks, or understand the architecture of a large TypeScript codebase.
 ---
 
 # build-graph
