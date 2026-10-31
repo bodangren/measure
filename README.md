@@ -21,6 +21,12 @@ Measure is a set of agent skills, agent roles, and a Claude Code mod. It stores 
 
 ---
 
+## Status
+
+As of 2026-10-31, the latest archived track is the spec review gate. Measure works with any agent harness that loads skills. Guard rails exist for two harnesses: the measure-guard mod for Claude Code, and the measure-guard plugin for OpenCode 2. The next release collects the Unreleased entries in [CHANGELOG.md](CHANGELOG.md).
+
+---
+
 ## How it works
 
 ```mermaid
@@ -169,7 +175,10 @@ measure/
 ├── lessons-learned.md      # Project memory (50 lines or less)
 ├── tech-debt.md            # Known shortcuts (50 lines or less)
 ├── code_styleguides/       # Style guides for each language
-├── tracks/<track_id>/      # spec.md, plan.md, metadata.json for each track
+├── anti-patterns.md        # Project anti-pattern catalog (orchestrator projects)
+├── sets/                   # Track set overviews, one file per set (track sets only)
+├── runs/<track>/           # Role result files, one set per track (orchestrator runs)
+├── tracks/<track_id>/      # spec.md, spec-review.md, plan.md, metadata.json for each track
 └── archive/                # Closed tracks
 ```
 
@@ -208,6 +217,8 @@ For larger tracks, the `measure-orchestrator` skill runs a track as a sequence o
 
 Review and audit roles only report. The orchestrator sends each finding back to the Green role with its evidence, and a fix makes older reviews invalid, so the reviews run again. Each routed finding gets one disposition: FIX, CONTEST with cited evidence, ESCALATE to the user, or DECLINE for a Nit finding.
 
+Before Red starts, the spec review gate runs `measure-spec-review` once per track and writes `spec-review.md`. The `role-gate` command runs mechanical checks on each role result between phases. The anti-pattern catalog has 10 active entries, A2 to A11, and two retired entries, A1 and A8. Each week, the audit role runs a doc drift check that reports differences between the documents and the code as nonblocking `DRIFT:` findings.
+
 ---
 
 ## The installer in detail
@@ -243,6 +254,8 @@ The log is `~/.local/state/measure/install.log`.
 Measure started as a fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), the spec-driven framework for Gemini CLI. It keeps Conductor's core idea, **Context → Spec & Plan → Implement**, and adds project memory, sprint and graph-aware modes, multi-agent orchestration, the measure-guard mod, and an installer that keeps every agent on the same version.
 
 If you come from Conductor: tracks, specs, plans, and the workflow work the same way. The folder is `measure/` instead of `conductor/`.
+
+Three ideas in Measure come from Google's [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) (EGM, Apache-2.0): the fresh-context spec review, the finding dispositions, and the doc drift check.
 
 ---
 
