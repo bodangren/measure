@@ -1,0 +1,12 @@
+{
+  "track_id": "skill_doctor_fixes_20261031",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-10-31T12:20:00Z",
+  "updated_at": "2026-10-31T12:25:00Z",
+  "description": "Skill doctor fixes for the Measure skills: fix the findings of the npm skill-doctor 0.1.0 static check and of the Claude Code /skill-doctor usage report for skills/measure, skills/measure-orchestrator, skills/build-graph, and the claude-skills/measure copy (PM task A-40).",
+  "estimated_tasks": 7,
+  "completed": "2026-10-31",
+  "actual_tasks": 7,
+  "deviation_notes": "The track ran in a worktree on chore/skill-doctor-fixes and merged with --no-ff. The PM approval ('go, with your defaults') replaced the user questions of new-track step 9 and the manual phase confirmation. The author changed the build-graph text from 317 to 337 characters before Round 2, to keep the trigger words that the npm rule skill.description-missing-trigger-guidance needs."
+}

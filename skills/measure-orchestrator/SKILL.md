@@ -5,7 +5,25 @@ description: Orchestrate Measure track execution with dedicated subagents, role-
 
 # Measure Orchestrator
 
-Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-spec-review`, `measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are already registered as opencode subagent types — invoke them with the `task` tool's `subagent_type` parameter. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
+Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-spec-review`, `measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are registered subagent types. Start each one with the subagent tool of the harness, and give the role name as the subagent type. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
+
+## Quick start
+
+1. Find the Measure repo root. It must contain `measure/index.md`, `measure/tracks.md`,
+   `measure/anti-patterns.md`, and `measure/tracks/`.
+2. Read `measure/index.md`, `measure/tracks.md`, `measure/anti-patterns.md`, the
+   selected track `spec.md`, the selected track `plan.md`, and `test-strategy.md` if
+   present.
+3. Run:
+
+```bash
+python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py status --repo .
+```
+
+Use the first listed incomplete phase as the default next phase unless the user names a
+track or phase. **Note:** a phase with 0 non-deferred incomplete tasks is reported as
+"all phases complete" — but this can mean "all automatable work done, humans need to do
+the rest." Verify `[b]` markers in the plan are intentional before declaring success.
 
 ## Anti-Patterns Registry
 
@@ -65,24 +83,6 @@ Until the lib is installed, projects can add a `bash measure/test-all.sh` aggreg
 This replaces the current `npm test` (which only runs `tests/s1.sh` on TUTOR-001
 projects). A future pre-commit hook can run this aggregate.
 
-## Start Here
-
-1. Find the Measure repo root. It must contain `measure/index.md`, `measure/tracks.md`,
-   `measure/anti-patterns.md`, and `measure/tracks/`.
-2. Read `measure/index.md`, `measure/tracks.md`, `measure/anti-patterns.md`, the
-   selected track `spec.md`, the selected track `plan.md`, and `test-strategy.md` if
-   present.
-3. Run:
-
-```bash
-python3 ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py status --repo .
-```
-
-Use the first listed incomplete phase as the default next phase unless the user names a
-track or phase. **Note:** a phase with 0 non-deferred incomplete tasks is reported as
-"all phases complete" — but this can mean "all automatable work done, humans need to do
-the rest." Verify `[b]` markers in the plan are intentional before declaring success.
-
 ## Role Order
 
 Run roles in this order. Strategy, Mid, and Jr are sequential. Review A/B/C can run in
@@ -114,9 +114,9 @@ The `measure-orchestrator-audit` role is the only one that audits the *framework
 
 ## Delegation
 
-Invoke each role by calling the `task` tool with `subagent_type` set to the matching
-Measure subagent type (e.g. `measure-jr-green`, `measure-mid-red`, `measure-review-a-correctness`,
-`measure-orchestrator-audit`). Pass these values in the task prompt:
+Start each role with the subagent tool of the harness. Set the subagent type to the matching
+Measure role (e.g. `measure-jr-green`, `measure-mid-red`, `measure-review-a-correctness`,
+`measure-orchestrator-audit`). Pass these values in the role prompt:
 
 - repo root (absolute path)
 - track id
