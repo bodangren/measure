@@ -137,7 +137,7 @@ Roll back previous work by track, phase, or task using Git history. Read [refere
 ## Assets
 
 - **Workflow Template**: [assets/workflow.md](assets/workflow.md)
-- **Code Styleguides**: [assets/code_styleguides/](assets/code_styleguides/)
+- **Code Styleguides** (general rules, and one file for each language): [general](assets/code_styleguides/general.md), [C#](assets/code_styleguides/csharp.md), [Dart](assets/code_styleguides/dart.md), [Go](assets/code_styleguides/go.md), [HTML and CSS](assets/code_styleguides/html-css.md), [JavaScript](assets/code_styleguides/javascript.md), [Python](assets/code_styleguides/python.md), [TypeScript](assets/code_styleguides/typescript.md)
 - **Lessons Learned Template**: [assets/lessons-learned.md](assets/lessons-learned.md)
 - **Tech Debt Template**: [assets/tech-debt.md](assets/tech-debt.md)
 
