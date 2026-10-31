@@ -159,7 +159,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Green: update `skills/measure-orchestrator/SKILL.md`, `skills/measure-orchestrator/references/contracts.md`, `agents/measure-orchestrator.md`, and `plugins/opencode-measure-guard/commands/measure-orchestrate.md` as the contract states. 2b1ed94
 - [x] Task 2.5: Docs and checks: add the README role row. Change the role count in `measure/product.md` and `measure/tech-stack.md` to 14. Add a `CHANGELOG.md` line. Run the S2 command, the full runner, and `bun test plugins/opencode-measure-guard/tests/commands.test.ts`. ddbf3cf
 
-## Phase S3: Finding dispositions
+## Phase S3: Finding dispositions [checkpoint: 23c72ed]
 _Story ref: spec.md#story-s3_
 
 **Contract (acceptance criteria).**
