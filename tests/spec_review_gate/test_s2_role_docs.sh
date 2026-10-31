@@ -101,46 +101,54 @@ fm_line() {
 }
 fm_line 'mode: subagent'
 fm_line 'steps: 40'
-fm_line 'model: kimi-for-coding/k3'
-fm_line 'permission:'
+fm_line 'permissions:'
 
-echo "=== frontmatter: options has reasoningEffort: max ==="
+echo "=== frontmatter: OpenCode 2 fields only, no pinned model ==="
 if blank "$FM"; then fail "frontmatter is missing"
 else
-  opt=$(printf '%s\n' "$FM" | awk '$0 == "options:" { f = 1; next } f { print; exit }')
-  if [ "$opt" = '  reasoningEffort: max' ]; then pass "options: followed by '  reasoningEffort: max'"; else fail "line after options: is [$opt]"; fi
+  v1=$(grep -cE '^(model|options|temperature|top_p|permission|tools|prompt|disable|maxSteps):' <<< "$FM")
+  if [ "$v1" -eq 0 ]; then pass "no V1 field and no model: line"; else fail "frontmatter has $v1 V1 field or model: lines"; fi
 fi
 
-echo "=== frontmatter: permission keys are edit, bash, skill, task in order ==="
-if blank "$FM"; then fail "frontmatter is missing"
+# rules FILE: one 'action|resource|effect' line for each permissions rule in the frontmatter of FILE
+rules() {
+  awk 'NR > 1 && $0 == "---" { exit }
+       /^  - action: / { a = $3 }
+       /^    resource: / { r = substr($0, index($0, ":") + 2) }
+       /^    effect: / { print a "|" r "|" $2 }' "$1" 2>/dev/null
+}
+RULES_ROLE="$(rules "$ROLE")"
+RULES_A="$(rules "$REVIEW_A")"
+
+echo "=== frontmatter: rule actions are edit, shell, skill, subagent, question in order ==="
+if blank "$RULES_ROLE"; then fail "permissions has no rules"
 else
-  keys=$(printf '%s\n' "$FM" | awk '$0 == "permission:" { f = 1; next } f && /^  [a-z]+:/ { sub(/^  /, ""); sub(/:.*/, ""); printf "%s ", $0 }')
-  if [ "$keys" = 'edit bash skill task ' ]; then pass "permission keys: $keys"; else fail "permission keys are [$keys], expected [edit bash skill task ]"; fi
+  acts=$(cut -d'|' -f1 <<< "$RULES_ROLE" | awk 'NF && $0 != prev { printf "%s ", $0; prev = $0 }')
+  if [ "$acts" = 'edit shell skill subagent question ' ]; then pass "rule actions: $acts"; else fail "rule actions are [$acts], expected [edit shell skill subagent question ]"; fi
 fi
 
-echo "=== edit block has exactly the three contract lines ==="
-EDIT="$(printf '%s\n' "$FM" | awk '$0 == "  edit:" { f = 1; next } f && /^  [a-z]+:/ { exit } f { print }')"
-EXPECT_EDIT=$'    "*": deny\n    "measure/runs/**": allow\n    "**/measure/runs/**": allow'
-if blank "$EDIT"; then fail "edit block is missing or empty"
-elif [ "$EDIT" = "$EXPECT_EDIT" ]; then pass "edit block equals the three contract lines"
-else fail "edit block differs from the contract: [$(flat "$EDIT")]"; fi
+echo "=== edit rules are exactly the three contract rules ==="
+EDIT="$(grep '^edit|' <<< "$RULES_ROLE")"
+EXPECT_EDIT=$'edit|"*"|deny\nedit|"measure/runs/**"|allow\nedit|"**/measure/runs/**"|allow'
+if blank "$EDIT"; then fail "edit rules are missing"
+elif [ "$EDIT" = "$EXPECT_EDIT" ]; then pass "edit rules equal the three contract rules"
+else fail "edit rules differ from the contract: [$(flat "$EDIT")]"; fi
 
-echo "=== bash block equals the bash block of review A ==="
-extract_bash() { awk '$0 == "  bash:" { f = 1 } $0 == "  skill: allow" { f = 0 } f { print }' "$1" 2>/dev/null; }
-BASH_ROLE="$(extract_bash "$ROLE")"
-BASH_A="$(extract_bash "$REVIEW_A")"
-if blank "$BASH_A"; then fail "bash block of review A is missing or empty"
-elif [ "$(printf '%s\n' "$BASH_A" | wc -l)" -lt 10 ]; then fail "bash block of review A has too few lines to be real"
-elif blank "$BASH_ROLE"; then fail "bash block of the role file is missing or empty"
-elif [ "$BASH_ROLE" = "$BASH_A" ]; then pass "bash blocks are equal ($(printf '%s\n' "$BASH_A" | wc -l) lines)"
-else fail "bash block differs from review A: $(diff <(printf '%s\n' "$BASH_A") <(printf '%s\n' "$BASH_ROLE") | head -n 4 | tr '\n' ' ')"; fi
+echo "=== shell rules equal the shell rules of review A ==="
+SHELL_ROLE="$(grep '^shell|' <<< "$RULES_ROLE")"
+SHELL_A="$(grep '^shell|' <<< "$RULES_A")"
+if blank "$SHELL_A"; then fail "shell rules of review A are missing"
+elif [ "$(wc -l <<< "$SHELL_A")" -lt 10 ]; then fail "review A has too few shell rules to be real"
+elif blank "$SHELL_ROLE"; then fail "shell rules of the role file are missing"
+elif [ "$SHELL_ROLE" = "$SHELL_A" ]; then pass "shell rules are equal ($(wc -l <<< "$SHELL_A") rules)"
+else fail "shell rules differ from review A: $(diff <(printf '%s\n' "$SHELL_A") <(printf '%s\n' "$SHELL_ROLE") | head -n 4 | tr '\n' ' ')"; fi
 
-echo "=== frontmatter tail is skill: allow, then task with deny-all ==="
-TAIL="$(printf '%s\n' "$FM" | awk '$0 == "  skill: allow" { f = 1 } f { print }')"
-EXPECT_TAIL=$'  skill: allow\n  task:\n    "*": deny'
-if blank "$TAIL"; then fail "frontmatter has no '  skill: allow' line"
-elif [ "$TAIL" = "$EXPECT_TAIL" ]; then pass "tail equals skill: allow, task:, \"*\": deny"
-else fail "frontmatter tail differs: [$(flat "$TAIL")]"; fi
+echo "=== frontmatter tail is skill allow, then subagent and question deny-all ==="
+TAIL="$(awk -F'|' '$1 == "skill" { f = 1 } f { print }' <<< "$RULES_ROLE")"
+EXPECT_TAIL=$'skill|"*"|allow\nsubagent|"*"|deny\nquestion|"*"|deny'
+if blank "$TAIL"; then fail "permissions has no skill rule"
+elif [ "$TAIL" = "$EXPECT_TAIL" ]; then pass "tail equals skill allow, subagent deny, question deny"
+else fail "permissions tail differs: [$(flat "$TAIL")]"; fi
 
 echo "=== body starts with the role sentence ==="
 first=$(printf '%s\n' "$BODY" | awk 'NF { print; exit }')
@@ -223,16 +231,20 @@ if blank "$first_bullet"; then fail "Role Handoff Rules has no first bullet"
 elif [[ "$(flat "$first_bullet")" == "- Run roles in the skill's order: spec review once per track before the first strategy, then strategy,"* ]]; then pass "first bullet starts with the contract text"
 else fail "first bullet starts with [$(flat "$first_bullet" | cut -c1-120)]"; fi
 
-echo "=== agents/measure-orchestrator.md: no other section changed (Decision 22) ==="
+echo "=== agents/measure-orchestrator.md: the S2 change kept the other sections (Decision 22) ==="
+# Decision 22 applies to the S2 change only, so compare the phase base with the S2 checkpoint.
+# Later tracks may change other sections of the file.
+S2_CHECKPOINT=25b9064
 outside() { awk '$0 == "## Role Handoff Rules" { skip = 1; next } skip && /^## / { skip = 0 } !skip { print }'; }
-if ! git -C "$ROOT" cat-file -e "$PHASE_BASE:agents/measure-orchestrator.md" 2>/dev/null; then
-  fail "the phase base commit or file is not in the git history"
+if ! git -C "$ROOT" cat-file -e "$PHASE_BASE:agents/measure-orchestrator.md" 2>/dev/null \
+  || ! git -C "$ROOT" cat-file -e "$S2_CHECKPOINT:agents/measure-orchestrator.md" 2>/dev/null; then
+  fail "the phase base or the S2 checkpoint is not in the git history"
 else
   base_out="$(git -C "$ROOT" show "$PHASE_BASE:agents/measure-orchestrator.md" | outside)"
-  cur_out="$(outside < "$ORCH_AGENT")"
-  if blank "$base_out" || blank "$cur_out"; then fail "an extract is empty"
-  elif [ "$base_out" = "$cur_out" ]; then pass "text outside Role Handoff Rules equals the phase base"
-  else fail "text outside Role Handoff Rules differs from the phase base"; fi
+  s2_out="$(git -C "$ROOT" show "$S2_CHECKPOINT:agents/measure-orchestrator.md" | outside)"
+  if blank "$base_out" || blank "$s2_out"; then fail "an extract is empty"
+  elif [ "$base_out" = "$s2_out" ]; then pass "at the S2 checkpoint, text outside Role Handoff Rules equals the phase base"
+  else fail "at the S2 checkpoint, text outside Role Handoff Rules differs from the phase base"; fi
 fi
 
 # ---------------------------------------------------------------------------

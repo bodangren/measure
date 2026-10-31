@@ -2,47 +2,108 @@
 description: Reviews spec.md and plan.md before Red starts, with a paraphrase, a zoom-out check, and a zero-decision check
 mode: subagent
 steps: 40
-model: kimi-for-coding/k3
-options:
-  reasoningEffort: max
-permission:
-  edit:
-    "*": deny
-    "measure/runs/**": allow
-    "**/measure/runs/**": allow
-  bash:
-    "*": allow
-    "*git add*": deny
-    "*git am*": deny
-    "*git apply*": deny
-    "*git branch -D*": deny
-    "*git checkout*": deny
-    "*git cherry-pick*": deny
-    "*git clean*": deny
-    "*git commit*": deny
-    "*git merge*": deny
-    "*git push*": deny
-    "*git rebase*": deny
-    "*git reset*": deny
-    "*git restore*": deny
-    "*git stash*": deny
-    "*git switch*": deny
-    "*git tag*": deny
-    "*rm *": deny
-    "*mv *": deny
-    "*cp *": deny
-    "*chmod *": deny
-    "*chown *": deny
-    "*sed -i*": deny
-    "*tee *": deny
-    "*truncate *": deny
-    "*>*": deny
-  skill: allow
-  task:
-    "*": deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: "measure/runs/**"
+    effect: allow
+  - action: edit
+    resource: "**/measure/runs/**"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*git add*"
+    effect: deny
+  - action: shell
+    resource: "*git am*"
+    effect: deny
+  - action: shell
+    resource: "*git apply*"
+    effect: deny
+  - action: shell
+    resource: "*git branch -D*"
+    effect: deny
+  - action: shell
+    resource: "*git checkout*"
+    effect: deny
+  - action: shell
+    resource: "*git cherry-pick*"
+    effect: deny
+  - action: shell
+    resource: "*git clean*"
+    effect: deny
+  - action: shell
+    resource: "*git commit*"
+    effect: deny
+  - action: shell
+    resource: "*git merge*"
+    effect: deny
+  - action: shell
+    resource: "*git push*"
+    effect: deny
+  - action: shell
+    resource: "*git rebase*"
+    effect: deny
+  - action: shell
+    resource: "*git reset*"
+    effect: deny
+  - action: shell
+    resource: "*git restore*"
+    effect: deny
+  - action: shell
+    resource: "*git stash*"
+    effect: deny
+  - action: shell
+    resource: "*git switch*"
+    effect: deny
+  - action: shell
+    resource: "*git tag*"
+    effect: deny
+  - action: shell
+    resource: "*rm *"
+    effect: deny
+  - action: shell
+    resource: "*mv *"
+    effect: deny
+  - action: shell
+    resource: "*cp *"
+    effect: deny
+  - action: shell
+    resource: "*chmod *"
+    effect: deny
+  - action: shell
+    resource: "*chown *"
+    effect: deny
+  - action: shell
+    resource: "*sed -i*"
+    effect: deny
+  - action: shell
+    resource: "*tee *"
+    effect: deny
+  - action: shell
+    resource: "*truncate *"
+    effect: deny
+  - action: shell
+    resource: "*>*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: deny
 ---
 
 You are the Measure Spec Review subagent.
+
+Do not use the question tool. Send every question to the orchestrator. The orchestrator asks the user and sends the answer back to you. If you need a product decision or other user input, stop. End with `status: blocked` in the `MEASURE_AGENT_RESULT` block. Put the exact question and its options in `handoff`. In the audit result JSON, set `retry_recommendation` to `escalate_human`.
 
 Your inputs are `role_base_sha`, `audited_head_sha`, the track id, the result path, the log path, and the round (`1` or `2`). For round 2, the orchestrator also gives the round 1 findings. Confirm that `audited_head_sha` equals HEAD before you review.
 

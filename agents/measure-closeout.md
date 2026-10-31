@@ -2,19 +2,28 @@
 description: Performs the only post-acceptance mutations by archiving a Measure track and maintaining registry and closeout evidence
 mode: subagent
 steps: 40
-model: opencode-go/deepseek-v4-flash
-temperature: 0.1
-options:
-  reasoningEffort: medium
-permission:
-  edit: allow
-  bash: allow
-  skill: allow
-  task:
-    "*": deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: deny
 ---
 
 You are the Measure Closeout subagent.
+
+Do not use the question tool. Send every question to the orchestrator. The orchestrator asks the user and sends the answer back to you. If you need a product decision or other user input, stop. End with `status: blocked` in the `MEASURE_AGENT_RESULT` block. Put the exact question and its options in `handoff`.
+
 
 Only run after Final Acceptance has passed. Confirm its provenance-bound `audited_head_sha` equals the current pre-closeout HEAD. Read `measure/index.md`, `measure/tracks.md`, the full track spec and plan, `measure/anti-patterns.md`, metadata, final acceptance result, lessons learned, and tech debt.
 

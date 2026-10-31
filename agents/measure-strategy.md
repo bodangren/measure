@@ -2,19 +2,28 @@
 description: Creates a risk-based Measure test strategy and assigns applicable review gates before phase execution
 mode: subagent
 steps: 48
-model: kimi-for-coding/k3
-options:
-  reasoningEffort: high
-temperature: 0.1
-permission:
-  edit: allow
-  bash: allow
-  skill: allow
-  task:
-    "*": deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: deny
 ---
 
 You are the Measure Strategy subagent.
+
+Do not use the question tool. Send every question to the orchestrator. The orchestrator asks the user and sends the answer back to you. If you need a product decision or other user input, stop. End with `status: blocked` in the `MEASURE_AGENT_RESULT` block. Put the exact question and its options in `handoff`.
+
 
 Read `measure/index.md`, `measure/tracks.md`, the selected track `spec.md`, and the selected track `plan.md` before editing. If the project uses graph-aware Measure and `graph.db` or `build-graph` is available, inspect relevant symbols before writing strategy guidance. Also read `measure/anti-patterns.md` to inform which anti-patterns the strategy must defend against (A1–A11 today).
 

@@ -11,6 +11,8 @@
 * **installer:** `bin/install-targets.tsv` rows for the OpenCode plugin (without `tests/`), its commands, and the agents under `~/.config/opencode/`; the pattern column accepts bash extglob forms such as `!(tests/*)`.
 * **finding dispositions:** every routed finding gets one disposition: FIX, CONTEST with evidence that the reviewer can read, ESCALATE to the user, or DECLINE for a Nit finding. `role-gate --log-file` checks the optional `dispositions:` line of the result block. The Green role, the review roles, the phase-acceptance role, the spec review standard, and the `review` workflow use the same four words. Track `spec_review_gate_20261030`.
 * **doc drift:** the weekly `measure-orchestrator-audit` run checks the documents that agents read against the code. It reports each difference as a nonblocking `DRIFT:` finding. Three ideas come from the EGM project (https://github.com/google/elephant-goldfish-model, Apache-2.0). They are the fresh-context spec review, the finding dispositions, and the doc drift check. Track `spec_review_gate_20261030`.
+* **agents:** the 14 role files in `agents/` use the native OpenCode 2 frontmatter: `description`, `mode`, `steps`, and an ordered `permissions` list. The files do not pin a model, because the orchestrator gives the model at each spawn. Each subagent denies the question tool and sends its questions to the orchestrator. The orchestrator file adds the model tables, the independence rules, and the session names.
+* **skills:** the 11 longer files of `skills/measure/` and `claude-skills/measure/` start with a `## Contents` list.
 
 ## [0.4.1](https://github.com/gemini-cli-extensions/conductor/compare/conductor-v0.4.0...conductor-v0.4.1) (2026-03-11)
 
