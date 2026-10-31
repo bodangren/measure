@@ -213,11 +213,12 @@ result.
 **Detection:**
 ```bash
 for doc in measure/product.md measure/tech-stack.md; do
+  [ -f "$doc" ] || { echo "$doc: DRIFT candidate: the document does not exist"; continue; }
   grep -o '`[^`]*`' "$doc" | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$' | sort -u |
   while read -r p; do [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"; done
 done
 ```
-This recipe finds only path claims. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
+This recipe finds only path claims and missing documents. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
 
 **Symptoms:** A document that agents read names a file, a field, a command, a count, or a behavior that the code no longer has. Example: `product.md` says "13 role definitions" after a 14th role file was added.
 
