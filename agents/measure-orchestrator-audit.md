@@ -167,15 +167,18 @@ The fix is a pre-commit hook that runs `bash measure/generate.sh` and stages the
 
 ## Doc drift detector
 
-Run this detector only in the scheduled (weekly) audit. Do not run it for a change-triggered audit.
+Run this detector only in the scheduled (weekly) audit. Do not run it for a change-triggered audit. The brief of the role states the run type: scheduled or change-triggered. When the brief does not state it, treat the run as change-triggered.
 
-**Scope.** Check `measure/product.md`, `measure/tech-stack.md`, and the `spec.md` of each track in scope. Look in `measure/archive/` and in `measure/tracks/`. A track is in scope when its status is `done`, `completed`, or `complete`. The completion date is the `completed` field. When that field is absent, use the date part of `updated_at`. A track that completed in the last `30 days` before the audit date is in scope. A track with status `cancelled` is out of scope. Older specs are history, and a later track spec can replace them.
+**Scope.** Check `measure/product.md`, `measure/tech-stack.md`, and the `spec.md` of each track in scope. Look in `measure/archive/` and in `measure/tracks/`. Older specs are history, and a later track spec can replace them.
+
+**Track scope.** A track is in scope when its status is `done`, `completed`, or `complete`. The completion date is the `completed` field. When that field is absent, use the date part of `updated_at`. A track that completed in the last `30 days` before the audit date is in scope. A track with status `cancelled` is out of scope.
 
 **Procedure.**
 
 1. Run the A11 recipe of `measure/anti-patterns.md` from the repository root.
 2. For each document, list each concrete claim with its line: a file, a symbol, a command, a field, a count, or a behavior.
 3. Find the code that the claim names. Compare the claim with the code.
+4. Do not run a command that a document names. Check that the command exists in the code or the scripts.
 
 **Report only differences.** Report these differences: a missing feature, a missing field, a fixed value where the document says computed, and a different pattern or library. A difference that a later track spec explains is not drift. Do not report code that no document covers.
 
