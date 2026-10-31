@@ -218,11 +218,12 @@ _Story ref: spec.md#story-s4_
   **Detection:**
   ```bash
   for doc in measure/product.md measure/tech-stack.md; do
+    [ -f "$doc" ] || { echo "$doc: DRIFT candidate: the document does not exist"; continue; }
     grep -o '`[^`]*`' "$doc" | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$' | sort -u |
     while read -r p; do [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"; done
   done
   ```
-  This recipe finds only path claims. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
+  This recipe finds only path claims and missing documents. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
 
   **Symptoms:** A document that agents read names a file, a field, a command, a count, or a behavior that the code no longer has. Example: `product.md` says "13 role definitions" after a 14th role file was added.
 
@@ -248,6 +249,7 @@ _Story ref: spec.md#story-s4_
     - Edge: the A11 block (from its heading to the next `---` line) is the same in both catalogs; no file in `agents/` or `skills/measure-orchestrator/` contains `A1–A10`; the bash block of A11, extracted from the catalog and run with `bash` in the repository root, exits 0.
     - Red evidence (commit 8f87953, git note attached): `bash tests/spec_review_gate/run.sh 'test_s4_*.sh'` exits 1 and prints `=== spec_review_gate: 1 suites (PASS=0, FAIL=1) ===`. `test_s4_doc_drift.sh` gives 26 checks (PASS=2, FAIL=24). The 2 passes are the audit role file and Role Order item 10 naming the audit role. Each failure is a missing S4 deliverable: the `## Doc drift detector` section and its 10 strings, the A11 heading and the 11 headings in both catalogs, `11 entries (A1–A11)`, `doc drift detector` in item 10, `(A1–A11 today)` in the strategy role and the audit Inputs, the CHANGELOG credit, the README row, and the 3 remaining `A1–A10` strings (`agents/measure-strategy.md:19`, `agents/measure-orchestrator-audit.md:58`, `skills/measure-orchestrator/SKILL.md:15`). The A11 block equality check and the recipe check fail because the extract is empty. The full runner gives 9 suites (PASS=8, FAIL=1): only `test_s4_doc_drift.sh` fails. A simulated Green in a temporary copy gives 26 checks (PASS=26, FAIL=0).
 - [x] Task 4.2: Green: add the A11 entry to `skills/measure-orchestrator/references/anti-pattern-catalog.md` and to `measure/anti-patterns.md`. 00b66a1
+  - Contract amendment (Review A F1 at 8f584ba): this commit; the recipe reports a missing document
 - [x] Task 4.3: Green: add the doc drift detector and the count changes to `agents/measure-orchestrator-audit.md`. Change the count in `agents/measure-strategy.md`. Update `skills/measure-orchestrator/SKILL.md` as the contract states. 4879740
   - Review remediation F1–F6 (Review C F1–F5, Review B N2): 89e3bea; F1, F4, F5 contested
   - Review remediation F1–F7 (Review A F1–F4, Review C F7–F8, Review B N4): bee2313; F1 contested, F3 declined
