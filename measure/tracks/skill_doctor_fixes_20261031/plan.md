@@ -9,7 +9,7 @@ Track: `skill_doctor_fixes_20261031`. Spec: [spec.md](./spec.md).
 - When a task changes a file in `skills/measure/`, copy the file to the same path in `claude-skills/measure/` in the same commit.
 - The check command `SD` is `node /tmp/skill-doctor-run/node_modules/skill-doctor/dist/cli.js`.
 
-## Phase 1: Skill file fixes
+## Phase 1: Skill file fixes [checkpoint: d8bad26]
 
 - [x] Task 1.1: Fix N1, N2, and C1. In `skills/measure/SKILL.md`, replace the two description paragraphs with the `measure` text of the spec, as one line in the `description: |` block. Copy the file to `claude-skills/measure/SKILL.md`. bc3503b
   - Acceptance: the parsed description equals the spec text (462 characters). `SD skills --strictness pedantic --format json` reports no finding for `measure` with a rule id `skill.invalid-frontmatter-description` or `skill.long-frontmatter-description`. Edge case: the YAML front matter still parses, and the `name:` line does not change.
