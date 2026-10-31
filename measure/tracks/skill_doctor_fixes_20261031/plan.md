@@ -11,7 +11,7 @@ Track: `skill_doctor_fixes_20261031`. Spec: [spec.md](./spec.md).
 
 ## Phase 1: Skill file fixes
 
-- [ ] Task 1.1: Fix N1, N2, and C1. In `skills/measure/SKILL.md`, replace the two description paragraphs with the `measure` text of the spec, as one line in the `description: |` block. Copy the file to `claude-skills/measure/SKILL.md`.
+- [x] Task 1.1: Fix N1, N2, and C1. In `skills/measure/SKILL.md`, replace the two description paragraphs with the `measure` text of the spec, as one line in the `description: |` block. Copy the file to `claude-skills/measure/SKILL.md`. bc3503b
   - Acceptance: the parsed description equals the spec text (462 characters). `SD skills --strictness pedantic --format json` reports no finding for `measure` with a rule id `skill.invalid-frontmatter-description` or `skill.long-frontmatter-description`. Edge case: the YAML front matter still parses, and the `name:` line does not change.
 - [ ] Task 1.2: Fix N3. In `skills/measure/SKILL.md`, replace the line `- **Code Styleguides**: [assets/code_styleguides/](assets/code_styleguides/)` with this line. Copy the file to `claude-skills/measure/SKILL.md`.
   - `- **Code Styleguides** (general rules, and one file for each language): [general](assets/code_styleguides/general.md), [C#](assets/code_styleguides/csharp.md), [Dart](assets/code_styleguides/dart.md), [Go](assets/code_styleguides/go.md), [HTML and CSS](assets/code_styleguides/html-css.md), [JavaScript](assets/code_styleguides/javascript.md), [Python](assets/code_styleguides/python.md), [TypeScript](assets/code_styleguides/typescript.md)`

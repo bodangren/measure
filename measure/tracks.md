@@ -60,7 +60,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [ ] **Track: Skill doctor fixes for the Measure skills**
+- [~] **Track: Skill doctor fixes for the Measure skills**
   *Link: [./tracks/skill_doctor_fixes_20261031/](./tracks/skill_doctor_fixes_20261031/)*
 
 ---
