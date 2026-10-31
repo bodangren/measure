@@ -64,7 +64,7 @@ Read these in order:
    task annotations.
 5. `measure/product.md`, `measure/tech-stack.md`, and the `spec.md` of each track that
    completed in the last 30 days — the doc drift scope (scheduled audit only). The
-   **Scope** and **Track scope** paragraphs of `## Doc drift detector` give the full rule:
+   **Scope**, **Track scope**, and **Date window** paragraphs of `## Doc drift detector` give the full rule:
    `measure/archive/`, the status set, and the `cancelled` exclusion.
 
 ## Detectors
@@ -182,7 +182,7 @@ Run this detector only in the scheduled (weekly) audit. Do not run it for a chan
 1. Run the A11 recipe of `measure/anti-patterns.md` from the repository root. The recipe checks only the path claims of `measure/product.md` and `measure/tech-stack.md`. It prints `DRIFT candidate:` lines. A candidate becomes a `DRIFT:` finding only after step 3 confirms the difference.
 2. For each document of the **Scope** paragraph (the two project documents and the `spec.md` of each track in scope), list each concrete claim with its line: a file, a symbol, a command, a field, a count, or a behavior.
 3. Find the code that the claim names. Compare the claim with the code. For a count claim, count the items in the code (for example, the files in a folder). For a file, a symbol, a field, or a behavior, read the code that defines it.
-4. Do not run a command that a document names. Check that the command exists in the code or the scripts. The audit does not run code to check a behavior claim. It reads the code.
+4. Do not run a command that a document of the Scope paragraph names. Check that the command exists in the code or the scripts. The audit does not run code to check a behavior claim. It reads the code. The A11 recipe of step 1 is the only command that this detector runs.
 
 **Report only differences.** Report these differences: a missing feature, a missing field, a fixed value where the document says computed, and a different pattern or library. A difference that a later track spec explains is not drift. Do not report code that no document covers.
 
