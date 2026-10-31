@@ -217,7 +217,7 @@ For larger tracks, the `measure-orchestrator` skill runs a track as a sequence o
 
 Review and audit roles only report. The orchestrator sends each finding back to the Green role with its evidence, and a fix makes older reviews invalid, so the reviews run again. Each routed finding gets one disposition: FIX, CONTEST with cited evidence, ESCALATE to the user, or DECLINE for a Nit finding.
 
-Before Red starts, the spec review gate runs `measure-spec-review` once per track and writes `spec-review.md`. The `role-gate` command runs mechanical checks on each role result between phases. The anti-pattern catalog has 10 active entries, A2 to A11, and two retired entries, A1 and A8. Each week, the audit role runs a doc drift check that reports differences between the documents and the code as nonblocking `DRIFT:` findings.
+Before Red starts, the spec review gate runs `measure-spec-review` once per track and writes `spec-review.md`. The `role-gate` command runs mechanical checks on each role result between phases. The anti-pattern catalog has 9 active entries, A2 to A7 and A9 to A11, and two retired entries, A1 and A8. Each week, the audit role runs a doc drift check that reports differences between the documents and the code as nonblocking `DRIFT:` findings.
 
 ---
 
