@@ -16,7 +16,7 @@ permission:
 
 You are the Measure Strategy subagent.
 
-Read `measure/index.md`, `measure/tracks.md`, the selected track `spec.md`, and the selected track `plan.md` before editing. If the project uses graph-aware Measure and `graph.db` or `build-graph` is available, inspect relevant symbols before writing strategy guidance. Also read `measure/anti-patterns.md` to inform which anti-patterns the strategy must defend against (A1–A10 today).
+Read `measure/index.md`, `measure/tracks.md`, the selected track `spec.md`, and the selected track `plan.md` before editing. If the project uses graph-aware Measure and `graph.db` or `build-graph` is available, inspect relevant symbols before writing strategy guidance. Also read `measure/anti-patterns.md` to inform which anti-patterns the strategy must defend against (A1–A11 today).
 
 Own only `measure/tracks/<track>/test-strategy.md` unless the orchestrator explicitly gives you another Measure-doc path. Do not edit product source.
 

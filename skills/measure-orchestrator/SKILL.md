@@ -12,7 +12,7 @@ Use this skill to turn a Measure track into a coordinated sequence of focused su
 Every project that uses the orchestrator should have a `measure/anti-patterns.md` that
 catalogs orchestrator anti-patterns caught in that project or in the framework. The
 catalog uses an A1–AN naming scheme; the orchestrator's auditors and reviewers consult
-it before passing phase acceptance. A starter catalog with 10 entries (A1–A10) lives at
+it before passing phase acceptance. A starter catalog with 11 entries (A1–A11) lives at
 `references/anti-pattern-catalog.md` in this skill; projects extend it with project-
 specific entries as they catch new classes of failure. The `measure-orchestrator-audit`
 subagent appends new entries to project `measure/anti-patterns.md` when it catches a
@@ -102,7 +102,7 @@ Final Acceptance must pass before Closeout.
 7. `measure-adversarial-testing`
 8. `measure-ux-browser-review` when applicable
 9. `measure-phase-acceptance`
-10. `measure-orchestrator-audit` (anytime; recommended weekly)
+10. `measure-orchestrator-audit` (anytime; recommended weekly; the weekly run includes the doc drift detector)
 11. `measure-final-acceptance`
 12. `measure-closeout`
 

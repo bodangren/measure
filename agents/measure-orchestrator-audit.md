@@ -55,13 +55,15 @@ suite, `measure/tracks.md`, and the plan-truthfulness invariants in `measure/tra
 ## Inputs
 
 Read these in order:
-1. `measure/anti-patterns.md` — the catalog of known anti-patterns (A1–A10 today). New
+1. `measure/anti-patterns.md` — the catalog of known anti-patterns (A1–A11 today). New
    entries get appended when you find a new class.
 2. `tests/*.sh` — every contract test. Apply the vacuous-pass, over-broad-filter,
    digit-only-count, and archived-track-path detectors to each.
 3. `measure/tracks.md` — apply the registry-overstatement detector (A6).
 4. `measure/tracks/*/plan.md` — apply the false-claim-text detector (A5) to plan
    task annotations.
+5. `measure/product.md`, `measure/tech-stack.md`, and the `spec.md` of each track that
+   completed in the last 30 days — the doc drift scope (scheduled audit only).
 
 ## Detectors
 
@@ -162,6 +164,26 @@ ls -la .git/hooks/pre-commit 2>/dev/null
 ```
 
 The fix is a pre-commit hook that runs `bash measure/generate.sh` and stages the result.
+
+## Doc drift detector
+
+Run this detector only in the scheduled (weekly) audit. Do not run it for a change-triggered audit.
+
+**Scope.** Check `measure/product.md`, `measure/tech-stack.md`, and the `spec.md` of each track in scope. Look in `measure/archive/` and in `measure/tracks/`. A track is in scope when its status is `done`, `completed`, or `complete`. The completion date is the `completed` field. When that field is absent, use the date part of `updated_at`. A track that completed in the last `30 days` before the audit date is in scope. A track with status `cancelled` is out of scope. Older specs are history, and a later track spec can replace them.
+
+**Procedure.**
+
+1. Run the A11 recipe of `measure/anti-patterns.md` from the repository root.
+2. For each document, list each concrete claim with its line: a file, a symbol, a command, a field, a count, or a behavior.
+3. Find the code that the claim names. Compare the claim with the code.
+
+**Report only differences.** Report these differences: a missing feature, a missing field, a fixed value where the document says computed, and a different pattern or library. A difference that a later track spec explains is not drift. Do not report code that no document covers.
+
+**Output.** Add one nonblocking finding for each difference to `nonblocking_findings`:
+
+`DRIFT: <path>:<line> — claim: <claim> — code: <evidence> — options: update the document, or open a track`
+
+Drift alone does not fail the audit.
 
 ## Outputs
 
