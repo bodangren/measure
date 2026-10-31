@@ -1,9 +1,7 @@
 ---
 name: measure
 description: |
-  Spec-driven development framework for AI-assisted software projects. Measure organizes work into "tracks" (features, bugs, chores) with specs and phased plans, adding persistent memory (lessons-learned, tech-debt), skills integration, and plan-mode policies.
-
-  Use this skill whenever the user is doing structured software development with an AI assistant — even if they don't say "Measure" or "tracks." Triggers on: setting up projects ("measure setup", "set up project", "initialize"), planning features ("new track", "create track", "plan feature", "write a spec", "break into tasks"), planning a program of related tracks ("track set", "a set of tracks", "one track per module"), implementing work ("implement", "work on track", "execute plan", "build this feature"), reviewing code ("review", "code review", "verify track", "check my work"), checking progress ("measure status", "show progress", "what's left"), reverting work ("revert", "undo track", "rollback", "go back"), or any mention of spec-driven development, TDD, or structured AI coding.
+  Spec-driven development framework for AI coding agents. Measure keeps each feature, bug, or chore as a track with a spec, a phased plan, and project memory. Use it for structured development, also when the user does not say "Measure". Triggers: "measure setup", "new track", "plan feature", "write a spec", "track set", "implement", "work on track", "review", "verify track", "measure status", "what's left", "revert", "undo track", spec-driven development, TDD.
 ---
 
 # Measure
