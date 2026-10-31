@@ -1,0 +1,4 @@
+Round 4 F3 and F4.
+F3 (Review C F1): FIX. Procedure step 4 now says 'a document of the Scope paragraph' and ends with 'The A11 recipe of step 1 is the only command that this detector runs.'. The other step 4 sentences stay. This removes the visible conflict between step 1 and step 4.
+F4 (Review C F2): FIX. Inputs item 5 now names the Scope, Track scope, and Date window paragraphs of '## Doc drift detector'.
+No other text changed. The out-of-scope items do not change: one JSON example, schema_version 2, no --role orchestrator-audit line, no edit instruction. Files: agents/measure-orchestrator-audit.md.
