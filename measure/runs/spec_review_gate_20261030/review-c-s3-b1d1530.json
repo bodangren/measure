@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "role": "review-c",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S3 Finding dispositions",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "b1d15309e80afb5d33540663223bcf73de7f9797",
+  "audited_head_sha": "b1d15309e80afb5d33540663223bcf73de7f9797",
+  "status": "fail",
+  "summary": "Phase S3 has one Blocker. The placement of the dispositions line conflicts between contracts.md and the test strategy, so a literal follow-up breaks the role gate. The worked example in contracts.md also misstates the keep rule for an unrouted finding. F8 and F9 are closed. F7 stays open until F10 is fixed. The S3 docs test could not run.",
+  "contract_applicability": {
+    "applicable": true,
+    "basis": "Phase S3 changes the finding disposition contract, the agent prompts that carry it, and the checker that reads it.",
+    "path_evidence": [
+      "skills/measure-orchestrator/references/contracts.md",
+      "agents/measure-jr-green.md",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+      "measure/tracks/spec_review_gate_20261030/test-strategy.md",
+      "measure/tracks/spec_review_gate_20261030/plan.md"
+    ]
+  },
+  "blocking_findings": [
+    "F11 [Blocker] measure/tracks/spec_review_gate_20261030/test-strategy.md:193 and plan.md:173: Both files say the optional dispositions line goes below the Agent Result Block template. contracts.md:108 and the checker require the line inside the block, before END_MEASURE_AGENT_RESULT. contracts.md:120 states that a line after END does not count. Rationale: A verifier or implementer who follows the track text places the line outside the block, so role-gate ignores it and the disposition check fails."
+  ],
+  "nonblocking_findings": [
+    "F10 [Major] skills/measure-orchestrator/references/contracts.md:133-137: The worked example says the re-review keeps its own F3 and writes the CONTEST kept suffix. The keep rule at contracts.md:143-144 applies only to routed CONTEST items. F3 is a new finding, not a routed item. Rationale: An agent that copies the example writes a CONTEST kept line for a finding that was never contested. F7 stays open until this example is corrected.",
+    "F12 [Nit] skills/measure-orchestrator/references/contracts.md:147: The No FIX item paragraph states the same-HEAD fact twice. Rationale: The repeated sentence adds length without new rule text."
+  ],
+  "closed_findings": [
+    "F8: Closed by 011b92c. contracts.md:114 states that the line is optional in general and required when the brief held routed findings.",
+    "F9: Closed by 011b92c. contracts.md:147 states that a round with no FIX item runs the re-review on the same HEAD."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned b1d15309e80afb5d33540663223bcf73de7f9797, which matches audited_head_sha.",
+    "git status --short returned only ?? extensions/, which the briefing excludes.",
+    "audit-result --role review-c returned PASS on the inconclusive draft of this file. It has not run on this final file because the shell is now denied.",
+    "contracts.md:108 and :114 place the line inside the result block. contracts.md:118-120 read only the last complete block. The checker grammar at measure_interphase_checks.py:83 matches the worked example line at contracts.md:129.",
+    "test-strategy.md:193 and plan.md:173 conflict with contracts.md:108 on placement."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --short",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-c --file measure/runs/spec_review_gate_20261030/review-c-s3-b1d1530.json (draft run, PASS)",
+    "NOT RUN: bash tests/spec_review_gate/test_s3_dispositions_docs.sh (shell denied)",
+    "NOT RUN: validator on the final JSON (shell denied)",
+    "NOT RUN: targeted Red command (shell denied)",
+    "NOT RUN: post-check git status after the audit (shell denied)"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "medium"
+}

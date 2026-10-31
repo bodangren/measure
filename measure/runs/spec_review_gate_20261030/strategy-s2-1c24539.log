@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+status: success
+role: strategy
+phase: Phase S2: The measure-spec-review orchestrator role
+commits: b4ed539 measure(strategy): Refresh the test strategy for Phase S2
+files_changed: measure/tracks/spec_review_gate_20261030/test-strategy.md
+tests_run: bash tests/spec_review_gate/run.sh -> exit 0, 3 suites (PASS=3, FAIL=0); bun test plugins/opencode-measure-guard -> exit 0, 85 pass, 0 fail; git probes in a temporary repository (git 2.53.0, GIT_CONFIG_GLOBAL=/dev/null): rev-parse --verify --quiet <value>^{commit} exits 1 for a tree SHA, a blob SHA, --all, -h, --output=/tmp/x, A..HEAD, '', ' ', not-a-ref, 40 zeros; exits 0 for HEAD, a short SHA, an annotated tag. git diff --name-only lists only the new path of a rename, and quotes a non-ASCII path.
+red_evidence: not applicable (strategy role)
+green_evidence: not applicable (strategy role)
+anti_patterns_checked: A3, A4, A5, A6, A7, A9 applicable; A1, A2, A8, A10 not applicable (section 6)
+deviations: none
+handoff: Capture phase_base_sha with git rev-parse HEAD now (expected b4ed539), before Red marks Task 2.1 [~]. S2 section updated: Decision 27 closes the old open item; Red covers 40 zeros and not-a-ref; adversarial suite tests/spec_review_gate/test_s2_adversarial.sh with 19 probe groups; Review B compares the edit and bash blocks with review A by diff of the lines from '  edit:' to '  skill:'; Review C, adversarial applicable; browser not applicable. New open item (rename gap): a commit that renames src/a.py to measure/runs/demo_track/a.py passes the scope rule, because git diff --name-only with rename detection lists only the new path, and the result depends on the host diff.renames config. Default: Red adds no case outside the contract; adversarial reports it; the orchestrator routes it to the user as ESCALATE. Recommendation: ask the user before Red whether to amend the S2 contract with --no-renames in the spec-review scope call. Other reported probes: a finding with a newline passes the regex; U+200B passes strip(); non-UTF-8 or folder result files give a traceback (older behavior, fails closed); a non-ASCII file name under measure/runs/ fails because of core.quotePath. Fixtures must set GIT_CONFIG_GLOBAL=/dev/null and GIT_CONFIG_NOSYSTEM=1. S1 lessons recorded in section 10. S3 table gained the amendment strings; S4 names its adversarial suite.
+END_MEASURE_AGENT_RESULT

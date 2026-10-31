@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: 8e5de63, 23c72ed
+tests_run: true: pass (targeted 3 suites PASS=3 FAIL=0; adversarial 91 checks PASS=91 FAIL=0; full 8 suites PASS=8 FAIL=0; diff -r skills/measure claude-skills/measure = no difference)
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py, measure/tracks/spec_review_gate_20261030/plan.md
+plan_updates: Task 3.2 restored [x] at 7d4a745, one adversarial remediation line at 8e5de63
+known_failures: none
+handoff: A folder as --log-file now exits 1 with 'missing MEASURE_AGENT_RESULT block' and no Traceback, the same as a missing file. has_agent_result and dispositions_feedback use path.is_file(); a normal file and a symlink to a file still read; a dangling symlink and a missing path count as no log. The cmd_role_gate call site keeps Path(args.log_file).exists() because G21 of test_s3_adversarial.sh pins that exact line as a mutant anchor and tests/ is immutable; the call site reads no file and dispositions_feedback rejects a non-file path, so a folder is safe on both paths. No contracts.md change; no tests/ change. 64 logs under measure/runs/ give 0 feedback. phase_base_sha a1a9396, role_base_sha 8d5b4cc, Green HEAD 23c72ed.
+dispositions: F1=FIX
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Review B (security) re-review of Phase S1 at c7d7e98 found no blocking defect. Step 9.3 now gives the subagent only absolute paths and forbids secrets, credentials, tokens, and environment values. spec-review.md:15 tells the reviewer not to quote a secret value in the committed report. The new user message, the Options line, the stop outcome, and the author-line rules add no new risk. run.sh and the S1 tests are unchanged since 6e856e1, and both S1 suites pass. Four nonblocking items stay open.",
+  "phase_base_sha": "65c7925157bb4189c8c6d3b62c42e8f8d9ae0314",
+  "role_base_sha": "c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba",
+  "audited_head_sha": "c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba",
+  "security_applicability": "applicable",
+  "security_applicability_reason": "test-strategy.md section 5, Phase S1, says Review B is applicable with a short scope. The phase diff 65c7925..c7d7e98 adds agent prose that starts a subagent (new-track.md step 9, spec-review.md) and an executable bash runner (tests/spec_review_gate/run.sh). The remediation diff 6e856e1..c7d7e98 changes the subagent handoff and the report rules.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "skills/measure/references/new-track.md:304 (same text in claude-skills/measure/references/new-track.md:304): step 9.4 still says 'Write the returned text without changes', and step 10 commits it. The remediation added the reviewer rule at spec-review.md:15, but it did not add the author check that the earlier pass also recommended. The reviewer rule is now the only control against a secret value in the git history. This is defense in depth, not a defect. Recommendation: add one sentence to step 9.4 that the author reads the returned text for secret values before step 10.",
+    "tests/spec_review_gate/run.sh:29-35 (carried from the 6e856e1 pass, not routed): a pattern such as 'run.sh' or '*.sh' selects run.sh itself as a suite. The outer summary then counts the nested runner as one suite. This is an A3 count risk, not a security defect. Recommendation: skip run.sh in the match loop.",
+    "tests/spec_review_gate/run.sh:32 (carried from the 6e856e1 pass, not routed): '[ -f \"$f\" ]' follows symbolic links. A committed symbolic link below tests/spec_review_gate/ that points outside the folder will run. A pattern alone cannot cause this. Recommendation: add '[ -L \"$f\" ] && continue' or document the rule.",
+    "tests/spec_review_gate/test_s1_new_track.sh:22 and tests/spec_review_gate/test_s1_standard.sh:19 (carried from the 6e856e1 pass, not routed): 'TMP=\"$(mktemp -d)\"' has no failure check. When mktemp fails, TMP is empty and the scripts write below the file system root. Recommendation: add '[ -n \"$TMP\" ] && [ -d \"$TMP\" ] || exit 2' after each mktemp call."
+  ],
+  "evidence": [
+    "git rev-parse HEAD printed c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba, which equals audited_head_sha. git status --short printed only '?? extensions/' (out of scope).",
+    "git log --oneline 6e856e1..c7d7e98 printed two commits: a3600f8 'fix(new-track): Clarify the spec review step after the S1 reviews' and c7d7e98 'measure(plan): Record the S1 review remediation'.",
+    "git diff --stat 6e856e1..c7d7e98: 5 files, 47 insertions, 12 deletions. The files are skills/measure/references/new-track.md, skills/measure/references/spec-review.md, their claude-skills copies, and measure/tracks/spec_review_gate_20261030/plan.md. The plan.md change is one line: '- Review remediation R1–R7: a3600f8'.",
+    "cmp of skills/measure/references/new-track.md with claude-skills/measure/references/new-track.md, and of the two spec-review.md copies, printed no difference. The mirrors are identical.",
+    "Earlier finding new-track.md:302 is fixed. Line 302 now says 'Give it the absolute paths of the resolved Product Definition, Tech Stack, and Workflow.' and 'Give it no secrets, credentials, tokens, or environment values.' The handoff is paths only, with no conversation history, no questioning answers, and no author summary.",
+    "Earlier finding spec-review.md:13 with new-track.md:303 is fixed at the reviewer side. spec-review.md:15 says 'The reviewer does not quote a secret value (a key, a token, a password) in the report, because the author commits the report. The reviewer names the file and the line instead.' The subagent gets the absolute path of this standard, so the rule reaches the reviewer. The rule covers all report text, which includes the paraphrase sections. The author check in step 9.4 was not added (nonblocking finding 1).",
+    "New risk check, user message (new-track.md:301): the not-run message is a fixed string. It holds no path, environment value, or user data. The step goes to step 10 without a wait, and the not-run form holds a fixed line only.",
+    "New risk check, Options line (new-track.md:306-307): the line gives two fixed choices and free text. The free text goes only to the author agent, and it selects fixes in spec.md and plan.md. No text passes the answer to the subagent, a shell command, or a file outside the track.",
+    "New risk check, stop outcome (new-track.md:310): a stop ends the workflow without a commit and leaves the track files on disk. The agent tells the user. No file leaves the local repository, and nothing goes to an external service. The uncommitted report can hold reviewer text, but this exposure is smaller than the commit path.",
+    "New risk check, author lines (new-track.md:304, :309, :310 and spec-review.md:76, :117-126): 'Reviewer:' holds the subagent type and model id, and 'Author model:' holds the session model id. These values are not secrets. '## Accepted Risks' is written only after the user approves the commit, so the user sees each remaining finding before the commit.",
+    "Round 2 (new-track.md:309) gets the same paths and the Round 1 findings with author responses. This is the same input as at 6e856e1, and the text is already part of the committed report. The exposure does not increase.",
+    "git diff --quiet 6e856e1 c7d7e98 -- tests/ exited 0 (TESTS-UNCHANGED). run.sh, test_s1_new_track.sh, and test_s1_standard.sh are byte-identical to the versions that the 6e856e1 pass probed. The earlier live probes of run.sh (path traversal, absolute paths, shell metacharacters, newline patterns) stay valid.",
+    "bash tests/spec_review_gate/run.sh 'test_s1_*.sh' printed '=== Total: 16 checks (PASS=16, FAIL=0) ===' for test_s1_standard.sh and '=== spec_review_gate: 2 suites (PASS=2, FAIL=0) ==='.",
+    "A2 (consent-blind publish gate): not applicable. The phase has no draft-to-published status change and no named subject.",
+    "A6 (registry overstatement): git diff --quiet 6e856e1 c7d7e98 -- measure/tracks.md exited 0. The registry change in the phase diff is only the track marker from '- [ ]' to '- [~]'. The registry makes no claim that a security state is resolved."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --short",
+    "git diff --stat 6e856e1..c7d7e98",
+    "git diff 6e856e1..c7d7e98 -- tests/",
+    "git diff --stat 65c7925..c7d7e98",
+    "git diff 6e856e1..c7d7e98 -- skills/ measure/",
+    "cmp skills/measure/references/spec-review.md claude-skills/measure/references/spec-review.md",
+    "cmp skills/measure/references/new-track.md claude-skills/measure/references/new-track.md",
+    "git diff --quiet 6e856e1 c7d7e98 -- tests/",
+    "git diff --quiet 6e856e1 c7d7e98 -- measure/tracks.md",
+    "git log --oneline 6e856e1..c7d7e98",
+    "bash tests/spec_review_gate/run.sh 'test_s1_*.sh'",
+    "grep -i 'secret|credential|token|environment' skills/measure/references/new-track.md skills/measure/references/spec-review.md"
+  ],
+  "changed_files": [
+    "claude-skills/measure/references/new-track.md",
+    "claude-skills/measure/references/spec-review.md",
+    "measure/tracks/spec_review_gate_20261030/plan.md",
+    "skills/measure/references/new-track.md",
+    "skills/measure/references/spec-review.md"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

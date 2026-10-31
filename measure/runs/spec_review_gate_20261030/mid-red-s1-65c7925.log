@@ -1,0 +1,15 @@
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S1: Spec review standard and the new-track review step
+baseline_sha: 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314
+role_base_sha: 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314
+head_sha: 5042c6d68ce8717b47c5527ea87051f325251b17
+commits: 94985b7, 59b548e, c9f6d4e, dbd7127, 02cf66e, 5042c6d
+tests_run: `bash tests/spec_review_gate/run.sh 'test_s1_*.sh'` exit 1, "=== spec_review_gate: 2 suites (PASS=0, FAIL=2) ===" (test_s1_standard.sh 16 checks PASS=2 FAIL=14; test_s1_new_track.sh 41 checks PASS=22 FAIL=19); `bash tests/spec_review_gate/run.sh 'test_none_*.sh'` exit 1, prints "no suites matched"
+files_changed: measure/tech-stack.md, measure/tracks.md, measure/tracks/spec_review_gate_20261030/plan.md, measure/tracks/spec_review_gate_20261030/metadata.json, tests/spec_review_gate/run.sh, tests/spec_review_gate/test_s1_standard.sh, tests/spec_review_gate/test_s1_new_track.sh
+plan_updates: track line [~], metadata status in_progress, Task 1.1 [x] 59b548e, Task 1.2 [x] dbd7127 with Red evidence, Task 1.3 [~] as the Green handoff marker
+known_failures: test_s1_standard.sh 14 checks fail because skills/measure/references/spec-review.md is missing; test_s1_new_track.sh 19 checks fail because new-track.md §2.5 has no step 9 and no step 11 (step 10 not renumbered) and SKILL.md lacks references/spec-review.md in New Track and the spec-review.md line in Directory Structure; no harness defect
+handoff: Green starts at Task 1.3. Conservative defaults: (1) S1 tests do not assert the Author Response forms `- F<n>: fixed` or `not fixed —`, because S3 replaces them. (2) Tests assert contract phrases case-insensitive in Zoom-Out (root problem, symptom, speculative, premature optimization, symbol, correct place, requirement level) and exact in Severity (Blocker, Major, Nit, premature optimization, undefined project-specific term); copy them from the contract and spec Decision 11. (3) The SKILL.md Directory Structure line must be exactly `│       ├── spec-review.md  # Spec review report (fresh subagent)` between the spec.md and plan.md lines. (4) `## Report Layout` holds the template in a code fence; `## Accepted Risks` text sits inside `## Re-Review Limit`. (5) Step 9 first-occurrence order: `references/spec-review.md`, `Never run the review in this context.`, `Give the subagent no conversation history`, `at most one re-review`; step 9 also contains `step 10`; sub-steps are indented so only steps start in column 0. (6) Steps 1 to 8 of §2.5 are compared with git object 7d72b40; do not change them. Green gates: `bash tests/spec_review_gate/run.sh 'test_s1_*.sh' && bash tests/spec_review_gate/run.sh && diff -r skills/measure claude-skills/measure`. The log is not committed.
+END_MEASURE_AGENT_RESULT

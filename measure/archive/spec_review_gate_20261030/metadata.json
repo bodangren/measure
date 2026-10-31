@@ -1,13 +1,14 @@
 {
   "track_id": "spec_review_gate_20261030",
   "type": "feature",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-10-30T13:35:38Z",
-  "updated_at": "2026-10-30T13:35:38Z",
+  "updated_at": "2026-10-31T05:46:44Z",
+  "completed": "2026-10-31",
   "description": "Spec review gate, finding dispositions, and doc drift check: a fresh-subagent review of spec.md and plan.md in new-track, a measure-spec-review orchestrator role with a checker gate, four dispositions for routed review findings, and a doc drift detector in the weekly audit. Ideas adapted from Google's Elephant-Goldfish Model (Apache-2.0).",
   "estimated_tasks": 19,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 19,
+  "deviation_notes": "All 19 tasks closed with commit SHAs at final acceptance 8a8efe2. Model substitutions: Opus replaced Muse for S2 acceptance after startup failures. GLM replaced Muse for S3 and S4 reviews and acceptance because of budget. Final acceptance uses OpenAI; the shared Anthropic family is a recorded deviation. Contract amendment: eef86ff made the A11 recipe report a missing document (Review A F1). Cross-phase test change: 1dc03cf moved the bash suites to here-strings to remove a pipe race. Review results are recorded at each reviewed HEAD. Test-only adversarial commits, including 8d5b4cc and d3e764a, followed those reviews. Sprint story statuses S1-S4 remain pending in this file as written at track start.",
   "sprint": {
     "goal": "Every Measure track gets an independent review of spec.md and plan.md before Red starts, every routed review finding gets one checkable disposition, and the weekly audit finds documents that no longer agree with the code.",
     "stories": [

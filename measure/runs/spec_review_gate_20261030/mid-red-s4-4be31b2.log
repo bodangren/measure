@@ -1,0 +1,15 @@
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S4: Doc drift check in the weekly audit
+baseline_sha: 4be31b2bc3eded3f8200857a9d4768149590b71a
+role_base_sha: 4be31b2bc3eded3f8200857a9d4768149590b71a
+head: a02848d
+commits: 3018764 (S3 checkpoint 23c72ed in plan.md), 8f87953 (Red suite, git note attached), a02848d (Task 4.1 [x] 8f87953 and Red evidence, Task 4.2 [~])
+tests_run: RED_TEST_COMMAND `bash tests/spec_review_gate/run.sh 'test_s4_*.sh'` exit 1: 1 suite (PASS=0, FAIL=1); test_s4_doc_drift.sh 26 checks (PASS=2, FAIL=24). Full runner `bash tests/spec_review_gate/run.sh` exit 1: 9 suites (PASS=8, FAIL=1), only test_s4_doc_drift.sh fails; S1, S2, S3 suites and test_checker.py pass. Pipe lint: no '| grep -q' in tests/spec_review_gate/*.sh. Sandbox proof: simulated Green in a temp copy gives 26 checks (PASS=26, FAIL=0).
+files_changed: tests/spec_review_gate/test_s4_doc_drift.sh (new); measure/tracks/spec_review_gate_20261030/plan.md (S3 checkpoint, Task 4.1 [x] 8f87953, Red evidence, Task 4.2 [~])
+plan_updates: Task 4.1 [x] 8f87953; Task 4.2 [~]; Phase S3 heading has [checkpoint: 23c72ed]
+known_failures: test_s4_doc_drift.sh, 24 checks, each from a missing S4 deliverable: no '## Doc drift detector' section in agents/measure-orchestrator-audit.md (10 string checks fail on an empty section); no A11 heading and 10 (not 11) A-entry headings in both catalogs; no '11 entries (A1–A11)' and no 'doc drift detector' in Role Order item 10 of the orchestrator SKILL.md; no '(A1–A11 today)' in agents/measure-strategy.md and in the audit Inputs; no 'elephant-goldfish-model' in CHANGELOG Unreleased; no 'doc-to-code drift' in the README audit row; 'A1–A10' still at agents/measure-strategy.md:19, agents/measure-orchestrator-audit.md:58, skills/measure-orchestrator/SKILL.md:15; the A11 block equality check and the A11 recipe check fail because the extract is empty.
+handoff: Green order (cron rule): Task 4.2 commits the A11 entry in both catalogs (identical text, per the plan contract) before Task 4.3 commits any file that names A1–A11 or the doc drift detector. The suite also checks 'A1–A11 today' in the audit Inputs section (contract: A1–A10 today becomes A1–A11 today). Do not add a second JSON example, a second schema_version, or a --role orchestrator-audit line. The untracked extensions/ folder was not touched. Decision taken by default: the Inputs and measure-strategy A1–A11 checks come from the plan contract, not from the Task 4.1 case list.
+END_MEASURE_AGENT_RESULT

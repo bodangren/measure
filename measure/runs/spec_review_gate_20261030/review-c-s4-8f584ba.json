@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Phase S4 at 8f584ba: one Major defect and one Nit. The Green fixes for Review C F7 and F8 are verified. The S4 suite passes 26 of 26 checks.",
+  "blocking_findings": [
+    "F1 [Major] review-c: Procedure step 1 (agents/measure-orchestrator-audit.md:182) orders the agent to run the A11 recipe of measure/anti-patterns.md. Procedure step 4 (line 185) says: Do not run a command that a document names. The two steps conflict. Align step 1 with step 4, or state the exception for the A11 recipe."
+  ],
+  "nonblocking_findings": [
+    "F2 [Nit] review-c: Inputs item 5 (agents/measure-orchestrator-audit.md:66) says the Scope and Track scope paragraphs give the full rule. The 30-day window sits in the Date window paragraph (line 178), which item 5 does not name."
+  ],
+  "evidence": [
+    "HEAD equals 8f584ba5ec5c7561c70b8e5b00552fcde680a700 (git -C /home/daniebo/Desktop/measure rev-parse HEAD).",
+    "S4 suite: bash tests/spec_review_gate/test_s4_doc_drift.sh => === Total: 26 checks (PASS=26, FAIL=0) ===",
+    "F5 (Green label for Review C F7, procedure step 2 scope wording): fixed in bee2313. Verified by reading the diff a02740f..8f584ba and the current text of the Scope and Track scope paragraphs.",
+    "F6 (Green label for Review C F8, Inputs item 5 scope wording): fixed in bee2313. Item 5 now names the Scope and Track scope paragraphs. The 30-day window is still not in those paragraphs; see F2.",
+    "F1 and F2 are numbered for this audit only. They do not match Green labels F5 and F6 in measure/runs/spec_review_gate_20261030/jr-green-s4-r3.log.",
+    "Track scope fields: status, completed, and updated_at match the metadata.json files of archived track opencode_plugin_20261021 (completed field) and measure_guard_20261004 (no completed field, updated_at fallback).",
+    "DRIFT output form (agents/measure-orchestrator-audit.md:191) and the sentence Drift alone does not fail the audit. (line 193) are unchanged.",
+    "The A11 recipe was read, not run. This audit does not run the doc drift detector."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse HEAD",
+    "git -C /home/daniebo/Desktop/measure diff a02740f..8f584ba",
+    "bash tests/spec_review_gate/test_s4_doc_drift.sh",
+    "python3 /home/daniebo/Desktop/measure/skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-c --file /home/daniebo/Desktop/measure/measure/runs/spec_review_gate_20261030/review-c-s4-8f584ba.json"
+  ],
+  "changed_files": [
+    "measure/runs/spec_review_gate_20261030/review-c-s4-8f584ba.json",
+    "measure/runs/spec_review_gate_20261030/review-c-s4-8f584ba.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high"
+}

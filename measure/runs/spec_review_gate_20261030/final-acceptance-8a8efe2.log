@@ -1,0 +1,93 @@
+Final acceptance audit: spec_review_gate_20261030
+Role: final-acceptance. Run type: change-triggered. Model family: OpenAI.
+track_base_sha: 7d72b40665074a89f5be606935cad94a1ef1e4e9
+role_base_sha: 8a8efe2306f617c42aaae2abd71960d33bc0e9ad
+audited_head_sha: 8a8efe2306f617c42aaae2abd71960d33bc0e9ad
+HEAD matches the audited HEAD. The track baseline is an ancestor of HEAD.
+The tracked worktree is clean. The pre-existing untracked extensions/ folder remains unchanged.
+Scope: the exact track diff contains 46 files and 81 commits after the track baseline.
+Inputs: project and track indexes, registry, spec, plan, strategy, workflow, guidelines, anti-patterns, memory, debt, role contracts, and prior results.
+The audit also read the checker, changed role files, skill files, README, CHANGELOG, tests, and recorded remediation.
+
+Phase acceptance evidence
+S1: phase-acceptance-s1-4f1f290.json passes at 4f1f290. Its phase baseline is 65c7925.
+S2: phase-acceptance-s2-25b9064.json passes at 25b9064. Its phase baseline is ccdaae2.
+S3: phase-acceptance-s3-23c72ed.json passes at 23c72ed. Its phase baseline is a1a9396.
+S4: phase-acceptance-s4-8a8efe2.json passes at current HEAD 8a8efe2. Its phase baseline is 4be31b2.
+Each phase has exactly one passing result. The earlier S4 result at d3e764a remains inconclusive and does not count.
+Each passing result has a phase baseline and a role baseline that precede its audited HEAD.
+Each accepted HEAD precedes current HEAD. The latest acceptance leaves no later change unaccepted.
+The four passing JSON files satisfy the phase-acceptance schema.
+
+Plan and contract evidence
+All 19 tasks are [x]. Each task names a real ancestor commit with a task note.
+No non-deferred task remains. The S1, S2, and S3 checkpoint markers match their accepted HEADs.
+Closeout will record the S4 checkpoint. This audit changes no plan, registry, metadata, or archive state.
+S1: the standard defines every required section. The new-track step preserves steps 1 through 8 and adds the independent review before commit.
+S1: the no-subagent path writes the not-run report. Review paths show the paraphrase and findings, limit re-review, and require commit approval.
+S2: the role permissions match Review A. The role writes provisional artifacts, checks HEAD, uses the standard fallback, and makes no commit.
+S2: the checker validates aliases, paraphrases, finding formats, severity lists, baselines, scope, renames, and git failures.
+S3: the contracts define all four dispositions, their owners, severity rules, evidence rules, re-review results, and rounds without FIX.
+S3: the parser checks the final block range, duplicate lines, duplicate ids, empty evidence, and invalid words. The optional line preserves old logs.
+S4: the weekly detector defines document scope, metadata fields, date window, code comparisons, later-spec exclusions, and nonblocking DRIFT findings.
+S4: both catalogs contain the same A11 entry. The role text, README, CHANGELOG, and catalog counts agree.
+The recorded -z remediation and the final block-range rule override their earlier contract descriptions.
+The S4 amendment at eef86ff requires a missing-document candidate. Both catalogs and the adversarial tests implement it.
+
+Configured gates: each value was exported before execution.
+PROJECT_LINT: python3 -m py_compile skills/measure-orchestrator/scripts/measure_interphase_checks.py tests/spec_review_gate/test_checker.py && for f in tests/spec_review_gate/*.sh; do bash -n "$f" || exit 1; done
+PROJECT_LINT result: exit 0.
+PROJECT_CHECKS: diff -r skills/measure claude-skills/measure && bash plugins/opencode-measure-guard/scripts/check-parity.sh && git diff --quiet 7d72b40665074a89f5be606935cad94a1ef1e4e9 -- skills/measure/references/new-track-set.md
+PROJECT_CHECKS result: exit 0; parity: ok; the bundle diff and the new-track-set diff are empty.
+PROJECT_TESTS: bash tests/spec_review_gate/run.sh && bun test plugins/opencode-measure-guard
+PROJECT_TESTS result: exit 0; 10 suites (PASS=10, FAIL=0); 28 Python tests; 85 Bun tests pass, 0 fail.
+Suite checks: S1 standard 16, S1 new-track 41, S1 adversarial 103, S2 role docs 52, S2 adversarial 96.
+Suite checks: S3 docs 71, S3 adversarial 91, S4 docs 26, S4 adversarial 75. Each suite reports zero failures.
+The gate output is retained at /home/daniebo/.local/share/opencode/shell/36eb9eeaaeb214ac5cf87e21bdd7783645877fe8/sh_1906dd760001Gq6Wke5QIiQcyg.out.
+Doctor: `bash measure/doctor.sh` exits 0 is not applicable: no `measure/doctor.sh` in this repository. Strategy section 7 substitutes PROJECT_CHECKS.
+
+Independent probes and pre-closeout checks
+probe-final-1.py verifies phase counts, ancestry, schema, all task SHAs, task notes, historical Red notes, archived-path references, and checker changes.
+probe-final-2.py compares all 34 old aliases with the baseline checker. Logs without a line and logs with a valid line preserve old results.
+The new parser rejects an invalid line for all 12 canonical checker roles. Each unset final gate fails acceptance.
+The probe confirms bundle parity at all 81 commits. The checker adds no import outside the standard library.
+A1: no supervisor file changed. The checker keeps the earlier substring check; this track adds no substring heuristic.
+A2: no publish gate applies. A3: labeled counts match 14 role files and 11 catalog entries.
+A4: missing headings, empty extracts, invalid gate inputs, and missing documents have rejection or candidate tests.
+A5: the two matching plan annotations are historical. Their Red notes support them. Current cited suites pass with the recorded check counts.
+A6: the registry remains [~]. Its feature note matches the implementation. All four adversarial suites pass.
+A7: scoped fixed-string checks and mutation tests retain real hits. No bare-word exclusion filter hides findings.
+A8: retired. A9: no test under tests/ names an archived track path or reads this active track directory.
+A10: not applicable; this repository has no doctor.sh or generated facts directory.
+A11: the extracted recipe exits 0. Its three candidates are claude-code/testing, commands/, and node_modules/ in tech-stack.md.
+These candidates are path-like text, not confirmed drift. The strategy records them. This audit does not run the scheduled detector.
+ux-paths from the track baseline exits 0 with no output. Browser review does not apply.
+
+Recorded deviations
+Opus replaced Muse for S2 phase acceptance after two startup failures. Red and S2 acceptance use different Anthropic models.
+GLM replaced Muse for S3 and S4 Review A and acceptance because the OpenCode Go budget exceeded 80 percent.
+Adversarial commit 1dc03cf changed 23 pipes to here-strings. Patterns, messages, and check counts remain unchanged.
+Build sessions changed strategy lines in 0b6670d and eef86ff. The corresponding plan and spec amendments explain these changes.
+Review results precede test-only adversarial commits. S4 also adds the final amendment SHA in plan.md before acceptance at current HEAD.
+The prerequisite same-HEAD sentence conflicts with Role Order. Closeout will record this debt, not repeat the accepted deviation as a blocker.
+
+Conclusion
+Final acceptance passes at 8a8efe2. No blocking finding or hard violation remains.
+The JSON lists carried nonblocking items for closeout. This role makes no implementation change and no commit.
+The audit-result validator exits 0 and prints PASS: audit result is valid.
+The final-acceptance role gate reruns all configured gates. It exits 0 and prints PASS: final-acceptance gate passed.
+An optional git diff --check reports one new blank line at contracts.md:150. This check is not a configured gate.
+The final format check requires non-empty strings with file:line citations in every array. The log has no dispositions line.
+
+MEASURE_AGENT_RESULT
+role: final-acceptance
+status: complete
+track: spec_review_gate_20261030
+phase: track review
+commits: none
+tests_run: PROJECT_LINT pass; PROJECT_CHECKS pass; PROJECT_TESTS pass; 10 suites pass; 85 Bun tests pass; probes pass; audit-result pass; final-acceptance role gate pass
+files_changed: measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.json; measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.log; probe-final-1.py; probe-final-2.py
+plan_updates: none
+known_failures: none blocking; carried nonblocking debt is listed in the JSON
+handoff: Route to measure-closeout. Record the S4 checkpoint and the listed debt during closeout. No archive or metadata change occurred here.
+END_MEASURE_AGENT_RESULT

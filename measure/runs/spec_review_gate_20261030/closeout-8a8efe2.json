@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "role": "closeout",
+  "summary": "Closeout passes at 8a8efe2. All 19 plan tasks are done with checkpoints. The runner reports PASS=10. The track is archived. Sprint stories S1 to S4 stay pending.",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "track review",
+  "audited_head_sha": "8a8efe2306f617c42aaae2abd71960d33bc0e9ad",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "The 21 nonblocking findings from final acceptance stay in measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.json. Eight tech-debt rows record them in measure/tech-debt.md.",
+    "Sprint stories S1 to S4 stay pending in metadata.json by conservative default. The orchestrator decides any update."
+  ],
+  "evidence": [
+    "bash tests/spec_review_gate/run.sh exits 0. Ten suites report PASS=10 FAIL=0. The unittest run reports 28 tests OK.",
+    "grep for measure/tracks/spec_review_gate_20261030 in tests/, skills/, agents/ finds no match. The A9 path check is not triggered.",
+    "grep for the same path in measure/ outside runs/ and archive/ finds no match.",
+    "The plan has 19 [x] tasks, zero [~] tasks, zero [ ] tasks, and zero [b] tasks. Phase headings carry checkpoints 4f1f290, 25b9064, 23c72ed, and 8a8efe2.",
+    "final-acceptance-8a8efe2.json status pass, blocking_findings 0, retry_recommendation none, confidence high.",
+    "phase-acceptance S1 to S4 each report status pass with blocking_findings 0.",
+    "metadata.json status is done and completed is 2026-10-31.",
+    "The track folder is absent from measure/tracks/. The archive folder measure/archive/spec_review_gate_20261030/ is present.",
+    "tracks.md has an Archived Tracks section that names the archive link. The track has no active entry.",
+    "The S3 draft test file is deleted. The S4 draft test file is absent."
+  ],
+  "commands": [
+    "bash tests/spec_review_gate/run.sh",
+    "grep -rln \"measure/tracks/spec_review_gate_20261030\" tests/ skills/ agents/",
+    "grep -rn \"measure/tracks/spec_review_gate_20261030\" measure/ --exclude-dir=runs --exclude-dir=archive",
+    "git mv measure/tracks/spec_review_gate_20261030 measure/archive/spec_review_gate_20261030",
+    "python3 -I -c \"import os; os.remove('measure/runs/spec_review_gate_20261030/test_s3_adversarial.sh.draft')\"",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role closeout --track spec_review_gate_20261030 --phase \"track review\" --baseline 8a8efe2306f617c42aaae2abd71960d33bc0e9ad --result-file measure/runs/spec_review_gate_20261030/closeout-8a8efe2.json --log-file measure/runs/spec_review_gate_20261030/closeout-8a8efe2.log",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py status --repo ."
+  ],
+  "changed_files": [
+    "measure/archive/spec_review_gate_20261030/index.md",
+    "measure/archive/spec_review_gate_20261030/metadata.json",
+    "measure/archive/spec_review_gate_20261030/plan.md",
+    "measure/archive/spec_review_gate_20261030/spec.md",
+    "measure/archive/spec_review_gate_20261030/test-strategy.md",
+    "measure/archive/spec_review_gate_20261030/automation-supervisor-closeout-manifest.json",
+    "measure/tracks.md",
+    "measure/tech-debt.md",
+    "measure/runs/spec_review_gate_20261030/closeout-8a8efe2.json",
+    "measure/runs/spec_review_gate_20261030/closeout-8a8efe2.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

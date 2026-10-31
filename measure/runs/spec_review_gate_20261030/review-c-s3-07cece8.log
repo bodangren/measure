@@ -1,0 +1,59 @@
+Measure Review C audit trace
+track: spec_review_gate_20261030
+phase: S3 Finding dispositions
+phase_base_sha: a1a9396347f92429efb820c8afd65288db92b083
+role_base_sha: a1a9396347f92429efb820c8afd65288db92b083
+audited_head_sha: 07cece83540468b6026fff6b661228385a064e6e
+head_check: .git/refs/heads/main confirms audited_head_sha is current.
+result_json: measure/runs/spec_review_gate_20261030/review-c-s3-07cece8.json
+verdict: fail
+retry_recommendation: retry_implementation
+
+Limits of this audit:
+- The shell tool was denied (permission.rejected). No git command, test run, or validator run was executed.
+- Checks used read and grep tools only.
+- Not verified: 1c24539 amendment strings; git show 7d4a745 --stat; tests/spec_review_gate/test_s3_dispositions_docs.sh; targeted Red command; audit-result validator on the JSON.
+
+Contract applicability:
+- Applicable. Phase S3 changes routing between Green, audit roles, the orchestrator, and the user.
+
+Answers to the four audit questions:
+1. Routing loop completeness: incomplete. The loop has no outcome for a CONTEST-only round (F1). Route parity is missing in two audit roles (F3). Step 9 has no user decision point for ESCALATE items (F4).
+2. dispositions line format and worked example: the format is consistent across contracts.md, measure-jr-green.md, and the checker regex at measure_interphase_checks.py:83-84. The contracts.md reference has no worked example (F7). The optional and required wording differs (F8).
+3. 1c24539 amendment strings: not verified. The shell tool was denied.
+4. User flow in new-track step 9 and review.md section 3.1: not clear. Step 9 lacks a user decision point for ESCALATE (F4). review.md section 3.1 allows DECLINE only for Low, and contracts.md allows DECLINE only for Nit (F5). The keep-and-withdraw paragraph in five roles is ambiguous for a fresh re-review (F2).
+
+Retracted finding:
+- An earlier draft reported that the checker had no dispositions enforcement. A targeted read showed dispositions_feedback at measure_interphase_checks.py:418 and its call at line 630. The retracted finding is not in the result JSON.
+- The real defect is the copy divergence at ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py (F6).
+
+Evidence summary:
+- contracts.md lines 85-124 read.
+- measure_interphase_checks.py lines 83-84, 291-380, 418, and 630 read.
+- measure-jr-green.md lines 34-48 read.
+- Five audit role files read for the keep-and-withdraw paragraph.
+- adversarial-testing and ux-browser-review grep returned no matches for the routing terms.
+- ~/.agents checker grep returned no matches for dispositions.
+- spec-review.md lines 69 and 83-87 read.
+- new-track.md lines 312-313 read.
+- review.md lines 170 and 192-196 read.
+- SKILL.md lines 145-146 read.
+- plan.md lines 162-199 read.
+- RETRY_RECOMMENDATIONS includes retry_implementation at measure_interphase_checks.py:17-25.
+
+Route to Green:
+- Blocking findings F1-F6 need Green fixes or a documented decision.
+- F6 needs the ~/.agents copy synced or the plan citation corrected. This path lies outside the repo. Route it to the orchestrator.
+
+MEASURE_AGENT_RESULT
+role: review-c
+status: complete
+track: spec_review_gate_20261030
+phase: S3 Finding dispositions
+commits: none
+tests_run: none (shell tool denied; read and grep checks only)
+files_changed: measure/runs/spec_review_gate_20261030/review-c-s3-07cece8.json; measure/runs/spec_review_gate_20261030/review-c-s3-07cece8.log
+plan_updates: none
+known_failures: F1-F6 blocking (routing loop CONTEST-only round; keep-paragraph ambiguity in five roles; route parity in adversarial-testing and ux-browser-review; step 9 ESCALATE user decision; review.md section 3.1 DECLINE and severity conflict; ~/.agents checker divergence). F7-F9 nonblocking. Unverified: 1c24539 strings, git show 7d4a745 --stat, S3 docs test, targeted Red command, validator run.
+handoff: Audit verdict fail with retry_recommendation retry_implementation. Route F1-F6 to Green. Route the ~/.agents checker divergence (F6) to the orchestrator. Rerun this audit with shell access to close the unverified items. No questions for the user.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "role": "adversarial-testing",
+  "phase_heading": "Phase S3: Finding dispositions",
+  "audited_head_sha": "33f608d57ba7a0935eafed123c6648e6e9c59d0f",
+  "status": "fail",
+  "summary": "The S3 dispositions parser holds every contract probe, every block range regression, and every time limit, and 13 of 13 checker mutants fail at least one probe. One probe exposes a defect: a folder as --log-file gives a Python Traceback at measure_interphase_checks.py:416, and the strategy defines a Traceback as a finding. The failing test is committed in 8d5b4cc and is routed to Green. The F14 pipe race fix is committed in 1dc03cf with equal check totals.",
+  "blocking_findings": [
+    "F15 [Major] adversarial-testing: skills/measure-orchestrator/scripts/measure_interphase_checks.py:416 (has_agent_result, called from cmd_role_gate:645) gives a Python Traceback (IsADirectoryError) when --log-file names a folder, because Path.exists() is true for a folder. dispositions_feedback at :441-443 repeats the same exists()-then-open pattern. The gate fails closed (exit 1), but test-strategy.md S3 says a Traceback in any probe is a finding, and Review B recommended Path.is_file(). The kept failing check is tests/spec_review_gate/test_s3_adversarial.sh G12 '--log-file is a folder (report: exit 0 or 1, no Traceback)'. Owner: Green."
+  ],
+  "nonblocking_findings": [
+    "F16 [Nit] adversarial-testing: measure/tracks/spec_review_gate_20261030/test-strategy.md, table 'S3 adversarial probes', has three rows that contracts.md superseded: 'two dispositions: lines in the last block' expects exit 0 (contracts.md now requires exit 1 with 'more than one dispositions line'); 'Unclosed last start line' is a Report row (the final block range rule now gives exit 1); 'Documented example' expects exactly one grep line (contracts.md now holds 2 lines, :111 and :131). The suite asserts the current contract. Owner: the user or a build session.",
+    "F17 [Nit] adversarial-testing: report rows record parser gaps that Review B already listed: 'F1=FIX CR ; F2=DECLINE' exits 0; 'F2=CONTEST(NUL)' and 'F2=CONTEST(U+200B)' exit 0; 'dispositions:none' exits 0; non-UTF-8 bytes inside the dispositions line exit 0 (errors=ignore removes them); a handoff value with U+2028 before the start text exits 0. No contract defines these results."
+  ],
+  "evidence": [
+    "Commit 1dc03cf (F14): 23 conditions of the form printf | grep -q in the five bash suites now use here-strings. Totals before and after are equal: test_s1_standard 16/16, test_s1_new_track 41/41, test_s1_adversarial 103/103, test_s2_role_docs 52/52, test_s3_dispositions_docs 71/71, all with FAIL=0.",
+    "After 1dc03cf, 300 runs of test_s3_dispositions_docs.sh (xargs -P 16) all gave '=== Total: 71 checks (PASS=71, FAIL=0) ==='. Before the fix, the orchestrator saw 3 failures in 300 runs.",
+    "Commit 8d5b4cc adds tests/spec_review_gate/test_s3_adversarial.sh: 91 checks (PASS=90, FAIL=1). The one failure is G12 '--log-file is a folder' (Traceback, IsADirectoryError).",
+    "G17 block range regressions through the real role-gate --role jr-green: inner start line, trailing start line after an invalid block, second dispositions line, START/bad/START/END/END, START/END/bad/END, end line before the first start line, CRLF, end line with trailing spaces, leading spaces, leading tab, and a start line on line 1 each exit 1 with only 'invalid dispositions line' FAIL lines. Two blocks with the first invalid, a line after the last end line, and a valid one-block log exit 0.",
+    "G18 time limits: 20000 end lines then 20000 start lines and one block 0.138 s; 50,000 F<n>=FIX items 0.180 s; one 5 MB CONTEST item 0.161 s; 50,000 items with a duplicate at the end 0.183 s (exit 1, 'duplicate finding id F50000').",
+    "G19 live corpus (read-only): 63 logs under measure/runs/ (54 with both exact lines), 0 under measure/archive/*/. No log gives dispositions feedback or a Traceback, and each log with both exact lines exits 0.",
+    "G20 lint: no .sh file under tests/spec_review_gate/ holds a pipe into grep -q.",
+    "G21 sensitivity: 13 mutants each fail at least one probe: re.match for fullmatch; the first start line for the block range; the first block (break) for the last; only the first dispositions line; no duplicate check; re.IGNORECASE; no strip() of each item; no strip() of each line; exact end line without strip(); splitlines() for the LF split; the call only for jr-green; no call; the old quadratic any(...) loop (killed by the G18 time probe).",
+    "Contract probes from the strategy table pass: CRLF logs, NUL after FIX, ';' inside parentheses, nested and unbalanced parentheses, spaces around items, U+00A0 text, id forms (F01, full-width digit, f1, Fix, spaces around '=', FIXX, DECLINE()), several blocks, substring start text, non-UTF-8 bytes outside the block, missing log, every role (strategy, mid-red, review-a, spec-review), fail-open order with GREEN_TEST_COMMAND=false, both documented example lines, and the frozen S1 and S2 corpus.",
+    "Anti-patterns: A4 is defended by the control case, by the 'only dispositions FAIL lines' rule of each reject probe, and by the mutants. A7 is defended by the lint check, which reads every line with a regex and has no filter word. A5: the 1dc03cf note claims were checked by live runs; the plan text was not changed by this role."
+  ],
+  "commands": [
+    "git rev-parse HEAD gave 33f608d57ba7a0935eafed123c6648e6e9c59d0f before this role",
+    "python3 -I measure/runs/spec_review_gate_20261030/adversarial-s3-herestring.py on the five suites: 23 replacements",
+    "bash tests/spec_review_gate/<suite>.sh for the five suites before and after: equal totals, FAIL=0",
+    "seq 300 | xargs -P 16 bash tests/spec_review_gate/test_s3_dispositions_docs.sh: 300 x 71 PASS",
+    "bash tests/spec_review_gate/test_s3_adversarial.sh: 91 checks (PASS=90, FAIL=1), 57 s",
+    "python3 -I skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role jr-green --track x --phase y --log-file /tmp/fd (a folder): Traceback through cmd_role_gate:645 and has_agent_result:416",
+    "PROJECT_TESTS part 1: bash tests/spec_review_gate/run.sh gave '=== spec_review_gate: 8 suites (PASS=7, FAIL=1) ===' (the failing suite is test_s3_adversarial.sh, G12), exit 1",
+    "PROJECT_TESTS part 2: bun test plugins/opencode-measure-guard gave 85 pass, 0 fail, exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role adversarial-testing --file measure/runs/spec_review_gate_20261030/adversarial-testing-s3-33f608d.json"
+  ],
+  "changed_files": [
+    "tests/spec_review_gate/test_s1_standard.sh (1dc03cf): here-strings for 5 conditions",
+    "tests/spec_review_gate/test_s1_new_track.sh (1dc03cf): here-strings for 8 conditions",
+    "tests/spec_review_gate/test_s1_adversarial.sh (1dc03cf): here-strings for 3 conditions",
+    "tests/spec_review_gate/test_s2_role_docs.sh (1dc03cf): here-strings for 4 conditions",
+    "tests/spec_review_gate/test_s3_dispositions_docs.sh (1dc03cf): here-strings for 3 conditions",
+    "tests/spec_review_gate/test_s3_adversarial.sh (8d5b4cc): new S3 adversarial suite"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high"
+}

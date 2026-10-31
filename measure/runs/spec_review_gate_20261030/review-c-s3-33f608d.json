@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "role": "review-c",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S3 Finding dispositions",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "33f608d57ba7a0935eafed123c6648e6e9c59d0f",
+  "audited_head_sha": "33f608d57ba7a0935eafed123c6648e6e9c59d0f",
+  "status": "pass",
+  "summary": "Contract audit at 33f608d finds no contract defect. The single suite failure comes from a race in the test harness. The race is routed as nonblocking F14 to the adversarial role.",
+  "contract_applicability": {
+    "applicable": true,
+    "basis": "Phase S3 changes the finding disposition contract, the agent prompts that carry it, and the checker that reads it.",
+    "path_evidence": [
+      "skills/measure-orchestrator/references/contracts.md",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+      "measure/tracks/spec_review_gate_20261030/plan.md",
+      "tests/spec_review_gate/test_s3_dispositions_docs.sh"
+    ]
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F14 [Major] review-c: The in_text() helper in tests/spec_review_gate/test_s3_dispositions_docs.sh:56 runs printf piped into grep -qF under set -uo pipefail. grep -q can exit at the first match, so printf can get a broken pipe, and pipefail makes the check fail. The race is intermittent under load. Route the harness fix to the adversarial role. The same pattern exists in every bash suite of S1, S2, and S3."
+  ],
+  "closed_findings": [],
+  "evidence": [
+    "git rev-parse HEAD returned 33f608d57ba7a0935eafed123c6648e6e9c59d0f, which matches audited_head_sha.",
+    "The git diff 0b6670d..33f608d changes plan.md (one line), contracts.md (lines 118-119), and measure_interphase_checks.py (range logic). No file under agents/ or tests/ changed.",
+    "contracts.md:118-119 states the last result block range. Hand traces of the checker range logic agree with that wording for five log shapes: S1 E1 S2 E2 S3; S1 S2 E1; S1 E1 E2 S2 E3; S1 E1 S2; and logs with no END line.",
+    "plan.md:173 and plan.md:177 and contracts.md:108 agree with contracts.md:118-119 on placement and on the range rule.",
+    "F1-F13 stay closed. The change set does not touch the lines cited for closed items.",
+    "Failing run: bash tests/spec_review_gate/run.sh, run 1, 7 suites PASS=6 FAIL=1, exit 1. The failing check was 'FAIL: measure-review-a-correctness.md: withdrawn:: missing [withdrawn:]'. The agent file contains 'withdrawn:' at line 61 and was not changed.",
+    "Reruns by review-c: test_s3_dispositions_docs.sh passed 71 of 71 on two runs. run.sh passed 7 of 7 with exit 0 on a later run.",
+    "Cause of the intermittent failure, per orchestrator evidence at 33f608d: seq 300 with xargs -P 32 running the suite gave 297 runs with PASS=71 FAIL=0 and 3 runs with FAIL=1 at different checks. The cause is the race in in_text() at test_s3_dispositions_docs.sh:56, described in F14. The tracked tree was clean at 33f608d."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse HEAD (run, 33f608d57ba7a0935eafed123c6648e6e9c59d0f)",
+    "git status --short (run, only ?? extensions/ is untracked)",
+    "bash tests/spec_review_gate/run.sh (run 1, 7 suites PASS=6 FAIL=1, exit 1)",
+    "bash tests/spec_review_gate/test_s3_dispositions_docs.sh (two reruns, 71/71 each, exit 0)",
+    "bash tests/spec_review_gate/run.sh (later run, 7 suites PASS=7 FAIL=0, exit 0)",
+    "python3 -I measure/skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-c --file measure/runs/spec_review_gate_20261030/review-c-s3-33f608d.json (run after this file was written)"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "medium"
+}

@@ -1,0 +1,18 @@
+Strategy refresh for Phase S3 at role_base_sha 25b90641915e26ca489d053b56cea4ded2485071.
+
+Commit: a1a9396 measure(strategy): Refresh the test strategy for Phase S3 (only measure/tracks/spec_review_gate_20261030/test-strategy.md).
+Baselines at 25b9064, run by this role: bash tests/spec_review_gate/run.sh -> 6 suites (PASS=6, FAIL=0); bun test plugins/opencode-measure-guard -> 85 pass, 0 fail.
+Run logs: measure/runs/ has 37 *.log (28 with both exact marker lines); measure/archive/ has 0 *.log.
+
+MEASURE_AGENT_RESULT
+status: complete
+role: strategy
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: a1a9396347f92429efb820c8afd65288db92b083
+tests_run: bash tests/spec_review_gate/run.sh (6 suites PASS=6 FAIL=0); bun test plugins/opencode-measure-guard (85 pass, 0 fail)
+files_changed: measure/tracks/spec_review_gate_20261030/test-strategy.md
+plan_updates: none
+known_failures: none
+handoff: Capture phase_base_sha with git rev-parse HEAD after a1a9396, or after the S2 checkpoint commit if it lands later, before Red marks Task 3.1 [~]. S3 risk high. Review B full scope on dispositions_feedback and its call for every role. Review C full scope on the four dispositions across contracts.md, jr-green, five audit roles, review.md, the standard, new-track step 9, and SKILL.md Delegation. Adversarial suite test_s3_adversarial.sh with 19 probe groups, 7 sensitivity copies, and a live backward-compatibility corpus. Route the Report row "unclosed last start line" to the user as ESCALATE when it gives exit 0. S2 checkpoint is not yet in plan.md. S4 unchanged.
+END_MEASURE_AGENT_RESULT

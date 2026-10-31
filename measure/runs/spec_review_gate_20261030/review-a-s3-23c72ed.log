@@ -1,0 +1,73 @@
+Review A (correctness) incremental audit for Phase S3: Finding dispositions.
+Track spec_review_gate_20261030. Range 33f608d..23c72ed (1dc03cf, 8d5b4cc, 8e5de63, 23c72ed).
+phase_base_sha a1a9396, role_base_sha = audited_head_sha = 23c72ed, HEAD confirmed equal.
+
+Scope of this round: the here-string fix (F14), the new S3 adversarial suite, and the
+folder-as---log-file fix.
+
+1. Here-string replacements (1dc03cf, 23 conditions in five bash suites).
+   bash appends exactly one newline to a here-string word; printf '%s\n' "$x" outputs
+   "$x" plus one newline. Probe 4 compared both byte streams with od for 9 input shapes
+   (empty, trailing newline, leading double dash, U+2028, 5000 bytes, and more): the
+   bytes are identical, so grep reads the same input. The diff changes only the input
+   source; every pattern, flag set, and message stays the same. The conversion script
+   measure/runs/.../adversarial-s3-herestring.py keeps the grep invocation verbatim.
+   No check became vacuous: 8 match and miss cases under 'set -uo pipefail' return 0 on
+   a match and 1 on a miss for both forms. G20 of the new suite lints against any pipe
+   into grep -q; my scan finds 23 converted conditions and 0 pipes left. Stress: 20
+   parallel runs each of test_s3_dispositions_docs.sh and test_s1_new_track.sh all end
+   71 and 41 checks (PASS, FAIL=0), exit 0.
+
+2. The is_file() change (8e5de63).
+   Probe 4 compared the 33f608d module with the 23c72ed module: a missing path, a
+   normal file, a symlink to a file, and a dangling symlink give the same results. A
+   folder raised IsADirectoryError before; now it gives has_agent_result False and no
+   feedback. CLI role-gate with a folder exits 1 with 'missing MEASURE_AGENT_RESULT
+   block' and no Traceback; a missing path gives the same; a symlink to a valid log
+   exits 0. grep shows the two functions are called only from cmd_role_gate, so no
+   other command changes behavior. The docstrings state the non-file rule.
+
+3. The new suite test_s3_adversarial.sh (8d5b4cc, 91 checks).
+   The G17 block-range cases match the contracts.md range text verified in the prior
+   round. The G08 id-form rejections match DISPOSITIONS_ITEM_RE
+   'F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))'. G12 (a folder as --log-file)
+   is a report probe that asserts only exit 0 or 1 with no Traceback, so the 8e5de63
+   fix made it pass without asserting the old defect. G15 reads the contracts.md
+   example lines dynamically. G21 runs 13 broken checker copies; each fails at least
+   one probe. G18 holds the linear-time contract (0.173 s to 0.269 s measured). G19
+   scans 67 live logs read-only: no feedback, no Traceback.
+
+4. Test suite. bash tests/spec_review_gate/run.sh gives 8 suites (PASS=8, FAIL=0).
+   The five modified suites keep their check counts: 16, 41, 103, 52, 71. The new
+   suite gives 91 checks (PASS=91, FAIL=0), including G12.
+
+5. Plan line. 'Adversarial remediation F1 (folder as --log-file): 8e5de63; is_file()
+   in has_agent_result and dispositions_feedback' is true. 23c72ed adds only this line.
+
+Findings: no blocking findings. One nonblocking Nit: contracts.md does not state the
+strip() rule for marker lines that G17 enforces (an end line with trailing spaces, a
+dispositions line with leading spaces or a leading tab still counts). The prior Nit on
+the missing DispositionsLineTest block-range cases is resolved by G17.
+
+Result artifacts:
+- JSON: measure/runs/spec_review_gate_20261030/review-a-s3-23c72ed.json
+- Log (this file): measure/runs/spec_review_gate_20261030/review-a-s3-23c72ed.log
+- Probe: measure/runs/spec_review_gate_20261030/probe-review-a-4.py
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: 1dc03cf, 8d5b4cc, 8e5de63, 23c72ed
+tests_run: bash tests/spec_review_gate/run.sh gives PASS=8, FAIL=0; python3 -I probe-review-a-4.py gives 14 PASS, 0 FAIL; audit-result --role review-a exit 0
+files_changed: review-a-s3-23c72ed.json, review-a-s3-23c72ed.log (audit artifacts only)
+plan_updates: none by this role
+known_failures: none
+handoff: Orchestrator may accept the audit. Status pass, blocking 0, one nonblocking Nit (F1) on the contracts.md strip rule for marker lines.
+audited_head_sha: 23c72ed732e7958fbd71386addee366cfb5a2b0e
+summary: Incremental audit of 33f608d..23c72ed passes. The 23 here-string replacements give grep the same bytes and keep every check a real conditional; 40 parallel stress runs stay clean. The is_file() change keeps the result for a missing path, a file, and a symlink, and turns a folder into the missing-block message with no Traceback; only role-gate calls the two functions. The new 91-check adversarial suite asserts the contract and covers the prior test gap. run.sh gives 8 suites (PASS=8, FAIL=0). The plan line is true. One nonblocking Nit on the unstated strip rule for marker lines.
+blocking_findings: 0
+nonblocking_findings: 1
+retry_recommendation: none
+END_MEASURE_AGENT_RESULT

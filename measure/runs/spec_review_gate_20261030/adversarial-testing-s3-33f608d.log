@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: measure-adversarial-testing
+status: fail
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: 1dc03cf, 8d5b4cc
+tests_run: bash tests/spec_review_gate/run.sh: fail (8 suites, PASS=7, FAIL=1; test_s3_adversarial.sh G12); bun test plugins/opencode-measure-guard: pass (85 pass, 0 fail)
+files_changed: tests/spec_review_gate/test_s1_standard.sh, tests/spec_review_gate/test_s1_new_track.sh, tests/spec_review_gate/test_s1_adversarial.sh, tests/spec_review_gate/test_s2_role_docs.sh, tests/spec_review_gate/test_s3_dispositions_docs.sh, tests/spec_review_gate/test_s3_adversarial.sh
+plan_updates: none
+known_failures: test_s3_adversarial.sh G12 '--log-file is a folder' gives a Traceback (F15, measure_interphase_checks.py:416 and :441-443); kept on purpose for Green
+handoff: F14 fixed in 1dc03cf (23 here-strings, equal totals, 300 stress runs pass). The S3 suite draft was written at measure/runs/spec_review_gate_20261030/test_s3_adversarial.sh.draft and moved into tests/spec_review_gate/ with the shell. Route F15 [Major] to Green (use Path.is_file() before each read). F16 [Nit] (three stale strategy rows) goes to the user or a build session. After the Green fix, rerun this gate. Audit JSON: measure/runs/spec_review_gate_20261030/adversarial-testing-s3-33f608d.json
+END_MEASURE_AGENT_RESULT

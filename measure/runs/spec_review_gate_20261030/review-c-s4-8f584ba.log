@@ -1,0 +1,17 @@
+MEASURE_AGENT_RESULT
+role: review-c
+status: fail
+track: spec_review_gate_20261030
+phase: Phase S4: Doc drift check in the weekly audit
+audited_head_sha: 8f584ba5ec5c7561c70b8e5b00552fcde680a700
+phase_base_sha: 4be31b2bc3eded3f8200857a9d4768149590b71a
+role_base_sha: 8f584ba5ec5c7561c70b8e5b00552fcde680a700
+commits: none
+tests_run: bash tests/spec_review_gate/test_s4_doc_drift.sh => === Total: 26 checks (PASS=26, FAIL=0) ===
+blocking_findings: F1 [Major] procedure step 1 conflicts with procedure step 4 in agents/measure-orchestrator-audit.md (lines 182 and 185)
+nonblocking_findings: F2 [Nit] Inputs item 5 scope pointer omits the 30-day window paragraph (agents/measure-orchestrator-audit.md:66)
+files_changed: measure/runs/spec_review_gate_20261030/review-c-s4-8f584ba.json, measure/runs/spec_review_gate_20261030/review-c-s4-8f584ba.log
+plan_updates: none
+known_failures: F1 blocks the S4 audit contract until Green resolves the step 1 and step 4 conflict
+handoff: Green fixes F1 in agents/measure-orchestrator-audit.md by aligning procedure step 1 with step 4 or by stating the A11 exception. F2 is optional. Final acceptance must record the audit example schema_version 2 defect (agents/measure-orchestrator-audit.md:196) in measure/tech-debt.md. No record exists yet. The defect is outside the S4 diff and is not an S4 finding.
+END_MEASURE_AGENT_RESULT

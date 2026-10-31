@@ -1,0 +1,81 @@
+Audit log for review-a, track spec_review_gate_20261030, phase S3 (Phase S3: Finding dispositions).
+Audited range: a1a9396..0b6670d. role_base_sha = audited_head_sha = 0b6670da9feeb3f2c370a90dab94acda9ae3efd4.
+HEAD confirmed equal to audited_head_sha with git rev-parse HEAD.
+
+Live checks run:
+
+1. bash tests/spec_review_gate/run.sh
+   Summary line: === spec_review_gate: 7 suites (PASS=7, FAIL=0) ===
+   test_s3_dispositions_docs.sh alone: 71 checks (PASS=71, FAIL=0).
+   test_checker.py inside the run: PASS.
+
+2. dispositions_feedback and its call in cmd_role_gate (probe-review-a-1.py, 37 checks, 0 failures):
+   - The worked example block of contracts.md is valid input: no feedback, role-gate exit 0.
+   - Red case: a "dispositions: F1=bad" line after END_MEASURE_AGENT_RESULT exits 0 with
+     PASS: jr-green gate passed.
+   - Block range: only the last complete block counts; a line between an earlier end and the
+     later start does not count; a second start line inside the block cannot hide an invalid
+     line above it; two dispositions lines in one block give "more than one dispositions
+     line"; a stray start after the last end is ignored; a log with an end line only or with
+     no end line gives no feedback (role-gate then fails on the missing block, not on
+     dispositions).
+   - Values: lowercase word, unknown word, CONTEST without parentheses, CONTEST(),
+     CONTEST(spaces), ESCALATE(), FIX(done), empty value, F0=FIX, X1=FIX, trailing empty
+     item, duplicate id, semicolon inside parentheses, and a CR inside an item are each
+     rejected. "none", "dispositions:none" without a space, and the full valid line pass.
+   - The contracts.md rule sentences match the parser behavior on every probed case.
+   - The call runs for every role: it sits in cmd_role_gate before every role branch.
+     role-gate --role review-a with a bad line exits 1 with "invalid dispositions line";
+     with a valid line and a valid result JSON it exits 0.
+
+3. probe-review-a-2.py: the parser over all 58 real logs under measure/runs/ gives feedback
+   for 0 logs. jr-green-s2-r3.log holds "dispositions: F1=FIX; F2=FIX" and passes.
+
+4. Doc agreement: contracts.md, spec-review.md, new-track.md step 9, review.md 3.1 item 3,
+   agents/measure-jr-green.md ## Routed findings, all seven audit and test role files
+   (withdrawn:, | CONTEST kept:, escalate_human in each), and the SKILL.md Delegation
+   section name the same four dispositions. The 1c24539 strings exist in tech-debt.md,
+   spec.md Decision 29, and test-strategy.md; strategy-s2-1c24539.log exists. No
+   "not fixed -" remains in skills/ or agents/. The Agent Result Block template keeps its
+   12 lines and holds no dispositions line. diff -r skills/measure claude-skills/measure
+   exits 0.
+
+5. Test meaning: DispositionsLineTest holds a control case (a block without the line
+   passes) and asserts in each rejection that every FAIL line starts with the dispositions
+   message, so a fixture defect cannot count as a parser rejection. test_s3_dispositions_docs.sh
+   requires each extract non-empty, requires the template to equal the 12 expected lines,
+   and fails when "not fixed -" occurs. No vacuous A3, A4, or A7 pattern was found.
+
+6. Plan truthfulness: Tasks 3.1 to 3.5 are [x] with SHAs 99ba994, 7d4a745, 6b158b1,
+   34d1775, 94dfcef. Each SHA resolves and carries a git note that matches the plan text.
+   The 99ba994 note records the Red evidence that the plan claims. The remediation lines
+   under Tasks 3.2 and 3.4 name real commits (011b92c, 213407f, 53ecfcc) whose notes match
+   the recorded deviations. The 0b6670d plan text agrees with contracts.md and the parser.
+
+Findings:
+
+- Blocking: none.
+- Nonblocking:
+  F1 [Major] review-a: The block-range rules that the remediation commits 011b92c and
+  213407f added to dispositions_feedback have no regression test in
+  tests/spec_review_gate/test_checker.py. Both commit notes state "No file under tests/
+  changed". DispositionsLineTest covers the last-block case and the after-end case, but not
+  the more-than-one dispositions line rule, the second start line inside the block, the
+  block start after the previous end line, or the end-line-only log. test-strategy.md still
+  names DispositionsLineTest as the live behavior proof of the parser. The current behavior
+  is correct (probe 1 confirms), but a refactor can break these rules with all suites
+  green.
+
+Verdict: pass. The phase behavior, the docs, and the plan claims are correct. One
+nonblocking Major finding on test coverage of the remediation rules.
+
+MEASURE_AGENT_RESULT
+status: pass
+role: review-a
+phase: Phase S3: Finding dispositions
+audited_head_sha: 0b6670da9feeb3f2c370a90dab94acda9ae3efd4
+summary: Phase S3 passes. Parser, checker call, contracts, docs, and plan claims verified live. 7 suites (PASS=7, FAIL=0). One nonblocking Major on missing regression tests for the remediation block-range rules.
+blocking_findings: 0
+nonblocking_findings: 1
+retry_recommendation: none
+END_MEASURE_AGENT_RESULT

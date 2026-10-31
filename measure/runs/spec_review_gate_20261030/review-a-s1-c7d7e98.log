@@ -1,0 +1,16 @@
+MEASURE_AGENT_RESULT
+role: review-a
+phase: Phase S1: Spec review standard and the new-track review step
+track: spec_review_gate_20261030
+audited_head_sha: c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba
+phase_base_sha: 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314
+role_base_sha: c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba
+status: pass
+summary: Phase S1 passes after remediation. R1-R7 fixes hold with no contradiction. All contract lines survive. The runner exits 0 with 16/16 and 41/41.
+blocking_findings: none
+nonblocking_findings: tests/spec_review_gate/test_s1_standard.sh:154: Report Layout check omits the two S1 Author Response forms. Coverage gap only; the deliverable is correct.
+retry_recommendation: none
+result_file: measure/runs/spec_review_gate_20261030/review-a-s1-c7d7e98.json
+commands: git rev-parse HEAD equals c7d7e98; bash tests/spec_review_gate/run.sh exits 0 (2 suites PASS=2 FAIL=0; 16/16 and 41/41); git diff dbd7127..HEAD -- tests/ empty; git diff 7d72b40..HEAD -- new-track-set.md empty; audit-result --role review-a exits 0
+evidence: R1 secrets ban in sub-step 3; R2 no secret quotes in Reviewer Input; R3 exact not-run message plus do not wait; R4 Options line plus Wait; R5 stop outcome plus Accepted Risks after approval in step 9 and standard; R6 author and reviewer line split in step 9 and Report Layout; R7 plain at most one re-review; steps 1-8 byte-equal to 7d72b40; plan line Review remediation R1-R7: a3600f8 is true
+END_MEASURE_AGENT_RESULT

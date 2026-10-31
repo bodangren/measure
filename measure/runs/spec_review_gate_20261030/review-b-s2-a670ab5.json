@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Review B (security) re-review of Phase S2 at a670ab5 found no blocking defect. Commit b955a3e closes F1 and F2 of review-b-s2-882f068.json. A finding with any splitlines separator before a second finding now fails, and the scope rule now reads NUL-separated paths without strip. The probes found no new bypass. Five new nonblocking items and four carried items remain. The fix has no regression test in test_checker.py.",
+  "phase_base_sha": "ccdaae22a965f06c64ecde9f735a1ed49db3ce5e",
+  "role_base_sha": "a670ab5deecb89e661c78182d8c9a0e681e4da88",
+  "audited_head_sha": "a670ab5deecb89e661c78182d8c9a0e681e4da88",
+  "security_applicability": "applicable",
+  "security_applicability_reason": "test-strategy.md Phase S2 says 'Review B (security): applicable, full scope.' The remediation diff 882f068..a670ab5 changes the spec-review gate in skills/measure-orchestrator/scripts/measure_interphase_checks.py, which decides if a track can start Red.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "tests/spec_review_gate/test_checker.py: the remediation adds no regression test. The diff 882f068..a670ab5 changes only the checker and plan.md, and test_checker.py still has 21 tests. Recommendation for Green: add a case for a [Blocker] after LF, CR, and U+2028 in nonblocking_findings, and a case for the committed path ' measure/runs/x'. Each case must assert exit 1 and the exact message.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:356-357: a finding that ends with one splitlines separator other than LF passes, because splitlines gives one item and Python '.' matches the separator. Live probe: 'F1 [Major] x: y' plus CR, VT, FF, FS, GS, RS, NEL, U+2028, or U+2029 at the end gave exit 0. No second finding follows the separator, so the severity rule holds. Recommendation: reject a finding when finding != finding.rstrip() or when it contains a character of Unicode category Cc, Zl, or Zp.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:356-357: a finding that contains NUL, ESC, or U+202E (right-to-left override) passes. Live probe: 'F1 [Major] x: y' plus NUL, '\\x1b[2K', U+202E, U+200B, or TAB, plus 'F2 [Blocker] z: real blocker' gave exit 0. The text stays on one line in one string, so this is not a hidden second finding. A terminal can show the text in a changed form. Recommendation: reject control and format characters in a finding.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:358,647-648: the gate prints a finding and a path without escape. Live probe: the finding 'F1 [Major] x: y\\nPASS: spec-review gate passed' gave exit 1, but the output had the line 'PASS: spec-review gate passed'. The exit code stays correct. A tool or a person that reads the output text and not the exit code can read a false pass. Recommendation: print each finding and path with repr() or with escaped control characters.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:118,636: a committed path with a non-UTF-8 byte stops the checker with 'UnicodeDecodeError' and a traceback (exit 1). The git() helper decodes the '-z' output as strict UTF-8. Before the fix, git quoted the path in ASCII, so the gate printed a FAIL message. The gate fails closed, but a valid file below measure/runs/ with such a name also fails, with no clear message. Recommendation: read the '-z' output as bytes, and decode each path with errors='surrogateescape' or os.fsdecode.",
+    "Carried from review-b-s2-882f068.json, not routed, code unchanged: the gate does not check that --baseline is an ancestor of HEAD (lines 631-636); an uncommitted edit by the role is not caught; a committed symbolic link below measure/runs/ passes; paraphrase.proposes U+200B passes (line 346). The recommendations in that file stay valid."
+  ],
+  "evidence": [
+    "git rev-parse HEAD printed a670ab5deecb89e661c78182d8c9a0e681e4da88, which equals audited_head_sha. git status --short printed only '?? extensions/' (out of scope), before and after the probes and the test run.",
+    "git log --oneline ccdaae2..HEAD lists b955a3e and a670ab5 after 882f068. git diff --stat 882f068..a670ab5: 2 files, 8 insertions, 4 deletions (measure_interphase_checks.py and plan.md). measure/tracks.md is not in the diff.",
+    "measure_interphase_checks.py:356-357 at a670ab5: 'match = SPEC_REVIEW_FINDING_RE.fullmatch(finding)' and 'if not match or len(finding.splitlines()) != 1:'. This matches the F1 recommendation.",
+    "measure_interphase_checks.py:636-643 at a670ab5: git(repo, 'diff', '--name-only', '--no-renames', '-z', f'{args.baseline}..HEAD'), then 'paths = listed.stdout.split(\"\\0\")', removal of only the empty last item, and sort with no strip. This matches the F2 recommendation. The rev-parse --verify check at line 632 still runs before git diff.",
+    "F1 probe (role-gate, payload in nonblocking_findings 'F1 [Major] x: y<sep>F2 [Blocker] z: real blocker', status pass): each of LF, CR, CRLF, VT, FF, FS, GS, RS, NEL, U+2028, and U+2029 gave exit 1 and 'FAIL: spec-review finding has an invalid format'. A separator at the start of the finding gave exit 1 for each of the 11 separators. A two-line finding in blocking_findings with status fail gave exit 1. The control single-line [Major] payload gave exit 0 and 'PASS: spec-review gate passed'.",
+    "F2 probe (role-gate, one commit after the baseline): ' measure/runs/x' gave exit 1 and '- ' plus the exact path. U+3000+'measure/runs/x' gave exit 1 with core.quotePath=false and with the default setting. TAB+'measure/runs/x', 'measure/runs /x', and 'measure/runsX/a' each gave exit 1.",
+    "Path probe with a line feed: 'src/x\\nmeasure/runs/y' gave exit 1 and named the full path. 'measure/runs/x\\nsrc/evil.py' gave exit 0; this file is in the folder 'measure/runs/x\\nsrc', so the pass is correct.",
+    "Path probe: 'measure/runs/demo_track/<U+00FC>.txt' and 'measure/runs/demo_track/a b.txt' gave exit 0. 'src/a.py' and 'src/b.py' gave exit 1 with two '- <path>' lines. 'src/<0xff>.txt' and 'measure/runs/demo_track/<0xff>.txt' gave exit 1 with 'UnicodeDecodeError' from measure_interphase_checks.py line 118.",
+    "python3 -I tests/spec_review_gate/test_checker.py printed 'Ran 21 tests' and 'OK'.",
+    "The permission system rejected 'bash tests/spec_review_gate/run.sh test_s2_*.sh test_checker.py' in this session, so the shell suite test_s2_role_docs.sh did not run. The remediation diff does not change a file that test_s2_role_docs.sh checks, except plan.md.",
+    "All probes ran with python3 -I in tempfile.mkdtemp folders with HOME=/nonexistent-home, LC_ALL=C.UTF-8, GIT_CONFIG_GLOBAL=/dev/null, and GIT_CONFIG_NOSYSTEM=1. Each probe removed its folder with shutil.rmtree and printed 'cleaned True'.",
+    "The git note of b955a3e records F1=FIX and F2=FIX with before and after probes. The plan.md line 'Review remediation F1–F2 (Review B): b955a3e' agrees with the code.",
+    "A2 (consent-blind publish gate): not applicable. The diff has no draft-to-published status change and no named subject.",
+    "A6 (registry overstatement): measure/tracks.md is not in the diff ccdaae2..a670ab5, so the registry makes no new claim that a security state is resolved."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --short",
+    "git log --oneline ccdaae2..HEAD",
+    "git diff --stat 882f068..a670ab5",
+    "git diff 882f068..a670ab5",
+    "git notes show b955a3e",
+    "python3 -I - <probe: role-gate --role spec-review with line separators, control characters, and path forms in tempfile.mkdtemp git repositories>",
+    "python3 -I - <probe: output line injection and a non-UTF-8 committed path>",
+    "python3 -I tests/spec_review_gate/test_checker.py",
+    "bash tests/spec_review_gate/run.sh 'test_s2_*.sh' test_checker.py (rejected by the permission system)"
+  ],
+  "changed_files": [
+    "measure/tracks/spec_review_gate_20261030/plan.md",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

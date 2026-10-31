@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: strategy
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S1: Spec review standard and the new-track review step
+commits: 65c7925
+tests_run: diff -r skills/measure claude-skills/measure (pass); bash plugins/opencode-measure-guard/scripts/check-parity.sh (pass, parity: ok); python3 -m py_compile skills/measure-orchestrator/scripts/measure_interphase_checks.py (pass); bun test plugins/opencode-measure-guard (pass, 85 pass 0 fail); PROJECT_CHECKS string (pass); ux-paths --baseline 7d72b40 (no output); A11 recipe dry run (exit 0, 4 path-like candidates in tech-stack.md)
+files_changed: measure/tracks/spec_review_gate_20261030/test-strategy.md (new; covers S1, S2, S3, S4)
+plan_updates: none
+known_failures: none
+handoff: Capture the S1 phase_base_sha with git rev-parse HEAD now, at 65c7925, before Red edits anything. For S2-S4, capture it after each strategy refresh commit. Red must first set the track line in measure/tracks.md to [~] and Tasks 1.1 and 1.2 to [~]; measure-guard denies edits to tests/ before that. Red owns Tasks 1.1 and 1.2 and leaves Task 1.3 [~] as the handoff marker (same pattern per phase: Red task [x] with SHA, first Green task [~]). Risk: S1 medium, S2 high, S3 high, S4 low. Review B, Review C, and adversarial testing are applicable in all phases (scopes in the strategy); browser review is not applicable (UX_REQUIRED=never). Track gates: PROJECT_LINT, PROJECT_CHECKS, PROJECT_TESTS are in strategy section 7. measure/doctor.sh does not exist: final acceptance records its line as not applicable in evidence, not as a blocker. Open item for the user (conservative default recorded): role-gate --role spec-review passes the scope rule when --baseline does not resolve, because committed_files returns [] on a git error; the plan contract does not define this case. Options: (a) keep the contract, adversarial testing probes it and routes it as ESCALATE; (b) add a contract line and a Red case that fails on an unresolvable --baseline. Default: (a). The S4 A11 recipe always exits 0, so its test proves only that it runs. Python tests must use an explicit environment, so the orchestrator GREEN_TEST_COMMAND does not run again inside the fixture.
+END_MEASURE_AGENT_RESULT

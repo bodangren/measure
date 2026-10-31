@@ -1,0 +1,31 @@
+Review B (security and data handling), Phase S3: Finding dispositions, track spec_review_gate_20261030.
+Audited HEAD b1d15309e80afb5d33540663223bcf73de7f9797 (equals git rev-parse HEAD). phase_base_sha a1a9396347f92429efb820c8afd65288db92b083.
+
+Result: fail. One blocking finding.
+
+Re-run of the findings from review-b-s3-1e9aa7c.json:
+- F1, trailing start line: fixed. The log exits 1 with 'invalid dispositions line: F1=BOGUS'.
+- F1, inner start line: open. 'MEASURE_AGENT_RESULT / role: strategy / dispositions: F1=BOGUS / MEASURE_AGENT_RESULT / END_MEASURE_AGENT_RESULT' exits 0. contracts.md:118 calls a start line stray only when no later end line exists, so the code fails open against the contract.
+- F2: fixed. A second dispositions line exits 1 with 'more than one dispositions line'.
+- F3: fixed. contracts.md:108 and agents/measure-jr-green.md:39 put the line inside the block.
+
+New F1 [Blocker] (route to Green): see the result JSON. The fix text gives a selection rule. A probe of that rule catches all five attack logs and gives no new failure over 4365 old logs.
+
+Backward compatibility: 4365 logs in 19 project roots, including the 51 logs under measure/runs/ of this repository, give no feedback, no exception, and no difference from the parser at 1e9aa7c.
+
+Tests: bash tests/spec_review_gate/run.sh printed 7 suites (PASS=7, FAIL=0). No test covers the fixed F1 and F2 cases (nonblocking item 1).
+
+Result JSON: measure/runs/spec_review_gate_20261030/review-b-s3-b1d1530.json
+
+MEASURE_AGENT_RESULT
+role: review-b
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: none
+tests_run: true: pass (bash tests/spec_review_gate/run.sh: 7 suites PASS=7 FAIL=0; 26 role-gate block-selection probes; 4365 old logs give 0 feedback)
+files_changed: measure/runs/spec_review_gate_20261030/review-b-s3-b1d1530.json, measure/runs/spec_review_gate_20261030/review-b-s3-b1d1530.log
+plan_updates: none
+known_failures: F1 [Blocker] an inner MEASURE_AGENT_RESULT line in the last block hides an invalid dispositions line; role-gate exits 0
+handoff: Audit fail at b1d1530 with retry_recommendation retry_implementation. Route F1 to Green: select the block from the first start line after the previous end line to the last end line, and validate every dispositions line in it. Add test_checker.py cases for the inner and the trailing start line. Old F1 (trailing start), F2, and F3 are fixed. Six nonblocking items are in the JSON.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Phase S1 at c7d7e98 fails the Review C UX and API scope. Fixes NB2, NB3, NB5, and NB6 hold in the step text. NB4 defines the stop outcome, but its question has no wait point. NB7 has one residual backticked phrase in spec-review.md. Step 9.8 asks the user to approve the commit, and step 10 commits without a stated wait. The validator, runner, and mirror diff did not run because the shell was denied.",
+  "role": "measure-review-c-ux-api",
+  "track": "spec_review_gate_20261030",
+  "phase": "Phase S1: Spec review standard and the new-track review step",
+  "phase_base_sha": "65c7925157bb4189c8c6d3b62c42e8f8d9ae0314",
+  "role_base_sha": "c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba",
+  "audited_head_sha": "c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba",
+  "contract_applicability": "applicable",
+  "blocking_findings": [
+    "B1 [skills/measure/references/new-track.md:309] Step 9.8 asks the user to approve the commit or to stop. It has no Options line and no wait marker. Step 10 commits next, so the flow can commit with no user answer. Add the Options line and a wait marker after the question. State that step 10 runs only after the user approves the commit. Mirror the change to claude-skills/measure."
+  ],
+  "nonblocking_findings": [
+    "NB1-carry [skills/measure/references/spec-review.md:136-138] The not-run form has three lines with no blank lines. Markdown joins them into one paragraph. Add a blank line between the lines.",
+    "NB7-residual [skills/measure/references/spec-review.md:69] The phrase at most one re-review sits in backticks. It reads as a code literal. Use plain prose.",
+    "FORMAT [skills/measure/references/new-track.md:305] Step 9.5 uses a blockquote Options line. Section 2.2 at new-track.md:34-37 uses a bulleted Options list with a Type your own answer line. Use one format for user choices.",
+    "RESUME [skills/measure/references/new-track.md:309] A stop ends the workflow with no commit. The step does not state how the user resumes the track. State the resume action, or state that a new run starts the review again.",
+    "ORDER [skills/measure/references/new-track.md:309-312] Step 9.8 does not state that the Accepted Risks write happens before the step 10 commit. Add the order so the committed report holds the accepted risks.",
+    "CONFIRM [skills/measure/references/new-track.md:301] The no-subagent path goes to step 10 with no user question. The user does not approve that commit. Confirm that this path is intended."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba in this turn. The full SHA is confirmed.",
+    "git merge-base --is-ancestor 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314 HEAD exited 0. The phase base is an ancestor of the audited HEAD.",
+    "git status --short shows only the untracked extensions/ directory. That state existed at the start of the session.",
+    "skills/measure/references/new-track.md lines 299-312 read. Step 9.2 says do not wait for the not-run path. Step 9.5 has the Options line and the wait marker at 305-306. Step 9.8 at line 309 has neither.",
+    "skills/measure/references/spec-review.md lines 60-139 read. Line 69 has the backticked phrase. Lines 76 and 117-126 name the author-written lines and the reviewer-only subsections. Lines 136-138 hold the not-run form with no blank lines.",
+    "grep of skills/measure/references for Options, Wait for the user, and Accepted Risks returned the same step 9 lines. Step 9.8 has no Options line and no wait marker.",
+    "Docs check from the earlier turn at this phase: measure/product.md line 20, README.md line 105, and CHANGELOG.md line 9 match the S1 behavior."
+  ],
+  "commands": [
+    "git rev-parse HEAD (exit 0, returned c7d7e9897e1b402ffb9f447e2dee1599b1ea9dba)",
+    "git merge-base --is-ancestor 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314 HEAD (exit 0)",
+    "git status --short (returned ?? extensions/)",
+    "measure_interphase_checks.py audit-result --role review-c (not run: shell denied)",
+    "bash tests/spec_review_gate/run.sh (not run: shell denied)",
+    "diff -r skills/measure claude-skills/measure (not run: shell denied; identical at 6e856e1 in an earlier turn)"
+  ],
+  "changed_files": [
+    "measure/runs/spec_review_gate_20261030/review-c-s1-c7d7e98.json",
+    "measure/runs/spec_review_gate_20261030/review-c-s1-c7d7e98.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "medium"
+}

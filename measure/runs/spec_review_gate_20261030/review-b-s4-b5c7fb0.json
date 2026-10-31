@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Review B of Phase S4 at b5c7fb0 passes with no blocking finding. The A11 recipe only reads two fixed documents and runs a quoted [ -e ] test. It has no eval, no write, and no command substitution of document text. Hostile backtick text did not run a command or create a file. The doc drift detector section adds no permission and gives no instruction to run document commands, edit files, or pass secrets. The S4 Red suite writes nothing in the repository.",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "b5c7fb048541c342e800a53131e02e57b5b8d443",
+  "audited_head_sha": "b5c7fb048541c342e800a53131e02e57b5b8d443",
+  "security_applicability": "applicable",
+  "security_applicability_reason": "test-strategy.md Phase S4 line 253 says 'Review B (security): applicable, short scope.' The phase diff changes the A11 recipe in two catalogs, the audit role prose, and adds tests/spec_review_gate/test_s4_doc_drift.sh, which runs the recipe.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "N1 [Nit] review-b: the A11 regex accepts a leading '..' component, so a document path such as '../../../../etc/passwd' makes the recipe test the existence of a file outside the repository. The probe confirmed this: the path gave no candidate line because the file exists. The recipe reads no file content and prints only characters from the regex class. test-strategy.md line 255 rates this as a Nit at most. No change is necessary.",
+    "N2 [Nit] review-b: the doc drift detector section lists 'a command' and 'a behavior' as claim types, and step 3 says 'Find the code that the claim names. Compare the claim with the code.' The section gives no instruction to run a command from a document, so this is not the Blocker of test-strategy.md line 256. The section also has no explicit statement that the audit checks a command claim by its definition in the code and does not run it. The audit role keeps a wide bash permission ('*': allow) from before this phase. A later track can add one sentence: 'Check a command claim by its definition in the code. Do not run commands that a document names.'",
+    "N3 [Nit] review-b: a backtick path that starts with '-' (for example '-rf/x', '--help/x', '-e/x') passes the regex. The recipe gives it only to the quoted test '[ -e \"$p\" ]' and to an echo string that starts with '$doc', so bash reads it as an operand, not as an option. The probe printed each one as a normal candidate line. No change is necessary."
+  ],
+  "evidence": [
+    "git rev-parse HEAD printed b5c7fb048541c342e800a53131e02e57b5b8d443, which equals audited_head_sha.",
+    "git diff --stat 4be31b2..b5c7fb0 shows 9 files: CHANGELOG.md, README.md, agents/measure-orchestrator-audit.md, agents/measure-strategy.md, measure/anti-patterns.md, the track plan.md, skills/measure-orchestrator/SKILL.md, skills/measure-orchestrator/references/anti-pattern-catalog.md, and tests/spec_review_gate/test_s4_doc_drift.sh.",
+    "The A11 recipe extracted from both catalogs is identical (probe 1: 'recipes identical: True'). It is three lines: a for loop over the fixed list 'measure/product.md measure/tech-stack.md', a pipeline grep -o | tr -d | grep -E | sort -u, and 'while read -r p; do [ -e \"$p\" ] || echo ...; done'.",
+    "Static scan of the recipe (probe 1): no eval, no source, no '>' redirect, no '$(' and no backtick command substitution, no rm, mv, cp, tee, touch, or sed -i. The one 'unquoted $p' regex hit is a false match: '$p' occurs only inside the double-quoted echo string and the quoted [ -e \"$p\" ] test.",
+    "Probe 1 ran the recipe with plain bash in a tempfile.TemporaryDirectory on fixture documents with 20 hostile items (LF in product.md, CRLF in tech-stack.md): leading '-', '$(touch PWNED_SUB)/x', 'a/$(touch PWNED_SUB2)', a backtick-split 'touch PWNED_BT', 'tests/*.sh', 'a b/c', '../../../../etc/passwd', ';', '|', '&&', an ESC byte, a span across two lines, and CRLF. Exit 0, stderr empty, 'PWNED markers: none', 'folder unchanged: True'.",
+    "Probe 1 output: the regex dropped every item with '$', '(', '*', space, ';', '|', '&', ESC, or a line break. 'ESC byte in stdout: False CR byte in stdout: False'. A span cannot cross a line, because grep -o reads one line at a time. The CRLF document gave 'crlf/path' without a CR byte.",
+    "Probe 1 with 10,000 path claims: exit 0, 10007 output lines, 0.67 seconds, below the 5 second limit of test-strategy.md line 265.",
+    "agents/measure-orchestrator-audit.md: the phase diff has hunks only at line 55 (Inputs item 5 and 'A1–A11 today') and line 163 (the new '## Doc drift detector' section). The frontmatter (lines 1-25 and later permission lines) has no changed line; a grep for changed permission, bash, or edit lines in the diff counted 0.",
+    "The '## Doc drift detector' section tells the audit to run the A11 recipe from the repository root, list claims, find the code, compare, and add 'DRIFT:' lines to nonblocking_findings. It contains no instruction to run a command that a document names, no instruction to edit a file, and no mention of a secret, token, credential, or environment variable. 'options: update the document, or open a track' are options for the user in the finding text, and the A11 Fix line says 'The user picks one.'",
+    "tests/spec_review_gate/test_s4_doc_drift.sh writes only to \"$TMP\" from mktemp -d (line 29, removed by the EXIT trap at line 31). Line 200 writes the extracted recipe to \"$TMP/a11-recipe.sh\"; line 204 runs it with 'cd \"$ROOT\" && bash' and keeps the output in a variable.",
+    "Probe 2 ran 'bash tests/spec_review_gate/test_s4_doc_drift.sh' from the repository root: exit 0, '=== Total: 26 checks (PASS=26, FAIL=0) ==='. 'git status --porcelain --ignored --untracked-files=all' was the same before and after, and a size and mtime snapshot of 26942 repository paths (without .git) showed added: none, removed: none, changed: none."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git diff --stat 4be31b2..b5c7fb0",
+    "git diff 4be31b2..b5c7fb0 -- agents measure/anti-patterns.md skills README.md CHANGELOG.md",
+    "git log --oneline 4be31b2..b5c7fb0",
+    "sed -n 1,25p agents/measure-orchestrator-audit.md",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-b-s4-1.py",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-b-s4-2.py",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-b --file measure/runs/spec_review_gate_20261030/review-b-s4-b5c7fb0.json"
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "README.md",
+    "agents/measure-orchestrator-audit.md",
+    "agents/measure-strategy.md",
+    "measure/anti-patterns.md",
+    "measure/tracks/spec_review_gate_20261030/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/anti-pattern-catalog.md",
+    "tests/spec_review_gate/test_s4_doc_drift.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

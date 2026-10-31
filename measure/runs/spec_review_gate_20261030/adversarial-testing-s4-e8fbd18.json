@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "role": "adversarial-testing",
+  "phase_heading": "Phase S4: Doc drift check in the weekly audit",
+  "audited_head_sha": "e8fbd186b64ec375d034a6c155c0132b7d5114db",
+  "status": "pass",
+  "summary": "The A11 recipe holds every Contract row of the S4 strategy and Decision 30. The two catalogs hold the same A11 block, and 11 of 11 recipe mutants fail at least one Contract row. No run creates a file, no PWNED marker appears, and 2 x 10,000 path claims end in 0.74 s. One Report row shows a Nit: a NUL byte in a document hides each path claim of that document. The new suite is committed in d3e764a, and the gate gives 10 suites with PASS=10.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] adversarial-testing: skills/measure-orchestrator/references/anti-pattern-catalog.md:216 and measure/anti-patterns.md:217 (the grep -o line of the A11 recipe). When a document holds a NUL byte, GNU grep treats it as binary, prints 'grep: measure/product.md: binary file matches' on stderr, and gives no match. Thus each path claim of that document is hidden, and the recipe exits 0. Invalid UTF-8 bytes alone do not cause this (checked with LC_ALL=C.UTF-8 and LC_ALL=C). A Markdown document with a NUL byte is rare, and the stderr line is visible. A later track can add 'grep -a'. Recorded by the Report row 'a NUL byte' of tests/spec_review_gate/test_s4_adversarial.sh. Owner: a later track.",
+    "F2 [Nit] adversarial-testing: the Report rows confirm Review B N1, N3, and N5 with live output. '../absent_zz.txt' gives a candidate line, and '../../present.txt' gives no line (N1). '-rf/x', '--help/x', and '-e/x' give normal candidate lines (N3). A folder, a FIFO, a symbolic link to /dev/zero, a dangling link, and a link to a folder as product.md each give 'the document does not exist' with exit 0 and no hang (N5). No new action is necessary for S4.",
+    "F3 [Nit] adversarial-testing: under 'bash -o pipefail', an empty document gives exit 1 and no line, because grep -o finds no match. A missing document gives exit 0 (Decision 30). The catalog runs the recipe with plain bash, so this is a Report row only."
+  ],
+  "evidence": [
+    "Commit d3e764a adds tests/spec_review_gate/test_s4_adversarial.sh: 75 checks (PASS=75, FAIL=0), about 2.6 s.",
+    "G1: the A11 bash block of skills/measure-orchestrator/references/anti-pattern-catalog.md is non-empty, measure/anti-patterns.md holds the same block, and bash -n accepts it.",
+    "G2 Contract rows (exact exit code, exact stdout lines, empty stderr), all pass: an existing path and an existing folder give no line; a missing path gives one line; a tech-stack.md path gets the tech-stack.md prefix; lines come in document order; a repeated path gives one line and lines are sorted; '..' to an existing file gives no line and to a missing file one line; a missing product.md, a missing tech-stack.md, and both missing give exit 0 and exactly one line '<doc>: DRIFT candidate: the document does not exist' per document; a missing product.md does not hide a tech-stack.md candidate; an empty document gives no line; a path with a space, `git log`, `bash measure/generate.sh`, and words without '/' give no line.",
+    "G3 Report rows (exit 0 or 1, no hang with a 5 s limit, no new file), all pass: hostile text with $(...), a backtick split, ';', '|', '&&', and ESC bytes; CRLF; paths that start with '-'; /etc/x; tests/*.sh; a fenced block; a NUL byte; non-UTF-8 bytes; a folder, a FIFO, and four kinds of symbolic link as the document; four bash -o pipefail rows.",
+    "G4 safety: no PWNED marker in the fixtures, the repository root, the temp parent, or the working folder; no run adds a file outside its fixture folder; a hostile run adds no file inside its fixture folder.",
+    "G4 live run in the repository root (read-only): 'A11 DRIFT candidates: 3', exit 0, each line holds 'DRIFT candidate:', git status unchanged. The value is printed, not asserted.",
+    "G5 time: 10,000 path claims in each of the two documents end in 0.738 s and give exactly 20000 candidate lines.",
+    "G6 sensitivity: 11 mutants each fail at least one Contract row: no [ -f \"$doc\" ] line; no continue; grep -E loosened to '.'; no '/' in the regex; no '$' anchor; [ -e \"$p\" ] negated; no tr -d; sort -u replaced by cat; only product.md in the loop; a different candidate text; a different missing-document text.",
+    "Anti-patterns: A4 is defended by the non-empty extract check, the exact-line Contract rows, and the mutants. A7: the suite has no filter word; it compares full lines. A5: the plan claims for S4 (Red 26 checks PASS=2 FAIL=24, Green 26/26) agree with the live test_s4_doc_drift.sh result of 26 checks (PASS=26, FAIL=0). G20 of test_s3_adversarial.sh passes with the new file."
+  ],
+  "commands": [
+    "git rev-parse HEAD gave e8fbd186b64ec375d034a6c155c0132b7d5114db before this role",
+    "bash tests/spec_review_gate/test_s4_adversarial.sh: 75 checks (PASS=75, FAIL=0), exit 0",
+    "bash -c <A11 recipe> on fixtures with a NUL byte, 0xff, and U+00E9 under LC_ALL=C.UTF-8 and LC_ALL=C: only the NUL byte hides the claim",
+    "PROJECT_TESTS part 1: bash tests/spec_review_gate/run.sh gave '=== spec_review_gate: 10 suites (PASS=10, FAIL=0) ===', exit 0",
+    "PROJECT_TESTS part 2: bun test plugins/opencode-measure-guard gave 85 pass, 0 fail, exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role adversarial-testing --file measure/runs/spec_review_gate_20261030/adversarial-testing-s4-e8fbd18.json"
+  ],
+  "changed_files": [
+    "tests/spec_review_gate/test_s4_adversarial.sh (d3e764a): new S4 adversarial suite"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

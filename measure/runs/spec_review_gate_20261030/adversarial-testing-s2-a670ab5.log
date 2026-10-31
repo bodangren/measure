@@ -1,0 +1,21 @@
+Adversarial testing S2 at role_base_sha a670ab5 (phase_base_sha ccdaae2).
+
+Test commit: 25b9064 test(spec-review): Adversarial tests for the S2 spec-review gate (git note attached).
+Suite: tests/spec_review_gate/test_s2_adversarial.sh, 96 checks (PASS=96, FAIL=0).
+Probe groups G01-G19 follow the S2 strategy table. G20 runs 10 broken checker copies; each copy fails at least one target probe.
+Plan amendment ccdaae2 replaces the Report row for a rename into measure/runs/: the suite asserts exit 1 and the old path.
+Remediation regressions: G06 (multi-line findings) and G16 (whitespace and non-ASCII paths).
+PROJECT_TESTS: bash tests/spec_review_gate/run.sh && bun test plugins/opencode-measure-guard -> exit 0 (6 suites PASS=6, FAIL=0; 85 pass, 0 fail).
+Audit JSON validation (installed checker): PASS: audit result is valid.
+
+MEASURE_AGENT_RESULT
+status: pass
+role: measure-adversarial-testing
+track: spec_review_gate_20261030
+phase: Phase S2: The measure-spec-review orchestrator role
+audited_head_sha: a670ab5deecb89e661c78182d8c9a0e681e4da88
+test_commit_sha: 25b90641915e26ca489d053b56cea4ded2485071
+result_file: measure/runs/spec_review_gate_20261030/adversarial-testing-s2-a670ab5.json
+summary: No contract defect. 96 checks pass. 10 broken checker copies each fail the suite. 7 nonblocking items (NETZERO Major; QUADRATIC, TRAILSEP, ZWSP, TRACEBACK, PLANTEXT, ALIASCASE Nit).
+handoff: The suite draft was written under measure/runs/ and moved into tests/spec_review_gate/ with the shell, because measure-guard blocks writes outside measure/ when no task is [~]. Route NETZERO to the user as a CONFIRM item. One full runner run showed a flake in test_s1_adversarial.sh that did not repeat.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S4",
+  "phase_heading": "Phase S4: Doc drift check in the weekly audit",
+  "status": "inconclusive",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "d3e764a0b9df0e76d6177a48130dc4fc9ba19bc5",
+  "audited_head_sha": "d3e764a0b9df0e76d6177a48130dc4fc9ba19bc5",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "retry_recommendation": "none",
+  "handoff": "Provisional artifact. Acceptance gate run is in progress."
+}

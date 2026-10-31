@@ -1,0 +1,20 @@
+Review A, Phase S4, track spec_review_gate_20261030
+phase_base_sha:  4be31b2bc3eded3f8200857a9d4768149590b71a
+role_base_sha:   8f584ba5ec5c7561c70b8e5b00552fcde680a700
+audited_head_sha: 8f584ba5ec5c7561c70b8e5b00552fcde680a700
+
+Result: fail. Three blocking findings remain. Escalate to a human.
+
+Findings:
+- F1 [Major]: A missing document gives exit 0 and no candidate line. The audit does not fail. CONTEST kept.
+- F5 [Major]: test_s4_adversarial.sh is named in test-strategy.md:263 and does not exist.
+- F2 and F4: fixed on 8f584ba.
+
+Runner: bash tests/spec_review_gate/run.sh printed "=== spec_review_gate: 9 suites (PASS=9, FAIL=0) ===".
+
+MEASURE_AGENT_RESULT
+status: fail
+audited_head_sha: 8f584ba5ec5c7561c70b8e5b00552fcde680a700
+result_json: measure/runs/spec_review_gate_20261030/review-a-s4-8f584ba.json
+retry_recommendation: escalate_human
+END_MEASURE_AGENT_RESULT

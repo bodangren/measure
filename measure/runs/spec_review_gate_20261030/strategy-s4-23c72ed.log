@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: strategy
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S4: Doc drift check in the weekly audit
+role_base_sha: 23c72ed732e7958fbd71386addee366cfb5a2b0e
+commit: 4be31b2 measure(strategy): Refresh the test strategy for Phase S4
+files: measure/tracks/spec_review_gate_20261030/test-strategy.md
+summary: F16 fixed in the table "S3 adversarial probes". The second dispositions line in the last block and the trailing start line after an invalid block now give exit 1. The documented example search finds 2 lines at 23c72ed. Each row says "changed by the S3 remediation" (011b92c). The folder row cites 8e5de63. Section 10 has the four S3 lessons (shell limits of audit roles, the pipe race under pipefail, no ";" in CONTEST and ESCALATE text, the model budget). The S4 section gives the Red command, Red evidence, the Green and closeout gates, Review A, B, and C scopes, the adversarial probes of test_s4_adversarial.sh, and the out-of-scope items of the audit role. Section 6 has an A11 row.
+evidence: A11 recipe at 23c72ed (plain bash, repository root, exit 0): "A11 DRIFT candidates at 23c72ed: 3" (claude-code/testing, commands/, node_modules/, all from measure/tech-stack.md). The recipe always exits 0 with plain bash. Under bash -o pipefail with a missing document it exits 1. Baselines at 23c72ed: run.sh gives 8 suites (PASS=8, FAIL=0); bun test gives 85 pass, 0 fail; diff -r skills/measure claude-skills/measure is empty; check-parity.sh prints parity: ok. role-gate --role orchestrator-audit prints unknown role 'orchestrator-audit'. A1–A10 occurs in 3 files: agents/measure-strategy.md:19, agents/measure-orchestrator-audit.md:58, skills/measure-orchestrator/SKILL.md:15.
+risk: S4 low. Reviews A, B, and C applicable. Adversarial testing applicable, limited to the A11 recipe. Browser review not applicable (UX_REQUIRED=never).
+handoff: Capture phase_base_sha with git rev-parse HEAD directly after 4be31b2, before Red marks Task 4.1 [~]. When the orchestrator records the S3 checkpoint in plan.md first, capture it after that checkpoint commit instead. Do not use 23c72ed. The S3 heading in plan.md has no checkpoint yet. Three S3 Nit items from the S3 acceptance JSON stay open (Review B items 3 and 6, Review A F1); S4 does not close them. The run log is not committed.
+END_MEASURE_AGENT_RESULT

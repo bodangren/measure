@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "role": "adversarial-testing",
+  "phase_heading": "Phase S3: Finding dispositions",
+  "audited_head_sha": "23c72ed732e7958fbd71386addee366cfb5a2b0e",
+  "status": "pass",
+  "summary": "The S3 dispositions parser passes the adversarial gate at 23c72ed. test_s3_adversarial.sh gives 91 checks (PASS=91, FAIL=0), and G12 now gives exit 1 with no Traceback. Probes of a symbolic link to a folder, a FIFO, /dev/null, a symbolic link to a file, and a dangling symbolic link found no gap, so this run added no test. PROJECT_TESTS exits 0.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F16 [Nit] adversarial-testing: three rows of the test-strategy.md table 'S3 adversarial probes' are out of date against contracts.md (two dispositions lines, the trailing start line, the documented example count). Routed to the S4 strategy refresh; this role did not change the strategy."
+  ],
+  "evidence": [
+    "F14 is fixed in 1dc03cf: 23 here-strings replace the pipe into grep -q in the five bash suites, with equal totals. G20 of test_s3_adversarial.sh passes, so no bash suite holds a pipe into grep -q.",
+    "F15 is fixed in 8e5de63: has_agent_result and dispositions_feedback test path.is_file(). G12 '--log-file is a folder' passes: exit 1, 'missing MEASURE_AGENT_RESULT block', no dispositions feedback, no Traceback.",
+    "bash tests/spec_review_gate/test_s3_adversarial.sh gives '=== Total: 91 checks (PASS=91, FAIL=0) ===', exit 0. Each of the 13 G21 mutants still fails at least one probe, including the mutant that uses the cmd_role_gate exists() line as its anchor.",
+    "Live role-gate --role jr-green probes in a temporary repository: a symbolic link to a folder, a FIFO (10 s timeout), /dev/null, and a dangling symbolic link each exit 1 with only 'FAIL: missing MEASURE_AGENT_RESULT block', no Traceback, and no hang. A symbolic link to a log with 'dispositions: F1=bad' exits 1 with 'FAIL: invalid dispositions line: F1=bad', so is_file() follows a link to a file.",
+    "These results match the 8e5de63 docstrings: a missing path, a folder, or another non-file path counts as no log, and a non-file path gives no dispositions feedback.",
+    "No probe found a gap, so step 3 added no test and made no commit."
+  ],
+  "commands": [
+    "git rev-parse HEAD gives 23c72ed732e7958fbd71386addee366cfb5a2b0e, equal to role_base_sha",
+    "git show 8e5de63 reviewed: two exists() tests became is_file(), and two docstrings changed",
+    "bash tests/spec_review_gate/test_s3_adversarial.sh: 91 checks (PASS=91, FAIL=0), exit 0",
+    "python3 -I skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --role jr-green --log-file <linkdir|fifo|/dev/null|linkbad|dangling> in a mktemp -d repository with GIT_CONFIG_GLOBAL=/dev/null and env -i",
+    "PROJECT_TESTS: bash tests/spec_review_gate/run.sh gives '=== spec_review_gate: 8 suites (PASS=8, FAIL=0) ===', exit 0",
+    "PROJECT_TESTS: bun test plugins/opencode-measure-guard gives 85 pass, 0 fail, exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role adversarial-testing --file measure/runs/spec_review_gate_20261030/adversarial-testing-s3-23c72ed.json"
+  ],
+  "changed_files": [],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

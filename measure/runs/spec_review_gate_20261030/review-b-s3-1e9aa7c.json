@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Review B (security) of Phase S3 at 1e9aa7c found three fail-open defects. In each defect, the role-gate check passes a log whose last result block holds an invalid dispositions line. (1) dispositions_feedback selects the last start line, not the last complete block, so a trailing or inner MEASURE_AGENT_RESULT line hides an invalid line. (2) The parser reads only the first dispositions line of the block, so a second invalid line passes. (3) contracts.md:108 tells the role to put the line below the result block, where the check does not read it. The check runs for all 14 role names, it adds its feedback and does not return early, its cost is linear, and 4360 old logs on this host give no feedback. Five nonblocking items are recorded.",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "1e9aa7c0751df1f2e1a53a119fb6e3cfe885aa90",
+  "audited_head_sha": "1e9aa7c0751df1f2e1a53a119fb6e3cfe885aa90",
+  "security_applicability": "applicable",
+  "security_applicability_reason": "test-strategy.md section 5, Phase S3, says Review B is applicable with full scope on the parser and its call. The phase diff a1a9396..1e9aa7c adds dispositions_feedback to skills/measure-orchestrator/scripts/measure_interphase_checks.py and calls it from cmd_role_gate. This parser decides a gate for every role.",
+  "blocking_findings": [
+    "F1 [Blocker] skills/measure-orchestrator/scripts/measure_interphase_checks.py:432-447 (dispositions_feedback, block selection): the parser selects the last line that equals MEASURE_AGENT_RESULT. When no END_MEASURE_AGENT_RESULT line follows that line, the parser returns []. Thus one extra start line hides an invalid dispositions line in the last complete block. Live probe with 'role-gate --role strategy': '<block with dispositions: F1=BOGUS>' plus one trailing 'MEASURE_AGENT_RESULT' line gave exit 0 and 'PASS: strategy gate passed'. An inner start line in the block ('MEASURE_AGENT_RESULT / dispositions: F1=BOGUS / MEASURE_AGENT_RESULT / END_MEASURE_AGENT_RESULT') also gave exit 0. The control log without the extra line gave exit 1. has_agent_result (line 415) accepts all of these logs. contracts.md '## Finding Dispositions' and spec Decision 18 say that the check reads the last result block, so these logs must fail. Fix: find the last END_MEASURE_AGENT_RESULT line, then the nearest start line before it. Also report an invalid line when the last start line has no end line and a dispositions line follows it. Add a test_checker.py case for each of the two logs.",
+    "F2 [Blocker] skills/measure-orchestrator/scripts/measure_interphase_checks.py:448-453 (dispositions_feedback, first line wins): the loop stops at the first line that starts with 'dispositions:'. A block with 'dispositions: none' and then 'dispositions: F1=BOGUS' gave exit 0 in a live 'role-gate --role strategy' probe. The orchestrator reads the log as text and can act on the second line, which the gate did not check. contracts.md defines one line per block. Fix: validate every dispositions line in the selected block, or fail with a message such as 'invalid dispositions line: more than one dispositions line'. Add a test_checker.py case.",
+    "F3 [Blocker] skills/measure-orchestrator/references/contracts.md:108: the text says 'The role adds the optional dispositions line below the result block'. The same section says 'A line after END_MEASURE_AGENT_RESULT does not count', and agents/measure-jr-green.md:39 says 'End the result block with a dispositions: line'. A role that obeys line 108 writes the line after END_MEASURE_AGENT_RESULT. The gate does not read that line: a live probe with 'END_MEASURE_AGENT_RESULT' followed by 'dispositions: F1=BOGUS' gave exit 0. Fix: change line 108 to say that the line is the last line inside the result block, before END_MEASURE_AGENT_RESULT. Add a test_s3_dispositions_docs.sh check for the corrected text."
+  ],
+  "nonblocking_findings": [
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:415 with :432-437: has_agent_result accepts a log by substring, and 'END_MEASURE_AGENT_RESULT' contains 'MEASURE_AGENT_RESULT'. A log with a look-alike start line ('ME\\u0410SURE_AGENT_RESULT', Cyrillic A), the line 'dispositions: F1=BOGUS', and an exact end line gave exit 0, because the parser finds no exact start line. The substring rule existed before S3, and old logs without exact lines must stay valid. Recommendation: when the log holds a line that starts with 'dispositions:' but no exact complete block, report that the line is outside a result block.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:414 and :428: a folder as --log-file gives a traceback 'IsADirectoryError: [Errno 21] Is a directory' and exit 1. The traceback comes from has_agent_result (Path.read_text), which existed before S3; dispositions_feedback has the same open call. The result is fail-closed. Recommendation: use Path.is_file() in both functions and print a FAIL line for a path that is not a regular file.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:428: errors=\"ignore\" removes bytes that are not UTF-8. The line 'dispositions: F1=FI\\xffX' (Latin-1 byte 0xFF) validates as 'F1=FIX', and 'role-gate --role strategy' gave exit 0. A reader that uses replacement characters sees 'FI\\ufffdX'. The risk is low, because a role writes its own log. Recommendation: read with errors=\"replace\" in dispositions_feedback only, so that the item fails the pattern and no traceback occurs.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:85 (DISPOSITIONS_ITEM_RE): the CONTEST and ESCALATE text accepts CR, U+2028, NUL, ')' and text that looks like an item. 'F1=CONTEST(a) F2=BOGUS)' and 'F1=CONTEST(a\\rF2=BOGUS)' give no feedback. In a terminal, the CR form shows only 'F2=BOGUS)' on the line. The checker does not compare the ids with the routed ids, so the gate result does not change. Recommendation: reject control characters and line separators (Unicode categories Cc, Zl, Zp) in the text. State in contracts.md that the orchestrator compares the ids of the line with the ids of the brief.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py:450: the parser reads only a line that starts with the exact lowercase prefix 'dispositions:'. 'Dispositions: F1=BOGUS' and '- dispositions: F1=BOGUS' give no feedback. The line is optional, so the checker cannot see that the line is missing or misspelled. contracts.md says that the orchestrator checks a disposition for each routed id. Recommendation: no code change. Keep the orchestrator check in contracts.md and in the skill."
+  ],
+  "evidence": [
+    "git rev-parse HEAD printed 1e9aa7c0751df1f2e1a53a119fb6e3cfe885aa90, which equals audited_head_sha. git status --short printed only '?? extensions/' (out of scope).",
+    "git diff --stat a1a9396..1e9aa7c: 22 files, 687 insertions, 28 deletions. The executable change is dispositions_feedback (+68 lines) in skills/measure-orchestrator/scripts/measure_interphase_checks.py. The other files are Markdown and tests. measure/tracks.md is not in the diff.",
+    "Fail open, static read: dispositions_feedback has no try/except and returns only the list it builds. cmd_role_gate calls it at line 629-630 with feedback.extend(...), before the role branches start at line 632. No branch clears feedback or returns before the final FAIL print.",
+    "Every role, live probe: a temporary git repository and a log with 'dispositions: F1=BOGUS' gave exit 1, the message 'invalid dispositions line: F1=BOGUS', and no traceback for these 14 role names: strategy, mid-red, jr-green, review-a, review-b, review-c, phase-acceptance, adversarial-testing, ux-browser-review, final-acceptance, closeout, spec-review, measure-jr-green, measure-spec-review.",
+    "Fail open with a failing command: jr-green with a valid dispositions line and GREEN_TEST_COMMAND=false gave exit 1 with a GREEN_TEST_COMMAND failure line. The fixture plan also failed the phase lookup, so the static read above is the main proof of the order.",
+    "Valid line, live probe: 'role-gate --role strategy' with 'dispositions: F1=FIX; F2=CONTEST(x)' gave exit 0 and 'PASS: strategy gate passed'.",
+    "Separator probes (direct call of the repository function): an invalid item after CR, U+2028, U+0085 (NEL), VT, FF, U+001C, or NUL inside the line gave 'invalid dispositions line: ...' each time. The same is true after 'none' for CR, U+2028, and NUL. A CRLF log with a valid line gave []. The parser splits only on LF (open with newline=\"\" and text.split(\"\\n\")), so no separator splits the line.",
+    "Syntax probes: 'F1=CONTEST(a; b)' gave two feedback items (fail-closed, as contracts.md forbids ';' in the text). 'F1=CONTEST(a(b)c)' gave []. 'F1=CONTEST( )', 'F1=fix', 'F01=FIX', a duplicate id, 'dispositions:' with an empty value, and a trailing ';' each gave feedback. 'dispositions:F1=FIX' gave []. A good block after a bad block gave []; a bad block after a good block gave feedback (last-block rule).",
+    "F1, F2, F3 live probes with 'role-gate --role strategy' gave exit 0 for: trailing start line without an end line, start line without an end line after an END line, inner start line in the block, a second invalid dispositions line, a dispositions line after END_MEASURE_AGENT_RESULT, and a look-alike start line. The control log with only an invalid line gave exit 1 'FAIL: invalid dispositions line: F1=BOGUS'.",
+    "Read path: dispositions_feedback opens only log_path with encoding=\"utf-8\", errors=\"ignore\", newline=\"\". It calls no subprocess and opens no other path. A missing --log-file gives 'FAIL: missing MEASURE_AGENT_RESULT block' and no traceback. A UTF-16 log gives has_agent_result False and the same FAIL line.",
+    "Cost (direct calls): 200000 distinct items 0.252 s; 200000 duplicate items 0.216 s (set, not list); 'F1=CONTEST(' plus 1000000 ')' characters 0.022 s; 1000000 start lines before a block 0.207 s; a start line and 2000000 lines without an end line 0.283 s. The cost is linear in each case.",
+    "Backward compatibility: the repository parser ran over every *.log below a measure/runs or measure/archive folder in the home folder of this host (node_modules, .git, .cache, .config, and similar folders skipped). 4360 logs in 19 project roots gave 0 non-empty feedback lists and 0 exceptions. 14 of these logs contain the text 'dispositions:'.",
+    "Not run: the harness denied the shell calls that made symbolic links, changed file permissions, or ran a second compatibility scan of a corrected parser. The symbolic link and permission cases are therefore unverified. A static read shows that Path.exists() and open() follow a symbolic link, the same as has_agent_result before S3.",
+    "A2 (consent-blind publish gate): not applicable. The phase has no draft-to-published status change and no named subject.",
+    "A6 (registry overstatement): measure/tracks.md is not in the phase diff, so the registry makes no new claim about a security state."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --short",
+    "git diff --stat a1a9396..1e9aa7c",
+    "git show --stat 53ecfcc",
+    "sed -n 400,485p skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "sed -n 600,700p skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "python3 -I - (direct calls of dispositions_feedback and has_agent_result: 39 log cases, 3 byte encodings, 9 cost cases, in tempfile.TemporaryDirectory)",
+    "python3 -I - (role-gate subprocess over 14 role names, jr-green with GREEN_TEST_COMMAND=false and true, folder, non-UTF-8 and missing --log-file, in a temporary git repository)",
+    "python3 -I - (role-gate --role strategy over 8 block-selection logs; dispositions_feedback over 4360 logs below measure/runs and measure/archive in the home folder)"
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "README.md",
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-jr-green.md",
+    "agents/measure-phase-acceptance.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "agents/measure-spec-review.md",
+    "agents/measure-ux-browser-review.md",
+    "claude-skills/measure/references/new-track.md",
+    "claude-skills/measure/references/review.md",
+    "claude-skills/measure/references/spec-review.md",
+    "measure/tracks/spec_review_gate_20261030/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "skills/measure/references/new-track.md",
+    "skills/measure/references/review.md",
+    "skills/measure/references/spec-review.md",
+    "tests/spec_review_gate/test_checker.py",
+    "tests/spec_review_gate/test_s3_dispositions_docs.sh"
+  ],
+  "test_strategy_violations": [
+    "test-strategy.md section 5, Phase S3, Review B scope 'Block selection' names 'a last start line without an end line after it'. tests/spec_review_gate/test_checker.py has no case for this log, and the checker passes it with an invalid line (F1)."
+  ],
+  "live_contract_violations": [
+    "skills/measure-orchestrator/references/contracts.md '## Finding Dispositions' says 'The check reads only the last result block of the log'. The checker reads the block after the last start line, and returns no feedback when that start line has no end line (F1).",
+    "skills/measure-orchestrator/references/contracts.md:108 places the line 'below the result block', and the same section says that a line after END_MEASURE_AGENT_RESULT does not count (F3)."
+  ],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "phase_heading": "Phase S3: Finding dispositions",
+  "audited_head_sha": "23c72ed732e7958fbd71386addee366cfb5a2b0e",
+  "status": "pass",
+  "summary": "Incremental audit of 33f608d..23c72ed passes. The 23 here-string replacements give grep the same bytes as printf '%s\\n' and keep every check a real conditional; 40 parallel stress runs of the two most-affected suites stay clean. The is_file() change keeps the result for a missing path, a normal file, and a symlink to a file, and turns a folder into 'missing MEASURE_AGENT_RESULT block' with no Traceback; only cmd_role_gate calls the two changed functions. The new test_s3_adversarial.sh suite asserts the contract, keeps report probes non-brittle, and covers the block-range cases that DispositionsLineTest lacked. run.sh gives 8 suites (PASS=8, FAIL=0). The plan line under Task 3.2 is true. One nonblocking Nit: the strip rule for marker lines is enforced by G17 but not stated in contracts.md.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-a: contracts.md '## Finding Dispositions' does not state that a start line, an end line, and a dispositions: line still count after strip(), so a line with leading or trailing spaces is accepted. G17 of tests/spec_review_gate/test_s3_adversarial.sh enforces this behavior ('an end line with trailing spaces', 'a dispositions line with leading spaces', 'a dispositions line with a leading tab'), but a reader of the contract alone could implement exact matching and fail the suite."
+  ],
+  "changed_files": [
+    "tests/spec_review_gate/test_s1_adversarial.sh, test_s1_new_track.sh, test_s1_standard.sh, test_s2_role_docs.sh, test_s3_dispositions_docs.sh: 23 conditions changed from 'printf %s\\\\n \"$x\" | grep -q' to 'grep -q ... <<< \"$x\"' (1dc03cf)",
+    "tests/spec_review_gate/test_s3_adversarial.sh: new suite, 91 checks, groups G00 to G21 (8d5b4cc)",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py: has_agent_result and dispositions_feedback use path.is_file() in place of path.exists(), with docstring updates (8e5de63)",
+    "measure/tracks/spec_review_gate_20261030/plan.md: one adversarial remediation line under Task 3.2 (23c72ed)"
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse HEAD gives 23c72ed732e7958fbd71386addee366cfb5a2b0e, equal to audited_head_sha",
+    "git -C /home/daniebo/Desktop/measure diff 33f608d..23c72ed reviewed: 1dc03cf, 8d5b4cc, 8e5de63, 23c72ed",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-a-4.py gives 14 PASS, 0 FAIL",
+    "bash tests/spec_review_gate/run.sh gives '=== spec_review_gate: 8 suites (PASS=8, FAIL=0) ==='; the five modified suites keep 16, 41, 103, 52, and 71 checks; test_s3_adversarial.sh gives 91 checks (PASS=91, FAIL=0)",
+    "stress: 20 parallel runs each of test_s3_dispositions_docs.sh and test_s1_new_track.sh give 71 and 41 checks (PASS, FAIL=0) in every run, xargs exit 0 for both",
+    "git -C /home/daniebo/Desktop/measure notes show 1dc03cf, 8d5b4cc, 8e5de63: each note exists and its claims were checked",
+    "grep over skills/measure-orchestrator/scripts/measure_interphase_checks.py: has_agent_result and dispositions_feedback are called only from cmd_role_gate",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-a --file measure/runs/spec_review_gate_20261030/review-a-s3-23c72ed.json validates this artifact"
+  ],
+  "evidence": [
+    "Here-string equivalence: bash appends exactly one newline to a here-string word, and 'printf %s\\\\n \"$x\"' outputs \"$x\" plus one newline, so grep reads the same bytes. Probe 4 compared the two byte streams with od for 9 input shapes, including the empty string, a trailing newline, a leading double dash, and a U+2028 character: identical. The diff of 1dc03cf changes only the input source; every pattern, flag set, and message stays the same, and the commit is exactly 23 insertions and 23 deletions over the five suites.",
+    "No check became vacuous: probe 4 ran 8 match and miss cases of the converted form under 'set -uo pipefail'; each condition returns 0 on a match and 1 on a miss for both the pipe and the here-string form. The conversion script measure/runs/spec_review_gate_20261030/adversarial-s3-herestring.py keeps the grep invocation verbatim and matched only conditions with a quoted literal pattern, so value pipelines with grep -n stayed unchanged. G20 of the new suite lints against any pipe into grep -q, and my scan of the five suites finds 23 converted conditions and 0 pipes left.",
+    "The race is gone and the suites are stable: 20 parallel runs each of test_s3_dispositions_docs.sh and test_s1_new_track.sh (xargs -P 10) all end with 71 and 41 checks (PASS, FAIL=0) and exit 0. The full run.sh gives 8 suites (PASS=8, FAIL=0) with the same per-suite check counts as before 1dc03cf.",
+    "is_file() behavior: probe 4 compared the 33f608d module with the 23c72ed module. A missing path, a normal file, a symlink to a file, and a dangling symlink give the same results (no block, or the block read, and no feedback). A folder raised IsADirectoryError before and now gives has_agent_result False and no feedback. An empty log path keeps has_agent_result True. The docstrings state the non-file rule in both functions.",
+    "Only role-gate is affected: grep shows has_agent_result and dispositions_feedback are called only from cmd_role_gate, so audit-result, status, closeout, and ux-paths keep their behavior. CLI probes: role-gate with a folder exits 1 with 'missing MEASURE_AGENT_RESULT block' and no Traceback; a missing path gives the same; a symlink to a valid log exits 0. G13 of the new suite confirms the dispositions check for the roles strategy, mid-red, review-a, and spec-review.",
+    "The new suite asserts the contract and not a defect: the G17 block-range cases match the contracts.md range text that the previous audit verified against the code, and the G08 id-form rejections match DISPOSITIONS_ITEM_RE 'F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\\\\((.+)\\\\))'. G12 (a folder as --log-file) is a report probe that asserts only exit 0 or 1 with no Traceback, so it passed after the 8e5de63 fix without asserting the old Traceback. G15 reads the contracts.md example lines dynamically. G21 runs 13 broken checker copies and each fails at least one probe, including the mutant that restores the old quadratic loop, which the G18 time limit kills.",
+    "The plan line 'Adversarial remediation F1 (folder as --log-file): 8e5de63; is_file() in has_agent_result and dispositions_feedback' is true: 8e5de63 changes exactly those two functions, and 23c72ed adds only this line to plan.md.",
+    "Anti-pattern checks: the new suite prints labeled totals (A3), its report probes fail on a Traceback and its record() marks a crash of a probe group as a FAIL rather than a skip (A4), and the notes of 1dc03cf, 8d5b4cc, and 8e5de63 state check counts and exits that match the live runs (A5). The note of 8d5b4cc records one intentional FAIL (G12, folder as --log-file) before the 8e5de63 fix; the live run of 23c72ed gives PASS=91, FAIL=0.",
+    "The worktree holds no tracked change beyond the audited commits; only the untracked extensions/ folder remains, which the brief excludes. The prior nonblocking Nit (DispositionsLineTest lacked the five block-range cases) is resolved: G17 covers all five through real role-gate runs."
+  ],
+  "confidence": "high",
+  "retry_recommendation": "none",
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": []
+}

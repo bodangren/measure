@@ -1,0 +1,8 @@
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: inconclusive
+track_id: spec_review_gate_20261030
+phase: S4
+audited_head_sha: d3e764a0b9df0e76d6177a48130dc4fc9ba19bc5
+handoff: Provisional. Acceptance gate run is in progress.
+END_MEASURE_AGENT_RESULT

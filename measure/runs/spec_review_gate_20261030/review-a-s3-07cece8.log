@@ -1,0 +1,24 @@
+Review A audit of Phase S3 Finding dispositions at 07cece8 (phase base a1a9396).
+
+HEAD check: `git rev-parse HEAD` gives 07cece83540468b6026fff6b661228385a064e6e. It equals audited_head_sha. The audited range is a1a9396..07cece8.
+
+Checker: `dispositions_feedback` finds the last exact MEASURE_AGENT_RESULT line and the next exact END line. It reads the first `dispositions:` line in that block. It accepts a missing line and `none`. It splits other values on `;`, strips each item, and applies fullmatch on the item pattern. It rejects empty values, empty items, and repeated ids. Each message starts with `invalid dispositions line`. The duplicate message names the id. `cmd_role_gate` calls it for every role when the log file exists, after the result-block check. The unanchored regex with fullmatch equals the contract anchored pattern. No defect exists.
+
+Docs: `contracts.md` holds the routed form, the six scopes, the owner, the four bullets, the evidence sentence, the severity rule, the gap rule, the result line, the re-review rules, and the no-FIX rule. The standard, new-track step 9, review.md, Green, the five audit roles, and Delegation use the same four words. The 1c24539 secret sentences exist in the standard and in sub-step 7. No `not fixed —` remains. The Agent Result Block keeps 12 lines.
+
+Tests: `bash tests/spec_review_gate/run.sh 'test_s3_*.sh' test_checker.py` exits 0 with 2 suites (PASS=2, FAIL=0). The docs suite gives 71 checks (PASS=71, FAIL=0). Extractors assert non-empty text before compare, so a missing heading fails. Counts use labeled summaries and exact anchored patterns. Plan Red numbers match the code shape. Plan S3 tasks are [x] with SHAs that exist. The S2 checkpoint is recorded.
+
+Tool note: repeat shell runs were denied by the sandbox guard, so the full runner has no fresh re-run here. S1 and S2 files did not change in this range. I record this as a limit, not a defect.
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: none
+tests_run: bash tests/spec_review_gate/run.sh 'test_s3_*.sh' test_checker.py exits 0 with 2 suites (PASS=2, FAIL=0); docs suite 71 checks (PASS=71, FAIL=0)
+files_changed: measure/runs/spec_review_gate_20261030/review-a-s3-07cece8.json, measure/runs/spec_review_gate_20261030/review-a-s3-07cece8.log
+plan_updates: none
+known_failures: none
+handoff: Verdict pass with no blocking findings. S3 matches Decisions 18-20. Full-runner re-run was denied by the sandbox guard; S1 and S2 files are unchanged in range.
+END_MEASURE_AGENT_RESULT

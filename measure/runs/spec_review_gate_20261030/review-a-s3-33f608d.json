@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "phase_heading": "Phase S3: Finding dispositions",
+  "audited_head_sha": "33f608d57ba7a0935eafed123c6648e6e9c59d0f",
+  "status": "pass",
+  "summary": "Incremental audit of 0b6670d..33f608d passes. The linear block selection in dispositions_feedback gives the same feedback as the old selection on 21845 exhaustive logs and 3000 random logs, with 0 differences. The new contracts.md range text and the docstring describe the code exactly, and the docstring linear-cost sentence holds (0.007 s on 20003 lines). run.sh gives 7 suites (PASS=7, FAIL=0). The plan remediation line is true, and the 213407f note carries the appended correction. One nonblocking Nit: DispositionsLineTest still lacks the five block-selection cases that Review B item 2 named; the plan scoped this round to items 1, 4, and 5 only.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-a: tests/spec_review_gate/test_checker.py DispositionsLineTest still has no case for the inner start line, the trailing start line, START / x / END / bad / END, the end line before the start line, or the second dispositions line in one block (Review B nonblocking item 2 at 0b6670d, out of scope for the 478b723 round). This audit probe covers those behaviors, but the repo suite does not."
+  ],
+  "changed_files": [
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py: dispositions_feedback selects the block end with starts[0] < index in place of any(...), and the docstring states the exact block range and the linear cost",
+    "skills/measure-orchestrator/references/contracts.md: the two block-range bullets under ## Finding Dispositions state the exact end and start rules",
+    "measure/tracks/spec_review_gate_20261030/plan.md: one remediation line under Task 3.2 for 478b723"
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse HEAD gives 33f608d57ba7a0935eafed123c6648e6e9c59d0f, equal to audited_head_sha",
+    "git -C /home/daniebo/Desktop/measure diff 0b6670d..33f608d reviewed: 478b723 (checker and contracts.md) and 33f608d (plan line)",
+    "bash /home/daniebo/Desktop/measure/tests/spec_review_gate/run.sh gives '=== spec_review_gate: 7 suites (PASS=7, FAIL=0) ==='",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-a-1.py gives 35 behavior PASS and 2 FAIL, and the 2 FAIL are exactly the two contracts.md rule sentences that this diff rewrote",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-a-3.py gives 16 PASS, 0 FAIL",
+    "git -C /home/daniebo/Desktop/measure notes show 213407f ends with the round 4 correction sentence",
+    "git -C /home/daniebo/Desktop/measure ls-files claude-skills shows no measure-orchestrator copy, so no bundle drift from the contracts.md change",
+    "grep over tests/spec_review_gate/test_s3_dispositions_docs.sh finds no assertion on the changed range sentences, so the doc test needed no update",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-a --file measure/runs/spec_review_gate_20261030/review-a-s3-33f608d.json validates this artifact"
+  ],
+  "evidence": [
+    "Equivalence of the selection change: 'any(start < index for start in starts)' equals 'starts is non-empty and starts[0] < index' because the start list is ascending. Probe review-a-3 compared the 0b6670d module with the 33f608d module on all 21845 logs of length 0 to 7 over a 4-token alphabet and on 3000 random logs of length 0 to 79 over 12 line kinds: 0 differences.",
+    "The contracts.md end rule 'the block ends at the last END_MEASURE_AGENT_RESULT line that has a MEASURE_AGENT_RESULT line above it' matches the code: an end line at index i has a start above it exactly when starts[0] < i. Probe: a log 'END / dispositions: F1=bad / START / role: x / END' gives no feedback, because the first end line has no start above it.",
+    "The contracts.md start rule matches the code. 'The last start line of the block' is starts_before_end[-1]; the last end line before it is floor; the block starts at the first start line after floor, which equals block_starts[0]. Probes: a start line on line 1 starts the block; 'START / role: x / END / dispositions: F1=BOGUS / END' gives feedback (the Review B case); an invalid line above the block start does not count; a second start line inside the block cannot hide a line above it.",
+    "The docstring states the same two rules (with 'It' for the block) and the linear-cost sentence. The code scans the line list a fixed number of times: starts, ends, the end loop, starts_before_end, earlier_ends, block_starts, and the block range. Probe: 20003 lines with 20000 end lines run in 0.007 s, against 15.351 s for the old code on 40003 lines per the Review B measurement.",
+    "The plan line 'Review remediation F1-F3 (Review B nonblocking items 1, 4, 5): 478b723; linear block selection, exact range text, 213407f note corrected' is true. Review B nonblocking items 1, 4, and 5 at 0b6670d are the quadratic selection, the contracts.md:119 range text, and the 213407f note claim. Commit 478b723 holds the first two fixes. The 213407f note now ends with 'Correction (S3 round 4): a dispositions: line after the last END_MEASURE_AGENT_RESULT line does not count, so that Red case exits 0, as test_checker.py checks', which matches test_checker.py test_edge_line_after_end_marker_is_ignored and the probe behavior.",
+    "The 478b723 commit note claims hold: the equivalence claim (probe: 0 differences), the linear timing claim (probe: 0.007 s), and the claim that the doc test words stay unchanged (grep: the doc test never asserted the changed sentences; run.sh passes).",
+    "Anti-pattern checks: no count assertion changed in this diff (A3 not applicable); the dispositions check rejects every malformed fixture that probe 1 and probe 3 built, so no vacuous pass (A4); every plan and note claim that this diff added was verified against live runs (A5).",
+    "The worktree holds no tracked change beyond the audited commits; only the untracked extensions/ folder remains, which the brief excludes."
+  ],
+  "confidence": "high",
+  "retry_recommendation": "none",
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": []
+}

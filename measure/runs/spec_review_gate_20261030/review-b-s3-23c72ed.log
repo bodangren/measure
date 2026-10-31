@@ -1,0 +1,21 @@
+Review B (security) of Phase S3 at 23c72ed.
+
+HEAD is 23c72ed732e7958fbd71386addee366cfb5a2b0e. There are no blocking findings.
+The is_file() change in 8e5de63 is fail-closed. Each path that is not a file fails role-gate with no Traceback and no hang.
+This includes a folder, a missing path, a dangling link, a link to a folder, a FIFO, /dev/null, and /dev/zero.
+The here-strings in 1dc03cf remove a pipefail race. The old form gave a false pass in each negative check in 200 of 200 large-input runs.
+The 42 block-selection attacks, the timing, and the scan of 4414 old logs give the same results as at 33f608d.
+The test suite gives 8 suites, PASS=8. test_s3_adversarial.sh closes the old item 2.
+Two nonblocking items stay open; they were not routed.
+
+MEASURE_AGENT_RESULT
+role: measure-review-b-security
+phase: Phase S3: Finding dispositions
+status: pass
+role_base_sha: 23c72ed732e7958fbd71386addee366cfb5a2b0e
+audited_head_sha: 23c72ed732e7958fbd71386addee366cfb5a2b0e
+result_file: measure/runs/spec_review_gate_20261030/review-b-s3-23c72ed.json
+blocking_findings: none
+nonblocking_findings: 2 (carried item 3 and the rest of item 6 of review-b-s3-0b6670d.json; not routed)
+handoff: 8e5de63 and 1dc03cf confirmed. No route to Green.
+END_MEASURE_AGENT_RESULT

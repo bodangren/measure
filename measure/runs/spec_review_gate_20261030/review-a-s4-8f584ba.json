@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Review A of Phase S4 at 8f584ba. F2 and F4 are fixed. F1 is kept because the CONTEST evidence does not show that a missing document fails. A new Major finding: the S4 adversarial suite named in test-strategy.md does not exist. The runner passes 9 of 9 suites.",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "8f584ba5ec5c7561c70b8e5b00552fcde680a700",
+  "audited_head_sha": "8f584ba5ec5c7561c70b8e5b00552fcde680a700",
+  "blocking_findings": [
+    "measure/tracks/spec_review_gate_20261030/test-strategy.md:264: F1 [Major] review-a: The A11 recipe exits 0 with no candidate line when a listed document is missing. The audit then reports no drift for that document. The contract at this line accepts that silent exit, which repeats the A4 vacuous-pass pattern. | CONTEST kept: The plan S4 recipe text fixes the grep pipeline. It does not fix a silent pass on a missing document. Step 1 of the audit does not check that each document exists before the recipe runs.",
+    "agents/measure-orchestrator-audit.md:182: F1 [Major] review-a: Step 1 runs the A11 recipe without a document-existence check. A missing measure/product.md or measure/tech-stack.md gives no finding and no failure. Add a check that fails when a Scope document is absent.",
+    "measure/tracks/spec_review_gate_20261030/test-strategy.md:263: F5 [Major] review-a: This line names tests/spec_review_gate/test_s4_adversarial.sh. The file does not exist. No S4 test covers the missing-document case, the pipefail row, or the sensitivity probes. Create the suite or correct the plan."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "F2 on 8f584ba: fixed. agents/measure-orchestrator-audit.md:176 names the metadata.json fields status, completed, and updated_at. Line 178 states the audit date rule and the 30 days window. Line 183 covers the spec.md documents of the Scope paragraph.",
+    "F2 on 8f584ba: fixed. Line 184 gives the check method for each claim kind. Line 182 states that a candidate becomes DRIFT only after step 3 confirms it.",
+    "F4 on 8f584ba: fixed. Line 191 gives the DRIFT: output form. Line 182 states that DRIFT candidate lines stay separate from DRIFT findings.",
+    "F1 check: test-strategy.md:264 accepts a missing document as exit 0 with no candidate line. test-strategy.md:270 states that plain bash always exits 0. plan.md:220-223 fixes the recipe text only. No line requires a fail for a missing document. The CONTEST does not hold, so F1 stays blocking.",
+    "F5 check: test-strategy.md:263 names tests/spec_review_gate/test_s4_adversarial.sh. The folder lists 9 files: run.sh, test_checker.py, and seven test_s*.sh suites. test_s4_adversarial.sh is absent.",
+    "Runner: bash tests/spec_review_gate/run.sh printed '=== spec_review_gate: 9 suites (PASS=9, FAIL=0) ==='. The runner passes. It does not cover F1 or F5, so the pass does not clear either finding."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse HEAD (8f584ba5ec5c7561c70b8e5b00552fcde680a700)",
+    "git -C /home/daniebo/Desktop/measure log --oneline a02740f..8f584ba",
+    "bash /home/daniebo/Desktop/measure/tests/spec_review_gate/run.sh (9 suites, PASS=9, FAIL=0)",
+    "python3 -I /home/daniebo/Desktop/measure/skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-a --file /home/daniebo/Desktop/measure/measure/runs/spec_review_gate_20261030/review-a-s4-8f584ba.json"
+  ],
+  "changed_files": [
+    "agents/measure-orchestrator-audit.md",
+    "measure/tracks/spec_review_gate_20261030/plan.md"
+  ],
+  "not_verified": [
+    "The live A11 recipe output on 8f584ba. The run used the contract text only.",
+    "F3, F6, and F7 were not re-verified in this run. F3 is DECLINE, a Nit only, and F6 and F7 are FIX items.",
+    "Whether the orchestrator accepts the F1 CONTEST outcome."
+  ],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high"
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Pass. The Phase S2 spec-review contract holds at 882f068. No blocking defect found. Four nonblocking findings: one Major and three Nits.",
+  "role": "measure-review-c-ux-api",
+  "track": "spec_review_gate_20261030",
+  "phase": "Phase S2: The measure-spec-review orchestrator role",
+  "phase_base_sha": "ccdaae22a965f06c64ecde9f735a1ed49db3ce5e",
+  "role_base_sha": "882f068c63f5dd297bf028912a0347c05645d406",
+  "audited_head_sha": "882f068c63f5dd297bf028912a0347c05645d406",
+  "contract_applicability": "applicable",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] skills/measure-orchestrator/SKILL.md Model Selection: Line 146 states that role files do not pin a model. agents/measure-spec-review.md line 5 pins model: kimi-for-coding/k3. Rationale: The orchestrator reads two rules that conflict. A spawn can override the pinned spec reviewer model. Route to Green for a wording fix.",
+    "F2 [Nit] agents/measure-orchestrator.md lines 19-23: The allow rules name /home/daniel-bo/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py. The host home is /home/daniebo. Rationale: The allow rules may not match the script path on this host. Route to Green for a path check.",
+    "F3 [Nit] skills/measure-orchestrator/references/contracts.md Spec Review JSON, final paragraph: The baseline rule omits --no-renames and the rev-parse check. Rationale: The checker runs both checks. The contract text and the checker differ. A grep for no-renames and rev-parse in contracts.md returns no match.",
+    "F4 [Nit] Spec Review JSON role value: The role file does not state the role value for the spec-review audit JSON. Rationale: The checker does not read the role value, so an unexpected value passes validation without a warning."
+  ],
+  "evidence": [
+    "HEAD is 882f068c63f5dd297bf028912a0347c05645d406. Git status shows only the pre-existing untracked path extensions/.",
+    "Phase diff ccdaae22..HEAD lists 14 files: CHANGELOG.md, README.md, agents/measure-orchestrator.md, agents/measure-spec-review.md, measure/product.md, measure/tech-stack.md, measure/tracks/spec_review_gate_20261030/plan.md, plugins/opencode-measure-guard/commands/measure-orchestrate.md, skills/measure-orchestrator/SKILL.md, skills/measure-orchestrator/references/contracts.md, skills/measure-orchestrator/scripts/measure_interphase_checks.py, tests/spec_review_gate/test_checker.py, tests/spec_review_gate/test_s2_role_docs.sh, and the spec-review role file.",
+    "Contract applicability is applicable. The S2 phase defines the spec-review role, the audit JSON contract, the role-gate baseline contract, and the role-name aliases. These are endpoint and user-flow contracts for the orchestrator.",
+    "Checker audit-result on the provisional JSON returned PASS: audit result is valid. The final JSON is validated after this rewrite; see the log.",
+    "tests/spec_review_gate/test_s2_role_docs.sh returned 52 of 52 PASS, exit 0. It covers the role frontmatter, the SKILL.md gate paragraph, contracts.md Spec Review JSON, the README row, and the role counts of 14.",
+    "Route parity: README.md line 195 lists measure-spec-review directly after the measure-orchestrator row at line 194. measure/product.md and measure/tech-stack.md state 14 role definitions for 14 files.",
+    "Checker spec-review branch: ROLE_ALIASES maps spec-review, spec_review, and measure-spec-review to spec-review. validate_spec_review_payload enforces the paraphrase object, the finding format, the [Blocker] and [Major]/[Nit] split, and the fail route to escalate_human. cmd_role_gate requires --baseline, resolves it with rev-parse before the scope check, and uses git diff --no-renames for the measure/runs/ scope check.",
+    "Role-file frontmatter: mode subagent, steps 40, model kimi-for-coding/k3, reasoningEffort max. The edit block allows measure/runs only. The role file body states the installed and repository standard paths, both artifact names, the escalate_human and infrastructure_retry routes, and the track setup phase.",
+    "Notes without a finding. The checker does not validate --phase track setup for spec-review. This follows spec Decision 17. The mid-red rename gap stays open in measure/tech-debt.md line 22. This gap is outside Phase S2."
+  ],
+  "commands": [
+    "run: git rev-parse HEAD (882f068c63f5dd297bf028912a0347c05645d406)",
+    "run: git status --porcelain (only ?? extensions/)",
+    "run: git diff --name-only ccdaae22a965f06c64ecde9f735a1ed49db3ce5e..HEAD (14 files)",
+    "run: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-c --file measure/runs/spec_review_gate_20261030/review-c-s2-882f068.json (provisional file: PASS)",
+    "run: bash tests/spec_review_gate/test_s2_role_docs.sh (52 of 52 PASS)",
+    "run: grep for no-renames and rev-parse in skills/measure-orchestrator/references/contracts.md (no match)",
+    "run: grep and read of SKILL.md lines 144-150, agents/measure-spec-review.md frontmatter, agents/measure-orchestrator.md lines 17-24",
+    "run: role-gate --role spec-review --baseline ccdaae22a965f06c64ecde9f735a1ed49db3ce5e --phase 'Phase S2: The measure-spec-review orchestrator role' --result-file measure/runs/spec_review_gate_20261030/review-c-s2-882f068.json --log-file measure/runs/spec_review_gate_20261030/review-c-s2-882f068.log (see log for output)",
+    "not run: tests/spec_review_gate/test_checker.py (pytest permission was denied in this turn)"
+  ],
+  "changed_files": [
+    "measure/runs/spec_review_gate_20261030/review-c-s2-882f068.json",
+    "measure/runs/spec_review_gate_20261030/review-c-s2-882f068.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "medium"
+}

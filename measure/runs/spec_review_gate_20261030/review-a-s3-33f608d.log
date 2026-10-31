@@ -1,0 +1,66 @@
+Review A (correctness) incremental audit for Phase S3: Finding dispositions.
+Track spec_review_gate_20261030. Range 0b6670d..33f608d (commits 478b723 and 33f608d).
+phase_base_sha a1a9396, role_base_sha = audited_head_sha = 33f608d, HEAD confirmed equal.
+
+Scope of this round: Review B nonblocking items 1, 4, and 5 at 0b6670d.
+1. Linear block selection in dispositions_feedback.
+2. Exact block-range text in contracts.md and the docstring.
+3. Appended correction on the 213407f note.
+
+What was checked and how:
+
+1. Selection equivalence. The old code ran 'any(start < index for start in starts)'
+   once per end line. The new code runs 'starts[0] < index' under an 'if starts' guard.
+   These are equal for every input, because the start list is ascending, so
+   starts[0] is its minimum. Probe review-a-3 loaded the 0b6670d module and the
+   33f608d module side by side and compared dispositions_feedback on all 21845 logs
+   of length 0 to 7 over a 4-token alphabet, and on 3000 random logs of length 0 to
+   79 over 12 line kinds. Result: 0 differences.
+
+2. The new contracts.md text. The end rule says the block ends at the last END line
+   that has a MEASURE_AGENT_RESULT line above it. The code takes the last end index
+   with starts[0] < index, which is the same rule. The start rule names the last end
+   line before the last start line of the block; the code takes floor from
+   earlier_ends and then block_starts[0]. Probe cases matched each clause: a start
+   line on line 1 starts the block; START / role / x / END / bad / END gives
+   feedback (the Review B case); an invalid line above the block start does not
+   count; a second start line inside the block cannot hide a line above it; a log
+   with no end line gives no feedback; a line after the block end does not count.
+
+3. The docstring. It states the same two rules and the linear-cost sentence. The
+   code scans the line list a fixed number of times. A 20003-line log with 20000 end
+   lines ran in 0.007 s, against 15.351 s for the old code on 40003 lines per the
+   Review B measurement.
+
+4. Test suite. bash tests/spec_review_gate/run.sh gives 7 suites (PASS=7, FAIL=0).
+   The re-run of probe review-a-1 gives 35 behavior PASS and 2 FAIL, and the 2 FAIL
+   are exactly the two contracts.md rule sentences that this diff rewrote. The doc
+   test never asserted those sentences, so no test drift.
+
+5. Plan and note claims. The plan line under Task 3.2 for 478b723 is true. The
+   213407f note ends with the round 4 correction, and the correction matches
+   test_checker.py and the live behavior. The 478b723 note claims on equivalence,
+   timing, and unchanged doc-test words all held under the probes.
+
+6. No claude-skills copy of measure-orchestrator exists, so the contracts.md change
+   causes no bundle drift. The worktree holds no tracked change beyond the audited
+   commits; only the untracked extensions/ folder remains, which the brief excludes.
+
+Findings: no blocking findings. One nonblocking Nit: DispositionsLineTest still
+lacks the five block-selection cases that Review B item 2 named; the plan scoped
+this round to items 1, 4, and 5 only.
+
+Result artifacts:
+- JSON: measure/runs/spec_review_gate_20261030/review-a-s3-33f608d.json
+- Log (this file): measure/runs/spec_review_gate_20261030/review-a-s3-33f608d.log
+- Probe: measure/runs/spec_review_gate_20261030/probe-review-a-3.py
+
+MEASURE_AGENT_RESULT
+role: review-a
+phase: Phase S3: Finding dispositions
+audited_head_sha: 33f608d57ba7a0935eafed123c6648e6e9c59d0f
+summary: Incremental audit of 0b6670d..33f608d passes. The linear block selection gives the same feedback as the old selection on 21845 exhaustive logs and 3000 random logs, with 0 differences. The new contracts.md range text and the docstring describe the code exactly, and the linear-cost claim holds. run.sh gives 7 suites (PASS=7, FAIL=0). The plan line is true and the 213407f note carries the correction. One nonblocking Nit on the still-open Review B item 2 test cases.
+blocking_findings: 0
+nonblocking_findings: 1
+retry_recommendation: none
+END_MEASURE_AGENT_RESULT

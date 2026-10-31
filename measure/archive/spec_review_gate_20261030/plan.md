@@ -203,7 +203,7 @@ _Story ref: spec.md#story-s3_
   - Review remediation F1–F6 (Review C): 53ecfcc; F6 contested (install state)
 - [x] Task 3.5: Docs and checks: in the "## Multi-agent orchestration" section of `README.md`, add one sentence on the four dispositions after "Review and audit roles only report." Add a `CHANGELOG.md` line. Run the S3 command and the full runner. 94dfcef
 
-## Phase S4: Doc drift check in the weekly audit
+## Phase S4: Doc drift check in the weekly audit [checkpoint: 8a8efe2]
 _Story ref: spec.md#story-s4_
 
 **Contract (acceptance criteria).**

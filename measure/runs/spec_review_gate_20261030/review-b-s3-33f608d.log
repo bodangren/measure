@@ -1,0 +1,21 @@
+Review B (security) of Phase S3 at 33f608d.
+
+HEAD is 33f608d57ba7a0935eafed123c6648e6e9c59d0f. Green round 7 fixed F1-F3, and this review confirms each fix.
+F1: the block selection is linear. 20000/20000 lines take 0.020 s (17.148 s at 0b6670d). 1000000/1000000 lines take 0.959 s.
+The selection gives the same result as 0b6670d on 20000 random logs.
+F2: contracts.md:118-119 holds the exact range text, and it agrees with the code.
+F3: the 213407f note has an appended correction.
+The 42 role-gate attacks give the same exit codes as at 0b6670d. 4408 old logs give no feedback.
+The test suite gives 7 suites, PASS=7. There are no blocking findings. Three nonblocking items stay open; they were not routed.
+
+MEASURE_AGENT_RESULT
+role: measure-review-b-security
+phase: Phase S3: Finding dispositions
+status: pass
+role_base_sha: 33f608d57ba7a0935eafed123c6648e6e9c59d0f
+audited_head_sha: 33f608d57ba7a0935eafed123c6648e6e9c59d0f
+result_file: measure/runs/spec_review_gate_20261030/review-b-s3-33f608d.json
+blocking_findings: none
+nonblocking_findings: 3 (carried items 2, 3, 6 of review-b-s3-0b6670d.json; not routed)
+handoff: F1-F3 confirmed. No route to Green.
+END_MEASURE_AGENT_RESULT

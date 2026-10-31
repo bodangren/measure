@@ -1,0 +1,30 @@
+Review A re-review of Phase S2 at a670ab5 (phase base ccdaae22, prior pass 882f068).
+
+HEAD check: `git rev-parse HEAD` gives a670ab5deecb89e661c78182d8c9a0e681e4da88. It equals audited_head_sha. The audited range is ccdaae22..a670ab5. The new range is 882f068..a670ab5: checker fix b955a3e plus plan line a670ab5.
+
+Diff scope: the new diff touches only the checker and one plan line. No other role changed behavior. `git diff` shows no `committed_files` change. The function text is unchanged.
+
+Fix F1: line 356 uses `SPEC_REVIEW_FINDING_RE.fullmatch`. Line 357 rejects `len(finding.splitlines()) != 1`. Live probes confirm the fix. Findings with LF, CR, and U+2028 fail with `spec-review finding has an invalid format`. A single-line Major finding still passes. A trailing-newline finding fails.
+
+Fix F2: line 636 runs `git diff --name-only --no-renames -z`. Lines 642-645 split on NUL, drop only the last empty item, sort, and do not strip. Live probes confirm the fix. A leading-space path fails with the exact path. An umlaut path under `measure/runs/` passes.
+
+Contracts: all eight payload messages hold. All gate messages hold. The success line is `PASS: spec-review gate passed`. Aliases and the audit-role set are unchanged.
+
+Plan line: plan line 157 states the remediation, names b955a3e, and names the `-z` NUL-separated no-strip deviation from the literal contract text. The claim is true.
+
+Tests: `bash tests/spec_review_gate/run.sh` exits 0. It reports 5 suites (PASS=5, FAIL=0). `test_checker.py` gives 21 tests OK. `test_s2_role_docs.sh` gives 52 checks (PASS=52, FAIL=0). One shell call with two patterns was denied; a plain single run worked. I record this as a tool note, not a defect.
+
+Anti-patterns: A4 checks assert non-empty extracts before compare. A3 counts use labeled `14 role definitions` strings. A5 plan claims match exits. No defect found.
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S2: The measure-spec-review orchestrator role
+commits: none
+tests_run: bash tests/spec_review_gate/run.sh exits 0 with 5 suites (PASS=5, FAIL=0); live probes for multi-line findings (LF/CR/U+2028 fail, single-line passes) and scope paths (leading-space fails exact, umlaut passes)
+files_changed: measure/runs/spec_review_gate_20261030/review-a-s2-a670ab5.json, measure/runs/spec_review_gate_20261030/review-a-s2-a670ab5.log
+plan_updates: none
+known_failures: none
+handoff: Verdict pass with no blocking findings. The remediation is correct and complete. No retry is needed. Green keeps committed_files unchanged.
+END_MEASURE_AGENT_RESULT

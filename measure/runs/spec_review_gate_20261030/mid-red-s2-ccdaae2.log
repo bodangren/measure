@@ -1,0 +1,14 @@
+MEASURE_AGENT_RESULT
+role: mid-red
+track: spec_review_gate_20261030
+phase: Phase S2: The measure-spec-review orchestrator role
+status: pass
+baseline_sha: ccdaae22a965f06c64ecde9f735a1ed49db3ce5e
+head_sha: c649daccd73f5dbca42e5c7467931cbd6a976480
+commits: 4a3bc03 (S1 checkpoint, plan only, git note attached); 345f47d (Red tests, git note attached); c649dac (plan evidence, Task 2.1 [x] 345f47d, Task 2.2 [~])
+tests: tests/spec_review_gate/test_checker.py (class SpecReviewRoleGateTest, 21 tests); tests/spec_review_gate/test_s2_role_docs.sh (52 checks)
+files: tests/spec_review_gate/test_checker.py, tests/spec_review_gate/test_s2_role_docs.sh, measure/tracks/spec_review_gate_20261030/plan.md
+red_command: bash tests/spec_review_gate/run.sh 'test_s2_*.sh' test_checker.py -> exit 1, "=== spec_review_gate: 2 suites (PASS=0, FAIL=2) ==="
+failures: test_checker.py 21 failures in 21 tests (20 spec-review cases fail with "unknown role 'spec-review'" and the contract message absent; the role-list case lacks spec-review; the review-a compatibility test passes). test_s2_role_docs.sh PASS=3, FAIL=49 (missing role file, skill text, contracts.md section, orchestrator agent bullet, command description, README row, role count 13 instead of 14). S1 suites still pass: 3 suites (PASS=3, FAIL=0).
+handoff: Green starts at Task 2.2 ([~]). Conservative defaults taken: (1) the orchestrator recorded the S1 checkpoint as 4f1f290 in plan.md at 4a3bc03, as it instructed, to clear a measure-guard block. (2) Beyond the plan case list I added four checks that the contract implies: payload-rule cases run through both role-gate and audit-result; test_s2_role_docs.sh checks that the permission keys are edit, bash, skill, task; that the text outside "## Role Handoff Rules" in agents/measure-orchestrator.md equals ccdaae2 (Decision 22); and that SKILL.md has a --role spec-review example. (3) The count check needs the labeled integer to equal 14 and the number of agents/measure-*.md files; Task 2.3 must add the role file before Task 2.5 sets 14, or the count check fails in between. (4) Contract strings that the test checks but the plan does not quote exactly: the first-paragraph role list text "(`measure-spec-review`, `measure-strategy`, `measure-mid-red`", the Model Selection phrases "family of the host build agent" and "record the assumption as a deviation", and "[Blocker|Major|Nit]" plus "escalate_human" in the Spec Review JSON section. Green must not edit tests/spec_review_gate/ except for a harness defect that Red confirms. The fixture rename case needs git 2.31+ (GIT_CONFIG_COUNT); the host has 2.53.0.
+END_MEASURE_AGENT_RESULT

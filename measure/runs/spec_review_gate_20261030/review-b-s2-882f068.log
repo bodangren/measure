@@ -1,0 +1,57 @@
+Review B (security) of Phase S2 at 882f068.
+
+HEAD is 882f068c63f5dd297bf028912a0347c05645d406, which equals audited_head_sha.
+The phase diff ccdaae2..882f068 changes 13 files. measure/tracks.md is not in the diff.
+
+Result: fail. Two blocking findings route to Green.
+
+Blocking findings:
+
+1. measure_interphase_checks.py:82,356: the finding regex has no end anchor, and the validator calls re.match.
+   A finding 'F1 [Major] x: y\nF2 [Blocker] z: ...' in nonblocking_findings passed the gate with status pass.
+   The separators '\r' and U+2028 give the same result.
+   Fix: mark a finding invalid when it has more than one line, and use fullmatch.
+
+2. measure_interphase_checks.py:642: the scope rule strips each path.
+   A committed file ' measure/runs/x' is outside measure/runs/, but the gate passed.
+   With core.quotePath=false, a path that starts with U+3000 also passed.
+   Fix: use 'git diff --name-only --no-renames -z', split on NUL, and do not strip.
+
+Checks that passed:
+
+- The permission blocks of agents/measure-spec-review.md and agents/measure-review-a-correctness.md are identical (the diff printed nothing).
+- The edit block has exactly three lines. 'skill: allow' and 'task: "*": deny' are present. The frontmatter has no extra key.
+- The role body forbids a commit and an edit outside the two artifacts. It does not tell the reviewer to quote a secret value.
+- The --baseline value goes to git as one argv item with no shell.
+- 33 option-like values (for example --output=<tmp>/outx, -h, --all, --since=...) gave exit 1 and the resolve message. No output file was created.
+- Ranges ('A..HEAD', '^!', '^@') fail closed. '^<sha>' reaches git diff, which fails, and the gate fails closed.
+- Renames and deletions of files outside measure/runs/ fail the gate (--no-renames works).
+- The S2 suites pass: 52/52 checks in test_s2_role_docs.sh, and 2 suites (PASS=2, FAIL=0).
+- The tests write only in temporary folders. git status was unchanged after the run.
+
+Nonblocking findings:
+
+1. The gate does not check that --baseline is an ancestor of HEAD.
+2. The bash deny patterns (older than this track, identical to Review A) do not stop an uncommitted edit of spec.md or plan.md. Decision 17 accepts this.
+3. A valid non-ASCII path below measure/runs/ fails the gate (fail closed). The -z fix also fixes this.
+4. A symbolic link below measure/runs/ that points outside passes the gate.
+5. paraphrase.proposes '​' passes.
+
+A2: not applicable. A6: not applicable (measure/tracks.md is unchanged).
+
+All probes ran with python3 -I in tempfile.mkdtemp folders with GIT_CONFIG_GLOBAL=/dev/null and GIT_CONFIG_NOSYSTEM=1. Each probe removed its folder.
+
+MEASURE_AGENT_RESULT
+role: measure-review-b-security
+status: fail
+phase: S2
+phase_base_sha: ccdaae22a965f06c64ecde9f735a1ed49db3ce5e
+role_base_sha: 882f068c63f5dd297bf028912a0347c05645d406
+audited_head_sha: 882f068c63f5dd297bf028912a0347c05645d406
+security_applicability: applicable
+result_path: measure/runs/spec_review_gate_20261030/review-b-s2-882f068.json
+blocking_findings: 2
+nonblocking_findings: 5
+retry_recommendation: retry_implementation
+handoff: Route both blockers to Green. (1) In validate_spec_review_payload, reject a finding with more than one line (splitlines) and use SPEC_REVIEW_FINDING_RE.fullmatch. Add cases for '\n', '\r', and U+2028. (2) In the spec-review scope rule, run 'git diff --name-only --no-renames -z', split on NUL, and do not strip. Add a case for ' measure/runs/x'. Neither fix changes the plan contract. Optional: add an ancestor check for --baseline.
+END_MEASURE_AGENT_RESULT

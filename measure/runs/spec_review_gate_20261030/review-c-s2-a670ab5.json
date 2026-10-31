@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Pass. The Phase S2 spec-review contract holds at a670ab5. No blocking defect found. Remediation F1 and F2 from Review B are fixed. Four nonblocking findings stay open: one Major and three Nits.",
+  "role": "measure-review-c-ux-api",
+  "track": "spec_review_gate_20261030",
+  "phase": "Phase S2: The measure-spec-review orchestrator role",
+  "phase_base_sha": "ccdaae22a965f06c64ecde9f735a1ed49db3ce5e",
+  "role_base_sha": "a670ab5deecb89e661c78182d8c9a0e681e4da88",
+  "audited_head_sha": "a670ab5deecb89e661c78182d8c9a0e681e4da88",
+  "contract_applicability": "applicable",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] skills/measure-orchestrator/SKILL.md Model Selection line 146: The text states that role files do not pin a model. agents/measure-spec-review.md line 5 pins model: kimi-for-coding/k3. Rationale: The two rules conflict. A spawn can override the pinned spec reviewer model. Carried from 882f068 and still open. Route to Green for a wording fix.",
+    "F2 [Nit] agents/measure-orchestrator.md lines 19-23: The allow rules name /home/daniel-bo/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py. The host home is /home/daniebo. Rationale: The allow rules may not match the script path on this host. Carried from 882f068. Not rechecked in this pass. Route to Green for a path check.",
+    "F3 [Nit] skills/measure-orchestrator/references/contracts.md line 83: The baseline rule does not name --no-renames or -z. Rationale: The checker uses both options for the scope check. The contract text omits them. Carried from 882f068 and still open. Route to Green for a wording fix.",
+    "F4 [Nit] Spec Review JSON role value: The role file does not state the role value for the spec-review audit JSON. Rationale: The checker does not read the role value. Carried from 882f068. Not rechecked in this pass. Route to Green."
+  ],
+  "evidence": [
+    "HEAD is a670ab5deecb89e661c78182d8c9a0e681e4da88. Git status shows only the pre-existing untracked path extensions/.",
+    "Phase diff ccdaae22..HEAD lists 14 files. The remediation diff 882f068..a670ab5 changes measure/tracks/spec_review_gate_20261030/plan.md and skills/measure-orchestrator/scripts/measure_interphase_checks.py only.",
+    "Remediation F2 is fixed. In-process probe of validate_spec_review_payload: a single-line finding passes. A finding with a mid-text newline, a trailing newline, or a carriage return gets the invalid-format message. A blocker finding with a newline gets the invalid-format message.",
+    "Remediation F2 guard: the U+2028 line separator was not probed. The fullmatch plus splitlines guard covers it by reading the code at checker lines 352-358 only.",
+    "Remediation F1 is fixed. The checker reads the scope listing with git diff --name-only --no-renames -z and splits on NUL. A role-gate run listed 14 paths as sorted '- <path>' lines with no quoting or escaping.",
+    "The role-gate run used the review-c artifact pair as input, so it does not test a spec-review artifact. Its paraphrase failure is expected for that input. Its scope output shows the path format only.",
+    "The failure wording for a missing baseline, an unresolved baseline, a listing error, and an invalid finding matches the phase contract. The missing-baseline and unresolved-baseline messages were confirmed by reading checker lines 628-640 only. The live runs were denied.",
+    "tests/spec_review_gate/run.sh ran 2 suites with PASS=2 and FAIL=0.",
+    "python3 -m unittest discover -s tests/spec_review_gate -p test_checker.py ran 21 tests. Result: OK. This closes the test_checker.py gap from 882f068.",
+    "audit-result --role review-c on the final JSON returned PASS: audit result is valid.",
+    "contracts.md line 83 states the baseline rule. It requires the baseline to resolve. A grep for no-renames and -z in contracts.md, SKILL.md, and agents/measure-spec-review.md returns no match.",
+    "SKILL.md line 146 states that role files do not pin a model. agents/measure-spec-review.md line 5 pins kimi-for-coding/k3. The conflict remains open.",
+    "Note only: the git-failure branch at checker line 638 still splits on newlines. Git error output has no NUL separator. This is not a finding."
+  ],
+  "commands": [
+    "run: git rev-parse HEAD (a670ab5deecb89e661c78182d8c9a0e681e4da88)",
+    "run: git status --short (only ?? extensions/)",
+    "run: bash tests/spec_review_gate/run.sh with the S2 suites (2 suites, PASS=2, FAIL=0)",
+    "run: python3 -I probe that imports measure_interphase_checks.py and calls validate_spec_review_payload on five finding variants",
+    "run: python3 measure_interphase_checks.py role-gate --role spec-review --baseline ccdaae22a965f06c64ecde9f735a1ed49db3ce5e against the review-c artifact pair (scope listing printed; paraphrase failure expected for this input)",
+    "run: python3 measure_interphase_checks.py audit-result --role review-c --file measure/runs/spec_review_gate_20261030/review-c-s2-a670ab5.json (provisional file: PASS)",
+    "run: python3 -B -m unittest discover -s tests/spec_review_gate -p test_checker.py (21 tests, OK)",
+    "run: grep and read of checker lines 555-655 and 338-367, contracts.md line 83, SKILL.md lines 140-150, agents/measure-spec-review.md frontmatter",
+    "not run: role-gate with a missing --baseline and with an unresolved --baseline. The shell calls were denied. Confirmed by reading source only.",
+    "not run: multi-line finding through the full role-gate path. Confirmed by the validator probe only.",
+    "not run: the U+2028 finding probe. Confirmed by reading source only."
+  ],
+  "changed_files": [
+    "measure/runs/spec_review_gate_20261030/review-c-s2-a670ab5.json",
+    "measure/runs/spec_review_gate_20261030/review-c-s2-a670ab5.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "medium"
+}

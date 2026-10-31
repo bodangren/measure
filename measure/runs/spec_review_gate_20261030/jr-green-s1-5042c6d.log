@@ -1,0 +1,79 @@
+MEASURE_AGENT_RESULT
+role: jr-green
+track: spec_review_gate_20261030
+phase: Phase S1: Spec review standard and the new-track review step
+phase_base_sha: 65c7925157bb4189c8c6d3b62c42e8f8d9ae0314
+role_base_sha: 5042c6d68ce8717b47c5527ea87051f325251b17
+head_sha: 6e856e1
+status: pass
+
+tasks:
+- task: "Task 1.3: Green: write skills/measure/references/spec-review.md as the contract states, and copy it to claude-skills/measure/references/spec-review.md."
+  state: "[x]"
+  commit: 1f9e753
+  evidence: "test_s1_standard.sh 16 checks (PASS=16, FAIL=0)"
+- task: "Task 1.4: Green: add step 9 to §2.5 of skills/measure/references/new-track.md and renumber steps 10 and 11. Update the New Track paragraph and the Directory Structure block of skills/measure/SKILL.md. Copy both files to claude-skills/measure/."
+  state: "[x]"
+  commit: 55fde72
+  evidence: "test_s1_new_track.sh 41 checks (PASS=41, FAIL=0); steps 1 to 8 byte-equal to 7d72b40"
+- task: "Task 1.5: Docs and checks: product.md New Track line, README.md command table, CHANGELOG.md Unreleased Features line. Run the S1 command and the full runner."
+  state: "[x]"
+  commit: d462c2e
+  evidence: "GREEN_TEST_COMMAND exits 0"
+
+deferred_tasks: none
+
+red_command:
+  command: "bash tests/spec_review_gate/run.sh 'test_s1_*.sh'"
+  before_green: "exit 1; === spec_review_gate: 2 suites (PASS=0, FAIL=2) ===; test_s1_standard.sh 16 checks (PASS=2, FAIL=14); test_s1_new_track.sh 41 checks (PASS=22, FAIL=19)"
+  after_green: "exit 0; === spec_review_gate: 2 suites (PASS=2, FAIL=0) ==="
+
+green_test_command:
+  command: "bash tests/spec_review_gate/run.sh 'test_s1_*.sh' && bash tests/spec_review_gate/run.sh && diff -r skills/measure claude-skills/measure"
+  exit: 0
+  summary_lines:
+  - "test_s1_new_track.sh: 41 checks (PASS=41, FAIL=0)"
+  - "test_s1_standard.sh: 16 checks (PASS=16, FAIL=0)"
+  - "=== spec_review_gate: 2 suites (PASS=2, FAIL=0) ==="
+  - "diff -r skills/measure claude-skills/measure: no output, exit 0"
+
+new_files:
+- skills/measure/references/spec-review.md
+- claude-skills/measure/references/spec-review.md
+
+changed_files:
+- skills/measure/references/new-track.md
+- claude-skills/measure/references/new-track.md
+- skills/measure/SKILL.md
+- claude-skills/measure/SKILL.md
+- measure/product.md
+- README.md
+- CHANGELOG.md
+
+commits:
+- 1f9e753 docs(measure): Add the spec review standard
+- f52eb25 measure(plan): Mark task 'Green: spec review standard' as complete
+- 55fde72 docs(measure): Add the spec review step to new-track
+- c46f0cf measure(plan): Mark task 'Green: spec review step' as complete
+- d462c2e docs(measure): Document the spec review step
+- 6e856e1 measure(plan): Mark task 'Docs and checks for spec review' as complete
+notes_attached: 1f9e753, 55fde72, d462c2e
+
+checks:
+- "git diff 5042c6d..HEAD -- tests/ is empty; the committed Red tests are unchanged."
+- "git diff 7d72b40 -- skills/measure/references/new-track-set.md is empty."
+- "python3 measure_interphase_checks.py ux-paths --repo . --baseline 65c7925 prints nothing."
+- "measure/doctor.sh does not exist in this repository. The strategy's documented live gate is GREEN_TEST_COMMAND, and it passes."
+
+conservative_defaults:
+- "Kept the nine sub-steps of step 9 as the contract lists them. Split long procedural sentences to obey ASD-STE100 without changing the required strings."
+- "The Author Response forms stay in the S1 shapes. S3 replaces them later, as spec Decision 10 states."
+- "Did not rebuild claude-skills/measure.skill (spec Decision 4)."
+- "Did not stage the untracked extensions/ folder."
+
+handoff:
+- "Phase S1 Green is complete. Tasks 1.3, 1.4, and 1.5 are [x] with SHA evidence in plan.md."
+- "The phase acceptance role should run the closeout gate of the strategy: GREEN_TEST_COMMAND, py_compile, bash -n on tests/spec_review_gate/*.sh, check-parity.sh, bun test plugins/opencode-measure-guard, the new-track-set.md diff, and ux-paths."
+- "Read step 9 of new-track.md as prose. Confirm that an agent can do each sub-step without a guess, as the strategy requires."
+- "No human-gated work is in this phase. No task needs a [b] marker."
+END_MEASURE_AGENT_RESULT

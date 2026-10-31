@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S1: Spec review standard and the new-track review step (review remediation round 2, F1–F5)
+commits: 54862aa, ff361ff
+tests_run: bash tests/spec_review_gate/run.sh 'test_s1_*.sh' -> exit 0, 2 suites (PASS=2, FAIL=0), test_s1_new_track.sh 41 checks (PASS=41, FAIL=0), test_s1_standard.sh 16 checks (PASS=16, FAIL=0); bash tests/spec_review_gate/run.sh -> exit 0, 2 suites (PASS=2, FAIL=0); diff -r skills/measure claude-skills/measure -> exit 0, no output; steps 1 to 8 of §2.5 equal git object 7d72b40 (independent Python compare)
+files_changed: skills/measure/references/new-track.md, skills/measure/references/spec-review.md, and byte-identical copies in claude-skills/measure/
+plan_updates: no task marker changed. One plain line under Task 1.4: "  - Review remediation F1–F5: 54862aa". Task 1.4 stays [x] with SHA 55fde72.
+known_failures: none
+handoff: F1 fixed - sub-step 8 now has Header `Spec review commit`, Question "Do you approve the commit?", and Options **Approve the commit** / **Stop** / Type your own answer. It says "Wait for the user's response." and "Step 10 runs only after the user approves the commit." F2 fixed - sub-step 4 tells the author to check the returned text for a secret value (a key, a token, a password) and to replace the value with its file and line. The sentence "Write the returned text" keeps its other meaning. F3 fixed - sub-step 5 and sub-step 8 use one format, the same Header, Question, and Options structure as §2.2. F4 fixed - the standard Re-Review Limit now gives "at most one re-review" as plain text. F5 fixed - the not-run form in the standard has a blank line between each of its three lines, and all Red tests still pass. Guard note: measure-guard denies edits outside measure/ while no task has [~]. I set Task 1.4 to [~] in the working tree for the edits only, restored it to [x] with SHA 55fde72 before each commit, and both commits carry all S1 tasks as [x]. No test file changed. Every S1 contract string and every Red test string is preserved. Steps 1 to 8 and steps 10 to 11 of §2.5 are unchanged, and new-track-set.md is untouched.
+END_MEASURE_AGENT_RESULT

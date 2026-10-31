@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: blocked
+track: spec_review_gate_20261030
+phase: Phase S4 remediation round 3
+commits: bee2313 docs(audit): Name the drift sources and check methods after the S4 reviews; 8f584ba measure(plan): Record the second S4 review remediation (final HEAD)
+tests_run: bash tests/spec_review_gate/run.sh 'test_s4_*.sh' => 1 suite (PASS=1, FAIL=0), 26 checks (PASS=26); bash tests/spec_review_gate/run.sh => 9 suites (PASS=8, FAIL=1). The only failing suite is test_s3_adversarial.sh. Its two G19 live-corpus checks fail on measure/runs/spec_review_gate_20261030/review-c-s4-a02740f.log, a Review C artifact with 'F1=withdrawn ... F4=withdrawn ... F2=holds on a02740f', which the checker rejects. diff -r skills/measure claude-skills/measure => empty.
+files_changed: agents/measure-orchestrator-audit.md, measure/tracks/spec_review_gate_20261030/plan.md
+plan_updates: Task 4.3 stays [x] with 4879740. Added the plain line 'Review remediation F1–F7 (Review A F1–F4, Review C F7–F8, Review B N4): bee2313; F1 contested, F3 declined'. Task 4.3 was [~] in the working tree during the edit only.
+known_failures: test_s3_adversarial.sh G19 fails on the foreign log measure/runs/spec_review_gate_20261030/review-c-s4-a02740f.log (mtime 11:12, after the round-2 gate at a02740f passed 9/9). The log's dispositions line uses 'withdrawn' and 'holds', which are not contract dispositions. This role did not edit or remove the artifact, because reviewer evidence must stay true. The S4 targeted command passes, and the other 8 suites pass. The failure does not depend on the round-3 diff: the S3 suite reads measure/runs logs only.
+dispositions: F1=CONTEST(test-strategy.md:264 makes a missing document exit 0 with no candidate line the contract result, and the plan S4 contract fixes the recipe text); F2=FIX; F3=DECLINE; F4=FIX; F5=FIX; F6=FIX; F7=FIX
+handoff: Blocked on one decision outside this role. The required GREEN_TEST_COMMAND cannot exit 0 while measure/runs/spec_review_gate_20261030/review-c-s4-a02740f.log holds 'dispositions: F1=withdrawn ...; F4=withdrawn; F5=withdrawn; F2=holds on a02740f; F3=holds on a02740f'. Option A (recommended): route the log back to the Review C role so that its dispositions line uses only FIX, CONTEST, ESCALATE, or DECLINE, then re-run the full runner. Option B: the orchestrator confirms that this live-corpus failure is accepted as an artifact of the review run. The round-3 changes are committed and green under the S4 targeted command. role_base_sha a02740ff80f111d947d7321525b3d5f47355e392; final HEAD 8f584ba. A11 catalogs, tests/, and the out-of-scope audit items do not change.
+END_MEASURE_AGENT_RESULT

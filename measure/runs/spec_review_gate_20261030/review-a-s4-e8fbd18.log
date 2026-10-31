@@ -1,0 +1,21 @@
+Review A (measure-review-a-correctness) on Phase S4 at e8fbd18. Status: pass.
+
+Evidence was run by the orchestrator at HEAD e8fbd186b64ec375d034a6c155c0132b7d5114db:
+- The probe exits 0. The A11 recipe matches in all three copies. A missing document gives one candidate line and exit 0. Both-present output equals the 8f584ba recipe output.
+- The runner exits 0 with PASS=9, FAIL=0.
+- F5 is withdrawn. Role Order item 7 runs adversarial testing after review, so the missing suite is expected at this step.
+
+No blocker remains.
+
+MEASURE_AGENT_RESULT
+role: measure-review-a-correctness
+status: pass
+track: spec_review_gate_20261030
+phase: Phase S4: Doc drift check in the weekly audit
+commits: none
+tests_run: orchestrator-run runner PASS=9 FAIL=0; orchestrator-run probe exit 0
+files_changed: measure/runs/spec_review_gate_20261030/review-a-s4-e8fbd18.json, measure/runs/spec_review_gate_20261030/review-a-s4-e8fbd18.log, measure/runs/spec_review_gate_20261030/probe-review-a-s4-1.py
+plan_updates: none
+known_failures: none
+handoff: none
+END_MEASURE_AGENT_RESULT

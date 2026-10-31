@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-c
+status: fail
+track: spec_review_gate_20261030
+phase: S3 Finding dispositions
+commits: b1d1530
+tests_run: none. Audit-only. The S3 docs test could not run because the shell was denied.
+files_changed: measure/runs/spec_review_gate_20261030/review-c-s3-b1d1530.json, measure/runs/spec_review_gate_20261030/review-c-s3-b1d1530.log
+plan_updates: none
+known_failures: F11 Blocker: test-strategy.md:193 and plan.md:173 place the dispositions line below the template, but contracts.md:108 and the checker require it inside the block. F10 Major: contracts.md:133-137 worked example misapplies the keep rule to an unrouted F3. F12 Nit: contracts.md:147 repeats the same-HEAD sentence. Validator not run on the final JSON. S3 docs test not run.
+handoff: Route F11 to Green through the orchestrator. Green must align test-strategy.md:193 and plan.md:173 with contracts.md:108, or the orchestrator must decide the placement. Route F10 to Green with F7 still open. Then rerun review-c on the new HEAD and run the audit-result validator and the S3 docs test. Escalate to the user because the retry recommendation is escalate_human.
+END_MEASURE_AGENT_RESULT

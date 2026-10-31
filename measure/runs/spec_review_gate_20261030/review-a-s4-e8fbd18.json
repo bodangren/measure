@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "role": "measure-review-a-correctness",
+  "status": "pass",
+  "summary": "Phase S4 at e8fbd18 has no blocking finding. The A11 recipe matches in all three copies, reports a missing document with exit 0, and the runner passes 9 of 9 suites.",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "e8fbd186b64ec375d034a6c155c0132b7d5114db",
+  "audited_head_sha": "e8fbd186b64ec375d034a6c155c0132b7d5114db",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "F1 verified: the probe at e8fbd18 shows the A11 recipe body identical in anti-pattern-catalog.md, measure/anti-patterns.md, and plan.md after the fence indent is removed (catalog vs anti: True; catalog vs plan: True).",
+    "F1 verified: with measure/product.md missing, the recipe prints one candidate line for that document and exits 0 with empty stderr. The former recipe printed nothing for a missing document.",
+    "F1 verified: with both documents present, the new recipe gives the same candidate lines as the 8f584ba recipe (same as old recipe: True). The live repository candidates are equal (True).",
+    "F1 verified: the sentence 'finds only path claims and missing documents' is present in the catalog, anti-patterns.md, and the plan contract.",
+    "F5 withdrawn: Role Order item 7 runs measure-adversarial-testing after Review A on the reviewed HEAD. test-strategy.md line 263 assigns tests/spec_review_gate/test_s4_adversarial.sh to that role. Its absence at Review A is expected.",
+    "Runner verified: bash tests/spec_review_gate/run.sh exit 0 with '=== spec_review_gate: 9 suites (PASS=9, FAIL=0) ===' at e8fbd18 (orchestrator-run, git rev-parse HEAD verified).",
+    "Doc drift detector: steps 1 to 4 of ## Doc drift detector name the A11 recipe, the DRIFT output form, and the scope. No step requires a guess."
+  ],
+  "commands": [
+    "git rev-parse HEAD (orchestrator-run): e8fbd186b64ec375d034a6c155c0132b7d5114db",
+    "python3 -I measure/runs/spec_review_gate_20261030/probe-review-a-s4-1.py (orchestrator-run): exit 0",
+    "bash tests/spec_review_gate/run.sh (orchestrator-run): exit 0, PASS=9, FAIL=0"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

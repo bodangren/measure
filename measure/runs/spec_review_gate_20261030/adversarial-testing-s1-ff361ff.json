@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Adversarial testing of the S1 runner and the S1 contract tests found no contract defect. The new suite test_s1_adversarial.sh has 103 checks and all pass. Four broken runner copies each fail the suite. Five nonblocking items stay open.",
+  "role": "measure-adversarial-testing",
+  "track": "spec_review_gate_20261030",
+  "phase": "Phase S1: Spec review standard and the new-track review step",
+  "phase_base_sha": "65c7925157bb4189c8c6d3b62c42e8f8d9ae0314",
+  "role_base_sha": "ff361ff9fcb0c93c6ab9998b4857f47df5885018",
+  "audited_head_sha": "ff361ff9fcb0c93c6ab9998b4857f47df5885018",
+  "test_commit_sha": "4f1f290",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "SELF [tests/spec_review_gate/run.sh:29-37] The pattern '*.sh' or 'run.sh' selects run.sh as a suite. The nested runner uses the default patterns, so the run ends. The output then has two summary lines; only the last line is the result. The contract does not exclude run.sh. Consider an exclusion of run.sh.",
+    "SYMLINK [tests/spec_review_gate/run.sh:32] The test [ -f \"$f\" ] follows symbolic links. A link test_link.sh -> ../../outside.sh in the suite folder ran the file outside the folder. A user with write access to the folder is necessary. Consider [ -L \"$f\" ] as a skip condition.",
+    "PYGLOB [tests/spec_review_gate/run.sh:53] The runner passes a .py file name to unittest discover -p, which reads it as a glob. The suite test_[ab].py ran test_a.py instead. The plan contract (plan.md:32) prescribes this command, so the runner obeys the contract. The case needs a file name with glob characters.",
+    "MKTEMP [tests/spec_review_gate/test_s1_standard.sh:19, tests/spec_review_gate/test_s1_new_track.sh:22] With TMPDIR=/nonexistent_dir_xyz, mktemp -d fails and TMP is empty. Both suites exit 1, so they fail closed. They try to write /no-severity.md, /good.md, /diff.out, and /mix/ at the file system root. As root these writes succeed. Add a mktemp check, as test_s1_adversarial.sh does.",
+    "PYZERO [tests/spec_review_gate/run.sh:53] A .py suite with zero tests, or a .py name that discover cannot import (a hyphen or a space), gives FAIL only because Python 3.12 and later exit 5 for NO TESTS RAN. On Python 3.11 or earlier, the same suite gives a vacuous PASS. This host has Python 3.14.4."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned ff361ff9fcb0c93c6ab9998b4857f47df5885018 before the test commit. The test commit is 4f1f290 and changes only tests/spec_review_gate/test_s1_adversarial.sh.",
+    "The plan contract (plan.md:30-34) defines the runner: glob patterns relative to the suite folder, sorted order, one suite per file, the summary line, and exit 1 when a suite fails or no file matches.",
+    "Runner probes on copies of run.sh: a pattern that matches nothing exits 1, prints 'no suites matched', and prints 0 suites (PASS=0, FAIL=0).",
+    "Runner probes: the patterns '../test_out.sh', '../*.sh', an absolute path, 'sub/test_in.sh', 'sub/*.sh', './test_none.sh', and '..' run nothing, exit 1, and print 'no suites matched'.",
+    "Runner probes: one failing suite among three passing suites exits 1 with 4 suites (PASS=3, FAIL=1). All four suites ran.",
+    "Runner probes: a suite with exit 7 and a suite killed by SIGKILL count as FAIL, and the runner exits 1. A suite that prints a false summary line does not change the last line.",
+    "Runner probes: names with a space run as one suite each; no word split ran the decoy files y.sh or test_x. A .py import error and a .py syntax error each count as FAIL, with 4 suites (PASS=2, FAIL=2).",
+    "Runner probes: in each summary line, N equals PASS plus FAIL. Duplicate patterns run a file once. Shell syntax in a pattern ran no command.",
+    "Mutation probes: 19 mutated copies of the S1 inputs each turn the target check from PASS to FAIL. The baseline copies give PASS for the same 18 target checks first.",
+    "A7 probes: 'Never add a spec-review line to this index.' in the step 5 block and 'Do not run spec-review in a track set.' in new-track-set.md each give FAIL. The tests have no exclusion filter.",
+    "A7 scope probes: the no-history sentence outside Reviewer Input, Apache-2.0 outside the intro, the role-gate text outside the row, and the forbid sentence in the step 10 block each give FAIL.",
+    "A4 probes: runner stubs that always exit 0, or always report no suites, make test_s1_new_track.sh report FAIL for the runner checks.",
+    "Sensitivity of the new suite: runner copies without the '..' filter, without dedup, with exit 0 on failure, and without .py selection give FAIL=7, FAIL=8, FAIL=17, and FAIL=5.",
+    "A4 all-[~] probe: not applicable. The S1 tests have no plan marker check.",
+    "A5 probe: the Red evidence in plan.md Task 1.2 was rerun from a git archive of dbd7127. The run gave 2 suites (PASS=0, FAIL=2), exit 1, and 16 checks (PASS=2, FAIL=14). test_s1_new_track.sh gave 41 checks (PASS=21, FAIL=20) against the claimed 22 and 19; the extra FAIL is the steps 1-8 check, which needs git history that the archive copy does not have.",
+    "PROJECT_TESTS: bash tests/spec_review_gate/run.sh exited 0 with 3 suites (PASS=3, FAIL=0). bun test plugins/opencode-measure-guard exited 0 with 85 pass and 0 fail."
+  ],
+  "commands": [
+    "git rev-parse HEAD (exit 0; ff361ff9fcb0c93c6ab9998b4857f47df5885018)",
+    "bash tests/spec_review_gate/test_s1_adversarial.sh (exit 0; 103 checks, PASS=103, FAIL=0)",
+    "bash test_s1_adversarial.sh in four temporary trees with broken run.sh copies (each exit 1; FAIL=7, 8, 17, 5)",
+    "TMPDIR=/nonexistent_dir_xyz bash tests/spec_review_gate/test_s1_standard.sh (exit 1; writes to / attempted)",
+    "TMPDIR=/nonexistent_dir_xyz bash tests/spec_review_gate/test_s1_new_track.sh (exit 1; writes to / attempted)",
+    "git archive dbd7127 into a temporary folder, then bash tests/spec_review_gate/run.sh 'test_s1_*.sh' (exit 1; 2 suites PASS=0, FAIL=2)",
+    "bash tests/spec_review_gate/run.sh (exit 0; 3 suites, PASS=3, FAIL=0)",
+    "bun test plugins/opencode-measure-guard (exit 0; 85 pass, 0 fail)",
+    "git commit test(spec-review): Adversarial tests for the S1 runner and contract tests (4f1f290, git note attached)",
+    "python3 /home/daniebo/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role adversarial-testing --file measure/runs/spec_review_gate_20261030/adversarial-testing-s1-ff361ff.json (result in the log)"
+  ],
+  "changed_files": [
+    "tests/spec_review_gate/test_s1_adversarial.sh",
+    "measure/runs/spec_review_gate_20261030/adversarial-testing-s1-ff361ff.json",
+    "measure/runs/spec_review_gate_20261030/adversarial-testing-s1-ff361ff.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

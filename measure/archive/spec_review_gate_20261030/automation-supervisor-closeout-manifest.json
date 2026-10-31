@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track_id": "spec_review_gate_20261030",
+  "track_title": "Spec review gate, finding dispositions, and doc drift check",
+  "phase": "track review",
+  "closeout_date": "2026-10-31",
+  "pre_closeout_head_sha": "8a8efe2306f617c42aaae2abd71960d33bc0e9ad",
+  "audited_head_sha": "8a8efe2306f617c42aaae2abd71960d33bc0e9ad",
+  "track_base_sha": "7d72b40665074a89f5be606935cad94a1ef1e4e9",
+  "closeout_status": "pass",
+  "audits": {
+    "final_acceptance": {
+      "result_file": "measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.json",
+      "status": "pass",
+      "blocking_findings": 0,
+      "nonblocking_findings": 21,
+      "confidence": "high",
+      "retry_recommendation": "none"
+    },
+    "phase_acceptance": [
+      {
+        "phase": "S1",
+        "result_file": "measure/runs/spec_review_gate_20261030/phase-acceptance-s1-4f1f290.json",
+        "status": "pass",
+        "audited_head_sha": "4f1f290",
+        "blocking_findings": 0,
+        "nonblocking_findings": 4,
+        "confidence": "high"
+      },
+      {
+        "phase": "S2",
+        "result_file": "measure/runs/spec_review_gate_20261030/phase-acceptance-s2-25b9064.json",
+        "status": "pass",
+        "audited_head_sha": "25b9064",
+        "blocking_findings": 0,
+        "nonblocking_findings": 5,
+        "confidence": "high"
+      },
+      {
+        "phase": "S3",
+        "result_file": "measure/runs/spec_review_gate_20261030/phase-acceptance-s3-23c72ed.json",
+        "status": "pass",
+        "audited_head_sha": "23c72ed",
+        "blocking_findings": 0,
+        "nonblocking_findings": 4,
+        "confidence": "high"
+      },
+      {
+        "phase": "S4",
+        "result_file": "measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.json",
+        "status": "pass",
+        "audited_head_sha": "8a8efe2",
+        "blocking_findings": 0,
+        "nonblocking_findings": 1,
+        "confidence": "high"
+      }
+    ],
+    "anti_patterns": {
+      "A5_false_claims_in_plan": "pass, checked by closeout review of the archived plan",
+      "A6_registry_note_matches_adversarial_state": "pass, registry entry names no adversarial state claim",
+      "A9_archived_track_path": "not triggered. No active-path reference to measure/tracks/spec_review_gate_20261030 in tests/, skills/, agents/, or measure/ outside runs/ and archive/",
+      "A11_doc_drift": "pass, the S4 recipe exits 0 and reports 3 DRIFT candidates recorded as nonblocking"
+    }
+  },
+  "plan_state": {
+    "tasks_done": 19,
+    "tasks_in_progress": 0,
+    "tasks_space_marker": 0,
+    "tasks_human_gated_deferred": 0,
+    "checkpoints": {
+      "S1": "4f1f290",
+      "S2": "25b9064",
+      "S3": "23c72ed",
+      "S4": "8a8efe2"
+    }
+  },
+  "commands": [
+    "bash tests/spec_review_gate/run.sh -> exit 0, 10 suites PASS=10 FAIL=0, 28 unittest tests OK, 26 S4 checks PASS=26",
+    "grep -rln \"measure/tracks/spec_review_gate_20261030\" tests/ skills/ agents/ -> no match (exit 1)",
+    "grep -rn \"measure/tracks/spec_review_gate_20261030\" measure/ --exclude-dir=runs --exclude-dir=archive -> no match",
+    "git mv measure/tracks/spec_review_gate_20261030 measure/archive/spec_review_gate_20261030",
+    "python3 -I -c os.remove(measure/runs/spec_review_gate_20261030/test_s3_adversarial.sh.draft) -> exit 0"
+  ],
+  "shas": {
+    "track_base": "7d72b40",
+    "s1_checkpoint": "4f1f290",
+    "s2_checkpoint": "25b9064",
+    "s3_checkpoint": "23c72ed",
+    "s4_checkpoint": "8a8efe2",
+    "amendments_and_remediations": ["eef86ff", "1dc03cf", "ccdaae2", "a3600f8", "8d5b4cc", "d3e764a"],
+    "closeout_commit": "recorded by git log after this commit"
+  },
+  "retained_evidence": [
+    "measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.json",
+    "measure/runs/spec_review_gate_20261030/final-acceptance-8a8efe2.log",
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s1-4f1f290.json",
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s2-25b9064.json",
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s3-23c72ed.json",
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.json",
+    "measure/runs/spec_review_gate_20261030/closeout-8a8efe2.json",
+    "measure/runs/spec_review_gate_20261030/closeout-8a8efe2.log",
+    "measure/runs/spec_review_gate_20261030/review-a-*, review-b-*, review-c-*, probe-*, jr-green-*, mid-red-*, adversarial-testing-*, strategy-* (run evidence, all retained)"
+  ],
+  "artifact_cleanup": {
+    "deleted": ["measure/runs/spec_review_gate_20261030/test_s3_adversarial.sh.draft"],
+    "absent": ["S4 draft test file (not present, no action)"],
+    "retained": "All other run artifacts are retained. The orchestrator did not identify any bulky artifact for deletion."
+  },
+  "sprint_stories": {
+    "S1": "pending",
+    "S2": "pending",
+    "S3": "pending",
+    "S4": "pending",
+    "note": "Sprint story statuses stay pending by conservative default. The orchestrator decides any update."
+  },
+  "open_items": {
+    "nonblocking_findings_final_acceptance": 21,
+    "count_note": "An earlier summary stated 33 nonblocking findings. The final acceptance JSON holds 21. This record uses 21."
+  }
+}

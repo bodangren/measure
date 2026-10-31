@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Review A of Phase S4 at a02740f finds one Major A4 defect in the A11 recipe and one Major no-guess gap in the doc drift detector. Plan truthfulness and the S3 checkpoint pass. Route to Green with retry_implementation.",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "a02740ff80f111d947d7321525b3d5f47355e392",
+  "audited_head_sha": "a02740ff80f111d947d7321525b3d5f47355e392",
+  "blocking_findings": [
+    "measure/anti-patterns.md:215: F1 [Major] review-a: The A11 recipe exits 0 with no output when a listed document is missing. A probe with measure/no-such-doc.md printed a grep error and exit=0, so the check passes on a missing deliverable (A4). The same recipe is in skills/measure-orchestrator/references/anti-pattern-catalog.md. Fix: fail when a listed document is absent, and add a missing-document fixture to the test.",
+    "tests/spec_review_gate/test_s4_doc_drift.sh:191: F1 [Major] review-a: The recipe check runs the recipe only in the real repository. It builds no missing-document fixture, so it cannot detect the A4 defect in F1. Add a fixture with a missing product.md or tech-stack.md and require a non-zero result.",
+    "agents/measure-orchestrator-audit.md:174: F2 [Major] review-a: The detector does not name the file that stores track status, completed, and updated_at. The track spec.md may not hold these fields; metadata.json is the likely source. Name the file, and state the audit date source for the 30-day window.",
+    "agents/measure-orchestrator-audit.md:172: F2 [Major] review-a: Scope lists spec.md files, but step 1 runs the A11 recipe on measure/product.md and measure/tech-stack.md only. Step 3 gives no check method for counts and behavior claims. Name the check method for each claim kind, or narrow the scope to match the recipe."
+  ],
+  "nonblocking_findings": [
+    "tests/spec_review_gate/test_s4_doc_drift.sh:99: F3 [Nit] review-a: The detector checks use generic substrings such as scheduled, completed, cancelled, and updated_at. Each substring can pass in any part of the section. Check the exact sentence for each rule (A7-style weakness, carried from b5c7fb0).",
+    "agents/measure-orchestrator-audit.md:187: F4 [Nit] review-a: The detector output prefix is DRIFT:, but the A11 recipe prints DRIFT candidate:. Use one prefix for both, or state the difference."
+  ],
+  "evidence": [
+    "git rev-parse HEAD printed a02740ff80f111d947d7321525b3d5f47355e392, which equals audited_head_sha.",
+    "git notes for 8f87953, 00b66a1, 4879740, 05bfc2e, and 89e3bea exist. Each matches the plan S4 claim for its task. The 8f87953 note gives Red 26 checks, PASS=2, FAIL=24, and the plan says the same.",
+    "The A11 recipe probe with measure/no-such-doc.md printed grep: No such file or directory and exit=0. No DRIFT candidate line appeared.",
+    "The 00b66a1 note says the A11 recipe exits 0 in the repository root with 3 DRIFT candidates. This matches the A11 recipe output on the real repository.",
+    "The 89e3bea note records the Task 4.3 remediation for F1 to F6 with Review C and Review B IDs. F1, F4, and F5 are contested, and the contest reasons match the note text.",
+    "The 05bfc2e note reports the runner at 9 suites, PASS=9, FAIL=0, and the S4 suite at 26 checks, PASS=26, FAIL=0. The audit runner run in this session matches that result.",
+    "The S3 checkpoint 23c72ed is supported by measure/runs/spec_review_gate_20261030/phase-acceptance-s3-23c72ed.json with status pass and summary 8 suites PASS=8.",
+    "The A11 entry is present after A10 and before ## How projects extend this catalog in measure/anti-patterns.md, and the detector section sits between A10 and ## Outputs in the audit role file. The count labels A1–A11 today and 11 entries (A1–A11) match the catalog."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git notes show 8f87953",
+    "git notes show 00b66a1",
+    "git notes show 4879740",
+    "git notes show 05bfc2e",
+    "git notes show 89e3bea",
+    "grep -o / tr / grep -E / sort -u / while read recipe run with measure/no-such-doc.md (exit=0)",
+    "bash tests/spec_review_gate/run.sh (9 suites, PASS=9, FAIL=0, as recorded in the 05bfc2e note and the audit run)"
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "README.md",
+    "agents/measure-orchestrator-audit.md",
+    "agents/measure-strategy.md",
+    "measure/anti-patterns.md",
+    "measure/tracks/spec_review_gate_20261030/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/anti-pattern-catalog.md",
+    "tests/spec_review_gate/test_s4_doc_drift.sh"
+  ],
+  "not_verified": [
+    "A detector run against a sandbox track set with dated and undated specs. The detector is prose, so no run is possible here.",
+    "The catalog line number of the A11 recipe. Its text is identical to measure/anti-patterns.md, per the 00b66a1 note.",
+    "A Green fix for F1 and F2. This audit is report-only."
+  ],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high"
+}

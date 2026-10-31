@@ -1,0 +1,9 @@
+MEASURE_AGENT_RESULT
+role: review-c
+status: pass
+phase: S3 Finding dispositions
+audited_head_sha: 33f608d57ba7a0935eafed123c6648e6e9c59d0f
+summary: Contract audit at 33f608d finds no contract defect. The single suite failure comes from a race in the test harness. The race is routed as nonblocking F14 to the adversarial role.
+nonblocking_findings: F14 [Major] review-c: in_text() in tests/spec_review_gate/test_s3_dispositions_docs.sh:56 races under pipefail. Route the harness fix to the adversarial role.
+retry_recommendation: none
+END_MEASURE_AGENT_RESULT

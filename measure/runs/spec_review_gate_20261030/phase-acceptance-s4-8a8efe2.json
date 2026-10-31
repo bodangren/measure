@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S4",
+  "phase_heading": "Phase S4: Doc drift check in the weekly audit",
+  "status": "pass",
+  "summary": "Phase S4 passes acceptance at 8a8efe2. The full runner exits 0 with 10 suites PASS=10. The orchestrator ran the audit-result validator on this JSON and it printed PASS. One nonblocking note remains on the A11 recipe candidates.",
+  "phase_base_sha": "4be31b2bc3eded3f8200857a9d4768149590b71a",
+  "role_base_sha": "8a8efe2306f617c42aaae2abd71960d33bc0e9ad",
+  "audited_head_sha": "8a8efe2306f617c42aaae2abd71960d33bc0e9ad",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "skills/measure-orchestrator/references/anti-pattern-catalog.md:208 and measure/anti-patterns.md:209: The A11 recipe reports three DRIFT candidates in measure/tech-stack.md: claude-code/testing, commands/, and node_modules/. The measure/tracks/spec_review_gate_20261030/test-strategy.md S4 section records these as path-like text, not drift. The contract requires only exit 0. Route to the A11 recipe owner in a later remediation to narrow the path pattern."
+  ],
+  "evidence": [
+    "git rev-parse HEAD gives 8a8efe2306f617c42aaae2abd71960d33bc0e9ad, equal to role_base_sha and audited_head_sha.",
+    "git diff --name-only e8fbd18 8a8efe2 lists measure/tracks/spec_review_gate_20261030/plan.md and tests/spec_review_gate/test_s4_adversarial.sh only. The plan change is one line: the Task 4.2 amendment names eef86ff.",
+    "The prerequisite results target e8fbd18, not 8a8efe2. The delta check confirms that the change set is limited to the test file and one plan line, so the prerequisite results still apply. The orchestrator records this as a deviation under Role Order.",
+    "bash tests/spec_review_gate/run.sh -> EXIT=0, '=== spec_review_gate: 10 suites (PASS=10, FAIL=0) ===', read from the saved output. test_s4_adversarial.sh PASS=75. test_s4_doc_drift.sh PASS=26, FAIL=0.",
+    "A11 byte check: the A11 block (heading to the next --- line) in skills/measure-orchestrator/references/anti-pattern-catalog.md is byte-identical to the block in measure/anti-patterns.md (cmp, CATALOGS_IDENTICAL).",
+    "S4 contract (plan.md lines 195-260 at 8a8efe2): the A11 entry, the Doc drift detector section, the 30-day window, the DRIFT form, the count changes, the CHANGELOG credit, and the README row. The 26 checks in test_s4_doc_drift.sh cover each item and pass.",
+    "A5: the S4 plan text claims no 'PASS=N' or 'all checks pass' count. The Red evidence line (PASS=2, FAIL=24 at 8f87953) is historical and matches the git note on that commit.",
+    "A1, A3, A4, A6, A7: the S4 phase diff changes no supervisor regex, no count assertion, no markers-consistent check, no tracks registry, and no filter that the suites do not already test. These checks do not apply.",
+    "SHAs 8f87953, 00b66a1, 4879740, 05bfc2e, and eef86ff exist (git cat-file -t gives commit). The Red note on 8f87953 is present.",
+    "Gates at 8a8efe2: bash tests/spec_review_gate/run.sh 'test_s4_*.sh' PASS=2 FAIL=0; diff -r skills/measure claude-skills/measure EXIT 0; py_compile of the checker and test_checker.py EXIT 0; bash -n on each suite EXIT 0; check-parity.sh parity ok EXIT 0; bun test plugins/opencode-measure-guard 85 pass, 0 fail, EXIT 0; git diff --quiet on new-track-set.md EXIT 0; ux-paths EXIT 0 with no output.",
+    "Orchestrator-run result: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role phase-acceptance --file measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.json printed 'PASS: audit result is valid' and exited 0 at HEAD 8a8efe2306f617c42aaae2abd71960d33bc0e9ad.",
+    "Review and audit: the S4 phase has no UI path, so browser review does not apply."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> 8a8efe2306f617c42aaae2abd71960d33bc0e9ad, exit 0",
+    "git diff --name-only e8fbd18 8a8efe2 -> 2 files, exit 0",
+    "bash tests/spec_review_gate/run.sh -> EXIT=0, 10 suites (PASS=10, FAIL=0)",
+    "bash tests/spec_review_gate/run.sh 'test_s4_*.sh' -> adversarial PASS=75, doc drift PASS=26, FAIL=0",
+    "cmp of the A11 block in both catalogs -> identical, exit 0",
+    "git cat-file -t 8f87953 00b66a1 4879740 05bfc2e eef86ff -> commit for each, exit 0",
+    "git notes show 8f87953 -> Red evidence note present",
+    "diff -r skills/measure claude-skills/measure -> exit 0",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh -> parity: ok, exit 0",
+    "bun test plugins/opencode-measure-guard -> 85 pass, 0 fail, exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py ux-paths --repo . --baseline 8a8efe2 -> exit 0, no output",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role phase-acceptance --file measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.json -> PASS: audit result is valid, exit 0 (orchestrator-run at 8a8efe2)"
+  ],
+  "changed_files": [
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.json",
+    "measure/runs/spec_review_gate_20261030/phase-acceptance-s4-8a8efe2.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

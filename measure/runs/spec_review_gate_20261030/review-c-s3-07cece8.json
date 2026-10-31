@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "role": "review-c",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S3",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "audited_head_sha": "07cece83540468b6026fff6b661228385a064e6e",
+  "status": "fail",
+  "summary": "Phase S3 routing of finding dispositions has six verified defects: an incomplete routing loop, an ambiguous keep rule, missing route parity in two audit roles, a missing user decision point in new-track step 9, a severity scale conflict between review.md and contracts.md, and a checker copy divergence in the host install path. The dispositions line format and checker regex are consistent.",
+  "contract_applicability": {
+    "applicable": true,
+    "basis": "Phase S3 changes the inter-role routing contract: finding ids, dispositions line, re-review rounds, and user escalation. These define the flow between the Green role, audit roles, the orchestrator, and the user, so the endpoint and flow contract applies.",
+    "path_evidence": [
+      "skills/measure-orchestrator/references/contracts.md:85-124",
+      "agents/measure-jr-green.md:34-48",
+      "skills/measure/references/new-track.md:312-313",
+      "skills/measure/references/review.md:170",
+      "skills/measure/references/review.md:192-196",
+      "skills/measure/references/spec-review.md:69",
+      "skills/measure/references/spec-review.md:83-87",
+      "skills/measure-orchestrator/SKILL.md:145-146",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py:83-84",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py:418",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py:630"
+    ]
+  },
+  "blocking_findings": [
+    "F1 [Major] review-c: The routing loop has no rule for a round that contains only CONTEST items. skills/measure/references/spec-review.md:69 runs a second round only when spec.md or plan.md changed. skills/measure/references/new-track.md:312-313 sends CONTEST items to the raiser but does not state the outcome when no file changes.",
+    "F2 [Major] review-c: The keep-and-withdraw paragraph in five audit roles ends with \"in your earlier list.\" This wording does not define a fresh re-review. The affected files are agents/measure-review-a-correctness.md:61-63, agents/measure-review-b-security.md:61-63, agents/measure-review-c-ux-api.md:54-56, agents/measure-phase-acceptance.md:72-74, and agents/measure-spec-review.md:77-79.",
+    "F3 [Major] review-c: agents/measure-adversarial-testing.md and agents/measure-ux-browser-review.md contain no CONTEST, withdraw, dispositions, routed-finding, or retry_recommendation text. skills/measure-orchestrator/references/contracts.md:92 lists both scopes as routed finding sources, so route parity is missing.",
+    "F4 [Major] review-c: skills/measure/references/new-track.md step 9 has no user decision point for ESCALATE items and for CONTEST items kept after re-review. skills/measure-orchestrator/SKILL.md:145-146 assigns these items to the user, so the flow does not match the orchestrator contract.",
+    "F5 [Major] review-c: skills/measure/references/review.md:196 allows DECLINE only for a Low finding, and review.md:170 uses the scale Critical, High, Medium, Low. skills/measure-orchestrator/references/contracts.md:92-99 allows DECLINE only for a Nit finding in contracts.md and spec-review.md, and uses the scale Blocker, Major, Nit. The two documents conflict on the severity scale for DECLINE.",
+    "F6 [Major] review-c: The checker copy at ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py has no dispositions_feedback function and no DISPOSITIONS regex. The repo copy at skills/measure-orchestrator/scripts/measure_interphase_checks.py:83-84, 418, and 630 has both. measure/tracks/spec_review_gate_20261030/plan.md cites the ~/.agents path as the validator, so the enforcement check does not run from that path."
+  ],
+  "nonblocking_findings": [
+    "F7 [Nit] review-c: skills/measure-orchestrator/references/contracts.md:85-124 has no worked example of the dispositions line. agents/measure-jr-green.md:34-48 contains one example, so the contract reference lacks a reference example.",
+    "F8 [Nit] review-c: contracts.md uses both \"required\" and \"optional\" wording for the dispositions line when routed findings are absent. The Green role file requires the line only when routed findings exist. Use one term for one meaning.",
+    "F9 [Nit] review-c: The re-review wording in skills/measure/references/spec-review.md and in contracts.md does not state whether a same-HEAD re-review and a new-HEAD re-review differ. State the rule once in contracts.md."
+  ],
+  "evidence": [
+    "Verified by read: contracts.md ## Finding Dispositions lines 85-124 define the id form, scopes, four dispositions, the DECLINE and CONTEST rules, the dispositions line, re-review, the keep rule, ESCALATE to user, and the no-FIX round.",
+    "Verified by read: DISPOSITIONS_ITEM_RE at measure_interphase_checks.py:83 is r\"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\\((.+)\\))\". DISPOSITIONS_PREFIX at line 84 is \"dispositions:\". Format matches contracts.md and measure-jr-green.md.",
+    "Verified by read: dispositions_feedback at measure_interphase_checks.py:418 reads the last MEASURE_AGENT_RESULT block, checks the dispositions line, and reports invalid items and duplicate ids. It is called from cmd_role_gate at line 630.",
+    "Verified by grep: no match for dispositions or dispositions_feedback in ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py.",
+    "Verified by grep: no match for CONTEST, withdraw, dispositions, routed finding, or retry_recommendation in agents/measure-adversarial-testing.md or agents/measure-ux-browser-review.md.",
+    "Verified by read: the keep-and-withdraw paragraph appears in five audit role files with the same wording ending \"in your earlier list.\"",
+    "Verified by read: spec-review.md:69 limits a second round to a change in spec.md or plan.md. spec-review.md:83-87 lists four dispositions and the \"Comprehension gap:\" rule.",
+    "Verified by read: review.md:170 uses the scale Critical, High, Medium, Low. review.md:192-196 item 3 states CONTEST and ESCALATE user-decision text and DECLINE only for a Low finding.",
+    "Verified by read: SKILL.md:145-146 sends CONTEST to the next run of the raiser and sends ESCALATE and kept CONTEST items to the user.",
+    "Not verified: the 1c24539 amendment strings. The shell tool was denied for this session, so git show could not run.",
+    "Not verified: git show 7d4a745 --stat. The shell tool was denied for this session.",
+    "Not verified: the S3 docs test (tests/spec_review_gate/test_s3_dispositions_docs.sh), the targeted Red command, and the audit-result validator run on this file. The shell tool was denied for this session.",
+    "Plan reference: measure/tracks/spec_review_gate_20261030/plan.md:162-199 records Task 3.1 at commit 99ba994, Task 3.2 at commit 7d4a745, and Red evidence of 67 docs failures in 2 failing suites at line 195."
+  ],
+  "commands": [
+    "read skills/measure-orchestrator/references/contracts.md (lines 85-124)",
+    "read skills/measure-orchestrator/scripts/measure_interphase_checks.py (lines 83-84, 291-380, 418, 630)",
+    "read agents/measure-jr-green.md (lines 34-48)",
+    "read agents/measure-review-a-correctness.md, agents/measure-review-b-security.md, agents/measure-review-c-ux-api.md, agents/measure-phase-acceptance.md, agents/measure-spec-review.md (keep-and-withdraw paragraphs)",
+    "grep for CONTEST, withdraw, dispositions, routed finding, and retry_recommendation in agents/measure-adversarial-testing.md and agents/measure-ux-browser-review.md",
+    "grep for dispositions and dispositions_feedback in ~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "read skills/measure/references/spec-review.md (lines 69, 83-87)",
+    "read skills/measure/references/new-track.md (lines 312-313)",
+    "read skills/measure/references/review.md (lines 170, 192-196)",
+    "read skills/measure-orchestrator/SKILL.md (lines 145-146)",
+    "read measure/tracks/spec_review_gate_20261030/plan.md (lines 162-199)",
+    "Denied: shell tool (permission.rejected). Not run: git show 1c24539, git show 7d4a745 --stat, S3 docs test, targeted Red command, audit-result validator."
+  ],
+  "changed_files": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high"
+}

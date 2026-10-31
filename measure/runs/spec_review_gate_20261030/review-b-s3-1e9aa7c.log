@@ -1,0 +1,23 @@
+Review B (security), Phase S3: Finding dispositions, track spec_review_gate_20261030.
+phase_base_sha a1a9396347f92429efb820c8afd65288db92b083, role_base_sha = audited_head_sha 1e9aa7c0751df1f2e1a53a119fb6e3cfe885aa90 (HEAD confirmed).
+
+Blocking findings (route to Green):
+F1 [Blocker] measure_interphase_checks.py:432-447: the parser selects the last start line, not the last complete block. A trailing or inner MEASURE_AGENT_RESULT line hides an invalid dispositions line. Live role-gate exit 0.
+F2 [Blocker] measure_interphase_checks.py:448-453: only the first dispositions line is read. 'dispositions: none' then 'dispositions: F1=BOGUS' gives exit 0.
+F3 [Blocker] contracts.md:108: the text puts the line 'below the result block'. The check ignores a line after END_MEASURE_AGENT_RESULT, so such a line is never validated. Live role-gate exit 0.
+
+Passed: all 14 role names run the check; feedback is added, no early return; separators CR, U+2028, NEL, VT, FF, U+001C, NUL cannot hide an item; the cost is linear (200000 items in 0.25 s); 4360 old logs on this host give no feedback and no exception.
+Not run: symbolic link and file permission probes (the harness denied those shell calls).
+
+MEASURE_AGENT_RESULT
+status: done
+role: measure-review-b-security
+phase: Phase S3: Finding dispositions
+audited_head_sha: 1e9aa7c0751df1f2e1a53a119fb6e3cfe885aa90
+result_file: measure/runs/spec_review_gate_20261030/review-b-s3-1e9aa7c.json
+audit_status: fail
+blocking: 3 (F1 block selection, F2 second dispositions line, F3 contracts.md:108 'below the result block')
+nonblocking: 5
+retry_recommendation: retry_implementation
+handoff: Route F1, F2, and F3 to Green. Green must add a test_checker.py case for each of the F1 and F2 logs, and a docs check for F3. Run a compatibility scan of the corrected parser over the old logs, because this review could not run it.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "role": "review-c",
+  "track_id": "spec_review_gate_20261030",
+  "phase": "S3 Finding dispositions",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "62cdfcb8d092a698671957020347237e8b68fccd",
+  "audited_head_sha": "62cdfcb8d092a698671957020347237e8b68fccd",
+  "status": "pass",
+  "summary": "Phase S3 passes at 62cdfcb. F11 is withdrawn. F10 and F12 are closed. One nonblocking Major note remains on the plan and test-strategy placement wording.",
+  "contract_applicability": {
+    "applicable": true,
+    "basis": "Phase S3 changes the finding disposition contract, the agent prompts that carry it, and the checker that reads it.",
+    "path_evidence": [
+      "skills/measure-orchestrator/references/contracts.md",
+      "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+      "measure/tracks/spec_review_gate_20261030/plan.md",
+      "measure/tracks/spec_review_gate_20261030/test-strategy.md"
+    ]
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F13 [Major] measure/tracks/spec_review_gate_20261030/plan.md:173 and test-strategy.md:193: The text says the optional dispositions line goes below the block template. contracts.md:108 and 118-122 and the checker place the line inside the last block, before END_MEASURE_AGENT_RESULT. Rationale: An implementer who follows the track text places the line after END. The role gate does not read that line, so the disposition does not count. The track owner must reword both lines to match contracts.md."
+  ],
+  "closed_findings": [
+    "F8: Closed by 011b92c. contracts.md:114 states that the line is optional in general and required when the brief held routed findings.",
+    "F9: Closed by 011b92c. contracts.md:147 states that a round with no FIX item runs the re-review on the same HEAD.",
+    "F10: Closed by 213407f. The worked example at contracts.md:135-141 keeps routed F3 with CONTEST kept. It no longer writes the suffix for a new finding.",
+    "F11: Withdrawn. The normative contract and the checker both place the line inside the block. The plan wording is carried as F13."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned 62cdfcb8d092a698671957020347237e8b68fccd, which matches audited_head_sha.",
+    "git status --short returned only ?? extensions/, which the briefing excludes.",
+    "F11 withdrawn: contracts.md:108 and 118-122 and checker dispositions_feedback (lines 420-492) place the line inside the last block before END.",
+    "contracts.md:146 keeps the withdraw form and the keep form. The worked example at contracts.md:135-141 matches that rule.",
+    "contracts.md:149 states the no-FIX round rule once. The repeated same-HEAD sentence from F12 is gone.",
+    "test_s3_dispositions_docs.sh returned PASS=71, FAIL=0, EXIT=0.",
+    "test_checker.py (python3 -B -m unittest discover -s tests/spec_review_gate -p test_checker.py) returned 28 tests, OK.",
+    "audit-result --role review-c returned PASS: audit result is valid on the draft of this file (status inconclusive)."
+  ],
+  "commands": [
+    "git rev-parse HEAD (run, 62cdfcb8d092a698671957020347237e8b68fccd)",
+    "git status --short (run, only ?? extensions/)",
+    "bash tests/spec_review_gate/test_s3_dispositions_docs.sh (run, PASS=71 FAIL=0 EXIT=0)",
+    "python3 -B -m unittest discover -s tests/spec_review_gate -p test_checker.py (run, 28 tests OK)",
+    "python3 -B skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-c --file measure/runs/spec_review_gate_20261030/review-c-s3-62cdfcb.json (run on the draft, PASS; run on this final file, see log)",
+    "NOT RUN: bash tests/spec_review_gate/run.sh (suite wrapper not run; test_s3_dispositions_docs.sh and test_checker.py ran directly)"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

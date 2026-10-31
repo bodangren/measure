@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S4 remediation round 4
+commits: b82e6eb docs(anti-patterns): Report a missing document in the A11 recipe (both catalogs, note names F1 and eef86ff); 81ed610 docs(audit): Name the only command of the doc drift detector (note names F3 and F4); e8fbd18 measure(plan): Record the third S4 review remediation (final HEAD)
+tests_run: bash tests/spec_review_gate/run.sh 'test_s4_*.sh' => 1 suite (PASS=1, FAIL=0), 26 checks (PASS=26, FAIL=0); bash tests/spec_review_gate/run.sh => 9 suites (PASS=9, FAIL=0) at e8fbd18; diff -r skills/measure claude-skills/measure => empty. The A11 block of each catalog is byte-identical and equals the plan text plus a blank line and '---'; the extracted recipe passes bash -n and exits 0 in the repository root (3 path candidates, value not asserted).
+files_changed: skills/measure-orchestrator/references/anti-pattern-catalog.md, measure/anti-patterns.md, agents/measure-orchestrator-audit.md, measure/tracks/spec_review_gate_20261030/plan.md
+plan_updates: Tasks 4.2 and 4.3 stay [x] with 00b66a1 and 4879740. Added the plain line 'Review remediation F1–F4 (Review A F1 and F5, Review C F1 and F2 at 8f584ba): b82e6eb, 81ed610; F2 contested'. Task 4.2 and Task 4.3 were [~] in the working tree only during their edits. Each commit carries all S4 tasks [x].
+known_failures: none. The round-3 live-corpus failure is gone: measure/runs/spec_review_gate_20261030/review-c-s4-a02740f.log no longer has a dispositions line. The out-of-scope items of the audit role do not change: one JSON example, schema_version 2, no --role orchestrator-audit line, no edit instruction. tests/ did not change.
+dispositions: F1=FIX; F2=CONTEST(SKILL.md Role Order item 7 runs measure-adversarial-testing after the reviews, and the test-strategy.md S4 section assigns test_s4_adversarial.sh to that role); F3=FIX; F4=FIX
+handoff: S4 round-4 remediation is ready for the re-review. role_base_sha eef86ff74c4b651f8f09856243d30095ffde63e8; final HEAD e8fbd18. F1 copied the amended A11 block and prose from the plan contract at eef86ff into both catalogs, with byte-identical blocks. F3 made step 4 say 'a document of the Scope paragraph' and added the single-command sentence. F4 added the Date window paragraph to Inputs item 5. F2 stays contested. The catalog commit came first, per the hourly install rule.
+END_MEASURE_AGENT_RESULT

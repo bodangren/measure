@@ -1,0 +1,26 @@
+Review B (security and data handling), Phase S4: Doc drift check in the weekly audit, track spec_review_gate_20261030. Third re-review after the contract amendment and the remediation.
+Audited HEAD e8fbd186b64ec375d034a6c155c0132b7d5114db (equals git rev-parse HEAD). phase_base_sha 4be31b2bc3eded3f8200857a9d4768149590b71a.
+
+Result: pass. No blocking finding.
+
+1. The new A11 line runs only '[ -f "$doc" ]' on the two fixed document names and an echo. It reads no file, writes nothing, and runs no document text. The recipe is identical in both catalogs.
+2. Probe 3 ran the new recipe in temporary folders. Hostile text ran no command and created no file. A missing document gave one candidate line and exit 0, also under pipefail. A folder, a dangling symbolic link, a FIFO, and a link to /dev/zero each gave one candidate line, and grep did not run. A link to a regular file is followed, as before the change. 10,000 claims took 0.31 seconds.
+3. Step 4 is stricter. 'The A11 recipe of step 1 is the only command that this detector runs.' The text adds no instruction to edit a file, run code, or read secrets. The permission block did not change.
+4. Tests: test_s4_doc_drift.sh gave 26 checks (PASS=26, FAIL=0) and wrote nothing in the repository. run.sh gave 9 suites (PASS=9, FAIL=0).
+
+Open Nit items: N1 and N3 from b5c7fb0. New items with no security impact: N5 (the message says 'does not exist' for a folder or a FIFO) and N6 (step 3 counting and the step 4 'only command' sentence). Each item is optional.
+
+Result JSON: measure/runs/spec_review_gate_20261030/review-b-s4-e8fbd18.json
+
+MEASURE_AGENT_RESULT
+role: review-b
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S4: Doc drift check in the weekly audit
+commits: none
+tests_run: true: pass (bash tests/spec_review_gate/run.sh: 9 suites PASS=9 FAIL=0; test_s4_doc_drift.sh 26 checks PASS=26 FAIL=0 with no repository write; probe 3: new A11 recipe safe on hostile text, missing documents, a folder, symbolic links, a FIFO, and /dev/zero)
+files_changed: measure/runs/spec_review_gate_20261030/review-b-s4-e8fbd18.json, measure/runs/spec_review_gate_20261030/review-b-s4-e8fbd18.log, measure/runs/spec_review_gate_20261030/probe-review-b-s4-3.py
+plan_updates: none
+known_failures: none
+handoff: Audit pass at e8fbd18 with retry_recommendation none. The new A11 line reads no file, writes nothing, and runs no document text. Step 4 is stricter and adds no new risk. Nothing to route to Green. Optional Nit items N1, N3, N5, and N6 are in the JSON.
+END_MEASURE_AGENT_RESULT

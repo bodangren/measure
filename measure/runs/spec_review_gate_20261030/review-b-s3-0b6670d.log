@@ -1,0 +1,33 @@
+Review B (security and data handling), Phase S3: Finding dispositions, track spec_review_gate_20261030.
+Audited HEAD 0b6670da9feeb3f2c370a90dab94acda9ae3efd4 (equals git rev-parse HEAD). phase_base_sha a1a9396347f92429efb820c8afd65288db92b083.
+
+Result: pass. No blocking finding. Six nonblocking items.
+
+Re-run of F1 from review-b-s3-b1d1530.json:
+- F1 is fixed by 213407f. The inner-start, inner-start-with-fields, start-bad-start-end-end, and start-end-bad-end logs each exit 1 with 'invalid dispositions line: F1=BOGUS'.
+- The trailing start line, the nested block, the end line before the start line, CRLF, trailing spaces, and leading spaces also exit 1.
+
+Range rule: no new fail-open bypass. Two complete blocks with the first invalid exit 0, as the last-block rule says.
+
+Red case: 'START / role: x / END / dispositions: F1=BOGUS' exits 0. contracts.md:122 and test_checker.py:500-501 agree. The commit note of 213407f claims exit 1 for this case, and the note is wrong.
+
+Most important nonblocking item: the new block selection is quadratic when end lines come before start lines. 20000 end lines plus 20000 start lines take 19.1 s. The gate result stays correct. The fix is one line: 'starts and starts[0] < index'.
+
+Backward compatibility: 4382 logs in 19 project roots, including the 58 logs under measure/runs/ of this repository, give no feedback, no exception, and no difference from the parser at b1d1530.
+
+Tests: bash tests/spec_review_gate/run.sh printed 7 suites (PASS=7, FAIL=0).
+
+Result JSON: measure/runs/spec_review_gate_20261030/review-b-s3-0b6670d.json
+
+MEASURE_AGENT_RESULT
+role: review-b
+status: complete
+track: spec_review_gate_20261030
+phase: Phase S3: Finding dispositions
+commits: none
+tests_run: true: pass (bash tests/spec_review_gate/run.sh: 7 suites PASS=7 FAIL=0; 42 role-gate block-selection probes; 4382 old logs give 0 feedback)
+files_changed: measure/runs/spec_review_gate_20261030/review-b-s3-0b6670d.json, measure/runs/spec_review_gate_20261030/review-b-s3-0b6670d.log, measure/runs/spec_review_gate_20261030/probe-review-b-1.py, measure/runs/spec_review_gate_20261030/probe-review-b-2.py
+plan_updates: none
+known_failures: none
+handoff: Audit pass at 0b6670d with retry_recommendation none. F1 of b1d1530 is fixed and withdrawn. Six nonblocking items are in the JSON. Item 1 (quadratic block selection, 19.1 s at 20000/20000 lines) and item 2 (no tests for the selection cases) are the best candidates for a later Green round.
+END_MEASURE_AGENT_RESULT

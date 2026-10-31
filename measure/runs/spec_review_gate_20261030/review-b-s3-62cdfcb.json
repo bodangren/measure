@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Provisional artifact. Review B of Phase S3 at 62cdfcb is in progress. The final artifact replaces this file.",
+  "phase_base_sha": "a1a9396347f92429efb820c8afd65288db92b083",
+  "role_base_sha": "62cdfcb8d092a698671957020347237e8b68fccd",
+  "audited_head_sha": "62cdfcb8d092a698671957020347237e8b68fccd",
+  "security_applicability": "applicable",
+  "security_applicability_reason": "Provisional. The phase diff changes dispositions_feedback in skills/measure-orchestrator/scripts/measure_interphase_checks.py.",
+  "blocking_findings": [
+    "Provisional: the audit is not complete."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "git rev-parse HEAD printed 62cdfcb8d092a698671957020347237e8b68fccd."
+  ],
+  "commands": [
+    "git rev-parse HEAD"
+  ],
+  "changed_files": [],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "low"
+}
