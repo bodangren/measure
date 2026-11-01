@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "role_base_sha": "7f62ec669209f3581c0a6ee8eb809f64262e8dfc",
+  "audited_head_sha": "7f62ec669209f3581c0a6ee8eb809f64262e8dfc",
+  "track_base_sha": "7f62ec669209f3581c0a6ee8eb809f64262e8dfc",
+  "status": "pass",
+  "summary": "Round 1 on 7f62ec6. No Blocker. The spec claims about the current system hold against the code: four path rules, byte-identical core copies, both loaders, statusLines consumers, the hourly installer, and the advantage-pr folder list. Baseline gates pass (plugin 85 tests, mod 87 tests, tsc 0, parity ok, plugin validate 0, spec review gate 10 suites). Two Major plan findings remain: the mod allow test names a fixture state that realFiles() cannot give, and the mod loader has no named test for the Decision 10 failure paths. One Nit on the turnProblems attribution.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] plan.md Task 1.1: The mod test names a world with `realFiles()` and no `[~]` task, but `realFiles()` holds the measure-guard plan with `- [~] Task 1.4` (`mods/measure-guard/tests/fixtures/real.ts`), so `editDecision` opens every path (`hooks/guards.ts:55`) and the denies of `collect.py` and `work-old/a.md` cannot happen; the state needs the unmarking that `noTaskFiles()` does in `tests/edit-guard.test.ts:12-17`. Rationale: the named state contradicts the named fixture, so the allow case passes for the wrong reason and the two deny cases fail for a fixture reason, which Task 1.1's own acceptance line forbids.",
+    "F2 [Major] plan.md Task 1.1: The mod loader has no named test for the failure paths of Decision 10 (a folder at `measure/guard-allow`, and `allow` carried on a `parseError` return); only the plugin loader case at plan line 38 tests them. Rationale: Decision 10 applies to both loaders, and `register.tsx` reads the file through `$.fs` with its own outer catch, so a missing inner catch would set `parseError` and no test would catch it.",
+    "F3 [Nit] spec.md Current system: Bullet 2 says `turnProblems` treats a path inside `measure/` as Measure work, but the exclusion is in `changedDuringTurn` (`hooks/guards.ts:194-200`), and `turnProblems` receives the list after that filter. Rationale: the map of the four path rules is inaccurate about where the filter lives; Decision 6 still puts the allow filter in `turnProblems`, so the build does not change."
+  ],
+  "evidence": [
+    "HEAD 7f62ec669209f3581c0a6ee8eb809f64262e8dfc equals audited_head_sha; the working tree adds only the untracked extensions/ folder.",
+    "Four path rules confirmed: `editDecision` (guards.ts:39-60), the end-of-turn problem (changedDuringTurn at guards.ts:194-200, then turnProblems at guards.ts:214-229), `commitDecision` (guards.ts:348-377), `tddDecision` (guards.ts:301-317).",
+    "Parity: check-parity.sh compares hooks/parse.ts, hooks/guards.ts, and types/index.d.ts to src/core/parse.ts, src/core/guards.ts, and src/types.ts; it prints `parity: ok`.",
+    "Loaders: mod `loadSnapshot` in register.tsx:67-118 uses `$.fs.exists` and `$.fs.read` with an outer catch at line 115; plugin `loadSnapshot` in snapshot.ts:62-112 uses `stat` and `readFile` with an outer catch at line 109. Both build every return from `base`, so one `allow` field on `base` reaches every return.",
+    "statusLines consumers confirmed: commands.ts:64-69 (/measure-guard), tool.ts statusText (measure_status), tui/model.ts:45-48 (sidebar).",
+    "Installer: the cron line is `17 * * * * bin/install-measure-skill` and is installed; bin/install-targets.tsv uses `!(tests/*)` for plugins/opencode-measure-guard, and no node_modules file is tracked (0 in git ls-files). The installed copy is stamped from main at 7a6f7d9, so it holds no work of this track.",
+    "advantage-pr source check: the four folders match scripts/jobs/README.md lines 34-36 and 54, the daily-work-report prompt (scripts/daily-report/work/<date>/), collect.py lines 326-337, and make_reel.sh lines 12-21 (mp4, caption, and frames land in assets/videos/). The morning check writes .drafts/morning-fb-check-<date>.md.",
+    "The advantage-pr list text gives 4 folders and 0 ignored lines under Decisions 3 and 4: every comment line starts with #, and the four entries pass all five rules.",
+    "Existing Snapshot object literals are only in plugins/.../tests/core.test.ts:15, mods/.../tests/band.test.ts:10, edit-guard.test.ts:86 and :94, and commands.test.ts:112, which the plan lists.",
+    "Mod fixture state: mods/measure-guard/tests/fixtures/real.ts holds exactly one `- [~] Task 1.4` (in the measure-guard plan); tests/edit-guard.test.ts:12-17 unmarks it to reach a no-[~]-task world.",
+    "Plan test cases match existing helpers: tempProject, withMeasure, and makeGuard exist in tests/fake.ts (lines 17, 56, 67); tests/allow.test.ts is a new file, so no clash.",
+    "Gate table commands are valid on HEAD: GREEN_TEST_COMMAND, PROJECT_LINT, PROJECT_CHECKS, and PROJECT_TESTS all resolve to existing scripts and commands."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh",
+    "cd plugins/opencode-measure-guard && bun test",
+    "cd plugins/opencode-measure-guard && bun x tsc --noEmit -p .",
+    "claude plugin test mods/measure-guard",
+    "claude plugin validate mods/measure-guard",
+    "bash tests/spec_review_gate/run.sh",
+    "crontab -l",
+    "cat bin/install-targets.tsv bin/install-measure-skill"
+  ],
+  "changed_files": [
+    "measure/runs/guard_allow_list_20261101/spec-review-7f62ec6.json",
+    "measure/runs/guard_allow_list_20261101/spec-review-7f62ec6.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This track adds a per-repository allow list to the measure guard. The file `measure/guard-allow` holds folder paths, one per line, with comment lines. A write under a listed folder counts as Measure work in the edit guard, the end-of-turn check, the commit guard, and the TDD guard, also while no task is `[~]`. The parser rejects an absolute path, a `..` segment, a wildcard, an entry with no trailing `/`, and an entry that names the project root, and it records the reason. The mod files change first, the plugin copies follow, and the track then writes the list for the four output folders of advantage-pr.",
+    "current_system": "The pure guard decisions are in `mods/measure-guard/hooks/guards.ts` and `parse.ts`, and the OpenCode plugin keeps byte copies in `src/core/` with a parity script. Each guard reads a `Snapshot` that `loadSnapshot` builds from the Measure files, in `register.tsx` for the mod and in `snapshot.ts` for the plugin. Four path rules treat a path inside `measure/` as Measure work: the edit guard, the end-of-turn problem, the commit guard, and the TDD guard. `statusLines` gives the text of the `/measure-guard` reply, the `measure_status` tool, and the terminal sidebar. The hourly installer copies the plugin from the `main` ref."
+  }
+}

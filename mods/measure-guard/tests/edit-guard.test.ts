@@ -84,6 +84,7 @@ describe('editDecision', () => {
   test('allows a path outside the project root', () => {
     const snapshot = {
       root: ROOT, hasMeasure: true, isRepo: true, tracksPath: null, tracks: [], active: null, inProgressCount: 0, parseError: null,
+      allow: { folders: [], ignored: [] },
     }
     expect(editDecision({ ...base, snapshot }, '/tmp/scratch/a.ts')).toBeNull()
     expect(editDecision({ ...base, snapshot }, `${ROOT}/src/a.ts`)).not.toBeNull()
@@ -92,6 +93,7 @@ describe('editDecision', () => {
   test('allows on a parse error and before the first read', () => {
     const snapshot = {
       root: ROOT, hasMeasure: true, isRepo: true, tracksPath: null, tracks: [], active: null, inProgressCount: 0, parseError: 'bad',
+      allow: { folders: [], ignored: [] },
     }
     expect(editDecision({ ...base, snapshot }, `${ROOT}/src/a.ts`)).toBeNull()
     expect(editDecision({ ...base, snapshot: null }, `${ROOT}/src/a.ts`)).toBeNull()

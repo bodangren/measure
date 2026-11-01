@@ -4,6 +4,7 @@
 
 ### Features
 
+* **guard allow list:** the file `measure/guard-allow` lists folders that get writes while no task is `[~]`. The edit guard, the end-of-turn check, the commit guard, and the TDD guard treat a listed folder as Measure work. Both the Claude Code mod and the OpenCode plugin read it. Track `guard_allow_list_20261101`.
 * **opencode:** OpenCode 2 plugin `plugins/opencode-measure-guard/` (server and terminal parts): the Measure rule in the system prompt, task notes, edit, closeout, TDD, and commit guards, the end-of-turn check, `/measure-off`, `/measure-on`, `/measure-guard`, the Measure workflow commands, the `measure_status` tool, and a terminal band. Track `opencode_plugin_20261021`.
 * **agents:** `measure-orchestrator` carries the Measure rule section in its prompt; the OpenCode plugin adds the same section to every other agent.
 * **spec review:** `new-track` now runs one fresh subagent against the new standard `references/spec-review.md` before the track commit. The step writes `spec-review.md` in the track folder and adds it to the track index. Track `spec_review_gate_20261030`.

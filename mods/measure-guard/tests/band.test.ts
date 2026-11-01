@@ -16,6 +16,7 @@ const snapshotOf = (planMd: string, over: Partial<Snapshot> = {}): Snapshot => (
   active: { entry: ENTRY, planPath: `${ROOT}/measure/tracks/band_1/plan.md`, plan: parsePlan(planMd) },
   inProgressCount: 1,
   parseError: null,
+  allow: { folders: [], ignored: [] },
   ...over,
 })
 

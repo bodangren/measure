@@ -118,6 +118,7 @@ describe('statusLines', () => {
     active: { entry, planPath: `${ROOT}/measure/tracks/band_1/plan.md`, plan: parsePlan(BAND_PLAN) },
     inProgressCount: 1,
     parseError: null,
+    allow: { folders: [], ignored: [] },
   }
 
   test('lists the phases with closed counts and checkpoints, the [b] tasks, and the guards', () => {

@@ -1,11 +1,13 @@
 import type { EngineInterface, Register, ToolCallInput } from 'claude-code'
-import type { ClosingTrack, Decision, GuardContext, Mode, Plan, Snapshot } from '../types'
+import type { AllowList, ClosingTrack, Decision, GuardContext, Mode, Plan, Snapshot } from '../types'
 import {
+  ALLOW_FILE,
   bandLine,
   dirname,
   findLink,
   joinPath,
   noteKey,
+  parseAllowList,
   parseMode,
   parsePlan,
   parseTracks,
@@ -63,6 +65,15 @@ const planPathOf = async ($: EngineInterface, folder: string): Promise<string | 
   return (await $.fs.exists(plan)) ? plan : null
 }
 
+/** The allow list file; the empty list when it does not exist or cannot be read. */
+const readAllow = async ($: EngineInterface, path: string): Promise<AllowList> => {
+  try {
+    return (await $.fs.exists(path)) ? parseAllowList(await $.fs.read(path)) : { folders: [], ignored: [] }
+  } catch {
+    return { folders: [], ignored: [] }
+  }
+}
+
 /** Reads index.md, tracks.md, and the plans of the `[~]` tracks. */
 const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
   const root = await $.session.root()
@@ -75,20 +86,22 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
     active: null,
     inProgressCount: 0,
     parseError: null,
+    allow: { folders: [], ignored: [] },
   }
   const measure = joinPath(root, 'measure')
   if (!base.isRepo || !(await $.fs.exists(measure))) return base
 
+  const allow = await readAllow($, joinPath(measure, ALLOW_FILE))
   try {
     const index = joinPath(measure, 'index.md')
     const registry = (await $.fs.exists(index)) ? findLink(await $.fs.read(index), /Tracks Registry/i) : null
     const tracksPath = joinPath(measure, registry ?? 'tracks.md')
-    if (!(await $.fs.exists(tracksPath))) return { ...base, hasMeasure: true }
+    if (!(await $.fs.exists(tracksPath))) return { ...base, allow, hasMeasure: true }
 
     const tracksText = await $.fs.read(tracksPath)
     const tracks = parseTracks(tracksText)
     if (tracks.length === 0 && /^- \[[ ~xb]\] /m.test(tracksText)) {
-      return { ...base, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
+      return { ...base, allow, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
     }
 
     const plans = new Map<string, Plan>()
@@ -100,7 +113,7 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
       planPaths.set(track.id, path)
     }
 
-    const loaded = { ...base, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
+    const loaded = { ...base, allow, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
     const entry = selectActive(tracks, plans)
     if (entry === null) return loaded
     const plan = plans.get(entry.id)
@@ -113,7 +126,7 @@ const loadSnapshot = async ($: EngineInterface): Promise<Snapshot> => {
     }
     return { ...loaded, active: { entry, planPath, plan } }
   } catch (error) {
-    return { ...base, hasMeasure: true, parseError: error instanceof Error ? error.message : String(error) }
+    return { ...base, allow, hasMeasure: true, parseError: error instanceof Error ? error.message : String(error) }
   }
 }
 

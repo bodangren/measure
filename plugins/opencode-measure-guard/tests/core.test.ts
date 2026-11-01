@@ -26,6 +26,7 @@ const snapshotOf = (plan: Plan): Snapshot => {
     active: { entry, planPath: `${REPO}/measure/tracks/opencode_plugin_20261021/plan.md`, plan },
     inProgressCount: tracks.filter(t => t.marker === '~').length,
     parseError: null,
+    allow: { folders: [], ignored: [] },
   }
 }
 

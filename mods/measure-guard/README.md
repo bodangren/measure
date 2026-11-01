@@ -127,6 +127,27 @@ In `strict` mode, the mod checks each `Bash` call with `git commit`:
 - A commit of files outside `measure/` needs a `[~]` task. A commit of `measure/` files only always passes, so the workflow's own plan and checkpoint commits pass. The files of a commit are the staged files, plus the changed files when the command has `-a` or runs `git add` first.
 - After a commit for a `[~]` task, the agent gets a reminder: add the git note, and record the SHA on the task line in `plan.md`.
 
+## Allow list
+
+The file `measure/guard-allow` of the guarded repository is the allow list. A write to a folder on the list passes while no task is `[~]`. The path of the file is fixed, and `measure/index.md` does not link it. The file is plain UTF-8 text.
+
+- **Lines.** The parser trims each line. An empty line is ignored. A line that starts with `#` is a comment (a whole line only). Every other line is an entry.
+- **Entries.** An entry names one folder relative to the project root, and it ends with `/`. The parser ignores an entry at the first rule that fails:
+
+  | Order | Rule | Reason |
+  | --- | --- | --- |
+  | 1 | The entry starts with `/`. | `absolute path` |
+  | 2 | A segment of the entry is `..`. | `has a .. segment` |
+  | 3 | The entry contains `*`, `?`, `[`, `]`, `{`, or `}`. | `has a wildcard` |
+  | 4 | The entry does not end with `/`. | `not a folder (an entry ends with /)` |
+  | 5 | The entry names the project root (for example `./`). | `names the project root` |
+
+  A kept entry loses the leading `./`, the repeated `/`, and the trailing `/`. Each folder is kept once.
+- **Matching.** A path matches when it is the folder or lies under it. The match is by whole path segments and is case-sensitive. `..` segments resolve before the match. The guard does not resolve symbolic links.
+- **Effect.** A path on the list counts as Measure work, as a path inside `measure/` does, in four rules: the edit guard, the end-of-turn check, the commit guard (strict), and the TDD guard (strict). The setup deny, the closeout guard, the bypass, and `advise` mode do not change. A call that writes several paths is denied when one of its paths is denied.
+- **Status lines.** ``/measure-status`` shows `Allow list (measure/guard-allow): <folders>` directly before the `Guards:` line, and one `  ignored line <n>: <text> (<reason>)` line for each ignored entry. It shows nothing when the list is empty.
+- **Limits.** No wildcards. No file entries. No symbolic link resolution. No deny text names the list, so an agent does not learn to add its own path. The check does not find a change of `measure/guard-allow` made by an agent.
+
 ## Commands
 
 | Command | What it does |

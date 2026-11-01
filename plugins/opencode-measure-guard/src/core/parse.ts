@@ -1,6 +1,6 @@
 // Pure parse functions over the text of the Measure files. No `$` here, so
 // the tests call them directly.
-import type { GuardsOff, Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
+import type { AllowIgnored, AllowList, GuardsOff, Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
 
 const TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
 const TRACK_LINKED = /^- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
@@ -32,6 +32,41 @@ export const joinPath = (...parts: string[]): string => {
 
 /** The folder part of a path. */
 export const dirname = (path: string): string => joinPath(path, '..')
+
+/** The allow list file, in `<root>/measure/`. */
+export const ALLOW_FILE = 'guard-allow'
+
+/** The reason an allow list entry is ignored; null when the entry is kept. */
+const allowProblem = (entry: string): string | null => {
+  if (entry.startsWith('/')) return 'absolute path'
+  if (entry.split('/').includes('..')) return 'has a .. segment'
+  if (/[*?[\]{}]/.test(entry)) return 'has a wildcard'
+  if (!entry.endsWith('/')) return 'not a folder (an entry ends with /)'
+  if (joinPath(entry) === '') return 'names the project root'
+  return null
+}
+
+/**
+ * The allow list from the text of measure/guard-allow: one folder per line,
+ * `#` starts a comment line, and an entry that breaks a rule is ignored with
+ * its reason.
+ */
+export const parseAllowList = (text: string): AllowList => {
+  const folders: string[] = []
+  const ignored: AllowIgnored[] = []
+  text.split('\n').forEach((raw, i) => {
+    const entry = raw.trim()
+    if (entry === '' || entry.startsWith('#')) return
+    const reason = allowProblem(entry)
+    if (reason !== null) {
+      ignored.push({ line: i + 1, text: entry, reason })
+      return
+    }
+    const folder = joinPath(entry)
+    if (!folders.includes(folder)) folders.push(folder)
+  })
+  return { folders, ignored }
+}
 
 /** The target of the first markdown link on a line that matches `label`. */
 export const findLink = (md: string, label: RegExp): string | null => {
@@ -271,6 +306,11 @@ export const statusLines = (snapshot: Snapshot | null, guardsOff: GuardsOff): st
         }
       }
     }
+  }
+  if (snapshot !== null && snapshot.hasMeasure && (snapshot.allow.folders.length > 0 || snapshot.allow.ignored.length > 0)) {
+    const folders = snapshot.allow.folders.map(folder => `${folder}/`).join(', ')
+    lines.push(`Allow list (measure/guard-allow): ${folders === '' ? 'no folders' : folders}`)
+    for (const one of snapshot.allow.ignored) lines.push(`  ignored line ${one.line}: ${one.text} (${one.reason})`)
   }
   lines.push(`Guards: ${guardsText(guardsOff)}`)
   return lines

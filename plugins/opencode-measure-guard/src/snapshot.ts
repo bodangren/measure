@@ -2,9 +2,9 @@
 // mod's $.state snapshot), with Node file APIs and git. Pure parsing is in core/.
 import { execFile } from 'node:child_process'
 import { readFile, stat } from 'node:fs/promises'
-import { dirname, findLink, joinPath, parsePlan, parseTracks, selectActive } from './core/parse'
+import { ALLOW_FILE, dirname, findLink, joinPath, parseAllowList, parsePlan, parseTracks, selectActive } from './core/parse'
 import { statusLinesOf } from './core/guards'
-import type { Plan, Snapshot } from './types'
+import type { AllowList, Plan, Snapshot } from './types'
 
 const exists = async (path: string): Promise<boolean> => {
   try {
@@ -58,6 +58,15 @@ export const gitLines = async (args: string[], root: string): Promise<string[]> 
   return ran.code === 0 ? ran.stdout.split('\n').filter(line => line.trim() !== '') : []
 }
 
+/** The allow list file; the empty list when it does not exist or cannot be read. */
+const readAllow = async (path: string): Promise<AllowList> => {
+  try {
+    return (await exists(path)) ? parseAllowList(await read(path)) : { folders: [], ignored: [] }
+  } catch {
+    return { folders: [], ignored: [] }
+  }
+}
+
 /** Reads index.md, tracks.md, and the plans of the `[~]` tracks under `<root>/measure/`. */
 export const loadSnapshot = async (root: string): Promise<Snapshot> => {
   const base: Snapshot = {
@@ -69,20 +78,22 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
     active: null,
     inProgressCount: 0,
     parseError: null,
+    allow: { folders: [], ignored: [] },
   }
   const measure = joinPath(root, 'measure')
   if (!base.isRepo || !(await exists(measure))) return base
 
+  const allow = await readAllow(joinPath(measure, ALLOW_FILE))
   try {
     const index = joinPath(measure, 'index.md')
     const registry = (await exists(index)) ? findLink(await read(index), /Tracks Registry/i) : null
     const tracksPath = joinPath(measure, registry ?? 'tracks.md')
-    if (!(await exists(tracksPath))) return { ...base, hasMeasure: true }
+    if (!(await exists(tracksPath))) return { ...base, allow, hasMeasure: true }
 
     const tracksText = await read(tracksPath)
     const tracks = parseTracks(tracksText)
     if (tracks.length === 0 && /^- \[[ ~xb]\] /m.test(tracksText)) {
-      return { ...base, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
+      return { ...base, allow, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
     }
 
     const plans = new Map<string, Plan>()
@@ -94,7 +105,7 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
       planPaths.set(track.id, path)
     }
 
-    const loaded: Snapshot = { ...base, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
+    const loaded: Snapshot = { ...base, allow, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
     const entry = selectActive(tracks, plans)
     if (entry === null) return loaded
     const plan = plans.get(entry.id)
@@ -107,7 +118,7 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
     }
     return { ...loaded, active: { entry, planPath, plan } }
   } catch (error) {
-    return { ...base, hasMeasure: true, parseError: error instanceof Error ? error.message : String(error) }
+    return { ...base, allow, hasMeasure: true, parseError: error instanceof Error ? error.message : String(error) }
   }
 }
 
