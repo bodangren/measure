@@ -1,0 +1,6 @@
+Closeout of track guard_allow_list_20261101 (Allow list for the measure guard).
+Audited HEAD for final acceptance: 00a0149. Final acceptance: pass. A5, A6, A9: pass.
+Track moved to measure/archive/guard_allow_list_20261101, status done, completed 2026-11-02.
+Tech debt: two Low rows added, status Open.
+Manifest: measure/archive/guard_allow_list_20261101/automation-supervisor-closeout-manifest.json.
+Closeout evidence commit: see the next commit on main that records closeout-00a0149.
