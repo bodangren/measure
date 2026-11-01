@@ -1,0 +1,22 @@
+Red evidence for Task 1.1 (phase_base e07934a, role_base da879b0).
+
+RED_TEST_COMMAND exits 1:
+  cd plugins/opencode-measure-guard && bun test tests/allow.test.ts; p=$?; cd ../.. && claude plugin test mods/measure-guard; m=$?; test $p -eq 0 -o $m -eq 0
+
+Plugin tests/allow.test.ts: 27 tests, fail=19, pass=8.
+  Fail: A1, A2, A2b, A3, B1, B3 (allow half), B5, C1, D1 (allow half),
+        D1 (the deny does not name the allowed path), E1 (allow half),
+        F1 (6 tests), G1 (2 list tests).
+  Pass (controls): B2, B3 (deny half), B4 (2 tests), D1 (deny half),
+        D1 (message half), E1 (deny half), G1 (empty-list half).
+
+Mod suite: 11 files, 91 tests, fail=3, pass=88.
+  Fail: M1, M2, M4. Pass (control): M3. No old test fails.
+  The file count goes from 10 to 11.
+
+Causes: missing parseAllowList and isAllowed exports, missing allow field at
+each loadSnapshot return, no Allow list status lines, and allowed paths still
+denied by the edit, commit, and TDD guards. No fixture error.
+
+The four existing Snapshot literals get allow: { folders: [], ignored: [] }.
+No assertion changes. extensions/ stays untracked and unstaged.
