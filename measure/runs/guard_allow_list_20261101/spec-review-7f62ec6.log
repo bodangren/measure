@@ -1,0 +1,48 @@
+# Spec Review Log: guard_allow_list_20261101
+
+Round 1. Reviewer: Measure Spec Review subagent, DeepSeek V4.1 Flash 1017.
+audited_head_sha: 7f62ec669209f3581c0a6ee8eb809f64262e8dfc (equal to HEAD).
+Verdict: pass. No Blocker. Two Major findings and one Nit finding.
+
+### What this track proposes
+
+This track adds a per-repository allow list to the measure guard. The file `measure/guard-allow` holds folder paths, one per line, with comment lines. A write under a listed folder counts as Measure work in the edit guard, the end-of-turn check, the commit guard, and the TDD guard, also while no task is `[~]`. The parser rejects an absolute path, a `..` segment, a wildcard, an entry with no trailing `/`, and an entry that names the project root, and it records the reason. The mod files change first, the plugin copies follow, and the track then writes the list for the four output folders of advantage-pr.
+
+### How the current system works, per this spec
+
+The pure guard decisions are in `mods/measure-guard/hooks/guards.ts` and `parse.ts`, and the OpenCode plugin keeps byte copies in `src/core/` with a parity script. Each guard reads a `Snapshot` that `loadSnapshot` builds from the Measure files, in `register.tsx` for the mod and in `snapshot.ts` for the plugin. Four path rules treat a path inside `measure/` as Measure work: the edit guard, the end-of-turn problem, the commit guard, and the TDD guard. `statusLines` gives the text of the `/measure-guard` reply, the `measure_status` tool, and the terminal sidebar. The hourly installer copies the plugin from the `main` ref.
+
+### Findings
+
+- F1 [Major] plan.md Task 1.1: The mod test names a world with `realFiles()` and no `[~]` task, but `realFiles()` holds the measure-guard plan with `- [~] Task 1.4` (`mods/measure-guard/tests/fixtures/real.ts`), so `editDecision` opens every path (`hooks/guards.ts:55`) and the denies of `collect.py` and `work-old/a.md` cannot happen; the state needs the unmarking that `noTaskFiles()` does in `tests/edit-guard.test.ts:12-17`. Rationale: the named state contradicts the named fixture, so the allow case passes for the wrong reason and the two deny cases fail for a fixture reason, which Task 1.1's own acceptance line forbids.
+- F2 [Major] plan.md Task 1.1: The mod loader has no named test for the failure paths of Decision 10 (a folder at `measure/guard-allow`, and `allow` carried on a `parseError` return); only the plugin loader case at plan line 38 tests them. Rationale: Decision 10 applies to both loaders, and `register.tsx` reads the file through `$.fs` with its own outer catch, so a missing inner catch would set `parseError` and no test would catch it.
+- F3 [Nit] spec.md Current system: Bullet 2 says `turnProblems` treats a path inside `measure/` as Measure work, but the exclusion is in `changedDuringTurn` (`hooks/guards.ts:194-200`), and `turnProblems` receives the list after that filter. Rationale: the map of the four path rules is inaccurate about where the filter lives; Decision 6 still puts the allow filter in `turnProblems`, so the build does not change.
+
+### Commands
+
+```text
+git rev-parse HEAD
+bash plugins/opencode-measure-guard/scripts/check-parity.sh
+cd plugins/opencode-measure-guard && bun test
+cd plugins/opencode-measure-guard && bun x tsc --noEmit -p .
+claude plugin test mods/measure-guard
+claude plugin validate mods/measure-guard
+bash tests/spec_review_gate/run.sh
+crontab -l
+cat bin/install-targets.tsv bin/install-measure-skill
+```
+
+Results: parity ok; plugin suite 85 pass, 0 fail; tsc exit 0; mod suite 87 pass, 0 fail; plugin validate passed; spec review gate 10 suites pass; the cron line is `17 * * * * bin/install-measure-skill`.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: guard_allow_list_20261101
+phase: track setup
+commits: none
+tests_run: bash plugins/opencode-measure-guard/scripts/check-parity.sh (ok); cd plugins/opencode-measure-guard && bun test (85 pass, 0 fail); bun x tsc --noEmit -p . (exit 0); claude plugin test mods/measure-guard (87 pass, 0 fail); claude plugin validate mods/measure-guard (passed); bash tests/spec_review_gate/run.sh (10 suites pass)
+files_changed: measure/runs/guard_allow_list_20261101/spec-review-7f62ec6.json, measure/runs/guard_allow_list_20261101/spec-review-7f62ec6.log
+plan_updates: none
+known_failures: none
+handoff: Round 1 is pass with no Blocker. Nonblocking findings for the author: F1 [Major] the mod allow test names realFiles() with no [~] task, but that fixture holds `- [~] Task 1.4`, so the two deny cases fail for a fixture reason; unmark it as noTaskFiles() does in tests/edit-guard.test.ts:12-17. F2 [Major] the mod loader has no named test for the Decision 10 failure paths (a folder at measure/guard-allow, and allow kept on a parseError return); only the plugin loader case has them. F3 [Nit] spec.md Current system bullet 2 attributes the measure/ exclusion of the end-of-turn check to turnProblems, but it lives in changedDuringTurn (guards.ts:194-200).
+END_MEASURE_AGENT_RESULT

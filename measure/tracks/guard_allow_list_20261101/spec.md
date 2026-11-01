@@ -14,7 +14,7 @@ This track adds a per-repository allow list to the guard. A folder on the list m
 - Each guard reads a `Snapshot` (type in `types/index.d.ts`). The mod builds it in `loadSnapshot` of `mods/measure-guard/hooks/register.tsx` with `$.fs`. The plugin builds it in `loadSnapshot` of `plugins/opencode-measure-guard/src/snapshot.ts` with Node file calls.
 - Four path rules ask whether a write belongs to a task. Each rule treats a path inside `measure/` as Measure work:
   1. `editDecision` (edit guard; modes `guard` and `strict`).
-  2. `turnProblems` (end-of-turn check): the problem "Files changed outside measure/ while no task is in progress".
+  2. `turnProblems` (end-of-turn check): the problem "Files changed outside measure/ while no task is in progress". `changedDuringTurn` removes the `measure/` paths from the changed list before `turnProblems` gets the list. `changedDuringTurn` has no snapshot, so the allow list filter goes into `turnProblems` (Decision 6).
   3. `commitDecision` (commit guard; mode `strict`): the deny for a commit with files outside `measure/` while no task has `[~]`.
   4. `tddDecision` (TDD guard; mode `strict`): a source file needs a Red phase for the `[~]` task.
 - `statusLines` in `parse.ts` gives the text of `/measure-guard`, of the `measure_status` tool, and of the terminal sidebar.
