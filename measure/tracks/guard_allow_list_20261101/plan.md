@@ -63,7 +63,7 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
 
 ## Phase 2: Merge, install, and the advantage-pr list
 
-- [~] Task 2.1: In `/home/daniebo/Desktop/measure`, switch to `main` and run `git merge --no-ff feat/guard-allow-list`. Run `bin/install-measure-skill` once, then `bin/install-measure-skill --check`. Run the live check of Decision 13 with a script under `/tmp`. Delete the branch with `git branch -d`.
+- [x] Task 2.1: In `/home/daniebo/Desktop/measure`, switch to `main` and run `git merge --no-ff feat/guard-allow-list`. Run `bin/install-measure-skill` once, then `bin/install-measure-skill --check`. Run the live check of Decision 13 with a script under `/tmp`. Delete the branch with `git branch -d`. d61d6cc
   - Acceptance: the merge has no conflict. The installer exits 0 and keeps 0 files. `--check` exits 0. `diff -r` of `plugins/opencode-measure-guard/src` and `~/.config/opencode/plugins/opencode-measure-guard/src` shows no difference. In the live check, the installed guard allows a write of `scripts/daily-report/work/x.md` and denies `src/x.md` in a temporary git repository with the list and no `[~]` task.
   - Edge cases: when the merge has a conflict, stop and report it. When the installer exits 2 (it kept a local edit), stop and report the kept paths. When the cron job installed the merge first, the installer prints `No differences`, and the other checks still apply.
 - [ ] Task 2.2: Write `/home/daniebo/Desktop/advantage-pr/measure/guard-allow` with the text of "advantage-pr list" in the spec. Do not commit it. Run the checks of acceptance criterion 10 with the installed plugin.
