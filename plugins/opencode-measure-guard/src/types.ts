@@ -64,6 +64,24 @@ export type ActiveTrack = {
   plan: Plan
 }
 
+/** A line of measure/guard-allow that the guard ignores. */
+export type AllowIgnored = {
+  /** The 1-based line number. */
+  line: number
+  /** The trimmed line text. */
+  text: string
+  /** The reason string of the first rule that failed. */
+  reason: string
+}
+
+/** The allow list of measure/guard-allow. */
+export type AllowList = {
+  /** The kept folders, relative to the root, without a trailing slash. */
+  folders: string[]
+  /** The ignored entry lines, in file order. */
+  ignored: AllowIgnored[]
+}
+
 /** What the mod read from the project, kept in $.state. */
 export type Snapshot = {
   /** Absolute project root (the session root). */
@@ -80,6 +98,8 @@ export type Snapshot = {
   inProgressCount: number
   /** The reason the mod could not read the Measure files; the guards fail open. */
   parseError: string | null
+  /** The allow list of measure/guard-allow; empty when the file is absent or cannot be read. */
+  allow: AllowList
 }
 
 /**

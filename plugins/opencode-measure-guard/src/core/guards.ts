@@ -27,6 +27,15 @@ export const isInside = (folder: string, path: string): boolean => {
   return p === f || p.startsWith(`${f}/`)
 }
 
+/**
+ * True when `path` (absolute, or relative to the project root) lies under a
+ * folder of the allow list. Whole segments, case-sensitive, `..` resolved.
+ */
+export const isAllowed = (snapshot: Snapshot, path: string): boolean => {
+  const target = path.startsWith('/') ? joinPath(path) : joinPath(snapshot.root, path)
+  return snapshot.allow.folders.some(folder => isInside(joinPath(snapshot.root, folder), target))
+}
+
 /** A path relative to the project root, for the texts the agent reads. */
 export const relative = (snapshot: Snapshot, path: string): string =>
   isInside(snapshot.root, path) ? joinPath(path).slice(joinPath(snapshot.root).length + 1) : path
@@ -45,6 +54,7 @@ export const editDecision = (context: GuardContext, path: string): Decision => {
   }
   if (!snapshot.hasMeasure || snapshot.parseError !== null) return null
   if (!isInside(snapshot.root, path) || isInside(joinPath(snapshot.root, 'measure'), path)) return null
+  if (isAllowed(snapshot, path)) return null
 
   const { active } = snapshot
   if (active === null) {
@@ -221,8 +231,9 @@ export const turnProblems = (snapshot: Snapshot, changed: readonly string[], kno
       problems.push(`"${text}" is [x] but has no commit SHA. Commit the task, and add the 7-character SHA to its line in plan.md.`)
     }
   }
-  if (changed.length > 0 && (active === null || currentTask(active.plan) === null)) {
-    const listed = changed.slice(0, 5).join(', ') + (changed.length > 5 ? `, and ${changed.length - 5} more` : '')
+  const outside = changed.filter(path => !isAllowed(snapshot, path))
+  if (outside.length > 0 && (active === null || currentTask(active.plan) === null)) {
+    const listed = outside.slice(0, 5).join(', ') + (outside.length > 5 ? `, and ${outside.length - 5} more` : '')
     problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. Mark the task [~] in plan.md (or create a track), or revert the changes.`)
   }
   return problems
@@ -303,6 +314,7 @@ export const tddDecision = (context: GuardContext, red: RedState | null, path: s
   if (context.mode !== 'strict' || context.guardsOff !== null) return null
   if (snapshot === null || !snapshot.hasMeasure || snapshot.parseError !== null || snapshot.active === null) return null
   if (!isInside(snapshot.root, path) || isInside(joinPath(snapshot.root, 'measure'), path) || !isSourceFile(path)) return null
+  if (isAllowed(snapshot, path)) return null
   const task = currentTask(snapshot.active.plan)
   if (task === null) return null
   const state = redFor(red, taskKey(snapshot))
@@ -358,7 +370,7 @@ export const commitDecision = (context: GuardContext, commit: CommitCommand, sta
       note: null,
     }
   }
-  const outside = staged.filter(path => path !== 'measure' && !path.startsWith('measure/'))
+  const outside = staged.filter(path => path !== 'measure' && !path.startsWith('measure/') && !isAllowed(snapshot, path))
   const task = snapshot.active === null ? null : currentTask(snapshot.active.plan)
   if (outside.length > 0 && task === null) {
     const listed = outside.slice(0, 5).join(', ') + (outside.length > 5 ? `, and ${outside.length - 5} more` : '')
