@@ -60,7 +60,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [ ] **Track: Allow list for the measure guard**
+- [~] **Track: Allow list for the measure guard**
   *Link: [./tracks/guard_allow_list_20261101/](./tracks/guard_allow_list_20261101/)*
 
 ---
