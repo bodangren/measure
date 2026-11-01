@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "role": "review-c",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 1: Allow list in the guard",
+  "phase_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "track_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "audited_head_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "status": "pass",
+  "contract_applicability": "applicable",
+  "summary": "The phase adds the measure/guard-allow contract to both guards and to every status surface. The spec list parses to 4 folders and 0 ignored lines. The status line of Decision 11 sits directly before Guards:. The deny texts did not change, and no deny text names the list. Both loaders fill allow on every return. The mod and plugin core copies pass the parity check. Both README sections and the CHANGELOG line are present. No HTTP route and no browser UI exist, so route parity is the mod/plugin core parity.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-c: plugins/opencode-measure-guard/README.md:98 opens the Status lines inline-code span with a double backtick and closes it with a single backtick, so /measure-guard and the surface names render with a stray literal backtick."
+  ],
+  "evidence": [
+    "HEAD is 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4 on feat/guard-allow-list and equals audited_head_sha and role_base_sha.",
+    "The phase diff e07934a57234fe12a3ce8e0f6b51ebf5b740e334..470d4a4 has 20 files and 675 insertions.",
+    "The 'advantage-pr list' text of spec.md parses to folders ['scripts/daily-report/work','scripts/daily-reel/work','assets/videos','.drafts'] and 0 ignored lines.",
+    "statusLines with that list gives 'Allow list (measure/guard-allow): scripts/daily-report/work/, scripts/daily-reel/work/, assets/videos/, .drafts/' directly before 'Guards: on' (Decision 11).",
+    "isAllowed on a snapshot with that list allows scripts/daily-report/work/x.md, scripts/daily-reel/work/x.json, assets/videos/fb-caption-2026-11-02.txt, and .drafts/x.md. It denies src/x.md and scripts/daily-report/send.py (acceptance criterion 10).",
+    "parseAllowList gives the ten Decision 4 reasons with the exact strings and 1-based line numbers: absolute path, has a .. segment, has a wildcard, not a folder (an entry ends with /), names the project root.",
+    "git diff of the phase has no changed deny string. grep of hooks/guards.ts has no deny text that names guard-allow (Decision 7).",
+    "Both loadSnapshot functions set allow before index.md and carry allow on every later return, including the parseError and catch returns (Decision 10).",
+    "The status surfaces call the shared statusLines: src/commands.ts:68 (/measure-guard), src/tool.ts:19 (measure_status), src/tui/model.ts:47 (sidebar), and mods/measure-guard/hooks/register.tsx:436 (/measure-status).",
+    "The plugin README has '## Allow list' at line 80 after '## Guards' at line 65 (the ADR-ready heading order of the plan). The mod README has '## Allow list' at line 130. CHANGELOG.md line 7 adds one Unreleased/Features line.",
+    "The advantage-pr list matches the outputs of the scheduled jobs: scripts/daily-report/work/<date>/ (collect.py WORK_DIR and the report prompt), scripts/daily-reel/work/<date>-<product>/ and last-reel-id.txt (make_reel.sh and the reel README), assets/videos/ (mp4, frames-<date>/, fb-caption-<date>.txt), and .drafts/ (morning-fb-check-<date>.md).",
+    "The 05:00 daily-assets bundle is a systemd oneshot script, not an OpenChamber session, so it needs no list entry.",
+    "F1: plugins/opencode-measure-guard/README.md:98 reads '``/measure-guard`, the `measure_status` tool, and the terminal sidebar` shows ...'. The opening run is two backticks and the closing run is one backtick."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+    "git diff --stat e07934a..470d4a4 -> 20 files changed, 675 insertions, 24 deletions",
+    "cd plugins/opencode-measure-guard && bun test -> 112 pass, 0 fail, 12 files",
+    "cd plugins/opencode-measure-guard && bun x tsc --noEmit -p . -> exit 0",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh -> parity: ok, exit 0",
+    "claude plugin test mods/measure-guard -> 91 pass, 0 fail, 11 files",
+    "cd plugins/opencode-measure-guard && bun run /home/daniebo/Desktop/measure/measure/runs/guard_allow_list_20261101/probe-contract-c.ts -> 4 folders, 0 ignored, status line correct, 6 of 6 allow checks ok, 10 of 10 reasons ok",
+    "git diff e07934a..470d4a4 | grep 'measure-guard:' -> test and doc lines only, no production deny text"
+  ],
+  "changed_files": [],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

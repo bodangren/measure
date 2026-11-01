@@ -1,0 +1,44 @@
+Phase acceptance, track guard_allow_list_20261101, phase "Phase 1: Allow list in the guard".
+Audited HEAD 241282e57a56d3ec0647102179af3469b9a65608 equals HEAD, role_base_sha, and audited_head_sha.
+
+Deviation review (same-HEAD rule):
+- git diff --stat 470d4a4 241282e -> plan.md (+2) and tests/allow-adversarial.test.ts (+267) only. No production file changed.
+- c59ee94 adds the adversarial test file only. 241282e changes plan.md only.
+- Verdict: accepted. Reviews A and C at 470d4a4 and the adversarial run at c59ee94 audited production code identical to HEAD. Review B audited 241282e.
+
+Task verification against commits, plan claims, and spec:
+- Task 1.1 (c8315cb): Red tests committed with git note. Files match the plan. Red counts match mid-red-p1-da879b0.log per Review A.
+- Task 1.2 (b44ac93): implementation committed with git note. Mod and plugin files match the plan. Parity ok.
+- Task 1.3 (ceccfdc): docs committed with git note. Two README sections and the CHANGELOG line exist.
+- Task 1.4 (c59ee94): adversarial test committed with git note. PROJECT_TESTS exits 0 at HEAD.
+
+PROJECT_TESTS at 241282e (one full run):
+- plugins/opencode-measure-guard bun test: 131 pass, 0 fail, 13 files, 428 expect() calls.
+- bun x tsc --noEmit -p .: exit 0.
+- bash scripts/check-parity.sh: parity: ok.
+- claude plugin test mods/measure-guard: 91 pass, 0 fail, 11 files.
+- bash tests/spec_review_gate/run.sh: 10 suites, PASS=10, FAIL=0.
+
+Anti-pattern checks:
+- A5: no PASS=N claim in plan.md. Baseline 85 and 87 plus 46 and 4 new tests equals 131 and 91. PROJECT_TESTS exits 0 at HEAD.
+- A6: measure/tracks.md changes only the track marker from [ ] to [~]. No resolved claim.
+- A3, A4, A7: the phase diff changes no contract test and no filter. Not applicable; prior reviews found them clean.
+- No stale red test, no fake gate, no deny text change, all callers updated.
+
+Spec acceptance criteria 1 to 7 are covered by the passing tests and the prior review probes. Criterion 8 passes here. Criteria 9 and 10 belong to Phase 2.
+
+Nonblocking items stay open for the closeout tech-debt transfer: the R-A-1 relative path base, the README code span, the X2 no-op, the O(n^2) dedupe, wide legal entries, and binary or large list files. None is a blocker. Review B probed R-A-1 and found a fail-closed effect.
+
+Verdict: pass. No blocking finding. retry_recommendation: none. Confidence: high.
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: none
+tests_run: PROJECT_TESTS at 241282e: plugin bun test 131 pass / 0 fail (13 files); tsc --noEmit exit 0; parity: ok; claude plugin test 91 pass / 0 fail (11 files); spec_review_gate 10 suites PASS=10 FAIL=0
+files_changed: measure/runs/guard_allow_list_20261101/phase-acceptance-p1-241282e.json, measure/runs/guard_allow_list_20261101/phase-acceptance-p1-241282e.log
+plan_updates: none
+known_failures: none
+handoff: Phase 1 acceptance passed at 241282e. The same-HEAD deviation is accepted with diff evidence. Six nonblocking items go to measure/tech-debt.md at closeout. The orchestrator may start Phase 2 merge and install.
+END_MEASURE_AGENT_RESULT

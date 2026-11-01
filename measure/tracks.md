@@ -60,12 +60,11 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [~] **Track: Allow list for the measure guard**
-  *Link: [./tracks/guard_allow_list_20261101/](./tracks/guard_allow_list_20261101/)*
-
----
-
 ## Archived Tracks
+
+- [x] **Track: Allow list for the measure guard**
+  *Link: [./archive/guard_allow_list_20261101/](./archive/guard_allow_list_20261101/)*
+  *A per-repository file `measure/guard-allow` names folders that a scheduled job may write while no task is `[~]`. Shared core of the mod and the plugin.*
 
 - [x] **Track: Spec review gate, finding dispositions, and doc drift check**
   *Link: [./archive/spec_review_gate_20261030/](./archive/spec_review_gate_20261030/)*

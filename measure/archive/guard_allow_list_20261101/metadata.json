@@ -1,9 +1,10 @@
 {
   "track_id": "guard_allow_list_20261101",
   "type": "feature",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-01T10:20:00Z",
-  "updated_at": "2026-11-01T10:20:00Z",
+  "updated_at": "2026-11-01T17:43:20Z",
+  "completed": "2026-11-02",
   "description": "Allow list for the measure guard: a per-repository file measure/guard-allow names folders that may get writes while no task is [~] (PM request A-41, approved by Daniel on 2026-11-01). Shared core of the Claude Code mod and the OpenCode plugin; the advantage-pr list for its scheduled jobs.",
   "estimated_tasks": 5
 }

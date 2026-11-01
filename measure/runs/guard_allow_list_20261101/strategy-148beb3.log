@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: strategy
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard; Phase 2: Merge, install, and the advantage-pr list
+commits: e07934a
+tests_run: baselines at 148beb3 (no code change): plugin bun test 85 pass 0 fail; tsc exit 0; check-parity.sh parity: ok; claude plugin test mods/measure-guard 87 pass 0 fail; claude plugin validate passed; tests/spec_review_gate/run.sh 10 suites (PASS=10, FAIL=0)
+files_changed: measure/tracks/guard_allow_list_20261101/test-strategy.md
+plan_updates: none
+known_failures: none
+handoff: Capture phase_base_sha with git rev-parse HEAD directly after e07934a, before Red marks the track line or Task 1.1 [~]. Do not use 148beb3. The track line in tracks.md is "- [ ]" and no task is [~], so the installed guard denies writes to tests/ until the track line and Task 1.1 are [~] (both edits are inside measure/). Risk: Phase 1 high, Phase 2 medium. Phase 1 reviews A, B, C and adversarial testing (mutations X1-X12 and input probes) apply; UX browser review not applicable (UX_REQUIRED=never). Phase 2 has no Red or Green role and no review role; verification is by the acceptance lines of Tasks 2.1 and 2.2 (merge, installer exit 0 and kept 0, --check, diff -r of src, a bun live check with a no-list control, cmp of the advantage-pr file, before/after git status listing of advantage-pr, labeled folders=4 ignored=0, six labeled path results). Two required cases are added to Task 1.1 because spec decisions had no full test: A2b (Decision 4 rule order: /../x/, /*/, ../*/, src/*, ../, .) and B5 (Decision 5 absolute and relative forms through isAllowed). Added assertions, not cases: B2 and B3 compare the deny text to a no-list control and assert no "guard-allow" in it (Decision 7). Red must use a namespace import for the new exports so each case fails alone. Expected Red-passing controls: B2, B4, M3 and the deny halves. Plan gap, not a blocker: the mod README has no "## Guards" heading, so Green puts "## Allow list" after "## Commit guard (strict mode)". The run log is not committed.
+END_MEASURE_AGENT_RESULT

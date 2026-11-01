@@ -1,0 +1,32 @@
+# Review C: API and user-flow contract, Phase 1
+
+Track: guard_allow_list_20261101. Role: review-c. Report only.
+
+HEAD is 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4 on feat/guard-allow-list. It equals role_base_sha and audited_head_sha.
+
+Contract applicability is applicable. The phase has a named file contract, status lines, loader behavior, deny texts, README text, and CHANGELOG text. There is no HTTP route and no browser UI.
+
+Results:
+- The spec list parses to 4 folders and 0 ignored lines.
+- The Decision 11 status line sits directly before Guards:.
+- The four status surfaces call the shared statusLines: /measure-guard, measure_status, the terminal sidebar, and /measure-status.
+- The deny texts did not change, and no deny text names the list.
+- Both loaders fill allow on every return.
+- Parity is ok. The plugin has 112 passing tests. The mod has 91 passing tests. tsc exits 0.
+- The advantage-pr list covers the outputs of the daily report, the daily reel, and the morning Facebook check.
+- One Nit: the plugin README line 98 has a broken inline-code span.
+
+Verdict: pass. No blocking finding.
+
+MEASURE_AGENT_RESULT
+role: review-c
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: none
+tests_run: bun test plugin 112 pass 0 fail; bun x tsc --noEmit exit 0; check-parity.sh parity: ok; claude plugin test mods/measure-guard 91 pass 0 fail; probe-contract-c.ts 4 folders 0 ignored and 6 of 6 allow checks ok
+files_changed: measure/runs/guard_allow_list_20261101/review-c-470d4a4.json; measure/runs/guard_allow_list_20261101/review-c-470d4a4.log; measure/runs/guard_allow_list_20261101/probe-contract-c.ts
+plan_updates: none
+known_failures: none
+handoff: Pass. One nonblocking Nit: plugins/opencode-measure-guard/README.md:98 has a broken inline-code span in the Status lines bullet (double backtick opens, single backtick closes). The phase contract holds for the file format, the status lines, the deny texts, the loaders, and the mod/plugin parity. The advantage-pr list of spec.md matches the outputs of scripts/daily-report/, scripts/daily-reel/, assets/videos/, and .drafts/. Phase 2 Tasks 2.1 and 2.2 are still open.
+END_MEASURE_AGENT_RESULT

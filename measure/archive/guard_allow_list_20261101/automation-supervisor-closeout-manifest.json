@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "inconclusive",
+  "track_id": "guard_allow_list_20261101",
+  "track_title": "Allow list for the measure guard",
+  "closeout_baseline_sha": "00a01498c5348366b45554c8236a02eef02056a8",
+  "track_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "audited_head_sha": "00a01498c5348366b45554c8236a02eef02056a8",
+  "closeout_commit_sha": "pending",
+  "closeout_record_commit_sha": "pending",
+  "audits": [
+    {"role": "review-a", "artifact": "measure/runs/guard_allow_list_20261101/review-a-470d4a4.json", "status": "pass", "audited_head_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4", "note": "Findings R-A-1 and R-A-2 carried to tech debt."},
+    {"role": "review-b", "artifact": "measure/runs/guard_allow_list_20261101/review-b-241282e.json", "status": "pass", "audited_head_sha": "241282e57a56d3ec0647102179af3469b9a65608", "note": "Findings B F2 and B F3 carried to tech debt."},
+    {"role": "review-c", "artifact": "measure/runs/guard_allow_list_20261101/review-c-470d4a4.json", "status": "pass", "audited_head_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4", "note": "No tech-debt row from this audit."},
+    {"role": "spec-review", "artifact": "measure/runs/guard_allow_list_20261101/spec-review-7f62ec6.json", "status": "pass", "audited_head_sha": "7f62ec669209f3581c0a6ee8eb809f64262e8dfc"},
+    {"role": "adversarial-testing", "artifact": "measure/runs/guard_allow_list_20261101/adversarial-testing-p1-470d4a4.json", "status": "pass", "audited_head_sha": "c59ee94e8ff0f3bc032fa568ddb55316197fc31c", "note": "Findings Adversarial F1 and F2 carried to tech debt."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/guard_allow_list_20261101/phase-acceptance-p1-241282e.json", "status": "pass", "audited_head_sha": "241282e57a56d3ec0647102179af3469b9a65608"},
+    {"role": "phase-acceptance", "phase": "Phase 2", "artifact": "measure/runs/guard_allow_list_20261101/phase-acceptance-p2-8e62ad2.json", "status": "pass", "audited_head_sha": "8e62ad2f08607999f7369da2490a3c496fa3bb7c"},
+    {"role": "final-acceptance", "artifact": "measure/runs/guard_allow_list_20261101/final-acceptance-00a0149.json", "status": "pass", "audited_head_sha": "00a01498c5348366b45554c8236a02eef02056a8"},
+    {"role": "closeout", "artifact": "measure/runs/guard_allow_list_20261101/closeout-00a0149.json", "status": "inconclusive until the second commit"}
+  ],
+  "models": "Not recorded in the inputs of this closeout.",
+  "commands": [
+    "git branch --show-current && git rev-parse HEAD && git status --short",
+    "Read measure/tracks/guard_allow_list_20261101/plan.md -> six [x] tasks with SHAs; checkpoints fc57fdb and 3b54a4b",
+    "git mv measure/tracks/guard_allow_list_20261101 measure/archive/guard_allow_list_20261101",
+    "grep -rn guard_allow_list tests/ mods/ plugins/ -> no match (exit 1); no A9 fix needed",
+    "wc -l measure/tech-debt.md measure/tracks.md -> 33 and 75 lines",
+    "PROJECT_LINT, PROJECT_CHECKS, and PROJECT_TESTS -> exit 0 at 00a0149 (recorded in final-acceptance-00a0149.json)",
+    "role-gate --role closeout --track guard_allow_list_20261101 --result-file measure/runs/guard_allow_list_20261101/closeout-00a0149.json --log-file measure/runs/guard_allow_list_20261101/closeout-00a0149.log"
+  ],
+  "task_shas": {
+    "1.1": "c8315cb",
+    "1.2": "b44ac93",
+    "1.3": "ceccfdc",
+    "1.4": "c59ee94",
+    "2.1": "d61d6cc",
+    "2.2": "8e62ad2"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "fc57fdb",
+    "Phase 2": "3b54a4b"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (per final-acceptance-00a0149.json)",
+    "a6_registry_check": "pass (per final-acceptance-00a0149.json)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep -rn guard_allow_list tests/ mods/ plugins/",
+    "result": "no match",
+    "test_fix": "none"
+  },
+  "retained_evidence": [
+    "measure/runs/guard_allow_list_20261101/ (all audit, phase, final, and closeout artifacts, logs, and probe scripts; retained, nothing deleted)",
+    "measure/archive/guard_allow_list_20261101/ (plan, spec, spec-review, test-strategy, index, metadata, and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "out_of_repository_facts": [
+    "/home/daniebo/Desktop/advantage-pr/measure/guard-allow is untracked in advantage-pr. The PM orchestrator commits it. This closeout did not write in advantage-pr."
+  ],
+  "tech_debt_rows_added": [
+    "2026-11-02 guard_allow_list_20261101: isAllowed relative-path limit and README code span (Low, Open)",
+    "2026-11-02 guard_allow_list_20261101: parseAllowList O(n²) dedupe, operator list risks, X2 mutation text no-op (Low, Open)"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

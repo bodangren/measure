@@ -1,0 +1,51 @@
+# Review A: guard_allow_list_20261101, Phase 1
+
+- Role: measure-review-a
+- Track: guard_allow_list_20261101
+- Phase: "Phase 1: Allow list in the guard"
+- phase_base_sha: e07934a57234fe12a3ce8e0f6b51ebf5b740e334
+- role_base_sha: 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4
+- audited_head_sha: 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4 (equals HEAD)
+- Scope: `git diff e07934a..470d4a4`, 20 files.
+
+## Result
+
+Status: pass. No blocking finding. Two nonblocking findings.
+
+## Checks
+
+- `bun test` in the plugin: 112 pass, 0 fail, 12 files.
+- `bun x tsc --noEmit -p .`: exit 0.
+- `bash scripts/check-parity.sh`: `parity: ok`, exit 0.
+- `claude plugin test mods/measure-guard`: 91 pass, 0 fail, 11 files.
+- No deny text changed. `guards.ts` has no `guard-allow` text.
+- Every return of both loaders carries `allow`. Mod `register.tsx` lines 92, 99, 104, 116, 122, 125, 127, 129. Plugin `snapshot.ts` lines 80, 91, 96, 108, 114, 117, 119, 121.
+- Decisions 3 to 12 each have an implementation and a test that can fail.
+- Plan Red counts and Green counts match the logs and this run. No false all-pass claim.
+
+## Findings
+
+1. R-A-1 (minor): `isAllowed` joins a relative path with `snapshot.root`, but `turnProblems` and `commitDecision` get git-root-relative paths. No test proves that the two roots are equal. `test-strategy.md` section 1 asks Review A to check this. No regression in this diff.
+2. R-A-2 (cosmetic): `plugins/opencode-measure-guard/README.md:98` has a broken code span. The claim is true; only the rendering is wrong.
+
+## Probe
+
+`measure/runs/guard_allow_list_20261101/review-a-probe.ts` (not committed). It confirms:
+- the `no plan.md` and `no ## Phase` returns keep the folders;
+- the success return keeps the folders;
+- a root without `measure/` gives `{ folders: [], ignored: [] }`;
+- the parser does not throw on `//`, `///a/`, `a/./b/`, `a/b/../`, a backslash, a space, a NUL byte, a BOM, 10 000 characters, or 5 000 lines;
+- a legitimate folder does not allow `src/x.ts` or a sibling root.
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: none
+tests_run: plugin bun test 112 pass 0 fail; plugin tsc exit 0; check-parity.sh parity: ok; mod claude plugin test 91 pass 0 fail; review probe pass
+files_changed: none
+plan_updates: none
+known_failures: none
+handoff: Phase 1 passes Review A with two nonblocking findings (isAllowed relative path base at mods/measure-guard/hooks/guards.ts:234 and :373; plugin README:98 code span). Phase 2 (merge, install, advantage-pr list) is unchanged.
+END_MEASURE_AGENT_RESULT

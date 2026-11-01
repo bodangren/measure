@@ -1,0 +1,115 @@
+# Mid-Red log: guard_allow_list_20261101, Phase 1, Task 1.1
+
+- Role: measure-mid-red
+- Track: guard_allow_list_20261101
+- Phase: "Phase 1: Allow list in the guard"
+- Task: Task 1.1 (Red). It stays `[~]` for the Green role.
+- Branch: feat/guard-allow-list
+- phase_base_sha: e07934a57234fe12a3ce8e0f6b51ebf5b740e334
+- role_base_sha: da879b0954e25c9235c736de5ed3d9997cd119b7
+- Resulting HEAD: c8315cbf1b38ca0d3f884b75e7ce66e5d8a58b79
+
+## Dirty paths at role start
+
+- `?? extensions/` only. It is untracked user work. It is preserved and not staged.
+
+## RED_TEST_COMMAND
+
+```
+cd plugins/opencode-measure-guard && bun test tests/allow.test.ts; p=$?; cd ../.. && claude plugin test mods/measure-guard; m=$?; test $p -eq 0 -o $m -eq 0
+```
+
+Exit code: 1. Both suites fail.
+
+## Plugin suite: tests/allow.test.ts
+
+Counts: 27 tests across 1 file, `pass=8`, `fail=19`.
+
+Failing tests (missing behavior of this track):
+- parseAllowList > A1 keeps the valid folders once, in order, with no ignored line
+- parseAllowList > A2 ignores each invalid entry with its line, text, and exact reason
+- parseAllowList > A2b applies the entry rules in order
+- parseAllowList > A3 keeps # inside an entry and gives the empty list for empty text
+- edit guard > B1 the allowed folder and a sub-folder resolve with no [~] task
+- edit guard > B3 an allowed path resolves with no [~] track
+- edit guard > B5 isAllowed matches both path forms by whole segments
+- end of turn > C1 turnProblems drops the allowed path and keeps the denied one
+- commit guard > D1 a commit of allowed and measure/ paths passes with no [~] task
+- commit guard > D1 the deny does not name the allowed path
+- TDD guard > E1 tddDecision allows an allowed source file
+- loadSnapshot > F1 reads the folders of measure/guard-allow
+- loadSnapshot > F1 gives the empty list when the file is absent
+- loadSnapshot > F1 gives the empty list and no parse error for a folder at the path
+- loadSnapshot > F1 keeps the list when tracks.md is absent
+- loadSnapshot > F1 gives the empty list without measure/
+- loadSnapshot > F1 keeps the list on a parseError
+- statusLines > G1 puts the list and the ignored lines directly before Guards
+- statusLines > G1 says no folders when only ignored lines exist
+
+Passing tests (controls; they prove the fixture and the old guard work):
+- edit guard > B2 each near miss is denied with the text of the same call without a list
+- edit guard > B3 src/a.ts keeps the no-track deny with and without the list
+- edit guard > B4 a [~] task keeps every path open
+- edit guard > B4 an ignored entry opens nothing, and one denied path denies a patch
+- commit guard > D1 a commit that adds a denied path is denied and lists it
+- commit guard > D1 the message format check stays for an allowed path
+- TDD guard > E1 tddDecision still denies src/a.ts
+- statusLines > G1 prints no list line for the empty list
+
+Failure causes:
+- `TypeError: parse.parseAllowList is not a function` for A1, A2, A2b, A3.
+- `TypeError: guards.isAllowed is not a function` for B5.
+- The allowed paths still reject for B1, B3, C1, D1 (allow half), E1 (allow half).
+- `snapshot.allow` is `undefined` at each `loadSnapshot` return for F1.
+- No `Allow list` line for G1.
+
+No fixture error. `tempProject`, `withMeasure`, `makeGuard`, and the fixture files load. No test reads the track folder.
+
+## Mod suite: mods/measure-guard
+
+Counts: 11 files, 91 tests, `pass=88`, `fail=3`.
+
+Failing tests:
+- allow list in the mod > M1 the tool hook allows the list and denies the near misses
+- allow list in the mod > M2 /measure-status shows the list line
+- allow list in the mod > M4 the list survives a parseError
+
+Passing control:
+- allow list in the mod > M3 a folder at measure/guard-allow gives no list and no crash
+
+No old test fails: the 87 baseline tests pass. The file count goes from 10 to 11.
+
+## Files in the commit c8315cb
+
+- measure/tracks/guard_allow_list_20261101/plan.md (Task 1.1 `[~]`, Red evidence)
+- plugins/opencode-measure-guard/tests/allow.test.ts (new)
+- plugins/opencode-measure-guard/tests/core.test.ts (add `allow` to the Snapshot literal)
+- mods/measure-guard/tests/allow.test.ts (new)
+- mods/measure-guard/tests/band.test.ts (add `allow` to the Snapshot literal)
+- mods/measure-guard/tests/commands.test.ts (add `allow` to the Snapshot literal)
+- mods/measure-guard/tests/edit-guard.test.ts (add `allow` to two Snapshot literals)
+
+No production source changed. No assertion changed in the existing tests.
+`extensions/` is untracked and unstaged.
+
+## Git note
+
+A git note with this evidence is on c8315cb.
+
+## Remaining failures at handoff
+
+The 22 failures above are the Red state. The Green role must remove them with
+Decision 3 to 12.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: c8315cb
+tests_run: RED_TEST_COMMAND exit 1; plugin tests/allow.test.ts 27 tests, 8 pass, 19 fail; mod suite 91 tests, 88 pass, 3 fail (M1, M2, M4)
+files_changed: measure/tracks/guard_allow_list_20261101/plan.md, plugins/opencode-measure-guard/tests/allow.test.ts, plugins/opencode-measure-guard/tests/core.test.ts, mods/measure-guard/tests/allow.test.ts, mods/measure-guard/tests/band.test.ts, mods/measure-guard/tests/commands.test.ts, mods/measure-guard/tests/edit-guard.test.ts
+plan_updates: Task 1.1 [~] with Red evidence
+known_failures: A1, A2, A2b, A3, B1, B3 allow half, B5, C1, D1 allow half, D1 deny excludes allowed path, E1 allow half, F1 (6 tests), G1 (2 list tests), M1, M2, M4
+handoff: The controls B2, B3 deny half, B4, D1 deny half, D1 message half, E1 deny half, G1 empty-list half, and M3 pass at Red; Green must make A1, A2, A2b, A3, B1, B3 allow half, B5, C1, D1 allow half, D1 deny excludes allowed path, E1 allow half, F1 (6 tests), G1 (2 list tests), M1, M2, and M4 pass with Decisions 3 to 12.
+END_MEASURE_AGENT_RESULT

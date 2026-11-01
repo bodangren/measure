@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: jr-green
+status: done
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: b44ac93 feat(guard): Add the allow list to the measure guard (Task 1.2); ceccfdc docs(guard): Document the allow list (Task 1.3); 470d4a4 chore(measure): Record the Green evidence of 'Allow list for the measure guard' (plan evidence)
+tests_run: GREEN_TEST_COMMAND exit 0. Plugin bun test: 112 pass, 0 fail (85 old + 27 allow). tsc --noEmit: exit 0. check-parity.sh: parity: ok. Mod claude plugin test: 91 pass, 0 fail (11 files).
+files_changed: mods/measure-guard/types/index.d.ts, mods/measure-guard/hooks/parse.ts, mods/measure-guard/hooks/guards.ts, mods/measure-guard/hooks/register.tsx, plugins/opencode-measure-guard/src/core/parse.ts, plugins/opencode-measure-guard/src/core/guards.ts, plugins/opencode-measure-guard/src/types.ts, plugins/opencode-measure-guard/src/snapshot.ts, plugins/opencode-measure-guard/README.md, mods/measure-guard/README.md, CHANGELOG.md, measure/tracks/guard_allow_list_20261101/plan.md. No new file. The Red tests are unchanged.
+plan_updates: Task 1.1 [x] c8315cb; Task 1.2 [x] b44ac93; Task 1.3 [x] ceccfdc. No [b] task. No phase checkpoint added.
+known_failures: none
+handoff: phase_base_sha e07934a57234fe12a3ce8e0f6b51ebf5b740e334; role_base_sha c8315cb; final Green HEAD 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4 (branch feat/guard-allow-list). No deny text changed (the diff has no deny string change). extensions/ is not staged. Targeted Red command now passes: the plugin allow.test.ts has 27 pass, 0 fail, and the mod suite has 91 pass, 0 fail. Both loaders read measure/guard-allow after the measure/ and repo checks; every later return carries allow. Reviewers can scope the audit to the 8 code files and 3 doc files listed in files_changed. Phase 2 (merge, install, advantage-pr list) remains.
+END_MEASURE_AGENT_RESULT

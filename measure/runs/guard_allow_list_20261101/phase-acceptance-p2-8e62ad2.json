@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "status": "pass",
+  "summary": "Phase 2 is complete at HEAD 8e62ad2f08607999f7369da2490a3c496fa3bb7c. The merge, the install, the read-only checks, and the advantage-pr file match the plan and spec claims. The phase diff changes only plan.md, so no code changed. One nonblocking Nit: the completed Task 2.2 plan line has no commit SHA, and the closeout gate requires one.",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 2: Merge, install, and the advantage-pr list",
+  "track_base_sha": "fc57fdbf2c955107a0c8e89f095ae59c0e953889",
+  "role_base_sha": "8e62ad2f08607999f7369da2490a3c496fa3bb7c",
+  "audited_head_sha": "8e62ad2f08607999f7369da2490a3c496fa3bb7c",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] plan.md: The completed line 'Task 2.2' has no commit SHA, because the track writes no commit for it. The closeout gate plan_closeout_feedback requires a hex SHA on every completed task line, so closeout fails on this line. Rationale: a scan of plan.md with the regex of plan_closeout_feedback flags only this line. Fix at closeout: cite the plan-evidence SHA 8e62ad2 on that line."
+  ],
+  "evidence": [
+    "HEAD equals 8e62ad2f08607999f7369da2490a3c496fa3bb7c, the audited head. git status shows only the pre-existing untracked extensions/. No tracked file changed by this role.",
+    "track_base_sha fc57fdbf2c955107a0c8e89f095ae59c0e953889 resolves to a commit. git diff --name-only fc57fdb..HEAD lists only measure/tracks/guard_allow_list_20261101/plan.md (3 insertions, 3 deletions). Phase 2 adds no code, as the test strategy says.",
+    "Prerequisite reviews for Phase 2 are not applicable per test-strategy.md section 5, and no Phase 2 review result exists in measure/runs/. Phase 1 acceptance passed at 241282e with status pass.",
+    "bin/install-measure-skill --check exits 0 and prints 'No differences: every target matches main (8e62ad2)'.",
+    "diff -r plugins/opencode-measure-guard/src /home/daniebo/.config/opencode/plugins/opencode-measure-guard/src prints nothing and exits 0.",
+    "git log --merges -1 --format=%H%n%P gives d61d6cce8ea92f47d922909b119478c0ab97068a with parents 7a6f7d92759b6d26bfafb2df5cf9005a031dfc46 and 9ec5f3c828dd1ed6d9ca78aa5013757109d924d5. git name-rev gives main~3^2 for the second parent, the branch tip. git show --cc prints no combined hunks, and the merge message has no conflict section, so the merge had no conflict.",
+    "git branch --list feat/guard-allow-list prints nothing. The branch is deleted, as Task 2.1 requires.",
+    "cmp /home/daniebo/Desktop/advantage-pr/measure/guard-allow /tmp/gal/advantage-pr-list.txt exits 0. A cmp of that text with the fenced text block under '## advantage-pr list' of spec.md exits 0. The file equals the spec text.",
+    "git -C /home/daniebo/Desktop/advantage-pr status --porcelain -- measure/guard-allow prints '?? measure/guard-allow'. A diff of /tmp/gal/apr-before.txt and /tmp/gal/apr-after.txt shows only line 12a13, the added untracked line. No other advantage-pr file changed by this track.",
+    "The script /tmp/gal/live-check.ts was read before the run. It writes only temp folders under the system temp dir and reads the project root read-only. It imports the installed src under /home/daniebo/.config/opencode/plugins/opencode-measure-guard/src.",
+    "bun /tmp/gal/live-check.ts with the arguments of the brief prints 'live check: ok' and exits 0. This repeats the live check of Decision 13 against the installed code.",
+    "The live check allows scripts/daily-report/work/x.md, scripts/daily-reel/work/x.json, assets/videos/fb-caption-2026-11-02.txt, and .drafts/x.md in both cases. It denies src/x.md and scripts/daily-report/send.py with the deny text that starts 'measure-guard:'. The deny halves prove that the guard is on, so the allow result is not a vacuous pass.",
+    "The read-only loadSnapshot of /home/daniebo/Desktop/advantage-pr gives folders scripts/daily-report/work, scripts/daily-reel/work, assets/videos, .drafts, ignored=0, parseError=null. This matches acceptance criterion 10.",
+    "The orchestrator live proof in its own session, recorded in the brief, allowed a write of tmp-gal-live/x.md and denied tmp-gal-control/x.md with the deny text under the running service. Its OpenCode log shows the plugin load at 2026-11-01T16:54:32Z, 8 s after the install. Recorded evidence, not repeated here.",
+    "The git note on d61d6cc records the Task 2.1 commands with labeled counts (written=5 removed=0 kept=0) and exit codes. The git note on 8e62ad2 records Task 2.2. The re-run results match both notes.",
+    "A5: no Phase 2 plan line says 'PASS=N', 'FAIL=0', or 'all checks pass'. The Task 2.2 claim 'the checks of acceptance criterion 10 pass' matches the live run. The Task 2.1 acceptance lines match the re-run commands.",
+    "A3, A4, A6, and A7 need no check here: the phase diff changed only plan.md, no contract test, filter, or tracks registry. A grep of measure/tracks.md finds no 'resolved' or 'fully solved' claim for this track.",
+    "This role ran bin/install-measure-skill only with --check. This role wrote no file in /home/daniebo/Desktop/advantage-pr and made no commit."
+  ],
+  "commands": [
+    "git rev-parse fc57fdb -> fc57fdbf2c955107a0c8e89f095ae59c0e953889",
+    "git rev-parse HEAD -> 8e62ad2f08607999f7369da2490a3c496fa3bb7c",
+    "git notes show d61d6cc -> Task 2.1 note read",
+    "git notes show 8e62ad2 -> Task 2.2 note read",
+    "bin/install-measure-skill --check -> exit 0, No differences: every target matches main (8e62ad2)",
+    "diff -r plugins/opencode-measure-guard/src /home/daniebo/.config/opencode/plugins/opencode-measure-guard/src -> exit 0, no output",
+    "git log --merges -1 --format=%H%n%P -> d61d6cce8ea92f47d922909b119478c0ab97068a with parents 7a6f7d92759b6d26bfafb2df5cf9005a031dfc46 9ec5f3c828dd1ed6d9ca78aa5013757109d924d5",
+    "git branch --list feat/guard-allow-list -> empty, 0 lines",
+    "cmp /home/daniebo/Desktop/advantage-pr/measure/guard-allow /tmp/gal/advantage-pr-list.txt -> exit 0",
+    "cmp of the spec fenced text block and /tmp/gal/advantage-pr-list.txt -> exit 0",
+    "git -C /home/daniebo/Desktop/advantage-pr status --porcelain -- measure/guard-allow -> ?? measure/guard-allow",
+    "diff /tmp/gal/apr-before.txt /tmp/gal/apr-after.txt -> only 12a13 added line ?? measure/guard-allow",
+    "bun /tmp/gal/live-check.ts <installed src> <fixtures> <guard-allow> <4 allowed> <2 denied> /home/daniebo/Desktop/advantage-pr -> exit 0, live check: ok",
+    "git diff --name-only fc57fdb..HEAD -> only measure/tracks/guard_allow_list_20261101/plan.md",
+    "git show --cc --format= d61d6cc -> 0 lines, no conflict hunks",
+    "grep -n 'resolved|fully solved|all checks pass|PASS=[0-9]' measure/tracks.md measure/tracks/guard_allow_list_20261101/plan.md -> no Phase 2 match"
+  ],
+  "changed_files": [
+    "measure/runs/guard_allow_list_20261101/phase-acceptance-p2-8e62ad2.json",
+    "measure/runs/guard_allow_list_20261101/phase-acceptance-p2-8e62ad2.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

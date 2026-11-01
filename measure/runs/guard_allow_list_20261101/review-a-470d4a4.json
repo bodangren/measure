@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 1: Allow list in the guard",
+  "status": "pass",
+  "verdict": "pass",
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "summary": "Phase 1 passes Review A. Decisions 3 to 12 are implemented and covered by tests that can fail. The gate commands pass. Two nonblocking findings: the relative path base of isAllowed in the turn and commit callers, and a broken code span at plugins/opencode-measure-guard/README.md:98.",
+  "phase_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "audited_head_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "diff_scope": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334..470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "changed_files": [],
+  "files_in_scope": [
+    "CHANGELOG.md",
+    "measure/tracks.md",
+    "measure/tracks/guard_allow_list_20261101/metadata.json",
+    "measure/tracks/guard_allow_list_20261101/plan.md",
+    "mods/measure-guard/README.md",
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/hooks/parse.ts",
+    "mods/measure-guard/hooks/register.tsx",
+    "mods/measure-guard/tests/allow.test.ts",
+    "mods/measure-guard/tests/band.test.ts",
+    "mods/measure-guard/tests/commands.test.ts",
+    "mods/measure-guard/tests/edit-guard.test.ts",
+    "mods/measure-guard/types/index.d.ts",
+    "plugins/opencode-measure-guard/README.md",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/core/parse.ts",
+    "plugins/opencode-measure-guard/src/snapshot.ts",
+    "plugins/opencode-measure-guard/src/types.ts",
+    "plugins/opencode-measure-guard/tests/allow.test.ts",
+    "plugins/opencode-measure-guard/tests/core.test.ts"
+  ],
+  "commands": [
+    "cd plugins/opencode-measure-guard && bun test -> 112 pass, 0 fail, 12 files",
+    "cd plugins/opencode-measure-guard && bun x tsc --noEmit -p . -> exit 0",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh -> parity: ok, exit 0",
+    "claude plugin test mods/measure-guard -> 91 pass, 0 fail, 11 files",
+    "git diff e07934a..470d4a4 -- mods/measure-guard plugins/opencode-measure-guard/src | grep SETUP_DENY|BYPASS|deny: -> no output",
+    "grep -rn guard-allow mods/measure-guard/hooks/*.ts plugins/opencode-measure-guard/src/core/*.ts -> no hit in guards.ts; ALLOW_FILE and the status line in parse.ts",
+    "bun measure/runs/guard_allow_list_20261101/review-a-probe.ts -> all loader returns carry allow; no parser throw on edge inputs"
+  ],
+  "evidence": [
+    "audited_head_sha 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4 equals HEAD on feat/guard-allow-list.",
+    "Decision 3: parseAllowList at mods/measure-guard/hooks/parse.ts:54 trims each line, skips empty lines, skips whole-line comments. Test A1 at plugins/opencode-measure-guard/tests/allow.test.ts:85.",
+    "Decision 4: allowProblem at mods/measure-guard/hooks/parse.ts:40 checks absolute, .. segment, wildcard, trailing slash, root in that order with the exact reason strings. Tests A2 (line 100) and A2b (line 131). Probe R5 shows no throw for //, ///a/, a/./b/, a/b/../, backslash, space, NUL byte, BOM, 10000 characters, and 5000 lines; // is ignored as an absolute path.",
+    "Decision 5: isAllowed at mods/measure-guard/hooks/guards.ts:31 joins the absolute form with joinPath and the relative form with joinPath(root, path), then matches with isInside. Test B5 at plugins/opencode-measure-guard/tests/allow.test.ts:213 covers both forms, .. resolution, the near miss, the sibling root, and the folder itself. Tests B2 (line 159) and B3 (line 178) cover case sensitivity.",
+    "Decision 6: editDecision at mods/measure-guard/hooks/guards.ts:57, turnProblems at :234, commitDecision at :373, tddDecision at :317. Tests B1 (line 150), B2, B3, B4 (line 188 and 196), C1 (line 227), D1 (lines 238, 248, 258, 268), E1 (lines 278, 283).",
+    "Decision 7: the diff has no deny string change; guards.ts has no guard-allow text. Tests B2 and B3 compare each deny with a control run and assert not.toContain('guard-allow'); test D1 at line 258 asserts the deny does not list the allowed path.",
+    "Decision 8: AllowIgnored, AllowList, and Snapshot.allow are at mods/measure-guard/types/index.d.ts:66 to :100 and in the plugin copy at plugins/opencode-measure-guard/src/types.ts. check-parity.sh confirms the copy.",
+    "Decision 9: ALLOW_FILE at parse.ts:37, parseAllowList at parse.ts:54, isAllowed at guards.ts:31 are exported.",
+    "Decision 10: allow is set on the base snapshot and carried on every later return. Mod hooks/register.tsx lines 92, 99, 104, 116, 122, 125, 127, 129. Plugin src/snapshot.ts lines 80, 91, 96, 108, 114, 117, 119, 121. Tests F1 (6 cases, lines 291 to 324) and M3 and M4. Probe R1 and R2 confirm the no-plan and no-Phase returns keep the folders; R3 confirms the success return; R4 confirms the empty list without measure/.",
+    "Decision 11: statusLines at mods/measure-guard/hooks/parse.ts:310 pushes the list line and one ignored line directly before the Guards line, for hasMeasure only, with the no folders variant. Tests G1 (lines 328, 342, 350), M2, M4.",
+    "Decision 12: check-parity.sh prints parity: ok. The plugin core files are byte copies of the mod files.",
+    "Plan Red counts (19 fail, 8 pass of 27 plugin; 3 fail, 88 pass of 91 mod) match measure/runs/guard_allow_list_20261101/mid-red-p1-da879b0.log.",
+    "Plan Green counts (112 pass, 0 fail plugin; 91 pass, 0 fail mod) match this run. Baseline was 85 and 87 tests.",
+    "The four existing test files add only allow: { folders: [], ignored: [] } to Snapshot literals; the diff shows no assertion change.",
+    "A4: parity uses diff -q, so a missing copy fails. F1 asserts the exact folders, so a missing file fails. G1 asserts the exact lines and their position. M3 is a control that also passed at Red, and the Red log lists it as a control.",
+    "A3: no bare-digit count assertion. A5: the plan claims match the real exits."
+  ],
+  "anti_pattern_checks": [
+    "A4 vacuous-pass: parity, F1, and G1 each fail on a missing deliverable.",
+    "A3 digit-only count: no bare-digit count assertion; the plan uses labelled fail= and pass= values.",
+    "A5 false-claim text: Red and Green counts match the logs and this run.",
+    "A7 word filter: the deny check uses exact equality with a control and not.toContain('guard-allow')."
+  ],
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "R-A-1 (minor): isAllowed at plugins/opencode-measure-guard/src/core/guards.ts:31 joins a relative path with snapshot.root, but turnProblems (mods/measure-guard/hooks/guards.ts:234) and commitDecision (:373) get git-root-relative paths. The match is correct only when snapshot.root is the git root; the plugin root is ctx.location.directory. No test builds a nested session root, though test-strategy.md section 1 asks Review A to check this. No regression in this diff; the measure/ prefix filter has the same assumption.",
+    "R-A-2 (cosmetic): plugins/opencode-measure-guard/README.md:98 opens a code span with two backticks and closes it with one. The claim is true (plugins/opencode-measure-guard/src/commands.ts:68, src/tool.ts:19, src/tui/model.ts:47 render statusLines); only the rendering is wrong. The mod README bullet is correct."
+  ],
+  "notes": [
+    "The independent probe file is measure/runs/guard_allow_list_20261101/review-a-probe.ts. It is under a gitignored folder and was not committed.",
+    "No production file, test, plan, or registry file was edited. No commit was made."
+  ]
+}

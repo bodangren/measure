@@ -1,0 +1,55 @@
+Phase 2 acceptance for track guard_allow_list_20261101, role phase-acceptance.
+
+Scope and baselines
+- HEAD is 8e62ad2f08607999f7369da2490a3c496fa3bb7c on branch main. It equals role_base_sha and audited_head_sha.
+- track_base_sha fc57fdb resolves to fc57fdbf2c955107a0c8e89f095ae59c0e953889.
+- git diff --name-only fc57fdb..HEAD lists only measure/tracks/guard_allow_list_20261101/plan.md (3 insertions, 3 deletions). Phase 2 adds no code, as test-strategy.md section 5 says.
+- Prerequisite reviews A, B, C, adversarial, and UX are not applicable in Phase 2 per test-strategy.md section 5. No Phase 2 review result exists in measure/runs/. Phase 1 acceptance passed at 241282e.
+
+Recorded evidence read
+- Git note on d61d6cc (Task 2.1): merge, install with written=5 removed=0 kept=0, --check exit 0, diff -r clean, live check ok.
+- Git note on 8e62ad2 (Task 2.2): the advantage-pr file is a byte copy of the spec text, untracked, and the AC 10 checks pass.
+- Orchestrator live proof in its own session: the running service allowed tmp-gal-live/x.md and denied tmp-gal-control/x.md. The OpenCode log shows the plugin load at 2026-11-01T16:54:32Z.
+
+Read-only checks repeated at this HEAD
+1. bin/install-measure-skill --check exits 0. Output: No differences: every target matches main (8e62ad2).
+2. diff -r plugins/opencode-measure-guard/src /home/daniebo/.config/opencode/plugins/opencode-measure-guard/src prints nothing and exits 0.
+3. git log --merges -1 --format=%H%n%P gives d61d6cce8ea92f47d922909b119478c0ab97068a with parents 7a6f7d92759b6d26bfafb2df5cf9005a031dfc46 and 9ec5f3c828dd1ed6d9ca78aa5013757109d924d5. git name-rev gives main~3^2 for the second parent. git show --cc prints no combined hunks. The merge had no conflict.
+4. git branch --list feat/guard-allow-list prints nothing. The branch is deleted.
+5. cmp /home/daniebo/Desktop/advantage-pr/measure/guard-allow /tmp/gal/advantage-pr-list.txt exits 0. A cmp of that text with the fenced text block under "## advantage-pr list" of spec.md exits 0.
+6. git -C /home/daniebo/Desktop/advantage-pr status --porcelain -- measure/guard-allow prints "?? measure/guard-allow". A diff of /tmp/gal/apr-before.txt and /tmp/gal/apr-after.txt shows only the added line 12a13.
+7. The script /tmp/gal/live-check.ts was read before the run. It writes only temp folders under the system temp dir. It imports the installed src and runs onToolBefore and a read-only loadSnapshot.
+8. bun /tmp/gal/live-check.ts with the arguments of the brief prints "live check: ok" and exits 0. It allows the four listed paths in both cases. It denies src/x.md and scripts/daily-report/send.py with the deny text that starts "measure-guard:". The read-only loadSnapshot of advantage-pr gives 4 folders, ignored=0, parseError=null.
+
+Plan and spec verification
+- Task 2.1: the merge, the install, --check, diff -r, the live check, and the branch deletion all match the acceptance lines. Verified live at this HEAD.
+- Task 2.2: the file equals the spec text. The file is untracked. No other advantage-pr file changed by this track. The AC 10 checks pass live against the installed plugin.
+- Acceptance criterion 9: --check exits 0 and the Decision 13 live check passes. Both verified live.
+- Acceptance criterion 10: the file content, the 4 folders, the 0 ignored lines, the 4 allowed paths, and the 2 denied paths all match. Verified live.
+- A5: no Phase 2 plan line says PASS=N, FAIL=0, or "all checks pass". The Task 2.2 claim that the AC 10 checks pass is true at this HEAD.
+- A3, A4, A6, A7: not required. The phase diff changed only plan.md. A grep of measure/tracks.md finds no "resolved" claim for this track.
+- The deny halves of the live check prove the guard is on. The allow result is not a vacuous pass.
+
+Findings
+- Blocking findings: none.
+- Nonblocking finding F1 [Nit] plan.md: the completed Task 2.2 line has no commit SHA. The closeout gate plan_closeout_feedback requires a hex SHA on every completed task line. A scan of plan.md with that regex flags only this line. The fix at closeout is to cite 8e62ad2 on that line. This role edits no repository file.
+
+Discipline
+- This role ran bin/install-measure-skill only with --check.
+- This role wrote no file in /home/daniebo/Desktop/advantage-pr.
+- This role edited no repository file and made no commit. It wrote only the two run artifacts.
+
+Verdict: pass. No blocking finding. retry_recommendation: none.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 2: Merge, install, and the advantage-pr list
+commits: none
+tests_run: bin/install-measure-skill --check exit 0; diff -r exit 0 with no output; cmp exit 0 for the file and the spec text; git status shows ?? measure/guard-allow; bun /tmp/gal/live-check.ts exit 0 with live check: ok
+files_changed: measure/runs/guard_allow_list_20261101/phase-acceptance-p2-8e62ad2.json, measure/runs/guard_allow_list_20261101/phase-acceptance-p2-8e62ad2.log
+plan_updates: none
+known_failures: none
+handoff: Verdict pass at HEAD 8e62ad2. All Phase 2 checks repeat clean. One Nit: the completed Task 2.2 plan line has no commit SHA, and the closeout gate requires one. Cite 8e62ad2 on that line at closeout.
+END_MEASURE_AGENT_RESULT

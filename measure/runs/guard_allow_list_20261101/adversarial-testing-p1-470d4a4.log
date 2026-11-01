@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: adversarial-testing
+status: complete
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: c59ee94e8ff0f3bc032fa568ddb55316197fc31c
+tests_run: bun test tests/allow-adversarial.test.ts 19 pass 0 fail; bun test 131 pass 0 fail 13 files; tsc --noEmit exit 0; check-parity.sh parity: ok; claude plugin test mods/measure-guard 91 pass 0 fail; tests/spec_review_gate/run.sh 10 suites PASS=10 FAIL=0
+files_changed: plugins/opencode-measure-guard/tests/allow-adversarial.test.ts; measure/runs/guard_allow_list_20261101/adversarial-testing-p1-470d4a4.json; measure/runs/guard_allow_list_20261101/adversarial-testing-p1-470d4a4.log
+plan_updates: none; the orchestrator marks Task 1.4
+known_failures: none
+handoff: Verdict pass, confidence high. The committed file is byte-identical to the probe copy and holds the 19 cases V1 to V19. All 12 mutation classes are rejected by a test; X2 as written is a no-op and an effective X2 form is caught by B5 and V11. Two nonblocking items: the O(n*n) dedupe costs 7 981 ms at 50 000 unique entries, and the X2 mutation text in test-strategy.md is a no-op. Production code is unchanged since 470d4a4.
+END_MEASURE_AGENT_RESULT

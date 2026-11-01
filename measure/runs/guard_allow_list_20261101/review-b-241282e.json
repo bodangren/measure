@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "role": "review-b",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 1: Allow list in the guard",
+  "status": "pass",
+  "verdict": "pass",
+  "security_applicability": "applicable",
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "summary": "Phase 1 passes Review B (security). The whole-segment path match, the `..` resolution, the five entry rules, and the fail-open read of measure/guard-allow resist every probe I ran or read. A path outside the listed folders can never pass; a broken or hostile list file only denies more. Three Minor items remain, all about entries an operator may legally write, plus the inherited relative-path-base limit of Review A, whose security effect I judged deny-more-only with a probe.",
+  "phase_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "track_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "241282e57a56d3ec0647102179af3469b9a65608",
+  "audited_head_sha": "241282e57a56d3ec0647102179af3469b9a65608",
+  "diff_scope": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334..241282e57a56d3ec0647102179af3469b9a65608",
+  "changed_files": [],
+  "files_in_scope": [
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/hooks/parse.ts",
+    "mods/measure-guard/hooks/register.tsx",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/core/parse.ts",
+    "plugins/opencode-measure-guard/src/snapshot.ts",
+    "plugins/opencode-measure-guard/tests/allow.test.ts",
+    "plugins/opencode-measure-guard/tests/allow-adversarial.test.ts",
+    "mods/measure-guard/README.md",
+    "plugins/opencode-measure-guard/README.md"
+  ],
+  "commands": [
+    "git rev-parse HEAD -> 241282e57a56d3ec0647102179af3469b9a65608 (equals the supplied audited_head_sha 241282e; HEAD is current)",
+    "git diff --stat e07934a57234fe12a3ce8e0f6b51ebf5b740e334..241282e -> 21 files; production changes only in mods/measure-guard and plugins/opencode-measure-guard/src",
+    "cd plugins/opencode-measure-guard && bun test tests/allow.test.ts tests/allow-adversarial.test.ts -> 46 pass, 0 fail, 138 expect() calls at audited HEAD",
+    "grep -rn guard-allow mods/measure-guard/hooks/guards.ts plugins/opencode-measure-guard/src/core/guards.ts -> no hit (exit 1)",
+    "grep -A 3 guard_allow_list_20261101 measure/tracks.md -> track entry and link only; no 'resolved' claim (A6 clean)",
+    "bun measure/runs/guard_allow_list_20261101/review-b-probe.ts -> 11 of 12 checks pass; the 12th disproved my own theoretical allow case, so it is a pass for the code"
+  ],
+  "evidence": [
+    "audited_head_sha 241282e57a56d3ec0647102179af3469b9a65608 equals git rev-parse HEAD on feat/guard-allow-list; the audited HEAD is current. Commits after role_base 470d4a4 are 88435b0, c59ee94 (tests only), and 241282e (plan.md and metadata.json only), so no production file changed after the implementation at b44ac93 and docs at ceccfdc.",
+    "Path matching: isAllowed (mods/measure-guard/hooks/guards.ts:31) resolves both sides with joinPath and matches with isInside (`p === f || p.startsWith(f + '/')`), so the match is whole-segment and case-sensitive. No startsWith shortcut exists; the adversarial record shows mutation X1 (startsWith) is caught by B2, B5, V1, V4.",
+    "Prefix and sibling tricks: B2, B5, and the adversarial path probes cover work.md, work-old/, workx/, Work/, a sibling root <root>2, /repo2, and /repos; all deny. I re-read the code; isInside needs a full `/` after the folder, so a sibling or prefix name cannot pass.",
+    ".. segments: rule 2 of allowProblem (parse.ts:41) ignores every entry with a `..` segment. joinPath (parse.ts:23) pops `..` and stops at the start, so a written path that climbs above the root resolves outside the root and isInside returns false. My probe confirmed: relative and absolute climb paths (`scripts/daily-report/work/../../../../etc/passwd`) give isAllowed false. The adversarial record shows the same for an absolute escape to /etc/passwd.",
+    "Fail-open read: readAllow (register.tsx:69 and snapshot.ts:62) wraps exists and read in try/catch and returns the empty list on any error, so a broken list can only deny more, never allow. My loader-level probe over a real temporary git repository: a missing file, a folder at the guard-allow path, and a chmod-000 file each give the empty list with no throw and parseError null. The adversarial record covers read-error and the loader tests F1, M3, M4 cover the return sites.",
+    "Binary and large list files: my probe fed binary bytes and a 50 000-line file to loadSnapshot. The loader never threw and parseError stayed null. The binary file produced one spurious folder entry (`%`) from the bytes `%\\n`; a 50 000-line list parsed in 29 317 ms on this loaded machine (7 981 ms in the adversarial run). Both are availability-only effects on an operator-owned file; see finding F3.",
+    "Accepted residual risk (Decisions 6 and 15): measure/guard-allow sits inside measure/, so editDecision exempts a write to it and no check detects a list edit by the agent. I confirmed no deny text names the list: guards.ts has no `guard-allow` string (grep exit 1), and tests B2 and B3 compare each deny with a control and assert not.toContain('guard-allow'). The adversarial record shows a write to measure/guard-allow without a `[~]` task is allowed (P11), as the spec accepts.",
+    "README claims: both README sections state the limit, not a protection: 'No deny text names the list' and 'The check does not find a change of measure/guard-allow made by an agent'. Neither README says the guard protects the list. Both state the symbolic link limit: 'The guard does not resolve symbolic links' and 'No symbolic link resolution'. The adversarial record confirms a symlink inside an allowed folder to src/ is allowed (P10), matching the documented limit.",
+    "A2 (consent-blind publish gate): not applicable. No draft-to-published status flip and no consent artifact exist in this track; the test strategy records A2 as not applicable, and the diff has no publish gate.",
+    "A6 (registry overstatement): measure/tracks.md holds only the track entry and its link for this track; it claims no security state is resolved. The plugin README line 98 has the broken code span that Review A already recorded (cosmetic only).",
+    "Inherited item R-A-1 (relative path base), security judgment: isAllowed joins a relative path with snapshot.root, while commitDecision and turnProblems receive git-root-relative paths. My probe with a session root deeper than the git root shows the real allowed path is denied (deny more). The theoretical opposite case, a git-root-relative `../scripts/...` string, resolves above the wrong base to a path outside the listed folder and is also denied, so the misalignment cannot let a path outside the listed folder pass. Git cannot stage a `../` path, so no realistic allow case exists. The effect is fail-closed only; it stays nonblocking.",
+    "A3: I parsed no count by a bare digit; all counts come from labeled bun test output. A7: no shipped code path filters by a banned word.",
+    "Suites at audited HEAD: the two allow test files give 46 pass, 0 fail. The adversarial record gives the full gates at c59ee94: 131 pass plugin, 91 pass mod, tsc exit 0, parity ok, spec review gate 10 suites. HEAD adds measure/ files only."
+  ],
+  "anti_pattern_checks": [
+    "A2 consent-blind publish gate: not applicable; no publish gate in the diff.",
+    "A5 false-claim text: the READMEs state limits, not protection; the registry makes no resolved claim.",
+    "A6 registry overstatement: measure/tracks.md has no resolved or fully-solved wording for this track.",
+    "A7 over-broad filter: the deny checks use exact control equality and not.toContain; no word filter in shipped code."
+  ],
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-a R-A-1, judged for security (mods/measure-guard/hooks/guards.ts:31, :234, :373): isAllowed joins a relative path with snapshot.root, but commitDecision and turnProblems get git-root-relative paths. Security effect: deny too much only. My probe shows a genuinely allowed path denied under a deeper session root, and the only theoretical allow case (a `../` git-root-relative string) resolves to a path outside the listed folder and is denied. No path outside the listed folder can pass, so this stays a correctness limit, not an allow escape. Inherited from Review A; no regression in this diff.",
+    "F2 [Nit] wide legal entries (parse.ts allowProblem keeps them by design): an operator entry `.git/` would let an agent write into .git (for example .git/hooks/pre-commit) without a `[~]` task, because the edit guard then exempts the path; git executes hooks, so this is a real privilege step, though it needs the operator to write the entry first. `node_modules/` writes are invisible to the end-of-turn check (git ignores them), and a `measure/` entry is redundant because measure/ is already exempt. The spec keeps them legal (the operator owns the list); report them to the user as Minor items, not blocks.",
+    "F3 [Nit] loader content robustness (register.tsx:69, snapshot.ts:62): readAllow accepts any bytes. A line of a binary or hostile list file that ends with `/` becomes a folder entry (my probe made the entry `%` from binary bytes), and a 50 000-line list costs seconds per guarded call (adversarial finding F2: O(n*n) dedupe). Both effects deny more or slow the session only; the operator owns the file. Availability only."
+  ],
+  "notes": [
+    "The probe file is measure/runs/guard_allow_list_20261101/review-b-probe.ts, under a gitignored folder; it was not committed.",
+    "I read the prior evidence (review-a-470d4a4.json, adversarial-testing-p1-470d4a4.json) before probing and probed only the gaps: loader-level missing/folder/unreadable/binary/large list files, a relative `..` climb above the root, and the R-A-1 wrong-base security effect.",
+    "Audit-only role: I edited no repository file, no test, no plan, and no registry file, and I made no commit."
+  ]
+}

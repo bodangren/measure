@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "status": "pass",
+  "summary": "Phase 1 passes acceptance at HEAD 241282e57a56d3ec0647102179af3469b9a65608. Every task commit (c8315cb, b44ac93, ceccfdc, c59ee94) matches its plan claim and carries a git note. PROJECT_TESTS exits 0 with 131 plugin tests, 91 mod tests, tsc exit 0, parity ok, and 10 spec-review-gate suites green. The recorded same-HEAD deviation is accepted: the diff 470d4a4..241282e touches plan.md and the new adversarial test only, so no production code changed after Reviews A and C. Six nonblocking items stay open for the closeout tech-debt transfer.",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 1: Allow list in the guard",
+  "track_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "241282e57a56d3ec0647102179af3469b9a65608",
+  "audited_head_sha": "241282e57a56d3ec0647102179af3469b9a65608",
+  "deviation_review": {
+    "claimed": "Production code is the same at 470d4a4 and 241282e. Reviews A and C audited 470d4a4; the adversarial run audited c59ee94.",
+    "verdict": "accepted",
+    "evidence": [
+      "git diff --stat 470d4a4 241282e -> 2 files: measure/tracks/guard_allow_list_20261101/plan.md (+2) and plugins/opencode-measure-guard/tests/allow-adversarial.test.ts (+267). No production file changed.",
+      "git show --stat c59ee94 -> only plugins/opencode-measure-guard/tests/allow-adversarial.test.ts. git show --stat 241282e -> only plan.md.",
+      "The adversarial result at c59ee94 and Reviews A and C at 470d4a4 therefore audited production code identical to the audited HEAD 241282e. Review B audited 241282e directly.",
+      "measure/tech-debt.md row 'Group (f)' records the same-HEAD deviation rule for test-only adversarial commits."
+    ]
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "R-A-1 / Review B F1 (review-a, review-b): isAllowed joins a relative path with snapshot.root, but commitDecision and turnProblems receive git-root paths. Review B probed the effect: the guard denies too much only, so the item is fail-closed. Carry to tech-debt at closeout.",
+    "README code span (review-a, review-c): plugins/opencode-measure-guard/README.md line 98 opens a code span with two backticks and closes it with one. Cosmetic only. Carry to tech-debt at closeout.",
+    "X2 no-op (adversarial F1): the X2 mutation in test-strategy.md section 4.6 changes no result because isAllowed already calls joinPath on both sides. The effective form is caught by B5 and V11. Defect in the mutation list, not in shipped code. Carry to tech-debt at closeout.",
+    "O(n^2) dedupe (adversarial F2): parseAllowList uses folders.includes in a forEach, so a 50 000-entry list costs seconds per parse. Availability only on an operator-owned file. Carry to tech-debt at closeout.",
+    "Wide legal entries (review-b F2): an operator entry such as .git/ would let an agent write into .git without a [~] task. The spec keeps such entries legal. Report to the user at closeout; carry to tech-debt.",
+    "Binary or large list files (review-b F3): readAllow accepts any bytes; a binary line that ends with / becomes a folder entry, and a 50 000-line list slows each guarded call. Availability only. Carry to tech-debt at closeout."
+  ],
+  "evidence": [
+    "git rev-parse HEAD -> 241282e57a56d3ec0647102179af3469b9a65608. It equals role_base_sha and audited_head_sha, so the audited HEAD is current.",
+    "git log --oneline e07934a..241282e -> da879b0, c8315cb, b44ac93, ceccfdc, 470d4a4, 88435b0, c59ee94, 241282e. One commit per task plus measure-only evidence commits. No extensions/ file is in the phase diff.",
+    "Task 1.1 (c8315cb): the commit adds plugins/opencode-measure-guard/tests/allow.test.ts, mods/measure-guard/tests/allow.test.ts, and the allow field in the four existing test files, as the plan states. A git note exists. The Red counts in plan.md match mid-red-p1-da879b0.log per review-a-470d4a4.json.",
+    "Task 1.2 (b44ac93): the commit changes types, parse, guards, and register.tsx in the mod, and types, snapshot, and the core copies in the plugin, as the plan states. A git note exists.",
+    "Task 1.3 (ceccfdc): the commit adds the two README sections and the CHANGELOG line. A git note exists. Review C verified section content and placement.",
+    "Task 1.4 (c59ee94): the commit adds plugins/opencode-measure-guard/tests/allow-adversarial.test.ts only. A git note exists. PROJECT_TESTS exits 0 at HEAD.",
+    "PROJECT_TESTS at 241282e: plugin bun test 131 pass, 0 fail, 13 files, 428 expect() calls; tsc --noEmit exit 0; check-parity.sh prints 'parity: ok'; claude plugin test 91 pass, 0 fail, 11 files; tests/spec_review_gate/run.sh 10 suites, PASS=10, FAIL=0.",
+    "A5: plan.md holds no 'PASS=N, FAIL=0' claim. The baseline of 85 plugin and 87 mod tests plus 46 new plugin tests and 4 new mod tests equals the current 131 and 91. The claim 'PROJECT_TESTS exits 0' is true at HEAD. The claim 'GREEN_TEST_COMMAND exits 0' is true: every component passed in this run.",
+    "A6: the phase diff changes measure/tracks.md from '[ ]' to '[~]' for this track and adds no resolved or solved claim.",
+    "A3, A4, A7: the phase diff changes no contract test and no filter, so these checks are not applicable to this phase. Review A and Review B checked them anyway and found them clean.",
+    "Spec acceptance criteria 1 to 7 are covered by the passing tests B1 to B5, C1, D1, E1, F1, G1, and M1 to M4, and by the probes recorded in review-a-470d4a4.json, review-b-241282e.json, and review-c-470d4a4.json. Criterion 8 passes in this run. Criteria 9 and 10 belong to Phase 2 after the merge.",
+    "No stale red test: both suites are fully green. No fake gate: the tests run live temporary git repositories through the real guard hooks. Decision 7 holds: Review A found no deny text change, and tests B2 and B3 assert the deny text does not name the list.",
+    "Callers are complete: isAllowed is used in editDecision, turnProblems, commitDecision, and tddDecision; both loaders set allow on every return; all four status surfaces use the shared statusLines, as Review A and Review C recorded."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> 241282e57a56d3ec0647102179af3469b9a65608",
+    "git diff --stat 470d4a4 241282e -> 2 files changed, 269 insertions; plan.md and the adversarial test only",
+    "git diff --stat e07934a..241282e -> 21 files changed, 944 insertions, 24 deletions",
+    "git log --oneline e07934a..241282e -> 8 commits",
+    "git show --stat c8315cb b44ac93 ceccfdc c59ee94 241282e -> file sets match the plan claims",
+    "git notes list -> notes on c8315cb, b44ac93, ceccfdc, c59ee94",
+    "(cd plugins/opencode-measure-guard && bun test && bun x tsc --noEmit -p . && bash scripts/check-parity.sh) && claude plugin test mods/measure-guard && bash tests/spec_review_gate/run.sh -> all pass",
+    "git diff e07934a..241282e -- measure/tracks.md -> the [~] marker change only",
+    "grep Group (f) measure/tech-debt.md -> the deviation row exists, Low, Open"
+  ],
+  "changed_files": [
+    "measure/runs/guard_allow_list_20261101/phase-acceptance-p1-241282e.json",
+    "measure/runs/guard_allow_list_20261101/phase-acceptance-p1-241282e.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

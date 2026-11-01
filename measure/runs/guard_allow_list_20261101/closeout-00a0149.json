@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "inconclusive",
+  "summary": "Provisional closeout record at 00a0149. Pre-closeout state passes. Archive, registry, metadata, debt, and manifest steps are pending.",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "track closeout",
+  "track_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "00a01498c5348366b45554c8236a02eef02056a8",
+  "audited_head_sha": "00a01498c5348366b45554c8236a02eef02056a8",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "Six nonblocking findings from final acceptance move to measure/tech-debt.md as two Low rows. The rows cover the cosmetic README span and the isAllowed relative-path limit.",
+    "The remaining four final-acceptance findings stay in final-acceptance-00a0149.json. Their risk is availability-only or an accepted operator risk."
+  ],
+  "evidence": [
+    "HEAD is 00a01498c5348366b45554c8236a02eef02056a8 on main. It equals audited_head_sha in final-acceptance-00a0149.json.",
+    "final-acceptance-00a0149.json has status pass, zero blocking findings, retry none, and confidence high.",
+    "plan.md has six [x] tasks and two checkpoints, fc57fdb and 3b54a4b. It has zero [~], zero [ ], and zero [b] tasks.",
+    "All six completed tasks carry commit SHA evidence: c8315cb, b44ac93, ceccfdc, c59ee94, d61d6cc, and 8e62ad2.",
+    "metadata.json has status in_progress before this closeout. The track folder is still under measure/tracks/."
+  ],
+  "commands": [
+    "git branch --show-current && git rev-parse HEAD && git status --short -> main; 00a01498c5348366b45554c8236a02eef02056a8; ?? extensions/",
+    "Read measure/tracks/guard_allow_list_20261101/plan.md -> six [x] tasks with SHAs; no [~], [ ], or [b] marker"
+  ],
+  "changed_files": [
+    "measure/runs/guard_allow_list_20261101/closeout-00a0149.json",
+    "measure/runs/guard_allow_list_20261101/closeout-00a0149.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

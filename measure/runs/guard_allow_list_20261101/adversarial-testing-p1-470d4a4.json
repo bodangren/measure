@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "role": "adversarial-testing",
+  "track_id": "guard_allow_list_20261101",
+  "phase": "Phase 1: Allow list in the guard",
+  "status": "pass",
+  "verdict": "pass",
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "summary": "The allow list of Decision 3 to 11 resists every adversarial probe. All 12 mutation classes are rejected by a test, except X2 as written, which is a no-op; an effective X2 form is rejected by B5 and V11. The 19 new adversarial cases are committed at c59ee94 in plugins/opencode-measure-guard/tests/allow-adversarial.test.ts. The plugin suite gives 131 pass and 0 fail, the mod suite 91 pass and 0 fail, tsc exits 0, parity is ok, and the review gate gives 10 suites. Two nonblocking items remain: the O(n*n) dedupe cost, and the no-op X2 mutation text.",
+  "phase_base_sha": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334",
+  "role_base_sha": "470d4a434e30cf8ea85b7efc718c4e7145bdb0d4",
+  "audited_head_sha": "c59ee94e8ff0f3bc032fa568ddb55316197fc31c",
+  "diff_scope": "e07934a57234fe12a3ce8e0f6b51ebf5b740e334..c59ee94e8ff0f3bc032fa568ddb55316197fc31c",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] test-strategy.md section 4.6 (X2): the X2 mutation as written is a no-op. isAllowed already calls joinPath on both sides, and isInside calls joinPath again, so skipping the second joinPath changes no result. Probe X2-literal ran 46 tests and caught nothing. The effective form (raw segment compare with no resolution) is caught by B5 and V11. Rationale: this is a defect in the mutation list, not in the shipped code; the strategy asks X2 to prove path resolution, and only the effective form proves it.",
+    "F2 [Nit] plugins/opencode-measure-guard/src/core/parse.ts:54 (parseAllowList): the dedupe uses folders.includes in a forEach, so the cost is O(n*n). A 50 000-line list with 50 000 unique entries takes 7 981 ms to parse (probe P9). loadSnapshot runs at each guarded tool call. The agent can write measure/guard-allow (the accepted residual risk of Decision 15), so an agent can add seconds to each of its own calls. Rationale: the list never allows a wrong path, so this is availability only; the operator owns the file."
+  ],
+  "evidence": [
+    "Production code is unchanged since the audited implementation at 470d4a434e30cf8ea85b7efc718c4e7145bdb0d4. The later commits are 88435b0 (plan.md Task 1.4 marker, measure/ only) and c59ee94 (the new test file). No production file changed.",
+    "Committed file: plugins/opencode-measure-guard/tests/allow-adversarial.test.ts, 267 lines, 19 tests V1 to V19, at commit c59ee94e8ff0f3bc032fa568ddb55316197fc31c. The git note records the mutation and input probe summary.",
+    "The committed file is byte-identical to measure/runs/guard_allow_list_20261101/adv-allow-adversarial.test.ts (diff prints nothing). Its imports '../src/core/*', '../src/snapshot', '../src/hooks/types', '../src/types', and './fake' resolve in tests/.",
+    "Targeted run: 'cd plugins/opencode-measure-guard && bun test tests/allow-adversarial.test.ts' gives 19 pass, 0 fail, 67 expect() calls.",
+    "Full plugin run: 'cd plugins/opencode-measure-guard && bun test' gives 131 pass, 0 fail, 428 expect() calls, 13 files (112 before this file).",
+    "Process finding F3 of the earlier record is resolved: Task 1.4 is [~], so the guard allows the test file, and the file is committed.",
+    "Input probes (measure/runs/guard_allow_list_20261101/adv-probe.ts and adv-probe-inputs.ts, not committed): '/*/' and '///a/' are ignored as 'absolute path'; 'a/./b/' is kept as 'a/b'; 'a/b/../' is ignored as 'has a .. segment'; '\\' is ignored as 'not a folder (an entry ends with /)'; 'a\\b/', 'a b/', and 'a/ /' are kept as literal folder names and open no slash-separated path; a NUL byte stays in the name; a BOM is removed by trim; CR-only line ends are one line and a CR-only file opens no real path; a 10 000-character entry is kept; a 10 000-line file counts line 10000; 50 000 lines parse in 7 981 ms; entry '/' and '//' are absolute, '.' and './.' are not folders, './' names the root, and 'measure/' is kept.",
+    "Path probes: 'work//a.md', 'work/./a.md', 'work/.', the folder itself, and a file path with a trailing '/' are true; 'work-old/a.md', 'workx/a.md', 'work.md', 'Work/a.md', U+2215 and fullwidth look-alikes, a NUL path, a sibling root '/repo2', '/repos', and a '..' escape are false; joinPath of a path above the root gives '/etc/passwd' and isAllowed is false.",
+    "Documented limits confirmed: a symbolic link inside an allowed folder that points at src/ is allowed (P10), and a write to measure/guard-allow is allowed with no [~] task (P11). Both follow Decision 5 and 15 and the README text.",
+    "Mutation probes X1 to X12 ran on throwaway copies under /tmp/adv (never on the repository). Baseline copy: 46 pass, 0 fail. X1 caught by B2, B5, V1, V4; X2-literal missed, X2-effective caught by B5 and V11; X3 by B2 and V1; X4 by A1, V5, V6, V18; X5 by A2, A2b, V3; X6 by A2b and V9; X7 by C1; X8 by D1 twice; X9 by E1; X10 by F1; X11 by F1; X12 by G1 twice.",
+    "The new cases type-check: 'bun x tsc --noEmit -p /tmp/adv/base' with the strict plugin tsconfig exits 0.",
+    "Project gates on the committed tree: 'bun test' 131 pass, 0 fail; 'bun x tsc --noEmit -p .' exits 0; 'bash scripts/check-parity.sh' prints 'parity: ok'; 'claude plugin test mods/measure-guard' gives 91 pass, 0 fail; 'bash tests/spec_review_gate/run.sh' gives 10 suites (PASS=10, FAIL=0).",
+    "A4 vacuous-pass check: the repository has no 'markers consistent' check (grep finds no hit), so that exact probe is not applicable. The equivalent vacuity test is the mutation table: each mutation removes one decision, and a test fails each time.",
+    "A5 false-claim check: plan.md states 112 plugin tests and 91 mod tests before this file; this run gives 112 and 91 on the same code, and 131 with the 19 new cases. The Red counts of 19 fail and 8 pass (plugin) and 3 fail and 88 pass (mod) match mid-red-p1-da879b0.log.",
+    "A7 over-broad filter check: no shipped code path filters output by a banned word. The deny-text assertions use exact equality with a control run plus not.toContain('guard-allow'), so a negated phrase cannot hide a hit."
+  ],
+  "commands": [
+    "diff measure/runs/guard_allow_list_20261101/adv-allow-adversarial.test.ts plugins/opencode-measure-guard/tests/allow-adversarial.test.ts -> identical",
+    "cd plugins/opencode-measure-guard && bun test tests/allow-adversarial.test.ts -> 19 pass, 0 fail",
+    "cd plugins/opencode-measure-guard && bun test -> 131 pass, 0 fail, 13 files",
+    "git add plugins/opencode-measure-guard/tests/allow-adversarial.test.ts && git commit -m \"test(guard): Add adversarial allow list tests\" -> c59ee94",
+    "git notes add -m \"Adversarial allow list tests ...\" HEAD",
+    "bun measure/runs/guard_allow_list_20261101/adv-probe.ts -> edge inputs, no throw",
+    "bun measure/runs/guard_allow_list_20261101/adv-probe-inputs.ts -> entry, path, symlink, and 50 000-line probes",
+    "bun /tmp/adv/run-probes.ts -> baseline 46 pass 0 fail; X1, X3 to X12 caught, X2-literal missed",
+    "bun /tmp/adv2/x2.ts -> X2-literal MISSED; X2-effective CAUGHT by B5 and V11",
+    "cd plugins/opencode-measure-guard && bun x tsc --noEmit -p . -> exit 0",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh -> parity: ok",
+    "claude plugin test mods/measure-guard -> 91 pass, 0 fail, 11 files",
+    "bash tests/spec_review_gate/run.sh -> 10 suites (PASS=10, FAIL=0)"
+  ],
+  "changed_files": [
+    "plugins/opencode-measure-guard/tests/allow-adversarial.test.ts"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "mutation_probes": [
+    { "id": "X1", "note": "startsWith instead of whole-segment match", "caught": true, "caught_by": ["B2", "B5", "V1", "V4"] },
+    { "id": "X2", "note": "strategy form removes the second joinPath only; no result changes", "caught": false, "caught_by": [] },
+    { "id": "X2e", "note": "effective form: raw compare with no path resolution", "caught": true, "caught_by": ["B5", "V11"] },
+    { "id": "X3", "note": "case-insensitive match", "caught": true, "caught_by": ["B2", "V1"] },
+    { "id": "X4", "note": "no trim()", "caught": true, "caught_by": ["A1", "V5", "V6", "V18"] },
+    { "id": "X5", "note": "no trailing-slash rule", "caught": true, "caught_by": ["A2", "A2b", "V3"] },
+    { "id": "X6", "note": "wildcard and trailing-slash rules swapped", "caught": true, "caught_by": ["A2b", "V9"] },
+    { "id": "X7", "note": "turnProblems without the allow filter", "caught": true, "caught_by": ["C1"] },
+    { "id": "X8", "note": "commitDecision without the allow filter", "caught": true, "caught_by": ["D1"] },
+    { "id": "X9", "note": "tddDecision without the allow filter", "caught": true, "caught_by": ["E1"] },
+    { "id": "X10", "note": "parseError return drops allow", "caught": true, "caught_by": ["F1"] },
+    { "id": "X11", "note": "read of a folder throws", "caught": true, "caught_by": ["F1"] },
+    { "id": "X12", "note": "status line after Guards", "caught": true, "caught_by": ["G1"] }
+  ],
+  "input_probes": [
+    { "probe": "entry /*/", "result": "ignored: absolute path" },
+    { "probe": "entry ///a/", "result": "ignored: absolute path" },
+    { "probe": "entry a/./b/", "result": "kept as a/b" },
+    { "probe": "entry a/b/../", "result": "ignored: has a .. segment" },
+    { "probe": "entry backslash", "result": "ignored: not a folder" },
+    { "probe": "entry a\\b/", "result": "kept as a literal name, opens no a/b path" },
+    { "probe": "entry a b/", "result": "kept as a literal name" },
+    { "probe": "entry a/ /", "result": "kept as a literal name with a space segment" },
+    { "probe": "entry 10 000 characters", "result": "kept" },
+    { "probe": "50 000 lines", "result": "50 000 folders, 7 981 ms" },
+    { "probe": "NUL byte in an entry", "result": "kept in the name, opens no real path" },
+    { "probe": "BOM at the start", "result": "removed by trim, first entry kept" },
+    { "probe": "CR-only line ends", "result": "one line, one literal folder, opens no real path" },
+    { "probe": "path with // and /.", "result": "resolved, allowed" },
+    { "probe": "path with .. inside the folder", "result": "resolved, denied" },
+    { "probe": "path above the root", "result": "joinPath gives /etc/passwd, isAllowed false" },
+    { "probe": "symlink in an allowed folder to src/", "result": "allowed (documented limit)" },
+    { "probe": "write to measure/guard-allow", "result": "allowed (accepted residual risk)" }
+  ],
+  "anti_pattern_checks": [
+    "A4 vacuous-pass: no 'markers consistent' check exists in this repository (grep finds no hit), so the exact fixture probe is not applicable. The mutation table replaces it: every mutation removes one decision and at least one test fails.",
+    "A5 false-claim: the plan counts (112 plugin, 91 mod) equal this run on the same code; the Red counts equal the Red log.",
+    "A7 over-broad filter: no word filter exists in the shipped path; the deny checks use exact equality and not.toContain."
+  ],
+  "notes": [
+    "The probe scripts and the earlier copy of the test file stay under measure/runs/guard_allow_list_20261101/, which is gitignored.",
+    "No production, plan, registry, or README file was edited. Only the new test file is committed."
+  ]
+}

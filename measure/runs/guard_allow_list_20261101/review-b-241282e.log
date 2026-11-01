@@ -1,0 +1,46 @@
+Measure Review B (security) log, track guard_allow_list_20261101, phase "Phase 1: Allow list in the guard".
+
+Run order:
+1. Wrote both artifacts (this log and review-b-241282e.json) before probing, as the brief ordered. The JSON below was refined to the final verdict after the probes; this log carries the final result block only.
+2. Confirmed baselines: git rev-parse HEAD gives 241282e57a56d3ec0647102179af3469b9a65608, equal to the supplied audited_head_sha 241282e. HEAD is current on feat/guard-allow-list. phase_base_sha e07934a57234fe12a3ce8e0f6b51ebf5b740e334. The diff e07934a..241282e touches 21 files; production code lives only in mods/measure-guard and plugins/opencode-measure-guard/src. Commits after the Green evidence at 470d4a4 are 88435b0 (plan), c59ee94 (tests), 241282e (plan, metadata).
+3. Determined security_applicability from test-strategy.md section 4.6 ("Review B (security): applicable, full scope") and the diff: the change decides which writes the guard allows. Applicable; full scope audited.
+4. Read the prior evidence first (review-a-470d4a4.json, adversarial-testing-p1-470d4a4.json) and probed only gaps.
+5. Probed with measure/runs/guard_allow_list_20261101/review-b-probe.ts (bun, repo root; temporary git repositories under /tmp, deleted after the run).
+
+Probe results (12 checks):
+- missing guard-allow file: empty list, no throw, parseError null.
+- folder at the guard-allow path: empty list, no throw, parseError null.
+- unreadable file (chmod 000): empty list, no throw, parseError null.
+- binary file: no throw, parseError null; the bytes made one spurious entry `%`.
+- large file (50 000 lines): no throw, parseError null; 29 317 ms on this loaded machine.
+- relative and absolute `..` paths that climb above the root: isAllowed false.
+- wrong base (session root deeper than git root, item 4 of the brief): the genuinely allowed path is denied (deny more); the theoretical `../scripts/...` string also resolves outside the listed folder and is denied. The misalignment cannot allow a path outside the listed folders; it is fail-closed only. Verdict: keep Review A item R-A-1 as nonblocking.
+The first run of the probe had 4 FAIL lines; all four came from my fixture (tracks.md without the Link line, which the loader reports as a parse error). I fixed the fixture and reran; the product code did not change between runs. One later check failed by design of my own expectation: I predicted a wrong-base allow case, and the code denies it.
+
+Checks from prior evidence, read and not repeated:
+- Mutation probes X1 to X12 with results, input probes (prefix, sibling, sibling root, symlink, write to the list), and the full gate counts are in adversarial-testing-p1-470d4a4.json.
+- Loader return sites, Decision 7 deny-text checks, and the git-root assumption are in review-a-470d4a4.json.
+
+New Review B checks:
+- grep -rn guard-allow in both guards.ts files: no hit. No deny text names the list.
+- Both READMEs state the limits and no protection: "No deny text names the list", "The check does not find a change of measure/guard-allow made by an agent", "The guard does not resolve symbolic links".
+- measure/tracks.md: track entry and link only, no "resolved" claim (A6 clean).
+- A2 (consent-blind publish gate): not applicable; no publish gate exists in the diff.
+- bun test tests/allow.test.ts tests/allow-adversarial.test.ts at audited HEAD: 46 pass, 0 fail.
+
+Result: status pass, no blocking finding. Three Minor nonblocking findings (F1 the inherited relative-path base, judged deny-more-only; F2 wide legal entries .git/, node_modules/, measure/; F3 loader accepts binary and very large list files). retry_recommendation none, confidence high.
+
+Facts changed: none.
+
+MEASURE_AGENT_RESULT
+role: review-b
+status: pass
+track: guard_allow_list_20261101
+phase: Phase 1: Allow list in the guard
+commits: none
+tests_run: bun measure/runs/guard_allow_list_20261101/review-b-probe.ts (11 pass 1 disproved expectation); cd plugins/opencode-measure-guard && bun test tests/allow.test.ts tests/allow-adversarial.test.ts -> 46 pass 0 fail; grep checks for guard-allow and tracks.md claims
+files_changed: measure/runs/guard_allow_list_20261101/review-b-241282e.json, measure/runs/guard_allow_list_20261101/review-b-241282e.log, measure/runs/guard_allow_list_20261101/review-b-probe.ts
+plan_updates: none
+known_failures: none blocking; three Minor nonblocking findings in the JSON (F1 inherited relative path base, deny-more-only; F2 wide legal entries; F3 binary and large list files)
+handoff: none
+END_MEASURE_AGENT_RESULT
