@@ -23,7 +23,7 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
 
 ## Phase 1: Allow list in the guard
 
-- [ ] Task 1.1: Red: write the failing tests.
+- [~] Task 1.1: Red: write the failing tests.
   - New file `plugins/opencode-measure-guard/tests/allow.test.ts`. Use `tempProject`, `withMeasure`, and `makeGuard` of `tests/fake.ts` for the cases that need files. Cases:
     - A1 `parseAllowList`: comments, empty lines, a line with spaces around `scripts/daily-report/work/`, `./assets/videos/`, `a//b/`, the CRLF line `.drafts/` + `\r`, and a second `assets/videos/` give `folders` `['scripts/daily-report/work', 'assets/videos', 'a/b', '.drafts']` and no `ignored` item.
     - A2 `parseAllowList`: each entry of Decision 4 is ignored with its line number, trimmed text, and exact reason: `/etc/` and `/` (`absolute path`); `scripts/../src/` and `..` (`has a .. segment`); `src/*/`, `src/?/`, `src/[ab]/`, and `src/{a,b}/` (`has a wildcard`); `scripts/daily-report/work` (`not a folder (an entry ends with /)`); `./` (`names the project root`).
@@ -44,6 +44,14 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
     - M4: with the list of M1 and a `measure/tracks.md` whose track lines are in no known format (`- [~] Track one` with no link line), the pane shows the line `The Measure files cannot be read: ...` and the line `Allow list (measure/guard-allow): scripts/daily-report/work/`.
   - Add `allow: { folders: [], ignored: [] }` to each `Snapshot` object literal of the existing tests (`plugins/opencode-measure-guard/tests/core.test.ts`, `mods/measure-guard/tests/band.test.ts`, `mods/measure-guard/tests/edit-guard.test.ts`, `mods/measure-guard/tests/commands.test.ts`).
   - Acceptance: `RED_TEST_COMMAND` exits 1. Each failure comes from a missing export or a missing behavior of this track, not from a fixture error. Record the failure count of each suite in the git note.
+  - Red evidence (role `mid-red`; `phase_base_sha` `e07934a57234fe12a3ce8e0f6b51ebf5b740e334`, `role_base_sha` `da879b0`):
+    - Command: `cd plugins/opencode-measure-guard && bun test tests/allow.test.ts; p=$?; cd ../.. && claude plugin test mods/measure-guard; m=$?; test $p -eq 0 -o $m -eq 0`. It exits 1. Both suites fail.
+    - Plugin `tests/allow.test.ts`: 27 tests, `fail=19`, `pass=8`. Fail: A1, A2, A2b, A3, B1, B3 (allow half), B5, C1, D1 (allow half), D1 (the deny does not name the allowed path), E1 (allow half), F1 (6 tests), G1 (2 list tests). Pass (controls): B2, B3 (deny half), B4 (2 tests), D1 (deny half), D1 (message half), E1 (deny half), G1 (empty-list half).
+    - Mod suite: 11 files, 91 tests, `fail=3`, `pass=88`. Fail: M1, M2, M4. Pass (control): M3. No old test fails. The file count goes from 10 to 11.
+    - Causes: `parse.parseAllowList is not a function`, `guards.isAllowed is not a function`, `snapshot.allow` is `undefined` at each loader return, no `Allow list` status lines, and allowed paths still denied by the edit, commit, and TDD guards.
+    - No fixture error: `tempProject`, `withMeasure`, `makeGuard`, `realFiles`, and the fixture files load. No test reads `measure/tracks/guard_allow_list_20261101/`.
+    - The four existing test files get `allow: { folders: [], ignored: [] }` in each `Snapshot` literal. No assertion changes.
+    - The log is `/home/daniebo/Desktop/measure/measure/runs/guard_allow_list_20261101/mid-red-p1-da879b0.log`. It is not committed.
 - [ ] Task 1.2: Green: implement Decisions 3 to 12.
   - Mod: `mods/measure-guard/types/index.d.ts` (Decision 8), `mods/measure-guard/hooks/parse.ts` (`ALLOW_FILE`, `parseAllowList`, the `statusLines` lines of Decision 11), `mods/measure-guard/hooks/guards.ts` (`isAllowed`, and its use in `editDecision`, `turnProblems`, `commitDecision`, and `tddDecision`), and `loadSnapshot` in `mods/measure-guard/hooks/register.tsx` (Decision 10, with `$.fs`).
   - Plugin: copy the three core files (Decision 12), and change `loadSnapshot` in `plugins/opencode-measure-guard/src/snapshot.ts` (Decision 10, with `readFile`).
