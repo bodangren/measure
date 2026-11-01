@@ -21,7 +21,7 @@ Track: `guard_allow_list_20261101`. Spec: [spec.md](./spec.md). The decision num
 
 Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and all pass. `tsc` and the parity check exit 0.
 
-## Phase 1: Allow list in the guard
+## Phase 1: Allow list in the guard [checkpoint: fc57fdb]
 
 - [x] Task 1.1: Red: write the failing tests. `c8315cb`
   - New file `plugins/opencode-measure-guard/tests/allow.test.ts`. Use `tempProject`, `withMeasure`, and `makeGuard` of `tests/fake.ts` for the cases that need files. Cases:
