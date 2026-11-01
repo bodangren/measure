@@ -23,7 +23,7 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
 
 ## Phase 1: Allow list in the guard
 
-- [~] Task 1.1: Red: write the failing tests.
+- [x] Task 1.1: Red: write the failing tests. `c8315cb`
   - New file `plugins/opencode-measure-guard/tests/allow.test.ts`. Use `tempProject`, `withMeasure`, and `makeGuard` of `tests/fake.ts` for the cases that need files. Cases:
     - A1 `parseAllowList`: comments, empty lines, a line with spaces around `scripts/daily-report/work/`, `./assets/videos/`, `a//b/`, the CRLF line `.drafts/` + `\r`, and a second `assets/videos/` give `folders` `['scripts/daily-report/work', 'assets/videos', 'a/b', '.drafts']` and no `ignored` item.
     - A2 `parseAllowList`: each entry of Decision 4 is ignored with its line number, trimmed text, and exact reason: `/etc/` and `/` (`absolute path`); `scripts/../src/` and `..` (`has a .. segment`); `src/*/`, `src/?/`, `src/[ab]/`, and `src/{a,b}/` (`has a wildcard`); `scripts/daily-report/work` (`not a folder (an entry ends with /)`); `./` (`names the project root`).
@@ -52,11 +52,11 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
     - No fixture error: `tempProject`, `withMeasure`, `makeGuard`, `realFiles`, and the fixture files load. No test reads `measure/tracks/guard_allow_list_20261101/`.
     - The four existing test files get `allow: { folders: [], ignored: [] }` in each `Snapshot` literal. No assertion changes.
     - The log is `/home/daniebo/Desktop/measure/measure/runs/guard_allow_list_20261101/mid-red-p1-da879b0.log`. It is not committed.
-- [ ] Task 1.2: Green: implement Decisions 3 to 12.
+- [x] Task 1.2: Green: implement Decisions 3 to 12. `b44ac93`
   - Mod: `mods/measure-guard/types/index.d.ts` (Decision 8), `mods/measure-guard/hooks/parse.ts` (`ALLOW_FILE`, `parseAllowList`, the `statusLines` lines of Decision 11), `mods/measure-guard/hooks/guards.ts` (`isAllowed`, and its use in `editDecision`, `turnProblems`, `commitDecision`, and `tddDecision`), and `loadSnapshot` in `mods/measure-guard/hooks/register.tsx` (Decision 10, with `$.fs`).
   - Plugin: copy the three core files (Decision 12), and change `loadSnapshot` in `plugins/opencode-measure-guard/src/snapshot.ts` (Decision 10, with `readFile`).
   - Acceptance: `GREEN_TEST_COMMAND` exits 0. `check-parity.sh` prints `parity: ok`. No deny text changes (`git diff` of the deny strings is empty).
-- [ ] Task 1.3: Docs: add a section `## Allow list` to `plugins/opencode-measure-guard/README.md` (after `## Guards`) and to `mods/measure-guard/README.md`. Each section gives the file path, the line and entry rules with the five reasons, the matching rule, the four path rules that it changes, the status lines, and the limits (no wildcards, no file entries, no symbolic link resolution, the list is not named in a deny text). Add one line under `## Unreleased` / `### Features` of `CHANGELOG.md`.
+- [x] Task 1.3: Docs: add a section `## Allow list` to `plugins/opencode-measure-guard/README.md` (after `## Guards`) and to `mods/measure-guard/README.md`. Each section gives the file path, the line and entry rules with the five reasons, the matching rule, the four path rules that it changes, the status lines, and the limits (no wildcards, no file entries, no symbolic link resolution, the list is not named in a deny text). Add one line under `## Unreleased` / `### Features` of `CHANGELOG.md`. `ceccfdc`
   - Acceptance: both sections exist. `GREEN_TEST_COMMAND` exits 0.
 
 ## Phase 2: Merge, install, and the advantage-pr list
