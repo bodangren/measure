@@ -58,7 +58,7 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
   - Acceptance: `GREEN_TEST_COMMAND` exits 0. `check-parity.sh` prints `parity: ok`. No deny text changes (`git diff` of the deny strings is empty).
 - [x] Task 1.3: Docs: add a section `## Allow list` to `plugins/opencode-measure-guard/README.md` (after `## Guards`) and to `mods/measure-guard/README.md`. Each section gives the file path, the line and entry rules with the five reasons, the matching rule, the four path rules that it changes, the status lines, and the limits (no wildcards, no file entries, no symbolic link resolution, the list is not named in a deny text). Add one line under `## Unreleased` / `### Features` of `CHANGELOG.md`. `ceccfdc`
   - Acceptance: both sections exist. `GREEN_TEST_COMMAND` exits 0.
-- [~] Task 1.4: Adversarial: commit `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts` (role `measure-adversarial-testing`). The orchestrator added this task on 2026-11-01, because the guard denies the test file while no task is `[~]`.
+- [x] Task 1.4: Adversarial: commit `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts` (role `measure-adversarial-testing`). The orchestrator added this task on 2026-11-01, because the guard denies the test file while no task is `[~]`. c59ee94
   - Acceptance: the file is committed, and `PROJECT_TESTS` exits 0.
 
 ## Phase 2: Merge, install, and the advantage-pr list
