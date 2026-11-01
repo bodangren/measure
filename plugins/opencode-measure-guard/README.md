@@ -77,6 +77,27 @@ Known limits of the strict guards: a test run inside a script the guard does not
 
 Live check (Task 4.4, OpenCode 2.0.32, model `coding-plan/glm-5.3-flash`): a `write` of `hello.txt` in a project with no `[~]` task failed with `measure-guard: no task in the track "..." is in progress. Mark the next task ...`, the file was not created, and the agent quoted the deny text.
 
+## Allow list
+
+The file `measure/guard-allow` of the guarded repository is the allow list. A write to a folder on the list passes while no task is `[~]`. The path of the file is fixed, and `measure/index.md` does not link it. The file is plain UTF-8 text.
+
+- **Lines.** The parser trims each line. An empty line is ignored. A line that starts with `#` is a comment (a whole line only). Every other line is an entry.
+- **Entries.** An entry names one folder relative to the project root, and it ends with `/`. The parser ignores an entry at the first rule that fails:
+
+  | Order | Rule | Reason |
+  | --- | --- | --- |
+  | 1 | The entry starts with `/`. | `absolute path` |
+  | 2 | A segment of the entry is `..`. | `has a .. segment` |
+  | 3 | The entry contains `*`, `?`, `[`, `]`, `{`, or `}`. | `has a wildcard` |
+  | 4 | The entry does not end with `/`. | `not a folder (an entry ends with /)` |
+  | 5 | The entry names the project root (for example `./`). | `names the project root` |
+
+  A kept entry loses the leading `./`, the repeated `/`, and the trailing `/`. Each folder is kept once.
+- **Matching.** A path matches when it is the folder or lies under it. The match is by whole path segments and is case-sensitive. `..` segments resolve before the match. The guard does not resolve symbolic links.
+- **Effect.** A path on the list counts as Measure work, as a path inside `measure/` does, in four rules: the edit guard, the end-of-turn check, the commit guard (strict), and the TDD guard (strict). The setup deny, the closeout guard, the bypass, and `advise` mode do not change. A call that writes several paths is denied when one of its paths is denied.
+- **Status lines.** ``/measure-guard`, the `measure_status` tool, and the terminal sidebar` shows `Allow list (measure/guard-allow): <folders>` directly before the `Guards:` line, and one `  ignored line <n>: <text> (<reason>)` line for each ignored entry. It shows nothing when the list is empty.
+- **Limits.** No wildcards. No file entries. No symbolic link resolution. No deny text names the list, so an agent does not learn to add its own path. The check does not find a change of `measure/guard-allow` made by an agent.
+
 ## End of turn
 
 The `prompt` hook records the turn start: the `git status --porcelain` lines and the `[x]` tasks without a SHA. The plugin watches `ctx.event.subscribe()` for the turn-end events `session.execution.succeeded`, `session.execution.failed`, and `session.execution.interrupted` (OpenCode 2.0.32 delivers these durable events to a plugin; the ephemeral `session.idle` never arrived in the live check, it is accepted too, and two events within one second count as one). On that event it computes the problems from the status lines at idle and the fresh snapshot (`turnProblems()` of the core): a `[x]` task that lost its SHA during the turn, or files changed outside `measure/` while no task has `[~]`. The problems go to the state file every time, also when the list is empty.
