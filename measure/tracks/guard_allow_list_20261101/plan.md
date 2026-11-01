@@ -61,10 +61,10 @@ Baseline on `7a6f7d9`: the plugin has 85 Bun tests, the mod has 87 tests, and al
 - [x] Task 1.4: Adversarial: commit `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts` (role `measure-adversarial-testing`). The orchestrator added this task on 2026-11-01, because the guard denies the test file while no task is `[~]`. c59ee94
   - Acceptance: the file is committed, and `PROJECT_TESTS` exits 0.
 
-## Phase 2: Merge, install, and the advantage-pr list
+## Phase 2: Merge, install, and the advantage-pr list [checkpoint: 3b54a4b]
 
 - [x] Task 2.1: In `/home/daniebo/Desktop/measure`, switch to `main` and run `git merge --no-ff feat/guard-allow-list`. Run `bin/install-measure-skill` once, then `bin/install-measure-skill --check`. Run the live check of Decision 13 with a script under `/tmp`. Delete the branch with `git branch -d`. d61d6cc
   - Acceptance: the merge has no conflict. The installer exits 0 and keeps 0 files. `--check` exits 0. `diff -r` of `plugins/opencode-measure-guard/src` and `~/.config/opencode/plugins/opencode-measure-guard/src` shows no difference. In the live check, the installed guard allows a write of `scripts/daily-report/work/x.md` and denies `src/x.md` in a temporary git repository with the list and no `[~]` task.
   - Edge cases: when the merge has a conflict, stop and report it. When the installer exits 2 (it kept a local edit), stop and report the kept paths. When the cron job installed the merge first, the installer prints `No differences`, and the other checks still apply.
-- [x] Task 2.2: Write `/home/daniebo/Desktop/advantage-pr/measure/guard-allow` with the text of "advantage-pr list" in the spec. Do not commit it. Run the checks of acceptance criterion 10 with the installed plugin. (no commit: the file is untracked in advantage-pr)
+- [x] Task 2.2: Write `/home/daniebo/Desktop/advantage-pr/measure/guard-allow` with the text of "advantage-pr list" in the spec. Do not commit it. Run the checks of acceptance criterion 10 with the installed plugin. `8e62ad2` (the plan commit that holds the evidence note; the file stays untracked in advantage-pr)
   - Acceptance: `cmp` of the file and the spec text exits 0. `git -C /home/daniebo/Desktop/advantage-pr status --porcelain -- measure/guard-allow` shows `?? measure/guard-allow`, and no other file of `advantage-pr` changed by this track. The checks of acceptance criterion 10 pass.
