@@ -60,13 +60,11 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ---
 
-- [~] **Track: README videos**
-  *Link: [./tracks/readme_videos_20261105/](./tracks/readme_videos_20261105/)*
-  *Two YouTube videos as linked thumbnails in `README.md`, at Daniel's request.*
-
----
-
 ## Archived Tracks
+
+- [x] **Track: README videos**
+  *Link: [./archive/readme_videos_20261105/](./archive/readme_videos_20261105/)*
+  *Two YouTube videos as linked thumbnails in `README.md`, at Daniel's request.*
 
 - [x] **Track: Allow list for the measure guard**
   *Link: [./archive/guard_allow_list_20261101/](./archive/guard_allow_list_20261101/)*
