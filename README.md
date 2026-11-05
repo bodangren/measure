@@ -10,6 +10,13 @@ Measure is a set of agent skills, agent roles, and a Claude Code mod. It stores 
 
 ---
 
+## Videos
+
+[![Measure Framework Orchestrator](https://img.youtube.com/vi/4QeRkIH2gSs/hqdefault.jpg)](https://www.youtube.com/watch?v=4QeRkIH2gSs)
+[![Measure Framework Explainer](https://img.youtube.com/vi/AP6-63xSUXM/hqdefault.jpg)](https://www.youtube.com/watch?v=AP6-63xSUXM)
+
+---
+
 ## Why use Measure?
 
 - **Context that survives sessions.** Your product definition, tech stack, workflow, and style guides live in `measure/`, next to your code. Agents read them before they plan or write anything.
