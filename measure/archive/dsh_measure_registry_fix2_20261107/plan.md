@@ -22,7 +22,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 3.1: correct `measure/archive/dsh_measure_registry_20261107/{spec.md,plan.md,metadata.json}` (full-description rule, the cancelled exemption, the SHA trail pointing at `b314321` for the rebuild) and add its `spec-review.md` with the review's findings and one disposition each `bab9984`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Record corrections and gates' (Protocol in workflow.md) `ad94ec4`
 
-## Phase 4: Closeout
+## Phase 4: Closeout [checkpoint: 981736c]
 
 - [x] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix2_20261107` and record the manifest-only FAIL `45cae15`
-- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md) `981736c`
