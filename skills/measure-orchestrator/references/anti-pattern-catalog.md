@@ -224,8 +224,12 @@ for doc in measure/product.md measure/tech-stack.md; do
     echo "$doc: DRIFT candidate: the document cannot be read"
     continue
   fi
-  grep -ao -- '`[^`]*`' "$doc" 2>/dev/null | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$' | sort -u |
+  grep -ao -- '`[^`]*`' "$doc" 2>/dev/null | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$' | sort -u |
   while IFS= read -r p; do
+    first="${p%% *}"
+    if [ "$first" != "$p" ] && [ -f "$first" ] && [ -x "$first" ]; then
+      continue
+    fi
     [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"
   done
 done

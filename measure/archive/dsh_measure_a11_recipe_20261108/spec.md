@@ -75,3 +75,15 @@ asserts equality), and the S4 contract cases cover each change.
 
 - The scope rule comparing trees rather than intermediate commits.
 - Symbolic-link-to-/dev/zero and FIFO latency behavior (kept as report rows).
+
+> **Correction (2026-11-08, dsh_measure_a11_recipe_fix2_20261108):** a span whose
+> first space-free word is an existing executable file is skipped when the full
+> span is not a path, so `bin/measure-benchmark run` is not a candidate; the path
+> pattern is pinned to exactly one space between segments with no leading or
+> trailing space (`^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$`),
+> and directory claims such as `commands/` are still checked. A NUL or
+> invalid-UTF-8 document's ASCII claims are still found (an invalid-byte span is
+> not itself a path claim). The unreadable-document row is skipped under root. The
+> `trailing_extra` row pins the anchors. The live output is back to 3 candidates;
+> the tech-debt row keeps the `..` outside-repo and report-not-confirmed-drift
+> items as remaining.

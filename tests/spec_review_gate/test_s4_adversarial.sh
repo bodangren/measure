@@ -169,6 +169,14 @@ def unreadable_product(case):
     os.chmod(case / P, 0)
 
 
+def exec_command(case):
+    """An existing executable command whose span has an argument."""
+    target = case / "bin" / "measure-benchmark"
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"#!/usr/bin/env bash\n")
+    target.chmod(0o755)
+
+
 # (id, label, case factory, expected exit, expected stdout lines)
 CONTRACT = [
     ("existing", "a backtick path that exists gives no line",
@@ -204,6 +212,16 @@ CONTRACT = [
      lambda: make_case(b"See `src/a b.txt`.\n"), 0, [f"{P}: DRIFT candidate: src/a b.txt does not exist"]),
     ("space_existing", "an existing backtick path with a space gives no line",
      lambda: make_case(b"See `src/a b.txt`.\n", files=["src/a b.txt"]), 0, []),
+    ("executable_command", "a command span whose first word is an executable gives no line",
+     lambda: make_case(b"Run `bin/measure-benchmark run`.\n", setup=exec_command), 0, []),
+    ("executable_command_missing_arg", "an executable command span with a missing argument gives no line",
+     lambda: make_case(b"Run `bin/measure-benchmark missing`.\n", setup=exec_command), 0, []),
+    ("double_space", "a span with two spaces is not a path claim",
+     lambda: make_case(b"See `src/a  b.txt`.\n"), 0, []),
+    ("leading_space", "a span with a space right after the slash is not a path claim",
+     lambda: make_case(b"See `src/ a.txt`.\n"), 0, []),
+    ("trailing_space", "a span with a trailing space is not a path claim",
+     lambda: make_case(b"See `src/a.txt `.\n"), 0, []),
     ("trailing_extra", "a span with characters after the path is not a path claim",
      lambda: make_case(b"See `src/a.txt:tag`.\n", files=["src/a.txt"]), 0, []),
     ("nul_missing", "a NUL byte in the document does not hide a missing claim",
@@ -229,6 +247,10 @@ CONTRACT_CASES = {}
 def contract_results(recipe_file, stop_on_fail=False):
     res = []
     for cid, label, factory, exp_rc, exp_lines in CONTRACT:
+        if cid == "unreadable_document" and os.geteuid() == 0:
+            # chmod 0 does not stop root; report the environment instead of failing.
+            print("  report [unreadable_document]: skipped under root (chmod 0 does not apply)")
+            continue
         case = CONTRACT_CASES.get(cid)
         if case is None:
             case = CONTRACT_CASES[cid] = factory()
@@ -365,9 +387,9 @@ record("G5 time: the run gives exactly 20000 candidate lines", count == 2 * N, f
 MUTANTS = [
     ("no missing-document branch", 'if [ ! -e "$doc" ]; then', 'if false; then'),
     ("no continue after a missing document", 'does not exist"\n    continue', 'does not exist"'),
-    ("grep -E loosened to '.'", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$'", "grep -E '.'"),
-    ("no '/' in the regex", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$'", "grep -E '^[A-Za-z0-9_.-]+[A-Za-z0-9_./ -]*$'"),
-    ("no '$' anchor in the regex", "[A-Za-z0-9_./ -]*$'", "[A-Za-z0-9_./ -]*'"),
+    ("grep -E loosened to '.'", "grep -E '^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$'", "grep -E '.'"),
+    ("no '/' in the regex", "grep -E '^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$'", "grep -E '^[A-Za-z0-9_.-]+[A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$'"),
+    ("no '$' anchor in the regex", "( [A-Za-z0-9_./-]+)?)?$'", "( [A-Za-z0-9_./-]+)?'"),
     ("[ -e \"$p\" ] negated", '[ -e "$p" ] ||', '[ ! -e "$p" ] ||'),
     ("no tr -d of the backticks", "| tr -d '`' ", ""),
     ("sort -u replaced by cat", "| sort -u |", "| cat |"),
@@ -376,7 +398,9 @@ MUTANTS = [
     ("a different candidate text", "$doc: DRIFT candidate: $p does not exist", "$doc: DRIFT: $p does not exist"),
     ("a different missing-document text", "the document does not exist\"", "missing\""),
     ("no grep -a (text mode)", "grep -ao -- ", "grep -o "),
-    ("no space in the path pattern", "^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$", "^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$"),
+    ("no space in the path pattern", "^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$", "^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]+$"),
+    ("no executable-command skip", '    if [ "$first" != "$p" ] && [ -f "$first" ] && [ -x "$first" ]; then', '    if false; then'),
+    ("multiple spaces allowed in the span", "( [A-Za-z0-9_./-]+)?)?$'", "( +[A-Za-z0-9_./-]+)*$'"),
     ("no not-a-regular-file branch", 'if [ ! -f "$doc" ]; then', 'if false; then'),
 ]
 

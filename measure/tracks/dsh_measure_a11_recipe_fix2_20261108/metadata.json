@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_a11_recipe_fix2_20261108",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-08T11:00:00Z",
+  "updated_at": "2026-11-08T11:00:00Z",
+  "description": "A11 recipe fix2: skip executable command spans, pin the single-space path rule, retarget sensitivity mutants, guard the unreadable row for root, and correct the records",
+  "estimated_tasks": 5,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
