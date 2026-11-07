@@ -187,3 +187,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure dispositions parser fix2**
   *Link: [./archive/dsh_measure_srg_parser_fix2_20261108/](./archive/dsh_measure_srg_parser_fix2_20261108/)*
   *Broaden the dispositions control/format rejection (C1, U+2028/2029, bidi, zero-width), make the result markers exact lines, add the ordering probe and the grammar/doc test, and record the review*
+
+- [x] **Track: DSH Measure dispositions parser fix3**
+  *Link: [./archive/dsh_measure_srg_parser_fix3_20261108/](./archive/dsh_measure_srg_parser_fix3_20261108/)*
+  *Search the raw dispositions value, add the remaining Bidi_Control marks (U+061C/200E/200F), strengthen the grammar doc test to the full class sentence, and record the fix2 review*
