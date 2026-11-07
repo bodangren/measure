@@ -66,11 +66,11 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.4: Docs: README "Known limits" and "Guards" (bounded shell grammar, registry deny, in-command `git add`) `008f90f`
 - [x] Task: Measure - User Manual Verification 'Phase S3: Close the write-path bypasses' (Protocol in workflow.md) `9b5a4fa`
 
-## Phase S4: Documentation, live check, and track closeout
+## Phase S4: Documentation, live check, and track closeout [checkpoint: 2b71cdb]
 
 _Story ref: spec.md#story-s4_
 
 - [x] Task 4.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the digest check, `reload`, the git-backed verification, and the bypass closures with their limits `e2421f7`
 - [x] Task 4.2: Live check: run the stale-instance sequence (install -> PASS with digest; modify the installed `src/status.js` without recompose -> FAIL with mismatched digests; `reload` -> PASS; then delete the modified installed file and reinstall, and record that `--check` is clean again) and record one shell-redirect deny, one `apply_patch` registry deny, one bad-SHA/no-note problem, and one metadata-mismatch deny under `measure/runs/dsh_measure_hardening_20261107/`
 - [x] Task 4.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md` (resolve the stale-instance row), `metadata.json`, archive the track, update `measure/tracks.md`
-- [ ] Task: Measure - User Manual Verification 'Phase S4: Documentation, live check, and track closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S4: Documentation, live check, and track closeout' (Protocol in workflow.md) `2b71cdb`
