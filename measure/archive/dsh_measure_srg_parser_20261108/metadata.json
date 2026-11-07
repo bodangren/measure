@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_srg_parser_20261108",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T08:00:00Z",
+  "updated_at": "2026-11-08T08:30:00Z",
+  "description": "Reject control and zero-width characters in a parseable dispositions value (CONTEST/ESCALATE text), with contract tests; record the resolved parser part and the remaining scope-rule item",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The control/zero-width check runs only when no item already failed, so the existing invalid-item messages (CR/U+2028 separators, NUL in an item) keep their contract. (2) The script is shipped under skills/measure-orchestrator; no claude-skills copy exists for it. (3) The scope rule (trees vs intermediate commits) remains the parser row residual, recorded in tech-debt.",
+  "completed": "2026-11-08"
+}
