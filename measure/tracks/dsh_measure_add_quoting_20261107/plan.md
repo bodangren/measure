@@ -19,7 +19,7 @@ and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 2: The live evidence
 
-- [ ] Task 2.1: reinstall (`bin/measure-dsh install --no-skills`), then run the installed `addedPaths` against quoted/escaped `git add` commands and a real scratch `git add "file with space.ts"`; record the output under `measure/runs/dsh_measure_add_quoting_20261107/`, and record `bin/measure-dsh --check --live` PASS with the installed digest
+- [x] Task 2.1: reinstall (`bin/measure-dsh install --no-skills`), then run the installed `addedPaths` against quoted/escaped `git add` commands and a real scratch `git add "file with space.ts"`; record the output under `measure/runs/dsh_measure_add_quoting_20261107/`, and record `bin/measure-dsh --check --live` PASS with the installed digest
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md)
 
 ## Phase 3: Docs and closeout
