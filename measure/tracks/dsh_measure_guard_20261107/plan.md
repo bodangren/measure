@@ -8,7 +8,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 `node --test plugins/dsh-measure-guard/tests/*.test.js` plus
 `bash plugins/dsh-measure-guard/scripts/check-parity.sh`.
 
-## Phase 1: Shared core and package skeleton
+## Phase 1: Shared core and package skeleton [checkpoint: 1d64eb9]
 
 - [x] Task 1.1: Record the plugin runtime in the tech stack `3afbb9a`
     - [ ] `measure/tech-stack.md` Distribution Formats row for `plugins/dsh-measure-guard/`: a Host plugin and a hand-written `client.js` in the documented lazy-CJS format, loaded by a DSH profile row, Node >= 24.9 type stripping for the shared `.ts` core, no build and no package manager
@@ -26,7 +26,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 1.4: Test harness `afd9884`
     - [ ] `tests/fixtures.js`: in-memory Measure files (index.md, tracks.md, plan.md, guard-allow) plus a repository fixture builder
     - [ ] `tests/core.test.js`: parse the fixture; assert active track, `[~]` task, band line, `[b]` count; assert the parity gate passes
-- [ ] Task 1.5: Measure - User Manual Verification 'Phase 1: Shared core and package skeleton' (Protocol in workflow.md)
+- [x] Task 1.5: Measure - User Manual Verification 'Phase 1: Shared core and package skeleton' (Protocol in workflow.md) `1d64eb9`
 
 ## Phase 2: Context layer
 
