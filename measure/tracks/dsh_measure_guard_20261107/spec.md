@@ -68,11 +68,12 @@ generated artifacts.
 
 ### Guard (L2)
 
-**FR-5 — Decision preparation.** For every guarded call the plugin computes the
-decision in `tools/pre-execute` (async; it may read files and run git), stores
-it by the execution token (`exec.token`), and clears it on `tools/result`.
-`ctx.tools.guard` only returns the stored denial; no guard may await. A
-throwing preparation defaults to allow.
+**FR-5 — Decision preparation.** Every guarded call is decided before it runs,
+in an asynchronous step that may read files and run git, and the decision is
+reported without blocking the turn: a denied call returns the shared core's
+deny text to the model and the file is unchanged; an allowed call proceeds. A
+preparation failure fails open. The synchronous guard performs no I/O and
+never awaits (mechanism: `design.md §5`).
 
 **FR-6 — Mutation normalization.** One `ToolMutation` contract covers `edit`
 (`file_path`, `old_string`, `new_string`), `write`, `apply_patch` (`input`,
@@ -81,16 +82,24 @@ disabled by default in the base profile), and `str_replace_editor`
 touches several paths is denied when any path is denied, and the deny names
 every denied path. `bash` and `pwsh` are classified as shell calls with unknown
 paths: the edit guard does not path-check them, and the end-of-turn check is
-their backstop. No shell path extraction is invented in this track.
+their backstop. No shell path extraction is invented in this track. A file tool
+whose after-text cannot be reconstructed from the call (`apply_patch`,
+`str_replace_editor`) passes the closeout guard and is covered by the
+end-of-turn check (fail open).
 
 **FR-7 — Edit guard.** In `guard` and `strict` modes, a write inside the project
 root and outside `measure/` is denied when no task in the active plan has
 `[~]`. Edits inside `measure/` always pass; paths on the allow list pass; a
-parse error allows everything.
+parse error allows everything. In a git repository without `measure/`, a write
+is denied with the shared core's setup text and the band offers setup until the
+user answers `off` or `setup`; after `off`, and outside a git work tree, the
+edit guard allows.
 
 **FR-8 — Closeout guard.** A track may change to `[x]` only when its plan has no
 open task. A task in phase N+1 may change to `[~]` only when phase N's heading
-carries `[checkpoint: <sha>]`.
+carries `[checkpoint: <sha>]`. The guard needs the after-text of the edit; it
+reads it for `edit` and `write` and fails open for every other tool
+(FR-6).
 
 **FR-9 — End-of-turn check.** At the end of a turn the plugin reports a `[x]`
 task with no SHA and files changed outside `measure/` while no task is `[~]`.
@@ -108,21 +117,26 @@ work, with the same parse rules and reasons as the existing implementations
 
 ### State
 
-**FR-11 — Four state classes.** The plugin separates repository configuration
-(persisted mode override, repo bypass), root snapshot (cached files keyed by the
-canonical worktree root), agent state (noted task key, setup answer, session
-bypass, Red state, pending reminder), and turn state (baseline status, SHA-less
-tasks, block count), the last keyed by `(agent.id, turn)`. Repository
-configuration persists in `~/.local/state/measure/dsh-guard/repos.json`. This
-track does not use `ctx.storageDomain`: its record schemas require a zod
-dependency, which NFR-2 forbids.
+**FR-11 — State and persistence.** Only the choices the user makes explicitly
+survive a restart: the repository mode override and the `/measure-off repo`
+bypass, kept in `~/.local/state/measure/dsh-guard/repos.json`. Everything else
+is per session and in memory; the end-of-turn baseline is captured once at the
+start of a turn. This track does not use `ctx.storageDomain`: its record
+schemas require a zod dependency, which NFR-2 forbids (state classes:
+`design.md §3`).
 
-**FR-12 — Root resolution.** The project root is the agent's working directory
-(`ctx.workingDirectory.get`) resolved with `ctx.fs.resolve` (the fs provider
-realpaths), then `git rev-parse --show-toplevel` through `ctx.subprocess`.
-Linked worktrees are independent. The plugin detects a second agent that edits
-the same root and warns it once (one note and a band suffix); it does not
-arbitrate.
+**FR-12 — Root and path resolution.** Every guarded path argument is resolved
+against the Session-effective directory, not the process cwd: the plugin reads
+`ctx.workingDirectory.get(agent.session)` per call, resolves and realpaths the
+path with `ctx.fs.resolve`, then applies the shared containment checks against
+that root. A durable directory change mid-turn is honoured on the next call;
+the snapshot cache is keyed by the canonical root, so the new project is read
+on demand. The project root is the work tree top level (`git rev-parse
+--show-toplevel` through `ctx.subprocess`, realpathed), falling back to the
+effective directory. Linked worktrees are independent. The first agent in a
+canonical root is the writer; a second distinct agent gets exactly one warning
+note and the band names the session count; the record is released when that
+agent is disposed. The plugin detects, it does not arbitrate.
 
 ### Client surface (L4)
 
@@ -162,8 +176,12 @@ track.
   from the DSH package's test command.
 - **NFR-4** POSIX paths only in this release. Windows containment fails open and
   is out of scope.
-- **NFR-5** Every user-visible string is localized (en, zh) and uses theme
-  tokens only.
+- **NFR-5** The plugin's own chrome — the band, the panel, the command labels,
+  the notices, and the JSON view labels — is localized in English and Chinese
+  and uses theme tokens only. The parity-bound shared-core text (deny texts,
+  the task note, the status lines, the end-of-turn reminder) ships in English,
+  as in both existing adapters; a translation layer would break the shared-core
+  parity that NFR-3 requires, so the boundary is explicit and accepted.
 
 ## Acceptance Criteria
 

@@ -57,7 +57,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 - [ ] Task 3.1: Decision preparation
     - [ ] `src/guard.js`: decision `Map` keyed by `exec.token` filled in `tools/pre-execute`, read by the synchronous `ctx.tools.guard`, cleared on `tools/result`; try/catch defaults to allow
-    - [ ] `tests/guard-prep.test.js`: map lifecycle, deny text reaches the guard, parse error allows, throwing listener allows
+    - [ ] `tests/guard-prep.test.js`: decision lifecycle, deny text reaches the guard, parse error allows, a throwing preparation or a failed git/fs read allows (fail open)
 - [ ] Task 3.2: Tool mutation normalization
     - [ ] `src/hooks.js`: `normalizeMutation` for `edit`, `write`, `apply_patch`, `str_replace_editor`, `bash`, `pwsh`; multi-path call denied when any path is denied
     - [ ] `tests/mutation.test.js`: every tool shape, relative paths, multi-path deny, non-mutation tools
@@ -65,8 +65,8 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `src/guard.js`: `editDecision` on every normalized path; deny text names the next task and `/measure-off`
     - [ ] `tests/edit-guard.test.js`: deny without `[~]`, allow with `[~]`, allow inside `measure/`, allow list, bypass, `advise` mode
 - [ ] Task 3.4: Closeout guard
-    - [ ] `src/guard.js`: track close (`closedTracks`) and phase start (`phaseStartDecision`) on `tracks.md`/`plan.md` edits
-    - [ ] `tests/closeout.test.js`: close with open tasks denied, close with `[b]` + `deferred:` allowed with a note, phase N+1 without checkpoint denied
+    - [ ] `src/guard.js`: track close (`closedTracks`) and phase start (`phaseStartDecision`) on `tracks.md`/`plan.md` edits; after-text only for `edit`/`write`, fail open for every other tool
+    - [ ] `tests/closeout.test.js`: close with open tasks denied, close with `[b]` + `deferred:` allowed with a note, phase N+1 without checkpoint denied, `apply_patch`/`str_replace_editor` fail open, an unreadable plan fails open
 - [ ] Task 3.5: End-of-turn check
     - [ ] `src/guard.js`: baseline at the first `agent/pre-step`; problems at `agent/turn-stopping`; strict holds the turn open by `agent.steer` at most `MAX_BLOCKS` (2) times; guard mode reminder at the next `pre-step`; band problems
     - [ ] `tests/end-of-turn.test.js`: changed files with no `[~]` reported, `[x]` without SHA reported, strict steer bounded to 2, advise records only
