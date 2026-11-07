@@ -39,9 +39,11 @@ change DSH itself and does not change the installer contract.
 `install`, `--check`, and `uninstall` (plus `--help`). It resolves the DSH home
 from `$DSH_HOME` or `~/.dsh`, the profile from `--profile` (default `web`), the
 guard mode from `--mode advise|guard|strict` (default `guard`), and the skill
-installer ref from `--ref` (default `main`). `install` and `uninstall` accept
-`--dry-run`; `--check` accepts `--source`, `--live`, `--session`, and `--json`;
-`uninstall` accepts `--keep-copy`. Every mode prints one line per check with
+installer ref from `--ref` (default `main`). `install` accepts `--source DIR` (a plugin
+package directory, default `plugins/dsh-measure-guard/`) and `--dry-run`;
+`--check` accepts `--source`, `--live`, `--session`, and `--json`;
+`uninstall` accepts `--keep-copy` and `--dry-run`. The exact flag, output, and
+JSON contract is `design.md §2`. Every mode prints one line per check with
 `PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no item
 failed. The full contract (flags, exit codes, output columns) is fixed in
 `design.md §2`.
@@ -66,27 +68,35 @@ Every file write is atomic (temp file, then rename).
 
 **FR-3 — Foreign-row refusal.** A row with `id: measure-guard` outside the
 managed block (for example a hand-written row from an earlier manual install) is
-never overwritten. `install` and `--check` report it with `FAIL` and name the
-block to remove; `uninstall` removes only the managed block and the installed
-plugin copy. The check and install are therefore safe on a profile someone else
+never overwritten. The scan matches block and flow mappings with quoted or
+plain values (`id: measure-guard`, `- { id: measure-guard }`,
+`name: "…dsh-measure-guard"`), ignoring comments; `design.md §3` fixes the
+rule. `install` and `--check` report the line with `FAIL` and name the block to
+remove; `uninstall` removes only the managed block and the installed plugin
+copy. The check and install are therefore safe on a profile someone else
 configured.
 
 **FR-4 — Check.** `--check` reports, at least: the skill copies (`measure` and
-`measure-orchestrator` resolved through one documented root order, real paths
-de-duplicated, every repository file present in the installed copy), the plugin
-copy (present, its stamp lists exactly the copied files with matching hashes),
-the profile block (`id`, `name`, and `mode` exactly as `design.md §3`), the
-plugin module (imports cleanly under plain Node and exports `name`, `inject`,
-`apply`), and, with `--live`, the state route. The live session id is
+`measure-orchestrator` resolved through the DSH-mirroring root order of
+`design.md §4`, real paths de-duplicated, every repository file present in the
+installed copy), the plugin copy (present, its stamp lists exactly the copied
+files with matching hashes), the profile block (`id`, `name`, and `mode`
+exactly as `design.md §3`), the plugin module (a Node one-liner imports it and
+exits 0 only when `name === 'measure-guard'`, `inject` is an array, and
+`apply` is a function), the copy's local-edit and stale-file state, and, with
+`--live`, the state route. `--json` prints the exact object of `design.md §2`. The live session id is
 `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with a hint.
 `--check` never writes. A missing `pnpm` is not an error; a different
 `DSH_HOME` or agents home is honoured through the environment.
 
 **FR-5 — Uninstall.** `uninstall` removes the managed block and, by default,
 the plugin copy `<profile>/plugins/dsh-measure-guard/` that it owns;
-`--keep-copy` keeps the copy. It reports what it kept (skills, foreign rows, and
-user-edited files), never removes a foreign row, and exits non-zero only when it
-could not remove something it owns.
+`--keep-copy` keeps the copy. It removes only files whose hash still matches
+their stamp: an edited file is kept, listed, and leaves the folder in place.
+Skills are never touched. When only comments and blank lines would remain in
+`cordis.patch.yml`, it writes `[]` so the file is still a valid patch. It never
+removes a foreign row and exits non-zero only when it could not remove something
+it owns.
 
 ### The workflow command surface (L2)
 
@@ -119,7 +129,10 @@ selection available in the profile, a role prompt template, independence rules,
 the three-family review rule, and how the role uses the guard's plan markers.
 `skills/measure-orchestrator/SKILL.md` links the reference from its contents
 list. The reference names only APIs and models that exist in this installation
-(DSH 0.2.2-rc.1) and marks anything uncorroborated.
+(DSH 0.2.2-rc.1) and marks anything uncorroborated. The prompt template, the
+per-role restrictions, the three-family review assignments, and the exact
+role-to-model table are fixed in `design.md §6`, and the reference restates them
+without inventing values.
 
 ### Documentation and verification (L4)
 
@@ -132,13 +145,13 @@ two harnesses and links the guide; `CHANGELOG.md` gains one entry.
 **FR-10 — Live environment and evidence.** On this machine, after the track: the
 guard plugin is installed from the profile copy (not the working tree), the
 profile row is the managed block, the mode is `guard` (the operator may switch),
-`--check` is green, the state route answers, the band shows the active track,
-the workflow commands appear in the command catalog, and the track records the
-evidence in the task git notes and `measure/runs/`. Re-importing the installed
-copy without a host restart is expected (the row's module URL changed) but is
-proven, not assumed; if the recomposition does not happen, the host restart is
-the recorded operator action and the evidence falls back to the file, record,
-and route checks from the loaded instance.
+`--check` is green, and the track records the evidence in the task git notes and
+`measure/runs/`. The runtime proof is **human-gated**: the agent-side stage
+proves the files, the record, the module exports, and the route of the loaded
+instance; the operator-side stage (a host restart, which ends an agent session)
+confirms the composer band, the `Measure` panel, and the eight commands in the
+`/` menu. A pending restart is recorded as a pending operator action and the
+track does not claim the runtime proof until the operator confirms it.
 
 **FR-11 — Distribution alignment.** The DSH plugin's installer target row is
 removed from `bin/install-targets.tsv` (the CLI owns that copy), the guard

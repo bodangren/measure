@@ -10,6 +10,13 @@ Status: written before Phase 1 Red, revised after the three-family spec review.
 | Artefact | Writer | Note |
 |---|---|---|
 | Skill copies (`~/.claude/skills/measure`, `~/.agents/skills/measure`, `measure-orchestrator`) | `bin/install-measure-skill` | the installer stays the only skill writer (NFR-3); `measure-dsh` only runs it and verifies it |
+
+The installer's own write contract is not this track's: it writes with `cat >`,
+keeps its stamp with redirection, appends `~/.local/state/measure/install.log`,
+and `uninstall` deliberately leaves skill copies alone. The CLI therefore makes
+no atomicity, confinement, or reversal claim about the skill step; those
+guarantees apply to the CLI's own writes only (plugin copy, profile patch), and
+`--no-skills` removes the step entirely. The spec and README say so.
 | Plugin copy under the profile | `bin/measure-dsh` | it must honour `--dsh-home` and `--profile`, which the installer's fixed target cannot express |
 | Profile patch block | `bin/measure-dsh` | marker-managed; no other writer |
 
@@ -53,20 +60,27 @@ measure-dsh --help
 ```
 
 - **Resolution.** `--dsh-home` beats `$DSH_HOME` beats `~/.dsh`. `--profile`
-  defaults to `web`. The plugin source is `<repo>/plugins/dsh-measure-guard`
-  where `<repo>` is the parent of the script's folder; `--source` overrides it
-  for `--check` and for the copy `install` makes. `--mode` accepts `advise`,
-  `guard`, `strict`; default `guard`. The skills are installed to the agents
-  and Claude homes resolved like `dsh-agent-instructions` does:
-  `$DSH_AGENTS_HOME` else `~/.agents`, and `~/.claude`.
+  defaults to `web`. The plugin *package directory* is
+  `<repo>/plugins/dsh-measure-guard` where `<repo>` is the parent of the
+  script's folder; `--source DIR` overrides it and must contain `index.js` and
+  `package.json` (a package directory, not a repository root). `--source`
+  affects the `install` copy and the `plugin` check only; the skill checks
+  always compare against `<repo>/skills/...` from the script location, and a
+  missing `<repo>/skills` turns those two checks into `SKIP`. `--mode` accepts
+  `advise`, `guard`, `strict`; default `guard`. The skill step runs the
+  installer, which resolves the real `$HOME`; the CLI never redirects it.
 - **Exit codes.** `0` all checks passed / install complete; `1` one or more
   checks failed / install incomplete; `2` usage error (bad flag, bad mode,
   `--session` without `--live`); `3` environment error (no profile folder, an
   unreadable patch file, a failed prerequisite).
 - **Output.** One line per item: `PASS <item>: <detail>`, `FAIL <item>:
   <detail>`, `WARN <item>: <detail>`, `SKIP <item>: <detail>`; actions as
-  `WRITE <path>`, `KEEP <path>`, `REMOVE <path>`. `--json` prints one object
-  with `ok`, `items[]`, `actions[]`.
+  `WRITE <path>`, `KEEP <path>`, `REMOVE <path>`, `MKDIR <path>`. `--json`
+  prints exactly one object:
+  `{ "ok": boolean, "mode": "check", "items": [{ "item": string, "status":
+  "PASS"|"FAIL"|"WARN"|"SKIP", "detail": string }], "actions": [{ "action":
+  "WRITE"|"KEEP"|"REMOVE"|"MKDIR", "path": string }] }`. `ok` is `true` only
+  when no item is `FAIL`; the item order is the table order of §4.
 - **`install` order.** (1) prerequisites: Node >= 24.9, the profile folder
   exists, the plugin source has `index.js` and `package.json`; (2) foreign-row
   scan; (3) `mkdir -p <profile>/plugins`; (4) the skill step unless
@@ -89,11 +103,26 @@ measure-dsh --help
   comments and blank lines remain, the CLI writes `[]` as the file content (a
   comments-only YAML document parses as null and would fail composition).
   Non-zero only when an owned item could not be removed.
-- **Copy stamp.** `<profile>/plugins/dsh-measure-guard/.measure-dsh-install`
-  with a header line `# measure-dsh install stamp v1` and one
-  `file <sha256>  <relpath>` line per copied file. The CLI owns this stamp; a
-  user-edited file (hash differs from the stamp) is kept with `WARN`, matching
-  the installer's local-edit policy.
+- **Copy and stamp.** `install` compares, for every source file (everything
+  under the package except `tests/`), the source content, the destination, and
+  the stamp:
+  - destination missing -> write the source, stamp the source hash;
+  - destination equals the source -> no write, stamp the source hash;
+  - destination hash equals the stamped hash but the source differs -> overwrite,
+    stamp the new source hash;
+  - destination hash differs from the stamped hash (user edit) -> keep the file,
+    `WARN`, and **keep the previous stamped hash** so later runs still see it
+    as edited;
+  - a stamped file whose source no longer exists -> remove it when its hash
+    still matches the stamp (then prune empty folders), keep it with `WARN`
+    when it was edited.
+  The stamp is `<profile>/plugins/dsh-measure-guard/.measure-dsh-install` with a
+  header `# measure-dsh install stamp v1` and one `file <sha256>  <relpath>`
+  line per file. `--check` reports a missing stamped file as `FAIL`, an edited
+  one as `WARN`, and a source file absent from the stamp as `WARN` (an
+  untracked leftover). `uninstall` removes only files whose hash still matches
+  their stamp; an edited file is kept, listed, and leaves the folder in place.
+  `--keep-copy` skips the copy removal entirely.
 
 ## 3. Managed block format
 
@@ -132,18 +161,31 @@ measure-dsh --help
 | `node` | `node --version` | >= 24.9 |
 | `skill-measure` | installed skill roots (below) | every file under `<repo>/skills/measure` exists in the installed copy; up to 10 missing names are listed, then "and N more"; a missing installed root is `FAIL`; no repository source is `SKIP` |
 | `skill-orchestrator` | the same rule for `skills/measure-orchestrator` | the same rule |
-| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `src/`, `locale/`, `icon.svg` exist; the stamp lists exactly the copied files with matching hashes; `node --input-type=module -e "import('<plugin>/index.js')"` prints/exports `name`, `inject`, `apply` |
+| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `src/`, `locale/`, `icon.svg` exist; the stamp lists exactly the copied files with matching hashes; a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
 | `record` | `<profile>/cordis.patch.yml` | exactly one managed block; `id: measure-guard`; `name: ./plugins/dsh-measure-guard/index.js`; `mode` in the three values |
 | `foreign-row` | the same file | no `measure-guard` row outside the block |
 | `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field |
 
-**Skill roots.** One resolution order, first existing root wins per skill:
-`<agentsHome>/skills/<name>` (agents home = `$DSH_AGENTS_HOME` else `~/.agents`),
-`<dshHome>/skills/<name>`, `<cwd>/.dsh/skills/<name>`,
-`<cwd>/.agents/skills/<name>`, `~/.claude/skills/<name>`. Real paths are
-de-duplicated (`~/.agents/skills` may be a symlink to `~/.claude/skills`), so a
-symlink never makes the same directory pass twice. `--check` reports the
-resolved root for each skill.
+**Skill roots.** One resolution order that mirrors the DSH provider's rank
+order, first existing root wins per skill:
+
+1. `<sessionRoot>/.dsh/skills/<name>` (project DSH, rank 100)
+2. `<sessionRoot>/.agents/skills/<name>` (project agents, rank 200)
+3. `<dshHome>/skills/<name>` (user DSH, rank 400)
+4. `<agentsHome>/skills/<name>` (user agents, rank 500; agents home =
+   `$DSH_AGENTS_HOME` else `~/.agents`)
+5. `~/.claude/skills/<name>` — a Measure compatibility path, used only when it
+   is not the same real directory as 4 (the installer also targets the Claude
+   home)
+
+`<sessionRoot>` is `deps.rootOf(agent)` for a command and the `--project`
+directory (default `$PWD`) for `--check`. Each root is realpathed and
+de-duplicated, so a symlinked `~/.agents/skills` never passes twice and a
+project root never shadows the same directory. The custom root of the DSH
+provider is not read: the CLI does not parse DSH configuration; the design and
+the guide say so. `--check` reports the resolved root for each skill and the
+`measure` skill DSH would load for the checked project.
+
 
 **Why not the installer's `--check`.** `bin/install-measure-skill --check`
 compares against a git ref (default `main`), which is exactly right for the
@@ -193,11 +235,20 @@ truth is measure/tracks.md and the active track's plan.md.
 - **`measure-orchestrate`** resolves `<measure-orchestrator>/SKILL.md`;
   the skill name is not `measure`, so the lookup is by skill name, not by the
   `measure` root only.
-- Definitions carry one-line descriptions and are registered next to the
-  existing three in `index.js`; no name collides with `measure` or with
-  `measure-status`/`measure-off`/`measure-on`.
-- Reference existence is read with `node:fs/promises` (a trusted host read
-  outside the workspace sandbox) and cached per agent session for one minute.
+- **Arguments.** The handler forwards `invocation.rawInput` (trimmed): when it
+  is non-empty, the message ends with `Arguments: <rawInput>`; when it is
+  empty, no argument line is added. Nothing is rejected. This mirrors the
+  OpenCode commands' `$ARGUMENTS` and keeps `/measure-new-track fix the parser`
+  meaningful.
+- **Discovery copy.** Exact descriptions: Setup Measure in this project; Create
+  a new Measure track; Create a Measure track set; Implement the active Measure
+  track; Review a Measure track or change; Revert Measure work; Run the Measure
+  doctor; Orchestrate the active Measure track.
+- Definitions are registered next to the existing three in `index.js`; no name
+  collides with `measure` or with `measure-status`/`measure-off`/`measure-on`.
+- Reference existence is read with `node:fs/promises` on every command (a
+  trusted host read outside the workspace sandbox); no cache, so a repaired
+  skill takes effect immediately.
 
 ## 6. Orchestrator DSH reference
 
@@ -226,11 +277,32 @@ each role, so the role text has one source.
 | `measure-closeout` | `agents/measure-closeout.md` | `deepseek-official/deepseek-flash` |
 | `measure-orchestrator-audit` | `agents/measure-orchestrator-audit.md` | `xiaomi/mimo-v2.6-pro` |
 
-Independence rule: a reviewer's family differs from the family that wrote the
-artifact under review where the profile allows it, and the three review roles
-(`review-a`, `review-b`, `review-c`) never share a family. The model ids above
-are the profile's `subagent-model-selection-settings.allowedModels`;
-`test-reference.sh` checks every id against the profile patch.
+**Prompt template** (one per spawn, the role body appended verbatim):
+
+```
+You are <role>. <One line: the role's purpose, taken from the role file's
+description.>
+
+Project: <repo root>. Measure track: <track id>.
+Read <the role's input files>. Follow your role contract below.
+Return the MEASURE_AGENT_RESULT block with status, findings, and evidence.
+
+<agents/measure-<role>.md body without YAML frontmatter>
+```
+
+**Per-role restrictions** (from the role files' `permissions`, restated by the
+reference): every role except the orchestrator edits only `measure/runs/**` and
+never runs git write commands; review and acceptance roles never edit source
+files; the closeout role may edit the track documents and `measure/tracks.md`;
+the orchestrator delegates and never implements. **Independence rule:** a
+reviewer's family differs from the family that wrote the artifact under review
+where the profile allows it, and the three review roles never share a family
+(`review-a` = xiaomi, `review-b` = kimi, `review-c` = minimax). `subagent` and
+`subagent_fork` take `provider`, `model`, and a `reasoning_effort` when the
+model supports one. The model ids above are the profile's
+`subagent-model-selection-settings.allowedModels`; `test-reference.sh` checks
+every id against the profile patch and checks the three review families are
+distinct.
 `skills/measure-orchestrator/SKILL.md` gains one contents bullet and one
 paragraph linking the reference. The file marks every claim not verified against
 the installation.
@@ -264,12 +336,24 @@ The current profile has a hand-written `id: measure-guard` block (absolute path,
    --session <id>`; the plugin route and boot graph.
 
 The new row's `name` is a different module URL from the hand-written absolute
-path, so a profile recomposition imports the installed copy without a host
-restart — this is expected but **unproven**, so Phase 5 proves it and records
-the result. If it does not happen, the fallback is a host restart performed by
-the operator outside the agent session; the track's evidence then uses the file
-and record checks plus the route from the currently loaded instance, and the
-restart is recorded as the one pending operator action.
+path, so a profile recomposition should import the installed copy without a
+host restart — this is expected but **unproven**. Phase 5 proves the migration
+in two stages and does **not** accept stale-instance evidence as the runtime
+proof:
+
+1. Agent-side, before any restart: the CLI `--check` (files, stamp, record,
+   module exports) and the live route from the **currently loaded** instance.
+   These prove the files and the record, not that the new copy is live.
+2. User-side, human-gated: the operator restarts DSH (a host restart ends this
+   session, so the agent cannot do it) and confirms the composer band, the
+   `Measure` panel, and the eight new commands in the `/` menu; the checkpoint
+   note records the pending restart until that confirmation arrives. The track
+   does not close on stage 1 alone.
+
+If the recomposition does happen without a restart, stage 1 sees the new
+commands in the catalog and the record's new `name`; the checkpoint records
+that observation and stage 2 still asks the operator to confirm the visible
+surface.
 
 ## 9. Verification commands
 

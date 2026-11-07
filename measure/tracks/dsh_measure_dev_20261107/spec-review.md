@@ -86,16 +86,40 @@ Report: `measure/runs/dsh_measure_dev_20261107/spec-review-k3.1-pro.md`
 
 ### What this track proposes
 
-PENDING
+The track turns a hand-wired DeepSeek Harness setup into a repeatable Measure development environment: a POSIX CLI that installs, checks and uninstalls one managed profile row plus the skill and plugin copies, eight Measure workflow commands in the existing guard plugin, a DSH agent-team reference for the Measure roles, a guide, and a human-gated live migration.
 
 ### How the current system works, per this spec
 
-PENDING
+`bin/install-measure-skill` owns every skill and plugin target, reads them from a git ref, and copies them with `cat >` plus a per-file hash stamp, appending a log under `~/.local/state/measure`; DSH loads skills from project and user roots, commands from `ctx.commands.register` with the receiving Agent available to a handler, and profile patches from `cordis.patch.yml`, where a comments-only document is not a valid patch.
 
 ### Findings
 
-PENDING
+- C-F1 [Blocker] spec.md FR-2/NFR-2; design.md §2 install order: The mandatory unchanged installer cannot satisfy the write invariants: `put()` uses `cat >` and stamps use direct redirection (`bin/install-measure-skill:158-166,258-266`), and every install appends `$HOME/.local/state/measure/install.log` outside the permitted roots (`:280-285`), while uninstall deliberately keeps skill writes.
+- C-F2 [Blocker] design.md §2; plan.md Tasks 1.2-1.3: `--source` is described as overriding the plugin source for both install and check and is assigned to the install implementation, but the install usage and spec omit it; the text also does not establish whether `DIR` is a repository root or a plugin directory or how it selects the skill-comparison source.
+- C-F3 [Blocker] design.md §2 Output; plan.md Task 1.3: `--json` fixes only the top-level keys `ok`, `items[]`, and `actions[]`; neither the item nor action element schema is defined.
+- C-F4 [Blocker] spec.md FR-2/FR-4/FR-5; design.md §2 Copy stamp: The design keeps a user-edited file during install but does not say what hash enters the new stamp, how removed source files are handled, or which edited files uninstall may delete, while check requires every stamped hash to match.
+- C-F5 [Blocker] design.md §3; plan.md Task 1.4: The foreign-row parser misses valid YAML such as `- { id: measure-guard, name: other }`.
+- C-F6 [Blocker] spec.md FR-5; design.md §§2-3: Install may create `cordis.patch.yml`, but uninstall has no rule for the resulting file after its sole managed block is removed; a comments-only patch is not a valid top-level array.
+- C-F7 [Blocker] design.md §§4-5: The chosen skill order puts user-agents before user-DSH and project roots and omits custom roots, whereas DSH ranks project `.dsh`, project `.agents`, custom, user-DSH, then user-agents; `<cwd>` is also not tied to the session root used by the project rail.
+- C-F8 [Blocker] design.md §5; plan.md Task 2.1: `measure-orchestrate` special-cases lookup of `measure-orchestrator/SKILL.md`, but the sole message template still says "Load the `measure` skill"; the OpenCode command loads `measure-orchestrator`.
+- C-F9 [Blocker] design.md §5; plan.md Task 2.1: The command contract neither forwards nor rejects `invocation.rawInput`, and supplies no exact discovery descriptions although the test requires them to be exact; the OpenCode commands append `$ARGUMENTS`.
+- C-F10 [Blocker] spec.md FR-8; design.md §6; plan.md Phase 3: The design lists candidate model ids and column headings but does not fix the role-to-model assignments, role prompt template, per-role restrictions, or three-family selections for the 14 roles.
+- C-F11 [Blocker] spec.md FR-10; design.md §8; plan.md Task 5.1: When recomposition fails, the fallback permits a pending host restart and substitutes file/record checks plus a route response from the currently loaded old instance, which cannot prove the new copy or commands are live.
+- C-F12 [Major] design.md §5 Reference rail: Caching reference existence per agent session for one minute is a premature optimization with no invalidation rule.
+- C-F13 [Major] design.md §4 `plugin`; plan.md Task 1.3: The shown dynamic `import()` only evaluates the host module; it never asserts that `name`, `inject`, and `apply` are exported, and the named check tests omit that failure.
 
 ### Author Response
 
-PENDING
+- C-F1: FIX (design.md §0 and spec NFR-2/FR-5: the installer's write contract is the installer's own and is not claimed by the CLI; the CLI's atomicity, confinement, and reversal guarantees cover its own writes, the skill step is delegated as-is, and `--no-skills` removes it)
+- C-F2: FIX (spec FR-1 and design.md §2: `--source DIR` is a plugin package directory used by `install` and the `plugin` check only; the skill checks always compare against `<repo>/skills` from the script location; a test covers a non-package `--source`)
+- C-F3: FIX (design.md §2 fixes the exact JSON object and the item and action element schemas)
+- C-F4: FIX (design.md §2 fixes the source/destination/stamp rules, the kept edited hash, stale-file removal and pruning, the check status per case, and stamped-only uninstall; the plan names each edge test)
+- C-F5: FIX (design.md §3 and plan Task 1.4: the scan matches block and flow mappings with quoted or plain values, and the test names those forms)
+- C-F6: FIX (spec FR-5 and design.md §2: when only comments remain, the CLI writes `[]`; a test covers a CLI-created patch after uninstall)
+- C-F7: FIX (design.md §4: the order mirrors DSH ranks 100, 200, 400, 500 plus a deduplicated Claude-home compatibility path; `<sessionRoot>` is `deps.rootOf` for a command and `--project` for `--check`; the custom root is not read and the guide says so)
+- C-F8: FIX (each workflow carries its own `skill`; the template loads it; the orchestrate test asserts `measure-orchestrator`)
+- C-F9: FIX (design.md §5 and spec FR-7: the trimmed `rawInput` is forwarded as an `Arguments:` line; the eight exact descriptions are fixed; the test asserts both)
+- C-F10: FIX (design.md §6 now fixes the 14-role table, the prompt template, the per-role restrictions, and the three-family assignments; `test-reference.sh` checks all 14 plus the distinct review families)
+- C-F11: FIX (spec FR-10 and design.md §8 make the runtime proof human-gated in two stages; stale-instance evidence is explicitly not acceptance, and a pending restart is recorded as pending)
+- C-F12: FIX (design.md §5: no cache; existence is read per command)
+- C-F13: FIX (design.md §4 and plan Task 1.3: a node one-liner imports the module and exits 0 only when `name`, `inject`, and `apply` have the right shapes; the failure is a named test case)
