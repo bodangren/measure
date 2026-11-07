@@ -208,3 +208,14 @@ test('clientStateResponse carries the writer count from deps.roots', async () =>
   const body = await (await clientStateResponse(deps, requestOf('?sessionId=session-1'))).json()
   assert.equal(body.band, `${bandLine(snapshotOf(), null)} · 2 sessions`)
 })
+
+test('clientStateResponse identifies the loaded Host module', async () => {
+  const deps = depsOf({ moduleUrl: 'file:///opt/dsh/plugins/dsh-measure-guard/index.js' })
+  const response = await clientStateResponse(deps, requestOf('?sessionId=session-1'))
+  assert.equal(response.headers.get('x-measure-guard-module'), 'file:///opt/dsh/plugins/dsh-measure-guard/index.js')
+})
+
+test('clientStateResponse omits the module header when the entry passes no moduleUrl', async () => {
+  const response = await clientStateResponse(depsOf(), requestOf('?sessionId=session-1'))
+  assert.equal(response.headers.get('x-measure-guard-module'), null)
+})

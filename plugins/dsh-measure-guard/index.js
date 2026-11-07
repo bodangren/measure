@@ -136,6 +136,9 @@ export function apply(ctx, config) {
     state,
     mode,
     roots,
+    // The installed entry identifies itself on the state route; the CLI's live
+    // check compares this URL with the installed copy.
+    moduleUrl: import.meta.url,
   })
 
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the

@@ -35,9 +35,22 @@ const errorText = error => {
   return String(error)
 }
 
-/** A JSON response with the given status. */
-const jsonResponse = (value, status = 200) =>
-  new Response(JSON.stringify(value), { status, headers: { 'content-type': 'application/json' } })
+/** A JSON response with the given status and optional extra headers. */
+const jsonResponse = (value, status = 200, headers = {}) =>
+  new Response(JSON.stringify(value), {
+    status,
+    headers: { 'content-type': 'application/json', ...headers },
+  })
+
+/**
+ * The identity of the loaded Host module, as the installed entry reports it.
+ * `--check --live` compares this header with the installed `index.js`, so a
+ * still-loaded working-tree copy cannot masquerade as the installed copy.
+ */
+const moduleIdentity = deps =>
+  typeof deps.moduleUrl === 'string' && deps.moduleUrl !== ''
+    ? { 'x-measure-guard-module': deps.moduleUrl }
+    : {}
 
 /**
  * The resource of the state route. Every I/O failure is caught: the response
@@ -62,7 +75,7 @@ export async function clientStateResponse(deps, request) {
       sessionCount: deps.roots === undefined ? 1 : deps.roots.countOf(root),
       updatedAt: new Date().toISOString(),
     })
-    return jsonResponse(view)
+    return jsonResponse(view, 200, moduleIdentity(deps))
   } catch (error) {
     return jsonResponse({ error: errorText(error) }, 500)
   }
