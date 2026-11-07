@@ -17,7 +17,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results `2dcc69e`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `1a5a932`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: a7b02ce]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix4_20261107` and record the manifest-only FAIL `20e322a`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `a7b02ce`
