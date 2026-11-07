@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_shell_grammar_20261107",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-08T02:20:00Z",
+  "updated_at": "2026-11-08T02:20:00Z",
+  "description": "Make the shell-write redirect scan heredoc-, quote-, and comment-aware (masking bodies/spans/comments) so prose quoting a redirect is no longer denied, while real writes stay detected",
+  "estimated_tasks": 10,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
