@@ -19,6 +19,7 @@ const REGISTRY = `${ROOT}/measure/tracks.md`
 const PLAN_PATH = `${ROOT}/measure/tracks/${TRACK_ID}/plan.md`
 
 const CLOSED_TRACKS = TRACKS.replace('- [~] **Track: DSH measure guard**', '- [x] **Track: DSH measure guard**')
+const METADATA = `${ROOT}/measure/tracks/${TRACK_ID}/metadata.json`
 
 /** The snapshot the adapter builds from the fixture texts. */
 const snapshotOf = (overrides = {}) => ({
@@ -97,7 +98,7 @@ test('closing a track with a deferred [b] task is allowed with the [b] note', as
 - [x] Task: Guard the edits \`abcdef0\`
 - [b] Task: Human review deferred:alice
 `
-  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan } })
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan, [METADATA]: JSON.stringify({ actual_tasks: 1 }) } })
   const { decision, note } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, CLOSED_TRACKS))
   assert.equal(decision, null)
   assert.match(note, /\[b\] Task: Human review/)
@@ -219,7 +220,7 @@ test('prepareDecision carries the closeout note to the post-execute append', asy
 - [x] Task: Guard the edits \`abcdef0\`
 - [b] Task: Human review deferred:alice
 `
-  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan } })
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan, [METADATA]: JSON.stringify({ actual_tasks: 1 }) } })
   deps.dirOf = () => ROOT
   const exec = {
     token: Symbol('note'),
@@ -239,3 +240,32 @@ test('prepareDecision carries the closeout note to the post-execute append', asy
   const decision = await postExecuteListener(notes)(exec, { content: [{ type: 'text', text: 'ok' }] }, async () => ({ kind: 'accept' }))
   assert.equal(decision.content.at(-1).text, outcome.note)
 })
+
+test('closing a track whose metadata actual_tasks disagrees is denied with both numbers', async () => {
+  const closedPlan = `# Implementation Plan
+
+## Phase 2: Adapter
+
+- [x] Task: Guard the edits \`abcdef0\`
+- [x] Task: Ship the docs \`abcdef1\`
+`
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan, [METADATA]: JSON.stringify({ actual_tasks: 1 }) } })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, CLOSED_TRACKS))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /actual_tasks 1 but its plan has 2 completed tasks/)
+})
+
+test('closing a track without metadata.json is denied', async () => {
+  const closedPlan = `# Implementation Plan
+
+## Phase 2: Adapter
+
+- [x] Task: Guard the edits \`abcdef0\`
+`
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: closedPlan } })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, CLOSED_TRACKS))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /has no metadata\.json/)
+  assert.match(decision.deny, /actual_tasks: 1/)
+})
+

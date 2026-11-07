@@ -63,7 +63,7 @@ const payloadOf = (turn = 1) => ({ turn })
  * The turn-stopping dependencies: the turn record is planted, the snapshot and
  * the status are supplied fresh, and the state classes are the real ones.
  */
-const depsOf = ({ mode = 'guard', plan = PLAN, status = [], baseline = [], unsha = [], blocks = 0, bypass = null } = {}) => {
+const depsOf = ({ mode = 'guard', plan = PLAN, status = [], baseline = [], unsha = [], blocks = 0, bypass = null, gitAnswers = {} } = {}) => {
   const state = { agents: new Agents(), turns: new Turns(), bypass: { async get() { return bypass } } }
   const snapshot = snapshotOf(plan)
   const deps = {
@@ -83,6 +83,10 @@ const depsOf = ({ mode = 'guard', plan = PLAN, status = [], baseline = [], unsha
     },
     async rootOf() {
       return ROOT
+    },
+    async gitProbe(args) {
+      const key = args.join(' ')
+      return Object.hasOwn(gitAnswers, key) ? gitAnswers[key] : 'ok'
     },
   }
   deps.computeProblems = ({ agentId }) => [...deps.state.agents.sessionOf(agentId).problems]
@@ -195,4 +199,21 @@ test('an allow-list folder is not a changed file outside measure/', async () => 
   deps.snapshots.get = async () => snapshotOf(NO_TASK_PLAN, { allow: parseAllowList(ALLOW) })
   deps.refreshSnapshot = async () => snapshotOf(NO_TASK_PLAN, { allow: parseAllowList(ALLOW) })
   assert.deepEqual(await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() }), [])
+})
+
+test('git-backed verification reports a missing commit at turn end', async () => {
+  const agent = agentOf()
+  const deps = depsOf({ gitAnswers: { 'cat-file -e abcdef0': 'missing' } })
+  const problems = await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /cites SHA abcdef0, which no commit in this repository owns/)
+})
+
+test('a probe error reports nothing and a bypass silences the git checks', async () => {
+  const agent = agentOf()
+  const errored = depsOf({ gitAnswers: { 'cat-file -e abcdef0': 'error' } })
+  assert.deepEqual(await onTurnStopping(errored, { agent, root: ROOT, payload: payloadOf() }), [])
+
+  const bypassed = depsOf({ bypass: 'session', gitAnswers: { 'cat-file -e abcdef0': 'missing' } })
+  assert.deepEqual(await onTurnStopping(bypassed, { agent: agentOf(), root: ROOT, payload: payloadOf() }), [])
 })

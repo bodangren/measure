@@ -91,6 +91,7 @@ export function apply(ctx, config) {
       return snapshots.get(root)
     },
     gitStatusOf: root => gitStatus(io, root),
+    gitProbe: (args, cwd) => io.gitProbe(args, cwd),
   }
   /**
    * True only for a top-level session (a root agent). `ctx.agents.roots()`

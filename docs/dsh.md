@@ -128,6 +128,16 @@ end-of-turn check reports a complete goal while a task is still `[~]`, and any
 current goal while no track is in progress. The guard never mutates the goal
 from a guard path.
 
+## Verification depth
+
+The end-of-turn check is not marker-only: for every `[x]` task that cites a SHA
+the adapter asks git whether that SHA is a real commit (`git cat-file -e`) and
+whether it carries the mandated git note (`git notes show`). A missing commit or
+note becomes a turn problem; a git that cannot answer fails open. Closing a
+track additionally requires its `metadata.json` to exist and its `actual_tasks`
+to equal the plan's `[x]` count, so a close cannot silently disagree with the
+plan.
+
 ## Setup answer
 
 A git repository without a `measure/` folder shows the setup question in the

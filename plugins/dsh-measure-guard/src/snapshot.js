@@ -68,7 +68,35 @@ export function makeIo(ctx) {
     }
   }
 
-  return { resolve, readText, exists, gitLines }
+  /**
+   * The tri-state git probe (Story S2): `ok` for exit 0, `missing` for exit 1
+   * (`git cat-file -e` exits 1 for an absent object, `git notes show` exits 1
+   * for an absent note), and `error` for any other failure (fail open).
+   */
+  const gitProbe = async (args, cwd, signal) => {
+    try {
+      const executable = await ctx.subprocess.resolveExecutable('git', undefined, signal)
+      const handle = ctx.subprocess.spawn({
+        argv: [executable, ...args],
+        cwd,
+        stdio: {
+          stdin: 'ignore',
+          stdout: { maxBytes: GIT_STDOUT_MAX },
+          stderr: { maxBytes: GIT_STDERR_MAX },
+        },
+        graceMs: GIT_GRACE_MS,
+        signal,
+      })
+      const { exitCode } = await handle.done
+      if (exitCode === 0) return 'ok'
+      if (exitCode === 1) return 'missing'
+      return 'error'
+    } catch {
+      return 'error'
+    }
+  }
+
+  return { resolve, readText, exists, gitLines, gitProbe }
 }
 
 const safeExists = async (io, path, signal) => {

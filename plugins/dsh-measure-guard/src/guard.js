@@ -22,6 +22,7 @@ import { normalizeMutation } from './hooks.js'
 import { strictRed, tddDecision } from './strict.js'
 import { commitCheck } from './commit.js'
 import { goalOf, goalProblems } from './goal.js'
+import { closeoutMetadataCheck, shaProblems } from './git-verification.js'
 
 /**
  * What the guards read (design §7): the snapshot, the mode, the setup answer,
@@ -127,6 +128,8 @@ export async function closeoutGuardFor(deps, agent, root, mutation) {
       }
       const result = trackCloseDecision(context, closing)
       if (result.decision !== null) return { decision: result.decision, note: null }
+      const metadata = await closeoutMetadataCheck(deps, path, closing)
+      if (metadata !== null) return { decision: metadata.decision, note: null }
       if (result.note !== null) notes.push(result.note)
     } else if (isPlanPath(path) && isInside(joinPath(root, 'measure'), path)) {
       const decision = phaseStartDecision(context, before, after)
@@ -224,6 +227,12 @@ export async function onTurnStopping(deps, { agent, root, payload }) {
       problems = [...problems, ...goalProblems(goalOf(deps, agent), snapshot)]
     } catch {
       // The goal check is an aid; a goal-service failure never breaks the turn check.
+    }
+    // The git-backed verification (Story S2): real commits and git notes.
+    try {
+      problems = [...problems, ...(await shaProblems(deps, snapshot))]
+    } catch {
+      // git verification is an aid; a failing probe fails open.
     }
   }
   session.problems = [...problems]
