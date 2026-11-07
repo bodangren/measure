@@ -2,7 +2,7 @@
 
 Measure guard rails for the DeepSeek Harness (DSH). This is the third adapter of the shared Measure guard core, after the Claude Code mod (`mods/measure-guard/`) and the OpenCode plugin (`plugins/opencode-measure-guard/`). It reads the project's `measure/` files, keeps the agent on the active track and task, and denies work the active plan does not cover. The Host half registers the system-prompt rule, the task note, the `measure_status` tool, the three commands, the edit, closeout and end-of-turn guards, and one JSON route; the Client half draws the status band and the Measure panel.
 
-Track: [`measure/tracks/dsh_measure_guard_20261107/`](../../measure/tracks/dsh_measure_guard_20261107/) (specification, design, and plan).
+Track: [`measure/archive/dsh_measure_guard_20261107/`](../../measure/archive/dsh_measure_guard_20261107/) (specification, design, and plan).
 
 ## Layout
 
