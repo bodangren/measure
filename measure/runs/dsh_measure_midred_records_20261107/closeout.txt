@@ -62,3 +62,6 @@ FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive
 Run: 2026-11-08 (tree 38b51cd + the record corrections), read back from this ledger.
 node suite: 297/297 pass; parity gates: parity: ok (both)
 CLI suite: 10/10 pass; spec-review-gate: 10 suites (PASS=10, FAIL=0)
+
+closeout --track dsh_measure_scan_fix2_20261107:
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_scan_fix2_20261107/automation-supervisor-closeout-manifest.json

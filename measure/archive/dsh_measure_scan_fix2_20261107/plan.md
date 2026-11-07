@@ -20,7 +20,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.3: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; append them under a named "Scan fix2 gates" ledger section and read them back `36d3b23`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records' (Protocol in workflow.md) `dd04ad2`
 
-## Phase 3: Gates and closeout
+## Phase 3: Gates and closeout [checkpoint: cd6d9cb]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_scan_fix2_20261107` and record that it reports only the expected manifest FAIL; each phase checkpoint pushed; archived at `194899a`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md) `cd6d9cb`
