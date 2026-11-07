@@ -155,6 +155,7 @@ All decisions come from the shared core; the adapter only normalizes the call an
 - **In-memory state.** The per-agent record (note key, setup answer, reminder, problems) and the per-turn record (baseline status, tasks without a SHA, block count) live in memory and are dropped when the agent is disposed. The end-of-turn baseline is captured once, at the first step of the turn.
 - **Root.** The session working directory is read per call, resolved to a realpath with `ctx.fs.resolve`, and then replaced by the output of `git rev-parse --show-toplevel`, realpathed again. When git fails or the directory is not a work tree, the realpathed effective directory is the root. Linked worktrees are independent: each has its own root, its own snapshot cache entry, and its own writer record.
 - **Path arguments.** A relative file argument is resolved against the session-effective directory per call, never against the process working directory. A durable directory change mid-turn is honoured on the next call.
+- **Registry shapes.** The shared parser reads both live `tracks.md` shapes: the bold title with its `*Link:*` on one of the next three lines (this repository's shape), and the Mediarr execution-order shape with an ordered-list prefix (`1. - [~] **Track: …**`) and `*Phases: … | Link: […]()*` on the same line. A line in neither shape is reported as a parse error and the guards fail open.
 
 ## Client surface
 

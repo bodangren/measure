@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Bug Fixes
+
+* **parse:** the shared parser reads the two live `tracks.md` shapes: an optional ordered-list prefix (`1. - [~] **Track: …**`) and a `*Link:*` on the same bold line, in addition to this repository's next-line link. The DSH adapter had reported `cannot read the Measure files: … has track lines in no known format` for the Mediarr registry (198 entries, 9 active now parse). The canonical change is in `mods/measure-guard/hooks/parse.ts`; the OpenCode and DSH parity copies and both unknown-format detectors follow. Track `dsh_measure_evolve_20261107`.
+
 ### Features
 
 * **dsh environment:** `bin/measure-dsh` installs, checks, and removes the DeepSeek Harness profile layer for Measure development: the guard plugin copy with its stamp, one marker-managed `cordis.patch.yml` row, the skill-copy and module-export checks, and the live route identity. The guard plugin gains the eight Measure workflow commands (they steer the agent into the matching workflow) and an `x-measure-guard-module` route header; `skills/measure-orchestrator/references/dsh.md` maps the Measure roles to DSH subagents, and [`docs/dsh.md`](docs/dsh.md) is the guide. The installer no longer carries a DSH plugin row: the CLI owns that copy. Track `dsh_measure_dev_20261107`.
