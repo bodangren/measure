@@ -12,10 +12,10 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: Green: the suite passes (all cases), both parity gates ok
 - [x] Task: Measure - User Manual Verification 'Phase 1: The whole-command token scan' (Protocol in workflow.md) `3f0a12f`
 
-## Phase 2: The quoting record corrections
+## Phase 2: The quoting record corrections [checkpoint: 964d706]
 
 - [x] Task 2.1: correct the archived quoting track's `spec.md`/`plan.md` (the Overview's old-code claim, FR-2's `--` wording, the quoted-separator claim), add each task its 7-character SHA, and update the installed evidence with the module path and exact `node` invocation; update `plugins/dsh-measure-guard/README.md` and the resolved `measure/tech-debt.md` residual text (only wrapper scripts and command substitution remain)
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The quoting record corrections' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The quoting record corrections' (Protocol in workflow.md) `964d706`
 
 ## Phase 3: The mid-red records
 
