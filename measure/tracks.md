@@ -211,3 +211,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure suite mktemp-failure guard**
   *Link: [./archive/dsh_measure_suite_mktemp_20261109/](./archive/dsh_measure_suite_mktemp_20261109/)*
   *Give every spec-review-gate suite the same failed-mktemp guard, add a stub-mktemp suite that proves each guard fires, and resolve the MKTEMP tech-debt row*
+
+- [x] **Track: DSH Measure intermediate-commit scope coverage**
+  *Link: [./archive/dsh_measure_scope_intermediate_20261109/](./archive/dsh_measure_scope_intermediate_20261109/)*
+  *Union per-commit paths from baseline..HEAD into changed_files and committed_files so intermediate add-then-delete commits are visible to the mid-red and audit scope checks, with an S2 probe*

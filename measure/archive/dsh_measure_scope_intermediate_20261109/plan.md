@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Intermediate paths and the probe [checkpoint: da6de25]
 
-- [ ] Task 1.1: `skills/measure-orchestrator/scripts/measure_interphase_checks.py`: union `git log --no-renames --name-only --pretty=format: baseline..HEAD` paths into `changed_files()` and `committed_files()`, keeping the existing tree/staged/working diffs and the sorted deduplicated output
+- [x] Task 1.1: `skills/measure-orchestrator/scripts/measure_interphase_checks.py`: union `git log --no-renames --name-only --pretty=format: baseline..HEAD` paths into `changed_files()` and `committed_files()`, keeping the existing tree/staged/working diffs and the sorted deduplicated output `061d6a3`
 - [x] Task 1.2: `tests/spec_review_gate/test_s2_adversarial.sh`: add the intermediate add-then-delete probe (mid-red reports `Mid Red changed non-test/non-Measure files`) and the test-only intermediate probe (no such message) `061d6a3`
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (11/11) and record the probe results `061d6a3`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Intermediate paths and the probe' (Protocol in workflow.md) `da6de25`
