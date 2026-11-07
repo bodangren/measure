@@ -45,7 +45,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] Edge: a rename of one model id, a missing role row, or two review roles sharing a family each make the check fail (tested with fixtures)
 - [x] Task 3.3: Measure - User Manual Verification 'Phase 3: Agent team reference' (Protocol in workflow.md) `dba1f1f`
 
-## Phase 4: Guide, docs, and distribution alignment
+## Phase 4: Guide, docs, and distribution alignment [checkpoint: 553df7f]
 
 - [x] Task 4.1: The guide and its checks `5875fb5`
     - [ ] `docs/dsh.md`: prerequisites, install, check, modes, workflow commands, agent team, uninstall, troubleshooting (restart note, foreign row, incomplete skill copy)
@@ -57,7 +57,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 4.3: Distribution alignment `52759ec`
     - [ ] remove the DSH plugin row from `bin/install-targets.tsv`; delete `plugins/dsh-measure-guard/tests/install.sh` (replaced by `tests/dsh/`); update the guard plugin README install section
     - [ ] `tests/dsh/test-install.sh` asserts the installer carries no DSH plugin row and the CLI owns the copy
-- [ ] Task 4.4: Measure - User Manual Verification 'Phase 4: Guide, docs, and distribution alignment' (Protocol in workflow.md)
+- [x] Task 4.4: Measure - User Manual Verification 'Phase 4: Guide, docs, and distribution alignment' (Protocol in workflow.md) `553df7f`
 
 ## Phase 5: Live environment and closeout
 
