@@ -101,7 +101,7 @@ the same items as a machine-readable object.
 |---|---|
 | `advise` | The context and the band only; nothing is denied. |
 | `guard` (default) | Edit, closeout, and end-of-turn guards; the band and the reminder. |
-| `strict` | `guard` plus the end-of-turn hold-open, at most twice per turn. |
+| `strict` | `guard` plus the end-of-turn hold-open (at most twice per turn), the TDD Red-before-Green guard, and the commit format/no-task guard with its post-commit reminder. |
 
 Change the mode by editing the managed block's `config.mode` (the profile
 recomposes on save) or by re-running `install --mode`.
@@ -118,6 +118,14 @@ reports an `active`, `paused`, or `blocked` goal without mutating it. The
 end-of-turn check reports a complete goal while a task is still `[~]`, and any
 current goal while no track is in progress. The guard never mutates the goal
 from a guard path.
+
+## Setup answer
+
+A git repository without a `measure/` folder shows the setup question in the
+band: **Set up Measure** or **Turn off for session**. The answer is stored for
+the session and posted to `POST /measure-guard/setup`; "Set up Measure" also
+delivers the shared core's setup prompt to the agent. A blocked edit with no
+button click records "off" once, as before.
 
 ## Agent team
 

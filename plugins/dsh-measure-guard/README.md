@@ -200,7 +200,7 @@ The live check reads the JSON route of the running GUI:
 curl 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-Current state: 170 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh`.
+Current state: 213 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh` (7/7).
 
 ## Verified live
 
@@ -230,8 +230,7 @@ The evidence images are [`live-band.png`](../../measure/runs/dsh_measure_guard_2
 
 ## Deferred
 
-To a follow-up track:
+- Windows path support (POSIX only; the containment checks fail open there).
 
-- the strict-mode TDD guard (Red before Green) and the commit-message guard;
-- subagent inheritance and goal binding;
-- Windows path support.
+The strict-mode TDD and commit guards (FR-13) and subagent inheritance plus goal
+binding (FR-14) are shipped by track `dsh_measure_evolve_20261107`.
