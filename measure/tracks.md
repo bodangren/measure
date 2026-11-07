@@ -27,6 +27,12 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+- [~] **Track: DSH Measure operator controls: effective mode and on-demand verification**
+  *Link: [./tracks/dsh_measure_ops_20261107/](./tracks/dsh_measure_ops_20261107/)*
+  *Makes the persisted per-repository mode seam real (`/measure-mode`, session and repository overrides, effective mode in the band/route/status) and adds a read-only `/measure-verify` for the git-backed ceremony.*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
