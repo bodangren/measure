@@ -40,7 +40,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Docs: README "Guards" section (commit format, no-task rule, reminder) `579335a`; `CHANGELOG.md` entry
 - [x] Task: Measure - User Manual Verification 'Phase S2: Strict commit guard and commit reminder' (Protocol in workflow.md) `67d29f1`
 
-## Phase S3: Session-accurate writer detection
+## Phase S3: Session-accurate writer detection [checkpoint: de737ed]
 
 _Story ref: spec.md#story-s3_
 
@@ -52,7 +52,7 @@ _Story ref: spec.md#story-s3_
     - [ ] `tests/plugin.test.js`: attach a root and its child in the fixture context; assert the child gets the rule section and guards but no second-writer note, and the band count stays 1
 - [x] Task 3.3: Green: implement the root-only claim `6d54eca`; the band `sessionCount` and the HTTP view read the root count; a missing `ctx.agents` keeps today's behavior (treat every agent as a root)
 - [x] Task 3.4: Docs: README "State and root resolution" `6d54eca` and "Known limits" name the root-session rule; `measure/tech-debt.md` row resolved later in S6
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Session-accurate writer detection' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S3: Session-accurate writer detection' (Protocol in workflow.md) `de737ed`
 
 ## Phase S4: Goal binding
 
