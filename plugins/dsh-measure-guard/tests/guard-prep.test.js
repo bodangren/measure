@@ -5,7 +5,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { createDecisions, installToolGuard, preExecuteListener } from '../src/hooks.js'
+import { createDecisions, installToolGuard, preExecuteListener, repoMutationLikely } from '../src/hooks.js'
+import { MUTATION_TOOLS } from '../src/guard.js'
 
 const agent = { id: 'agent-1', session: { id: 'agent-1' } }
 
@@ -86,6 +87,15 @@ test('an allow call stores the denial and the synchronous guard returns it', asy
   assert.equal(reason, 'measure-guard: no task is in progress')
   assert.equal(typeof reason, 'string')
   assert.equal(typeof reason?.then, 'undefined')
+})
+
+test('the mutation tools invalidate and the two classifications are disjoint', () => {
+  const readOnly = ['read', 'grep', 'glob', 'read_image', 'web_search', 'web_fetch', 'todo_write']
+  for (const tool of MUTATION_TOOLS) {
+    assert.equal(repoMutationLikely(tool), true, tool)
+    assert.equal(readOnly.includes(tool), false, `${tool} is classified both ways`)
+  }
+  for (const tool of readOnly) assert.equal(MUTATION_TOOLS.has(tool), false, tool)
 })
 
 test('repoMutationLikely is false only for the read-only tools', async () => {

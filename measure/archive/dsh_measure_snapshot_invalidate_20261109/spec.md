@@ -54,3 +54,14 @@ still invalidates (fail-safe).
 
 - Detecting a file change by any tool more precisely than the allowlist (an
   unknown tool stays conservative).
+
+> **Follow-up correction (2026-11-10, dsh_measure_snapshot_invalidate_fix2_20261109):**
+> the test files are
+> `plugins/dsh-measure-guard/tests/guard-prep.test.js` (predicate and
+> disjoint-set checks) and `plugins/dsh-measure-guard/tests/plugin.test.js`
+> (read-vs-bash invalidation spy). The node suite is 318 after the new block (317
+> before it), not 320. `MUTATION_TOOLS` is exported from `src/guard.js` and a test
+> asserts the two classifications are disjoint and cover every mutation tool. The
+> per-result cost is the measure/ reload (no per-result `git status`). The
+> within-step external-edit window is the documented residual: with several calls
+> in one step, an edit between two calls is seen at the next pre-step.

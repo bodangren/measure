@@ -320,7 +320,7 @@ export async function shellGuardFor(deps, agent, root, mutation) {
 }
 
 /** The tools whose call the guard layer inspects at all. */
-const MUTATION_TOOLS = new Set(['edit', 'write', 'apply_patch', 'str_replace_editor', 'bash', 'pwsh'])
+export const MUTATION_TOOLS = new Set(['edit', 'write', 'apply_patch', 'str_replace_editor', 'bash', 'pwsh'])
 
 /**
  * The whole pre-execute preparation for one call (FR-5): normalize the
