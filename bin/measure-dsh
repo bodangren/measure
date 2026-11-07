@@ -1462,8 +1462,8 @@ uninstall_summary() {
   if ((DRY_RUN)); then
     print_actions
     printf 'dry run: no files written or removed\n'
-    ((UNINSTALL_FAILED == 0))
-    return
+    if ((UNINSTALL_FAILED == 0)); then return 0; fi
+    return 1
   fi
   print_items
   print_actions

@@ -45,8 +45,9 @@ package directory, default `plugins/dsh-measure-guard/`) and `--dry-run`;
 and `--json`;
 `uninstall` accepts `--keep-copy` and `--dry-run`. The exact flag, output, and
 JSON contract is `design.md §2`. Every mode prints one line per check with
-`PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no item
-failed. The full contract (flags, exit codes, output columns) is fixed in
+`PASS`, `FAIL`, `SKIP`, or `WARN` (`install` and `uninstall` print their
+actions and summary instead of check items), and `--check` exits 0 only when no
+item failed. The full contract (flags, exit codes, output columns) is fixed in
 `design.md §2`.
 
 **FR-2 — Install.** `install` performs, in order: (a) prerequisite checks (Node

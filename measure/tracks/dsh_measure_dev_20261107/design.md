@@ -82,7 +82,8 @@ measure-dsh --help
   "WRITE"|"KEEP"|"REMOVE"|"MKDIR", "path": string }] }`. `ok` is `true` only
   when no item is `FAIL`; the item order is the table order of §4.
 - **`install` order.** (1) prerequisites: Node >= 24.9, the profile folder
-  exists, the plugin source has `index.js` and `package.json`; (2) foreign-row
+  exists, the plugin source has `index.js` and `package.json`, and the profile
+  and patch file are writable (a read-only target exits 3 before any copy); (2) foreign-row
   scan; (3) `mkdir -p <profile>/plugins`; (4) the skill step unless
   `--no-skills`: `bin/install-measure-skill --ref <ref>` (the installer resolves
   the real `$HOME`, so the CLI does not redirect it; the step is skipped with
@@ -95,7 +96,8 @@ measure-dsh --help
 - **Idempotency.** A second install with the same flags compares every file and
   the block text; it writes only what differs and the summary says `unchanged`
   when nothing did.
-- **`--dry-run`** prints the actions it would take and writes nothing.
+- **`--dry-run`** prints the actions it would take and writes nothing; for
+  `uninstall` it prints actions and the dry-run summary, not check items.
 - **`uninstall`** removes the managed block and the plugin copy
   `<profile>/plugins/dsh-measure-guard/` it owns by default; `--keep-copy`
   keeps the copy; it never removes a foreign row and never touches the skills.
@@ -140,11 +142,14 @@ measure-dsh --help
   after a blank line (creating the file when absent); two or more is `FAIL`.
 - Replacement is byte-surgical: text before `>>>`, the block, text after
   `<<<`; every other line is preserved exactly, including a missing trailing
-  newline (it is normalised once, and the summary says so).
+  newline (it is normalised once, and the summary says so). A `[]` placeholder
+  left by an earlier `uninstall` is replaced by the block rather than appended
+  as a second YAML document.
 - A **foreign row** is any non-comment line outside the block that mentions the
-  guard id or package in a YAML key: the rule matches
-  `(^|[\[{,]\s*)id\s*:\s*['"]?measure-guard['"]?` (block and flow mappings,
-  quoted or plain) or `(^|[\[{,]\s*)name\s*:\s*['"]?[^'"#\n]*dsh-measure-guard`
+  guard id or package in a YAML key. The rule is the design regex extended with
+  the optional sequence dash and whitespace the block form uses:
+  `(^|[-\[{,]\s*)id\s*:\s*['"]?measure-guard['"]?` (block and flow mappings,
+  quoted or plain) or `(^|[-\[{,]\s*)name\s*:\s*['"]?[^'"#\n]*dsh-measure-guard`
   (plain, single- or double-quoted). Comment lines are ignored. `install` and
   `--check` refuse with the line number and the deletion hint; `uninstall`
   leaves the row alone.
@@ -157,11 +162,11 @@ measure-dsh --help
 
 | Item | Source of truth | PASS when |
 |---|---|---|
-| `dsh-install` | `<dsh-home>/profiles/<profile>` exists | the profile folder exists |
+| `dsh-install` | `<dsh-home>/profiles/<profile>` exists | the profile folder exists; a missing folder is reported as `FAIL` and the exit is 3 (environment error) |
 | `node` | `node --version` | >= 24.9 |
 | `skill-measure` | installed skill roots (below) | every file under `<repo>/skills/measure` exists in the installed copy; up to 10 missing names are listed, then "and N more"; a missing installed root is `FAIL`; no repository source is `SKIP` |
 | `skill-orchestrator` | the same rule for `skills/measure-orchestrator` | the same rule |
-| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `icon.svg`, `README.md`, and the `src/`, `scripts/`, `locale/` trees exist; the `.measure-dsh-install` stamp lists exactly the copied files (everything in the package except `tests/`) with matching hashes and nothing extra; a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
+| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `icon.svg`, `README.md`, and the `src/`, `scripts/`, `locale/` trees exist; the `.measure-dsh-install` stamp lists exactly the copied files (everything in the package except `tests/`) with matching hashes and nothing extra (a stamped file missing on disk is `FAIL`; a source file absent from the stamp is `WARN`); a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
 | `record` | `<profile>/cordis.patch.yml` | exactly one managed block; `id: measure-guard`; `name: ./plugins/dsh-measure-guard/index.js`; `mode` in the three values; when `--mode` is given, the record's mode must equal it (otherwise `FAIL`), and without it the found mode is reported |
 | `foreign-row` | the same file | no `measure-guard` row outside the block |
 | `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field **and** its `x-measure-guard-module` response header, realpathed, equals the installed `<plugin>/index.js` file URL (a mismatch is `FAIL`: the running host loaded another copy; an absent header is `WARN` because the header ships in Phase 5) |
