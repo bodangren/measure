@@ -199,9 +199,33 @@ function substitutionAdds(command) {
  * cannot be resolved without the status, so they set `all`; an unterminated
  * quote is unreadable and also sets `all` (fail closed).
  */
+/**
+ * The paths an in-command `git add`/`git stage` contributes (Decision 9): for
+ * every command-position `git [-C <dir>] add` run, the following words until a
+ * separator, with shell quoting respected. `.`, a pathspec (`:/…`), a wildcard,
+ * or an executing command substitution that runs a `git add` sets `all`; an
+ * unterminated quote is unreadable and also sets `all` (fail closed). A nested
+ * `bash -c <string>`, `sh -c <string>`, `zsh -c <string>`, or `eval <string>` is
+ * scanned recursively (depth-capped) and merged.
+ */
 export function addedPaths(command) {
+  return scanAddedPaths(command, 0)
+}
+
+const NESTED_SHELLS = new Set(['bash', 'sh', 'zsh'])
+
+function scanAddedPaths(command, depth) {
   const added = { all: false, trackedOnly: false, paths: [] }
   if (typeof command !== 'string' || command === '') return added
+  if (depth > 3) {
+    added.all = true
+    return added
+  }
+  const merge = source => {
+    added.all = added.all || source.all
+    added.trackedOnly = added.trackedOnly || source.trackedOnly
+    for (const path of source.paths) if (!added.paths.includes(path)) added.paths.push(path)
+  }
   const tokens = shellTokens(command)
   if (tokens === null) {
     added.all = true
@@ -215,13 +239,27 @@ export function addedPaths(command) {
     return added
   }
   for (let i = 0; i < tokens.length; i += 1) {
-    if (tokens[i].separator || tokens[i].value !== 'git') continue
+    const current = tokens[i].value
+    if (tokens[i].separator) continue
+    if (!atCommandStart(tokens, i)) continue
+    // A nested shell or eval: scan the inner command text and merge its result.
+    if (current === 'eval') {
+      const inner = tokens[i + 1]
+      if (inner && !inner.separator) merge(scanAddedPaths(inner.value, depth + 1))
+      continue
+    }
+    if (NESTED_SHELLS.has(current) && tokens[i + 1]?.value === '-c') {
+      const inner = tokens[i + 2]
+      if (inner && !inner.separator) merge(scanAddedPaths(inner.value, depth + 1))
+      continue
+    }
+    if (current !== 'git') continue
     // Only a command-position `git` counts (`echo git add .` is not a git call),
     // and an env/wrapper prefix keeps the command position (`FOO=1 git add x`).
-    if (!atCommandStart(tokens, i)) continue
     let at = i + 1
     while (at + 1 < tokens.length && tokens[at].value === '-C' && !tokens[at + 1].separator) at += 2
-    if (at >= tokens.length || tokens[at].separator || tokens[at].value !== 'add') continue
+    if (at >= tokens.length || tokens[at].separator) continue
+    if (tokens[at].value !== 'add' && tokens[at].value !== 'stage') continue
     at += 1
     let afterDashDash = false
     for (; at < tokens.length && !tokens[at].separator; at += 1) {

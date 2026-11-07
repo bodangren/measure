@@ -145,6 +145,29 @@ test('a no-task commit of only measure/ files is allowed with no reminder', asyn
   assert.equal(check.commitDue, false)
 })
 
+test('addedPaths reads git stage like git add', async () => {
+  assert.deepEqual(addedPaths('git stage src/app.js && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('git -C . stage -A && git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('git stage -u && git commit -m "feat(app): Add"'), { all: false, trackedOnly: true, paths: [] })
+})
+
+test('addedPaths scans nested shell and eval commands', async () => {
+  assert.deepEqual(addedPaths('bash -c "git add src/app.js" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('sh -c "git stage src/app.js" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('eval "git add src/app.js" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('bash -c "bash -c \\"git add src/app.js\\"" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('bash -c "echo hi" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('eval "echo hi" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: [] })
+})
+
+test('a nested shell git add reaches the no-task commit rule', async () => {
+  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: [] }) })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'bash -c "git add src/app.js" && git commit -m "feat(app): Add the app"')
+  assert.notEqual(check.decision, null)
+  assert.match(check.decision.deny, /no task is in progress/)
+  assert.match(check.decision.deny, /src\/app\.js/)
+})
+
 test('a substitution-hidden git add reaches the no-task commit rule', async () => {
   const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: ['A  src/app.js'] }) })
   const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'X=$(git add src/app.js); git commit -m "feat(app): Add the app"')

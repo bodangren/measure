@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **commit guard nested commands:** `git stage` now contributes like `git add`, and `bash -c`, `sh -c`, `zsh -c`, and `eval` inner commands are scanned recursively (depth-capped) by the strict commit guard's `addedPaths`, so a non-test file staged through a nested shell cannot bypass the no-task check; node 306 tests, DSH adapter local. Track `dsh_measure_commit_nested_20261109`.
+
+### Features
+
 * **commit guard substitution:** a `git add` hidden in a command substitution (`X=$(git add secret.txt); git commit …`) now fails closed to the full working-tree set, so the strict no-task commit rule sees the file; single-quoted or backslash-escaped `$(git add …)` text and substitutions without an add keep the old behavior, and nested spans, `git -C <dir> add`, and quoted `"add"` are recognized (node 303 tests; DSH adapter local). Track `dsh_measure_commit_substitution_20261109`.
 
 ### Features
