@@ -29,12 +29,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [~] **Track: DSH Measure tracks registry cleanup**
-  *Link: [./tracks/dsh_measure_registry_20261107/](./tracks/dsh_measure_registry_20261107/)*
-  *Rebuilds the Archived Tracks section into one entry per archive directory with one description (no merged description blocks) and adds a structural registry check to the CLI suite. Pushes per phase.*
-
----
-
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -173,3 +167,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Visual Refresh: Define Unique Identity**
   *Link: [./archive/visual_refresh_20260425/](./archive/visual_refresh_20260425/)*
   *Define the project's unique visual identity: palette, typography, and component language.*
+
+- [x] **Track: DSH Measure tracks registry cleanup**
+  *Link: [./archive/dsh_measure_registry_20261107/](./archive/dsh_measure_registry_20261107/)*
+  *Rebuilt the tracks registry into one entry per archive directory with one description (37 directories, 0 merged description blocks) and added tests/dsh/test-registry.sh to the CLI suite (11/11). 8 tasks, 3 checkpoints, pushed per phase.*

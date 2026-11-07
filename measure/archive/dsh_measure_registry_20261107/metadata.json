@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_registry_20261107",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-11-08T03:00:00Z",
+  "updated_at": "2026-11-08T03:20:00Z",
+  "description": "Rebuild the measure/tracks.md Archived Tracks section (one entry per archive dir with one description) and add a structural registry check to the CLI suite",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "All 8 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The rebuild preserved the active and cancelled sections and added the five older tracks that had no archive-section entry; every archive directory now has exactly one entry. (2) The structural check lives in tests/dsh/test-registry.sh (CLI suite, 11/11) and has negative fixtures for a merged block and an unreferenced directory. (3) The one-line Visual Refresh entry outside the archive section is kept, and a standard entry for the same directory was added to the Archived Tracks section; the check counts one *Link: line for it.",
+  "completed": "2026-11-08"
+}
