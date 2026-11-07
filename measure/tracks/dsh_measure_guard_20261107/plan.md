@@ -28,7 +28,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `tests/core.test.js`: parse the fixture; assert active track, `[~]` task, band line, `[b]` count; assert the parity gate passes
 - [x] Task 1.5: Measure - User Manual Verification 'Phase 1: Shared core and package skeleton' (Protocol in workflow.md) `1d64eb9`
 
-## Phase 2: Context layer
+## Phase 2: Context layer [checkpoint: 891f080]
 
 - [x] Task 2.1: State model `f3db431`
     - [ ] `src/state.js`: `ReproStore` (mode override, repo bypass) over `~/.local/state/measure/dsh-guard/repos.json`; `Agents` keyed by agent id; `Turns` keyed by `agent.id:turn`; `Bypass`; `newUserMessage()`
@@ -51,7 +51,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.7: Setup offer (NFR-1) `781d43d`
     - [ ] `src/setup.js`: `needsSetup`, `setupChoice` transitions (`pending`/`off`/`setup`), `SETUP_PROMPT`, `setupBandText`; the state lives in agent state
     - [ ] `tests/setup.test.js`: git repo without `measure/` asks, non-repo does not, `off` silences, `setup` keeps the prompt text
-- [ ] Task 2.8: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md)
+- [x] Task 2.8: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md) `891f080`
 
 ## Phase 3: Guard layer
 
