@@ -223,3 +223,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure skill-doc check fix2**
   *Link: [./archive/dsh_measure_skill_doctor_fix2_20261109/](./archive/dsh_measure_skill_doctor_fix2_20261109/)*
   *Enforce the real folder-link rule (Markdown links to directories, N3), keep the bundle symlink rule separately, and add block/boundary/character/missing-description fixtures*
+
+- [x] **Track: DSH Measure skill-doc check fix3**
+  *Link: [./archive/dsh_measure_skill_doctor_fix3_20261109/](./archive/dsh_measure_skill_doctor_fix3_20261109/)*
+  *Add the folded > block fixture, correct the tech-debt row and CHANGELOG to name the Markdown folder-link rule, and record the fix2 review*
