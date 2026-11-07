@@ -91,6 +91,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure rehearsal follow-up corrections**
   *Link: [./archive/dsh_measure_rehearsal_followup_20261107/](./archive/dsh_measure_rehearsal_followup_20261107/)*
+
+- [x] **Track: DSH Measure isolated-session rehearsal**
+  *Link: [./archive/dsh_measure_isolated_session_20261107/](./archive/dsh_measure_isolated_session_20261107/)*
+  *Proves the guard's strict deny in a disposable project by a real session whose working directory is the fixture (host session RPC with `cwd`): the deny fired verbatim and the agent did not bypass. Also found that the comment-marker `reload` does not refresh the cached repository-mode store. 10 tasks, 3 checkpoints.*
   *Corrects the rehearsal track's overclaims and rules, hardens the fixture contract test to assert a real commit (with a negative case), defines the acceptance fields and cleanup checks, and records the review with an explicit Accepted Risk for the deferred isolated-session strict path. 9 tasks, 3 checkpoints.*
   *A disposable Measure fixture and contract test, the Red/Green/Review protocol in the orchestrator reference (section 10), and one executed rehearsal: Red and Green subagents ran for real (fail → green → commit + git note) and established that a subagent's `cwd` is its shell directory, not its guard root. 12 tasks, 4 checkpoints.*
   *Corrects the false panel-fallback claim (the full text lives in `bandFull` and `measure_status` only), pins and tests the compaction contract (strip, 160/161 boundary, no-space fallback), fixes the route field list, and proves the cap live (band 157 with `…`, bandFull 470). 10 tasks, 3 checkpoints.*

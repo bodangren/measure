@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_isolated_session_20261107",
+  "type": "feature",
+  "status": "done",
+  "created_at": "2026-11-07T17:00:00Z",
+  "updated_at": "2026-11-07T18:10:00Z",
+  "description": "Prove the guard's strict deny in a disposable project by driving a real isolated session whose working directory is the fixture, using the authenticated host session API from the browser bridge context",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 3 phase checkpoints are recorded. (1) The live run issued the host RPC calls from the GUI page context instead of exporting the auth cookie: the secret never left the browser, and tests/dsh/rehearsal/host-api.mjs is the operator-facing form that takes DSH_WEB_COOKIE. (2) Session A (created after a `bin/measure-dsh reload` comment-marker toggle) still reported guard/config because the toggle changes no composed config; a semantic change (`install --mode advise`) reloaded, and session B then got the strict deny. The defect is recorded in tech-debt and is the next track. (3) The deny text was captured from the session event stream (seq 186, isError true) and checked against the unchanged file on disk; the agent did not attempt a bypass.",
+  "completed": "2026-11-07"
+}
