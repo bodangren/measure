@@ -64,7 +64,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 3.3: Edit guard `a416bd4`
     - [ ] `src/guard.js`: `editDecision` on every normalized path; deny text names the next task and `/measure-off`
     - [ ] `tests/edit-guard.test.js`: deny without `[~]`, allow with `[~]`, allow inside `measure/`, allow list, bypass, `advise` mode
-- [ ] Task 3.4: Closeout guard
+- [~] Task 3.4: Closeout guard
     - [ ] `src/guard.js`: track close (`closedTracks`) and phase start (`phaseStartDecision`) on `tracks.md`/`plan.md` edits; after-text only for `edit`/`write`, fail open for every other tool
     - [ ] `tests/closeout.test.js`: close with open tasks denied, close with `[b]` + `deferred:` allowed with a note, phase N+1 without checkpoint denied, `apply_patch`/`str_replace_editor` fail open, an unreadable plan fails open
 - [ ] Task 3.5: End-of-turn check
