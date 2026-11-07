@@ -36,11 +36,11 @@
 - (2026-11-07, dsh_measure_ops_20261107) An on-demand verification command must refresh its snapshot and treat a git `error` differently from `missing`: `missing` proves absence (report it), `error` means the tool cannot answer (a `nothing to verify` reply, not `clean`). An in-progress track's `actual_tasks: null` is not a mismatch; the verdict starts at closeout.
 - (2026-11-07, dsh_measure_band_20261107) A status line built from a shared core text can be arbitrarily long: cap the adapter's display line (word-boundary ellipsis) and keep the full text in a second field for the hover title; never let a UI surface derive its height from task prose.
 - (2026-11-07, dsh_measure_band_20261107) `text-overflow: ellipsis` needs `min-width: 0` on the flex child; `white-space: nowrap` on the container alone does not clip a long child.
+- (2026-11-07, dsh_measure_band_followup_20261107) Before claiming a fallback surface holds some text, read what that surface actually renders: the sidebar panel renders `statusLines()` + the goal line and never the active task text, so the band's full text only lives in `bandFull` and `measure_status`. A live check must also use an input that exceeds the cap, or it proves nothing about the cap.
 
 ## Patterns That Worked Well
 
 - (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds; each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1 — each round found a problem the previous corrections had added.
-- (2026-11-07, dsh_measure_guard_20261107) Three independent spec reviewers from three model families found the same Blockers plus distinct ones (shell mutation semantics, path resolution, localization boundary, setup and writer tasks) — roughly twice the findings of the best pair. Keep their report ids prefixed per reviewer.
 - (2026-11-07, dsh_measure_guard_20261107) Parallel workers with disjoint write scopes and a Lead-only commit path kept a five-phase, 141-test plugin build coherent: each worker owned a module set, reported Red evidence, and never ran git.
 
 ## Planning Improvements

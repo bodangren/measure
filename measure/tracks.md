@@ -82,6 +82,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure compact status band**
   *Link: [./archive/dsh_measure_band_20261107/](./archive/dsh_measure_band_20261107/)*
+
+- [x] **Track: DSH Measure band follow-up corrections**
+  *Link: [./archive/dsh_measure_band_followup_20261107/](./archive/dsh_measure_band_followup_20261107/)*
+  *Corrects the false panel-fallback claim (the full text lives in `bandFull` and `measure_status` only), pins and tests the compaction contract (strip, 160/161 boundary, no-space fallback), fixes the route field list, and proves the cap live (band 157 with `…`, bandFull 470). 10 tasks, 3 checkpoints.*
   *The band stays on one line: `band` is capped at 160 characters on a word boundary with an ellipsis, `bandFull` carries the complete text as the hover title, and the Client row never wraps. 9 tasks, 2 checkpoints, 283 tests, live-verified (band 157 chars, bandFull 198).*
   *The effective mode is real (repository override > session override > config, `/measure-mode`, state route/band/status) and `/measure-verify` reports the git-backed ceremony on demand, read-only. 13 tasks, 3 checkpoints, 278 tests, live-verified (a repository `strict` override with config `advise` produced a real strict deny; reload learned to toggle a content marker).*
   *The live check now proves the running Host executes the installed bytes (load-time digest + `reload`), the guard verifies real commits and git notes plus the closeout `metadata.json`, and the apply_patch/shell-write/commit-add bypasses are closed (commit-set precision, bounded shell grammar). 19 tasks, 4 checkpoints, 251 tests, live-verified including the stale-instance FAIL and the turn-end git problem.*

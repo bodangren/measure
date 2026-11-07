@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_band_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T13:20:00Z",
+  "updated_at": "2026-11-07T13:40:00Z",
+  "description": "Correct the compact-band track's false panel-fallback claim, pin and test the exact compaction contract (strip, boundary, no-space), fix the stale route field list, and prove the cap live",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 3 phase checkpoints are recorded. (1) The tests were written after the shipped code; the pin matches it, so no behaviour change was needed (the Red evidence is the review finding that two rules were untested). (2) The live cap proof needed no plan modification: the follow-up task title is longer than BAND_MAX, and the route showed band 157 with an ellipsis and bandFull 470. (3) The archived band track was edited in place for the correction note (spec) and the exact-key assertion note (plan).",
+  "completed": "2026-11-07"
+}
