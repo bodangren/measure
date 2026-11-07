@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **commit guard nested commands:** `git stage` now contributes like `git add`, and `bash`/`sh`/`zsh` by basename with any `-c`-bearing option cluster (`-c`, `-lc`, `-x -c`, `/bin/bash`), multi-word `eval`, and `git stage` substitutions are scanned recursively (four-level cap, unreadable inner text fails closed) by the strict commit guard's `addedPaths`, so a non-test file staged through a nested shell cannot bypass the no-task check; node 306 tests, DSH adapter local. Track `dsh_measure_commit_nested_20261109`.
+* **commit guard nested commands:** `git stage` now contributes like `git add`, and `bash`/`sh`/`zsh` by basename with any `-c`-bearing option cluster (`-c`, `-lc`, `-x -c`, `/bin/bash`), multi-word `eval`, and `git stage` substitutions are scanned recursively (four-level cap, unreadable inner text fails closed) by the strict commit guard's `addedPaths`, so a non-test file staged through a nested shell cannot bypass the no-task check; node 310 tests, DSH adapter local. Track `dsh_measure_commit_nested_20261109`.
 
 ### Features
 

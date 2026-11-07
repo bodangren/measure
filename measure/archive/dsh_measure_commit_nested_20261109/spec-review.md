@@ -38,7 +38,7 @@ splits separators; only a command-position `git` counts. An outer `bash -c` or
 - F2: FIX (`eval` joins all its argument words and scans the joined text; both `eval git add src/app.js` and `eval "git add" src/app.js` return the path)
 - F3: FIX (shell recognition uses the command basename and any option cluster containing `c` — `-c`, `-lc`, `-x -c`, `/bin/bash`; the substitution pattern includes `stage`; the residual now names only arbitrary wrapper scripts and shell functions)
 - F4: FIX (cases cover `zsh -c`, `bash -lc`, `/bin/bash -c`, `bash -x -c`, multi-word `eval`, five-level nesting, and unreadable inner text)
-- F5: FIX (the integration case uses an untracked `src/new.js` with status `??` and the nested add, so only the recursion denies it)
+- F5: FIX (the fixture rewrite uses an untracked `src/new.js`; note that the original fixture also proved the recursion: it had empty staged/status and the adapter passes `commitTakesAll` (false), so the core `takesChanges` was never the reason it was denied)
 
 Delivered by `dsh_measure_commit_nested_fix2_20261109`; node 308/308, parity
 ok, CLI 13/13, srg 11/11.

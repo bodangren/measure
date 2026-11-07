@@ -218,7 +218,8 @@ const MAX_NESTED_DEPTH = 3
 function scanAddedPaths(command, depth) {
   const added = { all: false, trackedOnly: false, paths: [] }
   if (typeof command !== 'string' || command === '') return added
-  // Four levels: the exported call is depth 0; anything deeper fails closed.
+  // depth > 3: the exported call is depth 0, so three nested shells are scanned
+  // and the fourth nested level fails closed.
   if (depth > MAX_NESTED_DEPTH) {
     added.all = true
     return added
@@ -256,9 +257,17 @@ function scanAddedPaths(command, depth) {
     if (NESTED_SHELLS.has(shellName)) {
       let j = i + 1
       let takesCommand = false
-      while (j < tokens.length && !tokens[j].separator && tokens[j].value.startsWith('-')) {
-        if (tokens[j].value.includes('c')) takesCommand = true
-        j += 1
+      while (j < tokens.length && !tokens[j].separator) {
+        const option = tokens[j].value
+        if (option === '--') {
+          j += 1
+          continue
+        }
+        if (!option.startsWith('-')) break
+        if (option.includes('c')) takesCommand = true
+        // -o and -O take an argument; step over it while still hunting for -c.
+        if (option === '-o' || option === '-O') j += 2
+        else j += 1
       }
       if (takesCommand && j < tokens.length && !tokens[j].separator) {
         merge(scanAddedPaths(tokens[j].value, depth + 1))

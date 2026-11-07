@@ -66,3 +66,14 @@ tests with an untracked integration path.
 ## Out of Scope
 
 - Arbitrary wrapper scripts and shell functions.
+
+> **Correction (2026-11-09, dsh_measure_commit_nested_fix3_20261109):** the cap is
+> `depth > 3` (the exported call is depth 0): three nested shells are scanned and
+> the fourth nested level returns `all: true`; a boundary pair pins both. The
+> shell option loop steps over the argument of `-o`/`-O` and skips a `--` token
+> before the command word, so `bash -o pipefail -c`, `bash -O extglob -c`, and
+> `bash -c -- <string>` are scanned; options with unknown arguments remain a named
+> residual. The integration fixture had empty staged/status and the adapter
+> passes `commitTakesAll` (false there), so only the recursion denied it — the
+> fix1 review's F5 disposition is corrected. The CHANGELOG states `node 310
+> tests`.

@@ -171,6 +171,25 @@ test('addedPaths accepts every shell -c spelling and git stage substitutions', a
   assert.deepEqual(addedPaths('X=$(git stage secret.txt); git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
 })
 
+test('addedPaths skips shell option arguments while hunting for -c', async () => {
+  const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
+  assert.deepEqual(addedPaths('bash -o pipefail -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -O extglob -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -c -- "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+})
+
+test('addedPaths fails closed at the fourth nested level but scans three', async () => {
+  const nest = (levels, inner) => {
+    let text = inner
+    for (let level = 0; level < levels; level += 1) text = `bash -c ${JSON.stringify(text)}`
+    return text
+  }
+  assert.deepEqual(addedPaths(`${nest(3, 'git add src/app.js')} && git commit -m "feat(app): Add"`),
+    { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths(`${nest(4, 'git add src/app.js')} && git commit -m "feat(app): Add"`),
+    { all: true, trackedOnly: false, paths: [] })
+})
+
 test('addedPaths fails closed beyond the depth cap and for unreadable inner text', async () => {
   let nested = 'git add src/app.js'
   for (let level = 0; level < 5; level += 1) nested = `bash -c ${JSON.stringify(nested)}`

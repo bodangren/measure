@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_commit_nested_fix3_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-09T20:00:00Z",
+  "updated_at": "2026-11-09T20:00:00Z",
+  "description": "Commit nested fix3: skip shell option arguments while finding -c, pin the depth boundary with a pair test, and correct the fix1/fix2 review records and CHANGELOG count",
+  "estimated_tasks": 4,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
