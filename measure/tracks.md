@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure audit contract fix2**
-  *Link: [./tracks/dsh_measure_audit_contract_fix2_20261110/](./tracks/dsh_measure_audit_contract_fix2_20261110/)*
-  *Removes the remaining append/write instructions, defines the `PROPOSAL:` candidate format, pins the alias and negative doc checks, and records the review. Pushes per phase.*
+- (none)
 
 ---
 
@@ -281,3 +279,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure audit role contract alignment**
   *Link: [./archive/dsh_measure_audit_contract_20261110/](./archive/dsh_measure_audit_contract_20261110/)*
   *Align the audit role contract: schema version 1, an orchestrator-audit role gate, proposal-only outputs matching the permissions, and tests*
+
+- [x] **Track: DSH Measure audit contract fix2**
+  *Link: [./archive/dsh_measure_audit_contract_fix2_20261110/](./archive/dsh_measure_audit_contract_fix2_20261110/)*
+  *Remove the remaining append/write instructions, define the PROPOSAL candidate format, pin the measure-orchestrator-audit alias and negative doc checks, and record the review*
