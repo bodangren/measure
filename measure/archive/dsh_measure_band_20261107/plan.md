@@ -23,6 +23,7 @@ _Story ref: spec.md#story-s1_
     - [ ] The view keeps its existing fields; `bandFull` is additive
 - [x] Task 1.2: Red: failing tests for the compaction `f052cd7`
     - [ ] `tests/client-state.test.js`: a 500-character task line yields `band.length <= 160`, `band` ends with `…`, `bandFull` equals the full line; a short line is unchanged; a long line with a `sessions` suffix truncates inside it; a null band keeps both null; a non-string returns null from `compactBand`
+    - [ ] `tests/client-state.test.js` also pins the exact `Object.keys(view)` list, which necessarily gains `bandFull` (a note added by the follow-up track: the case is mandatory, not optional)
     - [ ] `tests/client-bundle.test.js`: the bundle uses `view.bandFull` as the title, and carries the nowrap/ellipsis styles
 - [x] Task 1.3: Green: implement `compactBand`, the view fields, and the Client styles; the suite passes `f052cd7`
 - [x] Task 1.4: Docs: README "Client surface" (compact band, `bandFull`, one-line rule) and `docs/dsh.md` `f052cd7`

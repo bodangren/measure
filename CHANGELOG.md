@@ -8,7 +8,7 @@
 
 ### Features
 
-* **dsh compact band:** the Measure band is capped at 160 characters on a word boundary with an ellipsis and never wraps, so a long task title no longer eats the composer's vertical space. The full position text stays available as the row's hover title (`bandFull`), in the sidebar panel, and in `measure_status`. Track `dsh_measure_band_20261107`.
+* **dsh compact band:** the Measure band is capped at 160 characters on a word boundary with an ellipsis and never wraps, so a long task title no longer eats the composer's vertical space. The full position text stays available as the row's hover title (`bandFull`) and in `measure_status` (the sidebar panel shows the status lines and the goal line, not the active task text). Track `dsh_measure_band_20261107`.
 
 * **dsh operator controls:** `/measure-mode` makes the guard mode effective per repository: a persisted repository override wins over an in-memory session override, which wins over `config.mode`; every guard path reads the effective mode per call, and the state route/band/status expose the value and its source. `/measure-verify` is a read-only on-demand run of the git-backed task checks and the active track's `metadata.json` verdict. Track `dsh_measure_ops_20261107`.
 

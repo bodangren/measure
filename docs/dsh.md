@@ -183,8 +183,9 @@ non-work-tree, or a git that cannot answer degrades to
 The band shows the Measure position on one line. The Host's view caps it at
 `BAND_MAX = 160` characters (`band`) on a word boundary with a trailing `…`, and
 `bandFull` carries the complete line as the hover title; the row never wraps and
-the primary span ellipsizes. The full text is always available in the sidebar
-panel and in `measure_status`.
+the primary span ellipsizes. The full text is available through the hover title
+and in `measure_status`; the sidebar panel shows the status lines and the goal
+line, not the active task text.
 
 ## Setup answer
 

@@ -8,6 +8,12 @@ The band is the `conversation.input.dock` entry that shows the Measure position 
 
 This track compacts the band in the adapter (the Client view), keeps the full line available as a hover title, and leaves the shared core untouched.
 
+> **Correction (2026-11-07, dsh_measure_band_followup_20261107):** an earlier
+> version of this spec said the sidebar panel also carries the full position
+> text. It does not: the panel renders the status lines and the goal line, never
+> the active task text. The full text is available through the band's hover
+> title (`bandFull`) and in `measure_status` only.
+
 Decisions made for this track (the owner reported the band length directly):
 
 1. **Spec format:** story-shaped (feature track).
@@ -65,6 +71,6 @@ Decisions made for this track (the owner reported the band length directly):
 ## Out of Scope
 
 - Core `bandLine()` wording or content changes.
-- Redesigning the sidebar panel or the measure-status text (they keep the full text).
+- Redesigning the sidebar panel or the measure-status text.
 - Responsive layout below the band (other chips may clip on narrow viewports).
 - Windows paths and platform packaging.
