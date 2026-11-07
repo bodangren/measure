@@ -153,12 +153,26 @@ def changed_files(repo: Path, baseline: str) -> list[str]:
 
 
 def committed_files(repo: Path, baseline: str) -> list[str]:
+    """Files changed between `baseline` and HEAD, with both sides of a rename.
+
+    Plain `--name-only` prints only the new path of a rename, so a Red commit
+    could move a production file into `tests/` and hide the old path from the
+    mid-red check. The `R` records of `--name-status` carry both paths; with
+    rename detection off the `A`/`D` records already name both.
+    """
     if not baseline:
         return []
     result = git(repo, "diff", "--name-only", f"{baseline}..HEAD")
     if result.returncode != 0:
         return []
-    return sorted(line.strip() for line in result.stdout.splitlines() if line.strip())
+    files = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    renames = git(repo, "diff", "--name-status", "--diff-filter=R", f"{baseline}..HEAD")
+    if renames.returncode == 0:
+        for line in renames.stdout.splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 3 and parts[0].startswith("R"):
+                files.update(path.strip() for path in parts[1:] if path.strip())
+    return sorted(files)
 
 
 def non_test_committed_files(repo: Path, baseline: str) -> list[str]:

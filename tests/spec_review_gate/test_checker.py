@@ -318,6 +318,43 @@ class SpecReviewRoleGateTest(unittest.TestCase):
         self.assertIn(OUTSIDE_MSG, out)
         self.assertIn("- src/a.py", out)
 
+    def test_edge_mid_red_rename_into_tests_lists_old_path(self) -> None:
+        """The mid-red gate lists the old path of a production file renamed into tests/."""
+        self.write("src/a.py", 'print("a")\n')
+        self.git("add", "src/a.py")
+        base = self.commit("add src/a.py")
+        (self.repo / "tests").mkdir()
+        self.git("mv", "src/a.py", "tests/a.py")
+        self.commit("move src/a.py into tests/")
+        env = clean_env(
+            {
+                "GIT_CONFIG_COUNT": "1",
+                "GIT_CONFIG_KEY_0": "diff.renames",
+                "GIT_CONFIG_VALUE_0": "true",
+                "RED_TEST_COMMAND": "false",
+            }
+        )
+        # Precondition: with rename detection on, plain git diff lists only the new path.
+        pre = self.git("diff", "--name-only", f"{base}..HEAD", env=env)
+        self.assertEqual(pre.stdout.split(), ["tests/a.py"], f"precondition failed: {pre.stdout}")
+        code, out = self.run_checker(
+            "role-gate",
+            "--repo",
+            str(self.repo),
+            "--role",
+            "mid-red",
+            "--track",
+            TRACK,
+            "--phase",
+            "Phase S1: Fixture",
+            "--baseline",
+            base,
+            env=env,
+        )
+        self.assert_exit(1, code, out)
+        self.assertIn("Mid Red changed non-test/non-Measure files", out)
+        self.assertIn("- src/a.py", out)
+
     # ------------------------------------------------- backward compatibility
     def test_backward_compat_review_a_json_without_paraphrase(self) -> None:
         payload = pass_payload()
