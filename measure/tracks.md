@@ -231,3 +231,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure skill-doc check fix4**
   *Link: [./archive/dsh_measure_skill_doctor_fix4_20261109/](./archive/dsh_measure_skill_doctor_fix4_20261109/)*
   *Add anchor-only and scheme passing fixtures, fix the CHANGELOG conjunction, correct the stale PASS counts, and record the fix3 review*
+
+- [x] **Track: DSH Measure commit guard substitution fail-closed**
+  *Link: [./archive/dsh_measure_commit_substitution_20261109/](./archive/dsh_measure_commit_substitution_20261109/)*
+  *Make the strict commit guard's addedPaths fail closed when a command substitution hides a git add, with unit cases and the tech-debt row narrowed*
