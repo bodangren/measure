@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSH Measure evolution — 24-hour report</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --ink: #14161f;
+    --muted: #5b6172;
+    --line: #e3e6ef;
+    --accent: #4f46e5;
+    --accent-soft: #eef0ff;
+    --teal: #0f766e;
+    --teal-soft: #e6f7f4;
+    --amber: #b45309;
+    --amber-soft: #fff4e5;
+    --green: #15803d;
+    --green-soft: #e8f7ee;
+    --red: #b91c1c;
+    --red-soft: #fdeeee;
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
+  header.hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #0f766e 100%);
+    border-radius: 18px;
+    color: #fff;
+    padding: 36px 36px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero::after {
+    content: "";
+    position: absolute; right: -80px; top: -80px; width: 280px; height: 280px;
+    border-radius: 50%; background: rgba(255,255,255,.07);
+  }
+  .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: 11px; opacity: .75; margin: 0 0 10px; }
+  h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.15; letter-spacing: -.02em; }
+  .hero p.sub { margin: 0; color: rgba(255,255,255,.85); max-width: 720px; font-size: 15px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.9); }
+  .hero-meta span { border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 4px 12px; }
+  .hero-meta .ok { background: rgba(16,185,129,.2); border-color: rgba(16,185,129,.5); }
+
+  section { margin-top: 40px; }
+  h2 { font-size: 20px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .section-note { color: var(--muted); font-size: 13.5px; margin: 0 0 18px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .stat .num { font: 700 26px/1.1 var(--mono); letter-spacing: -.02em; }
+  .stat .lbl { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+  .stat.accent .num { color: var(--accent); }
+  .stat.teal .num { color: var(--teal); }
+
+  .chart { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-top: 12px; }
+  .bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; }
+  .bar div { height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 12.5px; color: var(--muted); }
+  .legend b { font-family: var(--mono); color: var(--ink); font-weight: 600; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; letter-spacing: -.01em; }
+  .card p { margin: 0 0 10px; color: #333849; font-size: 14px; }
+  .card .why { color: var(--muted); font-size: 13.5px; border-left: 2px solid var(--line); padding-left: 10px; margin: 10px 0 12px; }
+  .tag { display: inline-block; font: 600 11px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; margin-right: 6px; }
+  .tag.guard { background: var(--accent-soft); color: var(--accent); }
+  .tag.tests { background: var(--teal-soft); color: var(--teal); }
+  .tag.docs { background: var(--amber-soft); color: var(--amber); }
+  .tag.ops { background: var(--green-soft); color: var(--green); }
+  .evidence { font-size: 12.5px; color: var(--muted); font-family: var(--mono); line-height: 1.7; word-break: break-word; }
+  .evidence a { color: var(--accent); text-decoration: none; }
+  .evidence a:hover { text-decoration: underline; }
+
+  .timeline { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 8px 22px 8px; }
+  .tl { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .tl:first-child { border-top: 0; }
+  .tl .when { font: 600 12.5px/1.5 var(--mono); color: var(--accent); }
+  .tl .what { font-size: 14px; }
+  .tl .what p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+
+  table.gates { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; font-size: 13.5px; }
+  table.gates th, table.gates td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.gates th { background: #fafbff; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  table.gates tr:last-child td { border-bottom: 0; }
+  table.gates code { font: 12.5px var(--mono); color: #1f2432; }
+  .pill { display: inline-block; font: 600 11.5px var(--mono); padding: 3px 9px; border-radius: 999px; }
+  .pill.pass { background: var(--green-soft); color: var(--green); }
+  .pill.policy { background: var(--amber-soft); color: var(--amber); }
+
+  ul.clean { margin: 0; padding-left: 18px; }
+  ul.clean li { margin: 6px 0; font-size: 14px; }
+  ul.clean li b { font-weight: 600; }
+  .open { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .open .row { display: grid; grid-template-columns: 210px 1fr; gap: 14px; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 13.5px; }
+  .open .row:first-child { border-top: 0; }
+  .open .row .k { font-weight: 600; }
+  .open .row .v { color: var(--muted); }
+
+  footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 12.5px; }
+  footer code { font-family: var(--mono); background: #eef0f7; padding: 2px 6px; border-radius: 5px; color: #2b2f3a; }
+  @media (max-width: 820px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: 1fr; }
+    .tl { grid-template-columns: 1fr; gap: 4px; }
+    .open .row { grid-template-columns: 1fr; gap: 2px; }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <p class="eyebrow">DeepSeek Harness · Measure framework · state of the work</p>
+  <h1>24 hours of relentless, gate-verified hardening</h1>
+  <p class="sub">From the first Measure-guard plugin for DSH to a spec-review gate that proves its own rules: every improvement below landed as a Measure track — spec, plan, SHA-marked tasks, review, archive, pushed checkpoint — and none of it rests on an unverified claim.</p>
+  <div class="hero-meta">
+    <span>window 2026-11-07 11:13 → 2026-11-08 07:12 (+0800)</span>
+    <span>main @ f47348d</span>
+    <span class="ok">all gates green</span>
+  </div>
+</header>
+
+<section>
+  <h2>By the numbers</h2>
+  <p class="section-note">Authored commits, archived tracks, and suite sizes measured from the repository at report time.</p>
+  <div class="stats">
+    <div class="stat accent"><div class="num">643</div><div class="lbl">commits in the window</div></div>
+    <div class="stat accent"><div class="num">53</div><div class="lbl">Measure tracks archived</div></div>
+    <div class="stat"><div class="num">399</div><div class="lbl">files touched</div></div>
+    <div class="stat"><div class="num">+27,433</div><div class="lbl">lines added (−156 removed)</div></div>
+    <div class="stat teal"><div class="num">318</div><div class="lbl">guard plugin unit tests (26 files)</div></div>
+    <div class="stat teal"><div class="num">13</div><div class="lbl">CLI integration tests</div></div>
+    <div class="stat teal"><div class="num">11</div><div class="lbl">spec-review-gate suites</div></div>
+    <div class="stat teal"><div class="num">2</div><div class="lbl">shared-core parity gates</div></div>
+  </div>
+
+  <div class="chart">
+    <div class="bar" role="img" aria-label="Commit types">
+      <div style="width:64.2%;background:#4f46e5"></div>
+      <div style="width:9.0%;background:#6366f1"></div>
+      <div style="width:7.9%;background:#0f766e"></div>
+      <div style="width:6.8%;background:#14b8a6"></div>
+      <div style="width:6.1%;background:#b45309"></div>
+      <div style="width:5.4%;background:#f59e0b"></div>
+      <div style="width:0.4%;background:#64748b"></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:#4f46e5"></i>measure records <b>413</b></span>
+      <span><i class="sw" style="background:#6366f1"></i>chore <b>58</b></span>
+      <span><i class="sw" style="background:#0f766e"></i>docs <b>51</b></span>
+      <span><i class="sw" style="background:#14b8a6"></i>fix <b>44</b></span>
+      <span><i class="sw" style="background:#b45309"></i>test <b>39</b></span>
+      <span><i class="sw" style="background:#f59e0b"></i>feat <b>35</b></span>
+      <span><i class="sw" style="background:#64748b"></i>perf + merges <b>3</b></span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>What was actually improved</h2>
+  <p class="section-note">Nine themes, each backed by an archived track with a dated review and a green gate run.</p>
+  <div class="grid">
+
+    <div class="card">
+      <h3>Guard performance without blindness</h3>
+      <span class="tag guard">measure-guard</span><span class="tag tests">unit-tested</span>
+      <p>The host used to invalidate <em>every</em> cached snapshot after <em>every</em> tool result — correct but so heavy it re-read <code>measure/</code> on each call. Snapshots now refresh only for tools that can mutate the repository, with a disjoint tool-classification test pinning both sides.</p>
+      <p class="why">Why it matters: a fast guard gets left on; a guard that is turned off protects nothing.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_snapshot_invalidate_20261109/">snapshot_invalidate</a> · <a href="measure/archive/dsh_measure_snapshot_invalidate_fix2_20261109/">fix2</a> · <a href="measure/archive/dsh_measure_snapshot_invalidate_fix3_20261109/">fix3</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Commit guard with real teeth</h3>
+      <span class="tag guard">commit guard</span><span class="tag tests">38 unit cases</span>
+      <p>The strict commit guard now fails closed when a command substitution hides a <code>git add</code>, scans nested shells and <code>git stage</code>, steps over shell option arguments (<code>-euo</code>, <code>--rcfile</code>, <code>--init-file</code>) and wrapper/env prefixes, counts only short <code>-c</code> clusters, honours <code>--</code>, and reads added paths with a real shell-word tokenizer (quotes, escapes, comments) instead of a whitespace regex.</p>
+      <p class="why">Why it matters: an under-approximating guard let a data file ride into a test-only mid-red commit; each fix closes one parser hole with a negative test that would catch its return.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_commit_substitution_20261109/">substitution</a> · <a href="measure/archive/dsh_measure_commit_nested_20261109/">nested</a> · <a href="measure/archive/dsh_measure_commit_nested_fix2_20261109/">fix2</a> · <a href="measure/archive/dsh_measure_commit_nested_fix3_20261109/">fix3</a> · <a href="measure/archive/dsh_measure_commit_nested_fix4_20261109/">fix4</a> · <a href="measure/archive/dsh_measure_commit_nested_fix5_20261109/">fix5</a> · <a href="measure/archive/dsh_measure_add_quoting_20261107/">add_quoting</a> · <a href="measure/archive/dsh_measure_token_scan_followup_20261107/">token_scan</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Shell-write grammar: fewer false denials, same real blocks</h3>
+      <span class="tag guard">shell scan</span><span class="tag tests">unit-tested</span>
+      <p>The redirect scan now masks heredoc bodies (through the delimiter, tab-aware for <code>&lt;&lt;-</code>), <code>&gt;</code> inside quoted spans, and <code>#</code> comments before looking for <code>&gt;</code>/<code>&gt;&gt;</code> — and only recognises heredoc markers outside quotes. Real writes still deny; a document quoting <code>&gt; measure/tracks.md</code> no longer does.</p>
+      <p class="why">Why it matters: false positives train operators to weaken the guard; false negatives lose work. Both directions are now pinned by tests.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_shell_grammar_20261107/">shell_grammar</a> · <a href="measure/archive/dsh_measure_allow_parse_20261109/">allow_parse</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Registry and closeout can no longer drift</h3>
+      <span class="tag docs">measure CLI</span><span class="tag tests">checker suite</span>
+      <p>The registry checker now proves every archive directory appears exactly once, the active/cancelled/archived sections stay separate, and each registry description equals its metadata description. Closeout verifies the same before it reports done — it caught two of its own recent tracks in the act.</p>
+      <p class="why">Why it matters: the registry is the project index; a wrong line there misleads every future session. The check now fails the build, not the reader.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_registry_20261107/">registry</a> · <a href="measure/archive/dsh_measure_registry_fix2_20261107/">fix2</a> · <a href="measure/archive/dsh_measure_registry_fix3_20261107/">fix3</a> · <a href="measure/archive/dsh_measure_registry_fix4_20261107/">fix4</a> · <a href="measure/archive/dsh_measure_closeout_registry_20261108/">closeout_registry</a> · <a href="measure/archive/dsh_measure_scope_intermediate_20261109/">scope_intermediate</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Spec-review gate that proves itself</h3>
+      <span class="tag tests">11 suites</span><span class="tag guard">adversarial</span>
+      <p>The gate runner now refuses to run itself, skips symlinked suites, rejects glob-metacharacter names instead of silently running something else, and fails when a unittest file runs zero tests (the Python ≤3.11 trap). The dispositions parser rejects control characters, zero-width and bidi marks, and matches markers exactly; the A11 doc-drift recipe skips executable command spans and pins its space rule.</p>
+      <p class="why">Why it matters: the gate is the last line of defence for every track, so it must be adversarially tested against itself, not just against tracks.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_srg_runner_20261108/">srg_runner</a> · <a href="measure/archive/dsh_measure_srg_parser_20261108/">parser</a> · <a href="measure/archive/dsh_measure_srg_parser_fix2_20261108/">parser fix2</a> · <a href="measure/archive/dsh_measure_srg_parser_fix3_20261108/">parser fix3</a> · <a href="measure/archive/dsh_measure_a11_recipe_20261108/">a11</a> · <a href="measure/archive/dsh_measure_a11_recipe_fix2_20261108/">a11 fix2</a> · <a href="measure/archive/dsh_measure_a11_recipe_fix3_20261108/">a11 fix3</a> · <a href="measure/archive/dsh_measure_suite_mktemp_20261109/">mktemp guard</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Skill descriptions held to contract</h3>
+      <span class="tag tests">CLI suite</span><span class="tag docs">skill doctor</span>
+      <p>A repository check now enforces the 1024-character <code>SKILL.md</code> description limit, keeps the <code>claude-skills/measure</code> bundle free of folder links, honours the real folder-link rule (anchors and schemes skipped), and pins the folded <code>&gt;</code> description form with a fixture.</p>
+      <p class="why">Why it matters: descriptions are the agent-facing contract; an over-long or folder-linked description silently breaks skill loading in hosts.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_skill_doctor_check_20261109/">skill_doctor_check</a> · <a href="measure/archive/dsh_measure_skill_doctor_fix2_20261109/">fix2</a> · <a href="measure/archive/dsh_measure_skill_doctor_fix3_20261109/">fix3</a> · <a href="measure/archive/dsh_measure_skill_doctor_fix4_20261109/">fix4</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Audit role: proposals, not writes</h3>
+      <span class="tag docs">role contract</span><span class="tag tests">alias + doc pins</span>
+      <p>The audit example uses <code>schema_version</code> 1; <code>role-gate --role orchestrator-audit</code> (and the <code>measure-orchestrator-audit</code> alias) validates the result; Inputs, Detectors and Outputs describe catalog and guard-test <em>proposals</em> with a defined candidate format (<code>PROPOSAL:</code> naming the path and assertion) that matches the role's edit permissions. Doc tests pin the schema version, the format, and the absence of the old append/write instructions.</p>
+      <p class="why">Why it matters: the audit role's contract is what makes its findings actionable; a write instruction the role cannot perform produced dead feedback for weeks.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_audit_contract_20261110/">audit_contract</a> · <a href="measure/archive/dsh_measure_audit_contract_fix2_20261110/">fix2</a> · <a href="measure/tracks/dsh_measure_audit_contract_fix3_20261110/">fix3 (in flight)</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Operator surface &amp; agent-team rehearsal</h3>
+      <span class="tag ops">DSH</span><span class="tag docs">guides</span>
+      <p>A one-command, verifiable DSH Measure development environment (guide, CLI, workflow commands, live migration); a compact one-line status band with a strict <code>compactBand</code> contract; operator controls for effective mode and on-demand verification; a disposable-fixture agent-team rehearsal protocol with its review corrections; an isolated-session strict-deny proof; and config-nonce profile reload that no longer relies on a comment marker.</p>
+      <p class="why">Why it matters: the framework is only real if it survives a cold environment, a broken reload, and an agent team that follows the protocol literally.</p>
+      <p class="evidence">Tracks: <a href="measure/archive/dsh_measure_dev_20261107/">dev</a> · <a href="measure/archive/dsh_measure_guard_20261107/">guard plugin</a> · <a href="measure/archive/dsh_measure_evolve_20261107/">evolve</a> · <a href="measure/archive/dsh_measure_ops_20261107/">ops</a> · <a href="measure/archive/dsh_measure_band_20261107/">band</a> · <a href="measure/archive/dsh_measure_band_followup_20261107/">band fix</a> · <a href="measure/archive/dsh_measure_team_rehearsal_20261107/">rehearsal</a> · <a href="measure/archive/dsh_measure_isolated_session_20261107/">isolated session</a> · <a href="measure/archive/dsh_measure_reload_20261107/">reload</a></p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>The last 24 hours, hour by hour</h2>
+  <p class="section-note">Each block is one or more complete Measure tracks: spec wrote it, tests proved it, review challenged it, archive recorded it, checkpoint pushed it.</p>
+  <div class="timeline">
+    <div class="tl">
+      <div class="when">18:30 → 19:30</div>
+      <div class="what"><b>DSH development environment, guard plugin, strict evolution</b>
+        <p>Eight workflow commands, a live-verified environment CLI, the third guard adapter over the shared core, session-accurate writers, goal binding, and the setup offer.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">19:30 → 21:00</div>
+      <div class="what"><b>Compact band, agent-team rehearsal, isolated session, reload, mid-red records</b>
+        <p>The band collapses to one line with a pinned contract; a disposable fixture runs the agent team end to end; the isolated session proves a strict deny; profile reload moves to a config nonce; rename-aware committed files fix the mid-red gate.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">21:00 → 23:00</div>
+      <div class="what"><b>Commit guard quoting → token scan → nested shells; shell-write grammar</b>
+        <p>A shell-word tokenizer replaces the regex; the whole command is scanned; nested shells, substitutions, <code>git stage</code>, and wrapper prefixes are handled; heredoc/quote/comment-aware redirect scanning lands with live evidence.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">23:00 → 01:00</div>
+      <div class="what"><b>Registry checkers, spec-review-gate runner, dispositions parser, A11 recipe</b>
+        <p>Registry check gains empty-fallback and archived-entry cases; the gate runner refuses self-runs, symlinks, and zero-test files; the dispositions parser rejects control, zero-width, and bidi characters with exact marker matching; the A11 recipe skips executable spans.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">01:00 → 03:30</div>
+      <div class="what"><b>Closeout registry guard, mktemp guard, intermediate-commit scope, skill-doc checks, nested fix2–fix5, allow-list hardening</b>
+        <p>Closeout verifies the registry description and immediately caught two tracks; every srg suite survives a failed <code>mktemp</code>; scope rules include intermediate commits; the skill-doc check enforces the 1024-char description and bundle folder-link rules; allow-list parsing becomes linear and rejects control characters.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">03:30 → 05:30</div>
+      <div class="what"><b>Snapshot invalidation narrowing + fix2 + fix3</b>
+        <p>Snapshots refresh only for repo-mutating tools; the two tool classifications are tested disjoint; records made single-sourced after review.</p></div>
+    </div>
+    <div class="tl">
+      <div class="when">05:30 → 07:15</div>
+      <div class="what"><b>Contracts matching/scope, audit role contract + fix2, fix3 opened</b>
+        <p><code>contracts.md</code> gains a pinned Marker Matching and Baseline section; the audit role matches the checker; fix2 finishes the proposal wording and pins the alias and negative doc checks. Fix3 opens to close the review findings (status semantics, whole-file checks).</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Verification — the receipts</h2>
+  <p class="section-note">Run at the checkpoint before this report; every track in the window had to pass the same set.</p>
+  <table class="gates">
+    <thead><tr><th style="width:34%">Gate</th><th style="width:42%">Command</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Guard plugin unit tests</td><td><code>node --test plugins/dsh-measure-guard/tests/*.test.js</code></td><td><span class="pill pass">318 / 318 pass</span></td></tr>
+      <tr><td>Shared-core parity</td><td><code>bash plugins/dsh-measure-guard/scripts/check-parity.sh</code> and the opencode gate</td><td><span class="pill pass">parity: ok (both)</span></td></tr>
+      <tr><td>CLI integration suite</td><td><code>bash tests/dsh/run.sh</code></td><td><span class="pill pass">13 / 13 pass</span></td></tr>
+      <tr><td>Spec-review gate</td><td><code>bash tests/spec_review_gate/run.sh</code></td><td><span class="pill pass">11 suites (PASS=11, FAIL=0)</span></td></tr>
+      <tr><td>Track closeout</td><td><code>measure_interphase_checks.py closeout --track &lt;id&gt;</code></td><td><span class="pill policy">manifest-only FAIL is the expected result</span></td></tr>
+      <tr><td>Registry integrity</td><td><code>bash tests/dsh/test-registry.sh</code></td><td><span class="pill pass">68 archive dirs, one entry each</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Honest open items</h2>
+  <p class="section-note">Tracked in <a href="measure/tech-debt.md">measure/tech-debt.md</a>; none of them is hidden behind a green suite.</p>
+  <div class="open">
+    <div class="row"><div class="k">Audit role contract</div><div class="v">Fix3 in flight: audit status for a proposed failing guard, whole-file doc negatives, and the fix2 review reconciliation.</div></div>
+    <div class="row"><div class="k">Commit guard residual</div><div class="v">Wrapper scripts and shell functions still hide added paths from the bounded parser; unknown-option argument forms are not modelled.</div></div>
+    <div class="row"><div class="k">Spec-review gate rounds</div><div class="v">Group (b) test-suite robustness, (d) contract-reference gaps, (e) A11 remainders, (f) same-HEAD acceptance rule, (g) skill-text clarity.</div></div>
+    <div class="row"><div class="k">OpenCode plugin rows</div><div class="v">Synthetic reply timing, <code>session.execution.*</code> debounce, and the nonexistent <code>multiedit</code> entry.</div></div>
+    <div class="row"><div class="k">measure-guard design rows</div><div class="v">Bash-write visibility, subagent root resolution, name-rule guards, no DOM/integration test, duplicated shared core.</div></div>
+  </div>
+</section>
+
+<footer>
+  Generated 2026-11-08 07:20 CST from <code>git log --since="24 hours ago"</code> (643 commits), the archive registry, and the gate runs at <code>f47348d</code>.
+  Reproduce: <code>bash tests/dsh/run.sh</code> · <code>bash tests/spec_review_gate/run.sh</code> · <code>node --test plugins/dsh-measure-guard/tests/*.test.js</code> · <code>bash plugins/dsh-measure-guard/scripts/check-parity.sh</code>.
+</footer>
+
+</div>
+</body>
+</html>
