@@ -5,11 +5,11 @@ Spec: [./spec.md](./spec.md)
 
 **Each phase checkpoint is pushed to `origin/main` before the next phase.**
 
-## Phase 1: Rebuild the registry
+## Phase 1: Rebuild the registry [checkpoint: 4589f8c]
 
 - [x] Task 1.1: rebuild `measure/tracks.md`'s Archived Tracks section — one entry per directory under `measure/archive/` (title, link, and one description from that track's `metadata.json`), no merged description block; the active and cancelled sections stay unchanged
 - [x] Task 1.2: review the rebuild for lost entries (the archive-directory count equals the entry count) and for unchanged active/cancelled sections; record the before/after counts
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Rebuild the registry' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Rebuild the registry' (Protocol in workflow.md) `4589f8c`
 
 ## Phase 2: The structural check
 
