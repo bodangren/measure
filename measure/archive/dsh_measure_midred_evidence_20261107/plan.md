@@ -15,7 +15,7 @@ corrected archived record, then the gates and closeout.
 - [x] Task 1.5: run `bash tests/spec_review_gate/run.sh` (10/10), the node suite (288/288), and both parity gates; record the results
 - [x] Task: Measure - User Manual Verification 'Phase 1: The ledger and the record' (Protocol in workflow.md) `548b4c8`
 
-## Phase 2: Closeout
+## Phase 2: Closeout [checkpoint: 77a3ee1]
 
 - [x] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md` `3119de8`
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md) `77a3ee1`
