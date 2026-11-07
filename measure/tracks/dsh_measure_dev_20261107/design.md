@@ -85,6 +85,9 @@ measure-dsh --help
 - **`uninstall`** removes the managed block and the plugin copy
   `<profile>/plugins/dsh-measure-guard/` it owns by default; `--keep-copy`
   keeps the copy; it never removes a foreign row and never touches the skills.
+  After removal the patch file must still be a valid top-level array: when only
+  comments and blank lines remain, the CLI writes `[]` as the file content (a
+  comments-only YAML document parses as null and would fail composition).
   Non-zero only when an owned item could not be removed.
 - **Copy stamp.** `<profile>/plugins/dsh-measure-guard/.measure-dsh-install`
   with a header line `# measure-dsh install stamp v1` and one
@@ -109,10 +112,13 @@ measure-dsh --help
 - Replacement is byte-surgical: text before `>>>`, the block, text after
   `<<<`; every other line is preserved exactly, including a missing trailing
   newline (it is normalised once, and the summary says so).
-- A **foreign row** is any line matching `^\s*-\s+id:\s*measure-guard\s*$`
-  outside the block, or any `name:` line mentioning `dsh-measure-guard` outside
-  it. `install` and `--check` refuse with the line number and the deletion
-  hint; `uninstall` leaves it alone.
+- A **foreign row** is any non-comment line outside the block that mentions the
+  guard id or package in a YAML key: the rule matches
+  `(^|[\[{,]\s*)id\s*:\s*['"]?measure-guard['"]?` (block and flow mappings,
+  quoted or plain) or `(^|[\[{,]\s*)name\s*:\s*['"]?[^'"#\n]*dsh-measure-guard`
+  (plain, single- or double-quoted). Comment lines are ignored. `install` and
+  `--check` refuse with the line number and the deletion hint; `uninstall`
+  leaves the row alone.
 - Writes go to `<file>.measure-dsh.tmp` and are renamed over the target; a
   failure leaves the original untouched and the file mode is preserved.
 - The row is always `id: measure-guard`, `name:
@@ -159,13 +165,15 @@ and `measureWorkflowCommands(deps)`:
 | `measure-review` | `measure/references/review.md` | Review a Measure track or change |
 | `measure-revert` | `measure/references/revert.md` | Revert Measure work |
 | `measure-doctor` | `measure/references/doctor.md` | Run the Measure doctor |
-| `measure-orchestrate` | `measure-orchestrator/SKILL.md` | Orchestrate the active Measure track |
+| `measure-orchestrate` | `measure-orchestrator/SKILL.md` (skill `measure-orchestrator`) | Orchestrate the active Measure track |
 
-Message template (one `UserMessage`, `source: { kind: 'measure-guard', form:
-'instructions', summary: 'Measure <workflow>' }`):
+Each `WORKFLOWS` entry carries `{ command, workflow, skill, file }`; `skill` is
+`measure` for every command except `measure-orchestrate`, which is
+`measure-orchestrator`. Message template (one `UserMessage`, `source: { kind:
+'measure-guard', form: 'instructions', summary: 'Measure <workflow>' }`):
 
 ```
-Follow the Measure workflow "<workflow>". Load the `measure` skill and read
+Follow the Measure workflow "<workflow>". Load the `<skill>` skill and read
 `<resolved reference path>`; then continue with that workflow. The source of
 truth is measure/tracks.md and the active track's plan.md.
 ```
@@ -193,16 +201,39 @@ truth is measure/tracks.md and the active track's plan.md.
 
 ## 6. Orchestrator DSH reference
 
-`skills/measure-orchestrator/references/dsh.md` contains: the subagent tools and
-their arguments, the model families from the profile
-(`deepseek-official/deepseek-flash`, `minimax-cn/MiniMax-M3.1-Flash`,
-`xiaomi/mimo-v2.6-flash`, `xiaomi/mimo-v2.6-pro`, `kimi-coding/k3.1-pro`,
-`kimi-coding/kimi-for-coding`), the role table (role -> prompt summary -> model
-family), the independence and three-family review rule, the guard-marker
-handoffs (each role marks its task `[~]` and records the SHA), and per-role tool
-restrictions. `skills/measure-orchestrator/SKILL.md` gains one contents bullet
-and one paragraph linking the reference. The file marks every claim not verified
-against the installation.
+`skills/measure-orchestrator/references/dsh.md` contains the subagent tools and
+their arguments, the model families from the profile, the fixed role table
+below, the independence and three-family review rule, the guard-marker handoffs
+(each role marks its task `[~]` and records the SHA), and per-role tool
+restrictions. The role prompt is the body of `agents/measure-<role>.md` (its
+frontmatter stays out of the subagent prompt); the reference names that file for
+each role, so the role text has one source.
+
+| Role | Prompt source | Provider/model |
+|---|---|---|
+| `measure-orchestrator` | `agents/measure-orchestrator.md` | `deepseek-official/deepseek-flash` |
+| `measure-spec-review` | `agents/measure-spec-review.md` | `kimi-coding/k3.1-pro` |
+| `measure-strategy` | `agents/measure-strategy.md` | `deepseek-official/deepseek-flash` |
+| `measure-mid-red` | `agents/measure-mid-red.md` | `deepseek-official/deepseek-flash` |
+| `measure-jr-green` | `agents/measure-jr-green.md` | `deepseek-official/deepseek-flash` |
+| `measure-review-a-correctness` | `agents/measure-review-a-correctness.md` | `xiaomi/mimo-v2.6-pro` |
+| `measure-review-b-security` | `agents/measure-review-b-security.md` | `kimi-coding/k3.1-pro` |
+| `measure-review-c-ux-api` | `agents/measure-review-c-ux-api.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-phase-acceptance` | `agents/measure-phase-acceptance.md` | `xiaomi/mimo-v2.6-pro` |
+| `measure-adversarial-testing` | `agents/measure-adversarial-testing.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-ux-browser-review` | `agents/measure-ux-browser-review.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-final-acceptance` | `agents/measure-final-acceptance.md` | `kimi-coding/k3.1-pro` |
+| `measure-closeout` | `agents/measure-closeout.md` | `deepseek-official/deepseek-flash` |
+| `measure-orchestrator-audit` | `agents/measure-orchestrator-audit.md` | `xiaomi/mimo-v2.6-pro` |
+
+Independence rule: a reviewer's family differs from the family that wrote the
+artifact under review where the profile allows it, and the three review roles
+(`review-a`, `review-b`, `review-c`) never share a family. The model ids above
+are the profile's `subagent-model-selection-settings.allowedModels`;
+`test-reference.sh` checks every id against the profile patch.
+`skills/measure-orchestrator/SKILL.md` gains one contents bullet and one
+paragraph linking the reference. The file marks every claim not verified against
+the installation.
 
 ## 7. Test matrix
 

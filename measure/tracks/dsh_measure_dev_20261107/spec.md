@@ -150,9 +150,10 @@ replaced by the CLI contract tests, and the guard plugin README plus
 
 - **NFR-1** No new runtime dependency. `bin/measure-dsh` is POSIX bash; the
   tests are bash scripts and `node --test` where a JS assertion is simpler.
-- **NFR-2** No unbounded writes. Every write lands under the effective DSH
-  home/profile or the skill targets the installer owns, is atomic, and is
-  reversible by `uninstall`; no `sudo`, no write outside those roots.
+- **NFR-2** No unbounded writes. The CLI's own writes land under the effective
+  DSH home/profile, are atomic, and are reversible by `uninstall`; the skill
+  step invokes `bin/install-measure-skill` as the documented external writer of
+  its own targets; no `sudo`, no network, no write outside those roots.
 - **NFR-3** The installer stays the only skill writer. `measure-dsh` calls it
   and verifies its result; it never copies skill files itself.
 - **NFR-4** POSIX only, consistent with the repository.
