@@ -1,0 +1,5 @@
+# A11 recipe fix3 closeout
+
+Date: 2026-11-08
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_a11_recipe_fix3_20261108/automation-supervisor-closeout-manifest.json
