@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_midred_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T21:20:00Z",
+  "updated_at": "2026-11-07T21:50:00Z",
+  "description": "Simplify committed_files to the proven single --no-renames -z call, add the mid-red control case (test-only commit stays clean), and correct the archived mid-red record with the executed Red order",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "All 7 top-level tasks are done and the 2 phase checkpoints are recorded. (1) The simplification passes the same rename and control cases as the two-call implementation; the control case asserts the clean PASS (exit 0) with no non-test message, while the rename case asserts exit 1 with only the old production path. (2) The first srg run failed in test_s2_adversarial.sh because its G20 sensitivity mutants matched the new duplicate \"--no-renames\"/\"-z\" strings (count=2); the mutants were anchored to the spec-review scope line and srg is 10/10. (3) The follow-up review record is written after the review returns.",
+  "completed": "2026-11-07"
+}
