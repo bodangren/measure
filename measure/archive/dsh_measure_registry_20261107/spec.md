@@ -18,13 +18,14 @@ small structural check so the drift cannot silently return.
 ## Functional Requirements
 
 - **FR-1 (one entry per archived track).** The Archived Tracks section holds one
-  entry per directory under `measure/archive/`: the title line, the archive link,
-  and one description line. Every archive directory is referenced; no entry has
+  entry per **non-cancelled** directory under `measure/archive/` (the four
+  cancelled directories stay in the Cancelled section with their reasons): the
+  title line, the archive link, and one description line. Every archive directory is referenced; no entry has
   two description lines; no description line exists without a preceding entry.
   The active (`[~]`) and cancelled sections are unchanged.
-- **FR-2 (descriptions).** Each description is derived from the archived track's
-  own `metadata.json` `description` (or its README/title when absent), collapsed
-  to one line; no description is invented.
+- **FR-2 (descriptions).** Each description is the archived track's own
+  `metadata.json` `description` collapsed to one line and **never truncated**
+  (the title is used only when the field is empty); no description is rewritten.
 - **FR-3 (the structural check).** `tests/dsh/test-registry.sh` (part of the CLI
   contract suite) parses `measure/tracks.md` and asserts: every `- [x] **Track:`
   line is followed within two lines by a `*Link:` line; every archive directory

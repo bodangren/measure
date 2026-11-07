@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Rebuild the registry [checkpoint: 4589f8c]
 
-- [x] Task 1.1: rebuild `measure/tracks.md`'s Archived Tracks section — one entry per directory under `measure/archive/` (title, link, and one description from that track's `metadata.json`), no merged description block; the active and cancelled sections stay unchanged `46fd0bd`
+- [x] Task 1.1: rebuild `measure/tracks.md`'s Archived Tracks section — one entry per directory under `measure/archive/` (title, link, and one description from that track's `metadata.json`), no merged description block; the active and cancelled sections stay unchanged `b314321` (the publish commit; `46fd0bd` carries the plan, the evidence, and the structural test)
 - [x] Task 1.2: review the rebuild for lost entries (the archive-directory count equals the entry count) and for unchanged active/cancelled sections; record the before/after counts `46fd0bd`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Rebuild the registry' (Protocol in workflow.md) `4589f8c`
 
