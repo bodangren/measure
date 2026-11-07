@@ -10,8 +10,8 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 1: Fixture contract hardening
 
-- [~] Task 1.1: `tests/dsh/test-rehearsal-fixture.sh` asserts a real commit: `git -C "$PROJECT" rev-parse --verify HEAD` succeeds and `git -C "$PROJECT" log --oneline` lists exactly one commit (the `.git/HEAD` existence check is removed as the commit proof)
-- [ ] Task 1.2: run `bash tests/dsh/run.sh`; the new assertion passes alongside the existing contract tests
+- [x] Task 1.1: `tests/dsh/test-rehearsal-fixture.sh` asserts a real commit: `git -C "$PROJECT" rev-parse --verify HEAD` succeeds and `git -C "$PROJECT" log --oneline` lists exactly one commit (the `.git/HEAD` existence check is removed as the commit proof)
+- [x] Task 1.2: run `bash tests/dsh/run.sh`; the new assertion passes alongside the existing contract tests
 - [ ] Task: Measure - User Manual Verification 'Phase 1: Fixture contract hardening' (Protocol in workflow.md)
 
 ## Phase 2: The archived review corrections
