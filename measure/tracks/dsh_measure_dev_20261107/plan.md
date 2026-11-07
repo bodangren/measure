@@ -35,7 +35,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `plugins/dsh-measure-guard/tests/plugin.test.js` asserts the eleven commands and no duplicate registration
 - [x] Task 2.3: Measure - User Manual Verification 'Phase 2: Workflow commands' (Protocol in workflow.md) `2fa68fc`
 
-## Phase 3: Agent team reference
+## Phase 3: Agent team reference [checkpoint: dba1f1f]
 
 - [x] Task 3.1: DSH orchestrator reference `6b097a9`
     - [ ] `skills/measure-orchestrator/references/dsh.md`: subagent tools and arguments, the profile's model list, the exact 14-role table, the prompt template, per-role tool restrictions, independence and the three-family review assignments, guard-marker handoffs
@@ -43,7 +43,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 3.2: Reference checks `eeeed94`
     - [ ] `tests/dsh/test-reference.sh` in `tests/dsh/run.sh`: the reference exists; its local links resolve; every command name and model id it names exists (models against the profile patch); all 14 roles appear with a prompt source and a model; the three review roles have distinct families; the prompt template and the restrictions section are present
     - [ ] Edge: a rename of one model id, a missing role row, or two review roles sharing a family each make the check fail (tested with fixtures)
-- [ ] Task 3.3: Measure - User Manual Verification 'Phase 3: Agent team reference' (Protocol in workflow.md)
+- [x] Task 3.3: Measure - User Manual Verification 'Phase 3: Agent team reference' (Protocol in workflow.md) `dba1f1f`
 
 ## Phase 4: Guide, docs, and distribution alignment
 
