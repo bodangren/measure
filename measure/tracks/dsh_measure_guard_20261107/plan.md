@@ -34,19 +34,24 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `src/state.js`: `ReproStore` (mode override, repo bypass) over `~/.local/state/measure/dsh-guard/repos.json`; `Agents` keyed by agent id; `Turns` keyed by `agent.id:turn`; `Bypass`; `newUserMessage()`
     - [ ] `tests/state.test.js`: store round trip, bypass precedence, turn keys, message shape
 - [ ] Task 2.2: Snapshot service
-    - [ ] `src/snapshot.js`: `canonicalRoot` (`ctx.fs.resolve` + `git rev-parse --show-toplevel` via `ctx.subprocess`), `loadSnapshot` (index.md, tracks.md, plans, guard-allow), per-root cache, invalidation
-    - [ ] `src/roots.js`: `RootWriters` (one writer per worktree; second writer warning)
+    - [ ] `src/snapshot.js`: `canonicalRoot` (`ctx.workingDirectory.get` + `ctx.fs.resolve` + `git rev-parse --show-toplevel` via `ctx.subprocess`), `loadSnapshot` (index.md, tracks.md, plans, guard-allow), per-root cache, invalidation
     - [ ] `tests/snapshot.test.js`: real repository, temp repository, no `measure/`, parse error, canonical root of a subdirectory
-- [ ] Task 2.3: Rule section and task note
+- [ ] Task 2.3: Second-writer detection (FR-12)
+    - [ ] `src/roots.js`: `RootWriters` (one writer per canonical root; the second agent gets one warning note and the band suffix)
+    - [ ] `tests/roots.test.js`: one writer no notice, second writer one notice, same agent re-entry no second notice, different root no notice
+- [ ] Task 2.4: Rule section and task note
     - [ ] `src/context.js`: fixed `ctx.systemPrompt.section`; note from `agent/pre-step` (`{kind:'enter', messages}`); re-note after `compaction/end` and after cache invalidation; `agent/created` attach for existing agents
     - [ ] `tests/context.test.js`: rule text static; note appears exactly once per task change; note after compaction; no note without `measure/`
-- [ ] Task 2.4: `measure_status` tool
+- [ ] Task 2.5: `measure_status` tool
     - [ ] `src/status.js` + `ctx.tools.register`: tracks, active track, position, `[b]` count, next action, spec path; never the whole spec
     - [ ] `tests/status.test.js`: normal, no active track, no `measure/`, parse error
-- [ ] Task 2.5: Commands
-    - [ ] `src/commands.js` + `ctx.commands.register`: `/measure-off [repo]`, `/measure-on [repo]`, `/measure-status`
+- [ ] Task 2.6: Commands
+    - [ ] `src/commands.js` + `ctx.commands.register`: `measure-off` [repo], `measure-on` [repo], `measure-status`
     - [ ] `tests/commands.test.js`: session and repo scope, unknown argument defaults to session, status text
-- [ ] Task 2.6: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md)
+- [ ] Task 2.7: Setup offer (NFR-1)
+    - [ ] `src/setup.js`: `needsSetup`, `setupChoice` transitions (`pending`/`off`/`setup`), `SETUP_PROMPT`, `setupBandText`; the state lives in agent state
+    - [ ] `tests/setup.test.js`: git repo without `measure/` asks, non-repo does not, `off` silences, `setup` keeps the prompt text
+- [ ] Task 2.8: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md)
 
 ## Phase 3: Guard layer
 
