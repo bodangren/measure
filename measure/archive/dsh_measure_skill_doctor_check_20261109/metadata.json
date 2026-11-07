@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_skill_doctor_check_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T13:00:00Z",
+  "updated_at": "2026-11-09T13:40:00Z",
+  "description": "Add a CLI contract test that checks every SKILL.md description length and angle-bracket rule and rejects symlinks in the claude-skills bundle, with negative fixtures",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The description parser accepts inline and |/> block forms and collapses whitespace. (2) The bundle check rejects symbolic links anywhere under claude-skills/, not only under measure/. (3) The negative fixtures build temporary trees so the rules are proven non-vacuous.",
+  "completed": "2026-11-09"
+}
