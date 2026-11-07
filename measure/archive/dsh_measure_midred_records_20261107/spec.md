@@ -5,10 +5,11 @@
 The mid-red rename work shipped across two tracks, but a read-only closeout pass
 found the *records* still inconsistent and the first archive not closeout-clean:
 
-1. The archived follow-up plan has Task 2.2 and the Phase 2 verification task
-   still `[ ]`, and its completed tasks carry no commit SHA, so
+1. The archived follow-up plan's Task 2.2 and Phase 2 verification task already
+   carried their SHAs (`a481293`, `da75968`); the four completed tasks that lacked
+   a SHA were 1.1, 1.2, 1.3, and 2.1, so
    `measure_interphase_checks.py closeout --track dsh_measure_midred_followup_20261107`
-   reports missing SHAs (and a missing closeout manifest).
+   reports four missing-SHA lines (and a missing closeout manifest).
 2. The delivered rename test asserts the message and `- src/a.py` but not that
    `tests/a.py` is absent, which Task 1.2/FR-2 named.
 3. The follow-up archive has no `spec-review.md`, although its FR-3 requires the
@@ -22,23 +23,31 @@ follow-up track closeout-clean. It changes no gate behaviour.
 
 ## Functional Requirements
 
-- **FR-1 (closeout-clean archived plans).** The archived follow-up plan's Task 2.2
-  and Phase 2 verification task are `[x]` with their commit SHAs on the task
-  lines, and every `[x]` task in that plan carries a SHA;
-  `measure_interphase_checks.py closeout --track dsh_measure_midred_followup_20261107`
-  then reports no completed-task-lacks-SHA item (any remaining closeout-manifest
-  item is documented as the archival artifact, not a missing task).
+- **FR-1 (closeout-clean, defined).** Closeout-clean means: every non-deferred
+  `[x]` task in the archived follow-up plan carries a commit SHA (Task 2.2 and the
+  Phase 2 verification keep `a481293`/`da75968`; 1.1/1.2/1.3/2.1 get their SHAs),
+  its `metadata.json` says `status: done` with a completion date, and the archived
+  registry entry is `[x]`. The `automation-supervisor-closeout-manifest.json` is
+  **out of scope** for a manual track and is the single expected remaining
+  closeout FAIL. The exact closeout output is recorded at
+  `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` (the ledger,
+  together with the four SHAs and both parity outputs).
 - **FR-2 (the delivered assertion).** `tests/spec_review_gate/test_checker.py`'s
   mid-red rename case also asserts that `tests/a.py` does not appear in the
   report, matching its plan task and the track's FR-2.
-- **FR-3 (the review record).** The archived follow-up track gains a
-  `spec-review.md` holding the Round 1 findings (F1–F3 plus the four closeout
-  observations) and the author responses, and its `index.md` links it.
+- **FR-3 (the review records, concrete).** `measure/archive/dsh_measure_midred_followup_20261107/spec-review.md`
+  holds the follow-up's Round 1 findings verbatim — F1, F2, F3 and the closeout
+  observations O1–O4, each with one disposition (FIX/CONTEST/ESCALATE/DECLINE) —
+  and the follow-up's `index.md` links it; this record track's own
+  `spec-review.md` holds this review's findings with their dispositions, and its
+  `index.md` links it.
 - **FR-4 (the archived mid-red spec).** The archived mid-red spec gets a dated
   correction note covering the single-call approach and the `mkdir tests` fixture
   step (the normative text is preserved).
 - **FR-5 (gates).** `bash tests/spec_review_gate/run.sh` is 10/10; the node suite
-  stays 288/288; both parity gates print `parity: ok`.
+  stays 288/288; `plugins/dsh-measure-guard/scripts/check-parity.sh` and
+  `plugins/opencode-measure-guard/scripts/check-parity.sh` both print `parity: ok`
+  (a plan task runs them and records the output in the ledger).
 
 ## Non-Functional Requirements
 
