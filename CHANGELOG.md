@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **dsh shell-write grammar:** the redirect scan now masks heredoc bodies (through the delimiter line, with tab stripping for `<<-`), `>` characters inside quoted spans, and `#` comments before looking for `>`/`>>`, so a document or echo that quotes `> measure/tracks.md` is no longer denied while real writes (a redirect before a heredoc marker, multiple redirects) still are. `tee`/`sed -i` parsing keeps its own rules; command substitution and helper scripts stay the documented residual. Suite 299/299; installed evidence: `measure/runs/dsh_measure_shell_grammar_20261107/live-shell.md`. Track `dsh_measure_shell_grammar_20261107`.
+
+### Features
+
 * **dsh commit guard quoting:** the strict commit guard's in-command `git add` arguments are now read with a shell-word tokenizer (single quotes literal, double-quote and backslash escapes, `#` comments, `--` end-of-options), so a quoted path with spaces (for example `git add "src/a b.ts"`) contributes exactly that path instead of being split, and an unterminated quote fails closed. Proven against the installed plugin (digest `sha256:3d732c439b706149b`) and a real scratch `git add "file with space.ts"`; the parser tests grow from 288 to 291. Track `dsh_measure_add_quoting_20261107`.
 
 ### Features
