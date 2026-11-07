@@ -22,6 +22,6 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 3: Evidence and closeout
 
-- [ ] Task 3.1: extend `measure/runs/dsh_measure_team_rehearsal_20261107/live-rehearsal.md` with the two subagent ids and their roles, the exact commands, the guard output observed, and the cleanup checks with their commands and results (fixture absent, `repos.json` has no fixture root, plugin reloaded, `git status` clean)
-- [ ] Task 3.2: update `docs/dsh.md` if any statement about the guard root is now inexact; closeout documents (`measure/lessons-learned.md`, `measure/tech-debt.md`), `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.1: extend `measure/runs/dsh_measure_team_rehearsal_20261107/live-rehearsal.md` with the two subagent ids and their roles, the exact commands, the guard output observed, and the cleanup checks with their commands and results (fixture absent, `repos.json` has no fixture root, plugin reloaded, `git status` clean)
+- [x] Task 3.2: update `docs/dsh.md` if any statement about the guard root is now inexact; closeout documents (`measure/lessons-learned.md`, `measure/tech-debt.md`), `metadata.json`, archive the track, update `measure/tracks.md` `5bbc224`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Evidence and closeout' (Protocol in workflow.md)
