@@ -23,7 +23,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `src/core/parse.ts` (byte copy), `src/core/guards.ts` (with `./parse.ts`), `src/types.ts` (transformed copy per `design.md §9`)
     - [ ] `scripts/check-parity.sh` with the three checks; exits 1 and names the file that differs
     - [ ] `package.json` script `test` = `node --test tests/ && bash scripts/check-parity.sh`
-- [ ] Task 1.4: Test harness
+- [~] Task 1.4: Test harness
     - [ ] `tests/fixtures.js`: in-memory Measure files (index.md, tracks.md, plan.md, guard-allow) plus a repository fixture builder
     - [ ] `tests/core.test.js`: parse the fixture; assert active track, `[~]` task, band line, `[b]` count; assert the parity gate passes
 - [ ] Task 1.5: Measure - User Manual Verification 'Phase 1: Shared core and package skeleton' (Protocol in workflow.md)
