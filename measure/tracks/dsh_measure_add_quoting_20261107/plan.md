@@ -17,10 +17,10 @@ and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 1.3: Green: the suite passes; both parity gates stay ok
 - [x] Task: Measure - User Manual Verification 'Phase 1: The tokenizer and its tests' (Protocol in workflow.md) `0ec5b42`
 
-## Phase 2: The live evidence
+## Phase 2: The live evidence [checkpoint: 6b81be2]
 
 - [x] Task 2.1: reinstall (`bin/measure-dsh install --no-skills`), then run the installed `addedPaths` against quoted/escaped `git add` commands and a real scratch `git add "file with space.ts"`; record the output under `measure/runs/dsh_measure_add_quoting_20261107/`, and record `bin/measure-dsh --check --live` PASS with the installed digest
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md) `6b81be2`
 
 ## Phase 3: Docs and closeout
 
