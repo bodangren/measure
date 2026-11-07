@@ -5,8 +5,6 @@
 
 ## Architecture & Design
 
-- (2026-05-25, scrum_tracks_20260525) Gate opt-in behaviour on one signal and treat absence as classic mode without warning.
-- <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate so every entry point degrades to one `Note: ...` line without HALT; reuse one skip-note format set.
 - <a id="2026-10-04-measure_guard"></a>(2026-10-04, measure_guard_20261004) Keep the system prompt fixed and send changing state (track, task, reminders) as conversation notes. A system prompt that changes with each task resets the prompt cache.
 - <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
 - <a id="2026-10-21-opencode_plugin"></a>(2026-10-21, opencode_plugin_20261021) Port a harness mod by copying its pure modules with a parity gate, and keep every harness call in a thin adapter; the OpenCode plugin reused the mod's guards and parser unchanged.
@@ -20,6 +18,9 @@
 - (2026-11-07, dsh_measure_evolve_20261107) A DSH `bash` tool result carries `exitCode` on `result.value`, and a non-zero exit is a *successful* result (`isError: false`); a failed call has no `value`. Read the value, not `isError`, for a failed-test predicate.
 - (2026-11-07, dsh_measure_evolve_20261107) A Cordis service that is not in `inject` must be read per call (`ctx.get(name)`): Cordis does not order it, so a value captured at `apply` time is silently undefined when the service registers later.
 - (2026-11-07, dsh_measure_evolve_20261107) Only root agents (`ctx.agents.roots()`) are sessions; a child agent attached under an owner must inherit the guards but never claim a writer slot, or one session + one subagent reads as two.
+- (2026-11-07, dsh_measure_hardening_20261107) A live check that compares a module **path** can pass on stale bytes: capture a SHA-256 digest at module evaluation, serve it, and compare it with the **installed copy**; `install`/`reload` must also trigger a recompose (the patch write), because replacing files under a running Host changes nothing.
+- (2026-11-07, dsh_measure_hardening_20261107) Every new deny must be gated by the mode and the bypass: `advise` allows every guard and `/measure-off` silences it. The re-review caught the metadata and shell denies running in `advise`, contradicting the documented mode contract.
+- (2026-11-07, dsh_measure_hardening_20261107) Narrowing an over-broad guard set must enumerate every option form (`git add -A`/`-u` as well as paths), or the refinement opens the exact bypass it closes. A bounded shell grammar that scans the whole command string also scans heredoc bodies: document the fail-closed false positives and use `write`/`edit` for documents that quote redirects.
 
 ## Recurring Gotchas
 
@@ -31,6 +32,7 @@
 - (2026-11-07, dsh_measure_guard_20261107) There is no DSH host-to-client channel without codegen: the forwarded-event allowlist is fixed, Typert remotes need generated artifacts, and projections need zod wire schemas. For file-derived state, one exact `ctx.webServer.register` route plus a short poll is the zero-dependency answer.
 - (2026-11-07, dsh_measure_guard_20261107) A profile patch row added at runtime recomposes live (HMR) and both halves load: verify from the browser by checking `window.__DSH_BOOT__` for the package id, then the rendered slot. The GUI page itself needs the launch cookie, so `curl` sees only the auth error.
 - (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys. Read a cited workflow before stating what it does.
+- (2026-11-07, dsh_measure_hardening_20261107) `git cat-file -e` exits **128** for a missing object, not 1, so a tri-state probe misreads a missing commit as a fatal error and fails open silently. Use `git rev-parse --verify --quiet <sha>^{commit}`: 0 = a real commit, 1 = missing or not a commit, 128 = a real repository failure.
 
 ## Patterns That Worked Well
 
@@ -44,3 +46,4 @@
 - (2026-10-04, measure_guard_20261004) Estimate 47/47 for a 9-story code track: 5 tasks per story (Contract, Red, Green, Docs, deferred verification) plus 2 setup tasks. Each Red task recorded the failing test output in its git note.
 - (2026-11-07, dsh_measure_guard_20261107) Estimate 28 planned vs 28 completed once the review added the setup-offer and second-writer tasks; naming the test gate and the file of every task at plan time kept the phase checkpoints cheap.
 - (2026-11-07, dsh_measure_evolve_20261107) Estimate 34 planned vs 34 completed; a live user report (the Mediarr registry parse error) became an extra Must story after the spec was written, and three fresh review rounds found 24 findings (7 Blockers) before Red — the last round mostly caught plan text that drifted from the code.
+- (2026-11-07, dsh_measure_hardening_20261107) Estimate 19/19; the re-review found two live defects the unit tests could not see, and a live turn-end probe exposed a wrong probe command. Run the required re-review before the phase checkpoint, and verify every external command's exit codes with a real probe rather than assuming them.

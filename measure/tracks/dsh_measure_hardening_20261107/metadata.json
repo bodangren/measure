@@ -1,22 +1,47 @@
 {
   "track_id": "dsh_measure_hardening_20261107",
   "type": "feature",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-07T10:10:00Z",
-  "updated_at": "2026-11-07T10:10:00Z",
+  "updated_at": "2026-11-07T11:30:00Z",
   "description": "DSH Measure hardening: a live check that detects stale plugin code, git-backed verification of the task ceremony, and closure of the apply_patch/shell-write/commit-add bypasses",
   "estimated_tasks": 19,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 19,
+  "deviation_notes": "All 19 plan tasks are done and the 4 phase checkpoints are recorded. Deviations: (1) The track was reviewed by a fresh reviewer twice; Round 2 found two live defects in the new code (the metadata/deny checks ran in advise mode and under the bypass; `git add -A/-u` contributed nothing) and they were fixed before S4, plus a live-found probe error: `git cat-file -e` exits 128 for a missing object, so the S2 probe silently failed open and was switched to `git rev-parse --verify --quiet <sha>^{commit}`. (2) Tasks 1.1-1.4, 2.1-2.4 and 3.1-3.4 landed as one commit each (the plan checkboxes carry the SHAs); S3\u2019s commit also carries the Round-2 code remediation. (3) The phase checkpoints use automated verification reports instead of user confirmation because the session runs with approvals disabled. (4) The `apply_patch`/`str_replace_editor` registry deny cannot be exercised live in this DSH build (those tools are not installed); it is covered by unit tests. (5) The shell grammar is bounded and documented as such: a heredoc body is not parsed separately, so redirect-looking text inside a document can trigger a fail-closed deny. (6) A completed task\u2019s SHA was briefly set to a fake value to prove the live end-of-turn problem, then restored; the evidence is in measure/runs/dsh_measure_hardening_20261107/live-turn-problems.md.",
   "sprint": {
     "goal": "The DeepSeek Harness adapter proves what it claims: a live check that detects stale plugin code, git-backed verification of the task ceremony, and guards that see the write paths they previously missed.",
     "stories": [
-      { "id": "S1", "title": "The live check detects stale plugin code", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S2", "title": "Git-backed verification of the task ceremony", "size": "M", "priority": "Must", "status": "pending" },
-      { "id": "S3", "title": "Close the write-path bypasses", "size": "L", "priority": "Must", "status": "pending" },
-      { "id": "S4", "title": "Documentation, live check, and track closeout", "size": "S", "priority": "Must", "status": "pending" }
+      {
+        "id": "S1",
+        "title": "The live check detects stale plugin code",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S2",
+        "title": "Git-backed verification of the task ceremony",
+        "size": "M",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S3",
+        "title": "Close the write-path bypasses",
+        "size": "L",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S4",
+        "title": "Documentation, live check, and track closeout",
+        "size": "S",
+        "priority": "Must",
+        "status": "done"
+      }
     ],
     "demo_notes": null,
-    "retro_ref": null
-  }
+    "retro_ref": "measure/lessons-learned.md"
+  },
+  "completed": "2026-11-07"
 }
