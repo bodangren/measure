@@ -59,7 +59,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `tests/dsh/test-install.sh` asserts the installer carries no DSH plugin row and the CLI owns the copy
 - [x] Task 4.4: Measure - User Manual Verification 'Phase 4: Guide, docs, and distribution alignment' (Protocol in workflow.md) `553df7f`
 
-## Phase 5: Live environment and closeout
+## Phase 5: Live environment and closeout [checkpoint: 0334d01]
 
 - [x] Task 5.1: Live migration `149ba83`
     - [ ] Back up the profile patch, run `bin/install-measure-skill --ref HEAD`, remove the hand-written row, run `bin/measure-dsh install --ref HEAD --mode guard`, and prove `--check` and `--check --live` green (agent-side stage)
@@ -70,7 +70,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 5.2: Track closeout documents `faf0fe9`
     - [ ] `measure/lessons-learned.md` and `measure/tech-debt.md` entries for the environment CLI, the identity header, and the installer-row ownership change
     - [ ] `measure/tracks/dsh_measure_dev_20261107/metadata.json` actual tasks and deviation notes; `measure/tracks.md` archive entry; `CHANGELOG.md` final wording
-- [ ] Task 5.3: Measure - User Manual Verification 'Phase 5: Live environment and closeout' (Protocol in workflow.md)
+- [x] Task 5.3: Measure - User Manual Verification 'Phase 5: Live environment and closeout' (Protocol in workflow.md) `0334d01`
 
 ## Deferred to a follow-up track
 
