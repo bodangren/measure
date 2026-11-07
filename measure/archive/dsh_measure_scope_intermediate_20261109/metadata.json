@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_scope_intermediate_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T11:00:00Z",
+  "updated_at": "2026-11-09T12:00:00Z",
+  "description": "Union per-commit paths from baseline..HEAD into changed_files and committed_files so intermediate add-then-delete commits are visible to the mid-red and audit scope checks, with an S2 probe",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The history list uses rev-list + diff-tree -z per commit for exact bytes, so quoted non-ASCII names and leading whitespace are preserved (G16 stays green). (2) The inline spec-review scope block was included as well as the two functions; the redundant G20 mutants were removed because the tree diff and history list each protect the rename/quoting rules. (3) The probes live in test_checker.py because it already holds the mid-red fixture.",
+  "completed": "2026-11-09"
+}
