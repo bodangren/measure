@@ -48,7 +48,7 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Docs: README "Guards" (end-of-turn verification, closeout metadata) and `docs/dsh.md`
 - [x] Task: Measure - User Manual Verification 'Phase S2: Git-backed verification of the task ceremony' (Protocol in workflow.md) `aa96a23`
 
-## Phase S3: Close the write-path bypasses
+## Phase S3: Close the write-path bypasses [checkpoint: 9b5a4fa]
 
 _Story ref: spec.md#story-s3_
 
@@ -64,7 +64,7 @@ _Story ref: spec.md#story-s3_
     - [ ] `tests/closeout.test.js`: `apply_patch`/`str_replace_editor` on `measure/tracks.md` and a `measure/**/plan.md` are denied with the text; the same tools on other files keep the fail-open behavior
 - [x] Task 3.3: Green: implement the shell path check, the registry deny for unreadable mutation tools, and the in-command `git add` set `008f90f`
 - [x] Task 3.4: Docs: README "Known limits" and "Guards" (bounded shell grammar, registry deny, in-command `git add`) `008f90f`
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Close the write-path bypasses' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S3: Close the write-path bypasses' (Protocol in workflow.md) `9b5a4fa`
 
 ## Phase S4: Documentation, live check, and track closeout
 
