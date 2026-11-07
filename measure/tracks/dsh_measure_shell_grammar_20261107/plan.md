@@ -10,6 +10,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/shell.js`: add the redirect-view masker — heredoc bodies masked from the marker line through the delimiter (leading tabs ignored for `<<-`), single/double-quoted spans masked (double-quote backslash escapes), and a `#` at a word start masked to the end of the line — and run `redirectTargets` on the masked view while `teeTargets`/`sedTargets` keep the original command
 - [x] Task 1.2: Red: `shell.test.js` cases — a heredoc body quoting `> measure/tracks.md` (no target), `cat > measure/a.md <<'EOF' … EOF` (the target), `echo "a > measure/b.md"` (no target), `# > measure/c.md` (no target), `cat > a.md <<'EOF' … EOF; echo x > b.md` (both targets); the current grammar fails the heredoc/quoted/comment cases
 - [x] Task 1.3: Green: the suite passes; the existing shell cases unchanged; both parity gates ok
+- [x] Task 1.4 (review F1–F5, added after the Phase 1 checkpoint): quote-aware heredoc marker detection (a `<<` inside quotes is not a heredoc), and the boundary tests (`<<-` with a tab-indented delimiter, `<<"WORD"`, a quoted redirect target, a `#` inside quotes); the executed order was Red tests first (two failed on the old grammar) and then the masker, recorded here because the plan listed the implementation first
 - [x] Task: Measure - User Manual Verification 'Phase 1: The masker and its tests' (Protocol in workflow.md) `7e7d5ff`
 
 ## Phase 2: The live evidence [checkpoint: 40c38ab]
@@ -19,7 +20,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 3: Records
 
-- [ ] Task 3.1: update the plugin README shell-write limit sentence (and `docs/dsh.md` if it repeats it), resolve `measure/tech-debt.md`'s heredoc row, add the `CHANGELOG.md` bug-fix entry, and run `bash tests/dsh/run.sh` after the docs edits
+- [~] Task 3.1: update the plugin README shell-write limit sentence and `docs/dsh.md` scoped to the **redirect scan** (the `tee`/`sed -i` raw-command residual stays named), resolve `measure/tech-debt.md`'s heredoc row with that residual, add the `CHANGELOG.md` bug-fix entry, and run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh` after the docs edits
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Records' (Protocol in workflow.md)
 
 ## Phase 4: Closeout

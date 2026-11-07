@@ -17,8 +17,29 @@ const clean = token => token.replace(/^['"]|['"]$/g, '')
 
 const isStreamDevice = path => STREAM_DEVICES.has(path) || path.startsWith('/dev/fd/')
 
-/** A heredoc marker: `<<`, `<<-`, with an optional quoted delimiter. */
-const HEREDOC_MARKER = /<<(-?)(?!<)\s*(['"]?)([A-Za-z0-9_]+)\2/
+/**
+ * The delimiter of a heredoc marker that starts outside quotes, or null. Quotes
+ * are skipped so `printf "x << y"` is not a heredoc; the delimiter itself may be
+ * quoted (`<<'EOF'`, `<<"EOF"`).
+ */
+const heredocDelimiter = line => {
+  let quote = null
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i]
+    if (quote !== null) {
+      if (char === quote && !(quote === '"' && line[i - 1] === '\\')) quote = null
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      continue
+    }
+    if (char !== '<' || line[i + 1] !== '<' || line[i + 2] === '<') continue
+    const match = /^<<(-?)(?!<)\s*(['"]?)([A-Za-z0-9_]+)\2/.exec(line.slice(i))
+    if (match !== null) return { stripTabs: match[1] === '-', delimiter: match[3] }
+  }
+  return null
+}
 
 /**
  * The command as the shell sees its structure: heredoc bodies, comments, and
@@ -30,10 +51,10 @@ const HEREDOC_MARKER = /<<(-?)(?!<)\s*(['"]?)([A-Za-z0-9_]+)\2/
 const redirectView = command => {
   const lines = command.split('\n')
   for (let i = 0; i < lines.length; i += 1) {
-    const marker = HEREDOC_MARKER.exec(lines[i])
+    const marker = heredocDelimiter(lines[i])
     if (marker === null) continue
-    const stripTabs = marker[1] === '-'
-    const delimiter = marker[3]
+    const stripTabs = marker.stripTabs
+    const delimiter = marker.delimiter
     for (let j = i + 1; j < lines.length; j += 1) {
       const candidate = stripTabs ? lines[j].replace(/^\t+/, '') : lines[j]
       if (candidate === delimiter) {

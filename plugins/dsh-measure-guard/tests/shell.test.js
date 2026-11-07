@@ -56,3 +56,14 @@ test('a quoted redirect and a comment redirect are not writes', () => {
   assert.deepEqual(shellWritePaths('# > measure/c.md'), [])
   assert.deepEqual(shellWritePaths("cat > a.md <<'EOF'\nbody\nEOF\necho x > b.md"), ['a.md', 'b.md'])
 })
+
+test('a quoted heredoc marker is not a heredoc', () => {
+  assert.deepEqual(shellWritePaths('printf "x << y"\necho data > out.md'), ['out.md'])
+})
+
+test('quoted delimiters, tab-stripped delimiters, and quoted targets', () => {
+  assert.deepEqual(shellWritePaths("cat > a.md <<-'EOF'\n\tbody\n\tEOF\n"), ['a.md'])
+  assert.deepEqual(shellWritePaths('cat > b.md <<"WORD"\nbody\nWORD\n'), ['b.md'])
+  assert.deepEqual(shellWritePaths('echo x > "measure/tracks.md"'), ['measure/tracks.md'])
+  assert.deepEqual(shellWritePaths('echo "a # b" > out.md'), ['out.md'])
+})
