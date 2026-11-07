@@ -5,12 +5,12 @@ Spec: [./spec.md](./spec.md)
 
 **Each phase checkpoint is pushed to `origin/main` before the next phase.**
 
-## Phase 1: The two scan rules
+## Phase 1: The two scan rules [checkpoint: 6075a73]
 
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: in `shellTokens`, a backslash-newline inside a double-quoted span is a line continuation (both characters dropped, the word continues; the header states it); in `addedPaths`, a `git` word counts only at a command start (first word or directly after a separator `;`/newline/`&`/`&&`/`|`/`||`), so `echo git add .` contributes nothing while `cd x && git add a.ts` and `git -C dir add .` still do
 - [x] Task 1.2: Red/Green tests: a double-quoted backslash-newline continuation (`git add "src/file\` newline `.ts"` → `paths: ['src/file.ts']`), the command-boundary negative (`echo git add . && git commit …` → no paths), a post-separator positive, and the existing cases unchanged; the old scan fails the double-quoted case
 - [x] Task 1.3: the suite passes and both parity gates stay ok
-- [ ] Task: Measure - User Manual Verification 'Phase 1: The two scan rules' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: The two scan rules' (Protocol in workflow.md) `6075a73`
 
 ## Phase 2: The records
 
