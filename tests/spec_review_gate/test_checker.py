@@ -355,6 +355,30 @@ class SpecReviewRoleGateTest(unittest.TestCase):
         self.assertIn("Mid Red changed non-test/non-Measure files", out)
         self.assertIn("- src/a.py", out)
 
+    def test_edge_mid_red_test_only_commit_is_clean(self) -> None:
+        """A Red commit that changes only test files keeps the mid-red report clean."""
+        self.write("tests/b.py", 'print("b")\n')
+        self.git("add", "tests/b.py")
+        self.commit("add a test file")
+        env = clean_env({"RED_TEST_COMMAND": "false"})
+        code, out = self.run_checker(
+            "role-gate",
+            "--repo",
+            str(self.repo),
+            "--role",
+            "mid-red",
+            "--track",
+            TRACK,
+            "--phase",
+            "Phase S1: Fixture",
+            "--baseline",
+            self.baseline,
+            env=env,
+        )
+        self.assert_exit(0, code, out)
+        self.assertIn("PASS: mid-red gate passed", out)
+        self.assertNotIn("Mid Red changed non-test/non-Measure files", out)
+
     # ------------------------------------------------- backward compatibility
     def test_backward_compat_review_a_json_without_paraphrase(self) -> None:
         payload = pass_payload()
