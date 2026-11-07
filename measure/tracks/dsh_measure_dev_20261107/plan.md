@@ -8,7 +8,7 @@ Gate for every phase: `bash tests/dsh/run.sh` (bash contract tests) and
 The script under test is `bin/measure-dsh`; the plugin under test is
 `plugins/dsh-measure-guard`.
 
-## Phase 1: Environment CLI
+## Phase 1: Environment CLI [checkpoint: 8986d00]
 
 - [x] Task 1.1: Record the environment CLI in the tech stack `25af03d`
     - [ ] `measure/tech-stack.md` Distribution Formats row for `bin/measure-dsh` (and the note that it replaces the installer's DSH plugin target)
@@ -23,7 +23,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 1.4: Uninstall and safety `9efa49c`
     - [ ] `uninstall` removes the managed block and the owned plugin copy (stamped files only; edited files kept and listed), `--keep-copy` keeps the copy, `--dry-run` writes nothing; keeps skills and foreign rows; writes `[]` when only comments would remain; non-zero only when an owned item could not be removed
     - [ ] `tests/dsh/test-foreign-row.sh`, `tests/dsh/test-uninstall.sh`, `tests/dsh/test-atomic-write.sh`: block and flow, quoted and plain foreign rows (`- { id: measure-guard }`, `name: "…dsh-measure-guard"`) refuse install/check with the line number and survive uninstall byte-identically; atomic write preserves the rest of the file; a patch file without a trailing newline; a CLI-created patch becomes `[]` after uninstall; read-only profile exits 3 with the original intact; a user-edited copy file is kept with WARN
-- [ ] Task 1.5: Measure - User Manual Verification 'Phase 1: Environment CLI' (Protocol in workflow.md)
+- [x] Task 1.5: Measure - User Manual Verification 'Phase 1: Environment CLI' (Protocol in workflow.md) `8986d00`
 
 ## Phase 2: Workflow commands [checkpoint: 2fa68fc]
 
