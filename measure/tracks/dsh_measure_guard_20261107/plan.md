@@ -14,7 +14,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `measure/tech-stack.md` Distribution Formats row for `plugins/dsh-measure-guard/`: a Host plugin and a hand-written `client.js` in the documented lazy-CJS format, loaded by a DSH profile row, Node >= 24.9 type stripping for the shared `.ts` core, no build and no package manager
     - [ ] `measure/tech-stack.md` Tooling Exceptions row for `dsh_measure_guard_20261107`: `node --test plugins/dsh-measure-guard/tests/*.test.js` and `bash plugins/dsh-measure-guard/scripts/check-parity.sh`; the live check is one DSH profile row
     - [ ] `measure/tech-stack.md` Architecture tree line under `plugins/`
-- [ ] Task 1.2: Scaffold the bundle package
+- [~] Task 1.2: Scaffold the bundle package
     - [ ] `plugins/dsh-measure-guard/package.json` with the exact fields of `design.md §1` (`dsh.bundle.patch`, `dsh.client`, `engines.node >=24.9.0`, no `lib/`)
     - [ ] `plugins/dsh-measure-guard/cordis.patch.yml` with the self-insert row `measure-guard`
     - [ ] `plugins/dsh-measure-guard/index.js` with `export const name`, `export const inject`, `export function apply`
