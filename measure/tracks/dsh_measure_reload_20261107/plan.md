@@ -8,12 +8,12 @@ proof, then docs/closeout. Gates: `bash tests/dsh/run.sh`,
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase 1: The semantic nonce
+## Phase 1: The semantic nonce [checkpoint: 4378e90]
 
 - [x] Task 1.1: `bin/measure-dsh`: write the managed entry config with `reloadNonce: <n>`, increment it on `reload` and on an unchanged-block `install`, drop the comment marker, tolerate a missing nonce (default 0), and keep every other entry byte-equal with the existing atomic edit
 - [x] Task 1.2: `tests/dsh/test-reload.sh` asserts the change is the `reloadNonce` config value (not a comment), increments twice, and leaves every other entry byte-equal; `tests/dsh/test-install.sh` asserts the unchanged-block install also increments it and writes no plugin file
 - [x] Task 1.3: run `bash tests/dsh/run.sh`; the CLI suite passes
-- [ ] Task: Measure - User Manual Verification 'Phase 1: The semantic nonce' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: The semantic nonce' (Protocol in workflow.md) `4378e90`
 
 ## Phase 2: The live proof
 
