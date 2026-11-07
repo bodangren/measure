@@ -54,7 +54,7 @@ _Story ref: spec.md#story-s3_
 - [x] Task 3.4: Docs: README "State and root resolution" `6d54eca` and "Known limits" name the root-session rule; `measure/tech-debt.md` row resolved later in S6
 - [x] Task: Measure - User Manual Verification 'Phase S3: Session-accurate writer detection' (Protocol in workflow.md) `de737ed`
 
-## Phase S4: Goal binding
+## Phase S4: Goal binding [checkpoint: 3b96632]
 
 _Story ref: spec.md#story-s4_
 
@@ -71,7 +71,7 @@ _Story ref: spec.md#story-s4_
     - [ ] `src/status.js`, `src/client-state.js`, `client.js`: the goal line in the status text and panel, the `goal` field in the state route, the localized goal row in the band; update `tests/client-state.test.js` for the new view keys
     - [ ] `src/guard.js` (end-of-turn): append the two `goalProblems` to the turn problems
 - [x] Task 4.4: Docs: README "Context"/"Tools and commands" `32b7b8c` (goal line, `/measure-goal`), `docs/dsh.md` (goal section), `CHANGELOG.md` entry
-- [ ] Task: Measure - User Manual Verification 'Phase S4: Goal binding' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S4: Goal binding' (Protocol in workflow.md) `3b96632`
 
 ## Phase S5: In-band setup answer
 
