@@ -12,7 +12,7 @@ import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
 import { measureWorkflowCommands } from './src/workflow.js'
-import { createDecisions, installToolGuard, postCommitListener, postExecuteListener, preExecuteListener } from './src/hooks.js'
+import { createDecisions, installToolGuard, postCommitListener, postExecuteListener, preExecuteListener, repoMutationLikely } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { goalService } from './src/goal.js'
@@ -218,7 +218,9 @@ export function apply(ctx, config) {
   ctx.on('tools/result', (exec, result) => {
     callNotes.delete(exec.token)
     commitDue.delete(exec.token)
-    snapshots.invalidateAll()
+    // A read-only result cannot change the repository; every other tool keeps
+    // the fail-safe invalidation.
+    if (repoMutationLikely(exec?.name)) snapshots.invalidateAll()
     // The strict-mode Red record of a finished call (FR-13): a successful
     // test-file write or a failed test command. It runs after the
     // invalidation, so the task key is read from a fresh snapshot.

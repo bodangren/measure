@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **snapshot invalidation cost:** the Host no longer invalidates every cached snapshot on every `tools/result`; a read-only result (`read`, `grep`, `glob`, `read_image`, `web_search`, `web_fetch`, `todo_write`) skips it, while every other tool — including an unknown name — keeps the fail-safe invalidation, and the per-step pre-step invalidation still sees external edits (node 317 tests). Track `dsh_measure_snapshot_invalidate_20261109`.
+
+### Features
+
 * **allow-list parsing:** the allow-list dedupe is linear (visited `Set`, first-seen order) and an entry containing a C0 control character is ignored with `has a control character`, so a binary-corrupted `measure/guard-allow` cannot admit a path; the OpenCode adapter's V6/V7 cases and both README rule tables are updated (control character is order 1). node 315 tests. Track `dsh_measure_allow_parse_20261109`.
 
 ### Features

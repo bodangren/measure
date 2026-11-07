@@ -88,6 +88,17 @@ test('an allow call stores the denial and the synchronous guard returns it', asy
   assert.equal(typeof reason?.then, 'undefined')
 })
 
+test('repoMutationLikely is false only for the read-only tools', async () => {
+  const { repoMutationLikely } = await import('../src/hooks.js')
+  for (const name of ['read', 'grep', 'glob', 'read_image', 'web_search', 'web_fetch', 'todo_write']) {
+    assert.equal(repoMutationLikely(name), false, name)
+  }
+  for (const name of ['bash', 'write', 'edit', 'apply_patch', 'subagent', 'some_new_tool', '']) {
+    assert.equal(repoMutationLikely(name), true, name)
+  }
+  assert.equal(repoMutationLikely(undefined), true)
+})
+
 test('tools/result clears the stored decision', async () => {
   const decisions = createDecisions()
   const exec = execOf()

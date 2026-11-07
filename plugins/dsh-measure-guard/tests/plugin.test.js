@@ -117,6 +117,30 @@ test('apply registers measure_status, the eleven commands, and the lifecycle lis
   assert.equal(ctx.listeners.has('session/event'), false)
 })
 
+test('tools/result invalidates the snapshot only for a mutating tool', async () => {
+  const { Snapshots } = await import('../src/snapshot.js')
+  const original = Snapshots.prototype.invalidateAll
+  let calls = 0
+  Snapshots.prototype.invalidateAll = function patched() {
+    calls += 1
+    return original.apply(this, arguments)
+  }
+  try {
+    const ctx = ctxOf()
+    apply(ctx, { mode: 'guard' })
+    await settle()
+    const listener = ctx.listeners.get('tools/result')
+    listener({ name: 'read', token: 't-read', arguments: {} }, {})
+    await settle()
+    assert.equal(calls, 0, 'a read result must not invalidate')
+    listener({ name: 'bash', token: 't-bash', arguments: {} }, {})
+    await settle()
+    assert.ok(calls >= 1, 'a bash result must invalidate')
+  } finally {
+    Snapshots.prototype.invalidateAll = original
+  }
+})
+
 test('apply attaches every existing agent and disposes it on agent/disposed', async () => {
   const agent = agentOf('agent-1')
   const ctx = ctxOf({ agents: [agent] })

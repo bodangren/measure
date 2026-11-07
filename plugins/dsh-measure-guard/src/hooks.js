@@ -49,6 +49,17 @@ const noteOf = outcome =>
  * preparation; a throw stores undefined, which is the fail-open rule of §5.
  * A standalone call (no `exec.agent`) has no project to guard and is allowed.
  */
+/** Tools whose result cannot change the repository; any other name invalidates. */
+const READ_ONLY_TOOLS = new Set(['read', 'grep', 'glob', 'read_image', 'web_search', 'web_fetch', 'todo_write'])
+
+/**
+ * True unless the tool is a known read-only tool. An unknown or empty name stays
+ * conservative so a new write tool cannot leave a stale snapshot behind; the
+ * per-step invalidation in the pre-step hook still sees external edits.
+ */
+export const repoMutationLikely = toolName =>
+  typeof toolName !== 'string' || toolName === '' || !READ_ONLY_TOOLS.has(toolName)
+
 export function preExecuteListener(deps, decisions, notes = new Map(), commitDue = new Set()) {
   return async (exec, next) => {
     const gate = await next()
