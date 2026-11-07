@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_registry_fix2_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T04:00:00Z",
+  "updated_at": "2026-11-08T04:40:00Z",
+  "description": "Consolidate measure/tracks.md to one layout (every archive directory exactly once, full metadata descriptions), harden tests/dsh/test-registry.sh with attribution rules and isolated negative fixtures, and correct the archived registry track's record",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 4 phase checkpoints are recorded, with a push after each phase. (1) The registry now has exactly three sections; the four cancelled directories stay in the Cancelled section with their reasons, and every other archive directory appears exactly once in Archived Tracks with its own link and one full metadata description. (2) The structural check is attribution-based and path-parameterized with six isolated negative fixtures. (3) The archived registry track record is corrected (scope, full descriptions, rebuild SHA b314321) and its review recorded with dispositions.",
+  "completed": "2026-11-08"
+}

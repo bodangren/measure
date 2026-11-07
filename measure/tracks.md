@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure registry consolidation**
-  *Link: [./tracks/dsh_measure_registry_fix2_20261107/](./tracks/dsh_measure_registry_fix2_20261107/)*
-  *Consolidates the registry to one layout (every archive directory exactly once, full metadata descriptions), hardens the structural check with attribution rules and isolated negative fixtures, and corrects the archived registry track's record. Pushes per phase.*
+- (none)
 
 ---
 
@@ -165,3 +163,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Skill distribution repair: install skills from main by cron, and remove automation-supervisor.py**
   *Link: [./archive/skill_distribution_repair_20261005/](./archive/skill_distribution_repair_20261005/)*
   *Skill distribution repair: install the Measure skills and agent roles from main by cron, protect local edits, and remove automation-supervisor.py everywhere*
+
+- [x] **Track: DSH Measure registry consolidation**
+  *Link: [./archive/dsh_measure_registry_fix2_20261107/](./archive/dsh_measure_registry_fix2_20261107/)*
+  *Consolidate measure/tracks.md to one layout (every archive directory exactly once, full metadata descriptions), harden tests/dsh/test-registry.sh with attribution rules and isolated negative fixtures, and correct the archived registry track's record*

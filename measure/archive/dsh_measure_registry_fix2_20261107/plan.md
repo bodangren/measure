@@ -24,5 +24,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 4: Closeout
 
-- [ ] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix2_20261107` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
+- [x] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix2_20261107` and record the manifest-only FAIL
+- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
