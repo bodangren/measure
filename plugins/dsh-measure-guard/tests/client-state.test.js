@@ -323,3 +323,8 @@ test('compactBand keeps the first max - 1 characters when there is no space', ()
   assert.equal(compact, `${'y'.repeat(159)}…`)
   assert.equal(compact.length, 160)
 })
+
+test('a space at index 0 is a cut and the kept prefix is trimmed', () => {
+  assert.equal(compactBand(` ${'x'.repeat(200)}`), '…')
+  assert.equal(compactBand(`${'z'.repeat(150)}   ${'x'.repeat(20)}`), `${'z'.repeat(150)}…`)
+})

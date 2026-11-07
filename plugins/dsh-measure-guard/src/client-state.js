@@ -14,16 +14,17 @@ export const BAND_MAX = 160
 /**
  * The compact band of one line (pinned contract). An input of length at most
  * `max` is unchanged. A longer input is cut at the last space at or before
- * `max - 1` characters; that space is not kept, a trailing ` ·` is stripped,
- * and `…` is appended. When no space exists at or before `max - 1`, the first
- * `max - 1` characters are kept. The result is at most `max` characters. A
- * non-string or an empty input is null.
+ * `max - 1` characters (a space at index 0 is a cut too); that space is not
+ * kept, the kept prefix is trimmed of trailing whitespace, a trailing ` ·` is
+ * stripped, and `…` is appended. When no space exists at or before `max - 1`,
+ * the first `max - 1` characters are kept. The result is at most `max`
+ * characters. A non-string or an empty input is null.
  */
 export function compactBand(text, max = BAND_MAX) {
   if (typeof text !== 'string' || text === '') return null
   if (text.length <= max) return text
   const cut = text.lastIndexOf(' ', max - 1)
-  const head = (cut > 0 ? text.slice(0, cut) : text.slice(0, max - 1)).replace(/\s+·$/, '').trimEnd()
+  const head = (cut >= 0 ? text.slice(0, cut) : text.slice(0, max - 1)).replace(/\s+·$/, '').trimEnd()
   return `${head}…`
 }
 

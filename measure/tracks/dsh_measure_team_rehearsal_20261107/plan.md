@@ -22,7 +22,7 @@ rehearsal, then closeout. The gate is
 
 ## Phase 3: Executed rehearsal
 
-- [ ] Task 3.1: build a fixture, set its repository mode override to `strict` through the same `repos.json` seam, and spawn the Red subagent (`cwd` = fixture) to write and run a failing test; capture the target and the failure
+- [~] Task 3.1: build a fixture, set its repository mode override to `strict` through the same `repos.json` seam, and spawn the Red subagent (`cwd` = fixture) to write and run a failing test; capture the target and the failure
 - [ ] Task 3.2: spawn the Green subagent (`cwd` = fixture) to run the failing test itself, implement until green, and commit with a git note; capture the guard behaviour and the commit; check whether a first source edit before the Green's own Red is denied as predicted
 - [ ] Task 3.3: clear the mode override, remove the fixture, and record the evidence (fixture path, subagent targets, guard denies/notes, test fail/pass, commit) under `measure/runs/dsh_measure_team_rehearsal_20261107/`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Executed rehearsal' (Protocol in workflow.md)
@@ -31,3 +31,15 @@ rehearsal, then closeout. The gate is
 
 - [ ] Task 4.1: README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, `measure/tech-debt.md` updates; `metadata.json`; archive the track and update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase 4: Documentation and closeout' (Protocol in workflow.md)
+
+## Phase 5: Post-review correction for the archived band follow-up track
+
+- [~] Task 5.1: Reconcile the band follow-up review (F1-F5): correct the archived
+      spec's Overview (the README never claimed a panel fallback; the false claim
+      was in docs/dsh.md, the CHANGELOG, and the archived band spec) and its
+      path/route wording; pin the trailing-whitespace detail and the space-at-
+      index-0 branch in `compactBand` (the code now cuts at a space at index 0
+      too, and the header says the kept prefix is trimmed of trailing
+      whitespace); add the leading-space test; note the correction in the
+      archived follow-up spec/plan and metadata.
+- [ ] Task: Measure - User Manual Verification 'Phase 5: Post-review correction for the archived band follow-up track' (Protocol in workflow.md)
