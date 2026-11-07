@@ -62,3 +62,12 @@ surprise CLI failure later.
 
 - The parser scope rule, the MKTEMP suite residual, the commit staged-read race,
   and the opencode rows.
+
+> **Correction (2026-11-09, after the review):** "collapsed" means
+> `" ".join(str(description).split())` (whitespace runs become one space), and
+> when the metadata description is empty the expected text is the entry's
+> label-stripped bold title — the same rule as `tests/dsh/test-registry.sh`, so
+> `visual_refresh_20260425` does not produce a new FAIL. The guard reports at most
+> one registry problem; the duplicate-entry rule stays with the registry test,
+> not closeout. The documentation target is
+> `skills/measure-orchestrator/SKILL.md` under `## Closeout Standard`.
