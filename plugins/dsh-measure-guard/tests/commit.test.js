@@ -246,3 +246,44 @@ test('git add -A contributes every status path and -u only the tracked ones', as
   assert.match(tracked.decision.deny, /src\/app\.js/)
   assert.doesNotMatch(tracked.decision.deny, /notes\.md/)
 })
+
+// ---- quoted and escaped git add arguments (dsh_measure_add_quoting_20261107)
+
+test('addedPaths keeps a quoted path with spaces exact', () => {
+  assert.deepEqual(addedPaths('git add "src/a b.ts" && git commit -m "feat(a): B"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['src/a b.ts'],
+  })
+  assert.deepEqual(addedPaths("git add 'docs/x y.md' && git commit -m 'docs: Y'"), {
+    all: false,
+    trackedOnly: false,
+    paths: ['docs/x y.md'],
+  })
+})
+
+test('addedPaths treats words after -- as paths even when they start with -', () => {
+  assert.deepEqual(addedPaths('git add -- -x.ts && git commit -m "fix(X): Z"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['-x.ts'],
+  })
+  assert.deepEqual(addedPaths('git add -u "src/a b.ts" && git commit -m "fix: Y"'), {
+    all: false,
+    trackedOnly: true,
+    paths: ['src/a b.ts'],
+  })
+})
+
+test('addedPaths ignores a trailing comment and fails closed on an unterminated quote', () => {
+  assert.deepEqual(addedPaths('git add src/a.ts # not a path && git commit -m "x"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['src/a.ts'],
+  })
+  assert.deepEqual(addedPaths('git add "src/half.ts && git commit -m "x"'), {
+    all: true,
+    trackedOnly: false,
+    paths: [],
+  })
+})
