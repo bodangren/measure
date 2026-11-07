@@ -47,7 +47,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 ## Phase 4: Guide, docs, and distribution alignment
 
-- [~] Task 4.1: The guide and its checks
+- [x] Task 4.1: The guide and its checks `5875fb5`
     - [ ] `docs/dsh.md`: prerequisites, install, check, modes, workflow commands, agent team, uninstall, troubleshooting (restart note, foreign row, incomplete skill copy)
     - [ ] `tests/dsh/test-docs.sh` in `tests/dsh/run.sh`: every guide link resolves; the guide names every command; README links the guide; the CHANGELOG entry exists
     - [ ] Edge: a dangling guide link, a missing command name, a missing README link, and a missing changelog entry each fail (tested with fixtures)
