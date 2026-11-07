@@ -43,16 +43,19 @@ assert_out '^PASS skill-install:'
 grep -q 'installer ref=t1' "$STUB_INSTALLER_LOG" || fail "the installer stub did not receive --ref t1"
 
 # 2. A second install rewrites only the patch as the recompose trigger: the
-#    plugin files, stamp, and skills are unchanged and every YAML entry stays
-#    equal (only the trailing-newline count moves).
+#    plugin files, stamp, and skills are unchanged, every YAML line stays equal,
+#    and only the managed entry's reloadNonce config value moves.
 before="$(profile_fingerprint)"
+nonce_before="$(sed -n 's/^        reloadNonce: \([0-9][0-9]*\)$/\1/p' "$PATCH" | head -n 1)"
 run install --no-skills
 assert_rc 0
-assert_out 'recompose marker toggled to trigger a live recompose'
+assert_out 'reloadNonce incremented to trigger a live recompose'
 assert_not_out '^WRITE .*plugins/'
 assert_not_out '^REMOVE '
 assert_not_out '^MKDIR '
-grep -qxF '# measure-dsh reload marker' "$PATCH" || fail "the second install did not toggle the recompose marker"
+nonce_after="$(sed -n 's/^        reloadNonce: \([0-9][0-9]*\)$/\1/p' "$PATCH" | head -n 1)"
+[[ "$nonce_after" -eq $((nonce_before + 1)) ]] || fail "the second install did not increment reloadNonce ($nonce_before -> $nonce_after)"
+! grep -qxF '# measure-dsh reload marker' "$PATCH" || fail "a legacy marker was kept"
 [[ "$(profile_fingerprint)" != "$before" ]] || fail "the second install did not rewrite the patch"
 
 # 3. A locally edited destination is kept, warned about, and keeps its old

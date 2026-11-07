@@ -55,9 +55,10 @@ Modes:
              failed, 1 when one failed, 3 on an environment error.
   uninstall  remove the managed record and the plugin copy the CLI owns. Skill
              copies and foreign rows are never touched.
-  reload     rewrite the profile's cordis.patch.yml with a marker comment toggled
-             (a real content change; every YAML entry is unchanged) so the
-             running profile recomposes and loads the installed plugin code.
+  reload     increment the managed plugin entry's reloadNonce config value (a
+             semantic content change; every other YAML line is unchanged) so the
+             running profile recomposes, loads the installed plugin code, and
+             re-reads its cached state. A comment-line change does not recompose.
              Run it after `install` when `--check --live` reports stale code.
 
 Resolution:
@@ -303,26 +304,77 @@ node_supported() {
   ((major > 24 || (major == 24 && minor >= 9)))
 }
 
-# The comment line a recompose toggles. A real content change is what the
-# loader watcher reacts to; a trailing-newline-only change is not reliable.
-RECOMPOSE_MARKER="# measure-dsh reload marker"
+# The plugin entry config field a reload bumps. A comment line changes no
+# composed configuration, so the loader skips the recompose and the running
+# plugin keeps its cached store; a config value does change it. The plugin
+# accepts and ignores the field (spec: dsh_measure_reload_20261107).
+RELOAD_NONCE=0
 
-# Rewrites the patch file with the recompose marker line added (or removed when
-# present), so the content changes and a watching loader recomposes the profile.
-# Every YAML entry, including the managed block, stays byte-equal.
-recompose_patch() {
-  local tmp="$PATCH_FILE.measure-dsh.tmp"
-  if grep -qxF -- "$RECOMPOSE_MARKER" "$PATCH_FILE"; then
-    awk -v marker="$RECOMPOSE_MARKER" '$0 != marker' "$PATCH_FILE" >"$tmp"
+# The comment markers the older reload wrote; an ordinary install/reload drops
+# them (a comment never triggers a recompose and must not accumulate).
+LEGACY_RELOAD_MARKERS=('# measure-dsh reload marker' '# measure-dsh reload probe')
+
+# Reads the managed block's reloadNonce into RELOAD_NONCE (default 0).
+read_reload_nonce() {
+  local line
+  line="$(sed -n 's/^        reloadNonce: *\([0-9][0-9]*\)$/\1/p' -- "$PATCH_FILE" 2>/dev/null | head -n 1)"
+  if [[ "$line" =~ ^[0-9]+$ ]]; then
+    RELOAD_NONCE="$line"
   else
-    cp -- "$PATCH_FILE" "$tmp"
-    if [[ -s "$PATCH_FILE" ]] && ! has_trailing_newline "$PATCH_FILE"; then
-      printf '\n' >>"$tmp"
-    fi
-    printf '%s\n' "$RECOMPOSE_MARKER" >>"$tmp"
+    RELOAD_NONCE=0
   fi
+}
+
+# Reads the managed block's mode into GUARD_MODE when the block has one.
+read_managed_mode() {
+  local line
+  line="$(sed -n 's/^        mode: *\(advise\|guard\|strict\)$/\1/p' -- "$PATCH_FILE" 2>/dev/null | head -n 1)"
+  case "$line" in
+    advise | guard | strict) GUARD_MODE="$line" ;;
+  esac
+}
+
+# Rewrites the managed block with reloadNonce incremented, so the composed
+# configuration changes and the loader recomposes the profile. Every other line,
+# and every field of the entry, stays byte-equal.
+recompose_patch() {
+  local tmp="$PATCH_FILE.measure-dsh.tmp" next i
+  load_patch || return 1
+  scan_block_markers
+  block_is_complete || return 1
+  read_reload_nonce
+  read_managed_mode
+  [[ -n "$GUARD_MODE" ]] || GUARD_MODE="guard"
+  next=$((RELOAD_NONCE + 1))
+  {
+    local line
+    for ((i = 0; i < BLOCK_START; i++)); do
+      line="${PATCH_LINES[$i]}"
+      case "$line" in
+        '# measure-dsh reload marker' | '# measure-dsh reload probe') continue ;;
+      esac
+      printf '%s\n' "$line"
+    done
+    printf '%s\n' \
+      "$BLOCK_OPEN" \
+      '- insert:' \
+      '    - id: measure-guard' \
+      "      name: $BLOCK_NAME" \
+      '      config:' \
+      "        mode: $GUARD_MODE" \
+      "        reloadNonce: $next" \
+      "$BLOCK_CLOSE"
+    for ((i = BLOCK_END + 1; i < ${#PATCH_LINES[@]}; i++)); do
+      line="${PATCH_LINES[$i]}"
+      case "$line" in
+        '# measure-dsh reload marker' | '# measure-dsh reload probe') continue ;;
+      esac
+      printf '%s\n' "$line"
+    done
+  } >"$tmp"
   chmod "$(file_mode "$PATCH_FILE")" -- "$tmp"
   mv -f -- "$tmp" "$PATCH_FILE"
+  RELOAD_NONCE="$next"
 }
 
 # The digest the plugin computes over its code files (src/digest.js): sha256
@@ -388,6 +440,9 @@ print_actions() {
 # --- The managed block --------------------------------------------------------
 
 block_text() {
+  # An existing block contributes its reloadNonce, so an unchanged install can
+  # detect byte equality and then bump the nonce for a real recompose.
+  [[ -f "$PATCH_FILE" ]] && read_reload_nonce
   printf '%s\n' \
     "$BLOCK_OPEN" \
     '- insert:' \
@@ -395,6 +450,7 @@ block_text() {
     "      name: $BLOCK_NAME" \
     '      config:' \
     "        mode: $GUARD_MODE" \
+    "        reloadNonce: $RELOAD_NONCE" \
     "$BLOCK_CLOSE"
 }
 
@@ -827,7 +883,7 @@ write_managed_block() {
       return 1
     fi
     add_action WRITE "$PATCH_FILE"
-    add_item record PASS "managed block unchanged (mode: $GUARD_MODE); recompose marker toggled to trigger a live recompose"
+    add_item record PASS "managed block unchanged (mode: $GUARD_MODE); reloadNonce incremented to trigger a live recompose"
     return 0
   fi
 
@@ -837,7 +893,14 @@ write_managed_block() {
     return 0
   fi
 
-  printf '%s\n' "${out[@]}" >"$tmp"
+  local -a cleaned=() cleaned_line
+  for cleaned_line in "${out[@]}"; do
+    case "$cleaned_line" in
+      '# measure-dsh reload marker' | '# measure-dsh reload probe') continue ;;
+    esac
+    cleaned+=("$cleaned_line")
+  done
+  printf '%s\n' "${cleaned[@]}" >"$tmp"
   chmod "$(if [[ -e "$PATCH_FILE" ]]; then file_mode "$PATCH_FILE"; else printf 644; fi)" -- "$tmp"
   if ! mv -f -- "$tmp" "$PATCH_FILE"; then
     rm -f -- "$tmp"
@@ -1608,18 +1671,18 @@ do_reload() {
     exit 3
   fi
   if ((DRY_RUN)); then
-    add_item reload PASS "would toggle the recompose marker in $PATCH_FILE to trigger a live recompose"
+    add_item reload PASS "would increment the reloadNonce in $PATCH_FILE to trigger a live recompose"
     print_items
     printf 'dry run: no files written\n'
     exit 0
   fi
   if ! recompose_patch; then
-    add_item reload FAIL "could not rewrite $PATCH_FILE"
+    add_item reload FAIL "no complete managed block in $PATCH_FILE to bump"
     print_items
     printf 'reload incomplete\n'
     exit 1
   fi
-  add_item reload PASS "toggled the recompose marker in $PATCH_FILE to trigger a live recompose"
+  add_item reload PASS "incremented the reloadNonce in $PATCH_FILE (now $RELOAD_NONCE) to trigger a live recompose"
   print_items
   printf 'reload complete: the running profile recomposes on the patch-file change.\n'
   exit 0
