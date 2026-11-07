@@ -270,8 +270,10 @@ function scanAddedPaths(command, depth) {
           continue
         }
         if (!option.startsWith('-')) break
-        if (option.includes('c')) takesCommand = true
         const shortCluster = /^-[A-Za-z]+$/.test(option)
+        // Only a short option cluster can carry -c; a long option such as
+        // --norc is not a -c option.
+        if (shortCluster && option.includes('c')) takesCommand = true
         const takesArgument = optionArguments.has(option) || (shortCluster && /[oO]$/.test(option))
         j += takesArgument ? 2 : 1
       }

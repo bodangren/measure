@@ -74,3 +74,9 @@ nested shells → path; four → `all: true`), and corrects the records.
 > appended dated correction; the fix2 spec's "depth 5 and beyond" sentence is
 > corrected to `depth > 3` with a boundary pair. The CHANGELOG states `node 311
 > tests`.
+
+> **`--` correction (2026-11-09, dsh_measure_commit_nested_fix5_20261109):** the
+> shipped rule is: a `--` after a `-c` cluster is skipped and the next word is the
+> command string; a `--` before any `-c` ends option processing and nothing is
+> scanned. The earlier note said a `--` token before the command word is skipped
+> unconditionally.

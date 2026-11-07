@@ -188,6 +188,13 @@ test('addedPaths handles option-argument clusters and -- semantics', async () =>
   assert.deepEqual(addedPaths('bash -o pipefail -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
 })
 
+test('addedPaths handles --init-file and does not treat --norc as -c', async () => {
+  const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
+  const none = { all: false, trackedOnly: false, paths: [] }
+  assert.deepEqual(addedPaths('bash --init-file /dev/null -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash --norc -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
+})
+
 test('addedPaths fails closed at the fourth nested level but scans three', async () => {
   const nest = (levels, inner) => {
     let text = inner

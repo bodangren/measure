@@ -83,3 +83,9 @@ tests with an untracked integration path.
 > intended) rule is `depth > 3`, so the exported depth-0 call plus three nested
 > shells is scanned and the fourth nested level returns `all: true`. A boundary
 > pair (three → path, four → `all: true`) pins it.
+
+> **`--` correction (2026-11-09, dsh_measure_commit_nested_fix5_20261109):** the
+> shipped rule no longer "skips a `--` token before the command word" in all
+> cases: after a `-c` cluster a `--` is skipped and the next word is the command
+> string, while a `--` before any `-c` ends option processing and nothing is
+> scanned (matching bash).

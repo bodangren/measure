@@ -10,3 +10,5 @@ Node 310/310; parity ok; CLI 13/13; srg 11/11.
 ## Closeout
 
 FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_commit_nested_fix3_20261109/automation-supervisor-closeout-manifest.json
+
+> **`--` correction (2026-11-09, dsh_measure_commit_nested_fix5_20261109):** a `--` after a `-c` cluster is skipped (the next word is the command string); a `--` before any `-c` ends option processing and nothing is scanned.

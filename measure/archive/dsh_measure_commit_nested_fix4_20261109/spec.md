@@ -74,3 +74,12 @@ bash), adds the missing cases, and corrects the records with named files.
 
 > **Correction (2026-11-09, before the review):** the node suite is 311 tests
 > after this track's cases (not 312): the option/`--` case is one test block.
+
+> **Follow-up correction (2026-11-09, dsh_measure_commit_nested_fix5_20261109):**
+> the plan's review target was wrong: the fix3 review belongs to
+> `measure/archive/dsh_measure_commit_nested_fix3_20261109/spec-review.md`, not to
+> this track's own `measure/archive/dsh_measure_commit_nested_fix4_20261109/spec-review.md`
+> (which holds the fix4 review). The base node count was 310 and this track's
+> single case block makes 311, not 312. The existing `bash -c -- "git add …"`
+> case already pinned the after-`-c` behavior; the new cases pin the before-`-c`
+> behavior. The fix3 review is recorded in its archive and linked.
