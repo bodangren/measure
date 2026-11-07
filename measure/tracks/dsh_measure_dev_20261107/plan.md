@@ -42,6 +42,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `skills/measure-orchestrator/SKILL.md`: one contents bullet and one paragraph linking the reference
 - [ ] Task 3.2: Reference checks
     - [ ] `tests/dsh/test-reference.sh` in `tests/dsh/run.sh`: the reference exists; its local links resolve; every command name and model id it names exists (models against the profile patch); all 14 roles appear with a prompt source and a model; the three review roles have distinct families; the prompt template and the restrictions section are present
+    - [ ] Edge: a rename of one model id, a missing role row, or two review roles sharing a family each make the check fail (tested with fixtures)
 - [ ] Task 3.3: Measure - User Manual Verification 'Phase 3: Agent team reference' (Protocol in workflow.md)
 
 ## Phase 4: Guide, docs, and distribution alignment
@@ -49,6 +50,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [ ] Task 4.1: The guide and its checks
     - [ ] `docs/dsh.md`: prerequisites, install, check, modes, workflow commands, agent team, uninstall, troubleshooting (restart note, foreign row, incomplete skill copy)
     - [ ] `tests/dsh/test-docs.sh` in `tests/dsh/run.sh`: every guide link resolves; the guide names every command; README links the guide; the CHANGELOG entry exists
+    - [ ] Edge: a dangling guide link, a missing command name, a missing README link, and a missing changelog entry each fail (tested with fixtures)
 - [ ] Task 4.2: README and changelog
     - [ ] `README.md`: the harness section names DSH and links `docs/dsh.md`; the install section names `bin/measure-dsh`
     - [ ] `CHANGELOG.md`: one Unreleased entry (environment CLI, workflow commands, agent-team reference, guide)
@@ -61,8 +63,10 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 - [ ] Task 5.1: Live migration
     - [ ] Back up the profile patch, run `bin/install-measure-skill --ref HEAD`, remove the hand-written row, run `bin/measure-dsh install --ref HEAD --mode guard`, and prove `--check` and `--check --live` green (agent-side stage)
-    - [ ] Record the agent-side evidence (state route JSON from the loaded instance, record check, module export check) in the task git note and `measure/runs/dsh_measure_dev_20261107/`, and record whether the recomposition re-imported the installed copy
-    - [ ] Ask the operator to restart DSH and confirm the band, the panel, and the eight commands (human-gated stage); record the pending restart until that confirmation, and do not claim the runtime proof before it
+    - [ ] Add the `x-measure-guard-module` response header to `plugins/dsh-measure-guard/src/client-state.js` (the loaded module's `import.meta.url`) and a plugin test for it; `--check --live` fails when the header names another copy
+    - [ ] Record the agent-side evidence (route JSON + identity header naming the installed copy, record check, module export check) in the task git note and `measure/runs/dsh_measure_dev_20261107/`
+    - [ ] Edge: when the identity header still names the working-tree copy, `--check --live` fails, the phase records a pending restart, and the track does not claim the runtime proof
+    - [ ] Ask the operator to restart DSH and confirm the band, the panel, and the eight commands (human-gated stage); record the pending restart until that confirmation
 - [ ] Task 5.2: Measure - User Manual Verification 'Phase 5: Live environment and closeout' (Protocol in workflow.md)
 
 ## Deferred to a follow-up track

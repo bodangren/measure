@@ -161,10 +161,10 @@ measure-dsh --help
 | `node` | `node --version` | >= 24.9 |
 | `skill-measure` | installed skill roots (below) | every file under `<repo>/skills/measure` exists in the installed copy; up to 10 missing names are listed, then "and N more"; a missing installed root is `FAIL`; no repository source is `SKIP` |
 | `skill-orchestrator` | the same rule for `skills/measure-orchestrator` | the same rule |
-| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `src/`, `locale/`, `icon.svg` exist; the stamp lists exactly the copied files with matching hashes; a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
-| `record` | `<profile>/cordis.patch.yml` | exactly one managed block; `id: measure-guard`; `name: ./plugins/dsh-measure-guard/index.js`; `mode` in the three values |
+| `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `icon.svg`, `README.md`, and the `src/`, `scripts/`, `locale/` trees exist; the `.measure-dsh-install` stamp lists exactly the copied files (everything in the package except `tests/`) with matching hashes and nothing extra; a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
+| `record` | `<profile>/cordis.patch.yml` | exactly one managed block; `id: measure-guard`; `name: ./plugins/dsh-measure-guard/index.js`; `mode` in the three values; when `--mode` is given, the record's mode must equal it (otherwise `FAIL`), and without it the found mode is reported |
 | `foreign-row` | the same file | no `measure-guard` row outside the block |
-| `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field |
+| `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field **and** its `x-measure-guard-module` response header, realpathed, equals the installed `<plugin>/index.js` file URL (a mismatch is `FAIL`: the running host loaded another copy) |
 
 **Skill roots.** One resolution order that mirrors the DSH provider's rank
 order, first existing root wins per skill:
@@ -221,7 +221,9 @@ truth is measure/tracks.md and the active track's plan.md.
 ```
 
 - Handler: `(invocation) => { ... }`; guard rails run first, then
-  `invocation.agent.steer(newUserMessage(...))`, then
+  `invocation.agent.steer(msg)` where `msg` is built with the plugin's own
+  `newUserMessage` helper from `src/state.js` (the hand-written equivalent of
+  the platform's `createUserMessage`; the plugin imports no DSH package), then
   `{ kind: 'success', text: 'Starting the Measure <workflow> workflow.' }`.
 - **Project rail.** The subject is the canonical root from `deps.rootOf(agent)`
   and its snapshot from `deps.snapshots.get(root)`; a project without
@@ -342,8 +344,11 @@ in two stages and does **not** accept stale-instance evidence as the runtime
 proof:
 
 1. Agent-side, before any restart: the CLI `--check` (files, stamp, record,
-   module exports) and the live route from the **currently loaded** instance.
-   These prove the files and the record, not that the new copy is live.
+   module exports) and `--check --live`, which compares the route's
+   `x-measure-guard-module` header with the installed `index.js` file URL. That
+   comparison is the mechanical identity signal: a still-loaded working-tree
+   copy reports its own path and the check fails, so the route can no longer
+   masquerade as the installed copy.
 2. User-side, human-gated: the operator restarts DSH (a host restart ends this
    session, so the agent cannot do it) and confirms the composer band, the
    `Measure` panel, and the eight new commands in the `/` menu; the checkpoint

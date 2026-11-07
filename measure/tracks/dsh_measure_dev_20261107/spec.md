@@ -41,7 +41,8 @@ from `$DSH_HOME` or `~/.dsh`, the profile from `--profile` (default `web`), the
 guard mode from `--mode advise|guard|strict` (default `guard`), and the skill
 installer ref from `--ref` (default `main`). `install` accepts `--source DIR` (a plugin
 package directory, default `plugins/dsh-measure-guard/`) and `--dry-run`;
-`--check` accepts `--source`, `--live`, `--session`, and `--json`;
+`--check` accepts `--source`, `--mode`, `--live`, `--session`, and
+`--json`;
 `uninstall` accepts `--keep-copy` and `--dry-run`. The exact flag, output, and
 JSON contract is `design.md §2`. Every mode prints one line per check with
 `PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no item
@@ -84,7 +85,8 @@ files with matching hashes), the profile block (`id`, `name`, and `mode`
 exactly as `design.md §3`), the plugin module (a Node one-liner imports it and
 exits 0 only when `name === 'measure-guard'`, `inject` is an array, and
 `apply` is a function), the copy's local-edit and stale-file state, and, with
-`--live`, the state route. `--json` prints the exact object of `design.md §2`. The live session id is
+`--live`, the state route plus its module-identity header (which must name the
+installed copy, not a working-tree copy). `--json` prints the exact object of `design.md §2`. The live session id is
 `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with a hint.
 `--check` never writes. A missing `pnpm` is not an error; a different
 `DSH_HOME` or agents home is honoured through the environment.
@@ -146,9 +148,9 @@ two harnesses and links the guide; `CHANGELOG.md` gains one entry.
 guard plugin is installed from the profile copy (not the working tree), the
 profile row is the managed block, the mode is `guard` (the operator may switch),
 `--check` is green, and the track records the evidence in the task git notes and
-`measure/runs/`. The runtime proof is **human-gated**: the agent-side stage
-proves the files, the record, the module exports, and the route of the loaded
-instance; the operator-side stage (a host restart, which ends an agent session)
+`measure/runs/`. The runtime proof is **human-gated**: the agent-side stage proves the files,
+the record, the module exports, and the route's module identity (the header must
+equal the installed copy); the operator-side stage (a host restart, which ends an agent session)
 confirms the composer band, the `Measure` panel, and the eight commands in the
 `/` menu. A pending restart is recorded as a pending operator action and the
 track does not claim the runtime proof until the operator confirms it.

@@ -64,20 +64,43 @@ Report: `measure/runs/dsh_measure_dev_20261107/spec-review-mimo-v2.6-pro.md`
 
 ### What this track proposes
 
-PENDING
+The track turns the hand-wired DSH setup into a repeatable environment: a POSIX CLI for the profile row and copies, eight workflow commands, a DSH agent-team reference, a guide, and a live migration.
 
 ### How the current system works, per this spec
 
-PENDING
+Measure ships skills, 14 roles, a Claude mod and an OpenCode plugin; the DSH side is one hand-written profile row plus a partially installed skill copy. DSH loads skills from project and user roots, commands with the receiving Agent available, and patch-relative rows through the nearest `package.json`.
 
 ### Findings
 
-PENDING
+- B-F1 [Blocker] spec FR-2(c) vs design §2 "Skill step delegation" and plan Task 1.2: who writes the plugin copy, and where it lands, is contradictory; with `--profile`/`--dsh-home` the installer writes to the wrong place or silently skips.
+- B-F2 [Blocker] spec FR-5 and the acceptance criterion vs design §2 `--prune`, plan Task 1.4, and design §7: whether `uninstall` removes the installed plugin copy is contradictory.
+- B-F3 [Blocker] design §5 WORKFLOWS row `measure-orchestrate`, plan Task 2.1: the eighth command's reference cannot resolve as specified; the template says to load `measure`, which cannot point at the orchestrator.
+- B-F4 [Major] design §5 handler contract: `newUserMessage` names an API no package of this installation exports; the platform constructor is `createUserMessage` from `@deepseek-ai/dsh-llm`.
+- B-F5 [Major] spec FR-4 vs design §4 `plugin` and `record` pass conditions: the design narrows the requirement (omits `scripts/` and `README.md`, no stamp check, any mode accepted).
+- B-F6 [Major] spec FR-2(e) and Accepted Risk vs design §8: the checklist's "restart DSH" action contradicts the migration note that a profile reload re-imports without a restart.
+- B-F7 [Major] design §4 skill items and design §5 lookup: the named roots are incomplete and redundant; the project and user-DSH roots and the agents-home resolution are not considered.
+- B-F8 [Major] plan Phases 3-5 and design §7 rows 3-5: the phases name no edge test cases; Tasks 4.1/4.2 name no test file for README/CHANGELOG checks.
+- B-F9 [Major] FR-10 and plan Task 5.1: the live proof cannot establish that the profile copy (not the working tree) is loaded; `--check --live` has no module identity signal.
+- B-F10 [Nit] design §5 message template: `summary` belongs to the `notice` form; an `instructions` source takes no summary.
 
 ### Author Response
 
-PENDING
+- B-F1: FIX (design.md §0 and spec FR-2: `bin/measure-dsh` is the plugin-copy writer into the resolved profile; the installer's fixed DSH row is removed by FR-11, so no flag sends a copy to the wrong place; plan Task 1.2 names the copy step)
+- B-F2: FIX (spec FR-5, design.md §2, plan Task 1.4, and design §7 now agree: `uninstall` removes the owned copy by default, `--keep-copy` opts out, `--prune` is removed)
+- B-F3: FIX (each workflow carries its own `skill`; the template loads that skill; `measure-orchestrate` resolves `measure-orchestrator/SKILL.md`; the test asserts it)
+- B-F4: FIX (design.md §5 names the plugin's own `newUserMessage` helper from `src/state.js`, the hand-written equivalent of `createUserMessage`; no platform API is assumed)
+- B-F5: FIX (design.md §4 `plugin` now covers every copied file including `scripts/` and `README.md`, checks the copy stamp exactly, and `record` compares the mode with `--mode` when the flag is given)
+- B-F6: FIX (spec FR-2 and design.md §2: the install summary says a patch edit normally needs no restart and names the two cases that do; the migration note matches)
+- B-F7: FIX (design.md §4 mirrors the DSH root order including the two project roots and user-DSH, resolves the agents home from `$DSH_AGENTS_HOME` or `~/.agents`, de-duplicates real paths, and records that the custom root is not read)
+- B-F8: FIX (plan Phase 3, 4 and 5 name their test files and failure cases: fixture-based failures for the reference and docs checks, and a live identity-mismatch case)
+- B-F9: FIX (the route gains an `x-measure-guard-module` header carrying the loaded module's `import.meta.url`; `--check --live` compares it with the installed copy and fails on a working-tree match; plan Task 5.1 adds the header, its plugin test, and the mismatch edge case)
+- B-F10: FIX (design.md §5 uses `source: { kind: 'measure-guard', form: 'instructions' }` without `summary`)
 
+### Author Notes
+
+Reviewer B read the documents before the first amendment pass; findings B-F1, B-F2, B-F3, B-F6 and B-F7 were already fixed in the same round by Reviewers A and C and are recorded here with their final text. B-F4, B-F5, B-F8, B-F9 and B-F10 were new and are fixed as above. The module-identity header is the mechanical answer to the live-proof gap and is the one addition to the guard plugin's route in this track.
+
+## Round 1 — Reviewer C
 ## Round 1 — Reviewer C
 
 Date: 2026-11-07
