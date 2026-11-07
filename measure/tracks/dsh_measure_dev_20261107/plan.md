@@ -25,7 +25,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `tests/dsh/test-foreign-row.sh`, `tests/dsh/test-uninstall.sh`, `tests/dsh/test-atomic-write.sh`: block and flow, quoted and plain foreign rows (`- { id: measure-guard }`, `name: "…dsh-measure-guard"`) refuse install/check with the line number and survive uninstall byte-identically; atomic write preserves the rest of the file; a patch file without a trailing newline; a CLI-created patch becomes `[]` after uninstall; read-only profile exits 3 with the original intact; a user-edited copy file is kept with WARN
 - [ ] Task 1.5: Measure - User Manual Verification 'Phase 1: Environment CLI' (Protocol in workflow.md)
 
-## Phase 2: Workflow commands
+## Phase 2: Workflow commands [checkpoint: 2fa68fc]
 
 - [x] Task 2.1: Workflow module `babea10`
     - [ ] `plugins/dsh-measure-guard/src/workflow.js`: `WORKFLOWS` table (command, workflow, skill, file), message template, trimmed `rawInput` forwarded as an `Arguments:` line, `resolveSkillFile` (the §4 root order with realpath dedupe, no cache), the project rail through `deps.rootOf`/`deps.snapshots`, the reference rail, `measureWorkflowCommands(deps)`
@@ -33,7 +33,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 2.2: Wire the commands `2fd1abe`
     - [ ] `plugins/dsh-measure-guard/index.js` registers the workflow commands through `ctx.commands.register`, next to the existing three
     - [ ] `plugins/dsh-measure-guard/tests/plugin.test.js` asserts the eleven commands and no duplicate registration
-- [ ] Task 2.3: Measure - User Manual Verification 'Phase 2: Workflow commands' (Protocol in workflow.md)
+- [x] Task 2.3: Measure - User Manual Verification 'Phase 2: Workflow commands' (Protocol in workflow.md) `2fa68fc`
 
 ## Phase 3: Agent team reference
 
