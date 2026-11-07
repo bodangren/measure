@@ -33,3 +33,10 @@ evidence track closeout:
 FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_midred_evidence_20261107/automation-supervisor-closeout-manifest.json
 
 Both report only the expected automation-supervisor closeout manifest, which a manual track never produces.
+
+## Token-scan follow-up gates (dsh_measure_token_scan_followup_20261107)
+node suite: 296/296 pass; parity gates: parity: ok (both)
+CLI suite: 10/10 pass; spec-review-gate: 10 suites (PASS=10, FAIL=0)
+
+closeout --track dsh_measure_add_quoting_followup_20261107:
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_add_quoting_followup_20261107/automation-supervisor-closeout-manifest.json

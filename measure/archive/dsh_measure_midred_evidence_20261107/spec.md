@@ -14,8 +14,9 @@ found five precision gaps, each about the *record*, not the gate:
   which a manual Measure track never produces.
 - **F3 (Blocker):** the plan said "record the result" of the closeout run but
   named no file or format for that evidence.
-- **F4 (Major):** the record items were not concrete (no finding ids, severity,
-  or text) and no disposition per finding was required.
+- **F4 (Major):** the record items were not concrete (F1–F3 were already named in the records spec's FR-3, but the review record lacked
+  their severity and text and the four observations had no ids) and no
+  disposition per finding was required.
 - **F5 (Major):** FR-5 required both parity gates, but no plan task ran them or
   named the scripts.
 

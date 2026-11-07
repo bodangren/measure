@@ -45,7 +45,7 @@ both records. No shared core change.
   (both the tracked and the untracked path are present), a quoted `;` path
   (`paths: ['a;b.ts']`), a real trailing-comment command (`git add src/a.ts #
   note`), a quoted `*` stays conservative (`all: true`), an unterminated quote
-  (`all: true`), and the existing `.`/`-A`/`-u`/escaped cases unchanged.
+  (`all: true`), and the existing `.`/`-A`/`-u`/plain/quoted/`--`/comment/unterminated cases unchanged.
 - **FR-4 (the record corrections).** The shipped quoting track's spec/plan are
   corrected: the Overview no longer says the old code captured `"src/file`; FR-2
   records that `--` handling is new, not preserved; its Overview/FR-2 no longer

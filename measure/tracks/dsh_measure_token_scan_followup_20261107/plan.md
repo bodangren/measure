@@ -14,9 +14,9 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: The records
 
-- [ ] Task 2.1: the archived `measure/archive/dsh_measure_add_quoting_followup_20261107/plan.md` tasks carry their SHAs (1.1/1.2/1.3 = `21e03a3`, 2.1 = `313c88a`, 3.1–3.4 = `c9eec5e`, 4.1 = `5f4be9f`); Task 3.4 names the ledger `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and the format (append the four gate results and read them back)
-- [ ] Task 2.2: correct `measure/archive/dsh_measure_midred_evidence_20261107/spec.md`'s Overview F4 bullet (F1–F3 were already named in the records spec; what was missing was their severity/text and the four observations' ids); correct `measure/archive/dsh_measure_add_quoting_followup_20261107/spec.md` FR-3 (no "escaped case" in the baseline) and name the evidence file in its plan Task 2.1
-- [ ] Task 2.3: append the node/parity/CLI/srg results to the mid-red ledger and read them back; run `closeout --track dsh_measure_add_quoting_followup_20261107` and record that it reports only the expected manifest FAIL
+- [x] Task 2.1: the archived `measure/archive/dsh_measure_add_quoting_followup_20261107/plan.md` tasks carry their SHAs (1.1/1.2/1.3 = `21e03a3`, 2.1 = `313c88a`, 3.1–3.4 = `c9eec5e`, 4.1 = `5f4be9f`); Task 3.4 names the ledger `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and the format (append the four gate results and read them back)
+- [x] Task 2.2: correct `measure/archive/dsh_measure_midred_evidence_20261107/spec.md`'s Overview F4 bullet (F1–F3 were already named in the records spec; what was missing was their severity/text and the four observations' ids); correct `measure/archive/dsh_measure_add_quoting_followup_20261107/spec.md` FR-3 (no "escaped case" in the baseline) and name the evidence file in its plan Task 2.1
+- [x] Task 2.3: append the node/parity/CLI/srg results to the mid-red ledger and read them back; run `closeout --track dsh_measure_add_quoting_followup_20261107` and record that it reports only the expected manifest FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The records' (Protocol in workflow.md)
 
 ## Phase 3: Gates and closeout
