@@ -62,3 +62,13 @@ residual.
 
 - Arbitrary wrapper scripts and shell functions (the named residual).
 - The opencode rows and the remaining spec_review_gate docs rows.
+
+> **Correction (2026-11-09, dsh_measure_commit_nested_fix2_20261109):** the depth
+> cap is four levels (`MAX_NESTED_DEPTH = 3`; the exported call is depth 0) and a
+> five-level nesting case asserts `all: true`. `eval` scans the space-joined
+> values of all its arguments. A shell is recognized by its basename
+> (`bash`/`sh`/`zsh`, including `/bin/bash`) with any option cluster containing
+> `c` (`-c`, `-lc`, `-x -c`); `git stage` inside a substitution fails closed like
+> `git add`. Unreadable inner text fails closed. The integration case uses an
+> untracked `src/new.js`, so only the recursion can deny it. The residual is
+> arbitrary wrapper scripts and shell functions only.

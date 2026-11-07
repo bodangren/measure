@@ -188,7 +188,7 @@ function substitutionAdds(command) {
       i = j
     }
   }
-  const add = /\bgit(?:\s+-C\s+\S+)?\s+["']?add["']?\b/
+  const add = /\bgit(?:\s+-C\s+\S+)?\s+["']?(?:add|stage)["']?\b/
   return spans.some(span => add.test(span))
 }
 
@@ -213,11 +213,13 @@ export function addedPaths(command) {
 }
 
 const NESTED_SHELLS = new Set(['bash', 'sh', 'zsh'])
+const MAX_NESTED_DEPTH = 3
 
 function scanAddedPaths(command, depth) {
   const added = { all: false, trackedOnly: false, paths: [] }
   if (typeof command !== 'string' || command === '') return added
-  if (depth > 3) {
+  // Four levels: the exported call is depth 0; anything deeper fails closed.
+  if (depth > MAX_NESTED_DEPTH) {
     added.all = true
     return added
   }
@@ -244,13 +246,23 @@ function scanAddedPaths(command, depth) {
     if (!atCommandStart(tokens, i)) continue
     // A nested shell or eval: scan the inner command text and merge its result.
     if (current === 'eval') {
-      const inner = tokens[i + 1]
-      if (inner && !inner.separator) merge(scanAddedPaths(inner.value, depth + 1))
+      // eval concatenates all of its words; scan the joined text.
+      const parts = []
+      for (let j = i + 1; j < tokens.length && !tokens[j].separator; j += 1) parts.push(tokens[j].value)
+      if (parts.length > 0) merge(scanAddedPaths(parts.join(' '), depth + 1))
       continue
     }
-    if (NESTED_SHELLS.has(current) && tokens[i + 1]?.value === '-c') {
-      const inner = tokens[i + 2]
-      if (inner && !inner.separator) merge(scanAddedPaths(inner.value, depth + 1))
+    const shellName = current.split('/').pop()
+    if (NESTED_SHELLS.has(shellName)) {
+      let j = i + 1
+      let takesCommand = false
+      while (j < tokens.length && !tokens[j].separator && tokens[j].value.startsWith('-')) {
+        if (tokens[j].value.includes('c')) takesCommand = true
+        j += 1
+      }
+      if (takesCommand && j < tokens.length && !tokens[j].separator) {
+        merge(scanAddedPaths(tokens[j].value, depth + 1))
+      }
       continue
     }
     if (current !== 'git') continue

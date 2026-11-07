@@ -160,12 +160,30 @@ test('addedPaths scans nested shell and eval commands', async () => {
   assert.deepEqual(addedPaths('eval "echo hi" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: [] })
 })
 
+test('addedPaths accepts every shell -c spelling and git stage substitutions', async () => {
+  const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
+  assert.deepEqual(addedPaths('zsh -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -lc "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('/bin/bash -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -x -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('eval git add src/app.js && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('eval "git add" src/app.js && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('X=$(git stage secret.txt); git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
+})
+
+test('addedPaths fails closed beyond the depth cap and for unreadable inner text', async () => {
+  let nested = 'git add src/app.js'
+  for (let level = 0; level < 5; level += 1) nested = `bash -c ${JSON.stringify(nested)}`
+  assert.deepEqual(addedPaths(`${nested} && git commit -m "feat(app): Add"`), { all: true, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('bash -c "git add \'x" && git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
+})
+
 test('a nested shell git add reaches the no-task commit rule', async () => {
-  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: [] }) })
-  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'bash -c "git add src/app.js" && git commit -m "feat(app): Add the app"')
+  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: ['?? src/new.js'] }) })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'bash -c "git add src/new.js" && git commit -m "feat(app): Add the app"')
   assert.notEqual(check.decision, null)
   assert.match(check.decision.deny, /no task is in progress/)
-  assert.match(check.decision.deny, /src\/app\.js/)
+  assert.match(check.decision.deny, /src\/new\.js/)
 })
 
 test('a substitution-hidden git add reaches the no-task commit rule', async () => {
