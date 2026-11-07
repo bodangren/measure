@@ -27,12 +27,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [~] **Track: DSH Measure evolution: strict guards, session-accurate writers, goal binding, and the setup button**
-  *Link: [./tracks/dsh_measure_evolve_20261107/](./tracks/dsh_measure_evolve_20261107/)*
-  *Closes the DSH guard's deferred FR-13 and FR-14 plus the setup button: strict TDD and commit guards, root-only writer slots, a DSH goal bound to the active track, and an in-band setup answer.*
-
----
-
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -75,6 +69,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: measure-guard for the DeepSeek Harness**
   *Link: [./archive/dsh_measure_guard_20261107/](./archive/dsh_measure_guard_20261107/)*
   *A third adapter over the shared core: context and guard layers on Cordis, plain-JS, no build step. Five phases, 28 tasks, 143 tests, live-verified in the web profile.*
+
+- [x] **Track: DSH Measure evolution: strict guards, session-accurate writers, goal binding, and the setup button**
+  *Link: [./archive/dsh_measure_evolve_20261107/](./archive/dsh_measure_evolve_20261107/)*
+  *Closes the DSH guard's deferred FR-13 and FR-14 plus the setup button: strict Red-before-Green and commit guards, root-only writer sessions, a goal bound to the active track (`/measure-goal`, goal line, drift checks), the in-band setup answer, and the shared registry parser fix for the Mediarr format. 34 tasks, 7 checkpoints, 213 tests, live-verified.*
 
 - [x] **Track: README videos**
   *Link: [./archive/readme_videos_20261105/](./archive/readme_videos_20261105/)*

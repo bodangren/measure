@@ -5,8 +5,8 @@
 
 ## Architecture & Design
 
-- (2026-05-25, scrum_tracks_20260525) Opt-in additive design kept 100% backward compatibility: gate new behaviour on one signal (a spec section or a metadata key) and treat absence as classic mode without warning.
-- <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate (tool on PATH, data file fresh, project language matches) so every entry point degrades to one `Note: ...` line without HALT; reuse one set of skip-note formats across all entry points.
+- (2026-05-25, scrum_tracks_20260525) Gate opt-in behaviour on one signal and treat absence as classic mode without warning.
+- <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate so every entry point degrades to one `Note: ...` line without HALT; reuse one skip-note format set.
 - <a id="2026-10-04-measure_guard"></a>(2026-10-04, measure_guard_20261004) Keep the system prompt fixed and send changing state (track, task, reminders) as conversation notes. A system prompt that changes with each task resets the prompt cache.
 - <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
 - <a id="2026-10-21-opencode_plugin"></a>(2026-10-21, opencode_plugin_20261021) Port a harness mod by copying its pure modules with a parity gate, and keep every harness call in a thin adapter; the OpenCode plugin reused the mod's guards and parser unchanged.
@@ -15,8 +15,11 @@
 - (2026-11-07, dsh_measure_guard_20261107) Node's native type stripping loads a copied `.ts` core with no build step, but Node ESM still needs the file extension: one `./parse` -> `./parse.ts` transform in the parity copy, checked by the gate. Stripping is refused under `node_modules`, so install as a path row or a folder outside it.
 - (2026-11-07, dsh_measure_guard_20261107) A build-free DSH client plugin is real: the shipped `cordis-plugin-development` skill ships a hand-written `window.__ModuleLoader__.load({ id, factory })` template, and the Host only reads the bytes at `exports["./client"]`. A path-form Loader row loads both halves because client-modules walks to the nearest `package.json`.
 - <a id="2026-11-07-dsh_measure_dev"></a>(2026-11-07, dsh_measure_dev_20261107) Give one owner per artefact. The DSH environment CLI owns the plugin copy and the profile row; the installer keeps only the skill targets. Two writers for one profile folder caused a real contradiction that the spec review caught.
-- (2026-11-07, dsh_measure_dev_20261107) A profile patch edit recomposes live even when the new row points at a different module URL: the installed copy replaced the working-tree copy with no restart, and a module-identity header proved which copy the host loaded. Stale-instance evidence can look identical, so make the route name its module.
+- (2026-11-07, dsh_measure_dev_20261107) A profile patch edit recomposes live even when the new row points at a different module URL; a module-identity header proves which **path** loaded. Replacing an installed plugin's file **content** does not reload the running Host, and the path header stays PASS for the stale instance: write the patch file (or restart) before trusting the live check.
 - <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working; the order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
+- (2026-11-07, dsh_measure_evolve_20261107) A DSH `bash` tool result carries `exitCode` on `result.value`, and a non-zero exit is a *successful* result (`isError: false`); a failed call has no `value`. Read the value, not `isError`, for a failed-test predicate.
+- (2026-11-07, dsh_measure_evolve_20261107) A Cordis service that is not in `inject` must be read per call (`ctx.get(name)`): Cordis does not order it, so a value captured at `apply` time is silently undefined when the service registers later.
+- (2026-11-07, dsh_measure_evolve_20261107) Only root agents (`ctx.agents.roots()`) are sessions; a child agent attached under an owner must inherit the guards but never claim a writer slot, or one session + one subagent reads as two.
 
 ## Recurring Gotchas
 
@@ -40,3 +43,4 @@
 
 - (2026-10-04, measure_guard_20261004) Estimate 47/47 for a 9-story code track: 5 tasks per story (Contract, Red, Green, Docs, deferred verification) plus 2 setup tasks. Each Red task recorded the failing test output in its git note.
 - (2026-11-07, dsh_measure_guard_20261107) Estimate 28 planned vs 28 completed once the review added the setup-offer and second-writer tasks; naming the test gate and the file of every task at plan time kept the phase checkpoints cheap.
+- (2026-11-07, dsh_measure_evolve_20261107) Estimate 34 planned vs 34 completed; a live user report (the Mediarr registry parse error) became an extra Must story after the spec was written, and three fresh review rounds found 24 findings (7 Blockers) before Red — the last round mostly caught plan text that drifted from the code.
