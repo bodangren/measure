@@ -19,7 +19,7 @@ assert_rc 0
 
 patch_text_before="$(without_nonce)"
 nonce_before="$(nonce_of)"
-[[ -n "$nonce_before" ]] || fail "the managed block has no reloadNonce"
+[[ "$nonce_before" == "0" ]] || fail "a fresh install should write reloadNonce 0, found '$nonce_before'"
 fingerprint_before="$(profile_fingerprint)"
 
 # 1. reload --dry-run writes nothing and says what it would do.
@@ -81,3 +81,27 @@ run reload
 assert_rc 0
 assert_out '^PASS reload: incremented the reloadNonce'
 assert_eq "$(nonce_of)" "1"
+
+# 8. A non-integer reloadNonce reads as 0: the next write is 1.
+sed -i 's/^        reloadNonce: 1$/        reloadNonce: abc/' -- "$PATCH"
+run reload
+assert_rc 0
+assert_eq "$(nonce_of)" "1"
+
+# 9. A changed-block install (a new mode) keeps the nonce: the content already
+#    changed, so there is nothing to bump.
+run install --no-skills --mode strict
+assert_rc 0
+assert_eq "$(nonce_of)" "1"
+grep -q '^        mode: strict$' "$PATCH" || fail "the changed-block install did not write mode strict"
+
+# 10. A reload on a patch with no complete managed block fails and writes nothing.
+cp -- "$PATCH" "$PATCH.saved"
+printf '[]\n' >"$PATCH"
+patch_without_block="$(cat -- "$PATCH")"
+run reload
+assert_rc 1
+assert_out '^FAIL reload: no complete managed block'
+assert_eq "$(cat -- "$PATCH")" "$patch_without_block"
+cp -- "$PATCH.saved" "$PATCH"
+rm -f -- "$PATCH.saved"
