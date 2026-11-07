@@ -59,3 +59,15 @@ the row to one resolution clause.
   rev-parse cost, and the window.
 - Given the gates, Then node 318/318, CLI 13/13, srg 11/11, parity ok; the
   checkpoint is pushed.
+
+> **Follow-up correction (2026-11-10, after the review):** the F4 wording
+> correction lives in the fix2 spec (appended block) and in the snapshot track's
+> review (appended paragraph), not in this spec. The verification did run the
+> node suite (318/318) and both parity gates in addition to the CLI/srg tasks; the
+> evidence file records them. The track-level acceptance also covers FR-2 (the
+> original note's own 317/317) and FR-5 (the fix2 review with F1-F5, linked from
+> its index). The CHANGELOG names the exact second id
+> `dsh_measure_snapshot_invalidate_fix2_20261109`. The Overview's "previous
+> track's note" sentence mixed the two notes: the 318 claim sat in the note fix2
+> appended to the original track's spec; fix2's own suite is 318 and the original
+> track's suite was 317.

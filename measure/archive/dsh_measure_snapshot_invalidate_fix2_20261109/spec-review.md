@@ -35,7 +35,7 @@ turn. `READ_ONLY_TOOLS` (hooks) and `MUTATION_TOOLS` (guard) sit side by side.
 - F1: FIX (the fix2 spec note now carries all four corrections — test files, the 317/318 counts, the rev-parse cost, the within-step window — and the snapshot track's note states its own 317/317)
 - F2: FIX (the CHANGELOG bullet names both tracks)
 - F3: FIX (the cost line includes the one `git rev-parse --is-inside-work-tree`; `git status` stays per turn)
-- F4: FIX (the note says the predicate test's enumeration was incomplete for `pwsh`/`str_replace_editor`; `MUTATION_TOOLS` itself contains both)
+- F4: FIX (the fix2 spec carries an appended F4 wording correction: `MUTATION_TOOLS` contains both tools; the predicate test's enumeration was the incomplete list, and the shipped disjoint-set test enumerates the exported set)
 - F5: FIX (the perf row has a single 2026-11-10 resolution clause with the allowlist wording, the rev-parse cost, and the window)
 
 Delivered by `dsh_measure_snapshot_invalidate_fix3_20261109`; node 318/318,

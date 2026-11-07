@@ -79,3 +79,10 @@ within-step window as the residual, and corrects the records.
 > `git status --porcelain` is read per turn, not per result;
 > (4) the within-step external-edit window — when several tool calls share one
 > step, an edit between two calls is seen at the next `agent/pre-step`.
+
+> **F4 wording correction (2026-11-10, dsh_measure_snapshot_invalidate_fix3_20261109):**
+> the phrase "the write-tool list omitting `pwsh`/`str_replace_editor`" in an
+> earlier finding does not describe `MUTATION_TOOLS` (which contains both tools);
+> the incomplete list was the predicate test's tool enumeration. The disjoint-set
+> test added by this track enumerates `MUTATION_TOOLS` itself, so both names are
+> covered.

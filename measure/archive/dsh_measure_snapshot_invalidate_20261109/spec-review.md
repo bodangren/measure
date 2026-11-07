@@ -33,6 +33,13 @@ entered step; `recordRed` reads the snapshot only for file/shell mutations.
 - F5 [Major] FR-4/Task 2.1: the row update was unpinned and ended contradictory (Status Open with a "Resolved" note), and "read-only results no longer invalidate" over-claimed since only seven names skip.
 - F6 [Nit] Overview: the cost claim attributed a per-result `git status` read; the reload runs the work-tree check and measure re-reads, while `git status --porcelain` is per turn.
 
+**Correction (2026-11-10, dsh_measure_snapshot_invalidate_fix3_20261109):** the
+F1-F6 review's F3 wording says "the write-tool list omitting `pwsh`/
+`str_replace_editor`"; the set `MUTATION_TOOLS` contains both tools — the
+incomplete list was the predicate test's tool enumeration (the shipped
+disjoint-set test enumerates the exported set instead). The finding text is left
+as review evidence; this paragraph is the correction.
+
 ### Author Response
 
 - F1: FIX (the files are `plugins/dsh-measure-guard/tests/guard-prep.test.js` for the predicate and disjoint-set checks and `plugins/dsh-measure-guard/tests/plugin.test.js` for the invalidation spy; the spec correction names them)
