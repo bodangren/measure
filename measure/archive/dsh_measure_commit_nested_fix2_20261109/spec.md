@@ -77,3 +77,9 @@ tests with an untracked integration path.
 > passes `commitTakesAll` (false there), so only the recursion denied it — the
 > fix1 review's F5 disposition is corrected. The CHANGELOG states `node 310
 > tests`.
+
+> **Off-by-one correction (2026-11-09, dsh_measure_commit_nested_fix4_20261109):**
+> this spec's FR-1 says "depth 5 and beyond returns `all: true`"; the shipped (and
+> intended) rule is `depth > 3`, so the exported depth-0 call plus three nested
+> shells is scanned and the fourth nested level returns `all: true`. A boundary
+> pair (three → path, four → `all: true`) pins it.

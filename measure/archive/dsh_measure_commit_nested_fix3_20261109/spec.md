@@ -64,3 +64,13 @@ nested shells → path; four → `all: true`), and corrects the records.
 
 - Options with unknown arguments, arbitrary wrapper scripts, and shell
   functions.
+
+> **Correction (2026-11-09, dsh_measure_commit_nested_fix4_20261109):** the option
+> loop steps over the argument of `-o`/`-O`, a short cluster ending in `o`/`O`
+> (`-euo`), `--rcfile`, and `--init-file`; a `--` after `-c` is skipped while a
+> `--` before any `-c` stops the scan (matching bash). The residual target is the
+> commit-race row in `measure/tech-debt.md`. The fix2 review is recorded in its
+> archive with severity/scope and dispositions; the fix1 F5 finding carries an
+> appended dated correction; the fix2 spec's "depth 5 and beyond" sentence is
+> corrected to `depth > 3` with a boundary pair. The CHANGELOG states `node 311
+> tests`.

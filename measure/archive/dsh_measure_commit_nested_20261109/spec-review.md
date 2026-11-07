@@ -32,6 +32,8 @@ splits separators; only a command-position `git` counts. An outer `bash -c` or
 - F4 [Major] FR-4/Task 1.2: no `zsh -c`, depth-cap, or unreadable-inner test.
 - F5 [Nit] Overview/FR-4: the integration fixture's tracked path was already taken via `GIT_ADD`/`takesChanges`; only an untracked path proves the recursion.
 
+**Correction (2026-11-09, dsh_measure_commit_nested_fix4_20261109):** the F5 finding's claim that the fixture's `src/app.js` "was already a taken change via `GIT_ADD`/`takesChanges`" is wrong: the adapter passes `commitTakesAll` (the commit's own `-a`/`--all`), which was false, and the fixture had empty staged/status, so only the recursive `addedPaths` result denied the file. The fixture rewrite to an untracked path is extra coverage, not a necessity. The finding text is left as review evidence; this paragraph is the correction.
+
 ### Author Response
 
 - F1: FIX (the code names `MAX_NESTED_DEPTH = 3` with a four-level comment; the spec records the value; a five-level nesting case asserts `all: true`)

@@ -178,6 +178,16 @@ test('addedPaths skips shell option arguments while hunting for -c', async () =>
   assert.deepEqual(addedPaths('bash -c -- "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
 })
 
+test('addedPaths handles option-argument clusters and -- semantics', async () => {
+  const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
+  const none = { all: false, trackedOnly: false, paths: [] }
+  assert.deepEqual(addedPaths('bash -euo pipefail -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash --rcfile /dev/null -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -c -- "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
+  assert.deepEqual(addedPaths('bash -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
+  assert.deepEqual(addedPaths('bash -o pipefail -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
+})
+
 test('addedPaths fails closed at the fourth nested level but scans three', async () => {
   const nest = (levels, inner) => {
     let text = inner

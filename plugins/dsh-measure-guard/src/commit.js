@@ -257,17 +257,23 @@ function scanAddedPaths(command, depth) {
     if (NESTED_SHELLS.has(shellName)) {
       let j = i + 1
       let takesCommand = false
+      // Bash options that take a separate argument; a short cluster ending in
+      // o/O (for example `-euo pipefail`) takes one too.
+      const optionArguments = new Set(['-o', '-O', '--rcfile', '--init-file'])
       while (j < tokens.length && !tokens[j].separator) {
         const option = tokens[j].value
         if (option === '--') {
+          // After -c, `--` still precedes the command string; before -c it ends
+          // option processing with no command string (bash treats -c as a file).
+          if (!takesCommand) break
           j += 1
           continue
         }
         if (!option.startsWith('-')) break
         if (option.includes('c')) takesCommand = true
-        // -o and -O take an argument; step over it while still hunting for -c.
-        if (option === '-o' || option === '-O') j += 2
-        else j += 1
+        const shortCluster = /^-[A-Za-z]+$/.test(option)
+        const takesArgument = optionArguments.has(option) || (shortCluster && /[oO]$/.test(option))
+        j += takesArgument ? 2 : 1
       }
       if (takesCommand && j < tokens.length && !tokens[j].separator) {
         merge(scanAddedPaths(tokens[j].value, depth + 1))

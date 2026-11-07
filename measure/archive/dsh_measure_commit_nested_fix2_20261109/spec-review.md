@@ -32,6 +32,16 @@ applies the format and no-task rules.
 - F4 [Major] Overview/Fix1 F5: the claim that the integration fixture's `src/app.js` "was already a taken change via `GIT_ADD`/`takesChanges`" is false — the adapter passes `commitTakesAll`, not the core `takesChanges`, and the fixture had empty staged/status, so only the recursion denied it.
 - F5 [Major] FR-5/Task 2.1: "the four rules" was undefined and the CHANGELOG still said `node 306 tests` while the suite was 308.
 
+### Findings (as review returned)
+
+Date: 2026-11-09. Reviewer: subagent (fresh context, default model).
+
+- F1 [Blocker] plan.md Task 2.1 (also spec FR-5): the review-record and correction-note files were not named.
+- F2 [Major] spec FR-1/Acceptance/plan Task 1.2: the cap was stated two ways while the shipped rule is `depth > 3`.
+- F3 [Major] spec FR-3/plan Tasks 1.1/1.2: option arguments (`-o pipefail`, `-O extglob`) and `--` placement were not concrete.
+- F4 [Major] Overview/fix1 F5: the claim that the integration fixture's path was already taken via `GIT_ADD`/`takesChanges` was false.
+- F5 [Major] spec FR-5/plan Task 2.1: "the four rules" was undefined and the CHANGELOG still said `node 306 tests`.
+
 ### Author Response
 
 - F1: FIX (the review record is `measure/archive/dsh_measure_commit_nested_20261109/spec-review.md`, linked from that index, and the note is a dated correction block in that track's `spec.md`; this track's plan names the same paths)
