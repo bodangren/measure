@@ -197,10 +197,22 @@ From the package folder, `node --run test` runs the first two. The installer tes
 The live check reads the JSON route of the running GUI:
 
 ```bash
-curl 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
+curl -D - 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-Current state: 213 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh` (7/7).
+The response carries two identity headers: `x-measure-guard-module` names the
+loaded module's path, and `x-measure-guard-digest: sha256:<hex>` is the digest
+of the code bytes the running instance loaded. The digest is captured once, at
+module evaluation (`src/digest.js`), so a Host that still runs an older instance
+answers with the old digest. `bin/measure-dsh --check --live` compares it with
+the source digest: a mismatch is FAIL (stale plugin code), an absent header is
+WARN (a pre-digest instance), and a match is PASS. The remediation is
+`bin/measure-dsh reload`, which rewrites the profile's `cordis.patch.yml` with
+its trailing-newline count toggled (every YAML entry is unchanged) so the
+running profile recomposes. `install` performs the same recompose write when the
+managed block is unchanged.
+
+Current state: the test count and the contract suite are in [CHANGELOG.md](../../CHANGELOG.md); the environment CLI's contract tests are `bash tests/dsh/run.sh`.
 
 ## Verified live
 

@@ -3,6 +3,7 @@
 // The module imports no Harness package: every capability comes from ctx
 // (design §2).
 import { homedir } from 'node:os'
+import { fileURLToPath } from 'node:url'
 
 import { parseModeOf, createState, newUserMessage } from './src/state.js'
 import { Snapshots, canonicalRoot, gitStatus, makeIo } from './src/snapshot.js'
@@ -15,10 +16,19 @@ import { createDecisions, installToolGuard, postCommitListener, postExecuteListe
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { goalService } from './src/goal.js'
+import { loadedDigest } from './src/digest.js'
 import { SETUP_PROMPT } from './src/setup.js'
 import { registerClientState } from './src/client-state.js'
 
 export const name = 'measure-guard'
+
+/**
+ * The digest of the bytes this instance loaded (Story S1). It is computed once,
+ * at module evaluation, never per request: a stale Host instance that was
+ * loaded before an install replaced the files keeps the old digest, which is
+ * exactly what `bin/measure-dsh --check --live` compares against the source.
+ */
+const LOADED_DIGEST = loadedDigest(fileURLToPath(new URL('.', import.meta.url)))
 
 export const inject = [
   'tools',
@@ -170,6 +180,8 @@ export function apply(ctx, config) {
     // The installed entry identifies itself on the state route; the CLI's live
     // check compares this URL with the installed copy.
     moduleUrl: import.meta.url,
+    // The digest of the loaded bytes, for the CLI's stale-instance check.
+    digest: LOADED_DIGEST,
     // The setup button's "Set up Measure" answer delivers the shared core's
     // setup prompt to the receiving agent exactly once (Story S5).
     injectSetup: agent => {

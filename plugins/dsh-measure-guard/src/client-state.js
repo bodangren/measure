@@ -95,10 +95,12 @@ const jsonResponse = (value, status = 200, headers = {}) =>
  * `--check --live` compares this header with the installed `index.js`, so a
  * still-loaded working-tree copy cannot masquerade as the installed copy.
  */
-const moduleIdentity = deps =>
-  typeof deps.moduleUrl === 'string' && deps.moduleUrl !== ''
-    ? { 'x-measure-guard-module': deps.moduleUrl }
-    : {}
+const moduleIdentity = deps => {
+  const headers = {}
+  if (typeof deps.moduleUrl === 'string' && deps.moduleUrl !== '') headers['x-measure-guard-module'] = deps.moduleUrl
+  if (typeof deps.digest === 'string' && deps.digest !== '') headers['x-measure-guard-digest'] = deps.digest
+  return headers
+}
 
 /**
  * The resource of the state route. Every I/O failure is caught: the response

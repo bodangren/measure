@@ -42,6 +42,7 @@ Usage:
   measure-dsh --check   [--dsh-home DIR] [--profile NAME] [--source DIR]
                         [--mode MODE] [--project DIR] [--live] [--session ID]
                         [--json]
+  measure-dsh reload    [--dsh-home DIR] [--profile NAME] [--dry-run]
   measure-dsh uninstall [--dsh-home DIR] [--profile NAME] [--keep-copy]
                         [--dry-run]
   measure-dsh --help
@@ -54,6 +55,10 @@ Modes:
              failed, 1 when one failed, 3 on an environment error.
   uninstall  remove the managed record and the plugin copy the CLI owns. Skill
              copies and foreign rows are never touched.
+  reload     rewrite the profile's cordis.patch.yml (its trailing newline is
+             toggled; every YAML entry is unchanged) so the running profile
+             recomposes and loads the installed plugin code. Run it after
+             `install` when `--check --live` reports stale code.
 
 Resolution:
   dsh home   --dsh-home, else $DSH_HOME, else ~/.dsh
@@ -145,6 +150,10 @@ case "$1" in
     COMMAND=uninstall
     shift
     ;;
+  reload)
+    COMMAND=reload
+    shift
+    ;;
   -h | --help)
     usage
     exit 0
@@ -191,7 +200,7 @@ while (($#)); do
       shift
       ;;
     --dry-run)
-      [[ "$COMMAND" == "install" || "$COMMAND" == "uninstall" ]] || usage_error "--dry-run is an install and uninstall option"
+      [[ "$COMMAND" == "install" || "$COMMAND" == "uninstall" || "$COMMAND" == "reload" ]] || usage_error "--dry-run is an install, uninstall, and reload option"
       DRY_RUN=1
       shift
       ;;
@@ -292,6 +301,37 @@ node_supported() {
   minor="${v%%.*}"
   [[ "$major" =~ ^[0-9]+$ && "$minor" =~ ^[0-9]+$ ]] || return 1
   ((major > 24 || (major == 24 && minor >= 9)))
+}
+
+# Rewrites the patch file with its trailing-newline count toggled (one <-> two),
+# so a watching loader recomposes the profile. The YAML text and every entry,
+# including the managed block, stay byte-equal apart from those newlines.
+recompose_patch() {
+  local content size stripped trailing
+  content="$(cat -- "$PATCH_FILE")"
+  size="$(wc -c <"$PATCH_FILE")"
+  stripped=${#content}
+  trailing=$((size - stripped))
+  if ((trailing >= 2)); then
+    atomic_write_text "$content"$'\n' "$PATCH_FILE"
+  else
+    atomic_write_text "$content"$'\n\n' "$PATCH_FILE"
+  fi
+}
+
+# The digest the plugin computes over its code files (src/digest.js): sha256
+# over "<rel>\n<sha256(file)>\n" lines for the sorted code file list.
+source_digest() {
+  local dir="$1" rel
+  {
+    for rel in index.js client.js package.json cordis.patch.yml; do
+      [[ -f "$dir/$rel" ]] && printf '%s\n' "$rel"
+    done
+    find "$dir/locale" -maxdepth 1 -type f -name '*.json' -printf 'locale/%f\n' 2>/dev/null || true
+    find "$dir/src" -type f \( -name '*.js' -o -name '*.ts' \) -printf 'src/%P\n' 2>/dev/null || true
+  } | LC_ALL=C sort -u | while IFS= read -r rel; do
+      printf '%s\n%s\n' "$rel" "$(sha_of "$dir/$rel")"
+    done | sha256sum | cut -d' ' -f1
 }
 
 # --- Collected output ---------------------------------------------------------
@@ -767,8 +807,21 @@ write_managed_block() {
   local generated
   generated="$(printf '%s\n' "${out[@]}")"
   if [[ -f "$PATCH_FILE" ]] && [[ "$generated" == "$(cat -- "$PATCH_FILE")" ]] && has_trailing_newline "$PATCH_FILE"; then
-    add_action KEEP "$PATCH_FILE"
-    add_item record PASS "managed block unchanged (mode: $GUARD_MODE)"
+    if ((DRY_RUN)); then
+      add_action KEEP "$PATCH_FILE"
+      add_item record PASS "managed block unchanged (mode: $GUARD_MODE)"
+      return 0
+    fi
+    # The bytes are unchanged, so a watching loader would not recompose.
+    # Toggle the trailing newline: the YAML content stays equal, but the patch
+    # write makes the running profile load the installed plugin code.
+    if ! recompose_patch; then
+      add_item record FAIL "could not rewrite $PATCH_FILE to trigger a recompose"
+      INSTALL_FAILED=1
+      return 1
+    fi
+    add_action WRITE "$PATCH_FILE"
+    add_item record PASS "managed block unchanged (mode: $GUARD_MODE); patch rewritten to trigger a live recompose"
     return 0
   fi
 
@@ -1231,6 +1284,17 @@ live_check() {
     add_item live FAIL "HTTP 200 without a band field from $url"
     return 0
   fi
+  local digest installed_digest
+  digest="$(printf '%s\n' "$resp" | sed -n 's/^[Xx]-[Mm]easure-[Gg]uard-[Dd]igest:[[:space:]]*//p' | head -n 1 | tr -d '\r')"
+  installed_digest="sha256:$(source_digest "$PLUGIN_TARGET")"
+  if [[ -z "$digest" ]]; then
+    add_item live WARN "HTTP 200 with a band field; the loaded module predates the digest header, so its code identity is unproven; run 'bin/measure-dsh reload' or restart DSH"
+    return 0
+  fi
+  if [[ "$digest" != "$installed_digest" ]]; then
+    add_item live FAIL "the running host loaded stale plugin code (loaded $digest, installed $installed_digest); run 'bin/measure-dsh reload' or restart DSH"
+    return 0
+  fi
   module="$(printf '%s\n' "$resp" | sed -n 's/^[Xx]-[Mm]easure-[Gg]uard-[Mm]odule:[[:space:]]*//p' | head -n 1 | tr -d '\r')"
   module="${module#"${module%%[![:space:]]*}"}"
   module="${module%"${module##*[![:space:]]}"}"
@@ -1243,7 +1307,7 @@ live_check() {
   module_path="${module_path//%20/ }"
   expected="$(realpath -m -- "$PLUGIN_TARGET/index.js")"
   if [[ "$(realpath -m -- "$module_path")" == "$expected" ]]; then
-    add_item live PASS "HTTP 200 with a band field; the module header matches $expected"
+    add_item live PASS "HTTP 200 with a band field; the module header matches $expected; digest ${digest:0:24} matches the installed copy"
   else
     add_item live FAIL "the running host loaded $module_path, not the installed copy $expected; restart DSH after installing"
   fi
@@ -1518,8 +1582,46 @@ do_uninstall() {
   exit 1
 }
 
+do_reload() {
+  if [[ ! -d "$PROFILE_DIR" ]]; then
+    add_item reload FAIL "profile folder does not exist: $PROFILE_DIR"
+    print_items
+    printf 'reload aborted: environment error\n'
+    exit 3
+  fi
+  if [[ ! -f "$PATCH_FILE" ]]; then
+    add_item reload FAIL "no patch file at $PATCH_FILE"
+    print_items
+    printf 'reload aborted: environment error\n'
+    exit 3
+  fi
+  if [[ ! -w "$PATCH_FILE" ]]; then
+    add_item reload FAIL "patch file is not writable: $PATCH_FILE"
+    print_items
+    printf 'reload aborted: environment error\n'
+    exit 3
+  fi
+  if ((DRY_RUN)); then
+    add_item reload PASS "would rewrite $PATCH_FILE (trailing newline toggled) to trigger a live recompose"
+    print_items
+    printf 'dry run: no files written\n'
+    exit 0
+  fi
+  if ! recompose_patch; then
+    add_item reload FAIL "could not rewrite $PATCH_FILE"
+    print_items
+    printf 'reload incomplete\n'
+    exit 1
+  fi
+  add_item reload PASS "rewrote $PATCH_FILE (trailing newline toggled) to trigger a live recompose"
+  print_items
+  printf 'reload complete: the running profile recomposes on the patch-file change.\n'
+  exit 0
+}
+
 case "$COMMAND" in
   install) do_install ;;
   check) do_check ;;
   uninstall) do_uninstall ;;
+  reload) do_reload ;;
 esac

@@ -42,15 +42,19 @@ assert_file "$HOME/.claude/skills/measure-orchestrator/SKILL.md"
 assert_out '^PASS skill-install:'
 grep -q 'installer ref=t1' "$STUB_INSTALLER_LOG" || fail "the installer stub did not receive --ref t1"
 
-# 2. A second install with the same inputs writes nothing and says unchanged.
+# 2. A second install rewrites only the patch as the recompose trigger: the
+#    plugin files, stamp, and skills are unchanged and every YAML entry stays
+#    equal (only the trailing-newline count moves).
 before="$(profile_fingerprint)"
+patch_content="$(cat -- "$PATCH")"
 run install --no-skills
 assert_rc 0
-assert_eq "$(profile_fingerprint)" "$before"
-assert_out 'unchanged'
-assert_not_out '^WRITE '
+assert_out 'patch rewritten to trigger a live recompose'
+assert_not_out '^WRITE .*plugins/'
 assert_not_out '^REMOVE '
 assert_not_out '^MKDIR '
+assert_eq "$(cat -- "$PATCH")" "$patch_content"
+[[ "$(profile_fingerprint)" != "$before" ]] || fail "the second install did not rewrite the patch"
 
 # 3. A locally edited destination is kept, warned about, and keeps its old
 #    stamped hash even when the source moves on.

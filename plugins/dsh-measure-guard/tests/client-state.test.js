@@ -241,6 +241,18 @@ test('clientStateResponse identifies the loaded Host module', async () => {
   assert.equal(response.headers.get('x-measure-guard-module'), 'file:///opt/dsh/plugins/dsh-measure-guard/index.js')
 })
 
+test('clientStateResponse carries the loaded digest when the entry has one', async () => {
+  const deps = depsOf({ digest: 'sha256:abc123' })
+  const response = await clientStateResponse(deps, requestOf('?sessionId=session-1'))
+  assert.equal(response.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+})
+
+test('clientStateResponse omits the digest header when the entry has none', async () => {
+  const deps = depsOf()
+  const response = await clientStateResponse(deps, requestOf('?sessionId=session-1'))
+  assert.equal(response.headers.get('x-measure-guard-digest'), null)
+})
+
 test('clientStateResponse omits the module header when the entry passes no moduleUrl', async () => {
   const response = await clientStateResponse(depsOf(), requestOf('?sessionId=session-1'))
   assert.equal(response.headers.get('x-measure-guard-module'), null)

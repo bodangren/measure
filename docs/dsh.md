@@ -91,9 +91,18 @@ One line per item: the profile folder, Node, the two skill copies (every
 repository file present, roots resolved in the DSH order), the plugin copy (all
 files plus an exact stamp), the plugin module's exports, the managed row and its
 mode, any foreign row, and with `--live` the state route (200 plus a `band`
-field and, once the guard plugin ships it, the `x-measure-guard-module` header
-naming the installed copy). Exit code 0 means no item failed; `--json` prints
-the same items as a machine-readable object.
+field, the `x-measure-guard-module` header naming the installed copy, and the
+`x-measure-guard-digest` header with the digest of the loaded code bytes). A
+mismatched digest is FAIL because the running Host executes stale plugin code;
+an absent digest is WARN. Exit code 0 means no item failed; `--json` prints the
+same items as a machine-readable object.
+
+After `install` replaces the plugin copy, the running profile must recompose to
+load the new code. `install` writes the patch file even when the managed block is
+unchanged, and `bin/measure-dsh reload` performs the same write on demand; both
+toggle only trailing newlines, so the YAML entries stay byte-equal. Restart DSH
+when `--check --live` still reports a stale digest (some hosts do not watch the
+patch file).
 
 ## Modes
 
