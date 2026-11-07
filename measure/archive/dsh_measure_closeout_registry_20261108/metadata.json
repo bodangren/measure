@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_closeout_registry_20261108",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T09:00:00Z",
+  "updated_at": "2026-11-09T09:40:00Z",
+  "description": "Make closeout verify the archived track's registry entry and its description against metadata, with a new CLI test for matching/mismatch/missing cases",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The check reports at most one registry problem per track and skips a missing registry file (the existing archive checks still apply). (2) When the metadata description is empty the expected text is the entry bold title, matching the registry structural rule. (3) The new test joins the CLI suite automatically (12 passed).",
+  "completed": "2026-11-09"
+}
