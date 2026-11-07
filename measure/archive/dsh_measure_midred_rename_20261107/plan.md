@@ -19,6 +19,6 @@ scripts, and `bash tests/dsh/run.sh`.
 
 ## Phase 2: Records and closeout
 
-- [~] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
-- [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; `spec-review.md` records the review with the author responses
+- [x] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md` `09fd7fe`; `spec-review.md` records the review with the author responses
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
