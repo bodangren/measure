@@ -167,3 +167,11 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure registry consolidation**
   *Link: [./archive/dsh_measure_registry_fix2_20261107/](./archive/dsh_measure_registry_fix2_20261107/)*
   *Consolidate measure/tracks.md to one layout (every archive directory exactly once, full metadata descriptions), harden tests/dsh/test-registry.sh with attribution rules and isolated negative fixtures, and correct the archived registry track's record*
+
+- [x] **Track: DSH Measure registry checker completeness**
+  *Link: [./archive/dsh_measure_registry_fix3_20261107/](./archive/dsh_measure_registry_fix3_20261107/)*
+  *Complete the registry structural check: section placement, description content equality against each archive's metadata (title fallback), and rejection of the old one-line link shape; deliver the consolidation review record*
+
+- [x] **Track: DSH Measure registry check finalization**
+  *Link: [./archive/dsh_measure_registry_fix4_20261107/](./archive/dsh_measure_registry_fix4_20261107/)*
+  *Finalize the registry check: pin the label-stripped-title fallback, add empty-fallback and section-only fixtures, name the evidence file and JSON mechanism, and deliver the fix3 review record*
