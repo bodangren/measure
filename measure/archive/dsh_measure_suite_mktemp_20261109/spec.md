@@ -57,3 +57,13 @@ tech-debt MKTEMP row.
 
 - The parser scope rule, the commit staged-read race, and the opencode/A11
   report-only rows.
+
+> **Correction (2026-11-09, after the review):** "every suite" means every shell
+> suite; `test_checker.py` uses `tempfile.mkdtemp` and is out of scope. The guard
+> has two halves — empty and not-a-directory — and the proof exercises both (the
+> second stub exits 0 and prints a regular file). Each stubbed run is bounded by
+> `timeout 60`; the repository snapshot includes `--ignored`. The preserved
+> contract is the nine existing suites' checks/summaries/flags and the 11/11
+> gate. The acceptance mirrors the gates: srg 11/11, CLI 12/12, node 301/301,
+> both parity gates. The older guard message is replaced in the three docs
+> suites; the distinct `tempfile.mkdtemp` message in `test_checker.py` stays.

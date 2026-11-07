@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **spec-review-gate suites:** every suite now guards a failed `mktemp -d` with the same `FAIL: mktemp -d failed; no fixture can be built` message, a one-FAIL summary, and exit 1; the new `tests/spec_review_gate/test_mktemp_failure.sh` stubs `mktemp` on PATH and proves the guard for all nine suites plus repository cleanliness (10 checks; gate 11/11). Track `dsh_measure_suite_mktemp_20261109`.
+* **spec-review-gate suites:** every suite now guards a failed `mktemp -d` with the same `FAIL: mktemp -d failed; no fixture can be built` message, a one-FAIL summary, and exit 1; the new `tests/spec_review_gate/test_mktemp_failure.sh` stubs `mktemp` on PATH — once failing, once succeeding with a regular file — and proves the guard for all nine suites plus repository cleanliness including ignored paths (19 checks; gate 11/11). Track `dsh_measure_suite_mktemp_20261109`.
 
 ### Features
 
