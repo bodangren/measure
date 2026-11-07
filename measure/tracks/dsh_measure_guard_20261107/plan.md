@@ -55,7 +55,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 ## Phase 3: Guard layer
 
-- [~] Task 3.1: Decision preparation
+- [x] Task 3.1: Decision preparation `8ff0330`
     - [ ] `src/guard.js`: decision `Map` keyed by `exec.token` filled in `tools/pre-execute`, read by the synchronous `ctx.tools.guard`, cleared on `tools/result`; try/catch defaults to allow
     - [ ] `tests/guard-prep.test.js`: decision lifecycle, deny text reaches the guard, parse error allows, a throwing preparation or a failed git/fs read allows (fail open)
 - [ ] Task 3.2: Tool mutation normalization
