@@ -9,12 +9,12 @@ the strict deny, then document and close out. The gate is
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase 1: The authenticated host-API probe
+## Phase 1: The authenticated host-API probe [checkpoint: 0f4d32c]
 
 - [x] Task 1.1: discover and record the GUI's auth context (browser bridge: attach to `http://127.0.0.1:3080`, read the page's storage/cookie for the value that authorizes `/api/`; record only whether it exists, never the value) and probe `GET /api/session` with it
 - [x] Task 1.2: `tests/dsh/rehearsal/host-api.mjs` (test-only): the auth value from an environment variable; list sessions (`GET /api/session`); create a session with `{ cwd }` (route/verb confirmed by the probe); prompt it with `{ text }`; print status and bounded excerpts; error clearly when auth is missing; never print the auth value
 - [x] Task 1.3: run the helper against the live host: list sessions, create a throwaway fixture-rooted session, print its summary (`workingDirectory` = the fixture root), and close/leave it inert
-- [ ] Task: Measure - User Manual Verification 'Phase 1: The authenticated host-API probe' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: The authenticated host-API probe' (Protocol in workflow.md) `0f4d32c`
 
 ## Phase 2: The executed strict deny
 
