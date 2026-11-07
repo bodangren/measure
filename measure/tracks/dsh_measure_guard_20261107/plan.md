@@ -90,7 +90,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 ## Phase 5: Distribution and docs
 
-- [~] Task 5.1: Documentation and display resources
+- [x] Task 5.1: Documentation and display resources `e12a914`
     - [ ] `README.md` (install, parity, layout, behavior, known limits), `locale/en.json`, `locale/zh.json`, `icon.svg`
 - [ ] Task 5.2: Distribution
     - [ ] `bin/install-targets.tsv` row: `plugins/dsh-measure-guard<TAB>~/.dsh/profiles/web/plugins/dsh-measure-guard<TAB>!(tests/*)`
