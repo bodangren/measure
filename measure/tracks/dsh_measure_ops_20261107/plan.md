@@ -12,7 +12,7 @@ files are `plugins/dsh-measure-guard/tests/*.test.js`; the gate is
 `node --test plugins/dsh-measure-guard/tests/*.test.js` plus both parity gates,
 `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase S1: The effective mode and the mode command
+## Phase S1: The effective mode and the mode command [checkpoint: 2d54132]
 
 _Story ref: spec.md#story-s1_
 
@@ -28,7 +28,7 @@ _Story ref: spec.md#story-s1_
     - [ ] `tests/edit-guard.test.js` (extended): a session mode override of `strict` turns a source edit into the strict deny; `advise` allows it; the repository override wins over the session override
 - [x] Task 1.3: Green: implement the seam, the command, the wiring, and the view; the suite passes `0741326`
 - [x] Task 1.4: Docs: README "Modes" (precedence, `/measure-mode`, the route field) and `docs/dsh.md` `0741326`
-- [ ] Task: Measure - User Manual Verification 'Phase S1: The effective mode and the mode command' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: The effective mode and the mode command' (Protocol in workflow.md) `2d54132`
 
 ## Phase S2: On-demand verification
 
