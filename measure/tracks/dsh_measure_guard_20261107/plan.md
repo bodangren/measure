@@ -68,8 +68,8 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `src/guard.js`: track close (`closedTracks`) and phase start (`phaseStartDecision`) on `tracks.md`/`plan.md` edits
     - [ ] `tests/closeout.test.js`: close with open tasks denied, close with `[b]` + `deferred:` allowed with a note, phase N+1 without checkpoint denied
 - [ ] Task 3.5: End-of-turn check
-    - [ ] `src/guard.js`: baseline at the first `agent/pre-step`; problems at `agent/turn-stopping`; strict holds the turn open by `agent.inject` at most `MAX_BLOCKS` (2) times; guard mode reminder at the next `pre-step`; band problems
-    - [ ] `tests/end-of-turn.test.js`: changed files with no `[~]` reported, `[x]` without SHA reported, strict second-step injection bounded to 2, advise records only
+    - [ ] `src/guard.js`: baseline at the first `agent/pre-step`; problems at `agent/turn-stopping`; strict holds the turn open by `agent.steer` at most `MAX_BLOCKS` (2) times; guard mode reminder at the next `pre-step`; band problems
+    - [ ] `tests/end-of-turn.test.js`: changed files with no `[~]` reported, `[x]` without SHA reported, strict steer bounded to 2, advise records only
 - [ ] Task 3.6: Measure - User Manual Verification 'Phase 3: Guard layer' (Protocol in workflow.md)
 
 ## Phase 4: Client surface

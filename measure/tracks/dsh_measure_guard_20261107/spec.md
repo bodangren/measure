@@ -97,7 +97,7 @@ task with no SHA and files changed outside `measure/` while no task is `[~]`.
 The baseline is `git status` at the first `agent/pre-step` of the turn; the
 problems are computed at `agent/turn-stopping`. `advise` shows them in the band
 only; `guard` adds a UI notice and an agent reminder delivered by the next
-`agent/pre-step`; `strict` holds the turn open by injecting at
+`agent/pre-step`; `strict` holds the turn open by steering at
 `agent/turn-stopping`, at most `MAX_BLOCKS` (2) times. **The band** is the
 `conversation.input.dock` strip; it shows `bandLine()`, the setup offer, the
 `[b]` count, the open problems, and the guard bypass state.

@@ -208,13 +208,14 @@ closeout guard (`readOrEmpty` + `applyEdit`/`applyMultiEdit` equivalents).
   a plan edit uses `phaseStartDecision`.
 - **End-of-turn**: baseline at the first `agent/pre-step` of the turn
   (`gitStatus` via subprocess); `agent/turn-stopping` computes problems and
-  **strict** holds the turn open by `agent.inject(newUserMessage(...))`, at most
-  `MAX_BLOCKS` times. Verified in `dsh-agent-loop/lib/index.js:789-797`: after
-  the turn-stopping dispatch the loop breaks only when the `next-step` inbox is
-  empty, and `inject()` splices into `next-step` (`:576`), so an injection at
-  that boundary opens one more step. Guard mode records the problems and queues
-  a reminder delivered by the next `agent/pre-step` (and shows them in the
-  band). `advise` shows the band only.
+  **strict** holds the turn open by `agent.steer(newUserMessage(...))`, at most
+  `MAX_BLOCKS` times. `steer()` is the documented objection lever at that
+  boundary (`dsh-agent/README.md`: a listener objects by steering and the
+  machine re-reads its inbox); `dsh-agent-loop/lib/index.js:789-797` shows the
+  loop breaks only when the `next-step` inbox is empty after the turn-stopping
+  dispatch, and `steer()` splices there and wakes the driver (`:571-578`).
+  Guard mode records the problems and queues a reminder delivered by the next
+  `agent/pre-step` (and shows them in the band). `advise` shows the band only.
 
 ## 8. Client surface (FR-4, FR-10; plain JS, no build)
 
@@ -319,10 +320,10 @@ The adapter never re-implements these: `src/status.js` and `src/commands.js` cal
 ## 13. Deviations from the spec text (recorded for the Author Response)
 
 1. FR-2: task notes use `agent/pre-step`, not `agent.inject`, for exactly-once.
-2. FR-9 is kept as written: strict holds the turn open by `agent.inject()` in
-   `agent/turn-stopping`; the loop re-reads the next-step inbox after the
-   boundary, so the injection starts one more step (verified in the agent loop
-   source, not only in the README).
+2. FR-9 names `agent.steer()` for the strict hold-open, the documented
+   objection lever at `agent/turn-stopping`. `agent.inject()` would also land
+   in the next-step inbox, but steer is the documented mechanism, so the spec,
+   the plan and this design name steer.
 3. FR-11: repository config persists in a JSON state file, not `ctx.storageDomain`.
 4. NFR-3: parity compares `guards.ts` after one documented mechanical transform
    (the `./parse` specifier gains its `.ts` extension, the only extensionless
