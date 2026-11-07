@@ -91,9 +91,34 @@ if [ -s "$AUDIT" ]; then pass "agents/measure-orchestrator-audit.md exists"; els
 if [ -n "$AUDIT" ] && [ -s "$AUDIT" ]; then
   if grep -qF '"schema_version": 1' "$AUDIT"; then pass "the audit example uses schema_version 1"; else fail "the audit example does not use schema_version 1"; fi
   if grep -qF '"schema_version": 2' "$AUDIT"; then fail "the audit doc still shows schema_version 2"; else pass "the audit doc has no schema_version 2"; fi
-  if grep -qF 'as a candidate' "$AUDIT" && grep -qF 'PROPOSAL:' "$AUDIT"; then pass "the audit outputs are proposals with the PROPOSAL format"; else fail "the audit outputs do not define the proposal format"; fi
-  if grep -qF 'entries get appended' "$AUDIT"; then fail "the audit doc still says entries get appended"; else pass "the audit doc no longer appends catalog entries"; fi
-  if grep -qF 'you may write a focused guard test' "$AUDIT"; then fail "the audit doc still asks the role to write a guard test"; else pass "the audit doc no longer writes guard tests"; fi
+  # Whole-file, whitespace-collapsed searches: a reintroduced instruction fails even when
+  # its phrase wraps across lines, and the format/status sentences are pinned in full.
+  FLAT_AUDIT="$(flat "$(cat "$AUDIT")")"
+  if [[ "$FLAT_AUDIT" == *'is a nonblocking finding whose text starts with `PROPOSAL:` and names the proposed path and assertion'* ]]; then
+    pass "the candidate format is pinned as one sentence (nonblocking finding, PROPOSAL, path, assertion)"
+  else
+    fail "the candidate format sentence is missing or incomplete"
+  fi
+  if [[ "$FLAT_AUDIT" == *'does not change the audit result'* && "$FLAT_AUDIT" == *'`status` stays `"pass"`'* ]]; then
+    pass "a proposed failing guard is nonblocking and keeps the audit status pass"
+  else
+    fail "the proposed-failing-guard status rule is missing or incomplete"
+  fi
+  if [[ "$FLAT_AUDIT" == *'A proposed guard that would fail produces `status: "fail"`'* ]]; then
+    fail "the audit doc still fails the audit for a proposed guard"
+  else
+    pass "the audit doc no longer fails the audit for a proposed guard"
+  fi
+  if [[ "$FLAT_AUDIT" == *'entries get appended'* ]]; then
+    fail "the audit doc still says entries get appended (even wrapped)"
+  else
+    pass "the audit doc no longer appends catalog entries (whole-file, collapsed)"
+  fi
+  if [[ "$FLAT_AUDIT" == *'you may write a focused guard test'* ]]; then
+    fail "the audit doc still asks the role to write a guard test (even wrapped)"
+  else
+    pass "the audit doc no longer writes guard tests (whole-file, collapsed)"
+  fi
 fi
 
 echo "=== audit role: ## Doc drift detector stands after ## A10 and before ## Outputs ==="

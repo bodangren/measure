@@ -143,8 +143,11 @@ Run each detection recipe from `measure/anti-patterns.md`. For each finding:
    regression hasn't happened yet).
 3. If the test/guard does NOT exist, report the proposed guard test path and its
    assertion as a candidate (see Outputs); this role does not write it. Do not fix the
-   implementation being audited. A proposed guard that would fail produces `status: "fail"`
-   and routes remediation to the owning implementation role.
+   implementation being audited. A proposed guard that would fail is a nonblocking
+   candidate and does not change the audit result: `status` stays `"pass"`, because the
+   role only proposes the guard and the orchestrator or a track applies it. A catalog
+   violation the audit itself blocks produces `status: "fail"` and routes remediation to
+   the owning implementation role.
 
 ## A2 (consent-blind publish gate) detector
 
