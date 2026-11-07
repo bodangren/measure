@@ -17,5 +17,5 @@ corrected archived record, then the gates and closeout.
 
 ## Phase 2: Closeout
 
-- [ ] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md` `3119de8`
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md)
