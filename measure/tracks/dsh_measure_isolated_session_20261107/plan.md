@@ -18,12 +18,12 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 2: The executed strict deny
 
-- [ ] Task 2.1: build the fixture (`tests/dsh/rehearsal/make-project.sh`), write the fixture root's `strict` mode override in `repos.json`, reload, create a session with `cwd` = fixture, prompt a minimal source edit with no Red phase, and capture the strict deny text
-- [ ] Task 2.2: cleanup (clear the override, reload, remove the fixture) and record the evidence: fixture path, session id and `workingDirectory`, prompt text, HTTP statuses, deny text verbatim, cleanup commands and results
+- [x] Task 2.1: build the fixture (`tests/dsh/rehearsal/make-project.sh`), write the fixture root's `strict` mode override in `repos.json`, reload, create a session with `cwd` = fixture, prompt a minimal source edit with no Red phase, and capture the strict deny text
+- [x] Task 2.2: cleanup (clear the override, reload, remove the fixture) and record the evidence: fixture path, session id and `workingDirectory`, prompt text, HTTP statuses, deny text verbatim, cleanup commands and results
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The executed strict deny' (Protocol in workflow.md)
 
 ## Phase 3: Documentation and closeout
 
-- [ ] Task 3.1: replace the "accepted risk" in `skills/measure-orchestrator/references/dsh.md` §10 with the proven session path (keeping the subagent-root limitation); update `docs/dsh.md`, the plugin README, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md`
+- [x] Task 3.1: replace the "accepted risk" in `skills/measure-orchestrator/references/dsh.md` §10 with the proven session path (keeping the subagent-root limitation); update `docs/dsh.md`, the plugin README, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md`
 - [ ] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md)

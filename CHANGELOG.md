@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **dsh isolated-session rehearsal:** the guard's strict deny is proven in a disposable project by a session whose working directory is the fixture (created through the host session RPC `POST /api/session/create` with `{ cwd }`); the deny text, the session ids, and the cleanup checks are recorded under `measure/runs/dsh_measure_isolated_session_20261107/`. The run also proved that `bin/measure-dsh reload` (a comment-marker toggle) does not refresh the running plugin's cached repository-mode store — the next track fixes that. Track `dsh_measure_isolated_session_20261107`.
+
+### Features
+
 * **parse:** the shared parser reads the two live `tracks.md` shapes: an optional ordered-list prefix (`1. - [~] **Track: …**`) and a `*Link:*` on the same bold line, in addition to this repository's next-line link. The DSH adapter had reported `cannot read the Measure files: … has track lines in no known format` for the Mediarr registry (198 entries, 9 active now parse). The canonical change is in `mods/measure-guard/hooks/parse.ts`; the OpenCode and DSH parity copies and both unknown-format detectors follow. Track `dsh_measure_evolve_20261107`.
 
 ### Bug Fixes

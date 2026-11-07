@@ -212,6 +212,11 @@ directory is that project; `dsh --profile headless` cannot host the guard
 because the plugin requires `webServer` and the profile's stored credentials.
 The evidence is under `measure/runs/dsh_measure_team_rehearsal_20261107/`.
 
+The strict deny path itself is proven with a session whose working directory is
+the fixture (`POST /api/session/create` with `{ cwd }`, then a prompt that edits
+a source file with no Red phase): the reply carries the strict deny, recorded in
+`measure/runs/dsh_measure_isolated_session_20261107/`.
+
 ## Uninstall
 
 ```bash

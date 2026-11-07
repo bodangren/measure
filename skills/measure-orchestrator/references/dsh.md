@@ -220,7 +220,12 @@ agent through the **parent session's** working directory (the `cwd` option
 changes only its shell directory); `measure/` edits never need the Red phase but
 are not unconditionally allowed (the closeout guard and the registry/shell
 denies still apply); and the per-agent Red record makes the role handoff
-explicit. What the run did **not** prove is the strict deny path itself: that
-needs a session whose working directory is the fixture (see the accepted risk in
-the rehearsal track's review record).
+explicit. The strict deny path is proven in a session whose working directory is the
+fixture: open one with the host's session RPC (`POST /api/session/create` with
+`{ cwd: <fixture> }`; the GUI's own page context already holds the auth cookie,
+and `tests/dsh/rehearsal/host-api.mjs` is the operator form). Set the fixture
+root's mode override to `strict`, reload with a **semantic** change (a comment
+marker is not enough — the loader ignores it), then prompt a source edit with no
+Red phase: the reply carries the strict deny. A subagent of another session
+still cannot do this, because its guard root stays that parent session's root.
 
