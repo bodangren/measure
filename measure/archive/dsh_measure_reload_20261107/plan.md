@@ -21,8 +21,8 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 2.2: cleanup (no override, config mode restored, live check PASS) and write the evidence under `measure/runs/dsh_measure_reload_20261107/`
 - [x] Task: Measure - User Manual Verification 'Phase 2: The live proof' (Protocol in workflow.md) `acfe0f9`
 
-## Phase 3: Documentation and closeout
+## Phase 3: Documentation and closeout [checkpoint: 6165747]
 
 - [x] Task 3.1: update `bin/measure-dsh`'s help/usage text, the plugin README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md` (the Medium reload row resolves)
 - [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `d4465d8`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md) `6165747`
