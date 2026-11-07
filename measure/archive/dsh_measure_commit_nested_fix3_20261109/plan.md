@@ -18,7 +18,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: run `bash tests/dsh/run.sh` (13/13) and `bash tests/spec_review_gate/run.sh` (11/11) `0ef8886`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `662d67c`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: 9164f97]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_commit_nested_fix3_20261109` and record the manifest-only FAIL `e7da2e8`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `9164f97`
