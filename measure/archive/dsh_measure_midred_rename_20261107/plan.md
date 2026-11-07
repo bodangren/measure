@@ -22,3 +22,11 @@ scripts, and `bash tests/dsh/run.sh`.
 - [x] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
 - [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md` `09fd7fe`; `spec-review.md` records the review with the author responses
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `08c3792`
+
+> **Follow-up correction (2026-11-07, dsh_measure_midred_followup_20261107):**
+> the delivered implementation used two git calls; the follow-up replaced it with
+> the single `--no-renames -z` call. The executed Red order was: the test was
+> written first, then a missing `tests/` fixture directory was fixed, the fix was
+> applied, and a temporary copy/revert of `committed_files` proved the genuine
+> bypass (old code exits 0 with no feedback) and the fixed behaviour (exit 1 with
+> `- src/a.py`).

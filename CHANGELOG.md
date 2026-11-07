@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **spec-review gate mid-red rename:** the orchestrator checker's `committed_files` now unions both sides of every rename (`git diff --name-status --diff-filter=R`), so the mid-red gate catches a Red commit that renames a production file into `tests/` instead of passing it. A regression test proves the old code exits 0 (the bypass) and the fix exits 1 with the old path listed; the spec-review-gate suite is 10/10. Track `dsh_measure_midred_rename_20261107`.
+* **spec-review gate mid-red rename:** the orchestrator checker's `committed_files` now forces `--no-renames`, so a rename lists its old path as a deletion and its new path as an addition in one call, so the mid-red gate catches a Red commit that renames a production file into `tests/` instead of passing it. A regression test proves the old code exits 0 (the bypass) and the fix exits 1 with the old path listed; the spec-review-gate suite is 10/10. Track `dsh_measure_midred_rename_20261107`.
 
 ### Features
 
