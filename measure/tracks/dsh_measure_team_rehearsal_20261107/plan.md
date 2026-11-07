@@ -20,12 +20,12 @@ rehearsal, then closeout. The gate is
 - [x] Task 2.1: add a "Rehearsal" section to `skills/measure-orchestrator/references/dsh.md`: the three spawns with `cwd`, the strict mode override for the fixture root, the per-agent Red record rule (Green must run the failing test itself), the always-allowed `measure/` writes, the evidence to capture, and the cleanup `f570cb2`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Rehearsal protocol docs' (Protocol in workflow.md) `6f2242b`
 
-## Phase 3: Executed rehearsal
+## Phase 3: Executed rehearsal [checkpoint: 4223112]
 
 - [x] Task 3.1: build a fixture, set its repository mode override to `strict` through the same `repos.json` seam, and spawn the Red subagent (`cwd` = fixture) to write and run a failing test; capture the target and the failure
 - [x] Task 3.2: spawn the Green subagent (`cwd` = fixture) to run the failing test itself, implement until green, and commit with a git note; capture the guard behaviour and the commit; check whether a first source edit before the Green's own Red is denied as predicted
 - [x] Task 3.3: clear the mode override, remove the fixture, and record the evidence (fixture path, subagent targets, guard denies/notes, test fail/pass, commit) under `measure/runs/dsh_measure_team_rehearsal_20261107/`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Executed rehearsal' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Executed rehearsal' (Protocol in workflow.md) `4223112`
 
 ## Phase 4: Documentation and closeout
 
