@@ -61,7 +61,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 3.2: Tool mutation normalization `0108659`
     - [ ] `src/hooks.js`: `normalizeMutation` for `edit`, `write`, `apply_patch`, `str_replace_editor`, `bash`, `pwsh`; multi-path call denied when any path is denied
     - [ ] `tests/mutation.test.js`: every tool shape, relative paths, multi-path deny, non-mutation tools
-- [~] Task 3.3: Edit guard
+- [x] Task 3.3: Edit guard `a416bd4`
     - [ ] `src/guard.js`: `editDecision` on every normalized path; deny text names the next task and `/measure-off`
     - [ ] `tests/edit-guard.test.js`: deny without `[~]`, allow with `[~]`, allow inside `measure/`, allow list, bypass, `advise` mode
 - [ ] Task 3.4: Closeout guard
