@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure audit contract fix3**
+  *Link: [./tracks/dsh_measure_audit_contract_fix3_20261110/](./tracks/dsh_measure_audit_contract_fix3_20261110/)*
+  *Pin the audit status for a proposed failing guard, make the doc checks whole-file and format-complete, and reconcile the fix2 review*
 
 ---
 
