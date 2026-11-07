@@ -17,8 +17,8 @@ scripts, and `bash tests/dsh/run.sh`.
 - [x] Task 1.4: run `bash tests/spec_review_gate/run.sh`; all 10 suites pass (10/10 PASS on the final tree)
 - [x] Task: Measure - User Manual Verification 'Phase 1: Rename-aware committed files' (Protocol in workflow.md) `2de82ef`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 08c3792]
 
 - [x] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
 - [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md` `09fd7fe`; `spec-review.md` records the review with the author responses
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `08c3792`
