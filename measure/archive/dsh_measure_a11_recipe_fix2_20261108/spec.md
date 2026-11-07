@@ -37,7 +37,8 @@ and adds a non-root guard to the unreadable row.
 - **FR-3 (the cases).** S4 G2 gains: an executable command span (silent), a
   double-space span (silent), a leading-space span (silent), a trailing-space
   span (silent), and the executable-command-missing-argument span (silent); the
-  unreadable-document row is a report row with a note when running as root.
+  unreadable-document G2 contract row is skipped with a printed note when the
+  suite runs as root.
 - **FR-4 (sensitivity).** The G6 mutant list is retargeted to the new pattern
   text and gains a mutant for the executable skip and one that allows multiple
   spaces.
@@ -78,8 +79,7 @@ and adds a non-root guard to the unreadable row.
 
 > **Correction (2026-11-08, dsh_measure_a11_recipe_fix3_20261108):** the pinned
 > pattern in this record is the shipped
-> `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$` (the earlier copy of
-> this note carried the pre-fix form). The unreadable-document row is a G2
+> `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$`. The unreadable-document row is a G2
 > contract row that is skipped with a printed note under root (91 checks there,
 > 92 otherwise), not a G3 report row. The live A11 candidate count (3 with the
 > commands skipped) is evidence: the suite's G4 run prints it and no test asserts
