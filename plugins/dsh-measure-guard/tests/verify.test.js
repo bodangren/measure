@@ -177,3 +177,8 @@ test('the command is read-only: it never writes and never mutates the repository
   assert.equal(mutations, 0)
   assert.equal(await deps.io.readText(METADATA_PATH), fileBefore)
 })
+
+test('a non-numeric actual_tasks adds no verdict', async () => {
+  const reply = await verifyReport(depsOf({ files: { [METADATA_PATH]: JSON.stringify({ actual_tasks: '3' }) } }), AGENT)
+  assert.match(reply, /verification clean/)
+})

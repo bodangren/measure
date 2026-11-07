@@ -5,6 +5,7 @@
 import { dirname, joinPath, tasksOf } from './core/parse.ts'
 import { planCompletedCount, shaProblems } from './git-verification.js'
 import { readOrEmpty } from './snapshot.js'
+import { refreshSnapshotOf } from './status.js'
 
 /** The `<n> tasks checked` number: completed tasks that carry a SHA. */
 const checkedCount = plan => tasksOf(plan).filter(task => task.marker === 'x' && task.sha !== null).length
@@ -18,13 +19,8 @@ export async function verifyReport(deps, agent) {
   try {
     const root = await deps.rootOf(agent)
     // A fresh read: the cached snapshot can predate the commits and plan edits
-    // the command is asked about.
-    const snapshot = typeof deps.refreshSnapshot === 'function'
-      ? await deps.refreshSnapshot(root)
-      : await (async () => {
-          if (typeof deps.snapshots.invalidate === 'function') deps.snapshots.invalidate(root)
-          return deps.snapshots.get(root)
-        })()
+    // the command is asked about. The status module owns this refresh seam.
+    const snapshot = await refreshSnapshotOf(deps, root)
     if (snapshot === null || snapshot === undefined || !snapshot.hasMeasure) {
       return 'measure-guard: nothing to verify (no measure/ folder).'
     }
@@ -61,8 +57,7 @@ export async function verifyReport(deps, agent) {
         } else if (
           metadata !== null &&
           typeof metadata === 'object' &&
-          metadata.actual_tasks !== null &&
-          metadata.actual_tasks !== undefined &&
+          typeof metadata.actual_tasks === 'number' &&
           metadata.actual_tasks !== completed
         ) {
           problems.push(
