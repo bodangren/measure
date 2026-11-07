@@ -9,12 +9,12 @@ the rename handling, add the control case, correct the record, close out. Gates:
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts.
 
-## Phase 1: Simplify and cover
+## Phase 1: Simplify and cover [checkpoint: 8cfd295]
 
 - [x] Task 1.1: `skills/measure-orchestrator/scripts/measure_interphase_checks.py`: `committed_files()` becomes one `git diff --name-only --no-renames -z <baseline>..HEAD` call, split on NUL, sorted/deduplicated/non-empty, empty on failure; the docstring states the rule (the second `--name-status` call and the tab parsing are removed)
 - [x] Task 1.2: `tests/spec_review_gate/test_checker.py`: add the control case (a Red commit that changes only test files keeps the mid-red report clean) and assert in the rename case that `tests/a.py` is not in the non-test report while `- src/a.py` is
 - [x] Task 1.3: run the checker tests and `bash tests/spec_review_gate/run.sh`; both pass (the rename and control cases behave identically under the old and simplified implementations)
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Simplify and cover' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Simplify and cover' (Protocol in workflow.md) `8cfd295`
 
 ## Phase 2: The corrected record and closeout
 
