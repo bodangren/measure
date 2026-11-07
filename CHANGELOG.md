@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **spec-review-gate runner:** `tests/spec_review_gate/run.sh` never runs itself, skips a symlinked suite with `ignored suite (symbolic link)`, refuses a suite name containing a glob metacharacter (`unittest discover -p` would treat it as a pattern), and treats a captured `Ran 0 tests` line as a failing `.py` suite (Python ≤ 3.11 exited 0 for it). The adversarial suite gains five probes (119 checks pass) and the tech-debt row resolves SELF/SYMLINK/PYGLOB/PYZERO with MKTEMP as the residual. Track `dsh_measure_srg_runner_20261108`.
+
+### Features
+
 * **dsh shell-write grammar:** the redirect scan now masks heredoc bodies (through the delimiter line, with tab stripping for `<<-`), `>` characters inside quoted spans, and `#` comments before looking for `>`/`>>`, so a document or echo that quotes `> measure/tracks.md` is no longer denied while real writes (a redirect before a heredoc marker, multiple redirects) still are. `tee`/`sed -i` parsing keeps its own rules; command substitution and helper scripts stay the documented residual. Suite 299/299; installed evidence: `measure/runs/dsh_measure_shell_grammar_20261107/live-shell.md`. Track `dsh_measure_shell_grammar_20261107`.
 
 ### Features

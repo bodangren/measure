@@ -281,6 +281,52 @@ out=$(cd / && bash "$S/run.sh" 'test_a.sh' 2>&1); rc=$?
 rc_check "run from /" "$rc" 0
 summary_check "run from / summary" "$out" 1 1 0
 
+echo "=== runner: a pattern that matches the runner itself ==="
+S=$(runner_sandbox selfsel)
+printf '#!/usr/bin/env bash\necho SUITE-REAL\nexit 0\n' > "$S/test_real.sh"
+out=$(bash "$S/run.sh" 'run.sh' 2>&1); rc=$?
+rc_check "self-selection alone" "$rc" 1
+if has_line "$out" 'no suites matched'; then pass "self-selection alone prints 'no suites matched'"; else fail "self-selection alone lacks 'no suites matched'"; fi
+summary_check "self-selection alone summary" "$out" 0 0 0
+out=$(bash "$S/run.sh" '*.sh' 2>&1); rc=$?
+rc_check "self-selection beside a real suite" "$rc" 0
+summary_check "self-selection beside a real suite summary" "$out" 1 1 0
+if has_line "$out" 'SUITE-REAL'; then pass "the real suite ran beside the runner"; else fail "the real suite did not run"; fi
+
+echo "=== runner: a symbolic-linked suite is skipped ==="
+S=$(runner_sandbox symlinkprobe)
+SB="$TMP/symlink"
+mkdir -p "$SB"
+printf '#!/usr/bin/env bash\ntouch "%s"\nexit 0\n' "$SB/LINKED" > "$SB/target.sh"
+ln -s "$SB/target.sh" "$S/test_link.sh"
+printf '#!/usr/bin/env bash\necho SUITE-OK\nexit 0\n' > "$S/test_ok.sh"
+out=$(bash "$S/run.sh" 2>&1); rc=$?
+rc_check "symlinked suite skipped" "$rc" 0
+summary_check "symlinked suite skipped summary" "$out" 1 1 0
+if [ -e "$SB/LINKED" ]; then fail "the symlinked suite ran"; else pass "the symlinked suite did not run"; fi
+if has_line "$out" 'ignored suite (symbolic link): test_link.sh'; then pass "the symlink skip is reported"; else fail "the symlink skip is not reported"; fi
+
+echo "=== runner: a suite name with a glob metacharacter is refused ==="
+S=$(runner_sandbox globprobe)
+printf '#!/usr/bin/env bash\necho SUITE-A\nexit 0\n' > "$S/test_a.sh"
+printf '#!/usr/bin/env bash\nexit 0\n' > "$S/test_weird[1].sh"
+out=$(bash "$S/run.sh" 2>&1); rc=$?
+rc_check "glob metacharacter name" "$rc" 1
+if has_line "$out" 'refusing a suite name with a glob metacharacter: test_weird[1].sh'; then pass "the glob metacharacter refusal is reported"; else fail "the glob metacharacter refusal is missing"; fi
+if has_line "$out" 'SUITE-A'; then fail "a suite ran despite the refusal"; else pass "no suite ran after the refusal"; fi
+
+echo "=== runner: a zero-test python suite is FAIL (stub python exits 0) ==="
+S=$(runner_sandbox pyzeroprobe)
+SB="$TMP/pyzero"
+mkdir -p "$SB/bin"
+printf '#!/usr/bin/env bash\necho "Ran 0 tests in 0.000s"\necho ""\necho "OK"\nexit 0\n' > "$SB/bin/python3"
+chmod +x "$SB/bin/python3"
+printf 'import unittest\n\nclass NoTests(unittest.TestCase):\n    pass\n' > "$S/test_zero.py"
+out=$(PATH="$SB/bin:$PATH" bash "$S/run.sh" 2>&1); rc=$?
+rc_check "zero-test python suite (stub exits 0)" "$rc" 1
+summary_check "zero-test python suite summary" "$out" 1 0 1
+if has_line "$out" 'zero tests ran in test_zero.py'; then pass "the zero-test suite is reported"; else fail "the zero-test suite is not reported"; fi
+
 # ---------------------------------------------------------------------------
 # Part 2: mutation probes of the S1 contract tests. Each probe copies the test and its inputs
 # into a new tree, changes one input, and runs the copy. The baseline copy must give PASS for

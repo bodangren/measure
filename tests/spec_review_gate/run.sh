@@ -30,6 +30,21 @@ for pattern in "$@"; do
   IFS="$old_ifs"
   for f in "${files[@]+"${files[@]}"}"; do
     [ -f "$f" ] || continue
+    # The runner never runs itself, even when a pattern matches it.
+    [ "$f" = "run.sh" ] && continue
+    # A symlinked suite is skipped rather than followed.
+    if [ -L "$f" ]; then
+      echo "ignored suite (symbolic link): $f" >&2
+      continue
+    fi
+    # The name is also the unittest discovery pattern, so a glob metacharacter
+    # in it is ambiguous: refuse the whole run instead of running something else.
+    case "$f" in
+      *'*'* | *'?'* | *'['*)
+        echo "refusing a suite name with a glob metacharacter: $f" >&2
+        exit 1
+        ;;
+    esac
     case "$f" in
       *.sh | *.py) matched+=("$f") ;;
     esac
@@ -50,10 +65,22 @@ fail_n=0
 for f in "${suites[@]+"${suites[@]}"}"; do
   echo "--- suite: $f ---"
   case "$f" in
-    *.sh) bash "$SUITE_DIR/$f" ;;
-    *.py) python3 -m unittest discover -s "$SUITE_DIR" -p "$f" ;;
+    *.sh)
+      bash "$SUITE_DIR/$f"
+      rc=$?
+      ;;
+    *.py)
+      # Capture the output: on Python <= 3.11 a zero-test file exits 0, and the
+      # `Ran 0 tests` line is the only reliable evidence of that failure.
+      out="$(python3 -m unittest discover -s "$SUITE_DIR" -p "$f" 2>&1)"
+      rc=$?
+      printf '%s\n' "$out"
+      if grep -q '^Ran 0 tests' <<<"$out"; then
+        rc=1
+        printf 'zero tests ran in %s\n' "$f" >&2
+      fi
+      ;;
   esac
-  rc=$?
   if [ "$rc" -eq 0 ]; then
     pass_n=$((pass_n + 1))
     echo "--- suite result: PASS: $f ---"
