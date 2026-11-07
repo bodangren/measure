@@ -14,11 +14,11 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and gates [checkpoint: c7449ac]
 
-- [ ] Task 2.1: write `measure/archive/dsh_measure_registry_fix2_20261107/spec-review.md` with F1–F7 and one disposition each, link it from that track's index, and correct its Overview's pre-fix shape; state the entry count as archive-referencing entries in this track's record
-- [ ] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/dsh/run.sh`; record the results
+- [x] Task 2.1: write `measure/archive/dsh_measure_registry_fix2_20261107/spec-review.md` with F1–F7 and one disposition each, link it from that track's index, and correct its Overview's pre-fix shape; state the entry count as archive-referencing entries in this track's record
+- [x] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/dsh/run.sh`; record the results
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `c7449ac`
 
 ## Phase 3: Closeout
 
-- [ ] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix3_20261107` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix3_20261107` and record the manifest-only FAIL
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)

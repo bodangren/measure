@@ -89,12 +89,23 @@ check_registry() {
         fi
       fi
     fi
-    # 2. The old one-line link shape is rejected.
+    # 2. Inside the Archived Tracks section only a bold [x] entry (and its
+    #    link/description lines) is allowed.
+    if ((i > archived_heading)); then
+      if [[ "$line" == '- [~] '* ]]; then
+        printf 'active entry inside the Archived Tracks section at line %s\n' "$((i + 1))" >&2
+        problems=$((problems + 1))
+      elif [[ "$line" == '- '* && "$line" != '- [x] **Track:'* ]]; then
+        printf 'non-archived entry inside the Archived Tracks section at line %s\n' "$((i + 1))" >&2
+        problems=$((problems + 1))
+      fi
+    fi
+    # 3. The old one-line link shape is rejected.
     if [[ "$line" == '- [x] ['*']('*'archive/'*')' ]]; then
       printf 'old single-line entry at line %s\n' "$((i + 1))" >&2
       problems=$((problems + 1))
     fi
-    # 3. No orphan description line: a description must follow a link line.
+    # 4. No orphan description line: a description must follow a link line.
     if [[ "$line" == '  *'* && "$line" != *'*Link:'* && "${lines[i - 1]:-}" != *'*Link:'* ]]; then
       printf 'orphan description line at %s\n' "$((i + 1))" >&2
       problems=$((problems + 1))
@@ -211,3 +222,28 @@ if OUT="$(check_registry "$TMP/tracks.md" "$TMP/archive" 2>&1)"; then
 fi
 [[ "$OUT" == *'active tracks'* ]] || fail "two-active message absent: $OUT"
 echo "[PASS] two active tracks are rejected"
+
+# Empty-description fallback: when metadata.description is empty, the expected
+# description is the label-stripped bold title.
+mkdir -p "$TMP/archive/empty_track"
+printf '{}\n' >"$TMP/archive/empty_track/metadata.json"
+fixture '## Archived Tracks' '- [x] **Track: Demo**' '  *Link: [./archive/demo_track/](./archive/demo_track/)*' '  *Real description.*' '- [x] **Track: Extra**' '  *Link: [./archive/extra_track/](./archive/extra_track/)*' '  *Extra description.*' '- [x] **Track: Empty Title**' '  *Link: [./archive/empty_track/](./archive/empty_track/)*' '  *Wrong fallback.*'
+if OUT="$(check_registry "$TMP/tracks.md" "$TMP/archive" 2>&1)"; then
+  fail "empty-fallback fixture was accepted"
+fi
+[[ "$OUT" == *'description differs from metadata for empty_track'* ]] || fail "empty-fallback message absent: $OUT"
+echo "[PASS] a description that differs from the empty-metadata fallback is rejected"
+
+fixture '## Archived Tracks' '- Demo — cancelled reason' '  *Link: [./archive/demo_track/](./archive/demo_track/)*' '- [x] **Track: Extra**' '  *Link: [./archive/extra_track/](./archive/extra_track/)*' '  *Extra description.*'
+if OUT="$(check_registry "$TMP/tracks.md" "$TMP/archive" 2>&1)"; then
+  fail "reason-entry-in-archived fixture was accepted"
+fi
+[[ "$OUT" == *'non-archived entry inside the Archived Tracks section'* ]] || fail "reason-entry message absent: $OUT"
+echo "[PASS] a cancelled reason entry inside Archived is rejected"
+
+fixture '## Archived Tracks' '- [~] **Track: Demo**' '  *Link: [./archive/demo_track/](./archive/demo_track/)*' '- [x] **Track: Extra**' '  *Link: [./archive/extra_track/](./archive/extra_track/)*' '  *Extra description.*'
+if OUT="$(check_registry "$TMP/tracks.md" "$TMP/archive" 2>&1)"; then
+  fail "active-entry-in-archived fixture was accepted"
+fi
+[[ "$OUT" == *'active entry inside the Archived Tracks section'* ]] || fail "active-entry message absent: $OUT"
+echo "[PASS] an active entry inside Archived is rejected"

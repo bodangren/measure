@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_registry_fix3_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T05:00:00Z",
+  "updated_at": "2026-11-08T05:30:00Z",
+  "description": "Complete the registry structural check: section placement, description content equality against each archive's metadata (title fallback), and rejection of the old one-line link shape; deliver the consolidation review record",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The completed check verifies section placement, description content equality against each archive metadata (bold-title fallback), and rejects the old one-line link shape; visual_refresh already used its title as the fallback, so no registry description changed. (2) The record count is stated as archive-referencing entries (39 directories = 39 archive-referencing entries, plus one active track). (3) The consolidation track now has its spec-review.md with F1-F7 and dispositions, and its Overview states the accurate pre-fix shape.",
+  "completed": "2026-11-08"
+}
