@@ -27,5 +27,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 4: Closeout
 
-- [ ] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md` `5f4be9f`
 - [ ] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
