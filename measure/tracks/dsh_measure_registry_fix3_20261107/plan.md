@@ -7,9 +7,9 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Complete the check
 
-- [x] Task 1.1: `tests/dsh/test-registry.sh`: split the registry by section and require archived bold entries (and only those) inside `## Archived Tracks`; require each entry's description to equal its archive's `metadata.json` description (collapsed) or, when empty, the entry's bold title; reject one-line `- [x] [Title](archive/<dir>/…)` links anywhere; keep the existing rules
-- [x] Task 1.2: add isolated negative fixtures for an entry outside the section, a metadata mismatch, a clipped description, and an old-shape link (each building its own registry and archive tree)
-- [x] Task 1.3: fix the registry's `visual_refresh_20260425` description to its bold title (the defined empty-description fallback); run `bash tests/dsh/test-registry.sh` and record each PASS
+- [x] Task 1.1: `tests/dsh/test-registry.sh`: split the registry by section and require archived bold entries (and only those) inside `## Archived Tracks`; require each entry's description to equal its archive's `metadata.json` description (collapsed) or, when empty, the entry's bold title; reject one-line `- [x] [Title](archive/<dir>/…)` links anywhere; keep the existing rules `457a272`
+- [x] Task 1.2: add isolated negative fixtures for an entry outside the section, a metadata mismatch, a clipped description, and an old-shape link (each building its own registry and archive tree) `457a272`
+- [x] Task 1.3: fix the registry's `visual_refresh_20260425` description to its bold title (the defined empty-description fallback); run `bash tests/dsh/test-registry.sh` and record each PASS `457a272`
 - [ ] Task: Measure - User Manual Verification 'Phase 1: Complete the check' (Protocol in workflow.md)
 
 ## Phase 2: Records and gates
