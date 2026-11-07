@@ -77,10 +77,10 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 4.1: Host state resource `3ae621b`
     - [ ] `src/client-state.js` + `ctx.webServer.register({ path: '/measure-guard/state', resource })`: JSON `{ band, status, guardsOff, problems, updatedAt }` for `?sessionId=`; 404 for an unknown session
     - [ ] `tests/client-state.test.js`: session lookup, no `measure/`, unknown session
-- [ ] Task 4.2: Band
+- [x] Task 4.2: Band `2ac34eb`
     - [ ] `client.js`: `window.__ModuleLoader__.load` factory; `conversation.input.dock` registration; 2 s fetch; theme tokens only; en/zh copy
     - [ ] `tests/client-bundle.test.js`: the bundle text parses, its `id` equals the package name, it requires only `react`, it registers the three surfaces
-- [ ] Task 4.3: Panel and command action
+- [x] Task 4.3: Panel and command action `2ac34eb`
     - [ ] `client.js`: `main` keyed slot key `measure` + `sidebar.panellist` id `measure`; `ctx.commandUi.decorate('measure-status')` action selects the panel
     - [ ] `tests/client-bundle.test.js`: panel pair and decoration present
 - [ ] Task 4.4: Live load check
