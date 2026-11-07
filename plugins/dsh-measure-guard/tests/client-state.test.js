@@ -303,3 +303,23 @@ test('a project without measure/ keeps both band fields null', () => {
   assert.equal(view.band, null)
   assert.equal(view.bandFull, null)
 })
+
+test('compactBand drops the space at the cut and strips a trailing separator', () => {
+  const line = `${'x'.repeat(157)} · tail of the line`
+  const compact = compactBand(line)
+  assert.equal(compact, `${'x'.repeat(157)}…`)
+})
+
+test('compactBand pins the 160/161 boundary', () => {
+  assert.equal(compactBand('a'.repeat(160)), 'a'.repeat(160))
+  const over = compactBand('a'.repeat(161))
+  assert.equal(over, `${'a'.repeat(159)}…`)
+  assert.equal(over.length, 160)
+})
+
+test('compactBand keeps the first max - 1 characters when there is no space', () => {
+  const token = 'y'.repeat(200)
+  const compact = compactBand(token)
+  assert.equal(compact, `${'y'.repeat(159)}…`)
+  assert.equal(compact.length, 160)
+})

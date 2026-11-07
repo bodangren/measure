@@ -12,9 +12,12 @@ export const CLIENT_STATE_PATH = '/measure-guard/state'
 export const BAND_MAX = 160
 
 /**
- * The compact band of one line: the input unchanged when it fits, else a
- * word-boundary cut at or before `max - 1` characters with a trailing ` ·`
- * stripped and an ellipsis appended. A non-string or an empty input is null.
+ * The compact band of one line (pinned contract). An input of length at most
+ * `max` is unchanged. A longer input is cut at the last space at or before
+ * `max - 1` characters; that space is not kept, a trailing ` ·` is stripped,
+ * and `…` is appended. When no space exists at or before `max - 1`, the first
+ * `max - 1` characters are kept. The result is at most `max` characters. A
+ * non-string or an empty input is null.
  */
 export function compactBand(text, max = BAND_MAX) {
   if (typeof text !== 'string' || text === '') return null
