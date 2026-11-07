@@ -17,7 +17,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `bin/measure-dsh`: usage/help, `--dsh-home`/`$DSH_HOME`/`~/.dsh` resolution, `--profile`, `--mode` validation, `--ref`, `--source` (plugin package dir), `--dry-run`, `--no-skills`, exit codes, output format
     - [ ] `install`: prerequisites, foreign-row scan, `mkdir -p <profile>/plugins`, the installer skill step, the plugin copy with its stamp (source/destination/stamp rules of `design.md §2`), the managed block, the summary and restart note
     - [ ] `tests/dsh/run.sh`, `tests/dsh/lib.sh`, `tests/dsh/test-install.sh`: temp world (fake HOME, DSH home, profile, git repo, installer stub); first install writes copy+stamp+block; second run unchanged; an edited destination is kept with WARN and its old stamp hash; a stale stamped file is removed; `--dry-run` writes nothing; missing profile exits 3; bad mode exits 2; installer exit 2 becomes WARN; `--source` pointing at a non-package exits 3
-- [ ] Task 1.3: Check
+- [~] Task 1.3: Check
     - [ ] `--check` items from `design.md §4`: `dsh-install`, `node`, `skill-measure`, `skill-orchestrator`, `plugin`, `record`, `foreign-row`, `live`; `--json` with the exact object of `design.md §2`; `--source`; `--live`/`--session`/`$DSH_SESSION_ID`; the resolved skill roots named
     - [ ] `tests/dsh/test-check.sh`: green after install; each red case (missing plugin, stale stamp, missing block, two blocks, incomplete skill copy, invalid mode in the record, an import that does not export `name`/`inject`/`apply`); `live` SKIP without the flag and without a session id; source-missing SKIP; `--json` item/action element schema
 - [ ] Task 1.4: Uninstall and safety
