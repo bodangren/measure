@@ -7,3 +7,7 @@ Every suite now exits 1 with 'FAIL: mktemp -d failed; no fixture can be built' a
 Proof suite: bash tests/spec_review_gate/test_mktemp_failure.sh -> 10 checks PASS=10 (nine suites + repository unchanged).
 Gate: 11 suites (PASS=11, FAIL=0).
 CLI suite: 12 passed / 0 failed; node 301/301; parity ok.
+
+## Closeout
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_suite_mktemp_20261109/automation-supervisor-closeout-manifest.json
