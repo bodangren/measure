@@ -319,3 +319,27 @@ test('addedPaths handles a real trailing comment and a quoted wildcard', () => {
     paths: [],
   })
 })
+
+// ---- quoted continuations and command boundaries (dsh_measure_token_scan_followup_20261107)
+
+test('addedPaths joins a double-quoted backslash-newline continuation', () => {
+  const command = 'git add "src/file\\' + '\n' + '.ts" && git commit -m "fix(a): A"'
+  assert.deepEqual(addedPaths(command), {
+    all: false,
+    trackedOnly: false,
+    paths: ['src/file.ts'],
+  })
+})
+
+test('addedPaths only honors git at a command start', () => {
+  assert.deepEqual(addedPaths('echo git add . && git commit -m "x"'), {
+    all: false,
+    trackedOnly: false,
+    paths: [],
+  })
+  assert.deepEqual(addedPaths('cd x && git add a.ts && git commit -m "fix: x"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['a.ts'],
+  })
+})

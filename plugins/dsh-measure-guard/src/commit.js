@@ -14,9 +14,11 @@ export const commitShaOf = text => /^\[[^\]\n]* ([0-9a-f]{7,40})\]/m.exec(text)?
  * The words and separators of one shell command (Decision 9): whitespace
  * separates words; `;`, newline, `&`/`&&`, and `|`/`||` are separators; a
  * single-quoted span is literal; a double-quoted span takes `\"` and `\\`
- * escapes; a backslash-newline is a line continuation; a backslash escapes the
- * next character; a `#` that starts a word comments to the end of the line. An
- * unterminated quote returns null so the caller can fail closed.
+ * escapes and a backslash-newline continuation; a backslash-newline outside
+ * quotes is also a continuation; a backslash escapes the next character; a `#`
+ * that starts a word comments to the end of the line. An unterminated quote
+ * returns null so the caller can fail closed. `addedPaths` only honors a `git`
+ * word at a command start (the first word or directly after a separator).
  */
 function shellTokens(command) {
   const tokens = []
@@ -43,6 +45,8 @@ function shellTokens(command) {
     if (quote === '"') {
       if (char === '"') {
         quote = null
+      } else if (char === '\\' && command[i + 1] === '\n') {
+        i += 1
       } else if (char === '\\' && (command[i + 1] === '"' || command[i + 1] === '\\')) {
         word += command[i + 1]
         inWord = true
@@ -114,6 +118,8 @@ export function addedPaths(command) {
   }
   for (let i = 0; i < tokens.length; i += 1) {
     if (tokens[i].separator || tokens[i].value !== 'git') continue
+    // Only a command-position `git` counts: `echo git add .` is not a git call.
+    if (i > 0 && !tokens[i - 1].separator) continue
     let at = i + 1
     while (at + 1 < tokens.length && tokens[at].value === '-C' && !tokens[at + 1].separator) at += 2
     if (at >= tokens.length || tokens[at].separator || tokens[at].value !== 'add') continue
