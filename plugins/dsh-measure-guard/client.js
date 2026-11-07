@@ -24,6 +24,7 @@ window.__ModuleLoader__.load({
       setup: 'No measure/ folder in this project. Create one to start a track.',
       problems: 'Problems',
       guards: 'Guards',
+      goal: 'Goal',
       guardsOn: 'on',
       guardsSession: 'off for this session',
       guardsRepo: 'off for this repository',
@@ -38,6 +39,7 @@ window.__ModuleLoader__.load({
       setup: '本项目没有 measure/ 文件夹。创建一个以开始轨道。',
       problems: '问题',
       guards: '守卫',
+      goal: '目标',
       guardsOn: '已开启',
       guardsSession: '本会话已关闭',
       guardsRepo: '本仓库已关闭',
@@ -215,6 +217,13 @@ window.__ModuleLoader__.load({
         view.guardsOff === null || view.guardsOff === undefined
           ? null
           : h('span', { style: { color: 'var(--dsw-alias-label-secondary)' } }, t('guards') + ': ' + guardsLabel(t, view.guardsOff)),
+        view.goal === null || view.goal === undefined
+          ? null
+          : h(
+              'span',
+              { style: { color: 'var(--dsw-alias-label-secondary)' } },
+              t('goal') + ': ' + view.goal.phase + ' · round ' + view.goal.round + '/' + view.goal.maxRounds + ' · ' + view.goal.objective,
+            ),
         h(ProblemList, { problems: view.problems, t }),
       )
     }

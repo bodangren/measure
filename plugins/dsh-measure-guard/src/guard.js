@@ -21,6 +21,7 @@ import { newUserMessage } from './state.js'
 import { normalizeMutation } from './hooks.js'
 import { strictRed, tddDecision } from './strict.js'
 import { commitCheck } from './commit.js'
+import { goalOf, goalProblems } from './goal.js'
 
 /**
  * What the guards read (design §7): the snapshot, the mode, the setup answer,
@@ -217,6 +218,12 @@ export async function onTurnStopping(deps, { agent, root, payload }) {
       problems = turnProblems(snapshot, changedDuringTurn(turn.status, status), turn.unsha)
     } catch {
       problems = []
+    }
+    // The goal/track mismatches (Story S4) are reported, never mutated.
+    try {
+      problems = [...problems, ...goalProblems(goalOf(deps, agent), snapshot)]
+    } catch {
+      // The goal check is an aid; a goal-service failure never breaks the turn check.
     }
   }
   session.problems = [...problems]

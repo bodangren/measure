@@ -80,7 +80,7 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   const updatedAt = '2026-11-07T03:00:00.000Z'
   const view = clientView({ snapshot, guardsOff: 'session', problems, mode: 'guard', updatedAt })
 
-  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt'])
+  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal'])
   assert.equal(view.band, bandLine(snapshot, 'session'))
   assert.match(view.band, /guards off for this session/)
   assert.equal(view.status, statusLines(snapshot, 'session').join('\n'))
@@ -88,6 +88,16 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   assert.deepEqual(view.problems, problems)
   assert.notEqual(view.problems, problems)
   assert.equal(view.updatedAt, updatedAt)
+  assert.equal(view.goal, null)
+})
+
+test('clientView carries the goal summary and its line', () => {
+  const snapshot = snapshotOf()
+  const goal = { objective: 'Measure track "X" (x_1).', phase: 'active', roundsStarted: 2, maxGoalRounds: 256 }
+  const view = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 'now', goal })
+
+  assert.deepEqual(view.goal, { objective: 'Measure track "X" (x_1).', phase: 'active', round: 2, maxRounds: 256 })
+  assert.match(view.status, /Goal active · round 2\/256 · Measure track "X" \(x_1\)\./)
 })
 
 test('clientView handles a project with no measure/ folder', () => {

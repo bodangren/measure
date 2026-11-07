@@ -14,6 +14,7 @@ import { measureWorkflowCommands } from './src/workflow.js'
 import { createDecisions, installToolGuard, postCommitListener, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
+import { goalService } from './src/goal.js'
 import { registerClientState } from './src/client-state.js'
 
 export const name = 'measure-guard'
@@ -88,6 +89,14 @@ export function apply(ctx, config) {
    * without the method, or a throwing call, keeps today's behavior and treats
    * every agent as a root.
    */
+  /**
+   * The goal service as an optional capability (Story S4). It is not in
+   * `inject`, so Cordis does not order it before this plugin; the value is
+   * therefore read per call, and a goal service that registers later is seen.
+   * A capture at apply time would leave goal binding silently off.
+   */
+  Object.defineProperty(deps, 'goals', { get: () => goalService(ctx), enumerable: true, configurable: true })
+
   deps.isRoot = agent => {
     if (agent === undefined || agent === null) return false
     const agents = ctx.agents

@@ -122,13 +122,14 @@ The live check of this repository used route (b) with `mode: advise`. The defaul
 ## Tools and commands
 
 - **`measure_status`.** A tool with no parameters. It returns the shared core's status lines: the tracks with their markers, the active plan path, each phase with its closed count and checkpoint SHA, the `[b]` tasks, the allow list, and the bypass state, followed by the task note (the active track with the current or the next task). It never returns the whole specification.
-- **Commands.** Three host commands, each registered through `ctx.commands.register` with an optional `repo` argument that widens the scope from the session to the repository:
+- **Commands.** Four host commands, each registered through `ctx.commands.register`; the first three take an optional `repo` argument that widens the scope from the session to the repository:
 
   | Command | Effect |
   | --- | --- |
   | `measure-off [repo]` | Turns the guards off for this session, or for this repository (kept across restarts). |
   | `measure-on [repo]` | Turns them on again for the same scope. |
   | `measure-status` | Replies with the status text of the current project. |
+  | `measure-goal` | Seeds a DeepSeek Harness goal from the active Measure track, replaces a complete goal, or reports the current goal without mutating it. |
 
 - **Workflow commands.** Eight more host commands steer the receiving agent into
   the matching Measure workflow: `measure-setup`, `measure-new-track`,
@@ -137,6 +138,7 @@ The live check of this repository used route (b) with `mode: advise`. The defaul
   the installed skill reference first, then sends one instruction message; the
   rest of the command line is forwarded as `Arguments:`. `/measure-orchestrate`
   loads the `measure-orchestrator` skill.
+- **Goal line and binding (Story S4).** The state route carries `goal: { objective, phase, round, maxRounds } | null`; the band adds a localized goal row, the `measure_status` text and the panel append `Goal <phase> · round <n>/<max> · <objective>`. `/measure-goal` creates a goal with the objective `Measure track "<track name>" (<track id>).` when there is none (or the current goal is complete, which the goal service allows replacing), reports `active`/`paused`/`blocked` goals with the matching guidance, and reports a refusal from the goal service instead of throwing. The goal service is read per call (`ctx.get('goals')`, not `inject`), so a goal service that registers later is still seen. The end-of-turn check reports two mismatches: a complete goal while a task is `[~]`, and any current goal while no track is in progress.
 - **Client decoration.** The Client half decorates `measure-status` with a `commandUi` action that opens the Measure panel. The trigger is consumed by the action, so a bare invocation spends the command line and submits nothing to the model.
 
 ## Guards

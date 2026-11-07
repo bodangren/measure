@@ -2,6 +2,7 @@
 // optional `repo` argument), and measure-status. Handlers return
 // { kind: 'success', text }; the texts mirror plugins/opencode-measure-guard.
 import { statusText, refreshSnapshotOf } from './status.js'
+import { goalOf, measureGoalCommand } from './goal.js'
 
 /** The scope of `/measure-off|on`: `repo` when the first token says so, else session. */
 export const scopeOf = args => (String(args ?? '').trim().split(/\s+/)[0] === 'repo' ? 'repo' : 'session')
@@ -20,7 +21,7 @@ export const onText = (scope, wasOff) => {
     : `measure-guard: the guards were not off for ${where}; nothing changed.`
 }
 
-/** The three `ctx.commands.register` definitions. */
+/** The host commands: the three bypass/status commands plus `/measure-goal`. */
 export function measureCommands(deps) {
   return [
     {
@@ -53,8 +54,9 @@ export function measureCommands(deps) {
         const root = await deps.rootOf(invocation.agent)
         const snapshot = await refreshSnapshotOf(deps, root)
         const guardsOff = await deps.state.bypass.get(root)
-        return { kind: 'success', text: statusText({ snapshot, guardsOff, mode: deps.mode }) }
+        return { kind: 'success', text: statusText({ snapshot, guardsOff, mode: deps.mode, goal: goalOf(deps, invocation.agent) }) }
       },
     },
+    measureGoalCommand(deps),
   ]
 }

@@ -92,6 +92,7 @@ test('apply registers measure_status, the eleven commands, and the lifecycle lis
     'measure-off',
     'measure-on',
     'measure-status',
+    'measure-goal',
     'measure-setup',
     'measure-new-track',
     'measure-new-track-set',
@@ -193,4 +194,21 @@ test('two root sessions get exactly one second-writer note naming both', async (
   const injected = [...first.injected, ...second.injected]
   assert.equal(injected.length, 1)
   assert.match(textOf(injected[0]), /2 sessions are working in this git worktree/)
+})
+
+test('the goal service is read per call, so a later registration is seen', async () => {
+  const ctx = ctxOf()
+  let service
+  ctx.get = name => (name === 'goals' ? service : undefined)
+  apply(ctx, { mode: 'guard' })
+  await settle()
+
+  const goalCommand = ctx.commandsList.find(command => command.name === 'measure-goal')
+  const before = await goalCommand.handler({ agent: agentOf('agent-1'), rawInput: '' })
+  assert.match(before.text, /has no goal service/)
+
+  service = { get: () => null, create: (_agent, request) => ({ ...request, phase: 'active', roundsStarted: 0, maxGoalRounds: 256 }) }
+  const after = await goalCommand.handler({ agent: agentOf('agent-1'), rawInput: '' })
+  assert.doesNotMatch(after.text, /has no goal service/)
+  assert.match(after.text, /no Measure track is in progress/)
 })

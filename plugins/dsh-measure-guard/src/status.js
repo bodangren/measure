@@ -2,6 +2,7 @@
 // note, and the hand-built ToolDefinition (design §2 consequence 1: no
 // defineTool import, so the definition is a plain object with the same fields).
 import { statusLines, taskNote } from './core/parse.ts'
+import { goalLine, goalOf } from './goal.js'
 
 /** The tool id. */
 export const STATUS_TOOL_NAME = 'measure_status'
@@ -17,10 +18,12 @@ export const STATUS_TOOL_PARAMETERS = { type: 'object', properties: {}, addition
  * The status text: the shared core's statusLines() joined, then the task note
  * when there is one (the OpenCode adapter's behaviour).
  */
-export function statusText({ snapshot = null, guardsOff = null, mode = 'guard' } = {}) {
+export function statusText({ snapshot = null, guardsOff = null, mode = 'guard', goal = null } = {}) {
   const lines = statusLines(snapshot, guardsOff).join('\n')
   const note = snapshot === null ? null : taskNote(snapshot, mode)
-  return note === null ? lines : `${lines}\n\n${note}`
+  const goalText = goalLine(goal)
+  const parts = [lines, goalText, note].filter(part => part !== null && part !== '')
+  return parts.join('\n\n')
 }
 
 /** A live snapshot refresh through the deps: the explicit dep wins, else invalidate + get. */
@@ -44,7 +47,7 @@ export function measureStatusTool(deps) {
       const root = await deps.rootOf(exec?.agent)
       const snapshot = await refreshSnapshotOf(deps, root)
       const guardsOff = await deps.state.bypass.get(root)
-      return statusText({ snapshot, guardsOff, mode: deps.mode })
+      return statusText({ snapshot, guardsOff, mode: deps.mode, goal: goalOf(deps, exec?.agent) })
     },
   }
 }

@@ -106,6 +106,19 @@ the same items as a machine-readable object.
 Change the mode by editing the managed block's `config.mode` (the profile
 recomposes on save) or by re-running `install --mode`.
 
+## Goal binding
+
+The adapter reads the DSH goal as an optional capability (`ctx.get('goals')`,
+never `inject`) and keeps it aligned with the active Measure track. The band,
+the `measure_status` output, and the panel show `Goal <phase> · round
+<n>/<max> · <objective>`, and the state route carries a `goal` summary.
+`/measure-goal` seeds a goal from the active track's entry (objective
+`Measure track "<track name>" (<track id>).`), replaces a complete goal, and
+reports an `active`, `paused`, or `blocked` goal without mutating it. The
+end-of-turn check reports a complete goal while a task is still `[~]`, and any
+current goal while no track is in progress. The guard never mutates the goal
+from a guard path.
+
 ## Agent team
 
 The Measure orchestrator drives a track through the Measure roles. On DSH the
