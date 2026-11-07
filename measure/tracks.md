@@ -109,6 +109,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure mid-red record reconciliation**
   *Link: [./archive/dsh_measure_midred_records_20261107/](./archive/dsh_measure_midred_records_20261107/)*
+
+- [x] **Track: DSH Measure mid-red evidence and record precision**
+  *Link: [./archive/dsh_measure_midred_evidence_20261107/](./archive/dsh_measure_midred_evidence_20261107/)*
+  *The named closeout ledger (output, SHAs, parity, node, srg), a defined closeout-clean (manifest out of scope), the corrected archived open-task list, the concrete review record with dispositions, and the parity gate task. 8 tasks, 2 checkpoints.*
   *Reconciles the mid-red records: the archived plans' task SHAs (closeout check now reports only the automation-supervisor manifest), the missing `tests/a.py` absence assertion, the follow-up's `spec-review.md` with responses, and the archived mid-red spec's dated correction note. 7 tasks, 2 checkpoints.*
   *`committed_files` is one `git diff --name-only --no-renames -z` call (both rename paths, no tab parser), the mid-red control case proves a test-only Red commit stays clean, and the archived record states the single-call approach and the executed Red order. 7 tasks, 2 checkpoints.*
   *`committed_files` now unions both paths of every rename, so the mid-red gate catches a production file renamed into `tests/` (regression test proves the old bypass exits 0 and the fix exits 1); spec-review-gate suite 10/10. 8 tasks, 2 checkpoints.*
