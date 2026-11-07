@@ -7,9 +7,9 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Record corrections
 
-- [x] Task 1.1: replace the old pattern string in the fix2 track's spec (FR-2), plan (Task 1.1), and correction note with `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$`; update the CHANGELOG A11 bullet (92 checks, both A11 tracks, fix2 executable skip)
-- [x] Task 1.2: write `measure/archive/dsh_measure_a11_recipe_fix2_20261108/spec-review.md` (F1–F5 with dispositions), link it from the fix2 index, and add the root-branch / live-count wording to the fix2 spec record
-- [x] Task 1.3: run the gates — `bash tests/spec_review_gate/run.sh` (10/10), node (301/301), both parity scripts, `bash tests/dsh/run.sh` (11/11)
+- [x] Task 1.1: replace the old pattern string in the fix2 track's spec (FR-2), plan (Task 1.1), and correction note with `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$`; update the CHANGELOG A11 bullet (92 checks, both A11 tracks, fix2 executable skip) `a245c3d`
+- [x] Task 1.2: write `measure/archive/dsh_measure_a11_recipe_fix2_20261108/spec-review.md` (F1–F5 with dispositions), link it from the fix2 index, and add the root-branch / live-count wording to the fix2 spec record `a245c3d`
+- [x] Task 1.3: run the gates — `bash tests/spec_review_gate/run.sh` (10/10), node (301/301), both parity scripts, `bash tests/dsh/run.sh` (11/11) `a245c3d`
 - [ ] Task: Measure - User Manual Verification 'Phase 1: Record corrections' (Protocol in workflow.md)
 
 ## Phase 2: Closeout
