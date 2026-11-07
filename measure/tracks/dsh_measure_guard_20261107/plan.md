@@ -42,7 +42,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.4: Rule section and task note `0ec9891`
     - [ ] `src/context.js`: fixed `ctx.systemPrompt.section`; note from `agent/pre-step` (`{kind:'enter', messages}`); re-note after `compaction/end` and after cache invalidation; `agent/created` attach for existing agents
     - [ ] `tests/context.test.js`: rule text static; note appears exactly once per task change; note after compaction; no note without `measure/`
-- [~] Task 2.5: `measure_status` tool
+- [x] Task 2.5: `measure_status` tool `bcd31ed`
     - [ ] `src/status.js` + `ctx.tools.register`: tracks, active track, position, `[b]` count, next action, spec path; never the whole spec
     - [ ] `tests/status.test.js`: normal, no active track, no `measure/`, parse error
 - [ ] Task 2.6: Commands
