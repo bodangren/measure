@@ -62,6 +62,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ## Archived Tracks
 
+- [x] **Track: measure-guard for the DeepSeek Harness**
+  *Link: [./archive/dsh_measure_guard_20261107/](./archive/dsh_measure_guard_20261107/)*
+  *A third adapter over the shared core: context and guard layers on Cordis, plain-JS, no build step. Five phases, 28 tasks, 143 tests, live-verified in the web profile.*
+
 - [x] **Track: README videos**
   *Link: [./archive/readme_videos_20261105/](./archive/readme_videos_20261105/)*
   *Two YouTube videos as linked thumbnails in `README.md`, at Daniel's request.*

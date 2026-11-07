@@ -1,0 +1,232 @@
+# dsh-measure-guard
+
+Measure guard rails for the DeepSeek Harness (DSH). This is the third adapter of the shared Measure guard core, after the Claude Code mod (`mods/measure-guard/`) and the OpenCode plugin (`plugins/opencode-measure-guard/`). It reads the project's `measure/` files, keeps the agent on the active track and task, and denies work the active plan does not cover. The Host half registers the system-prompt rule, the task note, the `measure_status` tool, the three commands, the edit, closeout and end-of-turn guards, and one JSON route; the Client half draws the status band and the Measure panel.
+
+Track: [`measure/archive/dsh_measure_guard_20261107/`](../../measure/archive/dsh_measure_guard_20261107/) (specification, design, and plan).
+
+## Layout
+
+```text
+plugins/dsh-measure-guard/
+├── package.json              # name, exports, dsh.bundle.patch, dsh.client, engines.node
+├── cordis.patch.yml          # the self-referencing insert row of a bundle install
+├── index.js                  # Host half: export name, inject, apply; owns the state
+├── client.js                 # Client half: hand-written window.__ModuleLoader__.load factory
+├── icon.svg                  # the plugin icon of the Plugins page
+├── locale/
+│   ├── en.json               # {"meta":{"title","description"}} for the plugin display
+│   └── zh.json               # the same metadata in Chinese
+├── src/
+│   ├── state.js              # the four state classes: repos, agents, turns, bypass
+│   ├── snapshot.js           # the I/O seam, canonical root, snapshot loader, cache
+│   ├── roots.js              # one writer per canonical root, the second-writer notice
+│   ├── context.js            # rule section, task note, reminder, compaction re-note
+│   ├── hooks.js              # decision map, tool guard, mutation normalization
+│   ├── guard.js              # edit guard, closeout guard, end-of-turn check
+│   ├── status.js             # measure_status text and the hand-built tool definition
+│   ├── commands.js           # measure-off, measure-on, measure-status
+│   ├── setup.js              # the shared setup symbols plus the agent-state helpers
+│   ├── client-state.js       # the JSON view and the HTTP route the client polls
+│   ├── types.ts              # parity copy of mods/measure-guard/types/index.d.ts
+│   └── core/
+│       ├── parse.ts          # parity copy of mods/measure-guard/hooks/parse.ts
+│       └── guards.ts         # parity copy (+ .ts on its one value import)
+├── scripts/check-parity.sh   # the three parity checks against mods/measure-guard/
+├── tests/
+│   ├── fixtures.js           # the in-memory project and the repository fixture
+│   ├── core.test.js          # the shared core on the fixture, and the parity gate
+│   ├── state.test.js         # repos.json, agents, turns, bypass, mode parsing
+│   ├── snapshot.test.js      # the real repository, a temp repository, no measure/
+│   ├── roots.test.js         # one writer, one second-writer notice, releases
+│   ├── context.test.js       # rule section, exactly-once note, compaction, reminder
+│   ├── status.test.js        # the status text and the tool definition
+│   ├── commands.test.js      # the three commands and their scopes
+│   ├── setup.test.js         # the setup question, the answers, the band text
+│   ├── guard-prep.test.js    # the decision lifecycle and the fail-open paths
+│   ├── mutation.test.js      # every tool shape and the multi-path denial
+│   ├── edit-guard.test.js    # deny without [~], allow with [~], allow list, bypass
+│   ├── closeout.test.js      # track close, phase start, the after-text rules
+│   ├── end-of-turn.test.js   # the problems, the strict hold, the reminder
+│   ├── client-state.test.js  # the JSON route, the 404, the failure path
+│   ├── client-bundle.test.js # the client text, its id, its surfaces
+│   ├── plugin.test.js        # the Host registrations of index.js
+│   └── install.sh            # the installer target contract (bash)
+└── README.md
+```
+
+No build step, no package manager, and no `node_modules`: `index.js` and `client.js` are plain ESM at the package root, `client.js` is served as bytes, and the `.ts` core is loaded by Node's built-in type stripping (Node >= 24.9).
+
+## Install
+
+### a. The installer (preferred)
+
+The installer copies the package into the profile; create the target's parent folder once, because the installer skips a target whose immediate parent is missing:
+
+```bash
+mkdir -p ~/.dsh/profiles/web/plugins
+```
+
+Then run the installer from the repository root. It copies `plugins/dsh-measure-guard/` to `~/.dsh/profiles/web/plugins/dsh-measure-guard` from `main`, without `tests/`:
+
+```bash
+bin/install-measure-skill
+```
+
+The copy is selected by one row that the installer cannot edit for you. Append this to `~/.dsh/profiles/web/cordis.patch.yml`:
+
+```yaml
+- insert:
+    - id: measure-guard
+      name: ./plugins/dsh-measure-guard/index.js
+      config:
+        mode: guard
+```
+
+`./` resolves against the profile folder. The row loads both halves: the Client half is found through the nearest `package.json`. Delete the block to unload the plugin; the loader recomposes through HMR, without a restart. Config-only changes therefore apply live, but the Host half's module files are not watched (`hmr.root: []` in the base profile): after editing the plugin's JavaScript, restart the DSH host (or reinstall the profile) to load the new code.
+
+### b. Without the installer
+
+Clone this repository and point one profile row at an absolute path, exactly like the live check did:
+
+```yaml
+- insert:
+    - id: measure-guard
+      name: /home/daniel-bo/Desktop/measure/plugins/dsh-measure-guard/index.js
+      config:
+        mode: guard
+```
+
+No pnpm and no `node_modules` are needed on this route either.
+
+### c. A real bundle install (needs pnpm)
+
+From the repository root:
+
+```bash
+dsh plugin --profile web add ./plugins/dsh-measure-guard
+```
+
+The profile manifest then lists `dsh-measure-guard`, and the Plugins page shows its title and icon instead of the technical path.
+
+The live check of this repository used route (b) with `mode: advise`. The default mode is `guard`.
+
+## Modes
+
+`config.mode` selects the level. The plugin validates the value itself: `advise`, `guard`, or `strict`; an unknown value logs one warning and falls back to `guard`.
+
+| Mode | Behaviour |
+| --- | --- |
+| `advise` | The context layer and the band only. Every guard allows. |
+| `guard` (default) | The edit guard, the closeout guard, and the end-of-turn check with a UI notice and an agent reminder delivered by the next step. |
+| `strict` | `guard`, plus the end-of-turn hold-open at most twice per turn. The TDD guard and the commit guard are deferred. |
+
+## Context
+
+- **Rule section.** One fixed system-prompt section, registered through `ctx.systemPrompt.section({ name: 'measure:rule', order: 5000, text })`, with the shared core's `ruleSection()` text. The text never changes in a session, so the prompt cache stays valid. The section exists only for an agent whose project has a `measure/` folder.
+- **Task note.** The shared core's `taskNote()` text, delivered exactly once per task change as `{ kind: 'enter', messages }` returned from `agent/pre-step`. It is not sent through `agent.inject()`, because an injection can miss a step. The note names the active track and the current task, or the next task when none is in progress.
+- **Re-note after compaction.** A successful `compaction/end` arms the note again, so the first step after the compaction receives it. A compaction with an error keeps the current note key.
+- **Second-writer warning.** The first agent of a canonical root is the writer. A second distinct agent in the same work tree gets exactly one injected note: `measure-guard: 2 sessions are working in this git worktree. measure-guard only warns; it does not arbitrate between them.` A second distinct agent in the same work tree also adds the adapter's own suffix to the band: `<n> sessions` (FR-12). The rest of the band line is the shared core's, including the number of tracks in progress and the bypass state.
+- **Setup offer.** In a git repository without `measure/` folder, the first blocked edit returns the shared core's setup deny, which names the two answers, and the band offers the setup. The answer lives in the agent state, so it is remembered for the session and the edit guard passes after `off`.
+
+## Tools and commands
+
+- **`measure_status`.** A tool with no parameters. It returns the shared core's status lines: the tracks with their markers, the active plan path, each phase with its closed count and checkpoint SHA, the `[b]` tasks, the allow list, and the bypass state, followed by the task note (the active track with the current or the next task). It never returns the whole specification.
+- **Commands.** Three host commands, each registered through `ctx.commands.register` with an optional `repo` argument that widens the scope from the session to the repository:
+
+  | Command | Effect |
+  | --- | --- |
+  | `measure-off [repo]` | Turns the guards off for this session, or for this repository (kept across restarts). |
+  | `measure-on [repo]` | Turns them on again for the same scope. |
+  | `measure-status` | Replies with the status text of the current project. |
+
+- **Client decoration.** The Client half decorates `measure-status` with a `commandUi` action that opens the Measure panel. The trigger is consumed by the action, so a bare invocation spends the command line and submits nothing to the model.
+
+## Guards
+
+All decisions come from the shared core; the adapter only normalizes the call and prepares the texts the core reads.
+
+- **Edit guard.** In `guard` and `strict`, a write inside the project root and outside `measure/` is denied when no task in the active plan has `[~]`. The deny text names the next task, or the track, and ends with the shared bypass line: `If this block is wrong, the user can run /measure-off.` A write inside `measure/` passes, a path on the allow list passes, a parse error allows everything, and the deny lists every denied path of a multi-path call (up to five, then "and N more").
+- **Closeout guard.** A track may change to `[x]` only when its plan has no open task; the deny names the open tasks and says that a human-gated task can stay `[b]` with a `deferred:<owner>` field. A task in phase N+1 may change to `[~]` only when the heading of phase N carries `[checkpoint: <sha>]`.
+- **End-of-turn check.** The baseline is `git status` at the first `agent/pre-step` of the turn; the problems are computed at `agent/turn-stopping`. The problems are files changed outside `measure/` while no task is `[~]`, and `[x]` tasks that lost their SHA. `advise` shows them in the band only, `guard` records them (the band shows them as problem rows) and queues a reminder that the next step delivers, and `strict` holds the turn open by steering, at most twice per turn.
+- **Allow list.** `measure/guard-allow` in the guarded repository names the folders that count as Measure work. It is parsed by the shared core's `parseAllowList` and matched by `isAllowed`, with the same rules as the two existing adapters.
+- **Fail-open policy.** Every guard preparation wraps its I/O in try/catch and allows the call on failure. A parse error in the Measure files allows everything. A shell call (`bash`, `pwsh`) has unknown paths, so the edit guard does not path-check it and the end-of-turn check is its backstop. A tool whose after-text cannot be reconstructed (`apply_patch`, `str_replace_editor`) passes the closeout guard and is covered by the end-of-turn check.
+
+## State and root resolution
+
+- **Repository config.** `~/.local/state/measure/dsh-guard/repos.json` holds `{ "<realpath root>": { mode?, off? } }`: the mode override and the repository bypass. It is read once and written atomically through a temp file and a rename. This is the only state that survives a restart.
+- **In-memory state.** The per-agent record (note key, setup answer, reminder, problems) and the per-turn record (baseline status, tasks without a SHA, block count) live in memory and are dropped when the agent is disposed. The end-of-turn baseline is captured once, at the first step of the turn.
+- **Root.** The session working directory is read per call, resolved to a realpath with `ctx.fs.resolve`, and then replaced by the output of `git rev-parse --show-toplevel`, realpathed again. When git fails or the directory is not a work tree, the realpathed effective directory is the root. Linked worktrees are independent: each has its own root, its own snapshot cache entry, and its own writer record.
+- **Path arguments.** A relative file argument is resolved against the session-effective directory per call, never against the process working directory. A durable directory change mid-turn is honoured on the next call.
+
+## Client surface
+
+- **Band.** A session-scoped entry in the `conversation.input.dock` slot, registered with the id `measure-guard` and order 20. It polls the Host route every 2 s while it is mounted and renders the band line (with the `<n> sessions` suffix when a second agent shares the work tree), the bypass state, and the open problems.
+- **Panel.** The keyed `main` slot with the key `measure`, paired with the `sidebar.panellist` entry with the id `measure` and its own icon. It is root-scoped: it lists the sessions from `ctx.sessions.list` and shows the status text of the selected one.
+- **Command decoration.** `ctx.commandUi.decorate({ name: 'measure-status', ui: { kind: 'action' } })` opens the panel through `ctx.layout.selectPanel('measure')`.
+- **Data route.** `GET /measure-guard/state?sessionId=<id>` returns `{ band, status, guardsOff, problems, updatedAt }`. An unknown session id is a 404. The band and the panel read the same route, so the Client never parses the Measure files itself.
+- **Styling.** Theme tokens only (`--dsw-alias-*`, `--dsw-radius-*`); no hard-coded colours.
+- **Localization boundary.** The plugin's own chrome is localized in English and Chinese: the band labels, the panel headings and rows, the command descriptions, and the setup line. The parity-bound core text (the deny texts, the task note, the status lines, the end-of-turn reminder) ships in English by design, because a translation layer would break the core parity.
+
+## Parity rule
+
+The shared core stays the single decision source. Change the Claude Code mod first, then copy:
+
+1. `src/core/parse.ts` is byte-identical to `mods/measure-guard/hooks/parse.ts`.
+2. `src/core/guards.ts` is identical after exactly one mechanical transform: its only extensionless value import `./parse` gains `.ts`, which Node ESM needs.
+3. `src/types.ts` is `mods/measure-guard/types/index.d.ts` without its `declare module 'claude-code'` block, plus the DSH header note.
+
+```bash
+bash plugins/dsh-measure-guard/scripts/check-parity.sh
+```
+
+The script prints `parity: ok` and exits 0, or names the file that differs and exits 1.
+
+## Checks
+
+```bash
+node --test 'plugins/dsh-measure-guard/tests/*.test.js'
+bash plugins/dsh-measure-guard/scripts/check-parity.sh
+bash plugins/dsh-measure-guard/tests/install.sh
+```
+
+From the package folder, `node --run test` runs the first two. The installer test uses a temporary home folder and never touches the real one.
+
+The live check reads the JSON route of the running GUI:
+
+```bash
+curl 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
+```
+
+Current state: 143 tests pass and 0 fail, the parity check reports `parity: ok`, and the installer test reports `[PASS] install.sh`.
+
+## Verified live
+
+The live check ran in the running DSH web profile with one reversible insert row in `~/.dsh/profiles/web/cordis.patch.yml` and `mode: advise`. It proved:
+
+- the boot graph carries a `dsh-measure-guard` entry, so the Host half loaded and the modules node half resolved the nearest `package.json` to serve the Client half;
+- the band renders the shared core's band line, `Measure · measure-guard for the DeepSeek Harness · Phase 4/5 · Task 4/5 [ ] Task 4.4: Live load check · no task in progress`;
+- the sidebar entry opens the keyed `main` panel `measure`, which lists the sessions and renders the status of the selected one, with the guards state and the active plan with its checkpoint SHAs;
+- the session context carries the fixed `# Measure workflow (measure-guard)` rule section, the task note naming the next task, and the second-writer warning;
+- `measure_status` appears in the tool schemas of the session;
+- a real parse error fails open: a `measure/` folder whose track lines are in no known format produced `cannot read the Measure files: ... has track lines in no known format · guards allow all calls` instead of a crash.
+
+The evidence images are [`live-band.png`](../../measure/runs/dsh_measure_guard_20261107/live-band.png) and [`live-panel.png`](../../measure/runs/dsh_measure_guard_20261107/live-panel.png).
+
+## Known limits
+
+- **Marker-only enforcement.** The plugin checks the `[ ]`, `[~]`, `[x]`, and `[b]` markers and the checkpoint headings. It does not verify a SHA, a git note, a `metadata.json` field, a generated document, or an archival step. A later task may start while an earlier one is still open, a checkpoint SHA may be fabricated, an `[x]` task may carry a SHA no commit owns, a commit may combine implementation and plan changes and skip the git notes, and a track may close without `actual_tasks` or generated-doc verification. The agent may also edit `measure/guard-allow` itself.
+- **Shell writes are not path-checked.** A write through `bash` or `pwsh` is invisible to the edit guard; only the end-of-turn check sees the result through `git status`. No shell path extraction is invented.
+- **Closeout fails open for `apply_patch` and `str_replace_editor`.** Only `edit` and `write` carry a reconstructable after-text, so the closeout guard decides on those two alone.
+- **POSIX only.** Windows containment fails open and is out of scope.
+- **The setup answer is per agent.** The choice lives in the agent state, so a new session in a repository without `measure/` asks again.
+- **The setup offer has no button here.** The first blocked edit returns the setup deny once and records the `off` answer, so the guard stops blocking in that session; the agent then asks the user whether to run the Measure setup workflow. The core's `setup` answer is not wired, because the Client half has no band button in this release. The runtime records one answer: after the first setup deny the guard stores `off`, and the edit guard then passes. The `setup` transition of `src/setup.js` has no host command in this adapter, so the shared core's "setup requested" band variant is not reachable from the Client yet.
+- **A path-form row shows the technical package id** in the Plugins page, because a row that names a file path has no display metadata. The bundle install shows the localized title and the icon.
+- **The profile target spells the default `~/.dsh`.** A different `DSH_HOME` needs the row adjusted, or the bundle installed with `dsh plugin add`.
+
+## Deferred
+
+To a follow-up track:
+
+- the strict-mode TDD guard (Red before Green) and the commit-message guard;
+- subagent inheritance and goal binding;
+- Windows path support.

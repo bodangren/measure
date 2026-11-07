@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Measure 守卫",
+    "description": "让代理保持在当前活跃的 Measure 轨道上，提供任务提示、编辑与收尾守卫，以及状态栏。"
+  }
+}
