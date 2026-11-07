@@ -15,11 +15,11 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 1.3: run `bash tests/dsh/run.sh`; the CLI suite passes
 - [x] Task: Measure - User Manual Verification 'Phase 1: The semantic nonce' (Protocol in workflow.md) `4378e90`
 
-## Phase 2: The live proof
+## Phase 2: The live proof [checkpoint: acfe0f9]
 
 - [x] Task 2.1: with a temporary `strict` override for this repository in `repos.json`, run `bin/measure-dsh reload` and read `GET /measure-guard/state` (expect `strict`/`repository`); clear the override, reload again, and read `guard`/`config`; record both reads, the installed digest, and the CLI output
 - [x] Task 2.2: cleanup (no override, config mode restored, live check PASS) and write the evidence under `measure/runs/dsh_measure_reload_20261107/`
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The live proof' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The live proof' (Protocol in workflow.md) `acfe0f9`
 
 ## Phase 3: Documentation and closeout
 
