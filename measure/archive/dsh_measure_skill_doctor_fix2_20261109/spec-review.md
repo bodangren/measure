@@ -34,7 +34,7 @@ folder.
 
 ### Author Response
 
-- F1: FIX (the record now states the shipped rule: `#anchor`-only links are skipped and scheme targets are not folder claims; the fixtures include an anchor-only file and the real repository passes)
+- F1: FIX (the record now states the shipped rule: `#anchor`-only links are skipped and scheme targets are not folder claims; the fixtures include a temporary skill with `[top](#top)` and `[site](https://example.com/x)` that must pass, and the real repository passes)
 - F2: FIX (a folded `description: >` fixture was added: a 1025-character folded description fails, a short folded description passes)
 - F3: FIX (the tech-debt row and CHANGELOG name the Markdown folder-link rule (N3, `skill.referenced-directory`) and keep the bundle-symlink rule separate)
 - F4: FIX (the record says the existing 13 tests keep their behavior; no test file is added)

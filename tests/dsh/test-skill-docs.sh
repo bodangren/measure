@@ -202,6 +202,15 @@ try:
         fail("a Markdown file link passes", run(file_link))
     print("[PASS] a Markdown file link passes")
 
+    # Anchor-only and scheme links are not folder claims.
+    passing_links = TMP / "passing_links"
+    skill_md = write_skill(passing_links, "links", "name: links\ndescription: short")
+    with skill_md.open("a", encoding="utf-8") as handle:
+        handle.write("[top](#top)\n[site](https://example.com/x)\n")
+    if run(passing_links):
+        fail("anchor-only and scheme links pass", run(passing_links))
+    print("[PASS] anchor-only and scheme links pass")
+
     # A symlink anywhere in the bundle is rejected.
     bundles = TMP / "bundles"
     bundle = bundles / "claude-skills"

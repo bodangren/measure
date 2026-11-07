@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_skill_doctor_fix4_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-09T16:00:00Z",
+  "updated_at": "2026-11-09T16:00:00Z",
+  "description": "Skill-doc check fix4: add anchor-only and scheme passing fixtures, fix the CHANGELOG conjunction, correct the stale PASS counts, and record the fix3 review",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

@@ -60,3 +60,12 @@ fix2 review with dispositions.
 
 - The commit staged-read race, the opencode rows, and the remaining
   spec_review_gate docs rows.
+
+> **Correction (2026-11-09, dsh_measure_skill_doctor_fix4_20261109):** the fix2
+> review's F1 disposition is now literally true: the test has a temporary skill
+> with `[top](#top)` and `[site](https://example.com/x)` that must pass. The test
+> prints 12 PASS lines (the previous record said 12 while a run printed 11). The
+> CHANGELOG bullet has its missing conjunction. NFR-1's "no write in the real
+> repository except the record corrections and the test fixture" describes the
+> test's fixtures; this track's own bookkeeping writes (review record, metadata,
+> registry, archive) are expected.
