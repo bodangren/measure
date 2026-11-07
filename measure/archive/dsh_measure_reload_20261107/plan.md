@@ -24,5 +24,6 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 ## Phase 3: Documentation and closeout [checkpoint: 6165747]
 
 - [x] Task 3.1: update `bin/measure-dsh`'s help/usage text, the plugin README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md` (the Medium reload row resolves)
-- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `d4465d8`
+- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.3 (follow-up review F6): re-run `bash tests/dsh/run.sh` after the docs/closeout edits so the doc checks (`test-docs.sh`) and the contract tests gate the final tree; the result is recorded in the follow-up track's notes `d4465d8`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md) `6165747`

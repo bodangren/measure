@@ -16,8 +16,8 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 2: Correct the record and the lesson
 
-- [ ] Task 2.1: correct the archived reload `spec.md`/`plan.md` (FR-1's executable live-proof record: `?sessionId=`, the JSON shape, the evidence file, the store path, the clearing command and the pre-run "no entry" value; FR-2's three edge cases; the Phase 3 post-docs gate task; the Overview's "extends" wording)
-- [ ] Task 2.2: fix `measure/lessons-learned.md` (no "toggle a marker comment" guidance; the semantic-value rule with the nonce example) within 50 lines
+- [x] Task 2.1: correct the archived reload `spec.md`/`plan.md` (FR-1's executable live-proof record: `?sessionId=`, the JSON shape, the evidence file, the store path, the clearing command and the pre-run "no entry" value; FR-2's three edge cases; the Phase 3 post-docs gate task; the Overview's "extends" wording)
+- [x] Task 2.2: fix `measure/lessons-learned.md` (no "toggle a marker comment" guidance; the semantic-value rule with the nonce example) within 50 lines
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Correct the record and the lesson' (Protocol in workflow.md)
 
 ## Phase 3: The post-docs gate and closeout
