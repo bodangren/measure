@@ -13,11 +13,11 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and gates [checkpoint: 1a5a932]
 
-- [x] Task 2.1: write `measure/archive/dsh_measure_registry_fix3_20261107/spec-review.md` (F1–F7 with one disposition each), link it from that track's index, add a dated correction note to its `spec.md` (fallback string, "the six earlier cases", the F7 wording), and complete the evidence file with the node/parity/CLI results, the archive-referencing entry count, and the closeout output
-- [x] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results
+- [x] Task 2.1: write `measure/archive/dsh_measure_registry_fix3_20261107/spec-review.md` (F1–F7 with one disposition each), link it from that track's index, add a dated correction note to its `spec.md` (fallback string, "the six earlier cases", the F7 wording), and complete the evidence file with the node/parity/CLI results, the archive-referencing entry count, and the closeout output `2dcc69e`
+- [x] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results `2dcc69e`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `1a5a932`
 
 ## Phase 3: Closeout
 
-- [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix4_20261107` and record the manifest-only FAIL
+- [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix4_20261107` and record the manifest-only FAIL `20e322a`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
