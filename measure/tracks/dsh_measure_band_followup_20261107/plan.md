@@ -17,11 +17,11 @@ then the live cap proof and closeout. The gate is
 - [x] Task 1.3: Green: the current implementation already satisfies the pinned rule; the tests pass without a behaviour change (a failing case means the code, not the test, is wrong)
 - [x] Task: Measure - User Manual Verification 'Phase 1: Pin the compaction contract with tests' (Protocol in workflow.md) `9fb1e86`
 
-## Phase 2: Correct the documentation
+## Phase 2: Correct the documentation [checkpoint: 06345b7]
 
 - [x] Task 2.1: README: the band bullet says the full text is available through `bandFull`/the hover title and `measure_status` (the sidebar panel keeps only the status lines plus the goal line); the "Data route" bullet lists the current view fields (`band`, `bandFull`, `status`, `guardsOff`, `problems`, `updatedAt`, `goal`, `mode`, `setup`)
 - [x] Task 2.2: `docs/dsh.md` "Status band" and the `CHANGELOG.md` entry repeat the corrected full-text statement; a dated correction note is added to the archived band track's `spec.md`, and the archived `plan.md` Task 1.2 notes that the exact-key assertion necessarily changes
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Correct the documentation' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Correct the documentation' (Protocol in workflow.md) `06345b7`
 
 ## Phase 3: Live cap proof and closeout
 
