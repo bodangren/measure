@@ -28,11 +28,11 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.4: Docs: README "Client surface" (compact band, `bandFull`, one-line rule) and `docs/dsh.md` `f052cd7`
 - [x] Task: Measure - User Manual Verification 'Phase S1: The band is one compact line' (Protocol in workflow.md) `1d974b9`
 
-## Phase S2: Documentation, live check, and track closeout
+## Phase S2: Documentation, live check, and track closeout [checkpoint: b312c98]
 
 _Story ref: spec.md#story-s2_
 
 - [x] Task 2.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the compact band and its `BAND_MAX`/`bandFull` limits `f052cd7`
 - [x] Task 2.2: Live check: install + reload; read the state route and record `band` (<= 160 characters, one line) and the presence of `bandFull` under `measure/runs/dsh_measure_band_20261107/`
 - [x] Task 2.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md` `890034c`
-- [ ] Task: Measure - User Manual Verification 'Phase S2: Documentation, live check, and track closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S2: Documentation, live check, and track closeout' (Protocol in workflow.md) `b312c98`
