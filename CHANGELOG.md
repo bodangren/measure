@@ -6,6 +6,10 @@
 
 * **parse:** the shared parser reads the two live `tracks.md` shapes: an optional ordered-list prefix (`1. - [~] **Track: …**`) and a `*Link:*` on the same bold line, in addition to this repository's next-line link. The DSH adapter had reported `cannot read the Measure files: … has track lines in no known format` for the Mediarr registry (198 entries, 9 active now parse). The canonical change is in `mods/measure-guard/hooks/parse.ts`; the OpenCode and DSH parity copies and both unknown-format detectors follow. Track `dsh_measure_evolve_20261107`.
 
+### Bug Fixes
+
+* **dsh rehearsal contract:** `tests/dsh/test-rehearsal-fixture.sh` now asserts the fixture's real initial commit (`rev-parse --verify HEAD` + exactly one commit, with a negative case) instead of the `.git/HEAD` file, and the rehearsal track's records were corrected: the executed run proved the Red→Green→commit handoff but not the fixture's strict deny path (a subagent keeps the parent session's guard root), the `measure/` write rule now lists the closeout/registry/shell exceptions, and the review record carries the deferral of a true isolated-session rehearsal as an Accepted Risk. Track `dsh_measure_rehearsal_followup_20261107`.
+
 ### Features
 
 * **dsh agent-team rehearsal:** a disposable Measure fixture (`tests/dsh/rehearsal/make-project.sh`) and its contract test, plus a Rehearsal protocol in `skills/measure-orchestrator/references/dsh.md` (section 10). One real rehearsal executed Red and Green subagents end to end (failing test → green → commit with a git note) and established the limit it documents: a subagent's `cwd` is its shell directory, not its guard root, so an isolated-project rehearsal needs a session opened in that project; `dsh --profile headless` cannot host the guard (`webServer` inject + stored credentials). Track `dsh_measure_team_rehearsal_20261107`.

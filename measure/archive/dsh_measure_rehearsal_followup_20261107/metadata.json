@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_rehearsal_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T16:00:00Z",
+  "updated_at": "2026-11-07T16:40:00Z",
+  "description": "Correct the rehearsal track's overclaims and rules, harden the fixture contract test to assert a real commit, define the acceptance fields, add the cleanup checks, and record the review with an explicit Accepted Risk for the deferred isolated-session strict path",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded. (1) The strict-path rehearsal remains an Accepted Risk: the fixture session must own the fixture as its working directory, which the agent tool surface cannot do; the review record documents the unproven part and the deferral. (2) The evidence file was extended with the subagent ids, exact commands, the no-deny reason, and the cleanup commands/results; one cleanup re-check found the installed plugin digest stale (the follow-up's compactBand change), fixed by reinstalling and re-running `--check --live`. (3) The fixture contract test was hardened to assert a real commit (positive and negative cases).",
+  "completed": "2026-11-07"
+}

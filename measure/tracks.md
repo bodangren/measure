@@ -88,6 +88,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure agent-team rehearsal**
   *Link: [./archive/dsh_measure_team_rehearsal_20261107/](./archive/dsh_measure_team_rehearsal_20261107/)*
+
+- [x] **Track: DSH Measure rehearsal follow-up corrections**
+  *Link: [./archive/dsh_measure_rehearsal_followup_20261107/](./archive/dsh_measure_rehearsal_followup_20261107/)*
+  *Corrects the rehearsal track's overclaims and rules, hardens the fixture contract test to assert a real commit (with a negative case), defines the acceptance fields and cleanup checks, and records the review with an explicit Accepted Risk for the deferred isolated-session strict path. 9 tasks, 3 checkpoints.*
   *A disposable Measure fixture and contract test, the Red/Green/Review protocol in the orchestrator reference (section 10), and one executed rehearsal: Red and Green subagents ran for real (fail → green → commit + git note) and established that a subagent's `cwd` is its shell directory, not its guard root. 12 tasks, 4 checkpoints.*
   *Corrects the false panel-fallback claim (the full text lives in `bandFull` and `measure_status` only), pins and tests the compaction contract (strip, 160/161 boundary, no-space fallback), fixes the route field list, and proves the cap live (band 157 with `…`, bandFull 470). 10 tasks, 3 checkpoints.*
   *The band stays on one line: `band` is capped at 160 characters on a word boundary with an ellipsis, `bandFull` carries the complete text as the hover title, and the Client row never wraps. 9 tasks, 2 checkpoints, 283 tests, live-verified (band 157 chars, bandFull 198).*
