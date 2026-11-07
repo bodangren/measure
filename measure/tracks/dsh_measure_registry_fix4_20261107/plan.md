@@ -7,8 +7,8 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Finalize the check
 
-- [x] Task 1.1: `tests/dsh/test-registry.sh`: pin the empty-description fallback to the label-stripped bold title (text between `**Track: ` and `**`), and reject any non-bold reason entry (`- <title> — <reason>` plus a link) or `[~]` entry inside `## Archived Tracks`, each with a specific message
-- [x] Task 1.2: add the fixtures — empty-description fallback mismatch (metadata description empty, description differs from the title), a cancelled reason entry in Archived, and a `[~]` entry in Archived — and run `bash tests/dsh/test-registry.sh`, recording the PASS lines in `measure/runs/dsh_measure_registry_fix3_20261107/evidence.md`
+- [x] Task 1.1: `tests/dsh/test-registry.sh`: pin the empty-description fallback to the label-stripped bold title (text between `**Track: ` and `**`), and reject any non-bold reason entry (`- <title> — <reason>` plus a link) or `[~]` entry inside `## Archived Tracks`, each with a specific message `2dcc69e`
+- [x] Task 1.2: add the fixtures — empty-description fallback mismatch (metadata description empty, description differs from the title), a cancelled reason entry in Archived, and a `[~]` entry in Archived — and run `bash tests/dsh/test-registry.sh`, recording the PASS lines in `measure/runs/dsh_measure_registry_fix3_20261107/evidence.md` `2dcc69e`
 - [ ] Task: Measure - User Manual Verification 'Phase 1: Finalize the check' (Protocol in workflow.md)
 
 ## Phase 2: Records and gates
