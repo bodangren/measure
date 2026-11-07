@@ -12,10 +12,10 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: Green: the suite passes; the existing shell cases unchanged; both parity gates ok
 - [x] Task: Measure - User Manual Verification 'Phase 1: The masker and its tests' (Protocol in workflow.md) `7e7d5ff`
 
-## Phase 2: The live evidence
+## Phase 2: The live evidence [checkpoint: 40c38ab]
 
 - [x] Task 2.1: `bin/measure-dsh install --no-skills`; run the installed `shellWritePaths` on the heredoc, quoted, comment, and real-write commands; record the output and the `--check --live` digest PASS under `measure/runs/dsh_measure_shell_grammar_20261107/`
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md) `40c38ab`
 
 ## Phase 3: Records
 
