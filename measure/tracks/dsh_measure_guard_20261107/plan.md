@@ -19,7 +19,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `plugins/dsh-measure-guard/cordis.patch.yml` with the self-insert row `measure-guard`
     - [ ] `plugins/dsh-measure-guard/index.js` with `export const name`, `export const inject`, `export function apply`
     - [ ] `plugins/dsh-measure-guard/README.md` skeleton: layout, parity rule, test command
-- [~] Task 1.3: Copy the shared core with parity
+- [x] Task 1.3: Copy the shared core with parity `38428e4`
     - [ ] `src/core/parse.ts` (byte copy), `src/core/guards.ts` (with `./parse.ts`), `src/types.ts` (transformed copy per `design.md §9`)
     - [ ] `scripts/check-parity.sh` with the three checks; exits 1 and names the file that differs
     - [ ] `package.json` script `test` = `node --test tests/ && bash scripts/check-parity.sh`
