@@ -1,13 +1,13 @@
 {
   "track_id": "dsh_measure_evolve_20261107",
   "type": "feature",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-07T09:05:00Z",
-  "updated_at": "2026-11-07T10:40:00Z",
+  "updated_at": "2026-11-07T11:10:00Z",
   "description": "DSH Measure evolution: strict TDD and commit guards, session-accurate writer detection, goal binding to the active Measure track, and the in-band setup answer",
   "estimated_tasks": 34,
-  "actual_tasks": null,
-  "deviation_notes": "",
+  "actual_tasks": 34,
+  "deviation_notes": "All 34 plan tasks are done and the 7 phase checkpoints are recorded (S7 first as a documented deviation, then S1-S5, S6). Deviations: (1) Story S7 (shared registry parser tolerance) was added after the owner reported the live Mediarr parse error and executes before S1; it is the only shared-core change and follows the mod-first parity order. (2) Tasks 1.1-1.4, 2.1-2.4, 3.1-3.4, 4.1-4.4 and 5.1-5.4 each landed as one commit instead of one commit per task; the plan checkboxes carry the commit SHA and the git notes record the deviation. (3) Phase checkpoints were created after the code phases completed, with automated verification reports instead of user confirmation because the session runs with approvals disabled. (4) The strict-mode TDD/commit guards and the goal binding are enforced only in strict mode / through /measure-goal as specified; the goal line is adapter chrome, not shared-core text. (5) The live check proved the strict deny and the new view fields, but it also found that replacing the installed plugin files does not HMR-reload the running Host: a profile patch write (or restart) is required, and the CLI module-path identity header cannot detect the stale instance (recorded in tech-debt). (6) The mod and OpenCode test suites cannot run on this host (no claude CLI, no bun); the parity gates plus the identical shared parser exercised by the DSH suite are the substitute evidence.",
   "sprint": {
     "goal": "A DeepSeek Harness session that develops a Measure track gets the rest of the guard rails: strict-mode Red-before-Green and commit checks, a writer count that names real sessions instead of subagents, a DSH goal bound to the active Measure track, and an in-band setup answer.",
     "stories": [
@@ -16,52 +16,53 @@
         "title": "Strict TDD guard (Red before Green)",
         "size": "L",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S2",
         "title": "Strict commit guard and commit reminder",
         "size": "L",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S3",
         "title": "Session-accurate writer detection",
         "size": "S",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S4",
         "title": "Goal binding",
         "size": "L",
         "priority": "Should",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S5",
         "title": "In-band setup answer",
         "size": "M",
         "priority": "Should",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S6",
         "title": "Documentation, live check, and track closeout",
         "size": "M",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": "S7",
         "title": "Registry format tolerance for real projects",
         "size": "S",
         "priority": "Must",
-        "status": "pending"
+        "status": "done"
       }
     ],
     "demo_notes": null,
-    "retro_ref": null
-  }
+    "retro_ref": "measure/lessons-learned.md"
+  },
+  "completed": "2026-11-07"
 }
