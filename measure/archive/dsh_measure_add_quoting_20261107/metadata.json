@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_add_quoting_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T23:45:00Z",
+  "updated_at": "2026-11-07T23:20:00Z",
+  "description": "Replace the commit guard's whitespace git-add split with a shell-word tokenizer so quoted/escaped paths are captured exactly, with an unterminated quote failing closed",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The tokenizer is deliberately bounded: it does not handle command substitution or wrapper scripts, which stay documented as a limit. (2) An unterminated quote fails closed by setting all=true (the guard then counts every changed path and may deny the commit). (3) The evidence file under measure/runs/ was force-added because .gitignore ignores the folder, matching how the repository tracks its other run evidence.",
+  "completed": "2026-11-07"
+}

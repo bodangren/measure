@@ -112,6 +112,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure mid-red evidence and record precision**
   *Link: [./archive/dsh_measure_midred_evidence_20261107/](./archive/dsh_measure_midred_evidence_20261107/)*
+
+- [x] **Track: DSH Measure commit guard: quote-aware `git add` arguments**
+  *Link: [./archive/dsh_measure_add_quoting_20261107/](./archive/dsh_measure_add_quoting_20261107/)*
+  *The strict commit guard reads `git add` with a shell-word tokenizer (quotes, escapes, comments, `--`), so a quoted path with spaces contributes exactly that path; unterminated quotes fail closed. 9 tasks, 3 checkpoints, pushed per phase.*
   *The named closeout ledger (output, SHAs, parity, node, srg), a defined closeout-clean (manifest out of scope), the corrected archived open-task list, the concrete review record with dispositions, and the parity gate task. 8 tasks, 2 checkpoints.*
   *Reconciles the mid-red records: the archived plans' task SHAs (closeout check now reports only the automation-supervisor manifest), the missing `tests/a.py` absence assertion, the follow-up's `spec-review.md` with responses, and the archived mid-red spec's dated correction note. 7 tasks, 2 checkpoints.*
   *`committed_files` is one `git diff --name-only --no-renames -z` call (both rename paths, no tab parser), the mid-red control case proves a test-only Red commit stays clean, and the archived record states the single-call approach and the executed Red order. 7 tasks, 2 checkpoints.*

@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **dsh commit guard quoting:** the strict commit guard's in-command `git add` arguments are now read with a shell-word tokenizer (single quotes literal, double-quote and backslash escapes, `#` comments, `--` end-of-options), so a quoted path with spaces (for example `git add "src/a b.ts"`) contributes exactly that path instead of being split, and an unterminated quote fails closed. Proven against the installed plugin (digest `sha256:3d732c439b706149b`) and a real scratch `git add "file with space.ts"`; the parser tests grow from 288 to 291. Track `dsh_measure_add_quoting_20261107`.
+
+### Features
+
 * **spec-review gate mid-red rename:** the orchestrator checker's `committed_files` now forces `--no-renames`, so a rename lists its old path as a deletion and its new path as an addition in one call, so the mid-red gate catches a Red commit that renames a production file into `tests/` instead of passing it. A regression test proves the old code exits 0 (the bypass) and the fix exits 1 with the old path listed; the spec-review-gate suite is 10/10. Track `dsh_measure_midred_rename_20261107`.
 
 ### Features
