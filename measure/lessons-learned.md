@@ -21,11 +21,12 @@
 - (2026-11-07, dsh_measure_hardening_20261107) A live check that compares a module **path** can pass on stale bytes: capture a SHA-256 digest at module evaluation, serve it, and compare it with the **installed copy**; `install`/`reload` must also trigger a recompose (the patch write), because replacing files under a running Host changes nothing.
 - (2026-11-07, dsh_measure_hardening_20261107) Every new deny must be gated by the mode and the bypass: `advise` allows every guard and `/measure-off` silences it. The re-review caught the metadata and shell denies running in `advise`, contradicting the documented mode contract.
 - (2026-11-07, dsh_measure_hardening_20261107) Narrowing an over-broad guard set must enumerate every option form (`git add -A`/`-u` as well as paths), or the refinement opens the exact bypass it closes. A bounded shell grammar that scans the whole command string also scans heredoc bodies: document the fail-closed false positives and use `write`/`edit` for documents that quote redirects.
+- (2026-11-07, dsh_measure_ops_20261107) `config.mode` is a default, not the effective mode: compose the persisted repository override, the in-memory session override, and the config in one `modeOf(root)` seam read per call, or a repository silently keeps the old level.
+- (2026-11-07, dsh_measure_ops_20261107) A reload trigger that changes only trailing newlines is not reliable: the loader watcher needs a real content change. Toggle a marker comment line instead.
 
 ## Recurring Gotchas
 
 - (2026-05-25, scrum_tracks_20260525) When inserting a new step mid-list in a numbered reference doc, prior step references in other docs drift silently. Audit cross-references after any step-number change.
-- (2026-10-04, measure_guard_20261004) The `claude plugin test` environment has no file, network, or process access, and its `$` has no `store` noun. Fixtures must be `.ts` modules generated from real files.
 - (2026-10-04, measure_guard_20261004) A rule like "the active track is the first `[~]` track" breaks when 2 tracks are `[~]`. Check each selection rule against the real `tracks.md` before the spec is final.
 - (2026-10-05, measure_guard_20261004) An interactive session watches a `--plugin-dir` folder: a saved edit reloads the mod at once, and an open pane stays open across the reload. No restart is necessary.
 - (2026-10-21, opencode_plugin_20261021) Probe the live host before writing to a documented shape: OpenCode 2.0.32 loads a plugin folder through `<folder>/index` (not `package.json` exports), `write` names its file `path`, `session.idle` never reaches a plugin subscription (the `session.execution.*` events do).
@@ -33,10 +34,10 @@
 - (2026-11-07, dsh_measure_guard_20261107) A profile patch row added at runtime recomposes live (HMR) and both halves load: verify from the browser by checking `window.__DSH_BOOT__` for the package id, then the rendered slot. The GUI page itself needs the launch cookie, so `curl` sees only the auth error.
 - (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys. Read a cited workflow before stating what it does.
 - (2026-11-07, dsh_measure_hardening_20261107) `git cat-file -e` exits **128** for a missing object, not 1, so a tri-state probe misreads a missing commit as a fatal error and fails open silently. Use `git rev-parse --verify --quiet <sha>^{commit}`: 0 = a real commit, 1 = missing or not a commit, 128 = a real repository failure.
+- (2026-11-07, dsh_measure_ops_20261107) An on-demand verification command must refresh its snapshot and treat a git `error` differently from `missing`: `missing` proves absence (report it), `error` means the tool cannot answer (a `nothing to verify` reply, not `clean`). An in-progress track's `actual_tasks: null` is not a mismatch; the verdict starts at closeout.
 
 ## Patterns That Worked Well
 
-- (2026-10-04, measure_guard_20261004) Two scratch scripts (task done: commit, note, SHA in `plan.md`, next task `[~]`; phase done: checkpoint commit, report note, `[checkpoint: <sha>]`) made the per-task ceremony cheap across 47 tasks.
 - (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds; each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1 — each round found a problem the previous corrections had added.
 - (2026-11-07, dsh_measure_guard_20261107) Three independent spec reviewers from three model families found the same Blockers plus distinct ones (shell mutation semantics, path resolution, localization boundary, setup and writer tasks) — roughly twice the findings of the best pair. Keep their report ids prefixed per reviewer.
 - (2026-11-07, dsh_measure_guard_20261107) Parallel workers with disjoint write scopes and a Lead-only commit path kept a five-phase, 141-test plugin build coherent: each worker owned a module set, reported Red evidence, and never ran git.
