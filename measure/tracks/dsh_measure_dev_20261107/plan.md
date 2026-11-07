@@ -30,7 +30,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 2.1: Workflow module `babea10`
     - [ ] `plugins/dsh-measure-guard/src/workflow.js`: `WORKFLOWS` table (command, workflow, skill, file), message template, trimmed `rawInput` forwarded as an `Arguments:` line, `resolveSkillFile` (the §4 root order with realpath dedupe, no cache), the project rail through `deps.rootOf`/`deps.snapshots`, the reference rail, `measureWorkflowCommands(deps)`
     - [ ] `plugins/dsh-measure-guard/tests/workflow.test.js`: names and the eight exact descriptions; one `agent.steer` per command with the resolved reference path; an argument command appends `Arguments: fix the parser`; no `measure/` -> error and no steer; missing reference -> error and no steer; `measure-setup` allowed without `measure/`; `measure-orchestrate` loads `measure-orchestrator`
-- [~] Task 2.2: Wire the commands
+- [x] Task 2.2: Wire the commands `2fd1abe`
     - [ ] `plugins/dsh-measure-guard/index.js` registers the workflow commands through `ctx.commands.register`, next to the existing three
     - [ ] `plugins/dsh-measure-guard/tests/plugin.test.js` asserts the eleven commands and no duplicate registration
 - [ ] Task 2.3: Measure - User Manual Verification 'Phase 2: Workflow commands' (Protocol in workflow.md)
