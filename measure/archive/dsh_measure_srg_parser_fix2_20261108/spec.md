@@ -74,3 +74,12 @@ a doc test, adds the ordering probe, and records the corrections with the review
 - The scope rule comparing trees rather than intermediate commits (the remaining
   parser row item).
 - The opencode and A11/recipe rows.
+
+> **Correction (2026-11-08, dsh_measure_srg_parser_fix3_20261108):** the class
+> search runs on the raw value (after the `dispositions:` prefix, before
+> stripping; a CRLF line ending is excluded), so a leading or trailing separator
+> or C1 control is rejected. The class also covers U+061C, U+200E, and U+200F, so
+> all Unicode Bidi_Control marks are rejected. The doc test asserts the whole
+> class sentence, not only a fragment. The tech-debt row now records the
+> trailing-separator and bidi-mark items as resolved, leaving the scope rule as
+> the only parser-row residual.

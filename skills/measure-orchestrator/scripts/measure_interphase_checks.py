@@ -84,7 +84,7 @@ DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)
 DISPOSITIONS_PREFIX = "dispositions:"
 # A control character (C0 except tab, and DEL) or a zero-width character inside
 # a dispositions value is invisible or misleading in the rendered finding text.
-CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f-\x9f\u200b\u200c\u200d\u2028\u2029\u202a-\u202e\u2060\u2066-\u2069\ufeff]")
+CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f-\x9f\u061c\u200b\u200c\u200d\u200e\u200f\u2028\u2029\u202a-\u202e\u2060\u2066-\u2069\ufeff]")
 AGENT_RESULT_START = "MEASURE_AGENT_RESULT"
 AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
 
@@ -480,13 +480,23 @@ def dispositions_feedback(log_path: str) -> list[str]:
     for line in lines[start + 1 : last_end]:
         stripped = line.strip()
         if stripped.startswith(DISPOSITIONS_PREFIX):
-            values.append(stripped[len(DISPOSITIONS_PREFIX) :].strip())
+            # Keep the raw value too: line.strip() would remove a separator or a
+            # C1 control at its start or end before the class search sees it.
+            raw = line[line.find(DISPOSITIONS_PREFIX) + len(DISPOSITIONS_PREFIX) :]
+            if raw.endswith("\r"):
+                raw = raw[:-1]
+            values.append(raw)
     if len(values) > 1:
         return ["invalid dispositions line: more than one dispositions line"]
     if not values:
         return []
-    value = values[0]
+    raw_value = values[0]
+    value = raw_value.strip()
     if value == "none":
+        # `none` is valid only as the plain value: a separator or another hidden
+        # character around it is still a control character.
+        if CONTROL_OR_ZERO_WIDTH_RE.search(raw_value):
+            return ["invalid dispositions line: control or zero-width character"]
         return []
     feedback: list[str] = []
     seen: set[str] = set()
@@ -508,7 +518,7 @@ def dispositions_feedback(log_path: str) -> list[str]:
             feedback.append(f"invalid dispositions line: duplicate finding id {finding_id}")
             continue
         seen.add(finding_id)
-    if not feedback and CONTROL_OR_ZERO_WIDTH_RE.search(value):
+    if not feedback and CONTROL_OR_ZERO_WIDTH_RE.search(raw_value):
         feedback.append("invalid dispositions line: control or zero-width character")
     return feedback
 

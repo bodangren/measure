@@ -245,6 +245,12 @@ class Probes:
         self.value_reject(g, "F2=CONTEST(U+2028)", "F2=CONTEST(a\u2028b)", "control or zero-width character")
         self.value_reject(g, "F2=CONTEST(U+0085)", "F2=CONTEST(a\x85b)", "control or zero-width character")
         self.value_reject(g, "F2=CONTEST(U+202E)", "F2=CONTEST(a\u202eb)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+200E)", "F2=CONTEST(a\u200eb)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+061C)", "F2=CONTEST(a\u061cb)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+200F)", "F2=CONTEST(a\u200fb)", "control or zero-width character")
+        self.value_reject(g, "a trailing U+2028 after the value", "F2=FIX\u2028", "control or zero-width character")
+        self.value_reject(g, "a leading U+0085 before the value", "\u0085F2=FIX", "control or zero-width character")
+        self.value_reject(g, "none with a leading U+2028", "\u2028none", "control or zero-width character")
 
     def g05_semicolon_in_parens(self):
         g = "G05 ';' inside parentheses (contract, spec Decision 18)"

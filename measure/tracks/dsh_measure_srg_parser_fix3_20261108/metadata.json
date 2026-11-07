@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_srg_parser_fix3_20261108",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-08T09:20:00Z",
+  "updated_at": "2026-11-08T09:20:00Z",
+  "description": "Search the raw dispositions value, add the remaining Bidi_Control marks (U+061C/200E/200F), strengthen the grammar doc test to the full class sentence, and record the fix2 review",
+  "estimated_tasks": 4,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
