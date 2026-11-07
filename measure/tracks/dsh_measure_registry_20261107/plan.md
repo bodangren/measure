@@ -13,8 +13,8 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: The structural check
 
-- [ ] Task 2.1: `tests/dsh/test-registry.sh`: assert each `- [x] **Track:` line is followed by a `*Link:` line within two lines, each archive directory has exactly one entry, the active section has at most one `[~]` track, and no merged two-or-more `*…*` description block exists; run it against a fixture with a merged block (must fail) and against the rebuilt registry (must pass)
-- [ ] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results
+- [x] Task 2.1: `tests/dsh/test-registry.sh`: assert each `- [x] **Track:` line is followed by a `*Link:` line within two lines, each archive directory has exactly one entry, the active section has at most one `[~]` track, and no merged two-or-more `*…*` description block exists; run it against a fixture with a merged block (must fail) and against the rebuilt registry (must pass)
+- [x] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The structural check' (Protocol in workflow.md)
 
 ## Phase 3: Closeout

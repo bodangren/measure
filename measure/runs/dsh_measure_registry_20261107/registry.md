@@ -10,3 +10,7 @@ Script check output:
 archive dirs: 37
 dirs with exactly one link line: 37
 merged description blocks: 0
+
+Phase 2 gates (dsh_measure_registry_20261107):
+node suite 301/301 pass; parity: ok (both)
+CLI suite: 11 passed, 0 failed (includes test-registry.sh)
