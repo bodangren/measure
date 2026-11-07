@@ -178,6 +178,14 @@ it stays clean until closeout. A project without `measure/`, no active track, a
 non-work-tree, or a git that cannot answer degrades to
 `nothing to verify (<reason>)`.
 
+## Status band
+
+The band shows the Measure position on one line. The Host's view caps it at
+`BAND_MAX = 160` characters (`band`) on a word boundary with a trailing `…`, and
+`bandFull` carries the complete line as the hover title; the row never wraps and
+the primary span ellipsizes. The full text is always available in the sidebar
+panel and in `measure_status`.
+
 ## Setup answer
 
 A git repository without a `measure/` folder shows the setup question in the

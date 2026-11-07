@@ -8,6 +8,8 @@
 
 ### Features
 
+* **dsh compact band:** the Measure band is capped at 160 characters on a word boundary with an ellipsis and never wraps, so a long task title no longer eats the composer's vertical space. The full position text stays available as the row's hover title (`bandFull`), in the sidebar panel, and in `measure_status`. Track `dsh_measure_band_20261107`.
+
 * **dsh operator controls:** `/measure-mode` makes the guard mode effective per repository: a persisted repository override wins over an in-memory session override, which wins over `config.mode`; every guard path reads the effective mode per call, and the state route/band/status expose the value and its source. `/measure-verify` is a read-only on-demand run of the git-backed task checks and the active track's `metadata.json` verdict. Track `dsh_measure_ops_20261107`.
 
 * **dsh live verification:** `bin/measure-dsh install` now writes the profile patch as a recompose trigger and a new `bin/measure-dsh reload` action performs that write on demand, so a running Host loads the installed code. The plugin captures a SHA-256 digest of its code files at module evaluation and serves it as `x-measure-guard-digest`; `--check --live` compares it with the installed copy, so a stale running instance is FAIL (naming both digests) instead of a false PASS, and a pre-digest instance is WARN. Track `dsh_measure_hardening_20261107`.

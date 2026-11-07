@@ -129,3 +129,11 @@ test('the band renders the effective mode with a localized label', () => {
     assert.match(match[1], /^\s{6}mode:/m, `${name} mode label`)
   }
 })
+
+test('the compact band is one ellipsized line with the full text in the title', () => {
+  assert.match(source, /view\.bandFull/)
+  assert.match(source, /whiteSpace: 'nowrap'/)
+  assert.match(source, /textOverflow: 'ellipsis'/)
+  assert.match(source, /flexWrap: 'nowrap'/)
+  assert.match(source, /title: view\.bandFull === null/)
+})

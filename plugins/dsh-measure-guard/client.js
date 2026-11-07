@@ -77,8 +77,9 @@ window.__ModuleLoader__.load({
     const bandStyle = {
       ...textStyle,
       display: 'flex',
-      flexWrap: 'wrap',
+      flexWrap: 'nowrap',
       alignItems: 'baseline',
+      overflow: 'hidden',
       gap: '8px',
       margin: '0 0 6px',
       padding: '4px 10px',
@@ -88,6 +89,16 @@ window.__ModuleLoader__.load({
     }
 
     const primaryStyle = { color: 'var(--dsw-alias-label-primary)', fontWeight: 600 }
+
+    /** The compact band line: one line, ellipsized; the full text rides in the title. */
+    const bandPrimaryStyle = {
+      ...primaryStyle,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      minWidth: 0,
+      flex: '1 1 auto',
+    }
 
     const panelStyle = {
       ...textStyle,
@@ -245,7 +256,7 @@ window.__ModuleLoader__.load({
       return h(
         'div',
         { 'data-measure-guard': 'band', style: bandStyle },
-        h('span', { style: primaryStyle }, band),
+        h('span', { style: bandPrimaryStyle, title: view.bandFull === null || view.bandFull === undefined ? undefined : view.bandFull }, band),
         view.guardsOff === null || view.guardsOff === undefined
           ? null
           : h('span', { style: { color: 'var(--dsw-alias-label-secondary)' } }, t('guards') + ': ' + guardsLabel(t, view.guardsOff)),

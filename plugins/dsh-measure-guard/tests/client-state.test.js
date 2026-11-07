@@ -7,7 +7,7 @@ import assert from 'node:assert/strict'
 
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { bandLine, parseAllowList, parsePlan, parseTracks, statusLines } from '../src/core/parse.ts'
-import { clientStateResponse, clientView, registerClientState } from '../src/client-state.js'
+import { BAND_MAX, clientStateResponse, clientView, compactBand, registerClientState } from '../src/client-state.js'
 
 const tracks = parseTracks(TRACKS)
 
@@ -80,7 +80,7 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   const updatedAt = '2026-11-07T03:00:00.000Z'
   const view = clientView({ snapshot, guardsOff: 'session', problems, mode: 'guard', updatedAt })
 
-  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal', 'mode', 'setup'])
+  assert.deepEqual(Object.keys(view), ['band', 'bandFull', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal', 'mode', 'setup'])
   assert.equal(view.band, bandLine(snapshot, 'session'))
   assert.match(view.band, /guards off for this session/)
   assert.equal(view.status, statusLines(snapshot, 'session').join('\n'))
@@ -257,4 +257,49 @@ test('clientStateResponse omits the digest header when the entry has none', asyn
 test('clientStateResponse omits the module header when the entry passes no moduleUrl', async () => {
   const response = await clientStateResponse(depsOf(), requestOf('?sessionId=session-1'))
   assert.equal(response.headers.get('x-measure-guard-module'), null)
+})
+
+// ---- the compact band (Story S1 of the band track) ------------------------
+
+test('compactBand caps a long line on a word boundary and keeps a short one', () => {
+  const short = 'Measure · Track · Task 1/2 [~] Do it'
+  assert.equal(compactBand(short), short)
+  assert.equal(compactBand(null), null)
+  assert.equal(compactBand(42), null)
+
+  const words = Array.from({ length: 60 }, (_, index) => `word${index}`).join(' ')
+  const compact = compactBand(words)
+  assert.ok(compact.length <= BAND_MAX, `length ${compact.length}`)
+  assert.ok(compact.endsWith('…'))
+  assert.ok(words.startsWith(compact.slice(0, -1).trimEnd()))
+  assert.ok(!compact.slice(0, -1).includes('  '))
+})
+
+test('a long task line keeps the band to one capped line and bandFull complete', () => {
+  const longTask = `Task: ${'validate the very long release acceptance flow '.repeat(15)}done`
+  const plan = parsePlan(`# Plan\n\n## Phase 1: Work\n\n- [~] ${longTask}\n`)
+  const snapshot = snapshotOf({ active: { entry: tracks[0], planPath: '/x', plan } })
+  const view = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1 })
+
+  assert.ok(view.band.length <= BAND_MAX, `band length ${view.band.length}`)
+  assert.ok(view.band.endsWith('…'))
+  assert.ok(view.bandFull.length > BAND_MAX)
+  assert.ok(view.bandFull.includes('validate the very long release acceptance flow'))
+})
+
+test('the sessions suffix is part of the compacted band', () => {
+  const longTask = `Task: ${'long '.repeat(80)}end`
+  const plan = parsePlan(`# Plan\n\n## Phase 1: Work\n\n- [~] ${longTask}\n`)
+  const snapshot = snapshotOf({ active: { entry: tracks[0], planPath: '/x', plan } })
+  const view = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, sessionCount: 2 })
+  assert.ok(view.band.length <= BAND_MAX)
+  assert.ok(view.band.endsWith('…'))
+  assert.ok(view.bandFull.endsWith('· 2 sessions'))
+})
+
+test('a project without measure/ keeps both band fields null', () => {
+  const snapshot = snapshotOf({ hasMeasure: false, tracks: [], active: null, inProgressCount: 0 })
+  const view = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1 })
+  assert.equal(view.band, null)
+  assert.equal(view.bandFull, null)
 })

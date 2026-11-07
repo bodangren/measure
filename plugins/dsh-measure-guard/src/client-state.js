@@ -8,6 +8,22 @@ import { needsSetup, resolveSetupChoice, setupBandText } from './setup.js'
 /** The route the Client fetches: `GET /measure-guard/state?sessionId=<id>`. */
 export const CLIENT_STATE_PATH = '/measure-guard/state'
 
+/** The most characters the band shows on one line (Story S1 of the band track). */
+export const BAND_MAX = 160
+
+/**
+ * The compact band of one line: the input unchanged when it fits, else a
+ * word-boundary cut at or before `max - 1` characters with a trailing ` ·`
+ * stripped and an ellipsis appended. A non-string or an empty input is null.
+ */
+export function compactBand(text, max = BAND_MAX) {
+  if (typeof text !== 'string' || text === '') return null
+  if (text.length <= max) return text
+  const cut = text.lastIndexOf(' ', max - 1)
+  const head = (cut > 0 ? text.slice(0, cut) : text.slice(0, max - 1)).replace(/\s+·$/, '').trimEnd()
+  return `${head}…`
+}
+
 /**
  * The JSON body of the route: the band line (null when the project has no
  * measure/ folder), the status text, the bypass state, the last end-of-turn
@@ -21,11 +37,15 @@ export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, ses
   const line = project === null ? null : bandLine(project, guardsOff)
   // FR-12: a second writer in one worktree is named in the band. The shared
   // core text is kept verbatim; the count is the adapter's own suffix.
-  const band = line === null || sessionCount < 2 ? line : `${line} · ${sessionCount} sessions`
+  // The session suffix is part of the line before compaction, so a long suffix
+  // can itself be truncated; the full line stays available as `bandFull`.
+  const bandFull = line === null || sessionCount < 2 ? line : `${line} · ${sessionCount} sessions`
+  const band = compactBand(bandFull)
   const status = statusLines(project, guardsOff)
   const goalText = goalLine(goal)
   return {
     band,
+    bandFull,
     status: (goalText === null ? status : [...status, goalText]).join('\n'),
     guardsOff,
     problems: [...problems],
