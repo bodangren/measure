@@ -99,7 +99,7 @@ if check_readme "$WORK/readme.md" >/dev/null 2>&1; then fail "the missing-README
 echo "[PASS] the missing-README-link fixture is rejected"
 
 cp "$CHANGELOG" "$WORK/changelog.md"
-sed -i '/dsh_measure_dev_20261107/d' "$WORK/changelog.md"
+sed -i '/dsh_measure_dev_20261107\|measure-dsh/d' "$WORK/changelog.md"
 if check_changelog "$WORK/changelog.md" >/dev/null 2>&1; then fail "the missing-changelog fixture passed, it must fail"; fi
 echo "[PASS] the missing-changelog fixture is rejected"
 

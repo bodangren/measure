@@ -24,7 +24,10 @@ export async function shaProblems(deps, snapshot) {
   const problems = []
   for (const task of tasksOf(plan)) {
     if (task.marker !== 'x' || task.sha === null) continue
-    const commit = await deps.gitProbe(['cat-file', '-e', `${task.sha}^{commit}`], root)
+    // `rev-parse --verify --quiet` exits 1 for a missing object or a non-commit
+    // and 128 only for a real repository failure. (`git cat-file -e` exits 128
+    // for a missing object, which the tri-state would misread as `error`.)
+    const commit = await deps.gitProbe(['rev-parse', '--verify', '--quiet', `${task.sha}^{commit}`], root)
     if (commit === 'error') continue
     if (commit === 'missing') {
       problems.push(`the task "${labelOf(task)}" cites SHA ${task.sha}, which no commit in this repository owns.`)

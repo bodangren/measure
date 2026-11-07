@@ -79,3 +79,7 @@ The track makes the DSH Measure adapter prove three claims. First, a SHA-256 dig
 - F20: FIX (the Overview item now diagnoses the over-approximation, matching Decision 9 and the code)
 
 Per the spec-review standard, a review has at most one re-review; Round 2 was that re-review. All Round 2 findings are fixed, verified by the 251-test suite, the 11-file CLI contract suite, and the live evidence under `measure/runs/dsh_measure_hardening_20261107/`; no finding is left open.
+
+## Post-review live correction
+
+After Round 2 closed, the live end-of-turn probe exposed a factual error in Decision 5 (raised in part by F17): `git cat-file -e <sha>^{commit}` exits **128** for a missing object, not 1, so the tri-state mapped a missing commit to `error` and the git problems silently failed open (the live route showed no problem for a plan task citing `deadbee`). The probe is now `git rev-parse --verify --quiet <sha>^{commit}`: exit 0 = a real commit, exit 1 = missing or not a commit, 128 = a real repository failure (fail open). `git notes show` on a valid commit without a note exits 1. Decision 5, plan Task 2.1, the README, `docs/dsh.md`, the CHANGELOG, and the tests were corrected; the live turn-end probe then produced the expected problem.

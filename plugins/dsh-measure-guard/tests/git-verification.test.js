@@ -50,7 +50,7 @@ test('a bad SHA and a missing note each produce one problem naming the task', as
     { marker: 'x', text: 'Bad sha', sha: 'deadbee' },
     { marker: 'x', text: 'No note', sha: 'abcdef1' },
   ])
-  const deps = depsOf({ answers: { 'cat-file -e deadbee^{commit}': 'missing', 'notes show abcdef1': 'missing' } })
+  const deps = depsOf({ answers: { 'rev-parse --verify --quiet deadbee^{commit}': 'missing', 'notes show abcdef1': 'missing' } })
   const problems = await shaProblems(deps, snapshotOf(plan))
 
   assert.equal(problems.length, 2)
@@ -63,7 +63,7 @@ test('a verified task is silent and a probe error fails open', async () => {
     { marker: 'x', text: 'Good', sha: 'abcdef0' },
     { marker: 'x', text: 'Unavailable', sha: 'abcdef2' },
   ])
-  const deps = depsOf({ answers: { 'cat-file -e abcdef2^{commit}': 'error' } })
+  const deps = depsOf({ answers: { 'rev-parse --verify --quiet abcdef2^{commit}': 'error' } })
   assert.deepEqual(await shaProblems(deps, snapshotOf(plan)), [])
 })
 

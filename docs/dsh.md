@@ -131,7 +131,8 @@ from a guard path.
 ## Verification depth
 
 The end-of-turn check is not marker-only: for every `[x]` task that cites a SHA
-the adapter asks git whether that SHA is a real commit (`git cat-file -e`) and
+the adapter asks git whether that SHA is a real commit (`git rev-parse --verify
+--quiet <sha>^{commit}`: exit 0 = commit, exit 1 = missing or not a commit) and
 whether it carries the mandated git note (`git notes show`). A missing commit or
 note becomes a turn problem; a git that cannot answer fails open. Closing a
 track additionally requires its `metadata.json` to exist and its `actual_tasks`
