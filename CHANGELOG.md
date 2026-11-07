@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **audit role contract:** the audit example uses `schema_version` 1; `role-gate --role orchestrator-audit` (and the `measure-orchestrator-audit` alias) validates the audit result; Inputs, Detectors, and Outputs describe catalog/guard-test proposals only with the `PROPOSAL:` candidate format; doc tests pin the schema version, format, and the absence of the append/write instructions. Tracks `dsh_measure_audit_contract_20261110` and `dsh_measure_audit_contract_fix2_20261110`.
+
+### Features
+
 * **role contracts:** `contracts.md` now has a "Marker Matching and Baseline" section pinned by the S3 docs test — whole-line marker matching after stripping, the raw dispositions value with one CRLF terminator ignored, item stripping, all six audit scope names plus the spec-review section scope, the spec-review baseline resolution (no ancestry requirement; Mid Red/Jr Green compare strings), the committed set (tree plus every commit in `baseline..HEAD`) and the working-tree union, and the HEAD-advance rule. Track `dsh_measure_contracts_scope_20261110`.
 
 ### Features
