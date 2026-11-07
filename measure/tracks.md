@@ -27,12 +27,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [~] **Track: DSH Measure agent-team rehearsal**
-  *Link: [./tracks/dsh_measure_team_rehearsal_20261107/](./tracks/dsh_measure_team_rehearsal_20261107/)*
-  *Builds a disposable Measure fixture, documents the Red/Green/Review protocol for DSH subagents, runs one real rehearsal with the live guard, and records what the guard actually does (including the per-agent Red record).*
-
----
-
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -91,6 +85,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure band follow-up corrections**
   *Link: [./archive/dsh_measure_band_followup_20261107/](./archive/dsh_measure_band_followup_20261107/)*
+
+- [x] **Track: DSH Measure agent-team rehearsal**
+  *Link: [./archive/dsh_measure_team_rehearsal_20261107/](./archive/dsh_measure_team_rehearsal_20261107/)*
+  *A disposable Measure fixture and contract test, the Red/Green/Review protocol in the orchestrator reference (section 10), and one executed rehearsal: Red and Green subagents ran for real (fail → green → commit + git note) and established that a subagent's `cwd` is its shell directory, not its guard root. 12 tasks, 4 checkpoints.*
   *Corrects the false panel-fallback claim (the full text lives in `bandFull` and `measure_status` only), pins and tests the compaction contract (strip, 160/161 boundary, no-space fallback), fixes the route field list, and proves the cap live (band 157 with `…`, bandFull 470). 10 tasks, 3 checkpoints.*
   *The band stays on one line: `band` is capped at 160 characters on a word boundary with an ellipsis, `bandFull` carries the complete text as the hover title, and the Client row never wraps. 9 tasks, 2 checkpoints, 283 tests, live-verified (band 157 chars, bandFull 198).*
   *The effective mode is real (repository override > session override > config, `/measure-mode`, state route/band/status) and `/measure-verify` reports the git-backed ceremony on demand, read-only. 13 tasks, 3 checkpoints, 278 tests, live-verified (a repository `strict` override with config `advise` produced a real strict deny; reload learned to toggle a content marker).*

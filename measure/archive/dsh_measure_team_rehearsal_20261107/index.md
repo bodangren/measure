@@ -3,3 +3,4 @@
 - [Specification](./spec.md)
 - [Implementation Plan](./plan.md)
 - [Metadata](./metadata.json)
+- [Live evidence](../../runs/dsh_measure_team_rehearsal_20261107/live-rehearsal.md)

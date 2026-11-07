@@ -202,6 +202,16 @@ roles are subagent prompts with a fixed provider/model per role; the full table,
 the prompt template, the independence rule, and the guard-marker handoffs are in
 [`../skills/measure-orchestrator/references/dsh.md`](../skills/measure-orchestrator/references/dsh.md).
 
+**Rehearsal.** Section 10 of that reference documents a disposable-project
+rehearsal (build it with `tests/dsh/rehearsal/make-project.sh`). A run on
+2026-11-07 executed Red and Green for real and established the key limit: a
+`subagent` spawned with a `cwd` option gets that directory for its shell
+commands, but its **guard root stays the parent session's working directory**.
+A rehearsal of an isolated project therefore needs a session whose working
+directory is that project; `dsh --profile headless` cannot host the guard
+because the plugin requires `webServer` and the profile's stored credentials.
+The evidence is under `measure/runs/dsh_measure_team_rehearsal_20261107/`.
+
 ## Uninstall
 
 ```bash

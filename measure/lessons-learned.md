@@ -40,8 +40,8 @@
 
 ## Patterns That Worked Well
 
-- (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds; each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1 — each round found a problem the previous corrections had added.
 - (2026-11-07, dsh_measure_guard_20261107) Parallel workers with disjoint write scopes and a Lead-only commit path kept a five-phase, 141-test plugin build coherent: each worker owned a module set, reported Red evidence, and never ran git.
+- (2026-11-07, dsh_measure_team_rehearsal_20261107) A `subagent`'s `cwd` changes its shell directory but **not its guard/session root**: the child is guarded against the parent session's repository, so a disposable-project rehearsal needs a session opened in that project. `dsh --profile headless` cannot host the guard (the plugin requires `webServer` and the web profile's stored credentials).
 
 ## Planning Improvements
 

@@ -8,6 +8,8 @@
 
 ### Features
 
+* **dsh agent-team rehearsal:** a disposable Measure fixture (`tests/dsh/rehearsal/make-project.sh`) and its contract test, plus a Rehearsal protocol in `skills/measure-orchestrator/references/dsh.md` (section 10). One real rehearsal executed Red and Green subagents end to end (failing test → green → commit with a git note) and established the limit it documents: a subagent's `cwd` is its shell directory, not its guard root, so an isolated-project rehearsal needs a session opened in that project; `dsh --profile headless` cannot host the guard (`webServer` inject + stored credentials). Track `dsh_measure_team_rehearsal_20261107`.
+
 * **dsh compact band:** the Measure band is capped at 160 characters on a word boundary with an ellipsis and never wraps, so a long task title no longer eats the composer's vertical space. The full position text stays available as the row's hover title (`bandFull`) and in `measure_status` (the sidebar panel shows the status lines and the goal line, not the active task text). Track `dsh_measure_band_20261107`.
 
 * **dsh operator controls:** `/measure-mode` makes the guard mode effective per repository: a persisted repository override wins over an in-memory session override, which wins over `config.mode`; every guard path reads the effective mode per call, and the state route/band/status expose the value and its source. `/measure-verify` is a read-only on-demand run of the git-backed task checks and the active track's `metadata.json` verdict. Track `dsh_measure_ops_20261107`.
