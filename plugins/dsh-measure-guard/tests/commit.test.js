@@ -352,6 +352,9 @@ test('addedPaths counts env-prefixed and wrapper git commands', () => {
     ['env git add a.ts && git commit -m "fix(a): A"', ['a.ts']],
     ['sudo git add b.ts && git commit -m "fix(b): B"', ['b.ts']],
     ['env FOO=1 sudo git add c.ts && git commit -m "fix(c): C"', ['c.ts']],
+    ['sudo -u root git add u.ts && git commit -m "fix(u): U"', ['u.ts']],
+    ['env -i git add i.ts && git commit -m "fix(i): I"', ['i.ts']],
+    ['nice -n 5 git add n.ts && git commit -m "fix(n): N"', ['n.ts']],
   ]
   for (const [command, paths] of cases) {
     assert.deepEqual(addedPaths(command), { all: false, trackedOnly: false, paths }, command)

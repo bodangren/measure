@@ -105,22 +105,41 @@ function shellTokens(command) {
 
 const COMMAND_PREFIXES = new Set(['env', 'sudo', 'command', 'exec', 'nice', 'time'])
 
+/** Wrapper options that consume the following word as their argument. */
+const PREFIX_OPTION_ARGS = new Set(['-u', '-n', '-C', '--user', '--nice', '--chdir', '--unset'])
+
 /** True for a leading `NAME=value` assignment word. */
 const isEnvAssignment = value => /^[A-Za-z_][A-Za-z0-9_]*=/.test(value)
 
 /**
  * True when tokens[index] begins a command: the first word, after a separator,
- * or after a run of command prefixes (env assignments and the wrapper set).
+ * or after a run of command prefixes (env assignments and the wrapper set,
+ * including a wrapper's option words and their arguments: `sudo -u root git`).
  */
 function atCommandStart(tokens, index) {
-  let at = index - 1
-  while (at >= 0 && !tokens[at].separator) {
+  let start = 0
+  for (let at = index - 1; at >= 0; at -= 1) {
+    if (tokens[at].separator) {
+      start = at + 1
+      break
+    }
+  }
+  let at = start
+  while (at < index) {
     const value = tokens[at].value ?? ''
-    if (isEnvAssignment(value) || COMMAND_PREFIXES.has(value)) {
-      at -= 1
+    if (isEnvAssignment(value)) {
+      at += 1
       continue
     }
-    return false
+    if (!COMMAND_PREFIXES.has(value)) return false
+    at += 1
+    while (at < index) {
+      const option = tokens[at].value ?? ''
+      if (!option.startsWith('-')) break
+      const takesArg = PREFIX_OPTION_ARGS.has(option)
+      at += 1
+      if (takesArg) at += 1
+    }
   }
   return true
 }

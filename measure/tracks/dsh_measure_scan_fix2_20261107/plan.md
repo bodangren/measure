@@ -10,6 +10,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: a `git` word counts at a command start if it is the first word, directly after a separator, or after a run of command prefixes (an environment assignment matching `^[A-Za-z_][A-Za-z0-9_]*=`, or `env`/`sudo`/`command`/`exec`/`nice`/`time`); documented in the header
 - [x] Task 1.2: tests: `FOO=1 git add secret.ts`, `env git add a.ts`, `sudo git add b.ts`, and `env FOO=1 sudo git add c.ts` all yield their paths; the `echo git add .` negative and existing cases unchanged; the old scan fails the new cases
 - [x] Task 1.3: the suite passes and both parity gates stay ok
+- [x] Task 1.4 (review F3, added after the Phase 1 checkpoint): extend the prefix rule to option-bearing wrappers — `sudo -u <user> git add`, `env -i git add`, `nice -n <n> git add` — skipping a wrapper's option words and the arguments of `-u`/`-n`/`-C`/`--user`/`--nice`/`--chdir`/`--unset`; add the three tests and prove the previous scanner fails them; both parity gates stay ok
 - [x] Task: Measure - User Manual Verification 'Phase 1: Command prefixes' (Protocol in workflow.md) `bda9226`
 
 ## Phase 2: Records
