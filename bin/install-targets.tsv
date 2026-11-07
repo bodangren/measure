@@ -12,3 +12,7 @@ agents	~/.agents/agents	measure-*.md
 plugins/opencode-measure-guard	~/.config/opencode/plugins/opencode-measure-guard	!(tests/*)
 plugins/opencode-measure-guard/commands	~/.config/opencode/commands	measure-*.md
 agents	~/.config/opencode/agents	measure-*.md
+
+# DSH: the web profile loads the copy through one cordis.patch.yml insert row;
+# the installer edits no YAML and runs no package manager.
+plugins/dsh-measure-guard	~/.dsh/profiles/web/plugins/dsh-measure-guard	!(tests/*)
