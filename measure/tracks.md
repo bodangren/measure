@@ -219,3 +219,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure skill-description repository check**
   *Link: [./archive/dsh_measure_skill_doctor_check_20261109/](./archive/dsh_measure_skill_doctor_check_20261109/)*
   *Add a CLI contract test that checks every SKILL.md description length and angle-bracket rule and rejects symlinks in the claude-skills bundle, with negative fixtures*
+
+- [x] **Track: DSH Measure skill-doc check fix2**
+  *Link: [./archive/dsh_measure_skill_doctor_fix2_20261109/](./archive/dsh_measure_skill_doctor_fix2_20261109/)*
+  *Enforce the real folder-link rule (Markdown links to directories, N3), keep the bundle symlink rule separately, and add block/boundary/character/missing-description fixtures*
