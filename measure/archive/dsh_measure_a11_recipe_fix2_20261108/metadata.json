@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_a11_recipe_fix2_20261108",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T11:00:00Z",
+  "updated_at": "2026-11-08T11:30:00Z",
+  "description": "A11 recipe fix2: skip executable command spans, pin the single-space path rule, retarget sensitivity mutants, guard the unreadable row for root, and correct the records",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The pinned pattern keeps directory claims by allowing an empty segment after the slash. (2) The unreadable-document contract row is skipped with a note under root. (3) The live A11 output is back to 3 candidates; the tech-debt Group (e) row keeps the .. outside-repo and report-not-confirmed-drift items open.",
+  "completed": "2026-11-08"
+}

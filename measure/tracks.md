@@ -195,3 +195,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure A11 recipe hardening**
   *Link: [./archive/dsh_measure_a11_recipe_20261108/](./archive/dsh_measure_a11_recipe_20261108/)*
   *Harden the A11 detection recipe: text-mode grep for NUL/invalid-UTF-8 documents, space-containing path claims, and distinct missing/non-regular/unreadable document messages, with S4 contract cases*
+
+- [x] **Track: DSH Measure A11 recipe fix2**
+  *Link: [./archive/dsh_measure_a11_recipe_fix2_20261108/](./archive/dsh_measure_a11_recipe_fix2_20261108/)*
+  *Skip executable command spans, pin the single-space path rule, retarget the sensitivity mutants, guard the unreadable row for root, and correct the records*
