@@ -27,7 +27,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 ## Phase 2: Workflow commands
 
-- [ ] Task 2.1: Workflow module
+- [~] Task 2.1: Workflow module
     - [ ] `plugins/dsh-measure-guard/src/workflow.js`: `WORKFLOWS` table (command, workflow, skill, file), message template, trimmed `rawInput` forwarded as an `Arguments:` line, `resolveSkillFile` (the §4 root order with realpath dedupe, no cache), the project rail through `deps.rootOf`/`deps.snapshots`, the reference rail, `measureWorkflowCommands(deps)`
     - [ ] `plugins/dsh-measure-guard/tests/workflow.test.js`: names and the eight exact descriptions; one `agent.steer` per command with the resolved reference path; an argument command appends `Arguments: fix the parser`; no `measure/` -> error and no steer; missing reference -> error and no steer; `measure-setup` allowed without `measure/`; `measure-orchestrate` loads `measure-orchestrator`
 - [ ] Task 2.2: Wire the commands
