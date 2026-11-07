@@ -263,3 +263,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure snapshot invalidation narrowing**
   *Link: [./archive/dsh_measure_snapshot_invalidate_20261109/](./archive/dsh_measure_snapshot_invalidate_20261109/)*
   *Narrow the per-tools/result snapshot invalidation to tools that can change the repository, with a read-only allowlist and fail-safe unknown names*
+
+- [x] **Track: DSH Measure snapshot invalidation fix2**
+  *Link: [./archive/dsh_measure_snapshot_invalidate_fix2_20261109/](./archive/dsh_measure_snapshot_invalidate_fix2_20261109/)*
+  *Export MUTATION_TOOLS with a disjoint-set test, state the within-step window, and correct the row and spec records*

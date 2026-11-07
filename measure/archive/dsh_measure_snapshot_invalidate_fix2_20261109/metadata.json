@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_snapshot_invalidate_fix2_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T01:00:00Z",
+  "updated_at": "2026-11-10T01:40:00Z",
+  "description": "Export MUTATION_TOOLS with a disjoint-set test, state the within-step window, and correct the row and spec records",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "All 8 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The disjoint test reads the exported MUTATION_TOOLS set. (2) The perf row is Resolved with the precise allowlist wording and the within-step window as the residual. (3) The snapshot-invalidation review is recorded with F1-F6 dispositions and a correction note.",
+  "completed": "2026-11-10"
+}
