@@ -33,7 +33,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.4: Docs: README "Checks" and "State and root resolution" plus `docs/dsh.md` name the digest, the stale FAIL, and `reload` `e20cf49`
 - [x] Task: Measure - User Manual Verification 'Phase S1: The live check detects stale plugin code' (Protocol in workflow.md) `1778798`
 
-## Phase S2: Git-backed verification of the task ceremony
+## Phase S2: Git-backed verification of the task ceremony [checkpoint: aa96a23]
 
 _Story ref: spec.md#story-s2_
 
@@ -46,7 +46,7 @@ _Story ref: spec.md#story-s2_
     - [ ] `tests/closeout.test.js`: the metadata deny is returned from `closeoutGuardFor` for a closed track and the allowed case carries no deny
 - [x] Task 2.3: Green: implement the seam and wire `shaProblems` into `onTurnStopping` and `closeoutMetadataCheck` into the registry closeout
 - [x] Task 2.4: Docs: README "Guards" (end-of-turn verification, closeout metadata) and `docs/dsh.md`
-- [ ] Task: Measure - User Manual Verification 'Phase S2: Git-backed verification of the task ceremony' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S2: Git-backed verification of the task ceremony' (Protocol in workflow.md) `aa96a23`
 
 ## Phase S3: Close the write-path bypasses
 
