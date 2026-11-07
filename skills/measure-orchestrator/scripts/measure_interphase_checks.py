@@ -142,6 +142,27 @@ def git_status(repo: Path) -> str:
     return result.stdout if result.returncode == 0 else ""
 
 
+def history_files(repo: Path, baseline: str) -> set[str]:
+    """Every path a commit in `baseline..HEAD` touched, including intermediate ones.
+
+    A tree diff (`git diff baseline..HEAD`) hides a path that one commit added and
+    a later commit removed, or changed and reverted. The mid-red, audit-scope, and
+    spec-review scope rules must see that work, so the per-commit file list is
+    unioned in.
+    """
+    if not baseline:
+        return set()
+    revisions = git(repo, "rev-list", f"{baseline}..HEAD")
+    if revisions.returncode != 0:
+        return set()
+    files: set[str] = set()
+    for revision in revisions.stdout.split():
+        result = git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", revision)
+        if result.returncode == 0:
+            files.update(path for path in result.stdout.split("\0") if path)
+    return files
+
+
 def changed_files(repo: Path, baseline: str) -> list[str]:
     files: set[str] = set()
     commands: list[list[str]] = []
@@ -152,6 +173,7 @@ def changed_files(repo: Path, baseline: str) -> list[str]:
         result = git(repo, *command)
         if result.returncode == 0:
             files.update(line.strip() for line in result.stdout.splitlines() if line.strip())
+    files.update(history_files(repo, baseline))
     return sorted(files)
 
 
@@ -167,9 +189,9 @@ def committed_files(repo: Path, baseline: str) -> list[str]:
     if not baseline:
         return []
     result = git(repo, "diff", "--name-only", "--no-renames", "-z", f"{baseline}..HEAD")
-    if result.returncode != 0:
-        return []
-    return sorted({path for path in result.stdout.split("\0") if path.strip()})
+    files = {path for path in result.stdout.split("\0") if path.strip()} if result.returncode == 0 else set()
+    files.update(history_files(repo, baseline))
+    return sorted(files)
 
 
 def non_test_committed_files(repo: Path, baseline: str) -> list[str]:
@@ -795,6 +817,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                         paths = listed.stdout.split("\0")
                         if paths and paths[-1] == "":
                             paths.pop()
+                        paths.extend(sorted(history_files(repo, args.baseline) - set(paths)))
                         paths.sort()
                         outside = [path for path in paths if not path.startswith("measure/runs/")]
                         if outside:

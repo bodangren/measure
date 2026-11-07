@@ -21,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "skills" / "measure-orchestrator" / "scripts" / "measure_interphase_checks.py"
+sys.path.insert(0, str(CHECKER.parent))
+import measure_interphase_checks as mic  # noqa: E402
 
 TRACK = "demo_track"
 PHASE = "track setup"
@@ -68,6 +70,46 @@ def clean_env(extra: dict[str, str] | None = None) -> dict[str, str]:
     if extra:
         env.update(extra)
     return env
+
+
+class IntermediateCommitScopeTest(unittest.TestCase):
+    """changed_files() and ux_paths() include paths an intermediate commit touched."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.mkdtemp(prefix="intermediate_scope_")
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        self.repo = Path(self.tmp) / "repo"
+        self.repo.mkdir()
+        self.git("init", "-q")
+        self.write("README.md", "base\n")
+        self.commit("base")
+        self.baseline = self.git("rev-parse", "HEAD").stdout.strip()
+
+    def git(self, *args: str) -> subprocess.CompletedProcess:
+        proc = subprocess.run(
+            ["git", "-c", "user.name=test", "-c", "user.email=test@example.com", "-c", "commit.gpgsign=false", *args],
+            cwd=str(self.repo), env=clean_env(), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False,
+        )
+        if proc.returncode != 0:
+            self.fail(f"fixture git {' '.join(args)} failed: {proc.stdout}")
+        return proc
+
+    def write(self, rel: str, text: str) -> None:
+        path = self.repo / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+
+    def commit(self, message: str) -> None:
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", message)
+
+    def test_intermediate_add_then_delete_is_in_changed_files_and_ux_paths(self) -> None:
+        self.write("app/src/x.ts", "export const x = 1;\n")
+        self.commit("add a UX file")
+        self.git("rm", "-q", "app/src/x.ts")
+        self.commit("delete it")
+        self.assertIn("app/src/x.ts", mic.changed_files(self.repo, self.baseline))
+        self.assertIn("app/src/x.ts", mic.ux_paths(self.repo, self.baseline))
 
 
 class SpecReviewRoleGateTest(unittest.TestCase):
@@ -279,6 +321,52 @@ class SpecReviewRoleGateTest(unittest.TestCase):
         out = self.assert_gate_fails(OUTSIDE_MSG)
         self.assertIn("- src/app.py", out)
         self.assertNotIn(PASS_LINE, out)
+
+    def test_edge_scope_intermediate_add_then_delete_outside_runs_folder(self) -> None:
+        """A path one commit adds and a later commit deletes is still phase work."""
+        self.write_result(pass_payload())
+        self.write("src/app.py", 'print("app")\n')
+        self.git("add", "src/app.py")
+        self.commit("add src/app.py")
+        self.git("rm", "-q", "src/app.py")
+        self.commit("delete src/app.py")
+        out = self.assert_gate_fails(OUTSIDE_MSG)
+        self.assertIn("- src/app.py", out)
+        self.assertNotIn(PASS_LINE, out)
+
+    def test_edge_midred_intermediate_add_then_delete_outside_tests(self) -> None:
+        """The mid-red non-test check sees a path added and removed in the range."""
+        self.write_result(pass_payload())
+        self.write("src/tmp.py", 'print("tmp")\n')
+        self.git("add", "src/tmp.py")
+        self.commit("add src/tmp.py")
+        self.git("rm", "-q", "src/tmp.py")
+        self.commit("delete src/tmp.py")
+        code, out = self.gate(role="mid-red")
+        self.assertIn("Mid Red changed non-test/non-Measure files", out)
+        self.assertIn("- src/tmp.py", out)
+
+    def test_edge_midred_intermediate_test_file_only_is_quiet(self) -> None:
+        """An intermediate test file does not trigger the mid-red non-test check."""
+        self.write_result(pass_payload())
+        self.write("tests/x_test.go", "package tests\n")
+        self.git("add", "tests/x_test.go")
+        self.commit("add a test file")
+        self.git("rm", "-q", "tests/x_test.go")
+        self.commit("delete it")
+        code, out = self.gate(role="mid-red")
+        self.assertNotIn("Mid Red changed non-test/non-Measure files", out)
+
+    def test_edge_scope_intermediate_inside_runs_folder_passes(self) -> None:
+        """Intermediate commits that only touch measure/runs/ stay in scope."""
+        self.write_result(pass_payload())
+        rel = f"measure/runs/{TRACK}/note.md"
+        self.write(rel, "note\n")
+        self.git("add", rel)
+        self.commit("add note")
+        self.git("rm", "-q", rel)
+        self.commit("delete note")
+        self.assert_gate_pass()
 
     def test_edge_unresolvable_baseline_zero_sha(self) -> None:
         self.write_result(pass_payload())

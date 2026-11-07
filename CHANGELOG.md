@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **intermediate-commit scope:** `changed_files()`, `committed_files()`, and the `spec-review` scope rule now union every path a commit in `baseline..HEAD` touched (`git rev-list` + `git diff-tree -z`, exact bytes), so a production file added and later deleted inside a phase can no longer hide from the mid-red, audit, or spec-review scope checks; `test_checker.py` gains spec-review, mid-red, `changed_files`, and `ux_paths` intermediate probes (35 tests). Track `dsh_measure_scope_intermediate_20261109`.
+
+### Features
+
 * **spec-review-gate suites:** every suite now guards a failed `mktemp -d` with the same `FAIL: mktemp -d failed; no fixture can be built` message, a one-FAIL summary, and exit 1; the new `tests/spec_review_gate/test_mktemp_failure.sh` stubs `mktemp` on PATH — once failing, once succeeding with a regular file — and proves the guard for all nine suites plus repository cleanliness including ignored paths (19 checks; gate 11/11). Track `dsh_measure_suite_mktemp_20261109`.
 
 ### Features
