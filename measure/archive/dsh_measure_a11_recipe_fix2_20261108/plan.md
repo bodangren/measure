@@ -18,7 +18,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/dsh/run.sh` (11/11); record the results `2f55b31`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `dd2b5a0`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: 297ce22]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_a11_recipe_fix2_20261108` and record the manifest-only FAIL `7c5190a`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `297ce22`
