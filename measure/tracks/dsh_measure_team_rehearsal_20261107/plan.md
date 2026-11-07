@@ -34,7 +34,7 @@ rehearsal, then closeout. The gate is
 
 ## Phase 5: Post-review correction for the archived band follow-up track
 
-- [~] Task 5.1: Reconcile the band follow-up review (F1-F5): correct the archived
+- [x] Task 5.1: Reconcile the band follow-up review (F1-F5): correct the archived
       spec's Overview (the README never claimed a panel fallback; the false claim
       was in docs/dsh.md, the CHANGELOG, and the archived band spec) and its
       path/route wording; pin the trailing-whitespace detail and the space-at-
