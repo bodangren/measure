@@ -4,7 +4,7 @@
   "status": "done",
   "created_at": "2026-11-08T10:10:00Z",
   "updated_at": "2026-11-08T10:40:00Z",
-  "description": "Harden the A11 detection recipe: text-mode grep for NUL/invalid-UTF-8 documents, space-containing path claims with a command-word skip list, and distinct missing/non-regular/unreadable document messages, with S4 contract cases",
+  "description": "Harden the A11 detection recipe: text-mode grep for NUL/invalid-UTF-8 documents, space-containing path claims, and distinct missing/non-regular/unreadable document messages, with S4 contract cases",
   "estimated_tasks": 9,
   "actual_tasks": 9,
   "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The command-word skip list was dropped: the anchored path pattern already excludes a space before the first slash, so the list was unreachable; the spec now says so and a trailing-characters case pins the ^...$ anchors. (2) The S4 sensitivity mutants were retargeted to the new recipe lines and four were added (text mode, space pattern, document branches). (3) The symlink-to-/dev/zero and FIFO rows stay report-only (latency), as the spec states.",
