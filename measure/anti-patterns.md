@@ -213,9 +213,22 @@ result.
 **Detection:**
 ```bash
 for doc in measure/product.md measure/tech-stack.md; do
-  [ -f "$doc" ] || { echo "$doc: DRIFT candidate: the document does not exist"; continue; }
-  grep -o '`[^`]*`' "$doc" | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$' | sort -u |
-  while read -r p; do [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"; done
+  if [ ! -e "$doc" ]; then
+    echo "$doc: DRIFT candidate: the document does not exist"
+    continue
+  fi
+  if [ ! -f "$doc" ]; then
+    echo "$doc: DRIFT candidate: the document is not a regular file"
+    continue
+  fi
+  if [ ! -r "$doc" ]; then
+    echo "$doc: DRIFT candidate: the document cannot be read"
+    continue
+  fi
+  grep -ao -- '`[^`]*`' "$doc" 2>/dev/null | tr -d '`' | grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$' | sort -u |
+  while IFS= read -r p; do
+    [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"
+  done
 done
 ```
 This recipe finds only path claims and missing documents. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.

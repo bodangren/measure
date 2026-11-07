@@ -160,6 +160,15 @@ r = subprocess.run(["bash", "-n", str(RECIPE_FILE)], env=env(), stdout=subproces
 record("G1 extract: bash -n accepts the recipe", r.returncode == 0, r.stderr.decode("utf-8", "replace"))
 
 # --- Contract rows --------------------------------------------------------------------------
+def dir_doc(case):
+    (case / P).mkdir()
+
+
+def unreadable_product(case):
+    """make_case wrote product.md; make it unreadable for this process."""
+    os.chmod(case / P, 0)
+
+
 # (id, label, case factory, expected exit, expected stdout lines)
 CONTRACT = [
     ("existing", "a backtick path that exists gives no line",
@@ -191,8 +200,23 @@ CONTRACT = [
      lambda: make_case(None, tech=b"`x/y.z`\n"), 0, [f"{P}: {NODOC}", f"{T}: DRIFT candidate: x/y.z does not exist"]),
     ("empty", "an empty document gives no line",
      lambda: make_case(b"", tech=b""), 0, []),
-    ("space", "a backtick path with a space gives no line (the regex drops it)",
-     lambda: make_case(b"See `src/a b.txt`.\n"), 0, []),
+    ("space", "a backtick path with a space is checked like any other path",
+     lambda: make_case(b"See `src/a b.txt`.\n"), 0, [f"{P}: DRIFT candidate: src/a b.txt does not exist"]),
+    ("space_existing", "an existing backtick path with a space gives no line",
+     lambda: make_case(b"See `src/a b.txt`.\n", files=["src/a b.txt"]), 0, []),
+    ("trailing_extra", "a span with characters after the path is not a path claim",
+     lambda: make_case(b"See `src/a.txt:tag`.\n", files=["src/a.txt"]), 0, []),
+    ("nul_missing", "a NUL byte in the document does not hide a missing claim",
+     lambda: make_case(b"caf\x00\n`src/nul_zz.txt`\n"), 0, [f"{P}: DRIFT candidate: src/nul_zz.txt does not exist"]),
+    ("nul_existing", "a NUL byte in the document does not hide an existing claim",
+     lambda: make_case(b"caf\x00\n`src/nul_ok.txt`\n", files=["src/nul_ok.txt"]), 0, []),
+    ("nonutf8_missing", "invalid UTF-8 bytes do not hide an ASCII missing claim",
+     lambda: make_case(b"`src/\xff\xfe.txt` caf\xe9\n`src/ascii_zz.txt`\n"), 0,
+     [f"{P}: DRIFT candidate: src/ascii_zz.txt does not exist"]),
+    ("dir_document", "a document path that is a directory gives the not-a-regular-file line",
+     lambda: make_case(None, setup=dir_doc), 0, [f"{P}: DRIFT candidate: the document is not a regular file"]),
+    ("unreadable_document", "an unreadable document gives the cannot-be-read line",
+     lambda: make_case(b"", setup=unreadable_product), 0, [f"{P}: DRIFT candidate: the document cannot be read"]),
     ("command", "a backtick command such as `git log` gives no line",
      lambda: make_case(b"Run `git log` and `bash measure/generate.sh`.\n"), 0, []),
     ("no_slash", "a backtick word without '/' gives no line",
@@ -225,8 +249,6 @@ def fifo(case):
     os.mkfifo(case / P)
 
 
-def dir_doc(case):
-    (case / P).mkdir()
 
 
 def link_file(case):
@@ -244,6 +266,8 @@ def link_dangling(case):
 
 def link_dir(case):
     os.symlink("/", case / P)
+
+
 
 
 HOSTILE = (b"`src/$(touch PWNED)` `$(touch PWNED)/x` `src/x;touch PWNED`\n"
@@ -339,11 +363,11 @@ record("G5 time: the run gives exactly 20000 candidate lines", count == 2 * N, f
 
 # --- G6 sensitivity: broken copies of the recipe --------------------------------------------
 MUTANTS = [
-    ("no [ -f \"$doc\" ] line", '  [ -f "$doc" ] || { echo "$doc: DRIFT candidate: the document does not exist"; continue; }\n', ""),
-    ("no continue after a missing document", "does not exist\"; continue; }", "does not exist\"; }"),
-    ("grep -E loosened to '.'", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$'", "grep -E '.'"),
-    ("no '/' in the regex", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$'", "grep -E '^[A-Za-z0-9_.-]+[A-Za-z0-9_./-]*$'"),
-    ("no '$' anchor in the regex", "[A-Za-z0-9_./-]*$'", "[A-Za-z0-9_./-]*'"),
+    ("no missing-document branch", 'if [ ! -e "$doc" ]; then', 'if false; then'),
+    ("no continue after a missing document", 'does not exist"\n    continue', 'does not exist"'),
+    ("grep -E loosened to '.'", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$'", "grep -E '.'"),
+    ("no '/' in the regex", "grep -E '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$'", "grep -E '^[A-Za-z0-9_.-]+[A-Za-z0-9_./ -]*$'"),
+    ("no '$' anchor in the regex", "[A-Za-z0-9_./ -]*$'", "[A-Za-z0-9_./ -]*'"),
     ("[ -e \"$p\" ] negated", '[ -e "$p" ] ||', '[ ! -e "$p" ] ||'),
     ("no tr -d of the backticks", "| tr -d '`' ", ""),
     ("sort -u replaced by cat", "| sort -u |", "| cat |"),
@@ -351,7 +375,11 @@ MUTANTS = [
      "for doc in measure/product.md; do"),
     ("a different candidate text", "$doc: DRIFT candidate: $p does not exist", "$doc: DRIFT: $p does not exist"),
     ("a different missing-document text", "the document does not exist\"", "missing\""),
+    ("no grep -a (text mode)", "grep -ao -- ", "grep -o "),
+    ("no space in the path pattern", "^[A-Za-z0-9_.-]+/[A-Za-z0-9_./ -]*$", "^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*$"),
+    ("no not-a-regular-file branch", 'if [ ! -f "$doc" ]; then', 'if false; then'),
 ]
+
 mdir = TMP / "mutants"
 mdir.mkdir()
 for i, (name, old, new) in enumerate(MUTANTS):

@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_a11_recipe_20261108",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-08T10:10:00Z",
+  "updated_at": "2026-11-08T10:10:00Z",
+  "description": "Harden the A11 detection recipe: text-mode grep for NUL/invalid-UTF-8 documents, space-containing path claims with a command-word skip list, and distinct missing/non-regular/unreadable document messages, with S4 contract cases",
+  "estimated_tasks": 6,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

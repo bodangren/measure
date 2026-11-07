@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **A11 doc-drift recipe:** the detection recipe in the anti-pattern catalog (and this project's copy) now reads documents in text mode (`grep -a`) so a NUL or invalid UTF-8 byte cannot hide claims; it checks backticked paths that contain a space after the first segment, keeps commands and non-path spans out with an anchored pattern, and reports a document as `does not exist`, `is not a regular file`, or `cannot be read`; the S4 contract rows cover each case (85 checks). Track `dsh_measure_a11_recipe_20261108`.
+
+### Features
+
 * **srg dispositions parser:** a parseable `dispositions:` value carrying a control or format character (C0 except tab, DEL, C1 controls, U+2028/U+2029, bidi controls, zero-width characters) is now rejected with `invalid dispositions line: control or zero-width character`; the S3 contract probes cover CONTEST/ESCALATE text and a tab-in-text pass (95 checks). The parser row keeps the scope-rule item as the residual. Track `dsh_measure_srg_parser_20261108`.
 
 ### Features
