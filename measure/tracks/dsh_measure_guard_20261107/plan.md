@@ -33,7 +33,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.1: State model `f3db431`
     - [ ] `src/state.js`: `ReproStore` (mode override, repo bypass) over `~/.local/state/measure/dsh-guard/repos.json`; `Agents` keyed by agent id; `Turns` keyed by `agent.id:turn`; `Bypass`; `newUserMessage()`
     - [ ] `tests/state.test.js`: store round trip, bypass precedence, turn keys, message shape
-- [~] Task 2.2: Snapshot service
+- [x] Task 2.2: Snapshot service `7107fb5`
     - [ ] `src/snapshot.js`: `canonicalRoot` (`ctx.workingDirectory.get` + `ctx.fs.resolve` + `git rev-parse --show-toplevel` via `ctx.subprocess`), `loadSnapshot` (index.md, tracks.md, plans, guard-allow), per-root cache, invalidation
     - [ ] `tests/snapshot.test.js`: real repository, temp repository, no `measure/`, parse error, canonical root of a subdirectory
 - [ ] Task 2.3: Second-writer detection (FR-12)
