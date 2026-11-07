@@ -3,13 +3,13 @@
 ## Overview
 
 The registry-cleanup track rebuilt `measure/tracks.md` but its review found that
-the file still has two shapes and one duplicate: seven completed tracks live as
-single-link entries outside the Archived Tracks section (no link line, no
-description), `visual_refresh_20260425` has both that single-link entry and a
-bold entry inside the section, the section therefore does not hold every
-non-cancelled archive directory, nine descriptions were clipped mid-word, and the
-new structural check verifies adjacency rather than attribution (it cannot see a
-missing description or an orphan line).
+the file still has two shapes and one duplicate: seven completed tracks live
+outside the Archived Tracks section (four with their link and description, three
+also missing a description), `visual_refresh_20260425` has both a single-line
+link entry and a bold entry inside the section, the section therefore does not
+hold every non-cancelled archive directory, nine descriptions were clipped
+mid-word, and the new structural check verifies adjacency rather than attribution
+(it cannot see a missing description or an orphan line).
 
 This track consolidates the registry to one layout: an Active section, a
 Cancelled section (the four cancelled archives with their reasons), and an
