@@ -192,3 +192,19 @@ test('registerClientState registers the exact state route and returns the dispos
   dispose()
   assert.equal(ctx.disposed, 1)
 })
+
+test('clientView names a second writer in the band, and only then', () => {
+  const snapshot = snapshotOf()
+  const one = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, sessionCount: 1 })
+  assert.equal(one.band, bandLine(snapshot, null))
+  const two = clientView({ snapshot, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, sessionCount: 2 })
+  assert.equal(two.band, `${bandLine(snapshot, null)} · 2 sessions`)
+  const none = clientView({ snapshot: { ...snapshot, hasMeasure: false }, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, sessionCount: 3 })
+  assert.equal(none.band, null)
+})
+
+test('clientStateResponse carries the writer count from deps.roots', async () => {
+  const deps = depsOf({ roots: { countOf: () => 2 } })
+  const body = await (await clientStateResponse(deps, requestOf('?sessionId=session-1'))).json()
+  assert.equal(body.band, `${bandLine(snapshotOf(), null)} · 2 sessions`)
+})

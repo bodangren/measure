@@ -125,6 +125,7 @@ export function apply(ctx, config) {
     snapshots,
     state,
     mode,
+    roots,
   })
 
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the

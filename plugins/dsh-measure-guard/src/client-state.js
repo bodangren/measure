@@ -13,11 +13,15 @@ export const CLIENT_STATE_PATH = '/measure-guard/state'
  * Host view is built in one place; the band and status lines do not vary with
  * it, and the FR-15 shape keeps the five fields.
  */
-export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt }) => {
+export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, sessionCount = 1 }) => {
   // An absent snapshot reads as "no read yet"; statusLines() accepts null.
   const project = snapshot === undefined ? null : snapshot
+  const line = project === null ? null : bandLine(project, guardsOff)
+  // FR-12: a second writer in one worktree is named in the band. The shared
+  // core text is kept verbatim; the count is the adapter's own suffix.
+  const band = line === null || sessionCount < 2 ? line : `${line} · ${sessionCount} sessions`
   return {
-    band: project === null ? null : bandLine(project, guardsOff),
+    band,
     status: statusLines(project, guardsOff).join('\n'),
     guardsOff,
     problems: [...problems],
@@ -50,7 +54,14 @@ export async function clientStateResponse(deps, request) {
     const snapshot = await deps.snapshots.get(root)
     const guardsOff = await deps.state.bypass.get(root)
     const problems = deps.state.agents.sessionOf(agent.id).problems
-    const view = clientView({ snapshot, guardsOff, problems, mode: deps.mode, updatedAt: new Date().toISOString() })
+    const view = clientView({
+      snapshot,
+      guardsOff,
+      problems,
+      mode: deps.mode,
+      sessionCount: deps.roots === undefined ? 1 : deps.roots.countOf(root),
+      updatedAt: new Date().toISOString(),
+    })
     return jsonResponse(view)
   } catch (error) {
     return jsonResponse({ error: errorText(error) }, 500)
