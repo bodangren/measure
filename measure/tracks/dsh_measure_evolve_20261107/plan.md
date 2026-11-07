@@ -73,7 +73,7 @@ _Story ref: spec.md#story-s4_
 - [x] Task 4.4: Docs: README "Context"/"Tools and commands" `32b7b8c` (goal line, `/measure-goal`), `docs/dsh.md` (goal section), `CHANGELOG.md` entry
 - [x] Task: Measure - User Manual Verification 'Phase S4: Goal binding' (Protocol in workflow.md) `3b96632`
 
-## Phase S5: In-band setup answer
+## Phase S5: In-band setup answer [checkpoint: 4b667fc]
 
 _Story ref: spec.md#story-s5_
 
@@ -86,7 +86,7 @@ _Story ref: spec.md#story-s5_
     - [ ] `tests/client-bundle.test.js`: the bundle carries both action labels and the POST path, and no new page-module import
 - [x] Task 5.3: Green: implement the route, the client actions, and the band variant `a94c3bf`; a denied edit still records `off` once when no button is used
 - [x] Task 5.4: Docs: README "Client surface" and "Known limits" `a94c3bf` (the setup answer is no longer fire-once); `CHANGELOG.md` entry
-- [ ] Task: Measure - User Manual Verification 'Phase S5: In-band setup answer' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S5: In-band setup answer' (Protocol in workflow.md) `4b667fc`
 
 ## Phase S6: Documentation, live check, and track closeout
 
