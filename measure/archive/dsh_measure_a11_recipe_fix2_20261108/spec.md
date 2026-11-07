@@ -28,11 +28,10 @@ and adds a non-root guard to the unreadable row.
 ## Functional Requirements
 
 - **FR-1 (commands out).** A span whose first space-free word is an existing
-  executable file (`[ -f ] && [ -x ]`) and whose full text is not an existing
-  path is skipped: `bin/measure-benchmark run` is not a drift candidate, while
+  executable file (`[ -f ] && [ -x ]`) is skipped: `bin/measure-benchmark run` is not a drift candidate, while
   `src/a b.txt` (first word not executable) is checked as before.
 - **FR-2 (one space).** The claim pattern is
-  `^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]*( [A-Za-z0-9_./-]+)?$`: exactly one space
+  `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$`: exactly one space
   between two path segments; a double space, a leading space after the slash, or
   a trailing space is not a claim.
 - **FR-3 (the cases).** S4 G2 gains: an executable command span (silent), a
@@ -49,7 +48,8 @@ and adds a non-root guard to the unreadable row.
   a dated correction note; `CHANGELOG.md` gains the command/space line.
 - **FR-6 (verification).** `bash tests/spec_review_gate/run.sh` is 10/10 (S4
   green), node 301/301, both parity gates ok, and `bash tests/dsh/run.sh`
-  returns to 11/11.
+  returns to 11/11. The live A11 candidate count is evidence (the suite prints
+  it; no test asserts it).
 
 ## Non-Functional Requirements
 
@@ -75,3 +75,13 @@ and adds a non-root guard to the unreadable row.
 > **Correction (2026-11-08):** the pinned pattern keeps directory claims
 > (`commands/`) by allowing an empty segment after the slash; only a space right
 > after the slash, a double space, or a trailing space is rejected.
+
+> **Correction (2026-11-08, dsh_measure_a11_recipe_fix3_20261108):** the pinned
+> pattern in this record is the shipped
+> `^[A-Za-z0-9_.-]+/([A-Za-z0-9_./-]+( [A-Za-z0-9_./-]+)?)?$` (the earlier copy of
+> this note carried the pre-fix form). The unreadable-document row is a G2
+> contract row that is skipped with a printed note under root (91 checks there,
+> 92 otherwise), not a G3 report row. The live A11 candidate count (3 with the
+> commands skipped) is evidence: the suite's G4 run prints it and no test asserts
+> it. The "full text is not an existing path" clause of FR-1 is dropped because
+> it cannot change the output.

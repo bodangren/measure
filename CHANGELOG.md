@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **A11 doc-drift recipe:** the detection recipe in the anti-pattern catalog (and this project's copy) now reads documents in text mode (`grep -a`) so a NUL or invalid UTF-8 byte cannot hide claims; it checks backticked paths that contain exactly one space between segments (directory claims kept), skips a span whose first word is an existing executable (a command with an argument), and reports a document as `does not exist`, `is not a regular file`, or `cannot be read`; the S4 contract rows cover each case (85 checks). Track `dsh_measure_a11_recipe_20261108`.
+* **A11 doc-drift recipe:** the detection recipe in the anti-pattern catalog (and this project's copy) now reads documents in text mode (`grep -a`) so a NUL or invalid UTF-8 byte cannot hide claims; it checks backticked paths that contain exactly one space between segments (directory claims kept), skips a span whose first word is an existing executable (a command with an argument; shipped by fix2), and reports a document as `does not exist`, `is not a regular file`, or `cannot be read`; the S4 contract rows and sensitivity mutants cover each case (92 checks). Tracks `dsh_measure_a11_recipe_20261108` and `dsh_measure_a11_recipe_fix2_20261108`.
 
 ### Features
 
