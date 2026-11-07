@@ -74,7 +74,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 ## Phase 4: Client surface
 
-- [~] Task 4.1: Host state resource
+- [x] Task 4.1: Host state resource `3ae621b`
     - [ ] `src/client-state.js` + `ctx.webServer.register({ path: '/measure-guard/state', resource })`: JSON `{ band, status, guardsOff, problems, updatedAt }` for `?sessionId=`; 404 for an unknown session
     - [ ] `tests/client-state.test.js`: session lookup, no `measure/`, unknown session
 - [ ] Task 4.2: Band
