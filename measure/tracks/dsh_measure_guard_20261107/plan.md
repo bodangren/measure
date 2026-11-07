@@ -83,7 +83,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 4.3: Panel and command action `2ac34eb`
     - [ ] `client.js`: `main` keyed slot key `measure` + `sidebar.panellist` id `measure`; `ctx.commandUi.decorate('measure-status')` action selects the panel
     - [ ] `tests/client-bundle.test.js`: panel pair and decoration present
-- [ ] Task 4.4: Live load check
+- [x] Task 4.4: Live load check `51ff2c5`
     - [ ] Add one `- insert:` row to `~/.dsh/profiles/web/cordis.patch.yml` with `name: /home/daniel-bo/Desktop/measure/plugins/dsh-measure-guard/index.js`; HMR recomposes without a restart
     - [ ] Verify from the running GUI's HTTP surface: the boot graph carries a `dsh-measure-guard` entry and `/plugins/dsh-measure-guard/client.js` serves the bundle; record the evidence and the user confirmation in the task git note
 - [ ] Task 4.5: Measure - User Manual Verification 'Phase 4: Client surface' (Protocol in workflow.md)
