@@ -39,22 +39,29 @@ change DSH itself and does not change the installer contract.
 `install`, `--check`, and `uninstall` (plus `--help`). It resolves the DSH home
 from `$DSH_HOME` or `~/.dsh`, the profile from `--profile` (default `web`), the
 guard mode from `--mode advise|guard|strict` (default `guard`), and the skill
-installer ref from `--ref` (default `main`). Every mode prints one line per
-check with `PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no
-item failed. The full contract (flags, exit codes, output columns) is fixed in
+installer ref from `--ref` (default `main`). `install` and `uninstall` accept
+`--dry-run`; `--check` accepts `--source`, `--live`, `--session`, and `--json`;
+`uninstall` accepts `--keep-copy`. Every mode prints one line per check with
+`PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no item
+failed. The full contract (flags, exit codes, output columns) is fixed in
 `design.md §2`.
 
 **FR-2 — Install.** `install` performs, in order: (a) prerequisite checks (Node
->= 24.9, the DSH installation resolvable, `plugins/dsh-measure-guard/`
-present); (b) the skill install step unless `--no-skills` — it runs
+>= 24.9, the profile folder exists, `plugins/dsh-measure-guard/` present);
+(b) the foreign-row refusal of FR-3; (c) `mkdir -p <profile>/plugins`; (d) the
+skill install step unless `--no-skills` — it runs
 `bin/install-measure-skill --ref <ref>`, so the installer remains the only
-writer of the skill copies; (c) copies `plugins/dsh-measure-guard/` without
-`tests/` into `<dsh-home>/profiles/<profile>/plugins/dsh-measure-guard/` with a
-`.measure-install` stamp (the installer's own convention); (d) writes one
-managed block into `<profile>/cordis.patch.yml` whose `insert` row has
-`id: measure-guard`, `name: ./plugins/dsh-measure-guard/index.js`, and
-`config.mode` from the flag; (e) prints the checklist result and the one action
-the operator must take (restart DSH, because host module files are not watched).
+writer of the skill copies; (e) copies `plugins/dsh-measure-guard/` without
+`tests/` into `<profile>/plugins/dsh-measure-guard/` and writes its own stamp
+`<profile>/plugins/dsh-measure-guard/.measure-dsh-install` (a per-file sha256
+list, the installer's local-edit convention); (f) writes one managed block into
+`<profile>/cordis.patch.yml` whose `insert` row has `id: measure-guard`,
+`name: ./plugins/dsh-measure-guard/index.js`, and `config.mode` from the flag;
+(g) prints the checklist, the restart note, and any remaining operator action.
+The plugin copy is **the CLI's write**, not the installer's: the installer's DSH
+target is fixed to `<dsh-home>/profiles/web/plugins` and cannot honour
+`--profile` or `--dsh-home`, so this track removes that target row from
+`bin/install-targets.tsv` and the CLI is the DSH plugin writer (see FR-11).
 Every file write is atomic (temp file, then rename).
 
 **FR-3 — Foreign-row refusal.** A row with `id: measure-guard` outside the
@@ -65,18 +72,21 @@ plugin copy. The check and install are therefore safe on a profile someone else
 configured.
 
 **FR-4 — Check.** `--check` reports, at least: the skill copies (`measure` and
-`measure-orchestrator` roots exist and, when the repository is available as the
-source, every file of `skills/<name>/` exists in the installed copy), the
-plugin copy (present, complete against the repository package except `tests/`,
-and stamped), the profile block (exactly one managed block, the expected `name`
-and `mode`), the plugin module (imports cleanly under plain Node and exports
-`name`, `inject`, `apply`), and the live proof when the profile is running (the
-`GET /measure-guard/state` route answers for a session id). A missing `pnpm` is
-not an error; a different `DSH_HOME` is honoured through the environment.
+`measure-orchestrator` resolved through one documented root order, real paths
+de-duplicated, every repository file present in the installed copy), the plugin
+copy (present, its stamp lists exactly the copied files with matching hashes),
+the profile block (`id`, `name`, and `mode` exactly as `design.md §3`), the
+plugin module (imports cleanly under plain Node and exports `name`, `inject`,
+`apply`), and, with `--live`, the state route. The live session id is
+`--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with a hint.
+`--check` never writes. A missing `pnpm` is not an error; a different
+`DSH_HOME` or agents home is honoured through the environment.
 
-**FR-5 — Uninstall.** `uninstall` removes the managed block and the installed
-plugin copy it owns, reports what was kept (skills, other rows, user edits), and
-exits non-zero only when it could not remove something it owns.
+**FR-5 — Uninstall.** `uninstall` removes the managed block and, by default,
+the plugin copy `<profile>/plugins/dsh-measure-guard/` that it owns;
+`--keep-copy` keeps the copy. It reports what it kept (skills, foreign rows, and
+user-edited files), never removes a foreign row, and exits non-zero only when it
+could not remove something it owns.
 
 ### The workflow command surface (L2)
 
@@ -124,7 +134,17 @@ guard plugin is installed from the profile copy (not the working tree), the
 profile row is the managed block, the mode is `guard` (the operator may switch),
 `--check` is green, the state route answers, the band shows the active track,
 the workflow commands appear in the command catalog, and the track records the
-evidence in the task git notes and `measure/runs/`.
+evidence in the task git notes and `measure/runs/`. Re-importing the installed
+copy without a host restart is expected (the row's module URL changed) but is
+proven, not assumed; if the recomposition does not happen, the host restart is
+the recorded operator action and the evidence falls back to the file, record,
+and route checks from the loaded instance.
+
+**FR-11 — Distribution alignment.** The DSH plugin's installer target row is
+removed from `bin/install-targets.tsv` (the CLI owns that copy), the guard
+plugin's installer-contract test `plugins/dsh-measure-guard/tests/install.sh` is
+replaced by the CLI contract tests, and the guard plugin README plus
+`measure/tech-stack.md` name `bin/measure-dsh` as the DSH installer.
 
 ## Non-Functional Requirements
 
@@ -136,21 +156,23 @@ evidence in the task git notes and `measure/runs/`.
 - **NFR-3** The installer stays the only skill writer. `measure-dsh` calls it
   and verifies its result; it never copies skill files itself.
 - **NFR-4** POSIX only, consistent with the repository.
-- **NFR-5** The guide and every message are plain English, and the script makes
-  no network call.
+- **NFR-5** The guide and every message are plain English. The script makes no
+  external network call; `--check --live` reads only the loopback profile
+  route.
 
 ## Acceptance Criteria
 
 - Given a DSH profile with no measure-guard row, when `bin/measure-dsh install`
-  runs, then the plugin copy exists, exactly one managed block points at it, and
-  `--check` exits 0.
+  runs, then the plugin copy exists with its stamp, exactly one managed block
+  points at it, and `--check` exits 0.
 - Given the same environment, when `install` runs twice, then the second run
   changes nothing and `--check` still exits 0.
 - Given a profile with a hand-written `id: measure-guard` row outside the
   managed block, when `install` or `--check` runs, then it reports `FAIL` with
   the block to remove and does not write anything.
 - Given a profile with a managed block, when `uninstall` runs, then the block
-  and the installed copy are gone and every other row and file is unchanged.
+  and the installed copy are gone and every other row and file is unchanged;
+  with `--keep-copy`, the copy stays.
 - Given an incomplete `~/.agents/skills/measure` copy, when `--check` runs,
   then it lists the missing files and exits non-zero.
 - Given a project with `measure/` and a session, when `/measure-implement` runs,

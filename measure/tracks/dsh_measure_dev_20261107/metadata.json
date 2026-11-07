@@ -3,9 +3,9 @@
   "type": "feature",
   "status": "new",
   "created_at": "2026-11-07T05:00:00Z",
-  "updated_at": "2026-11-07T05:00:00Z",
+  "updated_at": "2026-11-07T05:10:00Z",
   "description": "One-command, verifiable DSH Measure development environment: environment CLI, workflow commands, agent-team reference, guide, live migration",
-  "estimated_tasks": 21,
+  "estimated_tasks": 17,
   "actual_tasks": null,
   "deviation_notes": ""
 }
