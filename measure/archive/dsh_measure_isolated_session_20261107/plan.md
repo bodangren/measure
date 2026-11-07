@@ -22,8 +22,8 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 2.2: cleanup (clear the override, reload, remove the fixture) and record the evidence: fixture path, session id and `workingDirectory`, prompt text, HTTP statuses, deny text verbatim, cleanup commands and results
 - [x] Task: Measure - User Manual Verification 'Phase 2: The executed strict deny' (Protocol in workflow.md) `07e74bb`
 
-## Phase 3: Documentation and closeout
+## Phase 3: Documentation and closeout [checkpoint: abfba5f]
 
 - [x] Task 3.1: replace the "accepted risk" in `skills/measure-orchestrator/references/dsh.md` §10 with the proven session path (keeping the subagent-root limitation); update `docs/dsh.md`, the plugin README, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md`
 - [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `09ced5a`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md) `abfba5f`
