@@ -207,3 +207,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure closeout registry-description guard**
   *Link: [./archive/dsh_measure_closeout_registry_20261108/](./archive/dsh_measure_closeout_registry_20261108/)*
   *Make closeout verify the archived track's registry entry description against metadata, with a new CLI test for matching/mismatch/missing cases*
+
+- [x] **Track: DSH Measure suite mktemp-failure guard**
+  *Link: [./archive/dsh_measure_suite_mktemp_20261109/](./archive/dsh_measure_suite_mktemp_20261109/)*
+  *Give every spec-review-gate suite the same failed-mktemp guard, add a stub-mktemp suite that proves each guard fires, and resolve the MKTEMP tech-debt row*

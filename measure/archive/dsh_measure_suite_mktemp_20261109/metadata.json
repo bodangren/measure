@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_suite_mktemp_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T10:00:00Z",
+  "updated_at": "2026-11-09T10:40:00Z",
+  "description": "Give every spec-review-gate suite the same failed-mktemp guard, add a stub-mktemp suite that proves each guard fires, and resolve the MKTEMP tech-debt row",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The proof suite is itself a gate suite, so the gate count is now 11. (2) The stub mktemp uses PATH and TMPDIR isolation; the repository-unchanged check uses git status before/after. (3) Both the runner row MKTEMP residual and the Group (h) cross-reference row are resolved.",
+  "completed": "2026-11-09"
+}
