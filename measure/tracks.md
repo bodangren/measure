@@ -100,6 +100,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure reload follow-up corrections**
   *Link: [./archive/dsh_measure_reload_followup_20261107/](./archive/dsh_measure_reload_followup_20261107/)*
+
+- [x] **Track: DSH Measure mid-red gate: rename-aware committed files**
+  *Link: [./archive/dsh_measure_midred_rename_20261107/](./archive/dsh_measure_midred_rename_20261107/)*
+  *`committed_files` now unions both paths of every rename, so the mid-red gate catches a production file renamed into `tests/` (regression test proves the old bypass exits 0 and the fix exits 1); spec-review-gate suite 10/10. 8 tasks, 2 checkpoints.*
   *Corrects the reload track's executable proof record (sessionId, JSON shape, store path, cleanup commands, before/after), pins the three edge cases in the contract tests (no complete block, changed-mode nonce, non-integer nonce), fixes the comment-toggle lesson, and gates Phase 3 with the full CLI suite. 9 tasks, 3 checkpoints.*
   *`reload` and the unchanged-block `install` now increment the managed entry's `reloadNonce` config value, so the loader recomposes and the running plugin re-reads its caches; proven live both directions and covered by the CLI contract tests. 10 tasks, 3 checkpoints.*
   *Proves the guard's strict deny in a disposable project by a real session whose working directory is the fixture (host session RPC with `cwd`): the deny fired verbatim and the agent did not bypass. Also found that the comment-marker `reload` does not refresh the cached repository-mode store. 10 tasks, 3 checkpoints.*

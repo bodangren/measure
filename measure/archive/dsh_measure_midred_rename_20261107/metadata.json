@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_midred_rename_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T20:40:00Z",
+  "updated_at": "2026-11-07T21:00:00Z",
+  "description": "Make the orchestrator checker's committed_files rename-aware (union the old and new path), so the mid-red gate catches a production file renamed into tests/; add the regression test and update the records",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "All 8 top-level tasks are done and the 2 phase checkpoints are recorded. (1) The rename gap was real only for the mid-red gate: the spec-review scope listing already used --no-renames (Decision 29), so only committed_files/non_test_committed_files changed. (2) Red evidence was captured twice: the initial test run failed on a missing tests/ fixture directory, which was fixed, and a temporary revert of the fix proved the genuine bypass (old code exits 0, no feedback) and the Green (exit 1 with the old path). (3) No checker reference document names the committed-file rule, so no reference text changed beyond the function docstring and the tech-debt row.",
+  "completed": "2026-11-07"
+}

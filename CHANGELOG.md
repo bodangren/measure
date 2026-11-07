@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **spec-review gate mid-red rename:** the orchestrator checker's `committed_files` now unions both sides of every rename (`git diff --name-status --diff-filter=R`), so the mid-red gate catches a Red commit that renames a production file into `tests/` instead of passing it. A regression test proves the old code exits 0 (the bypass) and the fix exits 1 with the old path listed; the spec-review-gate suite is 10/10. Track `dsh_measure_midred_rename_20261107`.
+
+### Features
+
 * **dsh semantic reload:** `bin/measure-dsh reload` and the unchanged-block `install` now increment the managed plugin entry's `reloadNonce` config value instead of toggling a YAML comment. A comment changes no composed configuration, so the loader skipped the recompose and the running plugin kept its cached repository-mode store; the rehearsal found it live (a fixture-rooted session still reported `guard` after `reload`). The fix is proven both directions (override → reload → `strict/repository`; cleared → reload → `guard/config`), and legacy marker lines are dropped on install/reload. Track `dsh_measure_reload_20261107`.
 
 ### Features
