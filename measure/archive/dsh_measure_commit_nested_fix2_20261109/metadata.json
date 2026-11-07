@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_commit_nested_fix2_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T19:00:00Z",
+  "updated_at": "2026-11-09T19:40:00Z",
+  "description": "Pin the four-level depth cap, join all eval arguments, accept every shell -c spelling and git stage substitutions, add the missing tests, and record the review",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) MAX_NESTED_DEPTH = 3 (four levels) is recorded in code, spec, and a five-level test. (2) Shell recognition uses the basename and an option cluster containing c; eval joins all words. (3) The residual names only arbitrary wrapper scripts and shell functions.",
+  "completed": "2026-11-09"
+}
