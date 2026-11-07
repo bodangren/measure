@@ -27,12 +27,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [~] **Track: DSH Measure operator controls: effective mode and on-demand verification**
-  *Link: [./tracks/dsh_measure_ops_20261107/](./tracks/dsh_measure_ops_20261107/)*
-  *Makes the persisted per-repository mode seam real (`/measure-mode`, session and repository overrides, effective mode in the band/route/status) and adds a read-only `/measure-verify` for the git-backed ceremony.*
-
----
-
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -82,6 +76,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure hardening: trustworthy live verification and real guard enforcement**
   *Link: [./archive/dsh_measure_hardening_20261107/](./archive/dsh_measure_hardening_20261107/)*
+
+- [x] **Track: DSH Measure operator controls: effective mode and on-demand verification**
+  *Link: [./archive/dsh_measure_ops_20261107/](./archive/dsh_measure_ops_20261107/)*
+  *The effective mode is real (repository override > session override > config, `/measure-mode`, state route/band/status) and `/measure-verify` reports the git-backed ceremony on demand, read-only. 13 tasks, 3 checkpoints, 278 tests, live-verified (a repository `strict` override with config `advise` produced a real strict deny; reload learned to toggle a content marker).*
   *The live check now proves the running Host executes the installed bytes (load-time digest + `reload`), the guard verifies real commits and git notes plus the closeout `metadata.json`, and the apply_patch/shell-write/commit-add bypasses are closed (commit-set precision, bounded shell grammar). 19 tasks, 4 checkpoints, 251 tests, live-verified including the stale-instance FAIL and the turn-end git problem.*
 
 - [x] **Track: README videos**
