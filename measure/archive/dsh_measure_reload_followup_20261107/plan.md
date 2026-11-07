@@ -22,6 +22,6 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 3: The post-docs gate and closeout
 
-- [ ] Task 3.1: run `bash tests/dsh/run.sh` after the docs/archive edits and record the result (the doc checks must pass)
+- [~] Task 3.1: run `bash tests/dsh/run.sh` after the docs/archive edits and record the result (the doc checks must pass)
 - [ ] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: The post-docs gate and closeout' (Protocol in workflow.md)

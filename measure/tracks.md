@@ -97,6 +97,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure semantic reload**
   *Link: [./archive/dsh_measure_reload_20261107/](./archive/dsh_measure_reload_20261107/)*
+
+- [x] **Track: DSH Measure reload follow-up corrections**
+  *Link: [./archive/dsh_measure_reload_followup_20261107/](./archive/dsh_measure_reload_followup_20261107/)*
+  *Corrects the reload track's executable proof record (sessionId, JSON shape, store path, cleanup commands, before/after), pins the three edge cases in the contract tests (no complete block, changed-mode nonce, non-integer nonce), fixes the comment-toggle lesson, and gates Phase 3 with the full CLI suite. 9 tasks, 3 checkpoints.*
   *`reload` and the unchanged-block `install` now increment the managed entry's `reloadNonce` config value, so the loader recomposes and the running plugin re-reads its caches; proven live both directions and covered by the CLI contract tests. 10 tasks, 3 checkpoints.*
   *Proves the guard's strict deny in a disposable project by a real session whose working directory is the fixture (host session RPC with `cwd`): the deny fired verbatim and the agent did not bypass. Also found that the comment-marker `reload` does not refresh the cached repository-mode store. 10 tasks, 3 checkpoints.*
   *Corrects the rehearsal track's overclaims and rules, hardens the fixture contract test to assert a real commit (with a negative case), defines the acceptance fields and cleanup checks, and records the review with an explicit Accepted Risk for the deferred isolated-session strict path. 9 tasks, 3 checkpoints.*

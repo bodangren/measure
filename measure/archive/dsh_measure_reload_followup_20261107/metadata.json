@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_reload_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T19:20:00Z",
+  "updated_at": "2026-11-07T20:20:00Z",
+  "description": "Correct the semantic-reload track's executable proof record, pin the three undefined edge cases in code+tests, fix the lesson that still says to toggle a comment marker, and add the post-docs gate",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded. (1) The three edge cases were already implemented in bin/measure-dsh; the follow-up pinned them with tests (exact nonce values, changed-mode nonce preservation, non-integer nonce, no-complete-block failure) and documented them. (2) The live proof was not re-run (its evidence stands); only its record was made executable/exact. (3) The post-docs gate is `bash tests/dsh/run.sh` after the archive edits; its result is recorded on Task 3.1.",
+  "completed": "2026-11-07"
+}
