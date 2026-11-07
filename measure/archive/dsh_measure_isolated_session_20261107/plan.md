@@ -25,5 +25,5 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 ## Phase 3: Documentation and closeout
 
 - [x] Task 3.1: replace the "accepted risk" in `skills/measure-orchestrator/references/dsh.md` §10 with the proven session path (keeping the subagent-root limitation); update `docs/dsh.md`, the plugin README, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md`
-- [ ] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `09ced5a`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md)
