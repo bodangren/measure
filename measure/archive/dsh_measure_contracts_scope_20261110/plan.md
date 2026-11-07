@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (11/11) and `bash tests/dsh/run.sh` (13/13) `64b65a5`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The section and its assertions' (Protocol in workflow.md) `c277ef2`
 
-## Phase 2: Records and closeout [checkpoint: 9c0fb1b]
+## Phase 2: Records and closeout [checkpoint: 82de102]
 
 - [x] Task 2.1: update the Group (d) row in `measure/tech-debt.md` (matching/scope/baseline resolved; residual named) and add the `CHANGELOG.md` entry; run the node suite (318/318) and both parity gates `64b65a5`
-- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_contracts_scope_20261110` and record the manifest-only FAIL `64b65a5`
-- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `9c0fb1b`
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_contracts_scope_20261110` and record the manifest-only FAIL `969ebb2`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `82de102`
