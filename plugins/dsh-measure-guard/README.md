@@ -82,7 +82,7 @@ The copy is selected by one row that the installer cannot edit for you. Append t
         mode: guard
 ```
 
-`./` resolves against the profile folder. The row loads both halves: the Client half is found through the nearest `package.json`. Delete the block to unload the plugin; the loader recomposes through HMR, without a restart.
+`./` resolves against the profile folder. The row loads both halves: the Client half is found through the nearest `package.json`. Delete the block to unload the plugin; the loader recomposes through HMR, without a restart. Config-only changes therefore apply live, but the Host half's module files are not watched (`hmr.root: []` in the base profile): after editing the plugin's JavaScript, restart the DSH host (or reinstall the profile) to load the new code.
 
 ### b. Without the installer
 
