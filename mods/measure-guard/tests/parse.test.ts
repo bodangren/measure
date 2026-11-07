@@ -10,7 +10,7 @@ import {
   selectActive,
 } from '../hooks/parse'
 import type { Plan } from '../types'
-import { EDGE_PLAN, PLAN_ACTIVE_TASK, PLAN_NO_ACTIVE_TASK, TWO_ACTIVE_TRACKS } from './fixtures/plans'
+import { EDGE_PLAN, MEDIARR_REGISTRY, PLAN_ACTIVE_TASK, PLAN_NO_ACTIVE_TASK, TWO_ACTIVE_TRACKS } from './fixtures/plans'
 import { BENCHMARK_PLAN, GUARD_PLAN, TRACKS } from './fixtures/real'
 
 const allTasks = (plan: Plan) => plan.phases.flatMap(phase => phase.tasks)
@@ -32,6 +32,23 @@ describe('joinPath', () => {
 })
 
 describe('parseTracks', () => {
+  test('reads numbered entries and a same-line link (the Mediarr registry)', () => {
+    const tracks = parseTracks(MEDIARR_REGISTRY)
+    expect(tracks.map(t => t.id)).toEqual([
+      'chore_home_network_deployment_hardening_20260712',
+      'database_migration_strategy_20260713',
+      'feature_adult_library_20261107',
+      'feature_tv_browse_playback_20261003',
+    ])
+    expect(tracks.map(t => t.marker)).toEqual(['~', '~', ' ', 'x'])
+    expect(tracks[0]).toMatchObject({
+      name: 'Home Network Deployment Hardening',
+      folder: 'tracks/chore_home_network_deployment_hardening_20260712',
+      // The numbered line is line 4 of the fixture (0-based).
+      line: 4,
+    })
+  })
+
   test('reads both entry formats in the real tracks.md', () => {
     const tracks = parseTracks(TRACKS)
     expect(tracks.map(t => t.id)).toEqual([

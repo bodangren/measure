@@ -92,7 +92,7 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
 
     const tracksText = await read(tracksPath)
     const tracks = parseTracks(tracksText)
-    if (tracks.length === 0 && /^- \[[ ~xb]\] /m.test(tracksText)) {
+    if (tracks.length === 0 && /^(?:\d+\.\s+)?- \[[ ~xb]\] /m.test(tracksText)) {
       return { ...base, allow, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
     }
 

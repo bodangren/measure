@@ -67,3 +67,22 @@ export async function makeRepo() {
 export async function cleanupRepo(root) {
   if (root) await rm(root, { recursive: true, force: true })
 }
+
+// The Mediarr registry shape: numbered execution-order entries and a same-line
+// `*Link:*` after the bold title. This is the shape that made the adapter
+// report "has track lines in no known format".
+export const MEDIARR_TRACKS = `# Project Tracks
+
+## Active Tracks — Execution Order
+
+1. - [~] **Track: DSH measure guard** *Phases: 5 | Link: [./tracks/${TRACK_ID}/](./tracks/${TRACK_ID}/)*
+2. - [~] **Track: Database Migration** *Phases: 5 | Link: [./tracks/database_migration_20260713/](./tracks/database_migration_20260713/)*
+
+## Scoped Tracks (not started)
+
+- [ ] **Track: Adult Library** *Phases: 5 | Link: [./tracks/feature_adult_library_20261107/](./tracks/feature_adult_library_20261107/)*
+
+## Recently Completed (archived)
+
+- [x] **Track: TV Client Browse Density** *Phases: 5 | Link: [./archive/feature_tv_browse_playback_20261003/](./archive/feature_tv_browse_playback_20261003/)*
+`

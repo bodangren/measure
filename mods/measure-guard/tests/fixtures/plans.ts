@@ -75,3 +75,21 @@ export const DONE_PLAN = `## Phase 1: A [checkpoint: 1234567]
 - [x] Task: Done \`1234567\`
 - [b] Task: Human check deferred:user
 `
+
+// The Mediarr registry shape: numbered execution-order entries and a `*Link:*`
+// on the same bold line. The DSH adapter reported "no known format" on this.
+export const MEDIARR_REGISTRY = `# Project Tracks
+
+## Active Tracks — Execution Order
+
+1. - [~] **Track: Home Network Deployment Hardening** *Phases: 6 | Link: [./tracks/chore_home_network_deployment_hardening_20260712/](./tracks/chore_home_network_deployment_hardening_20260712/)*
+2. - [~] **Track: Database Migration and Data Preservation Strategy** *Phases: 5 | Link: [./tracks/database_migration_strategy_20260713/](./tracks/database_migration_strategy_20260713/)*
+
+## Scoped Tracks (not started)
+
+- [ ] **Track: Adult Library for Mediarr** *Phases: 5 | Link: [./tracks/feature_adult_library_20261107/](./tracks/feature_adult_library_20261107/)*
+
+## Recently Completed (archived)
+
+- [x] **Track: TV Client Browse Density** *Phases: 5 | Link: [./archive/feature_tv_browse_playback_20261003/](./archive/feature_tv_browse_playback_20261003/)*
+`

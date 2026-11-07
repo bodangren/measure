@@ -177,7 +177,7 @@ export async function loadSnapshot(io, root, signal) {
 
     const tracksText = await safeRead(io, tracksPath, signal)
     const tracks = parseTracks(tracksText)
-    if (tracks.length === 0 && /^- \[[ ~xb]\] /m.test(tracksText)) {
+    if (tracks.length === 0 && /^(?:\d+\.\s+)?- \[[ ~xb]\] /m.test(tracksText)) {
       return { ...withRepo, allow, hasMeasure: true, parseError: `${tracksPath} has track lines in no known format` }
     }
 

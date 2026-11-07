@@ -2,10 +2,14 @@
 // the tests call them directly.
 import type { AllowIgnored, AllowList, GuardsOff, Marker, Mode, Plan, Position, Snapshot, Task, TrackEntry } from '../types'
 
-const TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
-const TRACK_LINKED = /^- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
-const LINK_LINE = /\*Link: \[[^\]]*\]\(([^)\s]+)\)\*/
-const ENTRY = /^- \[[ ~xb]\] /
+// A track line may carry an ordered-list prefix (`1. - [~] **Track: ...**`,
+// the Mediarr execution-order registry), and its `*Link:*` may sit on the same
+// line (the Mediarr shape) or on one of the next three lines (this repository's
+// shape). Both live shapes are accepted.
+const TRACK_BOLD = /^(?:\d+\.\s+)?- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
+const TRACK_LINKED = /^(?:\d+\.\s+)?- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
+const LINK_LINE = /Link: \[[^\]]*\]\(([^)\s]+)\)\*/
+const ENTRY = /^(?:\d+\.\s+)?- \[[ ~xb]\] /
 const MD_LINK = /\]\(([^)\s]+)\)/
 
 const PHASE = /^## Phase\b/
@@ -93,6 +97,11 @@ export const parseTracks = (md: string): TrackEntry[] => {
   lines.forEach((line, i) => {
     const bold = TRACK_BOLD.exec(line)
     if (bold) {
+      const same = LINK_LINE.exec(line)
+      if (same) {
+        tracks.push(entryOf(i, bold[1] ?? ' ', bold[2] ?? '', same[1] ?? ''))
+        return
+      }
       for (const next of lines.slice(i + 1, i + 4)) {
         if (ENTRY.test(next)) break
         const link = LINK_LINE.exec(next)

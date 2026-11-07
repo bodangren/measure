@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
 
-import { TRACK_ID, TRACKS, cleanupRepo, makeRepo } from './fixtures.js'
+import { INDEX, MEDIARR_TRACKS, PLAN, TRACK_ID, TRACKS, cleanupRepo, makeRepo } from './fixtures.js'
 import { Snapshots, canonicalRoot, gitStatus, loadSnapshot, makeIo } from '../src/snapshot.js'
 
 const exec = promisify(execFile)
@@ -120,6 +120,49 @@ test('loadSnapshot reports a tracks file in no known format as a parse error', a
 
     assert.equal(snapshot.hasMeasure, true)
     assert.equal(snapshot.isRepo, true)
+    assert.deepEqual(snapshot.tracks, [])
+    assert.match(snapshot.parseError, /has track lines in no known format/)
+  } finally {
+    await cleanupRepo(root)
+  }
+})
+
+test('loadSnapshot reads a numbered, same-line-link registry (the Mediarr shape)', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-measure-mediarr-'))
+  try {
+    await mkdir(join(root, 'measure', 'tracks', TRACK_ID), { recursive: true })
+    await writeFile(join(root, 'measure', 'index.md'), INDEX, 'utf8')
+    await writeFile(join(root, 'measure', 'tracks.md'), MEDIARR_TRACKS, 'utf8')
+    await writeFile(join(root, 'measure', 'tracks', TRACK_ID, 'plan.md'), PLAN, 'utf8')
+    await initRepo(root)
+    const snapshot = await loadSnapshot(nodeIo, await realpath(root))
+
+    assert.equal(snapshot.parseError, null)
+    assert.equal(snapshot.hasMeasure, true)
+    assert.deepEqual(snapshot.tracks.map(track => track.id), [
+      TRACK_ID,
+      'database_migration_20260713',
+      'feature_adult_library_20261107',
+      'feature_tv_browse_playback_20261003',
+    ])
+    assert.deepEqual(snapshot.tracks.map(track => track.marker), ['~', '~', ' ', 'x'])
+    assert.equal(snapshot.inProgressCount, 2)
+    assert.equal(snapshot.active.entry.id, TRACK_ID)
+    assert.equal(snapshot.active.plan.phases.length, 2)
+  } finally {
+    await cleanupRepo(root)
+  }
+})
+
+test('loadSnapshot still reports a numbered registry with nothing parseable as a parse error', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-measure-badtracks-numbered-'))
+  try {
+    await mkdir(join(root, 'measure'), { recursive: true })
+    await writeFile(join(root, 'measure', 'tracks.md'), '# Tracks\n\n1. - [~] no bold title and no link\n', 'utf8')
+    await initRepo(root)
+    const snapshot = await loadSnapshot(nodeIo, await realpath(root))
+
+    assert.equal(snapshot.hasMeasure, true)
     assert.deepEqual(snapshot.tracks, [])
     assert.match(snapshot.parseError, /has track lines in no known format/)
   } finally {
