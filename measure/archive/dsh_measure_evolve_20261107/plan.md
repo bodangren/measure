@@ -88,14 +88,14 @@ _Story ref: spec.md#story-s5_
 - [x] Task 5.4: Docs: README "Client surface" and "Known limits" `a94c3bf` (the setup answer is no longer fire-once); `CHANGELOG.md` entry
 - [x] Task: Measure - User Manual Verification 'Phase S5: In-band setup answer' (Protocol in workflow.md) `4b667fc`
 
-## Phase S6: Documentation, live check, and track closeout
+## Phase S6: Documentation, live check, and track closeout [checkpoint: 5bdcedb]
 
 _Story ref: spec.md#story-s6_
 
 - [x] Task 6.1: Docs: README "Modes", "Guards", "Known limits", and a "Deferred" section that keeps only Windows path support (the other items are closed); `docs/dsh.md`; `CHANGELOG.md`; `measure/tech-stack.md` if a row is missing `b396420`
 - [x] Task 6.2: Live check: install the built copy into the running web profile with `bin/measure-dsh install`, verify the state route carries the goal summary and root session count, and record one strict-mode deny, one `/measure-goal` reply, and one child-agent attach that produces no second-writer note under `measure/runs/dsh_measure_evolve_20261107/`
 - [x] Task 6.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md` (resolve the second-writer and setup-button rows, add the new findings), `metadata.json`, archive the track, update `measure/tracks.md` `a6b3b16`
-- [ ] Task: Measure - User Manual Verification 'Phase S6: Documentation, live check, and track closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S6: Documentation, live check, and track closeout' (Protocol in workflow.md) `5bdcedb`
 
 ## Phase S7: Registry format tolerance for real projects [checkpoint: a893b3b]
 
