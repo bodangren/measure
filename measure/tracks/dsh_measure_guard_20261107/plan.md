@@ -30,7 +30,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 ## Phase 2: Context layer
 
-- [ ] Task 2.1: State model
+- [~] Task 2.1: State model
     - [ ] `src/state.js`: `ReproStore` (mode override, repo bypass) over `~/.local/state/measure/dsh-guard/repos.json`; `Agents` keyed by agent id; `Turns` keyed by `agent.id:turn`; `Bypass`; `newUserMessage()`
     - [ ] `tests/state.test.js`: store round trip, bypass precedence, turn keys, message shape
 - [ ] Task 2.2: Snapshot service
