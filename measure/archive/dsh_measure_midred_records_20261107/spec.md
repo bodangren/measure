@@ -14,8 +14,8 @@ found the *records* still inconsistent and the first archive not closeout-clean:
    `tests/a.py` is absent, which Task 1.2/FR-2 named.
 3. The follow-up archive has no `spec-review.md`, although its FR-3 requires the
    review and the responses there.
-4. The archived mid-red `spec.md` still states the two-call union and the
-   `git mv` recipe without `mkdir tests`; only its plan and metadata carry a
+4. The archived mid-red `spec.md` still stated the two-call union and the
+   `git mv` recipe without `mkdir tests`; only its plan and metadata carried a
    correction note.
 
 This track reconciles those records, adds the missing assertion, and makes the
@@ -23,11 +23,12 @@ follow-up track closeout-clean. It changes no gate behaviour.
 
 ## Functional Requirements
 
-- **FR-1 (closeout-clean, defined).** Closeout-clean means: every non-deferred
-  `[x]` task in the archived follow-up plan carries a commit SHA (Task 2.2 and the
-  Phase 2 verification keep `a481293`/`da75968`; 1.1/1.2/1.3/2.1 get their SHAs),
-  its `metadata.json` says `status: done` with a completion date, and the archived
-  registry entry is `[x]`. The `automation-supervisor-closeout-manifest.json` is
+- **FR-1 (closeout-clean, defined).** Closeout-clean means: **every non-deferred
+  task is `[x]`** (the checker's "plan task is not complete") and every such task
+  carries a commit SHA (Task 2.2 and the Phase 2 verification keep
+  `a481293`/`da75968`; 1.1/1.2/1.3/2.1 get their SHAs), its `metadata.json` says
+  `status: done` with a completion date, and the track is not in the active
+  section of `measure/tracks.md` (the checker rejects an active track). The `automation-supervisor-closeout-manifest.json` is
   **out of scope** for a manual track and is the single expected remaining
   closeout FAIL. The exact closeout output is recorded at
   `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` (the ledger,

@@ -19,10 +19,10 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 3: The mid-red records
 
-- [ ] Task 3.1: force-add the tracked ledger `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and read it back; the mid-red evidence track's own tasks carry SHAs
-- [ ] Task 3.2: make the archived record track closeout-clean: every task `[x]` with its SHA (including Task 1.5 and Phase 2's Task 2.1/verification), `metadata.json` `actual_tasks: 8`; correct its closeout-clean definition (every non-deferred task `[x]`, active-registry check) and its Overview F4 wording; `closeout --track dsh_measure_midred_records_20261107` reports only the expected manifest FAIL
-- [ ] Task 3.3: write `measure/archive/dsh_measure_midred_evidence_20261107/spec-review.md` with the F1–F7 findings verbatim and one disposition each, link it from that track's `index.md`, and add the track's task SHAs
-- [ ] Task 3.4: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; record the results
+- [x] Task 3.1: force-add the tracked ledger `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and read it back; the mid-red evidence track's own tasks carry SHAs
+- [x] Task 3.2: make the archived record track closeout-clean: every task `[x]` with its SHA (including Task 1.5 and Phase 2's Task 2.1/verification), `metadata.json` `actual_tasks: 8`; correct its closeout-clean definition (every non-deferred task `[x]`, active-registry check) and its Overview F4 wording; `closeout --track dsh_measure_midred_records_20261107` reports only the expected manifest FAIL
+- [x] Task 3.3: write `measure/archive/dsh_measure_midred_evidence_20261107/spec-review.md` with the F1–F7 findings verbatim and one disposition each, link it from that track's `index.md`, and add the track's task SHAs
+- [x] Task 3.4: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; record the results
 - [ ] Task: Measure - User Manual Verification 'Phase 3: The mid-red records' (Protocol in workflow.md)
 
 ## Phase 4: Closeout

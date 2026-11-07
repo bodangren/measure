@@ -1,0 +1,35 @@
+# Closeout ledger — dsh_measure_midred_followup_20261107
+
+Run: measure_interphase_checks.py closeout --track dsh_measure_midred_followup_20261107
+Expected: the single missing automation-supervisor manifest FAIL (a manual track never produces it); every [x] task carries a commit SHA.
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_midred_followup_20261107/automation-supervisor-closeout-manifest.json
+
+Task SHAs in the archived follow-up plan:
+
+Task SHAs (completed tasks that lacked one):
+1.1 = 8a9f4aa, 1.2 = 8a9f4aa, 1.3 = 8a9f4aa, 2.1 = 31835e6
+Task 2.2 = a481293; Phase 1 verification = 8cfd295; Phase 2 verification = da75968
+
+Parity gates:
+parity: ok
+parity: ok
+
+Node suite (Task 1.5):
+ℹ tests 288
+ℹ pass 288
+ℹ fail 0
+
+Parity gates (already run above): plugins/dsh-measure-guard/scripts/check-parity.sh and plugins/opencode-measure-guard/scripts/check-parity.sh -> parity: ok
+
+spec-review-gate: 10 suites (PASS=10, FAIL=0)
+
+## Read-back after reconciliation (dsh_measure_add_quoting_followup_20261107)
+
+records track closeout:
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_midred_records_20261107/automation-supervisor-closeout-manifest.json
+
+evidence track closeout:
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_midred_evidence_20261107/automation-supervisor-closeout-manifest.json
+
+Both report only the expected automation-supervisor closeout manifest, which a manual track never produces.
