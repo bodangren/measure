@@ -15,10 +15,10 @@ rehearsal, then closeout. The gate is
 - [x] Task 1.3: run `bash tests/dsh/run.sh`; the new contract test passes with the existing ones
 - [x] Task: Measure - User Manual Verification 'Phase 1: Fixture builder and contract test' (Protocol in workflow.md) `0640bb8`
 
-## Phase 2: Rehearsal protocol docs
+## Phase 2: Rehearsal protocol docs [checkpoint: 6f2242b]
 
 - [x] Task 2.1: add a "Rehearsal" section to `skills/measure-orchestrator/references/dsh.md`: the three spawns with `cwd`, the strict mode override for the fixture root, the per-agent Red record rule (Green must run the failing test itself), the always-allowed `measure/` writes, the evidence to capture, and the cleanup
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Rehearsal protocol docs' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Rehearsal protocol docs' (Protocol in workflow.md) `6f2242b`
 
 ## Phase 3: Executed rehearsal
 
