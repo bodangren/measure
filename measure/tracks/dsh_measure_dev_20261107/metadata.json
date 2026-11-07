@@ -1,11 +1,12 @@
 {
   "track_id": "dsh_measure_dev_20261107",
   "type": "feature",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-07T05:00:00Z",
-  "updated_at": "2026-11-07T05:10:00Z",
+  "updated_at": "2026-11-07T05:55:00Z",
   "description": "One-command, verifiable DSH Measure development environment: environment CLI, workflow commands, agent-team reference, guide, live migration",
-  "estimated_tasks": 17,
-  "actual_tasks": null,
-  "deviation_notes": ""
+  "estimated_tasks": 18,
+  "actual_tasks": 18,
+  "deviation_notes": "All 18 plan tasks are done and the 5 phase checkpoints are recorded. Deviations: the installer's DSH plugin row was removed so the environment CLI is the single writer of that copy (the spec's out-of-scope note about the installer contract is satisfied by not changing the installer itself); the CLI copies the plugin rather than the installer; tests/dsh/ runs as its own bash gate; the live runtime proof was obtained without a restart because the profile recomposed and the route's module-identity header matched the installed copy, and the human-gated stage 2 confirms the visible surface; the guard plugin gained the identity header and the eight workflow commands; setup offer restrictions from the guard track remain. Verification: bash tests/dsh/run.sh 7/7; plugin node:test 157/157; parity ok; bin/measure-dsh --check 7 PASS/1 SKIP; --check --live PASS with the installed module identity.",
+  "completed": "2026-11-07"
 }
