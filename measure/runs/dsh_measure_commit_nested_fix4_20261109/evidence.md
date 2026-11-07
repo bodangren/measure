@@ -6,3 +6,7 @@ Option-argument behavior: -o/-O, short cluster ending o/O (-euo), --rcfile, --in
 Cases: bash -euo pipefail -c, bash --rcfile FILE -c (path); bash -c -- (path); bash -- -c and bash -o pipefail -- -c (no path).
 Node 311/311; parity ok; CLI 13/13; srg 11/11.
 Records: fix2 review with severity/scope + dispositions; fix1 F5 dated correction; fix2 off-by-one corrected; residual/CHANGELOG (node 311) updated.
+
+## Closeout
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_commit_nested_fix4_20261109/automation-supervisor-closeout-manifest.json
