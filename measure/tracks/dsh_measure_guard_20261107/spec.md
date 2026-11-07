@@ -46,9 +46,12 @@ notices (the end-of-turn reminder and the second-writer warning), never for the
 task note.
 
 **FR-3 — Status tool.** A `measure_status` tool returns the shared core's
-`statusLines()` text: the track list, the active track, the position
-(`Phase p/P`, `Task t/T`), the `[b]` count, the next action, and the resolved
-Specification path. It must not inject the whole specification.
+`statusLines()` text followed by the `taskNote()` text, which together carry the
+track list with markers, the active plan path, each phase with its closed count
+and checkpoint, the `[b]` tasks, the allow list, the bypass state, and the
+active track with the current or next task (the band supplies the numeric
+`Phase p/P` / `Task t/T` position). It must not inject the whole
+specification.
 
 **FR-4 — Commands.** Three `ctx.commands.register` definitions, each one
 lowercase name with the rest of the line left to its own grammar:

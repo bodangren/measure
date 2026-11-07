@@ -5,46 +5,36 @@
 
 ## Architecture & Design
 
-- (2026-05-25, scrum_tracks_20260525) Opt-in additive design (Sprint Mode) preserved 100% backward compatibility with two existing tracks. Pattern: gate new behavior on a single signal (`## Stories` in spec / `sprint` key in metadata), and require ALL readers to treat absence as classic mode without warning.
-- <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate (tool on PATH AND data file fresh AND project language matches) so every entry point degrades to a single `Note: ...` line without HALT. Reusing the same 3 skip-note formats across all 5 entry points (new-track, implement, review, setup) made the user-visible behavior predictable.
-
+- (2026-05-25, scrum_tracks_20260525) Opt-in additive design (Sprint Mode) kept 100% backward compatibility: gate new behaviour on one signal (`## Stories` in the spec, `sprint` in metadata) and make every reader treat absence as classic mode without warning.
+- <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate (tool on PATH, data file fresh, project language matches) so every entry point degrades to one `Note: ...` line without HALT; reuse one set of skip-note formats across all entry points.
 - <a id="2026-10-04-measure_guard"></a>(2026-10-04, measure_guard_20261004) Keep the system prompt fixed and send changing state (track, task, reminders) as conversation notes. A system prompt that changes with each task resets the prompt cache.
-- (2026-10-04, measure_guard_20261004) Claude Code mods: a function that uses `$` must be in the hooks module file; the engine does not follow `$` across an import. Put pure logic in imported modules and the `$` calls in `register.tsx`.
-- <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree, so a checked-out feature branch never reaches the agents. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
-
-- <a id="2026-10-21-opencode_plugin"></a>(2026-10-21, opencode_plugin_20261021) Port a harness mod by copying its pure modules with a parity gate (byte diff in CI), and keep every harness call in a thin adapter; the OpenCode plugin reused the mod's guards and parser unchanged.
-- (2026-10-21, opencode_plugin_20261021) When a harness has no hook that holds a turn open, send the problems as a non-resuming synthetic message (delivered with the next prompt) and, in strict mode, as a bounded follow-up prompt; a resuming message makes the agent act on it by itself.
-- <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working. The order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
+- <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
+- <a id="2026-10-21-opencode_plugin"></a>(2026-10-21, opencode_plugin_20261021) Port a harness mod by copying its pure modules with a parity gate, and keep every harness call in a thin adapter; the OpenCode plugin reused the mod's guards and parser unchanged.
+- <a id="2026-11-07-dsh_measure_guard"></a>(2026-11-07, dsh_measure_guard_20261107) A DSH plugin loaded from a path can import no `@deepseek-ai/*` package: every capability comes from `ctx`. Hand-build what the platform helpers would give you — the `ToolDefinition` object that `defineTool` returns, and the user message (`{ ...input, role: 'user', id: randomUUID() }`, deep-frozen).
+- (2026-11-07, dsh_measure_guard_20261107) Exactly-once notes go through `agent/pre-step` (`{ kind: 'enter', messages }`); `agent.inject()` may miss the batch already claimed. `agent.steer()` at `agent/turn-stopping` is the documented hold-open lever: the loop re-reads the next-step inbox only after the boundary.
+- (2026-11-07, dsh_measure_guard_20261107) Node's native type stripping loads a copied `.ts` core with no build step, but Node ESM still needs the file extension: one `./parse` -> `./parse.ts` transform in the parity copy, checked by the gate. Stripping is refused under `node_modules`, so install as a path row or a folder outside it.
+- (2026-11-07, dsh_measure_guard_20261107) A build-free DSH client plugin is real: the shipped `cordis-plugin-development` skill ships a hand-written `window.__ModuleLoader__.load({ id, factory })` template, and the Host only reads the bytes at `exports["./client"]`. A path-form Loader row loads both halves because client-modules walks to the nearest `package.json`.
+- <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working; the order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
 
 ## Recurring Gotchas
 
-- (2026-05-25, scrum_tracks_20260525) When inserting a new step mid-list in a numbered reference doc (e.g., `new-track.md §2.2`), prior step references in *other* docs may silently drift. Audit cross-references after any §X step-number change.
-- (2026-05-25, graph_integration_20260525) Inserting a new numbered step in a markdown file can create duplicate numbers (two `3.` items) when only one renumber pass is done. Always grep `^[0-9]\.` after every insertion and renumber the suffix block in one shot.
-
-- (2026-10-04, measure_guard_20261004) The `claude plugin test` environment has no file, network, or process access, and its `$` has no `store` noun. A test answers each `$` call with its own hooks; fixtures must be `.ts` modules (generate them from real files with a script).
+- (2026-05-25, scrum_tracks_20260525) When inserting a new step mid-list in a numbered reference doc, prior step references in other docs drift silently. Audit cross-references after any step-number change.
+- (2026-10-04, measure_guard_20261004) The `claude plugin test` environment has no file, network, or process access, and its `$` has no `store` noun. Fixtures must be `.ts` modules generated from real files.
 - (2026-10-04, measure_guard_20261004) A rule like "the active track is the first `[~]` track" breaks when 2 tracks are `[~]`. Check each selection rule against the real `tracks.md` before the spec is final.
-
-- (2026-10-05, measure_guard_20261004) In an inline (not fullscreen) terminal, the pane close mark and `ctrl+x x` did not close a mod pane. Give each pane a command that also closes it, and open it with `closeOnEscape: true`.
 - (2026-10-05, measure_guard_20261004) An interactive session watches a `--plugin-dir` folder: a saved edit reloads the mod at once, and an open pane stays open across the reload. No restart is necessary.
-- (2026-10-05, skill_distribution_repair_20261005) `git archive` applies `tar.umask` (default 0002), so extracted files are 664 or 775. Use `git -c tar.umask=0022 archive` to get the modes that git records.
-- (2026-10-05, skill_distribution_repair_20261005) `~/.agents/agents` files are hard links to `pi-measure-harness/agents/`. Write in place (`cat src > dst`), never `cp`, `mv`, or `rm`, or the link breaks. An install shows in the Pi harness as uncommitted changes.
-
-- (2026-10-21, opencode_plugin_20261021) Probe the live OpenCode host before writing to a documented shape: 2.0.32 loads a plugin folder through `<folder>/index` and `<folder>/tui` (not `package.json` exports), `write` names its file `path`, `shell` returns `content` plus `metadata.exit`, `session.idle` never reaches a plugin subscription (the `session.execution.*` events do), and `opencode run` can hang while the HTTP API (`POST /api/session`, `.../prompt`) works.
-- (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys, or the project doctor rejects the files. Read a cited workflow before you state what it does: one correction said that `new-track` copies project keys, and it does not.
+- (2026-10-21, opencode_plugin_20261021) Probe the live host before writing to a documented shape: OpenCode 2.0.32 loads a plugin folder through `<folder>/index` (not `package.json` exports), `write` names its file `path`, `session.idle` never reaches a plugin subscription (the `session.execution.*` events do).
+- (2026-11-07, dsh_measure_guard_20261107) There is no DSH host-to-client channel without codegen: the forwarded-event allowlist is fixed, Typert remotes need generated artifacts, and projections need zod wire schemas. For file-derived state, one exact `ctx.webServer.register` route plus a short poll is the zero-dependency answer.
+- (2026-11-07, dsh_measure_guard_20261107) A profile patch row added at runtime recomposes live (HMR) and both halves load: verify from the browser by checking `window.__DSH_BOOT__` for the package id, then the rendered slot. The GUI page itself needs the launch cookie, so `curl` sees only the auth error.
+- (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys. Read a cited workflow before stating what it does.
 
 ## Patterns That Worked Well
 
-- (2026-05-25, scrum_tracks_20260525) Self-dogfooding: making the track that introduces a feature *also* be the first user of that feature (story-shaped spec, sprint metadata, velocity datapoint) caught two real issues during execution that pure unit-testing would have missed.
-- (2026-05-25, scrum_tracks_20260525) Locking acceptance criteria as a separate dedicated task before any edits (Tasks X.1 in every phase) eliminated mid-task scope drift across all 6 phases.
-- (2026-05-25, graph_integration_20260525) Same-region task folding (planned consecutive tasks that touch one doc collapsed into one commit) reduced 16 commits to 5 feature commits across S2-S5 with zero loss of traceability — every folded commit message names the folded task numbers.
-
-- (2026-10-04, measure_guard_20261004) Two scratch scripts (task done: commit, git note, SHA in plan.md, next task `[~]`; phase done: checkpoint commit, report note, `[checkpoint: <sha>]`) made the per-task ceremony cheap across 47 tasks.
-
-- (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds. The first agent follows it for a real request and lists every guess. Each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1. Each round found a problem that the corrections of the round before had added.
+- (2026-10-04, measure_guard_20261004) Two scratch scripts (task done: commit, note, SHA in `plan.md`, next task `[~]`; phase done: checkpoint commit, report note, `[checkpoint: <sha>]`) made the per-task ceremony cheap across 47 tasks.
+- (2026-10-09, track_sets_20261009) Review a new workflow reference with fresh agents in rounds; each later agent checks only the corrections of the round before. Blocking problems: 5, then 1, then 1 — each round found a problem the previous corrections had added.
+- (2026-11-07, dsh_measure_guard_20261107) Three independent spec reviewers from three model families found the same Blockers plus distinct ones (shell mutation semantics, path resolution, localization boundary, setup and writer tasks) — roughly twice the findings of the best pair. Keep their report ids prefixed per reviewer.
+- (2026-11-07, dsh_measure_guard_20261107) Parallel workers with disjoint write scopes and a Lead-only commit path kept a five-phase, 141-test plugin build coherent: each worker owned a module set, reported Red evidence, and never ran git.
 
 ## Planning Improvements
 
-- (2026-05-25, scrum_tracks_20260525) Estimate was perfect (28 tasks planned, 28 actual). One contributor: the Phase Completion Verification tasks were counted up front rather than added late, so the plan reflected real ceremony cost.
-- (2026-05-25, scrum_tracks_20260525) Tasks 1.2 and 1.3 ended up folded into a single commit because their edits touched the same numbered step block. Future plans: when two consecutive tasks edit the same code/doc region, consider merging them at planning time.
-- (2026-05-25, graph_integration_20260525) Estimate again hit exactly 28/28 (calibrated). Pattern confirmed: when a workflow-edit track has N stories and each story has ~5-6 tasks (1 AC + 1-3 edits + 1 cross-ref + 1 deferred manual verify), the per-story task count is predictable enough that the same template works across tracks.
 - (2026-10-04, measure_guard_20261004) Estimate 47/47 for a 9-story code track: 5 tasks per story (Contract, Red, Green, Docs, deferred verification) plus 2 setup tasks. Each Red task recorded the failing test output in its git note.
+- (2026-11-07, dsh_measure_guard_20261107) Estimate 28 planned vs 28 completed once the review added the setup-offer and second-writer tasks; naming the test gate and the file of every task at plan time kept the phase checkpoints cheap.

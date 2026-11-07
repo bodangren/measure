@@ -4,6 +4,7 @@
 
 ### Features
 
+* **dsh:** DeepSeek Harness plugin `plugins/dsh-measure-guard/`: a Host plugin and a hand-written browser half, with no build step and no new dependency. It adds the fixed Measure rule section and exactly-once task notes in projects with `measure/`, the second-writer warning, the setup offer, the `measure_status` tool, `measure-off`, `measure-on`, and `measure-status`, the edit, closeout, and end-of-turn guards with the `measure/guard-allow` list, a composer status band, a sidebar status panel, and one JSON status route. The shared core is a parity copy of the Claude Code mod's `parse.ts` and `guards.ts`. Track `dsh_measure_guard_20261107`.
 * **guard allow list:** the file `measure/guard-allow` lists folders that get writes while no task is `[~]`. The edit guard, the end-of-turn check, the commit guard, and the TDD guard treat a listed folder as Measure work. Both the Claude Code mod and the OpenCode plugin read it. Track `guard_allow_list_20261101`.
 * **opencode:** OpenCode 2 plugin `plugins/opencode-measure-guard/` (server and terminal parts): the Measure rule in the system prompt, task notes, edit, closeout, TDD, and commit guards, the end-of-turn check, `/measure-off`, `/measure-on`, `/measure-guard`, the Measure workflow commands, the `measure_status` tool, and a terminal band. Track `opencode_plugin_20261021`.
 * **agents:** `measure-orchestrator` carries the Measure rule section in its prompt; the OpenCode plugin adds the same section to every other agent.

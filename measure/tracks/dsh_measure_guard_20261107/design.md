@@ -33,14 +33,8 @@ plugins/dsh-measure-guard/
 │   ├── status.js          # measure_status text, band/panel view, commands text
 │   └── client-state.js    # the HTTP resource body (JSON the Client fetches)
 ├── scripts/check-parity.sh
-├── tests/
+├── tests/                 # one *.test.js per module (see plan.md), plus:
 │   ├── fixtures.js        # in-memory project (Measure files as strings)
-│   ├── core.test.js       # parity + parse/guard decisions on the fixture
-│   ├── snapshot.test.js
-│   ├── context.test.js
-│   ├── guards.test.js
-│   ├── end-of-turn.test.js
-│   ├── client-state.test.js
 │   └── install.sh         # installer target contract (bash)
 └── README.md
 ```
@@ -138,7 +132,8 @@ used instead. Same call as the OpenCode adapter's state file.
 - **Writer record** (`src/roots.js`): a `Map<root, Set<agentId>>`. The first
   agent of a root is the writer. A second distinct agent gets exactly one
   `agent.inject` warning note (`summary: 'measure-guard: another session'`) and
-  the band suffix `(<n> sessions)`; re-attaching the same agent never warns
+  the band suffix `<n> sessions` (the client view appends it from
+  `RootWriters.countOf`); re-attaching the same agent never warns
   twice. `agent/disposed` removes the id, and the record for a root is deleted
   when its set empties, so a restarted agent starts clean. First release
   detects, it does not arbitrate.
