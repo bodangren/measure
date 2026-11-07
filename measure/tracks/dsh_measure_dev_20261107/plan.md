@@ -37,7 +37,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 ## Phase 3: Agent team reference
 
-- [~] Task 3.1: DSH orchestrator reference
+- [x] Task 3.1: DSH orchestrator reference `6b097a9`
     - [ ] `skills/measure-orchestrator/references/dsh.md`: subagent tools and arguments, the profile's model list, the exact 14-role table, the prompt template, per-role tool restrictions, independence and the three-family review assignments, guard-marker handoffs
     - [ ] `skills/measure-orchestrator/SKILL.md`: one contents bullet and one paragraph linking the reference
 - [ ] Task 3.2: Reference checks
