@@ -62,6 +62,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 ## Archived Tracks
 
+- [x] **Track: DSH Measure development environment**
+  *Link: [./archive/dsh_measure_dev_20261107/](./archive/dsh_measure_dev_20261107/)*
+  *One command installs, checks, and removes the DSH profile layer; the plugin gains the Measure workflow commands; the orchestrator skill gains a DSH agent-team reference. Five phases, 18 tasks, live-verified in the running web profile with a module-identity proof.*
+
 - [x] **Track: measure-guard for the DeepSeek Harness**
   *Link: [./archive/dsh_measure_guard_20261107/](./archive/dsh_measure_guard_20261107/)*
   *A third adapter over the shared core: context and guard layers on Cordis, plain-JS, no build step. Five phases, 28 tasks, 143 tests, live-verified in the web profile.*

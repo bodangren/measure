@@ -2,12 +2,15 @@
 // snapshot cache, the I/O seam, and the root writers; apply() only registers.
 // The module imports no Harness package: every capability comes from ctx
 // (design §2).
+import { homedir } from 'node:os'
+
 import { parseModeOf, createState } from './src/state.js'
 import { Snapshots, canonicalRoot, gitStatus, makeIo } from './src/snapshot.js'
 import { RootWriters } from './src/roots.js'
 import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
+import { measureWorkflowCommands } from './src/workflow.js'
 import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { registerClientState } from './src/client-state.js'
@@ -117,6 +120,13 @@ export function apply(ctx, config) {
     ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
   }
 
+  // The eight Measure workflow commands (FR-6, FR-7): each one resolves the
+  // installed skill reference and steers the receiving agent.
+  const workflowDeps = { ...deps, skillDeps: { env: process.env, home: homedir() } }
+  for (const command of measureWorkflowCommands(workflowDeps)) {
+    ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
+  }
+
   // The Client data channel (FR-15): one exact HTTP route that the band and
   // the panel poll; the browser half is served from client.js by the loader.
   registerClientState(ctx, {
@@ -126,6 +136,9 @@ export function apply(ctx, config) {
     state,
     mode,
     roots,
+    // The installed entry identifies itself on the state route; the CLI's live
+    // check compares this URL with the installed copy.
+    moduleUrl: import.meta.url,
   })
 
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the

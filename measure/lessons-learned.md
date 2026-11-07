@@ -5,7 +5,7 @@
 
 ## Architecture & Design
 
-- (2026-05-25, scrum_tracks_20260525) Opt-in additive design (Sprint Mode) kept 100% backward compatibility: gate new behaviour on one signal (`## Stories` in the spec, `sprint` in metadata) and make every reader treat absence as classic mode without warning.
+- (2026-05-25, scrum_tracks_20260525) Opt-in additive design kept 100% backward compatibility: gate new behaviour on one signal (a spec section or a metadata key) and treat absence as classic mode without warning.
 - <a id="2026-05-25-graph_integration"></a>(2026-05-25, graph_integration_20260525) Graph-Aware Mode uses a 3-way availability gate (tool on PATH, data file fresh, project language matches) so every entry point degrades to one `Note: ...` line without HALT; reuse one set of skip-note formats across all entry points.
 - <a id="2026-10-04-measure_guard"></a>(2026-10-04, measure_guard_20261004) Keep the system prompt fixed and send changing state (track, task, reminders) as conversation notes. A system prompt that changes with each task resets the prompt cache.
 - <a id="2026-10-05-skill_distribution_repair"></a>(2026-10-05, skill_distribution_repair_20261005) Install skills from a git ref (`main`), not from the working tree. A hash stamp in each target tells an old install apart from a local edit: replace the first, keep the second and warn.
@@ -14,6 +14,8 @@
 - (2026-11-07, dsh_measure_guard_20261107) Exactly-once notes go through `agent/pre-step` (`{ kind: 'enter', messages }`); `agent.inject()` may miss the batch already claimed. `agent.steer()` at `agent/turn-stopping` is the documented hold-open lever: the loop re-reads the next-step inbox only after the boundary.
 - (2026-11-07, dsh_measure_guard_20261107) Node's native type stripping loads a copied `.ts` core with no build step, but Node ESM still needs the file extension: one `./parse` -> `./parse.ts` transform in the parity copy, checked by the gate. Stripping is refused under `node_modules`, so install as a path row or a folder outside it.
 - (2026-11-07, dsh_measure_guard_20261107) A build-free DSH client plugin is real: the shipped `cordis-plugin-development` skill ships a hand-written `window.__ModuleLoader__.load({ id, factory })` template, and the Host only reads the bytes at `exports["./client"]`. A path-form Loader row loads both halves because client-modules walks to the nearest `package.json`.
+- <a id="2026-11-07-dsh_measure_dev"></a>(2026-11-07, dsh_measure_dev_20261107) Give one owner per artefact. The DSH environment CLI owns the plugin copy and the profile row; the installer keeps only the skill targets. Two writers for one profile folder caused a real contradiction that the spec review caught.
+- (2026-11-07, dsh_measure_dev_20261107) A profile patch edit recomposes live even when the new row points at a different module URL: the installed copy replaced the working-tree copy with no restart, and a module-identity header proved which copy the host loaded. Stale-instance evidence can look identical, so make the route name its module.
 - <a id="2026-10-09-track_sets"></a>(2026-10-09, track_sets_20261009) A track set is ordinary tracks plus one overview page and an optional `set` key, so every existing reader keeps working; the order rule (a dependency has a lower order or is outside the set) prevents cycles without a tool.
 
 ## Recurring Gotchas

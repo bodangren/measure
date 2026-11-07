@@ -1,0 +1,165 @@
+# Measure on the DeepSeek Harness agent team
+
+This reference maps the Measure subagent roles onto DeepSeek Harness (DSH)
+subagents. It is the DSH counterpart of the role registry that the Claude Code
+mod and the OpenCode plugin install as `agents/measure-*.md`; the role files stay
+the single source of the role contracts, and this file fixes only the harness
+mechanics.
+
+## 1. What is different on DSH
+
+- DSH has no role registry. A role is a **prompt** given to a subagent, not a
+  named agent type. The role file supplies the prompt body; the orchestrator
+  supplies the provider and model.
+- DSH subagents share the filesystem and the git checkout with the parent. Two
+  children that write the same files will race: keep write scopes disjoint, as
+  the orchestrator does for phases.
+- The guard plugin (`plugins/dsh-measure-guard`) enforces the plan markers at
+  the profile level, not per role: a child that edits files outside `measure/`
+  without a `[~]` task is denied in `guard` and `strict` modes, exactly like the
+  parent.
+- Tool access is not restricted by the role file. Each role prompt restates its
+  restrictions (section 5), and the guard plus separate write scopes enforce
+  them in practice.
+
+## 2. Subagent tools
+
+`subagent` starts a child and returns its id immediately; `subagent_fork`
+starts a child seeded with the current conversation (use it only for work that
+needs the parent's context). Both take:
+
+```text
+description: 3-5 words for the UI
+prompt: the complete, self-contained task (the role prompt, section 4)
+provider + model: together, the role's model from the table
+reasoning_effort: optional, only where the model supports it
+cwd: the repository root (relative paths resolve from the parent's directory)
+```
+
+The child reports with `send_message`; `send_message` also steers a running
+child. Do not start a child and then poll: end the turn and let the runtime wake
+you, or wait with `wait_agent` only when another member is running.
+
+## 3. Models available in this installation
+
+The web profile's `subagent-model-selection-settings.allowedModels` names:
+
+| Provider | Model id |
+|---|---|
+| `deepseek-official` | `deepseek-flash` |
+| `minimax-cn` | `MiniMax-M3.1-Flash` |
+| `xiaomi` | `mimo-v2.6-flash` |
+| `xiaomi` | `mimo-v2.6-pro` |
+| `kimi-coding` | `k3.1-pro` |
+| `kimi-coding` | `kimi-for-coding` |
+
+A profile that changed that list must change this table and the role table
+below; `bin/measure-dsh --check` does not read the profile's model list, so the
+operator owns the consistency.
+
+## 4. Role table
+
+The prompt is the body of the named file without its YAML frontmatter.
+
+| Role | Prompt source | Provider/model |
+|---|---|---|
+| `measure-orchestrator` | `agents/measure-orchestrator.md` | `deepseek-official/deepseek-flash` |
+| `measure-spec-review` | `agents/measure-spec-review.md` | `kimi-coding/k3.1-pro` |
+| `measure-strategy` | `agents/measure-strategy.md` | `deepseek-official/deepseek-flash` |
+| `measure-mid-red` | `agents/measure-mid-red.md` | `deepseek-official/deepseek-flash` |
+| `measure-jr-green` | `agents/measure-jr-green.md` | `deepseek-official/deepseek-flash` |
+| `measure-review-a-correctness` | `agents/measure-review-a-correctness.md` | `xiaomi/mimo-v2.6-pro` |
+| `measure-review-b-security` | `agents/measure-review-b-security.md` | `kimi-coding/k3.1-pro` |
+| `measure-review-c-ux-api` | `agents/measure-review-c-ux-api.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-phase-acceptance` | `agents/measure-phase-acceptance.md` | `xiaomi/mimo-v2.6-pro` |
+| `measure-adversarial-testing` | `agents/measure-adversarial-testing.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-ux-browser-review` | `agents/measure-ux-browser-review.md` | `minimax-cn/MiniMax-M3.1-Flash` |
+| `measure-final-acceptance` | `agents/measure-final-acceptance.md` | `kimi-coding/k3.1-pro` |
+| `measure-closeout` | `agents/measure-closeout.md` | `deepseek-official/deepseek-flash` |
+| `measure-orchestrator-audit` | `agents/measure-orchestrator-audit.md` | `xiaomi/mimo-v2.6-pro` |
+
+## 5. Prompt template
+
+```text
+You are <role>. <The role file's description line.>
+
+Project: <repository root>. Measure track: <track id>.
+Read <the input files the role names>. Follow your role contract below.
+Return the MEASURE_AGENT_RESULT block described below.
+
+<agents/measure-<role>.md body without YAML frontmatter>
+```
+
+The result block, at the end of the child's final message:
+
+```text
+MEASURE_AGENT_RESULT
+role: <role>
+phase: <track setup | phase N>
+status: <pass | fail | blocked | inconclusive>
+findings: <one line per finding, or "none">
+evidence: <the commands run and their results>
+```
+
+Two roles keep their own formats when the role file defines one (the spec
+review role returns the three report subsections; the orchestrator audit returns
+its audit schema). The block above is the fallback.
+
+Per-role restrictions, restated for the harness:
+
+- Every role except `measure-closeout` edits only `measure/runs/**`; no role
+  runs git write commands.
+- Review and acceptance roles never edit source files.
+- `measure-closeout` may edit the track documents and `measure/tracks.md`.
+- The orchestrator delegates and never implements.
+- A role that must write code is a Green or coder role and gets an explicit
+  write scope from the orchestrator.
+
+## 6. Independence and the three-family review
+
+Reviewers never share a family, and a reviewer should not share the author's
+family where the profile allows it:
+
+| Review role | Family |
+|---|---|
+| `measure-review-a-correctness` | Xiaomi (MiMo) |
+| `measure-review-b-security` | Kimi |
+| `measure-review-c-ux-api` | MiniMax |
+| `measure-spec-review` | Kimi (author-side families: DeepSeek, MiniMax) |
+
+The orchestrator spawns the three review roles in one message so they run in
+parallel, and keeps their reports separate (`measure/runs/<track>/review-*.md`).
+
+## 7. Guard-marker handoffs
+
+The guard plugin is the harness-level contract between roles:
+
+1. Before a role edits a file outside `measure/`, the task line in the track
+   plan must be `[~]`. The orchestrator marks it before spawning the writer.
+2. A Green role commits the task and the orchestrator records the short SHA on
+   the task line. The guard's end-of-turn check reports an `[x]` task without a
+   SHA.
+3. A phase starts only when the previous phase heading carries
+   `[checkpoint: <sha>]`; the closeout guard denies a task in phase N+1 started
+   without it.
+4. A track may be archived only when every task is closed; the closeout guard
+   denies `[x]` on `tracks.md` while a plan has an open task.
+
+`/measure-off` (session scope) and `/measure-off repo` are the escape hatches;
+`/measure-status` opens the panel.
+
+## 8. Workflow commands in DSH
+
+The guard plugin registers the Measure workflows as commands: `measure-setup`,
+`measure-new-track`, `measure-new-track-set`, `measure-implement`,
+`measure-review`, `measure-revert`, `measure-doctor`, `measure-orchestrate`.
+Each one steers the receiving agent with the matching workflow instruction; the
+command line's remaining words are forwarded as `Arguments:`.
+
+## 9. Unverified on this installation
+
+- `subagent_fork` seeding was read from the package README, not exercised in
+  this track.
+- The `reasoning_effort` values are model-specific; check the model's options
+  before passing one.
+- The per-role tool restrictions are prompt-level, not enforced by DSH.
