@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_token_scan_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T00:20:00Z",
+  "updated_at": "2026-11-08T00:50:00Z",
+  "description": "Handle double-quoted backslash-newline continuations and require git at command position in the token scan; add their tests; reconcile the token-scan follow-up record (task SHAs, ledger format, evidence Overview wording)",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The double-quoted continuation was fixed with a POSIX backslash-newline drop, and the command-boundary rule now requires git at a command start. (2) The archived token-scan follow-up tracked record is reconciled: its plan tasks carry SHAs, the ledger records its gates and read-back, and its closeout reports only the expected automation-supervisor manifest FAIL. (3) The evidence track Overview F4 wording and the follow-up spec/plan wording are corrected.",
+  "completed": "2026-11-08"
+}

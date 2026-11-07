@@ -21,5 +21,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 3: Gates and closeout
 
-- [ ] Task 3.1: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; archive the track and update `measure/tracks.md`
+- [~] Task 3.1: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; archive the track and update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md)
