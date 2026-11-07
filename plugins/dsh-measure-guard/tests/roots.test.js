@@ -64,3 +64,19 @@ test('release of an unknown agent is a no-op', () => {
   writers.release('nobody')
   assert.equal(writers.countOf('/repo'), 1)
 })
+
+test('a child agent never claims a writer slot or counts as a session', () => {
+  const writers = new RootWriters()
+  assert.equal(writers.claim('child-1', '/repo', false), false)
+  assert.equal(writers.rootOf('child-1'), null)
+  assert.equal(writers.countOf('/repo'), 0)
+
+  // One root plus one child is one session, not two.
+  assert.equal(writers.claim('root-1', '/repo', true), false)
+  assert.equal(writers.claim('child-2', '/repo', false), false)
+  assert.equal(writers.countOf('/repo'), 1)
+
+  // A second root is the real second session and warns once.
+  assert.equal(writers.claim('root-2', '/repo', true), true)
+  assert.equal(writers.countOf('/repo'), 2)
+})

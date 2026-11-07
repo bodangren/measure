@@ -173,7 +173,8 @@ export async function attachAgent(_ctx, agent, deps) {
     disposers.push(agent.ctx.systemPrompt.section(section))
   }
 
-  if (deps.roots !== undefined && deps.roots.claim(agent.id, root) && typeof agent.inject === 'function') {
+  const isRoot = typeof deps.isRoot === 'function' ? deps.isRoot(agent) === true : true
+  if (deps.roots !== undefined && deps.roots.claim(agent.id, root, isRoot) && typeof agent.inject === 'function') {
     agent.inject(noticeMessage(secondWriterText(deps.roots.countOf(root)), 'second writer'))
   }
 

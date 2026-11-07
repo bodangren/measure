@@ -1,16 +1,20 @@
 // One writer agent per canonical root. The plugin only detects a second
-// session in the same worktree and warns it once; it does not arbitrate.
+// SESSION (a root agent) in the same worktree and warns it once; a child agent
+// (a subagent, teammate, or fork under an owner) still inherits the guards but
+// never claims a writer slot. The plugin does not arbitrate.
 export class RootWriters {
   #byRoot = new Map()
   #rootByAgent = new Map()
   #warned = new Set()
 
   /**
-   * Registers an agent as a writer of a root. Returns true only for the first
-   * claim of an additional agent (the second, third, ... distinct writer), so
-   * each agent gets at most one warning for a root.
+   * Registers a root agent as a writer of a root. Returns true only for the
+   * first claim of an additional root (the second, third, ... distinct
+   * session), so each session gets at most one warning for a root. A child
+   * agent (`isRoot` false) never claims and never counts.
    */
-  claim(agentId, root) {
+  claim(agentId, root, isRoot = true) {
+    if (isRoot !== true) return false
     if (this.#rootByAgent.get(agentId) === root) return false
     if (this.#rootByAgent.has(agentId)) this.release(agentId)
 

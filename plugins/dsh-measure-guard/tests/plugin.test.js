@@ -34,14 +34,14 @@ const agentOf = id => {
 }
 
 /** The fake host services apply() touches in Phase 2. */
-const ctxOf = ({ agents = [] } = {}) => {
+const ctxOf = ({ agents = [], roots = agents } = {}) => {
   const tools = []
   const commands = []
   const listeners = new Map()
   return {
     tools: { register: definition => (tools.push(definition), () => {}) },
     commands: { register: definition => (commands.push(definition), () => {}) },
-    agents: { list: () => agents, get: id => agents.find(agent => agent.id === id) },
+    agents: { list: () => agents, get: id => agents.find(agent => agent.id === id), roots: () => roots },
     workingDirectory: { get: () => '/repo' },
     fs: {
       resolve: async path => ({ targetKey: path, displayPath: path }),
@@ -70,6 +70,9 @@ const ctxOf = ({ agents = [] } = {}) => {
 }
 
 const settle = () => new Promise(resolve => setTimeout(resolve, 25))
+
+/** The text of a user message the plugin injected or steered. */
+const textOf = message => (message?.content ?? []).map(part => part?.text ?? '').join('')
 
 test('apply registers measure_status, the eleven commands, and the lifecycle listeners', async () => {
   const plugin = await import('../index.js')
@@ -164,4 +167,30 @@ test('the module imports only local modules and Node built-ins', async () => {
     )
   }
   assert.ok(specifiers.some(specifier => specifier.startsWith('./src/')))
+})
+
+test('one root and its child are one session: no second-writer note', async () => {
+  const root = agentOf('root-1')
+  const child = agentOf('child-1')
+  const ctx = ctxOf({ agents: [root, child], roots: [root] })
+  apply(ctx, { mode: 'guard' })
+  await settle()
+
+  assert.equal(root.injected.length, 0)
+  assert.equal(child.injected.length, 0)
+  // The child still inherits the guard layer.
+  assert.ok(child.listeners.has('agent/pre-step'))
+  assert.ok(child.listeners.has('agent/turn-stopping'))
+})
+
+test('two root sessions get exactly one second-writer note naming both', async () => {
+  const first = agentOf('root-1')
+  const second = agentOf('root-2')
+  const ctx = ctxOf({ agents: [first, second], roots: [first, second] })
+  apply(ctx, { mode: 'guard' })
+  await settle()
+
+  const injected = [...first.injected, ...second.injected]
+  assert.equal(injected.length, 1)
+  assert.match(textOf(injected[0]), /2 sessions are working in this git worktree/)
 })

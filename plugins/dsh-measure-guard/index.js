@@ -80,6 +80,24 @@ export function apply(ctx, config) {
     },
     gitStatusOf: root => gitStatus(io, root),
   }
+  /**
+   * True only for a top-level session (a root agent). `ctx.agents.roots()`
+   * names the live agents created without an owning agent context; a subagent,
+   * teammate, or fork under an owner is not a root and must not claim a writer
+   * slot (tech debt: one root and its child looked like two sessions). A host
+   * without the method, or a throwing call, keeps today's behavior and treats
+   * every agent as a root.
+   */
+  deps.isRoot = agent => {
+    if (agent === undefined || agent === null) return false
+    const agents = ctx.agents
+    if (agents === undefined || agents === null || typeof agents.roots !== 'function') return true
+    try {
+      return agents.roots().some(rootAgent => rootAgent !== null && rootAgent !== undefined && rootAgent.id === agent.id)
+    } catch {
+      return true
+    }
+  }
   deps.decide = exec => prepareDecision(deps, exec)
   deps.onTurnStopping = args => onTurnStopping(deps, args)
   deps.computeProblems = ({ agentId }) => [...state.agents.sessionOf(agentId).problems]
