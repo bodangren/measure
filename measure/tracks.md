@@ -255,3 +255,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit guard nested fix5**
   *Link: [./archive/dsh_measure_commit_nested_fix5_20261109/](./archive/dsh_measure_commit_nested_fix5_20261109/)*
   *Key -c detection on short option clusters (not --norc), add --init-file and --norc cases, and correct the fix3/fix4 records with named targets*
+
+- [x] **Track: DSH Measure allow-list parse hardening**
+  *Link: [./archive/dsh_measure_allow_parse_20261109/](./archive/dsh_measure_allow_parse_20261109/)*
+  *Make allow-list dedupe linear with a visited set, ignore control-character entries with a reason, add tests, and update the row*

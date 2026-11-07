@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_allow_parse_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T23:00:00Z",
+  "updated_at": "2026-11-09T23:40:00Z",
+  "description": "Make allow-list dedupe linear with a visited set, ignore control-character entries with a reason, add tests, and update the row",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The control-character rule supersedes the OpenCode adapter V6/V7 expectations; those cases and both README tables were updated (the OpenCode suite cannot run here because bun is absent). (2) The mods source is the parity source; both plugin copies are byte-identical. (3) An extremely wide list remains the accepted operator risk.",
+  "completed": "2026-11-09"
+}
