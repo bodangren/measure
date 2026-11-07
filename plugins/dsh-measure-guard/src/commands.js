@@ -4,6 +4,7 @@
 import { statusText, refreshSnapshotOf } from './status.js'
 import { goalOf, measureGoalCommand } from './goal.js'
 import { measureModeCommand } from './modes.js'
+import { measureVerifyCommand } from './verify.js'
 
 /** The scope of `/measure-off|on`: `repo` when the first token says so, else session. */
 export const scopeOf = args => (String(args ?? '').trim().split(/\s+/)[0] === 'repo' ? 'repo' : 'session')
@@ -66,5 +67,6 @@ export function measureCommands(deps) {
     },
     measureGoalCommand(deps),
     measureModeCommand(deps),
+    measureVerifyCommand(deps),
   ]
 }

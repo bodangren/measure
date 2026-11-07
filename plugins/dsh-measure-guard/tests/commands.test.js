@@ -81,7 +81,7 @@ const commandOf = (commands, name) => commands.find(command => command.name === 
 
 test('the host commands have the expected names and descriptions', () => {
   const commands = measureCommands(depsOf())
-  assert.deepEqual(commands.map(command => command.name), ['measure-off', 'measure-on', 'measure-status', 'measure-goal', 'measure-mode'])
+  assert.deepEqual(commands.map(command => command.name), ['measure-off', 'measure-on', 'measure-status', 'measure-goal', 'measure-mode', 'measure-verify'])
   for (const command of commands) assert.equal(typeof command.handler, 'function')
   assert.equal(typeof commandOf(commands, 'measure-off').description, 'string')
   assert.match(commandOf(commands, 'measure-off').description, /this session/)

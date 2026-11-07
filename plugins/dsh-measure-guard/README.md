@@ -133,6 +133,8 @@ The **effective** mode of a repository is: the persisted per-repository override
   | `measure-on [repo]` | Turns them on again for the same scope. |
   | `measure-status` | Replies with the status text of the current project. |
   | `measure-goal` | Seeds a DeepSeek Harness goal from the active Measure track, replaces a complete goal, or reports the current goal without mutating it. |
+  | `measure-mode` | Reports, sets, or clears the effective guard mode for this session or the repository (see Modes). |
+  | `measure-verify` | Read-only: verifies the active plan's commits, git notes, and `metadata.json` `actual_tasks` and reports the problems (or a clean count). |
 
 - **Workflow commands.** Eight more host commands steer the receiving agent into
   the matching Measure workflow: `measure-setup`, `measure-new-track`,

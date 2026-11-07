@@ -166,6 +166,15 @@ narrows its file set instead of over-approximating: an in-command
 path, `git add -u` the tracked paths, and `git commit -a` the tracked paths only.
 All of these denies are inert in `advise` mode and under `/measure-off`.
 
+## Verify on demand
+
+`/measure-verify` is read-only. It runs the same git-backed checks as the
+end-of-turn verification (each `[x]` task's SHA must be a real commit with its
+git note) plus the active track's `metadata.json` `actual_tasks` verdict, and
+replies with the problems or `verification clean (<n> tasks checked)`. A
+project without `measure/`, no active track, or a git that cannot answer
+degrades to `nothing to verify (<reason>)`.
+
 ## Setup answer
 
 A git repository without a `measure/` folder shows the setup question in the

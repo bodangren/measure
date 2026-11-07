@@ -94,6 +94,7 @@ test('apply registers measure_status, the eleven commands, and the lifecycle lis
     'measure-status',
     'measure-goal',
     'measure-mode',
+    'measure-verify',
     'measure-setup',
     'measure-new-track',
     'measure-new-track-set',
