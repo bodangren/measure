@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **role contracts:** `contracts.md` now has a "Marker Matching and Baseline" section pinned by the S3 docs test — whole-line marker matching after stripping, the raw dispositions value with one CRLF terminator ignored, item stripping, all six audit scope names plus the spec-review section scope, the spec-review baseline resolution (no ancestry requirement; Mid Red/Jr Green compare strings), the committed set (tree plus every commit in `baseline..HEAD`) and the working-tree union, and the HEAD-advance rule. Track `dsh_measure_contracts_scope_20261110`.
+
+### Features
+
 * **snapshot invalidation cost:** the Host no longer invalidates every cached snapshot on every `tools/result`; a read-only result (`read`, `grep`, `glob`, `read_image`, `web_search`, `web_fetch`, `todo_write`) skips it, while every other tool — including an unknown name — keeps the fail-safe invalidation; the pre-step invalidation remains, and the within-step external-edit window is the documented residual (node 318 tests; `MUTATION_TOOLS` is exported and the two classifications are tested disjoint). Tracks `dsh_measure_snapshot_invalidate_20261109` and `dsh_measure_snapshot_invalidate_fix2_20261109`.
 
 ### Features

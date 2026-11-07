@@ -113,6 +113,22 @@ in_text 'contracts.md: Comprehension gap rule' "$FD" 'Comprehension gap:'
 in_flat 'contracts.md: no-FIX round rule' "$FD" 'no FIX item'
 
 # ---------------------------------------------------------------------------
+# Marker matching and baseline: the section that documents the shipped rules
+MS="$(section "$CONTRACTS" '## Marker Matching and Baseline' '^## ')"
+if [ -z "$MS" ]; then fail "contracts.md has no '## Marker Matching and Baseline' heading"; fi
+in_text 'contracts.md: marker whole-line matching' "$MS" 'recognized only as whole lines after stripping the surrounding whitespace'
+in_text 'contracts.md: marker in another word' "$MS" 'a log whose only marker-like text is inside another word has no result block'
+in_text 'contracts.md: raw value and CRLF allowance' "$MS" 'with one trailing CR of a CRLF log ignored'
+in_text 'contracts.md: item strip' "$MS" 'the `;`-separated items are then stripped'
+in_text 'contracts.md: audit scope names' "$MS" 'the role name: `review-a`, `review-b`, `review-c`, `adversarial-testing`, `ux-browser-review`, or `phase-acceptance`'
+in_text 'contracts.md: spec-review scope is the section' "$MS" 'A spec-review finding'\''s scope names the section of `spec.md` or `plan.md` that the finding concerns'
+in_text 'contracts.md: baseline need not be an ancestor' "$MS" 'the baseline need not be an ancestor of HEAD'
+in_text 'contracts.md: changed files union' "$MS" 'unioned with every path any commit in `baseline..HEAD` touched'
+in_text 'contracts.md: working-tree union' "$MS" 'also unions the unstaged and staged diffs'
+in_text 'contracts.md: spec-review resolves the baseline' "$MS" 'The `spec-review` gate resolves `--baseline` to a commit'
+in_text 'contracts.md: HEAD advance rule' "$MS" 'Mid Red and Jr Green fail when HEAD still equals the baseline'
+
+# ---------------------------------------------------------------------------
 # Green role
 echo "=== Green role: ## Routed findings comes directly before ## Fabricate-vs-block decision ==="
 lrf=$(line_of "$GREEN" '## Routed findings')
