@@ -22,5 +22,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 3: Gates and closeout
 
-- [~] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_scan_fix2_20261107` and record that it reports only the expected manifest FAIL; each phase checkpoint pushed
+- [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_scan_fix2_20261107` and record that it reports only the expected manifest FAIL; each phase checkpoint pushed; archived at `194899a`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md)
