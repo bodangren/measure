@@ -9,3 +9,7 @@ test_checker.py: 35 tests OK (new: spec-review intermediate add/delete + inside-
 srg: 11 suites (PASS=11, FAIL=0); CLI 12/12; node 301/301; parity ok.
 
 Pre-fix, G19's add-then-remove src/tmp.py reported exit 0; now the scope rule names src/tmp.py.
+
+## Closeout
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_scope_intermediate_20261109/automation-supervisor-closeout-manifest.json
