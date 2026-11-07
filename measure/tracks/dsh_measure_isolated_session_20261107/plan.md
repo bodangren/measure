@@ -16,11 +16,11 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 1.3: run the helper against the live host: list sessions, create a throwaway fixture-rooted session, print its summary (`workingDirectory` = the fixture root), and close/leave it inert
 - [x] Task: Measure - User Manual Verification 'Phase 1: The authenticated host-API probe' (Protocol in workflow.md) `0f4d32c`
 
-## Phase 2: The executed strict deny
+## Phase 2: The executed strict deny [checkpoint: 07e74bb]
 
 - [x] Task 2.1: build the fixture (`tests/dsh/rehearsal/make-project.sh`), write the fixture root's `strict` mode override in `repos.json`, reload, create a session with `cwd` = fixture, prompt a minimal source edit with no Red phase, and capture the strict deny text
 - [x] Task 2.2: cleanup (clear the override, reload, remove the fixture) and record the evidence: fixture path, session id and `workingDirectory`, prompt text, HTTP statuses, deny text verbatim, cleanup commands and results
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The executed strict deny' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The executed strict deny' (Protocol in workflow.md) `07e74bb`
 
 ## Phase 3: Documentation and closeout
 
