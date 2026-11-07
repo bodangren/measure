@@ -12,7 +12,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run the gates — `bash tests/spec_review_gate/run.sh` (10/10), node (301/301), both parity scripts, `bash tests/dsh/run.sh` (11/11) `a245c3d`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Record corrections' (Protocol in workflow.md) `a6e76df`
 
-## Phase 2: Closeout
+## Phase 2: Closeout [checkpoint: 383e489]
 
 - [x] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_a11_recipe_fix3_20261108` and record the manifest-only FAIL `676db4a`
-- [x] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md) `383e489`
