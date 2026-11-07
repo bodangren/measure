@@ -54,7 +54,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 4.2: README and changelog `d2f5adc`
     - [ ] `README.md`: the harness section names DSH and links `docs/dsh.md`; the install section names `bin/measure-dsh`
     - [ ] `CHANGELOG.md`: one Unreleased entry (environment CLI, workflow commands, agent-team reference, guide)
-- [~] Task 4.3: Distribution alignment
+- [x] Task 4.3: Distribution alignment `52759ec`
     - [ ] remove the DSH plugin row from `bin/install-targets.tsv`; delete `plugins/dsh-measure-guard/tests/install.sh` (replaced by `tests/dsh/`); update the guard plugin README install section
     - [ ] `tests/dsh/test-install.sh` asserts the installer carries no DSH plugin row and the CLI owns the copy
 - [ ] Task 4.4: Measure - User Manual Verification 'Phase 4: Guide, docs, and distribution alignment' (Protocol in workflow.md)
