@@ -8,6 +8,8 @@ import { RootWriters } from './src/roots.js'
 import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
+import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
+import { onTurnStopping, prepareDecision } from './src/guard.js'
 
 export const name = 'measure-guard'
 
@@ -38,19 +40,42 @@ export function apply(ctx, config) {
     return canonicalRoot(io, dir)
   }
 
+  /** The Session-effective directory of an agent (synchronous, no I/O; FR-12). */
+  const dirOf = agent => {
+    if (agent === undefined || agent === null) return undefined
+    return agent.session === undefined ? ctx.workingDirectory.defaultDirectory : ctx.workingDirectory.get(agent.session)
+  }
+
+  // The guard layer resolves path arguments with `io.resolve(path, { cwd })`
+  // (design §4) while the snapshot seam keeps its `(path, cwd, signal)` form.
+  const guardIo = {
+    resolve: (path, options = {}) => io.resolve(path, options?.cwd, options?.signal),
+    readText: (path, signal) => io.readText(path, signal),
+    exists: (path, signal) => io.exists(path, signal),
+    gitLines: (args, cwd, signal) => io.gitLines(args, cwd, signal),
+  }
+
+  const decisions = createDecisions()
+  /** The closeout notes of allowed calls, by token, for `tools/post-execute`. */
+  const callNotes = new Map()
+
   const deps = {
     mode,
     state,
-    io,
+    io: guardIo,
     snapshots,
     roots,
     rootOf,
+    dirOf,
     refreshSnapshot: async root => {
       snapshots.invalidate(root)
       return snapshots.get(root)
     },
     gitStatusOf: root => gitStatus(io, root),
   }
+  deps.decide = exec => prepareDecision(deps, exec)
+  deps.onTurnStopping = args => onTurnStopping(deps, args)
+  deps.computeProblems = ({ agentId }) => [...state.agents.sessionOf(agentId).problems]
 
   const attached = new Map()
   const attach = async agent => {
@@ -91,4 +116,14 @@ export function apply(ctx, config) {
     ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
   }
 
+  // The guard layer (FR-5..FR-9): decision preparation on the way in, the
+  // synchronous guard that reports it, the closeout note on the way out, and
+  // the cleanup that also drops the cached snapshot for the next call.
+  ctx.on('tools/pre-execute', preExecuteListener(deps, decisions, callNotes))
+  installToolGuard(ctx, decisions)
+  ctx.on('tools/post-execute', postExecuteListener(callNotes))
+  ctx.on('tools/result', exec => {
+    callNotes.delete(exec.token)
+    snapshots.invalidateAll()
+  })
 }
