@@ -144,6 +144,54 @@ function atCommandStart(tokens, index) {
   return true
 }
 
+
+/**
+ * True when a command substitution that runs (not single-quoted or escaped)
+ * mentions a `git add`. Balanced `$(...)` and backtick spans are scanned, and
+ * `git -C <dir> add` and a quoted `"add"` are recognized; a literal `$(git add)`
+ * in a message does not count.
+ */
+function substitutionAdds(command) {
+  let text = ''
+  for (let i = 0; i < command.length; i += 1) {
+    const ch = command[i]
+    if (ch === '\\') {
+      i += 1
+      text += '  '
+      continue
+    }
+    if (ch === "'") {
+      let j = i + 1
+      while (j < command.length && command[j] !== "'") j += 1
+      text += ' '.repeat(Math.min(j, command.length) - i + 1)
+      i = j
+      continue
+    }
+    text += ch
+  }
+  const spans = []
+  for (let i = 0; i < text.length; i += 1) {
+    if (text[i] === '$' && text[i + 1] === '(') {
+      let depth = 1
+      let j = i + 2
+      while (j < text.length && depth > 0) {
+        if (text[j] === '(') depth += 1
+        else if (text[j] === ')') depth -= 1
+        j += 1
+      }
+      spans.push(text.slice(i + 2, depth === 0 ? j - 1 : j))
+      i = j - 1
+    } else if (text[i] === '`') {
+      let j = text.indexOf('`', i + 1)
+      if (j < 0) j = text.length
+      spans.push(text.slice(i + 1, j))
+      i = j
+    }
+  }
+  const add = /\bgit(?:\s+-C\s+\S+)?\s+["']?add["']?\b/
+  return spans.some(span => add.test(span))
+}
+
 /**
  * The paths an in-command `git add` contributes (Decision 9): for every `git`
  * [-C <dir>]* `add` token run, the following words until a separator, with the
@@ -156,6 +204,13 @@ export function addedPaths(command) {
   if (typeof command !== 'string' || command === '') return added
   const tokens = shellTokens(command)
   if (tokens === null) {
+    added.all = true
+    return added
+  }
+  // A `git add` hidden inside a command substitution cannot be attributed to a
+  // path set by the tokenizer; fail closed so the commit check considers every
+  // working-tree change instead of only the previously staged set.
+  if (substitutionAdds(command)) {
     added.all = true
     return added
   }

@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **commit guard substitution:** a `git add` hidden in a command substitution (`X=$(git add secret.txt); git commit …`) now fails closed to the full working-tree set, so the strict no-task commit rule sees the file; single-quoted or backslash-escaped `$(git add …)` text and substitutions without an add keep the old behavior, and nested spans, `git -C <dir> add`, and quoted `"add"` are recognized (node 303 tests; DSH adapter local). Track `dsh_measure_commit_substitution_20261109`.
+
+### Features
+
 * **skill-doc contract:** `tests/dsh/test-skill-docs.sh` now keeps every `skills/*/SKILL.md` frontmatter description within the skill format (at most 1024 characters, no `<`/`>` characters), rejects a SKILL.md Markdown link to a folder (npm `skill.referenced-directory`, finding N3), reports a missing description, and rejects symbolic links in the `claude-skills/` bundle as a separate rule, with fixtures for each rule and the 1024/1025 boundary; the CLI suite is 13/13. Track `dsh_measure_skill_doctor_check_20261109`.
 
 ### Features

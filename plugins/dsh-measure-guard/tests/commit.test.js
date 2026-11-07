@@ -145,6 +145,14 @@ test('a no-task commit of only measure/ files is allowed with no reminder', asyn
   assert.equal(check.commitDue, false)
 })
 
+test('a substitution-hidden git add reaches the no-task commit rule', async () => {
+  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: ['A  src/app.js'] }) })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'X=$(git add src/app.js); git commit -m "feat(app): Add the app"')
+  assert.notEqual(check.decision, null)
+  assert.match(check.decision.deny, /no task is in progress/)
+  assert.match(check.decision.deny, /src\/app\.js/)
+})
+
 test('a commit with -a takes the modified tracked paths and not untracked files', async () => {
   const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: [' M src/app.js', '?? notes.md'] }) })
   const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'git commit -am "feat(app): Add the app"')
@@ -176,6 +184,21 @@ test('addedPaths reads every git add segment', async () => {
   assert.deepEqual(addedPaths('git add -A && git commit -m "x"'), { all: true, trackedOnly: false, paths: [] })
   assert.deepEqual(addedPaths('git add -u && git commit -m "x"'), { all: false, trackedOnly: true, paths: [] })
   assert.deepEqual(addedPaths('git commit -m "x"'), { all: false, trackedOnly: false, paths: [] })
+})
+
+test('addedPaths fails closed when a substitution hides a git add', async () => {
+  const all = { all: true, trackedOnly: false, paths: [] }
+  const none = { all: false, trackedOnly: false, paths: [] }
+  assert.deepEqual(addedPaths('X=$(git add secret.txt); git commit -m "feat(app): Add"'), all)
+  assert.deepEqual(addedPaths('X=`git add secret.txt`; git commit -m "feat(app): Add"'), all)
+  assert.deepEqual(addedPaths('X=$(echo $(date); git add secret.txt); git commit -m "feat(app): Add"'), all)
+  assert.deepEqual(addedPaths('X=$(git "add" secret.txt); git commit -m "feat(app): Add"'), all)
+  assert.deepEqual(addedPaths('X=$(git -C . add secret.txt); git commit -m "feat(app): Add"'), all)
+  assert.deepEqual(addedPaths('git commit -m "feat(app): $(git add secret.txt)"'), all)
+  assert.deepEqual(addedPaths('git commit -m "feat(app): \\$(git add secret.txt)"'), none)
+  assert.deepEqual(addedPaths("git commit -m 'docs: $(git add secret.txt)'"), none)
+  assert.deepEqual(addedPaths('git commit -m "$(cat msg)"'), none)
+  assert.deepEqual(addedPaths('git commit -m "feat(app): Add"'), none)
 })
 
 test('the commit guard is inert outside strict mode', async () => {
