@@ -25,7 +25,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 3.4: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; record the results
 - [x] Task: Measure - User Manual Verification 'Phase 3: The mid-red records' (Protocol in workflow.md) `e9615ae`
 
-## Phase 4: Closeout
+## Phase 4: Closeout [checkpoint: d8c5f90]
 
 - [x] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md` `5f4be9f`
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md) `d8c5f90`
