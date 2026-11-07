@@ -13,7 +13,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 1.1: Record the environment CLI in the tech stack `25af03d`
     - [ ] `measure/tech-stack.md` Distribution Formats row for `bin/measure-dsh` (and the note that it replaces the installer's DSH plugin target)
     - [ ] `measure/tech-stack.md` Tooling Exceptions row for this track (`bash tests/dsh/run.sh`, `node --test`)
-- [~] Task 1.2: CLI skeleton, resolution, and install
+- [x] Task 1.2: CLI skeleton, resolution, and install `e88b24d`
     - [ ] `bin/measure-dsh`: usage/help, `--dsh-home`/`$DSH_HOME`/`~/.dsh` resolution, `--profile`, `--mode` validation, `--ref`, `--source` (plugin package dir), `--dry-run`, `--no-skills`, exit codes, output format
     - [ ] `install`: prerequisites, foreign-row scan, `mkdir -p <profile>/plugins`, the installer skill step, the plugin copy with its stamp (source/destination/stamp rules of `design.md §2`), the managed block, the summary and restart note
     - [ ] `tests/dsh/run.sh`, `tests/dsh/lib.sh`, `tests/dsh/test-install.sh`: temp world (fake HOME, DSH home, profile, git repo, installer stub); first install writes copy+stamp+block; second run unchanged; an edited destination is kept with WARN and its old stamp hash; a stale stamped file is removed; `--dry-run` writes nothing; missing profile exits 3; bad mode exits 2; installer exit 2 becomes WARN; `--source` pointing at a non-package exits 3
