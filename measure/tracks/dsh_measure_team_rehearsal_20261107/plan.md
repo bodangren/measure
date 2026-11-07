@@ -32,7 +32,7 @@ rehearsal, then closeout. The gate is
 - [ ] Task 4.1: README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, `measure/tech-debt.md` updates; `metadata.json`; archive the track and update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase 4: Documentation and closeout' (Protocol in workflow.md)
 
-## Phase 5: Post-review correction for the archived band follow-up track
+## Phase 5: Post-review correction for the archived band follow-up track [checkpoint: 5d9e270]
 
 - [x] Task 5.1: Reconcile the band follow-up review (F1-F5): correct the archived
       spec's Overview (the README never claimed a panel fallback; the false claim
@@ -42,4 +42,4 @@ rehearsal, then closeout. The gate is
       too, and the header says the kept prefix is trimmed of trailing
       whitespace); add the leading-space test; note the correction in the
       archived follow-up spec/plan and metadata.
-- [ ] Task: Measure - User Manual Verification 'Phase 5: Post-review correction for the archived band follow-up track' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 5: Post-review correction for the archived band follow-up track' (Protocol in workflow.md) `5d9e270`
