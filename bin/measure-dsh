@@ -1,0 +1,1525 @@
+#!/usr/bin/env bash
+# measure-dsh: install, check, and uninstall the Measure guard layer of a
+# DeepSeek Harness profile.
+#
+#   measure-dsh install   [--dsh-home DIR] [--profile NAME] [--mode MODE]
+#                         [--ref REF] [--source DIR] [--no-skills] [--dry-run]
+#   measure-dsh --check   [--dsh-home DIR] [--profile NAME] [--source DIR]
+#                         [--mode MODE] [--project DIR] [--live] [--session ID]
+#                         [--json]
+#   measure-dsh uninstall [--dsh-home DIR] [--profile NAME] [--keep-copy]
+#                         [--dry-run]
+#   measure-dsh --help
+#
+# Exit codes: 0 all checks passed / install complete; 1 a check failed /
+# install incomplete; 2 usage error; 3 environment error (missing profile,
+# unreadable patch, failed prerequisite).
+#
+# The CLI owns the plugin copy and the managed block. It never writes a skill
+# file: the installer ("bin/install-measure-skill") remains the only skill
+# writer and is invoked with the caller's environment.
+#
+# Contract: measure/tracks/dsh_measure_dev_20261107/design.md sections 2-4.
+set -euo pipefail
+
+PROG="measure-dsh"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+DEFAULT_MODE="guard"
+STAMP_HEADER="# measure-dsh install stamp v1"
+BLOCK_OPEN="# >>> measure-dsh managed block (id: measure-guard) >>>"
+BLOCK_CLOSE="# <<< measure-dsh managed block <<<"
+BLOCK_NAME="./plugins/dsh-measure-guard/index.js"
+
+# --- Output helpers -----------------------------------------------------------
+
+usage() {
+  cat <<'EOF'
+Usage:
+  measure-dsh install   [--dsh-home DIR] [--profile NAME] [--mode MODE]
+                        [--ref REF] [--source DIR] [--no-skills] [--dry-run]
+  measure-dsh --check   [--dsh-home DIR] [--profile NAME] [--source DIR]
+                        [--mode MODE] [--project DIR] [--live] [--session ID]
+                        [--json]
+  measure-dsh uninstall [--dsh-home DIR] [--profile NAME] [--keep-copy]
+                        [--dry-run]
+  measure-dsh --help
+
+Modes:
+  install    copy the guard plugin into <dsh-home>/profiles/<profile>/plugins,
+             write the managed record into the profile's cordis.patch.yml, and
+             run bin/install-measure-skill for the skill copies.
+  --check    verify the install without writing anything. Exits 0 when no item
+             failed, 1 when one failed, 3 on an environment error.
+  uninstall  remove the managed record and the plugin copy the CLI owns. Skill
+             copies and foreign rows are never touched.
+
+Resolution:
+  dsh home   --dsh-home, else $DSH_HOME, else ~/.dsh
+  profile    --profile, else web
+  mode       --mode advise|guard|strict (install default: guard)
+  ref        --ref (default: main)
+  source     --source DIR (plugin package directory; default
+             <repo>/plugins/dsh-measure-guard)
+  agents     $DSH_AGENTS_HOME, else ~/.agents
+
+Exit codes: 0 pass/complete, 1 failed/incomplete, 2 usage, 3 environment.
+EOF
+}
+
+usage_error() {
+  printf '%s: %s\n' "$PROG" "$*" >&2
+  printf "Try '%s --help'.\n" "$PROG" >&2
+  exit 2
+}
+
+file_mode() { stat -c %a -- "$1"; }
+
+has_trailing_newline() {
+  [[ -s "$1" ]] || return 1
+  [[ "$(tail -c 1 -- "$1" | od -An -tu1 | tr -d ' \n')" == "10" ]]
+}
+
+# Atomic replace: write the content to <target>.measure-dsh.tmp, keep the
+# target's mode when it exists, then rename. A failure leaves the target.
+atomic_write_text() { # text target [mode]
+  local text="$1" target="$2" mode="${3:-}"
+  local tmp="$target.measure-dsh.tmp"
+  if [[ -e "$target" ]]; then
+    mode="$(file_mode "$target")"
+  elif [[ -z "$mode" ]]; then
+    mode=644
+  fi
+  printf '%s' "$text" >"$tmp"
+  chmod "$mode" -- "$tmp"
+  mv -f -- "$tmp" "$target"
+}
+
+atomic_copy_file() { # source target
+  local src="$1" target="$2" mode
+  local tmp="$target.measure-dsh.tmp"
+  if [[ -e "$target" ]]; then
+    mode="$(file_mode "$target")"
+  else
+    mode="$(file_mode "$src")"
+  fi
+  cat -- "$src" >"$tmp"
+  chmod "$mode" -- "$tmp"
+  mv -f -- "$tmp" "$target"
+}
+
+sha_of() { sha256sum -- "$1" | cut -d' ' -f1; }
+
+# --- CLI state ----------------------------------------------------------------
+
+COMMAND=""
+DSH_HOME_FLAG=""
+PROFILE_NAME="web"
+GUARD_MODE=""
+MODE_GIVEN=0
+REF="main"
+SOURCE_DIR=""
+NO_SKILLS=0
+DRY_RUN=0
+PROJECT_DIR=""
+LIVE=0
+SESSION_ID=""
+JSON=0
+KEEP_COPY=0
+
+# --- Argument parsing ---------------------------------------------------------
+
+[[ $# -gt 0 ]] || { usage >&2; exit 2; }
+
+case "$1" in
+  install)
+    COMMAND=install
+    shift
+    ;;
+  --check)
+    COMMAND=check
+    shift
+    ;;
+  uninstall)
+    COMMAND=uninstall
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage_error "unknown command: $1"
+    ;;
+esac
+
+while (($#)); do
+  case "$1" in
+    --dsh-home)
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--dsh-home needs a directory"
+      DSH_HOME_FLAG="$2"
+      shift 2
+      ;;
+    --profile)
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--profile needs a name"
+      PROFILE_NAME="$2"
+      shift 2
+      ;;
+    --mode)
+      [[ "$COMMAND" == "install" || "$COMMAND" == "check" ]] || usage_error "--mode is an install and check option"
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--mode needs a value"
+      GUARD_MODE="$2"
+      MODE_GIVEN=1
+      shift 2
+      ;;
+    --ref)
+      [[ "$COMMAND" == "install" ]] || usage_error "--ref is an install option"
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--ref needs a value"
+      REF="$2"
+      shift 2
+      ;;
+    --source)
+      [[ "$COMMAND" == "install" || "$COMMAND" == "check" ]] || usage_error "--source is an install and check option"
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--source needs a directory"
+      SOURCE_DIR="$2"
+      shift 2
+      ;;
+    --no-skills)
+      [[ "$COMMAND" == "install" ]] || usage_error "--no-skills is an install option"
+      NO_SKILLS=1
+      shift
+      ;;
+    --dry-run)
+      [[ "$COMMAND" == "install" || "$COMMAND" == "uninstall" ]] || usage_error "--dry-run is an install and uninstall option"
+      DRY_RUN=1
+      shift
+      ;;
+    --project)
+      [[ "$COMMAND" == "check" ]] || usage_error "--project is a check option"
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--project needs a directory"
+      PROJECT_DIR="$2"
+      shift 2
+      ;;
+    --live)
+      [[ "$COMMAND" == "check" ]] || usage_error "--live is a check option"
+      LIVE=1
+      shift
+      ;;
+    --session)
+      [[ "$COMMAND" == "check" ]] || usage_error "--session is a check option"
+      [[ $# -ge 2 && -n "$2" ]] || usage_error "--session needs an id"
+      SESSION_ID="$2"
+      shift 2
+      ;;
+    --json)
+      [[ "$COMMAND" == "check" ]] || usage_error "--json is a check option"
+      JSON=1
+      shift
+      ;;
+    --keep-copy)
+      [[ "$COMMAND" == "uninstall" ]] || usage_error "--keep-copy is an uninstall option"
+      KEEP_COPY=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      usage_error "unknown option for $COMMAND: $1"
+      ;;
+  esac
+done
+
+if ((MODE_GIVEN)); then
+  case "$GUARD_MODE" in
+    advise | guard | strict) ;;
+    *) usage_error "invalid --mode: $GUARD_MODE (expected advise, guard, or strict)" ;;
+  esac
+fi
+
+if [[ "$COMMAND" == "check" && $LIVE -eq 0 && -n "$SESSION_ID" ]]; then
+  usage_error "--session requires --live"
+fi
+
+if [[ "$COMMAND" == "install" ]] && ((!MODE_GIVEN)); then
+  GUARD_MODE="$DEFAULT_MODE"
+fi
+
+# --- Resolution ---------------------------------------------------------------
+
+if [[ -n "$DSH_HOME_FLAG" ]]; then
+  DSH_ROOT="$(realpath -m -- "$DSH_HOME_FLAG")"
+elif [[ -n "${DSH_HOME:-}" ]]; then
+  DSH_ROOT="$(realpath -m -- "$DSH_HOME")"
+else
+  DSH_ROOT="$(realpath -m -- "$HOME/.dsh")"
+fi
+
+PROFILE_DIR="$DSH_ROOT/profiles/$PROFILE_NAME"
+PATCH_FILE="$PROFILE_DIR/cordis.patch.yml"
+PLUGIN_TARGET="$PROFILE_DIR/plugins/dsh-measure-guard"
+STAMP_FILE="$PLUGIN_TARGET/.measure-dsh-install"
+
+if [[ -n "$SOURCE_DIR" ]]; then
+  SOURCE="$(realpath -m -- "$SOURCE_DIR")"
+else
+  SOURCE="$REPO_DIR/plugins/dsh-measure-guard"
+fi
+
+if [[ -n "${DSH_AGENTS_HOME:-}" ]]; then
+  AGENTS_HOME="$(realpath -m -- "$DSH_AGENTS_HOME")"
+else
+  AGENTS_HOME="$(realpath -m -- "$HOME/.agents")"
+fi
+
+PROJECT_ROOT="$(realpath -m -- "${PROJECT_DIR:-$PWD}")"
+
+INSTALLER="$REPO_DIR/bin/install-measure-skill"
+SKILL_REPO="$REPO_DIR/skills"
+
+source_is_package() { [[ -d "$1" && -f "$1/index.js" && -f "$1/package.json" ]]; }
+
+NODE_VERSION=""
+node_supported() {
+  command -v node >/dev/null 2>&1 || return 1
+  NODE_VERSION="$(node --version 2>/dev/null)" || return 1
+  [[ -n "$NODE_VERSION" ]] || return 1
+  local v="${NODE_VERSION#v}" major minor
+  major="${v%%.*}"
+  v="${v#*.}"
+  minor="${v%%.*}"
+  [[ "$major" =~ ^[0-9]+$ && "$minor" =~ ^[0-9]+$ ]] || return 1
+  ((major > 24 || (major == 24 && minor >= 9)))
+}
+
+# --- Collected output ---------------------------------------------------------
+
+ITEM_NAME=()
+ITEM_STATUS=()
+ITEM_DETAIL=()
+ACTION_KIND=()
+ACTION_PATH=()
+declare -A ACTION_SEEN=()
+
+add_item() {
+  ITEM_NAME+=("$1")
+  ITEM_STATUS+=("$2")
+  ITEM_DETAIL+=("$3")
+}
+
+add_action() {
+  local key="$1"$'\t'"$2"
+  [[ -n "${ACTION_SEEN[$key]:-}" ]] && return 0
+  ACTION_SEEN[$key]=1
+  ACTION_KIND+=("$1")
+  ACTION_PATH+=("$2")
+}
+
+count_status() {
+  local want="$1" i n=0
+  for i in "${!ITEM_STATUS[@]}"; do
+    [[ "${ITEM_STATUS[$i]}" == "$want" ]] && n=$((n + 1))
+  done
+  printf '%s' "$n"
+}
+
+print_items() {
+  local i
+  for i in "${!ITEM_NAME[@]}"; do
+    printf '%s %s: %s\n' "${ITEM_STATUS[$i]}" "${ITEM_NAME[$i]}" "${ITEM_DETAIL[$i]}"
+  done
+}
+
+print_actions() {
+  local i
+  for i in "${!ACTION_KIND[@]}"; do
+    printf '%s %s\n' "${ACTION_KIND[$i]}" "${ACTION_PATH[$i]}"
+  done
+}
+
+# --- The managed block --------------------------------------------------------
+
+block_text() {
+  printf '%s\n' \
+    "$BLOCK_OPEN" \
+    '- insert:' \
+    '    - id: measure-guard' \
+    "      name: $BLOCK_NAME" \
+    '      config:' \
+    "        mode: $GUARD_MODE" \
+    "$BLOCK_CLOSE"
+}
+
+PATCH_EXISTS=0
+PATCH_TRAILING_NL=1
+PATCH_LINES=()
+BLOCK_STARTS=()
+BLOCK_ENDS=()
+
+load_patch() {
+  PATCH_LINES=()
+  PATCH_EXISTS=0
+  PATCH_TRAILING_NL=1
+  [[ -e "$PATCH_FILE" ]] || return 0
+  PATCH_EXISTS=1
+  [[ -r "$PATCH_FILE" ]] || return 1
+  mapfile -t PATCH_LINES <"$PATCH_FILE"
+  if [[ -s "$PATCH_FILE" ]] && ! has_trailing_newline "$PATCH_FILE"; then
+    PATCH_TRAILING_NL=0
+  fi
+  return 0
+}
+
+scan_block_markers() {
+  BLOCK_STARTS=()
+  BLOCK_ENDS=()
+  local i line
+  for i in "${!PATCH_LINES[@]}"; do
+    line="${PATCH_LINES[$i]}"
+    case "$line" in
+      *'# >>> measure-dsh managed block'*) BLOCK_STARTS+=("$i") ;;
+    esac
+    case "$line" in
+      *'# <<< measure-dsh managed block'*) BLOCK_ENDS+=("$i") ;;
+    esac
+  done
+}
+
+# A complete pair exists when there is exactly one opener and one closer and
+# the closer comes later. Sets BLOCK_START/BLOCK_END (0-based) or -1.
+BLOCK_START=-1
+BLOCK_END=-1
+block_is_complete() {
+  BLOCK_START=-1
+  BLOCK_END=-1
+  ((${#BLOCK_STARTS[@]} == 1 && ${#BLOCK_ENDS[@]} == 1)) || return 1
+  BLOCK_START="${BLOCK_STARTS[0]}"
+  BLOCK_END="${BLOCK_ENDS[0]}"
+  ((BLOCK_END > BLOCK_START))
+}
+
+# Finds a measure-guard row outside the managed block. Sets FOREIGN_LINES to
+# the 1-based line numbers.
+FOREIGN_LINES=()
+scan_foreign_rows() {
+  FOREIGN_LINES=()
+  local i line start=-1 end=-1
+  if ((${#BLOCK_STARTS[@]} && ${#BLOCK_ENDS[@]})); then
+    start="${BLOCK_STARTS[0]}"
+    end="${BLOCK_ENDS[${#BLOCK_ENDS[@]} - 1]}"
+  fi
+  local id_re name_re
+  id_re='(^|[[:space:]]|[][}{,])-?[[:space:]]*id[[:space:]]*:[[:space:]]*["'"'"']?measure-guard'
+  name_re='(^|[[:space:]]|[][}{,])-?[[:space:]]*name[[:space:]]*:[[:space:]]*["'"'"']?[^"'"'"'#[:space:]]*dsh-measure-guard'
+  for i in "${!PATCH_LINES[@]}"; do
+    if ((start >= 0 && i >= start && i <= end)); then continue; fi
+    line="${PATCH_LINES[$i]}"
+    case "$line" in
+      *'measure-dsh managed block'*) continue ;;
+    esac
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line//[[:space:]]/}" ]] && continue
+    if [[ "$line" =~ $id_re || "$line" =~ $name_re ]]; then
+      FOREIGN_LINES+=("$((i + 1))")
+    fi
+  done
+}
+
+foreign_line_text() {
+  local where
+  if ((${#FOREIGN_LINES[@]} == 1)); then
+    where="line ${FOREIGN_LINES[0]}"
+  else
+    where="lines $(join_by ', ' "${FOREIGN_LINES[@]}")"
+  fi
+  printf '%s' "$where"
+}
+
+foreign_detail() {
+  local verb="the row"
+  ((${#FOREIGN_LINES[@]} == 1)) || verb="the rows"
+  printf 'measure-guard row outside the managed block at %s; delete %s, then re-run (uninstall never removes it)' \
+    "$(foreign_line_text)" "$verb"
+}
+
+# --- install ------------------------------------------------------------------
+
+INSTALL_FAILED=0
+
+ensure_dir() {
+  local dir="$1"
+  local -a missing=()
+  while [[ ! -d "$dir" ]]; do
+    missing+=("$dir")
+    dir="$(dirname -- "$dir")"
+  done
+  local i
+  for ((i = ${#missing[@]} - 1; i >= 0; i--)); do
+    add_action MKDIR "${missing[$i]}"
+    if ((DRY_RUN == 0)); then
+      if ! mkdir -- "${missing[$i]}"; then
+        return 1
+      fi
+    fi
+  done
+  return 0
+}
+
+prune_empty_dirs() { # from a removed file's folder, up to but excluding the plugin root
+  local dir
+  dir="$(dirname -- "$1")"
+  while [[ "$dir" == "$PLUGIN_TARGET"/* && -d "$dir" ]]; do
+    rmdir -- "$dir" 2>/dev/null || break
+    dir="$(dirname -- "$dir")"
+  done
+}
+
+declare -A STAMP=()
+STAMP_STATE=""
+load_stamp() {
+  STAMP=()
+  STAMP_STATE=""
+  [[ -f "$STAMP_FILE" ]] || {
+    STAMP_STATE="missing"
+    return 0
+  }
+  [[ -r "$STAMP_FILE" ]] || {
+    STAMP_STATE="unreadable"
+    return 0
+  }
+  local -a lines=()
+  mapfile -t lines <"$STAMP_FILE"
+  if [[ "${lines[0]:-}" != "$STAMP_HEADER" ]]; then
+    STAMP_STATE="malformed"
+    return 0
+  fi
+  local line rel hash
+  for line in "${lines[@]:1}"; do
+    if [[ "$line" =~ ^file\ ([0-9a-f]{64})\ \ (.+)$ ]]; then
+      hash="${BASH_REMATCH[1]}"
+      rel="${BASH_REMATCH[2]}"
+      # A stamp is CLI-owned bookkeeping, but never let a hand-edited entry
+      # point outside the plugin folder.
+      case "/$rel/" in
+        */../*) continue ;;
+      esac
+      [[ "$rel" == /* ]] && continue
+      STAMP["$rel"]="$hash"
+    fi
+  done
+  STAMP_STATE="ok"
+}
+
+render_stamp() {
+  local rel
+  printf '%s\n' "$STAMP_HEADER"
+  if ((${#NEW_STAMP[@]})); then
+    while IFS= read -r rel; do
+      printf 'file %s  %s\n' "${NEW_STAMP[$rel]}" "$rel"
+    done < <(printf '%s\n' "${!NEW_STAMP[@]}" | LC_ALL=C sort)
+  fi
+}
+
+# Copies every source file (everything except tests/, node_modules/, and the
+# stamp) into the plugin target, applying the source/destination/stamp rules of
+# design section 2.
+COPY_WARN=()
+COPY_FAIL=()
+COPY_WRITTEN=0
+COPY_REMOVED=0
+declare -A NEW_STAMP=()
+
+copy_plugin() {
+  COPY_WARN=()
+  COPY_FAIL=()
+  COPY_WRITTEN=0
+  COPY_REMOVED=0
+  NEW_STAMP=()
+
+  local -a files=()
+  mapfile -d '' files < <(
+    find "$SOURCE" \
+      \( -path "$SOURCE/tests" -o -name node_modules -o -name .measure-dsh-install \) -prune \
+      -o -type f -print0 | LC_ALL=C sort -z
+  )
+
+  load_stamp
+
+  local -A is_source=()
+  local abs rel src dst src_hash dst_hash old_hash
+  for abs in "${files[@]}"; do
+    rel="${abs#"$SOURCE"/}"
+    is_source["$rel"]=1
+    src="$abs"
+    dst="$PLUGIN_TARGET/$rel"
+    src_hash="$(sha_of "$src")"
+    if [[ ! -e "$dst" ]]; then
+      ensure_dir "$(dirname -- "$dst")" || {
+        COPY_FAIL+=("could not create $(dirname -- "$dst")")
+        continue
+      }
+      if ((DRY_RUN == 0)); then
+        atomic_copy_file "$src" "$dst" || {
+          COPY_FAIL+=("could not write $rel")
+          continue
+        }
+      fi
+      add_action WRITE "$dst"
+      COPY_WRITTEN=$((COPY_WRITTEN + 1))
+      NEW_STAMP["$rel"]="$src_hash"
+      continue
+    fi
+
+    dst_hash="$(sha_of "$dst")"
+    if [[ "$dst_hash" == "$src_hash" ]]; then
+      NEW_STAMP["$rel"]="$src_hash"
+      continue
+    fi
+
+    old_hash="${STAMP[$rel]:-}"
+    if [[ -n "$old_hash" && "$dst_hash" == "$old_hash" ]]; then
+      # Unmodified installed file whose source moved on: overwrite.
+      if ((DRY_RUN == 0)); then
+        atomic_copy_file "$src" "$dst" || {
+          COPY_FAIL+=("could not update $rel")
+          continue
+        }
+      fi
+      add_action WRITE "$dst"
+      COPY_WRITTEN=$((COPY_WRITTEN + 1))
+      NEW_STAMP["$rel"]="$src_hash"
+    elif [[ -n "$old_hash" ]]; then
+      # Local edit: keep the file and the previous stamped hash.
+      COPY_WARN+=("edited $rel kept")
+      add_action KEEP "$dst"
+      NEW_STAMP["$rel"]="$old_hash"
+    else
+      # No stamp entry: an untracked local file is not overwritten.
+      COPY_WARN+=("unstamped $rel kept")
+      add_action KEEP "$dst"
+    fi
+  done
+
+  local -a stamped_rels=()
+  if ((${#STAMP[@]})); then
+    mapfile -t stamped_rels < <(printf '%s\n' "${!STAMP[@]}" | LC_ALL=C sort)
+  fi
+  for rel in "${stamped_rels[@]}"; do
+    [[ -n "${is_source[$rel]:-}" ]] && continue
+    dst="$PLUGIN_TARGET/$rel"
+    [[ -e "$dst" ]] || continue
+    dst_hash="$(sha_of "$dst")"
+    if [[ "$dst_hash" == "${STAMP[$rel]}" ]]; then
+      if ((DRY_RUN == 0)); then
+        rm -f -- "$dst" || {
+          COPY_FAIL+=("could not remove $rel")
+          continue
+        }
+        prune_empty_dirs "$dst"
+      fi
+      add_action REMOVE "$dst"
+      COPY_REMOVED=$((COPY_REMOVED + 1))
+    else
+      COPY_WARN+=("edited stale $rel kept")
+      add_action KEEP "$dst"
+      NEW_STAMP["$rel"]="${STAMP[$rel]}"
+    fi
+  done
+
+  local stamp_text current_stamp
+  stamp_text="$(render_stamp)"
+  current_stamp="$(cat -- "$STAMP_FILE" 2>/dev/null || true)"
+  if [[ "$stamp_text" != "$current_stamp" ]]; then
+    add_action WRITE "$STAMP_FILE"
+    if ((DRY_RUN == 0)); then
+      atomic_write_text "$stamp_text"$'\n' "$STAMP_FILE" 644 || COPY_FAIL+=("could not write the install stamp")
+    fi
+  fi
+}
+
+install_prerequisites() {
+  local failed=0
+  if [[ -d "$PROFILE_DIR" ]]; then
+    add_item dsh-install PASS "$PROFILE_DIR"
+  else
+    add_item dsh-install FAIL "profile folder does not exist: $PROFILE_DIR"
+    failed=1
+  fi
+  if node_supported; then
+    add_item node PASS "$NODE_VERSION (>= 24.9)"
+  else
+    add_item node FAIL "node >= 24.9 is required${NODE_VERSION:+ (found $NODE_VERSION)}"
+    failed=1
+  fi
+  if source_is_package "$SOURCE"; then
+    add_item source PASS "$SOURCE"
+  else
+    add_item source FAIL "not a plugin package (index.js and package.json required): $SOURCE"
+    failed=1
+  fi
+  return "$failed"
+}
+
+install_skill_step() {
+  if ((NO_SKILLS)); then
+    add_item skill-install SKIP "--no-skills"
+    return 0
+  fi
+  if [[ ! -x "$INSTALLER" ]]; then
+    add_item skill-install WARN "installer not found, skills not updated: $INSTALLER"
+    return 0
+  fi
+  if ((DRY_RUN)); then
+    add_item skill-install SKIP "--dry-run would run $INSTALLER --ref $REF"
+    return 0
+  fi
+  local out rc
+  set +e
+  out="$("$INSTALLER" --ref "$REF" 2>&1)"
+  rc=$?
+  set -e
+  case "$rc" in
+    0)
+      add_item skill-install PASS "installer exited 0 (ref: $REF)"
+      ;;
+    2)
+      add_item skill-install WARN "installer kept local edits (exit 2); review the installer output"
+      ;;
+    *)
+      local tail
+      tail="$(printf '%s\n' "$out" | tail -n 3 | tr '\n' ' ')"
+      add_item skill-install FAIL "installer exited $rc: $tail"
+      INSTALL_FAILED=1
+      ;;
+  esac
+  return 0
+}
+
+# Writes (or keeps) the managed block. Returns non-zero only when the patch
+# structure makes a safe write impossible.
+write_managed_block() {
+  scan_block_markers
+  local nstart=${#BLOCK_STARTS[@]} nend=${#BLOCK_ENDS[@]}
+
+  if ((nstart > 1 || nend > 1 || nstart != nend)); then
+    local detail
+    if ((nstart > 1 || nend > 1)); then
+      detail="more than one managed block in $PATCH_FILE"
+    else
+      detail="unpaired managed block markers in $PATCH_FILE"
+    fi
+    add_item record FAIL "$detail; fix the file by hand"
+    INSTALL_FAILED=1
+    return 1
+  fi
+  block_is_complete || true
+  if ((${#BLOCK_STARTS[@]} && BLOCK_START < 0)); then
+    add_item record FAIL "the managed block closing marker comes before the opening marker in $PATCH_FILE; fix the file by hand"
+    INSTALL_FAILED=1
+    return 1
+  fi
+
+  # An uninstall of a CLI-created patch leaves "[]"; replace the placeholder
+  # instead of appending a second YAML document to it.
+  if ((BLOCK_START < 0)); then
+    local -a meaningful=() filtered=()
+    local trimmed
+    for line in "${PATCH_LINES[@]}"; do
+      trimmed="${line//[[:space:]]/}"
+      [[ -z "$trimmed" ]] && continue
+      [[ "$trimmed" == \#* ]] && continue
+      meaningful+=("$trimmed")
+    done
+    if ((${#meaningful[@]} == 1)) && [[ "${meaningful[0]}" == "[]" ]]; then
+      for line in "${PATCH_LINES[@]}"; do
+        [[ "${line//[[:space:]]/}" == "[]" ]] && continue
+        filtered+=("$line")
+      done
+      PATCH_LINES=("${filtered[@]}")
+    fi
+  fi
+
+  local tmp="$PATCH_FILE.measure-dsh.tmp"
+  local i line
+  local -a block=() out=()
+  mapfile -t block < <(block_text)
+  if ((BLOCK_START < 0)); then
+    if ((${#PATCH_LINES[@]})); then
+      out=("${PATCH_LINES[@]}")
+      line="${out[${#out[@]} - 1]}"
+      if [[ -n "${line//[[:space:]]/}" ]]; then
+        out+=("")
+      fi
+    fi
+    out+=("${block[@]}")
+  else
+    for ((i = 0; i < BLOCK_START; i++)); do
+      out+=("${PATCH_LINES[$i]}")
+    done
+    out+=("${block[@]}")
+    for ((i = BLOCK_END + 1; i < ${#PATCH_LINES[@]}; i++)); do
+      out+=("${PATCH_LINES[$i]}")
+    done
+  fi
+
+  local generated
+  generated="$(printf '%s\n' "${out[@]}")"
+  if [[ -f "$PATCH_FILE" ]] && [[ "$generated" == "$(cat -- "$PATCH_FILE")" ]] && has_trailing_newline "$PATCH_FILE"; then
+    add_action KEEP "$PATCH_FILE"
+    add_item record PASS "managed block unchanged (mode: $GUARD_MODE)"
+    return 0
+  fi
+
+  if ((DRY_RUN)); then
+    add_action WRITE "$PATCH_FILE"
+    add_item record PASS "would write the managed block (mode: $GUARD_MODE)"
+    return 0
+  fi
+
+  printf '%s\n' "${out[@]}" >"$tmp"
+  chmod "$(if [[ -e "$PATCH_FILE" ]]; then file_mode "$PATCH_FILE"; else printf 644; fi)" -- "$tmp"
+  if ! mv -f -- "$tmp" "$PATCH_FILE"; then
+    rm -f -- "$tmp"
+    add_item record FAIL "could not replace $PATCH_FILE"
+    INSTALL_FAILED=1
+    return 1
+  fi
+  add_action WRITE "$PATCH_FILE"
+  local detail="managed block written (mode: $GUARD_MODE)"
+  if ((PATCH_EXISTS)) && ((!PATCH_TRAILING_NL)); then
+    detail="$detail; the missing trailing newline was normalised"
+  fi
+  add_item record PASS "$detail"
+  return 0
+}
+
+install_summary() {
+  local failed warn writes=0 removes=0 mkdirs=0 i
+  failed="$(count_status FAIL)"
+  warn="$(count_status WARN)"
+  for i in "${!ACTION_KIND[@]}"; do
+    case "${ACTION_KIND[$i]}" in
+      WRITE) writes=$((writes + 1)) ;;
+      REMOVE) removes=$((removes + 1)) ;;
+      MKDIR) mkdirs=$((mkdirs + 1)) ;;
+    esac
+  done
+  print_items
+  print_actions
+  if ((failed > 0)); then
+    printf 'install incomplete: %s failed item(s)\n' "$failed"
+    return 1
+  fi
+  if ((DRY_RUN)); then
+    printf 'dry run: no files written (%d write(s), %d removal(s), %d folder(s) would change)\n' "$writes" "$removes" "$mkdirs"
+  elif ((writes == 0 && removes == 0 && mkdirs == 0)); then
+    printf 'install complete (unchanged)\n'
+  else
+    printf 'install complete: %d write(s), %d removal(s), %d folder(s); local edits kept: %s\n' \
+      "$writes" "$removes" "$mkdirs" "$((${#COPY_WARN[@]}))"
+  fi
+  if ((warn > 0)); then
+    printf 'note: %s warning(s); review them before relying on the copy.\n' "$warn"
+  fi
+  printf 'note: a patch edit normally needs no restart; restart DSH when --check --live reports an identity mismatch or after later host-file edits.\n'
+  return 0
+}
+
+do_install() {
+  if ! install_prerequisites; then
+    print_items
+    printf 'install aborted: environment error\n'
+    exit 3
+  fi
+
+  if ! load_patch; then
+    add_item record FAIL "patch file is unreadable: $PATCH_FILE"
+    print_items
+    printf 'install aborted: environment error\n'
+    exit 3
+  fi
+  if [[ -e "$PATCH_FILE" && ! -w "$PATCH_FILE" ]]; then
+    add_item record FAIL "patch file is not writable: $PATCH_FILE"
+    print_items
+    printf 'install aborted: environment error\n'
+    exit 3
+  fi
+  if [[ ! -w "$PROFILE_DIR" ]]; then
+    add_item record FAIL "profile folder is not writable: $PROFILE_DIR"
+    print_items
+    printf 'install aborted: environment error\n'
+    exit 3
+  fi
+
+  # Refuse an unsafe record before copying anything.
+  scan_block_markers
+  if ((${#BLOCK_STARTS[@]} > 1 || ${#BLOCK_ENDS[@]} > 1 || ${#BLOCK_STARTS[@]} != ${#BLOCK_ENDS[@]})); then
+    if ((${#BLOCK_STARTS[@]} > 1 || ${#BLOCK_ENDS[@]} > 1)); then
+      add_item record FAIL "more than one managed block in $PATCH_FILE; fix the file by hand"
+    else
+      add_item record FAIL "unpaired managed block markers in $PATCH_FILE; fix the file by hand"
+    fi
+    print_items
+    printf 'install incomplete: the managed block is ambiguous\n'
+    exit 1
+  fi
+  if ((${#BLOCK_STARTS[@]} == 1)) && ! block_is_complete; then
+    add_item record FAIL "the managed block closing marker comes before the opening marker in $PATCH_FILE; fix the file by hand"
+    print_items
+    printf 'install incomplete: the managed block is ambiguous\n'
+    exit 1
+  fi
+
+  scan_foreign_rows
+  if ((${#FOREIGN_LINES[@]})); then
+    add_item foreign-row FAIL "$(foreign_detail)"
+    print_items
+    printf 'install incomplete: refusing to write while a foreign measure-guard row exists\n'
+    exit 1
+  fi
+  add_item foreign-row PASS "no measure-guard row outside the managed block"
+
+  if [[ ! -d "$PLUGIN_TARGET" ]]; then
+    ensure_dir "$PLUGIN_TARGET" || {
+      add_item plugin FAIL "could not create $PLUGIN_TARGET"
+      print_items
+      printf 'install incomplete\n'
+      exit 1
+    }
+  fi
+
+  install_skill_step
+  copy_plugin
+
+  local detail
+  if ((${#COPY_FAIL[@]})); then
+    detail="$(IFS='; '; printf '%s' "${COPY_FAIL[*]}")"
+    add_item plugin FAIL "$detail"
+    INSTALL_FAILED=1
+  elif ((${#COPY_WARN[@]})); then
+    detail="$(IFS='; '; printf '%s' "${COPY_WARN[*]}")"
+    add_item plugin WARN "$detail"
+  else
+    add_item plugin PASS "verified $((${#NEW_STAMP[@]})) files at $PLUGIN_TARGET"
+  fi
+
+  write_managed_block || true
+
+  if install_summary; then
+    exit 0
+  fi
+  exit 1
+}
+
+# --- check --------------------------------------------------------------------
+
+ENV_ERROR=0
+
+join_by() {
+  local sep="$1"
+  shift
+  local first=1 item
+  for item in "$@"; do
+    if ((first)); then
+      printf '%s' "$item"
+      first=0
+    else
+      printf '%s%s' "$sep" "$item"
+    fi
+  done
+}
+
+# Resolves the skill root exactly as design section 4: project DSH, project
+# agents, user DSH, user agents, then the Claude compatibility root; every root
+# is realpathed and de-duplicated, and the first existing one wins.
+SKILL_ROOT_FOUND=""
+SKILL_SEARCHED=()
+resolve_skill_root() { # skill
+  local skill="$1" candidate real
+  local -a candidates=(
+    "$PROJECT_ROOT/.dsh/skills/$skill"
+    "$PROJECT_ROOT/.agents/skills/$skill"
+    "$DSH_ROOT/skills/$skill"
+    "$AGENTS_HOME/skills/$skill"
+    "$HOME/.claude/skills/$skill"
+  )
+  local -A seen=()
+  SKILL_ROOT_FOUND=""
+  SKILL_SEARCHED=()
+  for candidate in "${candidates[@]}"; do
+    real="$(realpath -m -- "$candidate")"
+    [[ -n "${seen[$real]:-}" ]] && continue
+    seen["$real"]=1
+    SKILL_SEARCHED+=("$real")
+    if [[ -z "$SKILL_ROOT_FOUND" && -d "$real" ]]; then
+      SKILL_ROOT_FOUND="$real"
+    fi
+  done
+  [[ -n "$SKILL_ROOT_FOUND" ]]
+}
+
+skill_check() { # skill item
+  local skill="$1" item="$2"
+  local src="$SKILL_REPO/$skill"
+  if [[ ! -d "$src" ]]; then
+    add_item "$item" SKIP "no repository source: $src"
+    return 0
+  fi
+  if ! resolve_skill_root "$skill"; then
+    add_item "$item" FAIL "no installed $skill skill root; searched: $(join_by ', ' "${SKILL_SEARCHED[@]}")"
+    return 0
+  fi
+  local -a all=() missing=()
+  local abs rel
+  mapfile -d '' all < <(find "$src" -type f -print0 | LC_ALL=C sort -z)
+  for abs in "${all[@]}"; do
+    rel="${abs#"$src"/}"
+    [[ -e "$SKILL_ROOT_FOUND/$rel" ]] || missing+=("$rel")
+  done
+  if ((${#missing[@]} == 0)); then
+    add_item "$item" PASS "root $SKILL_ROOT_FOUND; all ${#all[@]} files present"
+    return 0
+  fi
+  local -a shown=()
+  local i
+  for ((i = 0; i < ${#missing[@]} && i < 10; i++)); do
+    shown+=("${missing[$i]}")
+  done
+  local detail="incomplete copy at $SKILL_ROOT_FOUND; missing: $(join_by ', ' "${shown[@]}")"
+  if ((${#missing[@]} > 10)); then
+    detail="$detail (and $((${#missing[@]} - 10)) more)"
+  fi
+  add_item "$item" FAIL "$detail"
+}
+
+plugin_check() {
+  local -a fails=() warns=()
+  if ! source_is_package "$SOURCE"; then
+    add_item plugin SKIP "plugin source is not a package (index.js and package.json required): $SOURCE"
+    return 0
+  fi
+  if [[ ! -d "$PLUGIN_TARGET" ]]; then
+    add_item plugin FAIL "installed plugin is missing: $PLUGIN_TARGET"
+    return 0
+  fi
+  load_stamp
+  case "$STAMP_STATE" in
+    ok) ;;
+    missing) fails+=("install stamp is missing") ;;
+    unreadable) fails+=("install stamp is unreadable") ;;
+    malformed) fails+=("install stamp is malformed") ;;
+  esac
+
+  local -a files=()
+  local -A is_source=() source_hash=()
+  local abs rel dst dst_hash
+  mapfile -d '' files < <(
+    find "$SOURCE" \
+      \( -path "$SOURCE/tests" -o -name node_modules -o -name .measure-dsh-install \) -prune \
+      -o -type f -print0 | LC_ALL=C sort -z
+  )
+  for abs in "${files[@]}"; do
+    rel="${abs#"$SOURCE"/}"
+    is_source["$rel"]=1
+    source_hash["$rel"]="$(sha_of "$abs")"
+  done
+
+  local -a rels=()
+  if ((${#source_hash[@]})); then
+    mapfile -t rels < <(printf '%s\n' "${!source_hash[@]}" | LC_ALL=C sort)
+  fi
+  for rel in "${rels[@]}"; do
+    dst="$PLUGIN_TARGET/$rel"
+    if [[ ! -e "$dst" ]]; then
+      fails+=("missing $rel")
+      continue
+    fi
+    dst_hash="$(sha_of "$dst")"
+    if [[ "$STAMP_STATE" == "ok" && -z "${STAMP[$rel]:-}" ]]; then
+      warns+=("unstamped $rel")
+    fi
+    [[ "$dst_hash" == "${source_hash[$rel]}" ]] && continue
+    if [[ "$STAMP_STATE" == "ok" && -n "${STAMP[$rel]:-}" ]]; then
+      if [[ "$dst_hash" == "${STAMP[$rel]}" ]]; then
+        fails+=("stale $rel (the source moved on)")
+      else
+        warns+=("edited $rel")
+      fi
+    elif [[ "$STAMP_STATE" != "ok" ]]; then
+      warns+=("unstamped $rel")
+    fi
+  done
+
+  local -a stamp_rels=()
+  if ((${#STAMP[@]})); then
+    mapfile -t stamp_rels < <(printf '%s\n' "${!STAMP[@]}" | LC_ALL=C sort)
+  fi
+  for rel in "${stamp_rels[@]}"; do
+    [[ -n "${is_source[$rel]:-}" ]] && continue
+    dst="$PLUGIN_TARGET/$rel"
+    if [[ -e "$dst" ]]; then
+      dst_hash="$(sha_of "$dst")"
+      if [[ "$dst_hash" == "${STAMP[$rel]}" ]]; then
+        fails+=("stale $rel (removed from the source)")
+      else
+        warns+=("edited stale $rel")
+      fi
+    else
+      fails+=("installed file is missing: $rel")
+    fi
+  done
+
+  # Files on disk that neither the source nor the stamp knows about.
+  local -a disk=()
+  mapfile -d '' disk < <(find "$PLUGIN_TARGET" -type f -print0 | LC_ALL=C sort -z)
+  for abs in "${disk[@]}"; do
+    rel="${abs#"$PLUGIN_TARGET"/}"
+    [[ "$rel" == ".measure-dsh-install" ]] && continue
+    [[ -n "${is_source[$rel]:-}" ]] && continue
+    [[ -n "${STAMP[$rel]:-}" ]] && continue
+    warns+=("untracked leftover $rel")
+  done
+
+  # The module one-liner: import must succeed and export the three names.
+  if [[ -f "$PLUGIN_TARGET/index.js" ]]; then
+    if command -v node >/dev/null 2>&1; then
+      if ! node --input-type=module -e '
+import { pathToFileURL } from "node:url"
+try {
+  const m = await import(pathToFileURL(process.argv[1]).href)
+  if (m.name !== "measure-guard") process.exit(1)
+  if (!Array.isArray(m.inject)) process.exit(1)
+  if (typeof m.apply !== "function") process.exit(1)
+} catch {
+  process.exit(1)
+}
+' "$PLUGIN_TARGET/index.js" 2>/dev/null; then
+        fails+=("module does not export name='measure-guard', an inject array, and an apply function")
+      fi
+    else
+      fails+=("node is required to import the module")
+    fi
+  fi
+
+  if ((${#fails[@]})); then
+    add_item plugin FAIL "$(join_by '; ' "${fails[@]}")"
+  elif ((${#warns[@]})); then
+    add_item plugin WARN "$(join_by '; ' "${warns[@]}")"
+  else
+    add_item plugin PASS "installed at $PLUGIN_TARGET; ${#is_source[@]} files match the source and the stamp; the module exports name/inject/apply"
+  fi
+}
+
+strip_value() {
+  local v="$1"
+  v="${v#"${v%%[![:space:]]*}"}"
+  v="${v%"${v##*[![:space:]]}"}"
+  v="${v//\"/}"
+  v="${v//\'/}"
+  printf '%s' "$v"
+}
+
+record_check() {
+  if [[ ! -e "$PATCH_FILE" ]]; then
+    add_item record FAIL "cordis.patch.yml is missing: $PATCH_FILE"
+    return 0
+  fi
+  if ! load_patch; then
+    add_item record FAIL "patch file is unreadable: $PATCH_FILE"
+    ENV_ERROR=1
+    return 0
+  fi
+  scan_block_markers
+  local nstart=${#BLOCK_STARTS[@]} nend=${#BLOCK_ENDS[@]}
+  if ((nstart == 0 && nend == 0)); then
+    add_item record FAIL "no managed block in $PATCH_FILE; run install"
+    return 0
+  fi
+  if ((nstart > 1 || nend > 1)); then
+    add_item record FAIL "more than one managed block in $PATCH_FILE"
+    return 0
+  fi
+  if ((nstart != nend)); then
+    add_item record FAIL "unpaired managed block markers in $PATCH_FILE"
+    return 0
+  fi
+  if ! block_is_complete; then
+    add_item record FAIL "the managed block closing marker comes before the opening marker in $PATCH_FILE"
+    return 0
+  fi
+
+  local i line id="" name="" mode=""
+  for ((i = BLOCK_START + 1; i < BLOCK_END; i++)); do
+    line="${PATCH_LINES[$i]}"
+    if [[ "$line" =~ ^[[:space:]]*-?[[:space:]]*id[[:space:]]*:[[:space:]]*(.*)$ ]]; then
+      id="$(strip_value "${BASH_REMATCH[1]}")"
+    elif [[ "$line" =~ ^[[:space:]]*-?[[:space:]]*name[[:space:]]*:[[:space:]]*(.*)$ ]]; then
+      name="$(strip_value "${BASH_REMATCH[1]}")"
+    elif [[ "$line" =~ ^[[:space:]]*mode[[:space:]]*:[[:space:]]*(.*)$ ]]; then
+      mode="$(strip_value "${BASH_REMATCH[1]}")"
+    fi
+  done
+
+  local -a fails=()
+  [[ "$id" == "measure-guard" ]] || fails+=("id is '${id:-<missing>}' (expected measure-guard)")
+  [[ "$name" == "$BLOCK_NAME" ]] || fails+=("name is '${name:-<missing>}' (expected $BLOCK_NAME)")
+  case "$mode" in
+    advise | guard | strict) ;;
+    *) fails+=("mode is '${mode:-<missing>}' (expected advise, guard, or strict)") ;;
+  esac
+  if ((MODE_GIVEN)) && [[ "$mode" != "$GUARD_MODE" ]]; then
+    fails+=("mode '$mode' does not match --mode '$GUARD_MODE'")
+  fi
+  if ((${#fails[@]})); then
+    add_item record FAIL "$(join_by '; ' "${fails[@]}")"
+  elif ((MODE_GIVEN)); then
+    add_item record PASS "mode $mode (matches --mode)"
+  else
+    add_item record PASS "mode $mode"
+  fi
+}
+
+foreign_check() {
+  if [[ ! -e "$PATCH_FILE" ]]; then
+    add_item foreign-row SKIP "no cordis.patch.yml"
+    return 0
+  fi
+  if ! load_patch; then
+    add_item foreign-row SKIP "patch file is unreadable"
+    return 0
+  fi
+  scan_block_markers
+  scan_foreign_rows
+  if ((${#FOREIGN_LINES[@]})); then
+    add_item foreign-row FAIL "$(foreign_detail)"
+  else
+    add_item foreign-row PASS "no measure-guard row outside the managed block"
+  fi
+}
+
+live_check() {
+  if ((!LIVE)); then
+    add_item live SKIP "not requested (--live)"
+    return 0
+  fi
+  local sid="${SESSION_ID:-${DSH_SESSION_ID:-}}"
+  if [[ -z "$sid" ]]; then
+    add_item live SKIP "no session id; pass --session ID or set DSH_SESSION_ID"
+    return 0
+  fi
+  local base="${DSH_WEB_URL:-http://127.0.0.1:3080}"
+  base="${base%/}"
+  local url="$base/measure-guard/state?sessionId=$sid"
+  local resp rc status body module module_path expected
+  set +e
+  resp="$(curl -sS -D - "$url" 2>/dev/null)"
+  rc=$?
+  set -e
+  if ((rc != 0)); then
+    add_item live FAIL "request failed (curl exit $rc): $url"
+    return 0
+  fi
+  status="$(printf '%s\n' "$resp" | head -n 1 | awk '{print $2}')"
+  if [[ "$status" != "200" ]]; then
+    add_item live FAIL "HTTP ${status:-none} from $url"
+    return 0
+  fi
+  body="$(printf '%s\n' "$resp" | awk 'BEGIN { headers = 1 } { sub(/\r$/, "") } headers { if ($0 == "") headers = 0; next } { print }')"
+  if ! printf '%s\n' "$body" | grep -Eq '"band"[[:space:]]*:'; then
+    add_item live FAIL "HTTP 200 without a band field from $url"
+    return 0
+  fi
+  module="$(printf '%s\n' "$resp" | sed -n 's/^[Xx]-[Mm]easure-[Gg]uard-[Mm]odule:[[:space:]]*//p' | head -n 1 | tr -d '\r')"
+  module="${module#"${module%%[![:space:]]*}"}"
+  module="${module%"${module##*[![:space:]]}"}"
+  if [[ -z "$module" ]]; then
+    add_item live WARN "HTTP 200 with a band field; x-measure-guard-module header is absent (it ships in Phase 5), so the loaded copy is unproven"
+    return 0
+  fi
+  module_path="$module"
+  module_path="${module_path#file://}"
+  module_path="${module_path//%20/ }"
+  expected="$(realpath -m -- "$PLUGIN_TARGET/index.js")"
+  if [[ "$(realpath -m -- "$module_path")" == "$expected" ]]; then
+    add_item live PASS "HTTP 200 with a band field; the module header matches $expected"
+  else
+    add_item live FAIL "the running host loaded $module_path, not the installed copy $expected; restart DSH after installing"
+  fi
+}
+
+json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\t'/ }"
+  s="${s//$'\n'/ }"
+  s="${s//$'\r'/ }"
+  printf '%s' "$s"
+}
+
+print_json() {
+  local i sep=""
+  local ok=true
+  ((FAIL_COUNT == 0)) || ok=false
+  printf '{"ok":%s,"mode":"check","items":[' "$ok"
+  for i in "${!ITEM_NAME[@]}"; do
+    printf '%s{"item":"%s","status":"%s","detail":"%s"}' \
+      "$sep" "$(json_escape "${ITEM_NAME[$i]}")" "$(json_escape "${ITEM_STATUS[$i]}")" "$(json_escape "${ITEM_DETAIL[$i]}")"
+    sep=","
+  done
+  printf '],"actions":['
+  sep=""
+  for i in "${!ACTION_KIND[@]}"; do
+    printf '%s{"action":"%s","path":"%s"}' \
+      "$sep" "$(json_escape "${ACTION_KIND[$i]}")" "$(json_escape "${ACTION_PATH[$i]}")"
+    sep=","
+  done
+  printf ']}\n'
+}
+
+do_check() {
+  if [[ -d "$PROFILE_DIR" ]]; then
+    add_item dsh-install PASS "$PROFILE_DIR"
+  else
+    add_item dsh-install FAIL "profile folder does not exist: $PROFILE_DIR"
+    ENV_ERROR=1
+  fi
+
+  if node_supported; then
+    add_item node PASS "$NODE_VERSION (>= 24.9)"
+  else
+    add_item node FAIL "node >= 24.9 is required${NODE_VERSION:+ (found $NODE_VERSION)}"
+  fi
+
+  skill_check measure skill-measure
+  skill_check measure-orchestrator skill-orchestrator
+  plugin_check
+  record_check
+  foreign_check
+  live_check
+
+  FAIL_COUNT="$(count_status FAIL)"
+  if ((JSON)); then
+    print_json
+  else
+    print_items
+    if ((FAIL_COUNT > 0)); then
+      printf 'check failed: %s item(s)\n' "$FAIL_COUNT"
+    else
+      printf 'check complete\n'
+    fi
+  fi
+  if ((ENV_ERROR)); then
+    exit 3
+  fi
+  ((FAIL_COUNT == 0)) || exit 1
+  exit 0
+}
+
+# --- uninstall ----------------------------------------------------------------
+
+UNINSTALL_FAILED=0
+
+remove_managed_block() {
+  scan_block_markers
+  local nstart=${#BLOCK_STARTS[@]} nend=${#BLOCK_ENDS[@]}
+  if ((nstart == 0 && nend == 0)); then
+    add_item record SKIP "no managed block in $PATCH_FILE"
+    return 0
+  fi
+  if ((nstart > 1 || nend > 1 || nstart != nend)) || ! block_is_complete; then
+    add_item record FAIL "the managed block in $PATCH_FILE is ambiguous; fix it by hand"
+    UNINSTALL_FAILED=1
+    return 0
+  fi
+
+  local -a rest=()
+  local i line
+  for ((i = 0; i < BLOCK_START; i++)); do
+    rest+=("${PATCH_LINES[$i]}")
+  done
+  for ((i = BLOCK_END + 1; i < ${#PATCH_LINES[@]}; i++)); do
+    rest+=("${PATCH_LINES[$i]}")
+  done
+  local only_comments=1
+  for line in "${rest[@]}"; do
+    [[ -z "${line//[[:space:]]/}" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    only_comments=0
+    break
+  done
+
+  if ((DRY_RUN == 0)); then
+    local tmp="$PATCH_FILE.measure-dsh.tmp"
+    if ((only_comments)); then
+      printf '[]\n' >"$tmp"
+    else
+      : >"$tmp"
+      for line in "${rest[@]}"; do
+        printf '%s\n' "$line" >>"$tmp"
+      done
+    fi
+    chmod "$(file_mode "$PATCH_FILE")" -- "$tmp"
+    if ! mv -f -- "$tmp" "$PATCH_FILE"; then
+      rm -f -- "$tmp"
+      add_item record FAIL "could not replace $PATCH_FILE"
+      UNINSTALL_FAILED=1
+      return 0
+    fi
+  fi
+  add_action WRITE "$PATCH_FILE"
+  if ((only_comments)); then
+    add_item record PASS "managed block removed; only comments remained, so the file is now []"
+  else
+    add_item record PASS "managed block removed"
+  fi
+}
+
+remove_plugin_copy() {
+  if ((KEEP_COPY)); then
+    add_item plugin SKIP "kept by --keep-copy"
+    return 0
+  fi
+  if [[ ! -d "$PLUGIN_TARGET" ]]; then
+    add_item plugin SKIP "not installed: $PLUGIN_TARGET"
+    return 0
+  fi
+
+  load_stamp
+  if [[ "$STAMP_STATE" != "ok" ]]; then
+    add_item plugin WARN "no usable install stamp ($STAMP_STATE); the copy is left in place"
+    add_action KEEP "$PLUGIN_TARGET"
+    return 0
+  fi
+
+  local -a warns=()
+  local -a rels=()
+  local rel dst removed=0 kept=0
+  if ((${#STAMP[@]})); then
+    mapfile -t rels < <(printf '%s\n' "${!STAMP[@]}" | LC_ALL=C sort)
+  fi
+  for rel in "${rels[@]}"; do
+    dst="$PLUGIN_TARGET/$rel"
+    [[ -e "$dst" ]] || continue
+    if [[ "$(sha_of "$dst")" == "${STAMP[$rel]}" ]]; then
+      if ((DRY_RUN == 0)); then
+        if ! rm -f -- "$dst"; then
+          warns+=("could not remove $rel")
+          UNINSTALL_FAILED=1
+          continue
+        fi
+        prune_empty_dirs "$dst"
+      fi
+      add_action REMOVE "$dst"
+      removed=$((removed + 1))
+    else
+      warns+=("edited $rel kept")
+      add_action KEEP "$dst"
+      kept=$((kept + 1))
+    fi
+  done
+
+  # Files the stamp does not list are not ours: keep and name them.
+  local -a disk=()
+  mapfile -d '' disk < <(find "$PLUGIN_TARGET" -type f -print0 | LC_ALL=C sort -z)
+  local abs
+  for abs in "${disk[@]}"; do
+    rel="${abs#"$PLUGIN_TARGET"/}"
+    [[ "$rel" == ".measure-dsh-install" ]] && continue
+    [[ -n "${STAMP[$rel]:-}" ]] && continue
+    warns+=("not owned (kept): $rel")
+    add_action KEEP "$abs"
+    kept=$((kept + 1))
+  done
+
+  # The stamp is the CLI's own file; uninstall ends its ownership either way.
+  if ((DRY_RUN == 0)); then
+    rm -f -- "$STAMP_FILE"
+  fi
+  add_action REMOVE "$STAMP_FILE"
+  if ((DRY_RUN == 0)) && ((kept == 0)); then
+    rmdir -- "$PLUGIN_TARGET" 2>/dev/null || true
+  fi
+
+  if ((${#warns[@]})); then
+    add_item plugin WARN "$(join_by '; ' "${warns[@]}")"
+  else
+    add_item plugin PASS "removed $removed owned file(s) from $PLUGIN_TARGET"
+  fi
+}
+
+uninstall_summary() {
+  local i writes=0 removes=0 kept=0
+  for i in "${!ACTION_KIND[@]}"; do
+    case "${ACTION_KIND[$i]}" in
+      WRITE) writes=$((writes + 1)) ;;
+      REMOVE) removes=$((removes + 1)) ;;
+      KEEP) kept=$((kept + 1)) ;;
+    esac
+  done
+  if ((DRY_RUN)); then
+    print_actions
+    printf 'dry run: no files written or removed\n'
+    ((UNINSTALL_FAILED == 0))
+    return
+  fi
+  print_items
+  print_actions
+  printf 'uninstall complete: %d write(s), %d removal(s), %d kept\n' "$writes" "$removes" "$kept"
+  if ((UNINSTALL_FAILED)); then
+    printf 'uninstall incomplete: an owned item could not be removed\n'
+    return 1
+  fi
+  return 0
+}
+
+do_uninstall() {
+  if [[ ! -d "$PROFILE_DIR" ]]; then
+    add_item dsh-install FAIL "profile folder does not exist: $PROFILE_DIR"
+    print_items
+    printf 'uninstall aborted: environment error\n'
+    exit 3
+  fi
+  if ! load_patch; then
+    add_item record FAIL "patch file is unreadable: $PATCH_FILE"
+    print_items
+    printf 'uninstall aborted: environment error\n'
+    exit 3
+  fi
+  if [[ -e "$PATCH_FILE" && ! -w "$PATCH_FILE" ]]; then
+    add_item record FAIL "patch file is not writable: $PATCH_FILE"
+    print_items
+    printf 'uninstall aborted: environment error\n'
+    exit 3
+  fi
+  if [[ ! -w "$PROFILE_DIR" ]]; then
+    add_item record FAIL "profile folder is not writable: $PROFILE_DIR"
+    print_items
+    printf 'uninstall aborted: environment error\n'
+    exit 3
+  fi
+
+  scan_block_markers
+  scan_foreign_rows
+  if ((${#FOREIGN_LINES[@]})); then
+    add_item foreign-row WARN "$(foreign_detail); left untouched"
+  else
+    add_item foreign-row PASS "no measure-guard row outside the managed block"
+  fi
+
+  remove_managed_block
+  remove_plugin_copy
+
+  if uninstall_summary; then
+    exit 0
+  fi
+  exit 1
+}
+
+case "$COMMAND" in
+  install) do_install ;;
+  check) do_check ;;
+  uninstall) do_uninstall ;;
+esac
