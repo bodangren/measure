@@ -16,7 +16,12 @@ RESULTS=()
 pass() { RESULTS+=("PASS: $1"); PASS_COUNT=$((PASS_COUNT + 1)); echo "PASS: $1"; }
 fail() { RESULTS+=("FAIL: $1"); FAIL_COUNT=$((FAIL_COUNT + 1)); FAILED=1; echo "FAIL: $1"; }
 
-TMP="$(mktemp -d)"
+TMP="$(mktemp -d)" || TMP=""
+if [ -z "$TMP" ] || [ ! -d "$TMP" ]; then
+  echo "FAIL: mktemp -d failed; no fixture can be built"
+  echo "=== Total: 1 checks (PASS=0, FAIL=1) ==="
+  exit 1
+fi
 trap 'rm -rf "$TMP"' EXIT
 
 HEADINGS=(

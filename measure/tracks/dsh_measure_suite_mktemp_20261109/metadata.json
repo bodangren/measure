@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_suite_mktemp_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-09T10:00:00Z",
+  "updated_at": "2026-11-09T10:00:00Z",
+  "description": "Give every spec-review-gate suite the same failed-mktemp guard, add a stub-mktemp suite that proves each guard fires, and resolve the MKTEMP tech-debt row",
+  "estimated_tasks": 5,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

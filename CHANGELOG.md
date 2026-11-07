@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **spec-review-gate suites:** every suite now guards a failed `mktemp -d` with the same `FAIL: mktemp -d failed; no fixture can be built` message, a one-FAIL summary, and exit 1; the new `tests/spec_review_gate/test_mktemp_failure.sh` stubs `mktemp` on PATH and proves the guard for all nine suites plus repository cleanliness (10 checks; gate 11/11). Track `dsh_measure_suite_mktemp_20261109`.
+
+### Features
+
 * **closeout registry check:** `closeout` now verifies the archived track's `measure/tracks.md` entry — it must exist, carry a description, and that description must equal the collapsed `metadata.json` description — so a post-archive metadata edit can no longer drift silently (the recurring failure behind two CLI red runs this session). New test `tests/dsh/test-closeout-registry.sh` covers matching, drifted, missing-description, and missing-entry records. Track `dsh_measure_closeout_registry_20261108`.
 
 ### Features
