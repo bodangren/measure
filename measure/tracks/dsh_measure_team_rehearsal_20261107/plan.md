@@ -8,12 +8,12 @@ rehearsal, then closeout. The gate is
 `node --test plugins/dsh-measure-guard/tests/*.test.js` plus both parity scripts,
 `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase 1: Fixture builder and contract test
+## Phase 1: Fixture builder and contract test [checkpoint: 0640bb8]
 
 - [x] Task 1.1: `tests/dsh/rehearsal/make-project.sh` (test-only): build a temp git repo with `measure/index.md`, `measure/tracks.md` (one `[~]` track), `measure/tracks/<id>/plan.md` (one phase, one `[~]` task), `measure/tracks/<id>/metadata.json` (`actual_tasks: 0`), commit it, print the canonical root; `--cleanup <dir>` removes a temp-only project
 - [x] Task 1.2: `tests/dsh/test-rehearsal-fixture.sh`: build and assert the files and commit, load the fixture through the plugin's real `loadSnapshot` (node), assert `hasMeasure`, `parseError === null`, the active track id, and one `[~]` task, then clean up
 - [x] Task 1.3: run `bash tests/dsh/run.sh`; the new contract test passes with the existing ones
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Fixture builder and contract test' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Fixture builder and contract test' (Protocol in workflow.md) `0640bb8`
 
 ## Phase 2: Rehearsal protocol docs
 
