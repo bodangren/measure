@@ -96,7 +96,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `bin/install-targets.tsv` row: `plugins/dsh-measure-guard<TAB>~/.dsh/profiles/web/plugins/dsh-measure-guard<TAB>!(tests/*)`
     - [ ] `tests/install.sh` modeled on the OpenCode installer test: the copy, no `tests/`, the stamp, `--check`, local-edit protection
     - [ ] `README.md` names the one selection step the installer cannot do: the profile `cordis.patch.yml` insert row `name: ./plugins/dsh-measure-guard/index.js`, which makes both halves load (the client half is found through the nearest `package.json`); the `dsh plugin --profile web add <abs path>` route stays documented for pnpm users
-- [~] Task 5.3: Track closeout documents
+- [x] Task 5.3: Track closeout documents `d4da594`
     - [ ] `measure/lessons-learned.md`, `measure/tech-debt.md`, `CHANGELOG.md` entries for this track
 - [ ] Task 5.4: Measure - User Manual Verification 'Phase 5: Distribution and docs' (Protocol in workflow.md)
 
