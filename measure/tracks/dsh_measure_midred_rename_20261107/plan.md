@@ -14,11 +14,11 @@ scripts, and `bash tests/dsh/run.sh`.
 - [x] Task 1.1: `skills/measure-orchestrator/scripts/measure_interphase_checks.py`: `committed_files()` unions the `--name-only` paths with both paths of every rename from `git diff --name-status --diff-filter=R <baseline>..HEAD` (tabs, sorted, deduplicated, empty on git failure); its docstring states the rule
 - [x] Task 1.2: Red: `tests/spec_review_gate/test_checker.py` gains the mid-red rename case (prod file renamed into `tests/`, `diff.renames=true`, `RED_TEST_COMMAND=false`); run it against the unmodified function and record that `- src/a.py` is absent (the failing Red)
 - [x] Task 1.3: Green: the case passes with the fix; the other checker tests stay green
-- [ ] Task 1.4: run `bash tests/spec_review_gate/run.sh`; all 10 suites pass
+- [x] Task 1.4: run `bash tests/spec_review_gate/run.sh`; all 10 suites pass (10/10 PASS on the final tree)
 - [ ] Task: Measure - User Manual Verification 'Phase 1: Rename-aware committed files' (Protocol in workflow.md)
 
 ## Phase 2: Records and closeout
 
-- [ ] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
+- [~] Task 2.1: update `measure/tech-debt.md` (the rename row: the mid-red part resolves; the spec-review runner items remain) and any checker reference text that names the committed-file rule
 - [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; `spec-review.md` records the review with the author responses
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
