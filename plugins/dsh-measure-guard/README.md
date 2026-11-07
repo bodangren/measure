@@ -58,31 +58,22 @@ No build step, no package manager, and no `node_modules`: `index.js` and `client
 
 ## Install
 
-### a. The installer (preferred)
+### a. The environment CLI (preferred)
 
-The installer copies the package into the profile; create the target's parent folder once, because the installer skips a target whose immediate parent is missing:
-
-```bash
-mkdir -p ~/.dsh/profiles/web/plugins
-```
-
-Then run the installer from the repository root. It copies `plugins/dsh-measure-guard/` to `~/.dsh/profiles/web/plugins/dsh-measure-guard` from `main`, without `tests/`:
+From the repository root:
 
 ```bash
-bin/install-measure-skill
+bin/measure-dsh install
 ```
 
-The copy is selected by one row that the installer cannot edit for you. Append this to `~/.dsh/profiles/web/cordis.patch.yml`:
-
-```yaml
-- insert:
-    - id: measure-guard
-      name: ./plugins/dsh-measure-guard/index.js
-      config:
-        mode: guard
-```
-
-`./` resolves against the profile folder. The row loads both halves: the Client half is found through the nearest `package.json`. Delete the block to unload the plugin; the loader recomposes through HMR, without a restart. Config-only changes therefore apply live, but the Host half's module files are not watched (`hmr.root: []` in the base profile): after editing the plugin's JavaScript, restart the DSH host (or reinstall the profile) to load the new code.
+It copies this package (everything except `tests/`) into
+`<dsh-home>/profiles/<profile>/plugins/dsh-measure-guard` with a stamp, writes
+one marker-managed row into the profile's `cordis.patch.yml`, and verifies the
+result. `--profile`, `--dsh-home`, `--mode`, `--source`, and `--ref` are
+documented in [`docs/dsh.md`](../../docs/dsh.md); `bin/measure-dsh --check`
+verifies an install and `bin/measure-dsh uninstall` removes the row and the copy
+it owns. The row loads both halves: the Client half is found through the nearest
+`package.json`.
 
 ### b. Without the installer
 
@@ -139,6 +130,13 @@ The live check of this repository used route (b) with `mode: advise`. The defaul
   | `measure-on [repo]` | Turns them on again for the same scope. |
   | `measure-status` | Replies with the status text of the current project. |
 
+- **Workflow commands.** Eight more host commands steer the receiving agent into
+  the matching Measure workflow: `measure-setup`, `measure-new-track`,
+  `measure-new-track-set`, `measure-implement`, `measure-review`,
+  `measure-revert`, `measure-doctor`, `measure-orchestrate`. Each one resolves
+  the installed skill reference first, then sends one instruction message; the
+  rest of the command line is forwarded as `Arguments:`. `/measure-orchestrate`
+  loads the `measure-orchestrator` skill.
 - **Client decoration.** The Client half decorates `measure-status` with a `commandUi` action that opens the Measure panel. The trigger is consumed by the action, so a bare invocation spends the command line and submits nothing to the model.
 
 ## Guards
@@ -197,7 +195,7 @@ The live check reads the JSON route of the running GUI:
 curl 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-Current state: 143 tests pass and 0 fail, the parity check reports `parity: ok`, and the installer test reports `[PASS] install.sh`.
+Current state: 155 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh`.
 
 ## Verified live
 

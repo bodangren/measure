@@ -142,4 +142,11 @@ run install --source "$W/not-a-package" --no-skills
 assert_rc 3
 assert_out '^FAIL source:'
 
+# 12. The installer no longer carries the DSH plugin row: bin/measure-dsh owns
+# that copy, so a second writer cannot race it.
+if grep -q 'dsh-measure-guard' "$REPO_ROOT/bin/install-targets.tsv"; then
+  fail "bin/install-targets.tsv still carries a DSH plugin row"
+fi
+echo "[PASS] the installer carries no DSH plugin row"
+
 echo "[PASS] test-install.sh"
