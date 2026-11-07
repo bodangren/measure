@@ -17,8 +17,8 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 2: The live proof
 
-- [ ] Task 2.1: with a temporary `strict` override for this repository in `repos.json`, run `bin/measure-dsh reload` and read `GET /measure-guard/state` (expect `strict`/`repository`); clear the override, reload again, and read `guard`/`config`; record both reads, the installed digest, and the CLI output
-- [ ] Task 2.2: cleanup (no override, config mode restored, live check PASS) and write the evidence under `measure/runs/dsh_measure_reload_20261107/`
+- [x] Task 2.1: with a temporary `strict` override for this repository in `repos.json`, run `bin/measure-dsh reload` and read `GET /measure-guard/state` (expect `strict`/`repository`); clear the override, reload again, and read `guard`/`config`; record both reads, the installed digest, and the CLI output
+- [x] Task 2.2: cleanup (no override, config mode restored, live check PASS) and write the evidence under `measure/runs/dsh_measure_reload_20261107/`
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The live proof' (Protocol in workflow.md)
 
 ## Phase 3: Documentation and closeout
