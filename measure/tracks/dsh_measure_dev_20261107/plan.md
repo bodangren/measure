@@ -61,13 +61,13 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 ## Phase 5: Live environment and closeout
 
-- [ ] Task 5.1: Live migration
+- [x] Task 5.1: Live migration `149ba83`
     - [ ] Back up the profile patch, run `bin/install-measure-skill --ref HEAD`, remove the hand-written row, run `bin/measure-dsh install --ref HEAD --mode guard`, and prove `--check` and `--check --live` green (agent-side stage)
     - [ ] Add the `x-measure-guard-module` response header to `plugins/dsh-measure-guard/src/client-state.js` (the entry module's `import.meta.url`, passed from `index.js`) and plugin tests for the header and its absence; `--check --live` fails when the header names another copy
     - [ ] Record the agent-side evidence (route JSON + identity header naming the installed copy, record check, module export check) in the task git note and `measure/runs/dsh_measure_dev_20261107/`
     - [ ] Edge: when the identity header still names the working-tree copy, `--check --live` fails, the phase records a pending restart, and the track does not claim the runtime proof
     - [ ] Ask the operator to restart DSH and confirm the band, the panel, and the eight commands (human-gated stage); record the pending restart until that confirmation
-- [ ] Task 5.2: Track closeout documents
+- [~] Task 5.2: Track closeout documents
     - [ ] `measure/lessons-learned.md` and `measure/tech-debt.md` entries for the environment CLI, the identity header, and the installer-row ownership change
     - [ ] `measure/tracks/dsh_measure_dev_20261107/metadata.json` actual tasks and deviation notes; `measure/tracks.md` archive entry; `CHANGELOG.md` final wording
 - [ ] Task 5.3: Measure - User Manual Verification 'Phase 5: Live environment and closeout' (Protocol in workflow.md)
