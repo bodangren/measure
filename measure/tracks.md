@@ -27,6 +27,12 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+- [~] **Track: DSH Measure agent-team rehearsal**
+  *Link: [./tracks/dsh_measure_team_rehearsal_20261107/](./tracks/dsh_measure_team_rehearsal_20261107/)*
+  *Builds a disposable Measure fixture, documents the Red/Green/Review protocol for DSH subagents, runs one real rehearsal with the live guard, and records what the guard actually does (including the per-agent Red record).*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
