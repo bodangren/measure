@@ -7,15 +7,15 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: The check and its fixtures
 
-- [x] Task 1.1: `tests/dsh/test-skill-docs.sh`: parse each `skills/*/SKILL.md` frontmatter description (inline or block), fail on more than 1024 characters or a `<`/`>` character, and fail on a symbolic link under `claude-skills/`, each with the offending name
-- [x] Task 1.2: negative fixtures in a temporary tree (oversized description, angle bracket, folder link) each rejected, and the real repository passing
-- [x] Task 1.3: run `bash tests/dsh/test-skill-docs.sh` and `bash tests/dsh/run.sh` (13/13)
+- [x] Task 1.1: `tests/dsh/test-skill-docs.sh`: parse each `skills/*/SKILL.md` frontmatter description (inline or block), fail on more than 1024 characters or a `<`/`>` character, and fail on a symbolic link under `claude-skills/`, each with the offending name `e4cec5d`
+- [x] Task 1.2: negative fixtures in a temporary tree (oversized description, angle bracket, folder link) each rejected, and the real repository passing `e4cec5d`
+- [x] Task 1.3: run `bash tests/dsh/test-skill-docs.sh` and `bash tests/dsh/run.sh` (13/13) `e4cec5d`
 - [ ] Task: Measure - User Manual Verification 'Phase 1: The check and its fixtures' (Protocol in workflow.md)
 
 ## Phase 2: Records and gates
 
-- [x] Task 2.1: resolve the `skill_doctor_fixes_20261031` row in `measure/tech-debt.md` and add the `CHANGELOG.md` bug-fix entry
-- [x] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/spec_review_gate/run.sh` (11/11)
+- [x] Task 2.1: resolve the `skill_doctor_fixes_20261031` row in `measure/tech-debt.md` and add the `CHANGELOG.md` bug-fix entry `e4cec5d`
+- [x] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/spec_review_gate/run.sh` (11/11) `e4cec5d`
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md)
 
 ## Phase 3: Closeout
