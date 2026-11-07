@@ -92,12 +92,15 @@ The no-import rule has three consequences the adapter must honour:
    `createUserMessage` (`dsh-llm/lib/index.js:37-64`): `structuredClone` of the
    input, `role: 'user'`, `id` from `randomUUID()` (`node:crypto`), deep-frozen.
    `source` is `{ kind: 'measure-guard', form: 'notice', summary }`.
-3. **Files and processes.** Reading uses the `ctx.fs` seam end to end:
+3. **Files and processes.** Project reads use the `ctx.fs` seam:
    `const target = await ctx.fs.resolve(path, { cwd, signal })` then
    `await ctx.fs.readText(target, signal)`; `stat`/`contains` are on the same
-   seam. Git runs through `ctx.subprocess` (design §4); no `node:child_process`
-   and no synchronous calls in the guard path. `node:crypto` and
-   `node:path`/`node:url` are the only Node built-ins the adapter imports.
+   seam. The repository config store (a trusted host file under
+   `~/.local/state`, outside the workspace sandbox) uses `node:fs/promises`
+   directly, async only. Git runs through `ctx.subprocess` (design §4); no
+   `node:child_process` and no synchronous calls in the guard path.
+   `node:crypto`, `node:fs/promises`, `node:path`, and `node:os` are the only
+   Node built-ins the adapter imports.
 
 ## 3. State classes (FR-11)
 
@@ -170,9 +173,12 @@ projection-backed) when a call needs turn state.
 
 ## 6. Context layer (FR-1..FR-4)
 
-- **Rule section**: one global `ctx.systemPrompt.section({ name: 'measure:rule',
-  order: 5000, text: ruleSection() })`, registered once. The text is static
-  (cache-safe). It is not registered when the root has no `measure/`.
+- **Rule section**: one agent-scoped `agent.ctx.systemPrompt.section({ name:
+  'measure:rule', order: 5000, text: ruleSection() })`, registered when the
+  plugin attaches to an agent whose canonical root has a `measure/` folder
+  (`ctx.agents.list()` at `apply` for existing agents, then `agent/created`).
+  The text is static (cache-safe). No section is registered for an agent whose
+  project has no `measure/`, which is how NFR-1's inertness reaches the prompt.
 - **Task note (exactly once)**: returned from `agent/pre-step` as
   `{ kind: 'enter', messages: [...messages, note] }` only when the noteKey
   changed; also on the first step after `compaction/end`, and when the cached
