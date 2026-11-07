@@ -179,16 +179,26 @@ recommended smoke test after a plugin change.
    root is this repository) write the same seam directly:
    `~/.local/state/measure/dsh-guard/repos.json` gains
    `{"<fixture root>": {"mode": "strict"}}`, then `bin/measure-dsh reload`.
-3. **Spawn Red** (`subagent` with `cwd` = the fixture): write a failing test and
-   run it, then report the failure. In strict mode a *test-file* write is always
-   allowed, and any write under `measure/` is always allowed.
-4. **Spawn Green** (`subagent` with `cwd` = the fixture): first run the failing
-   test itself, then implement until green, then commit with a git note and put
-   the short SHA on the task line. **The Red record is per agent:** strict mode
-   denies a source edit until *that agent* has both a test-file change and a
-   failed test run, so a Green agent that starts editing immediately is denied
-   — the protocol is to run the failing test first, or to keep the rehearsal in
-   `guard` mode.
+3. **The roles must run in a session whose working directory is the fixture.**
+   This is the fact a rehearsal run established: a child spawned with the
+   `subagent` tool's `cwd` option gets that directory for its shell commands,
+   but its **guard root stays the parent session's working directory** (the
+   child received the parent repository's plan problems, and its fixture writes
+   — outside that root — were allowed). So from a session opened in this
+   repository, a child agent cannot rehearse a disposable project under the
+   guard. Open a DSH session whose working directory is the fixture and run the
+   roles there; only then does the fixture's strict override govern the edits.
+4. **In that fixture session, spawn Red and Green** (plain subagents of *that*
+   session, or prompts in it): Red writes a failing test and runs it; Green
+   runs the failing test itself, then implements until green, commits with a
+   git note, and records the short SHA. **The Red record is per agent:** strict
+   mode denies a source edit until *that agent* has both a test-file change and
+   a failed test run, so a Green agent that starts editing immediately is
+   denied — run the failing test first, or keep the rehearsal in `guard` mode.
+   A write under `measure/` is always allowed and never needs the Red phase.
+   (`dsh --profile headless` cannot host the guard: the plugin's required
+   `inject` includes `webServer`, so the entry stays pending in the headless
+   app, and the headless profile has no stored LLM credentials.)
 5. **Spawn Review** (read-only, `cwd` = the fixture): compare the result with the
    plan and report.
 6. **Capture the evidence:** fixture path, the subagent targets, the strict deny
