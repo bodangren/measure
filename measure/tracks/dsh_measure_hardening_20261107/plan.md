@@ -14,7 +14,7 @@ implements them. Test files are
 `node --test plugins/dsh-measure-guard/tests/*.test.js` plus both parity gates,
 `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase S1: The live check detects stale plugin code
+## Phase S1: The live check detects stale plugin code [checkpoint: 1778798]
 
 _Story ref: spec.md#story-s1_
 
@@ -31,7 +31,7 @@ _Story ref: spec.md#story-s1_
     - [ ] `tests/dsh/test-install.sh` (case 2): a second install rewrites only the patch, keeps the YAML text equal, and writes no plugin file
 - [x] Task 1.3: Green: implement the module-load digest, the route header, the CLI comparison, `reload`, and the install-time patch write; the live gate passes end to end `e20cf49`
 - [x] Task 1.4: Docs: README "Checks" and "State and root resolution" plus `docs/dsh.md` name the digest, the stale FAIL, and `reload` `e20cf49`
-- [ ] Task: Measure - User Manual Verification 'Phase S1: The live check detects stale plugin code' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: The live check detects stale plugin code' (Protocol in workflow.md) `1778798`
 
 ## Phase S2: Git-backed verification of the task ceremony
 
@@ -58,7 +58,7 @@ _Story ref: spec.md#story-s3_
     - [ ] `src/commit.js` scaffold: `addedPaths(command)` -> `{ all: boolean, trackedOnly: boolean, paths: string[] }` parsing every `git add` segment before the commit (non-option tokens; `.`/wildcards set `all`; `-A`/`--all` sets `all`; `-u`/`--update` sets `trackedOnly`), `commitTakesAll(command)` for an explicit commit `-a`/`--all`, and `stagedFiles(deps, root, takesChanges, added)` per Decision 9 (base `git diff --cached`; `add.all` -> every status path; `add.paths` -> exactly those; `add.trackedOnly` or an explicit `-a` -> modified/deleted tracked paths only)
     - [ ] `src/guard.js`: relative shell targets are resolved against the Session-effective directory (`deps.dirOf(agent)`) before the checks, exactly like the file mutations; the shell branch runs the extracted targets through `editDecision`/`tddDecision` and denies registry targets before the commit check; the unreadable-mutation-tool deny covers `apply_patch` and `str_replace_editor` on the registry files. Both denies are inert in `advise` mode and under the `/measure-off` bypass (Decision 10)
 - [x] Task 3.2: Red: failing tests for the bypass closures `008f90f`
-    - [ ] `tests/shell.test.js` (new): `shellWritePaths` on the documented forms and non-forms (`2>/dev/null`, `>&1`, heredoc target, `| tee file`, `sed -i 's/a/b/' file`)
+    - [ ] `tests/shell.test.js` (new): `shellWritePaths` on the documented forms and non-forms (`2>/dev/null`, `>&1`, heredoc target, `| tee file`, `sed -i 's/a/b/' file`); a heredoc body is not parsed separately, which is documented as a fail-closed limit
     - [ ] `tests/edit-guard.test.js`: a redirect/tee/sed target denied without a task and allowed with one; a `measure/tracks.md` redirect denied with the registry text; other `measure/` and outside-root targets ignored; strict TDD through a shell source target
     - [ ] `tests/commit.test.js`: `git add src/app.js` with an unrelated untracked `notes.md` denies and names only `src/app.js`; `git add .` includes the untracked path; `git commit -am` excludes untracked and includes the modified tracked path; unparseable commands are allowed
     - [ ] `tests/closeout.test.js`: `apply_patch`/`str_replace_editor` on `measure/tracks.md` and a `measure/**/plan.md` are denied with the text; the same tools on other files keep the fail-open behavior
