@@ -30,7 +30,7 @@ Measure is a set of agent skills, agent roles, and a Claude Code mod. It stores 
 
 ## Status
 
-As of 2026-10-31, the latest archived track is the spec review gate. Measure works with any agent harness that loads skills. Guard rails exist for two harnesses: the measure-guard mod for Claude Code, and the measure-guard plugin for OpenCode 2. The next release collects the Unreleased entries in [CHANGELOG.md](CHANGELOG.md).
+As of 2026-11-07, the latest archived track is the DSH Measure development environment. Measure works with any agent harness that loads skills. Guard rails exist for three harnesses: the measure-guard mod for Claude Code, the measure-guard plugin for OpenCode 2, and the measure-guard plugin for the DeepSeek Harness, which also gets a one-command development environment in [`docs/dsh.md`](docs/dsh.md). The next release collects the Unreleased entries in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -67,6 +67,8 @@ cd measure
 ```
 
 The installer copies the skills and the agent roles from the `main` branch into `~/.claude/skills`, `~/.agents/skills`, and `~/.agents/agents`, and the OpenCode plugin, commands, and agents into `~/.config/opencode/`. It skips a location whose parent folder does not exist.
+
+For the DeepSeek Harness, run `./bin/measure-dsh install` after step 1: it copies the guard plugin into the DSH profile, writes one managed profile row, and verifies the result. See [`docs/dsh.md`](docs/dsh.md).
 
 If you already have an older copy of Measure in those folders, run `./bin/install-measure-skill --check` first. Then run `./bin/install-measure-skill --adopt` once to replace the old files.
 
@@ -166,6 +168,26 @@ To load the mod in every session, set `CLAUDE_CODE_PLUGIN_DIRS` to the mod folde
 | `strict` | | Adds the TDD guard, the commit guard, and the follow-up prompts. OpenCode has no hook that holds a turn open, so the follow-up prompt replaces the mod's held turn. |
 
 Install: `./bin/install-measure-skill` (step 1) when `~/.config/opencode/plugins` exists; the service loads the folder at once and logs `loading plugin`. Details: [`plugins/opencode-measure-guard/README.md`](plugins/opencode-measure-guard/README.md).
+
+---
+
+## DeepSeek Harness: the environment CLI
+
+`plugins/dsh-measure-guard/` is the DSH counterpart of the two adapters above. It is the same decision core and a Host plugin plus a hand-written browser half, with no build step and no package manager.
+
+- **Context and guards:** the fixed Measure rule section, task notes delivered through `agent/pre-step`, the second-writer warning and the setup offer; the edit, closeout, and end-of-turn checks with the usual modes.
+- **Commands:** `/measure-status`, `/measure-off`, `/measure-on`, and the eight workflow commands `/measure-setup`, `/measure-new-track`, `/measure-new-track-set`, `/measure-implement`, `/measure-review`, `/measure-revert`, `/measure-doctor`, `/measure-orchestrate`.
+- **Tool and client:** `measure_status`, a composer band, a Measure panel, and one JSON route.
+- **Agent team:** the Measure roles run as DSH subagents; the role-to-model table and the prompt template are in [`skills/measure-orchestrator/references/dsh.md`](skills/measure-orchestrator/references/dsh.md).
+
+Install and check with one command:
+
+```bash
+./bin/measure-dsh install
+./bin/measure-dsh --check
+```
+
+The CLI copies the plugin into the resolved DSH profile (`--dsh-home`, `--profile`), writes one marker-managed row in the profile's `cordis.patch.yml`, and verifies the skill copies, the copy stamp, the module exports, and (with `--live`) the running route. `./bin/measure-dsh uninstall` removes the layer. Details, modes, troubleshooting: [`docs/dsh.md`](docs/dsh.md).
 
 ---
 

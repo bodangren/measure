@@ -51,7 +51,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] `docs/dsh.md`: prerequisites, install, check, modes, workflow commands, agent team, uninstall, troubleshooting (restart note, foreign row, incomplete skill copy)
     - [ ] `tests/dsh/test-docs.sh` in `tests/dsh/run.sh`: every guide link resolves; the guide names every command; README links the guide; the CHANGELOG entry exists
     - [ ] Edge: a dangling guide link, a missing command name, a missing README link, and a missing changelog entry each fail (tested with fixtures)
-- [ ] Task 4.2: README and changelog
+- [~] Task 4.2: README and changelog
     - [ ] `README.md`: the harness section names DSH and links `docs/dsh.md`; the install section names `bin/measure-dsh`
     - [ ] `CHANGELOG.md`: one Unreleased entry (environment CLI, workflow commands, agent-team reference, guide)
 - [ ] Task 4.3: Distribution alignment
