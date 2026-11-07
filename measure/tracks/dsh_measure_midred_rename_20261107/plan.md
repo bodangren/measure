@@ -9,13 +9,13 @@ regression test, then the records and closeout. The gates are
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts, and `bash tests/dsh/run.sh`.
 
-## Phase 1: Rename-aware committed files
+## Phase 1: Rename-aware committed files [checkpoint: 2de82ef]
 
 - [x] Task 1.1: `skills/measure-orchestrator/scripts/measure_interphase_checks.py`: `committed_files()` unions the `--name-only` paths with both paths of every rename from `git diff --name-status --diff-filter=R <baseline>..HEAD` (tabs, sorted, deduplicated, empty on git failure); its docstring states the rule
 - [x] Task 1.2: Red: `tests/spec_review_gate/test_checker.py` gains the mid-red rename case (prod file renamed into `tests/`, `diff.renames=true`, `RED_TEST_COMMAND=false`); run it against the unmodified function and record that `- src/a.py` is absent (the failing Red)
 - [x] Task 1.3: Green: the case passes with the fix; the other checker tests stay green
 - [x] Task 1.4: run `bash tests/spec_review_gate/run.sh`; all 10 suites pass (10/10 PASS on the final tree)
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Rename-aware committed files' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Rename-aware committed files' (Protocol in workflow.md) `2de82ef`
 
 ## Phase 2: Records and closeout
 
