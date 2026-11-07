@@ -20,8 +20,8 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 2.2: write the archived track's `spec-review.md`: this round's findings, the author responses, and the explicit Accepted Risk for the unexecuted strict path
 - [x] Task: Measure - User Manual Verification 'Phase 2: The archived review corrections' (Protocol in workflow.md) `d1c004d`
 
-## Phase 3: Evidence and closeout
+## Phase 3: Evidence and closeout [checkpoint: 6fdfb14]
 
 - [x] Task 3.1: extend `measure/runs/dsh_measure_team_rehearsal_20261107/live-rehearsal.md` with the two subagent ids and their roles, the exact commands, the guard output observed, and the cleanup checks with their commands and results (fixture absent, `repos.json` has no fixture root, plugin reloaded, `git status` clean)
 - [x] Task 3.2: update `docs/dsh.md` if any statement about the guard root is now inexact; closeout documents (`measure/lessons-learned.md`, `measure/tech-debt.md`), `metadata.json`, archive the track, update `measure/tracks.md` `5bbc224`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Evidence and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Evidence and closeout' (Protocol in workflow.md) `6fdfb14`
