@@ -43,3 +43,16 @@ test('a command without a write form has no targets', () => {
 test('duplicate targets appear once, in command order', () => {
   assert.deepEqual(shellWritePaths('echo a > out.txt; echo b >> out.txt'), ['out.txt'])
 })
+
+// ---- heredoc, quote, and comment masking (dsh_measure_shell_grammar_20261107)
+
+test('a heredoc body quoting a redirect is not a write', () => {
+  const command = "cat > measure/tracks.md <<'EOF'\nThe guard denies > measure/plan.md writes.\nEOF\n"
+  assert.deepEqual(shellWritePaths(command), ['measure/tracks.md'])
+})
+
+test('a quoted redirect and a comment redirect are not writes', () => {
+  assert.deepEqual(shellWritePaths('echo "a > measure/b.md"'), [])
+  assert.deepEqual(shellWritePaths('# > measure/c.md'), [])
+  assert.deepEqual(shellWritePaths("cat > a.md <<'EOF'\nbody\nEOF\necho x > b.md"), ['a.md', 'b.md'])
+})
