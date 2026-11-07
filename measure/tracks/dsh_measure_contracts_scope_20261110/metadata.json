@@ -1,11 +1,12 @@
 {
   "track_id": "dsh_measure_contracts_scope_20261110",
   "type": "bug",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-10T03:00:00Z",
-  "updated_at": "2026-11-10T03:00:00Z",
+  "updated_at": "2026-11-10T03:40:00Z",
   "description": "Document the marker matching, raw dispositions value, scope names, non-ancestor baseline, unioned changed files, and HEAD-advance rules in contracts.md with doc-test assertions",
-  "estimated_tasks": 3,
-  "actual_tasks": null,
-  "deviation_notes": ""
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
 }
