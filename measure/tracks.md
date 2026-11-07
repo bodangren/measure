@@ -27,12 +27,6 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
-- [~] **Track: DSH Measure development environment**
-  *Link: [./tracks/dsh_measure_dev_20261107/](./tracks/dsh_measure_dev_20261107/)*
-  *One command installs, checks, and removes the DSH profile layer; the plugin gains the Measure workflow commands; the orchestrator skill gains a DSH agent-team reference.*
-
----
-
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -67,6 +61,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 ---
 
 ## Archived Tracks
+
+- [x] **Track: DSH Measure development environment**
+  *Link: [./archive/dsh_measure_dev_20261107/](./archive/dsh_measure_dev_20261107/)*
+  *One command installs, checks, and removes the DSH profile layer; the plugin gains the Measure workflow commands; the orchestrator skill gains a DSH agent-team reference. Five phases, 18 tasks, live-verified in the running web profile with a module-identity proof.*
 
 - [x] **Track: measure-guard for the DeepSeek Harness**
   *Link: [./archive/dsh_measure_guard_20261107/](./archive/dsh_measure_guard_20261107/)*
