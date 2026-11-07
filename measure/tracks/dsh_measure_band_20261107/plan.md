@@ -13,7 +13,7 @@ the gate is `node --test plugins/dsh-measure-guard/tests/*.test.js` plus
 `plugins/opencode-measure-guard/scripts/check-parity.sh`,
 `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase S1: The band is one compact line
+## Phase S1: The band is one compact line [checkpoint: 1d974b9]
 
 _Story ref: spec.md#story-s1_
 
@@ -26,7 +26,7 @@ _Story ref: spec.md#story-s1_
     - [ ] `tests/client-bundle.test.js`: the bundle uses `view.bandFull` as the title, and carries the nowrap/ellipsis styles
 - [x] Task 1.3: Green: implement `compactBand`, the view fields, and the Client styles; the suite passes `f052cd7`
 - [x] Task 1.4: Docs: README "Client surface" (compact band, `bandFull`, one-line rule) and `docs/dsh.md` `f052cd7`
-- [ ] Task: Measure - User Manual Verification 'Phase S1: The band is one compact line' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: The band is one compact line' (Protocol in workflow.md) `1d974b9`
 
 ## Phase S2: Documentation, live check, and track closeout
 
