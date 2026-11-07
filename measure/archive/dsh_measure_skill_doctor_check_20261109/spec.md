@@ -55,3 +55,13 @@ description, an angle-bracket description, a folder link) prove each rule fires.
 
 - The commit staged-read race, the opencode rows, and the remaining
   spec_review_gate docs rows.
+
+> **Correction (2026-11-09, dsh_measure_skill_doctor_fix2_20261109):** "folder
+> links" means the archived finding N3 / npm rule `skill.referenced-directory` — a
+> `SKILL.md` Markdown link whose target is empty, ends with `/`, or resolves to a
+> directory relative to the skill folder — not a filesystem symlink. The bundle
+> symlink rule stays as a separate rule covering all of `claude-skills/`. The
+> upgraded test also pins the 1024/1025 boundary, `|` block parsing, `<`-only and
+> `>`-only characters, a missing description, a file link pass, and anchor-only
+> links as allowed. The existing 12 CLI tests keep their behavior; the suite gains
+> one (13/13).

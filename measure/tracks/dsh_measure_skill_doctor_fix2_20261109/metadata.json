@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_skill_doctor_fix2_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-09T14:00:00Z",
+  "updated_at": "2026-11-09T14:00:00Z",
+  "description": "Skill-doc check fix2: enforce the real folder-link rule (Markdown links to directories, N3), keep the bundle symlink rule separately, and add block/boundary/character/missing-description fixtures",
+  "estimated_tasks": 4,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
