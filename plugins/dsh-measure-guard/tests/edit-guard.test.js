@@ -186,3 +186,58 @@ test('prepareDecision denies through the pre-execute listener and the decision m
   assert.match(decisions.get(exec.token), /no task in the track/)
   assert.match(decisions.get(exec.token), /src\/app\.js/)
 })
+
+// ---- the bounded shell-write guard (Story S3) ------------------------------
+
+const shellExec = command => ({ name: 'bash', agent, arguments: { command } })
+
+test('a shell redirect outside measure/ without a task is denied with the core edit text', async () => {
+  const deps = depsOf({ snapshot: snapshotOf(NO_TASK_PLAN) })
+  const decision = await prepareDecision(deps, shellExec('echo hi > /repo/src/app.js'))
+  assert.match(decision.denial ?? '', /is in progress/)
+})
+
+test('a shell redirect with a [~] task is allowed', async () => {
+  const deps = depsOf()
+  const decision = await prepareDecision(deps, shellExec('echo hi > /repo/src/app.js'))
+  assert.equal(decision.denial, undefined)
+})
+
+test('a shell write to the registry or a plan is denied with the after-text text', async () => {
+  const deps = depsOf()
+  for (const command of ['echo hi > /repo/measure/tracks.md', "sed -i 's/a/b/' /repo/measure/tracks/x/plan.md"]) {
+    const decision = await prepareDecision(deps, shellExec(command))
+    assert.match(decision.denial ?? '', /cannot read the after-text of a shell write/)
+    assert.match(decision.denial ?? '', /Use edit or write/)
+  }
+})
+
+test('a shell write to another measure/ file, an outside path, or /dev/null is allowed', async () => {
+  const deps = depsOf()
+  for (const command of ['echo hi > /repo/measure/guard-allow', 'echo hi > /tmp/out.txt', 'echo hi 2>/dev/null']) {
+    const decision = await prepareDecision(deps, shellExec(command))
+    assert.equal(decision.denial, undefined, command)
+  }
+})
+
+test('strict mode denies a source shell target without a Red phase', async () => {
+  const deps = depsOf({ mode: 'strict' })
+  const decision = await prepareDecision(deps, shellExec('echo hi > /repo/src/app.js'))
+  assert.match(decision.denial ?? '', /write a failing test first/)
+})
+
+test('advise mode and the bypass allow the shell and registry denies', async () => {
+  for (const options of [{ mode: 'advise' }, { bypass: 'session' }]) {
+    const deps = depsOf(options)
+    for (const command of ['echo hi > /repo/measure/tracks.md', 'echo hi > /repo/src/app.js']) {
+      assert.equal((await prepareDecision(deps, shellExec(command))).denial, undefined, `${JSON.stringify(options)} ${command}`)
+    }
+  }
+})
+
+test('a relative shell target resolves against the session directory', async () => {
+  const deps = depsOf({ snapshot: snapshotOf(NO_TASK_PLAN) })
+  deps.dirOf = () => '/repo'
+  const decision = await prepareDecision(deps, shellExec('echo hi > out.txt'))
+  assert.match(decision.denial ?? '', /is in progress/)
+})

@@ -8,7 +8,7 @@ import assert from 'node:assert/strict'
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { parseAllowList, parsePlan, parseTracks } from '../src/core/parse.ts'
 import { Agents, Turns } from '../src/state.js'
-import { commitCheck, commitShaOf, stagedFiles } from '../src/commit.js'
+import { addedPaths, commitCheck, commitShaOf, stagedFiles } from '../src/commit.js'
 import { prepareDecision } from '../src/guard.js'
 import { postCommitListener, preExecuteListener } from '../src/hooks.js'
 import { commitReminder } from '../src/core/guards.ts'
@@ -104,10 +104,12 @@ test('commitShaOf reads the short SHA of a commit line', () => {
   assert.equal(commitShaOf('no commit here'), null)
 })
 
-test('stagedFiles reads the staged paths and adds changed paths when the commit takes changes', async () => {
+test('stagedFiles adds the tracked changes for -a, and added paths exactly', async () => {
   const deps = depsOf({ io: ioOf({ staged: ['src/app.js'], status: [' M measure/tracks.md', '?? notes.md'] }) })
-  assert.deepEqual(await stagedFiles(deps, '/repo', false), ['src/app.js'])
-  assert.deepEqual(await stagedFiles(deps, '/repo', true), ['src/app.js', 'measure/tracks.md', 'notes.md'])
+  assert.deepEqual(await stagedFiles(deps, '/repo', false), ['src/app.js', ...[]])
+  assert.deepEqual(await stagedFiles(deps, '/repo', true), ['src/app.js', 'measure/tracks.md'])
+  assert.deepEqual(await stagedFiles(deps, '/repo', false, { all: false, paths: ['notes.md'] }), ['src/app.js', 'notes.md'])
+  assert.deepEqual(await stagedFiles(deps, '/repo', false, { all: true, paths: [] }), ['src/app.js', 'measure/tracks.md', 'notes.md'])
 })
 
 // ---- the strict decision ---------------------------------------------------
@@ -143,11 +145,37 @@ test('a no-task commit of only measure/ files is allowed with no reminder', asyn
   assert.equal(check.commitDue, false)
 })
 
-test('a commit with -a takes the changed and untracked paths too', async () => {
-  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: [' M src/app.js'] }) })
+test('a commit with -a takes the modified tracked paths and not untracked files', async () => {
+  const deps = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: [' M src/app.js', '?? notes.md'] }) })
   const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'git commit -am "feat(app): Add the app"')
   assert.notEqual(check.decision, null)
   assert.match(check.decision.deny, /src\/app\.js/)
+  assert.doesNotMatch(check.decision.deny, /notes\.md/)
+
+  const onlyUntracked = depsOf({ plan: NO_TASK_PLAN, io: ioOf({ staged: [], status: ['?? notes.md'] }) })
+  const allowed = await commitCheck(onlyUntracked, contextOf(onlyUntracked, NO_TASK_PLAN), 'git commit -am "measure(plan): Mark"')
+  assert.equal(allowed.decision, null)
+})
+
+test('an in-command git add contributes exactly its paths', async () => {
+  const io = ioOf({ staged: [], status: [' M src/app.js', '?? notes.md'] })
+  const deps = depsOf({ plan: NO_TASK_PLAN, io })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'git add src/app.js && git commit -m "feat(app): Add the app"')
+  assert.notEqual(check.decision, null)
+  assert.match(check.decision.deny, /src\/app\.js/)
+  assert.doesNotMatch(check.decision.deny, /notes\.md/)
+
+  const others = depsOf({ plan: NO_TASK_PLAN, io })
+  const allowed = await commitCheck(others, contextOf(others, NO_TASK_PLAN), 'git add measure/tracks.md && git commit -m "measure(plan): Mark"')
+  assert.equal(allowed.decision, null)
+})
+
+test('addedPaths reads every git add segment', async () => {
+  assert.deepEqual(addedPaths('git add src/app.js && git commit -m "feat(app): X"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
+  assert.deepEqual(addedPaths('git add . && git commit -m "x"'), { all: true, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('git add -A && git commit -m "x"'), { all: true, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('git add -u && git commit -m "x"'), { all: false, trackedOnly: true, paths: [] })
+  assert.deepEqual(addedPaths('git commit -m "x"'), { all: false, trackedOnly: false, paths: [] })
 })
 
 test('the commit guard is inert outside strict mode', async () => {
@@ -205,4 +233,16 @@ test('postCommitListener leaves a failed commit alone and drops its token', asyn
 
 test('the reminder text is the shared core commitment', () => {
   assert.match(commitReminder('1baeb84'), /git notes add/)
+})
+
+test('git add -A contributes every status path and -u only the tracked ones', async () => {
+  const io = ioOf({ staged: [], status: [' M src/app.js', '?? notes.md'] })
+  const allDeps = depsOf({ plan: NO_TASK_PLAN, io })
+  const all = await commitCheck(allDeps, contextOf(allDeps, NO_TASK_PLAN), 'git add -A && git commit -m "feat(app): Add"')
+  assert.match(all.decision.deny, /notes\.md/)
+
+  const trackedDeps = depsOf({ plan: NO_TASK_PLAN, io })
+  const tracked = await commitCheck(trackedDeps, contextOf(trackedDeps, NO_TASK_PLAN), 'git add -u && git commit -m "feat(app): Add"')
+  assert.match(tracked.decision.deny, /src\/app\.js/)
+  assert.doesNotMatch(tracked.decision.deny, /notes\.md/)
 })

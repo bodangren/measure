@@ -269,3 +269,41 @@ test('closing a track without metadata.json is denied', async () => {
   assert.match(decision.deny, /actual_tasks: 1/)
 })
 
+
+// ---- the unreadable-tool registry deny (Story S3) --------------------------
+
+const patchOf = path => `*** Begin Patch\n*** Update File: ${path}\n@@\n-a\n+b\n*** End Patch\n`
+const editorOf = path => ({ command: 'str_replace', path, old_str: 'a', new_str: 'b' })
+
+test('apply_patch and str_replace_editor on the registry files are denied', async () => {
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
+  for (const path of [REGISTRY, PLAN_PATH]) {
+    for (const [tool, args] of [['apply_patch', { input: patchOf(path) }], ['str_replace_editor', editorOf(path)]]) {
+      const decision = await prepareDecision(deps, { name: tool, agent, arguments: args })
+      assert.match(decision.denial ?? '', /cannot read the after-text/, `${tool} ${path}`)
+      assert.match(decision.denial ?? '', /Use edit or write/)
+    }
+  }
+})
+
+test('advise mode allows the registry deny and the metadata closeout check', async () => {
+  const deps = depsOf({ mode: 'advise', files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
+  const tool = await prepareDecision(deps, { name: 'apply_patch', agent, arguments: { input: '*** Update File: /repo/measure/tracks.md' } })
+  assert.equal(tool.denial, undefined)
+
+  const mismatch = await closeoutGuardFor(
+    { ...deps, mode: 'advise' },
+    agent,
+    ROOT,
+    mutationOf(REGISTRY, CLOSED_TRACKS),
+  )
+  assert.deepEqual(mismatch, { decision: null, note: null })
+})
+
+test('the same tools on other files keep the fail-open closeout behavior', async () => {
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
+  for (const [tool, args] of [['apply_patch', { input: patchOf('/repo/src/app.js') }], ['str_replace_editor', editorOf('/repo/src/app.js')]]) {
+    const decision = await prepareDecision(deps, { name: tool, agent, arguments: args })
+    assert.equal(decision.denial, undefined, String(tool))
+  }
+})

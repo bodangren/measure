@@ -138,6 +138,19 @@ track additionally requires its `metadata.json` to exist and its `actual_tasks`
 to equal the plan's `[x]` count, so a close cannot silently disagree with the
 plan.
 
+## Bypass closure
+
+Shell writes are checked within a bounded grammar: `>`/`>>` redirection, `tee`
+arguments, and `sed -i` file arguments resolve against the Session-effective
+directory and go through the edit and strict-TDD decisions; a write to
+`measure/tracks.md` or a plan is denied with a "use edit or write" text because
+the closeout guard cannot read it. `apply_patch` and `str_replace_editor` are
+denied on those same registry files for the same reason. The commit guard now
+narrows its file set instead of over-approximating: an in-command
+`git add <paths>` contributes exactly those paths, `git add -A` every status
+path, `git add -u` the tracked paths, and `git commit -a` the tracked paths only.
+All of these denies are inert in `advise` mode and under `/measure-off`.
+
 ## Setup answer
 
 A git repository without a `measure/` folder shows the setup question in the

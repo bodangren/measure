@@ -203,7 +203,7 @@ test('an allow-list folder is not a changed file outside measure/', async () => 
 
 test('git-backed verification reports a missing commit at turn end', async () => {
   const agent = agentOf()
-  const deps = depsOf({ gitAnswers: { 'cat-file -e abcdef0': 'missing' } })
+  const deps = depsOf({ gitAnswers: { 'cat-file -e abcdef0^{commit}': 'missing' } })
   const problems = await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
   assert.equal(problems.length, 1)
   assert.match(problems[0], /cites SHA abcdef0, which no commit in this repository owns/)
@@ -211,9 +211,9 @@ test('git-backed verification reports a missing commit at turn end', async () =>
 
 test('a probe error reports nothing and a bypass silences the git checks', async () => {
   const agent = agentOf()
-  const errored = depsOf({ gitAnswers: { 'cat-file -e abcdef0': 'error' } })
+  const errored = depsOf({ gitAnswers: { 'cat-file -e abcdef0^{commit}': 'error' } })
   assert.deepEqual(await onTurnStopping(errored, { agent, root: ROOT, payload: payloadOf() }), [])
 
-  const bypassed = depsOf({ bypass: 'session', gitAnswers: { 'cat-file -e abcdef0': 'missing' } })
+  const bypassed = depsOf({ bypass: 'session', gitAnswers: { 'cat-file -e abcdef0^{commit}': 'missing' } })
   assert.deepEqual(await onTurnStopping(bypassed, { agent: agentOf(), root: ROOT, payload: payloadOf() }), [])
 })

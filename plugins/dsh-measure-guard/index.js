@@ -30,6 +30,9 @@ export const name = 'measure-guard'
  */
 const LOADED_DIGEST = loadedDigest(fileURLToPath(new URL('.', import.meta.url)))
 
+/** The digest of this instance's loaded bytes (Story S1); exported for the tests. */
+export const digest = LOADED_DIGEST
+
 export const inject = [
   'tools',
   'agents',

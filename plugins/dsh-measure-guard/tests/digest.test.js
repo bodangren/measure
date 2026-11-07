@@ -3,9 +3,10 @@
 // covers tests, scripts, docs, or the install stamp.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { fileURLToPath } from 'node:url'
 
 import { computeDigest, digestFiles, loadedDigest } from '../src/digest.js'
@@ -89,4 +90,29 @@ test('tests and docs are outside the digest', async () => {
 
 test('loadedDigest returns null when the folder cannot be read', async () => {
   assert.equal(loadedDigest('/definitely/not/a/package'), null)
+})
+
+test('the digest is captured once, at module evaluation', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh-digest-load-'))
+  try {
+    await cp(PACKAGE, root, { recursive: true })
+    const url = pathToFileURL(join(root, 'index.js')).href
+
+    const firstModule = await import(url)
+    const first = firstModule.digest
+    assert.match(first, /^sha256:[0-9a-f]{64}$/)
+    assert.equal(first, computeDigest(root))
+
+    // A file changed after the import does not change this instance's answer:
+    // the digest was captured when the module was evaluated, not per request.
+    await writeFile(join(root, 'src/status.js'), '// changed after load\n', 'utf8')
+    assert.equal((await import(url)).digest, first)
+
+    // A fresh evaluation sees the new bytes, which proves the value is a
+    // load-time capture rather than a constant or a per-request read.
+    const second = (await import(`${url}?v=2`)).digest
+    assert.notEqual(second, first)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
 })
