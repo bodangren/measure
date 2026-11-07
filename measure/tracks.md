@@ -121,6 +121,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure token scan follow-up**
   *Link: [./archive/dsh_measure_token_scan_followup_20261107/](./archive/dsh_measure_token_scan_followup_20261107/)*
+
+- [x] **Track: DSH Measure commit scan fix2**
+  *Link: [./archive/dsh_measure_scan_fix2_20261107/](./archive/dsh_measure_scan_fix2_20261107/)*
+  *Env-prefixed and wrapper (`env`, `sudo`, `command`, `exec`, `nice`, `time`, including their option arguments) `git add` commands now contribute their paths instead of failing open; the ledger is indexed per track and the follow-up records cite the right sections. 11 tasks, 3 checkpoints, pushed per phase.*
   *A double-quoted backslash-newline is a continuation and `git` counts only at a command position; the token-scan follow-up record is reconciled (SHAs, ledger read-back, closeout manifest-only FAIL). 10 tasks, 3 checkpoints, pushed per phase.*
   *A whole-command token scan (line continuations, quoted separators, comments) replaces the segment regex; the shipped record is corrected and the mid-red archives are closeout-clean with a tracked ledger. 13 tasks, 4 checkpoints, pushed per phase.*
   *The strict commit guard reads `git add` with a shell-word tokenizer (quotes, escapes, comments, `--`), so a quoted path with spaces contributes exactly that path; unterminated quotes fail closed. 9 tasks, 3 checkpoints, pushed per phase.*

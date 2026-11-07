@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_scan_fix2_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T01:00:00Z",
+  "updated_at": "2026-11-08T01:50:00Z",
+  "description": "Count env-prefixed and wrapper git commands in the added-paths scan (no fail-open), add tests, and correct the ledger sections and the token-scan follow-up record wording",
+  "estimated_tasks": 11,
+  "actual_tasks": 11,
+  "deviation_notes": "All 11 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) Task 1.4 was added after the Phase 1 checkpoint because the review found option-bearing wrappers (sudo -u, env -i, nice -n) still failed open; it is recorded against the phase and the earlier checkpoint predates it. (2) The command-prefix rule now covers env assignments and the wrapper set with their option arguments; arbitrary wrapper scripts and command substitution remain the documented residual. (3) The ledger has a track index and named sections per track and run, and the archived follow-up records cite the right section.",
+  "completed": "2026-11-08"
+}
