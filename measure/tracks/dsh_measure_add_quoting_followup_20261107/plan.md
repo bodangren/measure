@@ -5,12 +5,12 @@ Spec: [./spec.md](./spec.md)
 
 **Each phase checkpoint is pushed to `origin/main` before the next phase.**
 
-## Phase 1: The whole-command token scan
+## Phase 1: The whole-command token scan [checkpoint: 3f0a12f]
 
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: replace `GIT_ADD_SEGMENT` + `shellWords(substring)` with `shellTokens(command)` (words, separators `;`/newline/`&`/`&&`/`|`/`||`, single-quote literal, double-quote `\"`/`\\`, backslash-newline continuation, backslash escape, `#` comment to end of line, unterminated quote → `null`) and rewrite `addedPaths` to find every `git` [-C `<dir>`]* `add` token run and parse its words with the current semantics
 - [x] Task 1.2: Red: `commit.test.js` cases — a backslash-newline continuation with an untracked path, a quoted `;` path, a real trailing-comment command, a quoted `*` stays `all`, an unterminated quote `all`, existing cases unchanged; run against the old extraction and record the failing cases
 - [x] Task 1.3: Green: the suite passes (all cases), both parity gates ok
-- [ ] Task: Measure - User Manual Verification 'Phase 1: The whole-command token scan' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: The whole-command token scan' (Protocol in workflow.md) `3f0a12f`
 
 ## Phase 2: The quoting record corrections
 
