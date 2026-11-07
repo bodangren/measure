@@ -25,6 +25,6 @@ then the live cap proof and closeout. The gate is
 
 ## Phase 3: Live cap proof and closeout
 
-- [ ] Task 3.1: Live: temporarily lengthen the active task title in this track's plan (so the route band exceeds `BAND_MAX`), reload with `bin/measure-dsh install --no-skills`, read `GET /measure-guard/state` and record `band.length` at most 160 ending in `…` and `bandFull.length` greater than 160 under `measure/runs/dsh_measure_band_followup_20261107/`; revert the title and reload again
-- [ ] Task 3.2: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.1: Live: temporarily lengthen the active task title in this track's plan (so the route band exceeds `BAND_MAX`), reload with `bin/measure-dsh install --no-skills`, read `GET /measure-guard/state` and record `band.length` at most 160 ending in `…` and `bandFull.length` greater than 160 under `measure/runs/dsh_measure_band_followup_20261107/`; revert the title and reload again `a94857f`
+- [x] Task 3.2: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md` `98796c4`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Live cap proof and closeout' (Protocol in workflow.md)
