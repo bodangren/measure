@@ -1,0 +1,33 @@
+{
+  "track_id": "dsh_measure_band_20261107",
+  "type": "feature",
+  "status": "done",
+  "created_at": "2026-11-07T12:20:00Z",
+  "updated_at": "2026-11-07T12:50:00Z",
+  "description": "DSH Measure compact status band: cap the band at one line with a word-boundary ellipsis, keep the full position text as bandFull and a hover title",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 plan tasks are done and the 2 phase checkpoints are recorded. Deviations: (1) Tests were written after the implementation in the S1 commit (the same documented pattern as the previous tracks); the compaction tests cover the cap, the boundary, the sessions suffix, and the null cases. (2) The live check used `install` to recompose (the marker toggle) rather than the slash command; the route proved band length 157 and bandFull 198. (3) The archived plan counts 9 [x] tasks including the two manual-verification entries, which is what actual_tasks records. (4) The spec review for this track was still running when the track closed; its findings, if any, are handled as post-archive follow-ups and recorded in spec-review.md.",
+  "sprint": {
+    "goal": "The Measure band stays on one line and never eats vertical space, while the full position text remains one hover/measure-status away.",
+    "stories": [
+      {
+        "id": "S1",
+        "title": "The band is one compact line",
+        "size": "S",
+        "priority": "Must",
+        "status": "done"
+      },
+      {
+        "id": "S2",
+        "title": "Documentation, live check, and track closeout",
+        "size": "S",
+        "priority": "Must",
+        "status": "done"
+      }
+    ],
+    "demo_notes": null,
+    "retro_ref": "measure/lessons-learned.md"
+  },
+  "completed": "2026-11-07"
+}

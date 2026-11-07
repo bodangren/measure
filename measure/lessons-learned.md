@@ -32,9 +32,10 @@
 - (2026-10-21, opencode_plugin_20261021) Probe the live host before writing to a documented shape: OpenCode 2.0.32 loads a plugin folder through `<folder>/index` (not `package.json` exports), `write` names its file `path`, `session.idle` never reaches a plugin subscription (the `session.execution.*` events do).
 - (2026-11-07, dsh_measure_guard_20261107) There is no DSH host-to-client channel without codegen: the forwarded-event allowlist is fixed, Typert remotes need generated artifacts, and projections need zod wire schemas. For file-derived state, one exact `ctx.webServer.register` route plus a short poll is the zero-dependency answer.
 - (2026-11-07, dsh_measure_guard_20261107) A profile patch row added at runtime recomposes live (HMR) and both halves load: verify from the browser by checking `window.__DSH_BOOT__` for the package id, then the rendered slot. The GUI page itself needs the launch cookie, so `curl` sees only the auth error.
-- (2026-10-09, track_sets_20261009) A reference that writes `metadata.json` must keep the project's own required keys. Read a cited workflow before stating what it does.
 - (2026-11-07, dsh_measure_hardening_20261107) `git cat-file -e` exits **128** for a missing object, not 1, so a tri-state probe misreads a missing commit as a fatal error and fails open silently. Use `git rev-parse --verify --quiet <sha>^{commit}`: 0 = a real commit, 1 = missing or not a commit, 128 = a real repository failure.
 - (2026-11-07, dsh_measure_ops_20261107) An on-demand verification command must refresh its snapshot and treat a git `error` differently from `missing`: `missing` proves absence (report it), `error` means the tool cannot answer (a `nothing to verify` reply, not `clean`). An in-progress track's `actual_tasks: null` is not a mismatch; the verdict starts at closeout.
+- (2026-11-07, dsh_measure_band_20261107) A status line built from a shared core text can be arbitrarily long: cap the adapter's display line (word-boundary ellipsis) and keep the full text in a second field for the hover title; never let a UI surface derive its height from task prose.
+- (2026-11-07, dsh_measure_band_20261107) `text-overflow: ellipsis` needs `min-width: 0` on the flex child; `white-space: nowrap` on the container alone does not clip a long child.
 
 ## Patterns That Worked Well
 
@@ -44,7 +45,6 @@
 
 ## Planning Improvements
 
-- (2026-10-04, measure_guard_20261004) Estimate 47/47 for a 9-story code track: 5 tasks per story (Contract, Red, Green, Docs, deferred verification) plus 2 setup tasks. Each Red task recorded the failing test output in its git note.
 - (2026-11-07, dsh_measure_guard_20261107) Estimate 28 planned vs 28 completed once the review added the setup-offer and second-writer tasks; naming the test gate and the file of every task at plan time kept the phase checkpoints cheap.
 - (2026-11-07, dsh_measure_evolve_20261107) Estimate 34 planned vs 34 completed; a live user report (the Mediarr registry parse error) became an extra Must story after the spec was written, and three fresh review rounds found 24 findings (7 Blockers) before Red — the last round mostly caught plan text that drifted from the code.
 - (2026-11-07, dsh_measure_hardening_20261107) Estimate 19/19; the re-review found two live defects the unit tests could not see, and a live turn-end probe exposed a wrong probe command. Run the required re-review before the phase checkpoint, and verify every external command's exit codes with a real probe rather than assuming them.
