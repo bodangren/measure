@@ -9,8 +9,8 @@ and its review found it **fails open** for env-prefixed and wrapper commands:
   `sudo git add …` return no paths, while the guard still reads the commit, so
   the file is neither in the index nor in the added set — a class of commands
   silently stops being checked.
-- The ledger that a record task cites mixes several tracks and names the wrong
-  track in its header; the record task does not cite a section.
+- The ledger that a record task cites mixes several tracks' runs under a title
+  naming one of them; the record task does not cite a section.
 - The follow-up spec's Overview and FR-4 describe the pre-fix record slightly
   inaccurately (Task 4.1 and the verification lines do carry SHAs; the task
   commits and the phase checkpoints are different SHAs).

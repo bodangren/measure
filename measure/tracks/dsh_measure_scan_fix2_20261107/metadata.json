@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_scan_fix2_20261107",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-08T01:00:00Z",
+  "updated_at": "2026-11-08T01:00:00Z",
+  "description": "Count env-prefixed and wrapper git commands in the added-paths scan (no fail-open), add tests, and correct the ledger sections and the token-scan follow-up record wording",
+  "estimated_tasks": 9,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

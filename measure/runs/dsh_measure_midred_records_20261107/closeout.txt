@@ -1,4 +1,13 @@
-# Closeout ledger — dsh_measure_midred_followup_20261107
+# Closeout ledger — Measure run evidence
+
+Track index:
+- `dsh_measure_midred_followup_20261107` — closeout
+- `dsh_measure_midred_evidence_20261107` — gates
+- `dsh_measure_add_quoting_followup_20261107` — gates
+- `dsh_measure_token_scan_followup_20261107` — gates
+- `dsh_measure_scan_fix2_20261107` — gates
+
+## dsh_measure_midred_followup_20261107 — closeout
 
 Run: measure_interphase_checks.py closeout --track dsh_measure_midred_followup_20261107
 Expected: the single missing automation-supervisor manifest FAIL (a manual track never produces it); every [x] task carries a commit SHA.
@@ -14,6 +23,8 @@ Task 2.2 = a481293; Phase 1 verification = 8cfd295; Phase 2 verification = da759
 Parity gates:
 parity: ok
 parity: ok
+
+## dsh_measure_midred_evidence_20261107 — gates
 
 Node suite (Task 1.5):
 ℹ tests 288
@@ -34,9 +45,20 @@ FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive
 
 Both report only the expected automation-supervisor closeout manifest, which a manual track never produces.
 
-## Token-scan follow-up gates (dsh_measure_token_scan_followup_20261107)
+## dsh_measure_add_quoting_followup_20261107 — gates
+
+node suite 294/294 at its Phase 3 tree; both parity gates `parity: ok`; CLI suite
+10/10; spec-review-gate 10/10 (its Phase 3 run at 6cc0346).
+
+## dsh_measure_token_scan_followup_20261107 — gates
 node suite: 296/296 pass; parity gates: parity: ok (both)
 CLI suite: 10/10 pass; spec-review-gate: 10 suites (PASS=10, FAIL=0)
 
 closeout --track dsh_measure_add_quoting_followup_20261107:
 FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_add_quoting_followup_20261107/automation-supervisor-closeout-manifest.json
+
+## dsh_measure_scan_fix2_20261107 — gates
+
+Run: 2026-11-08 (tree 38b51cd + the record corrections), read back from this ledger.
+node suite: 297/297 pass; parity gates: parity: ok (both)
+CLI suite: 10/10 pass; spec-review-gate: 10 suites (PASS=10, FAIL=0)

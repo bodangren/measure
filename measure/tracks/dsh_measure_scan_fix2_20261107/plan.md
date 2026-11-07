@@ -15,12 +15,12 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records
 
-- [ ] Task 2.1: `measure/runs/dsh_measure_midred_records_20261107/closeout.txt`: add a track index at the top and a clearly named section per track and run; the archived `measure/archive/dsh_measure_add_quoting_followup_20261107/plan.md` Task 3.4 cites the ledger and its "Token-scan follow-up gates" section
-- [ ] Task 2.2: correct `measure/archive/dsh_measure_token_scan_followup_20261107/spec.md`: the Overview states the exact pre-fix record (Task 4.1 and the verification lines carried SHAs; eight task lines lacked one, the checker reported seven because it skips the deferred task) and FR-4 distinguishes task commits from phase checkpoint SHAs
-- [ ] Task 2.3: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; append them under a named "Scan fix2 gates" ledger section and read them back
+- [x] Task 2.1: `measure/runs/dsh_measure_midred_records_20261107/closeout.txt`: add a track index at the top and a clearly named section per track and run; the archived `measure/archive/dsh_measure_add_quoting_followup_20261107/plan.md` Task 3.4 cites the ledger and its "Token-scan follow-up gates" section
+- [x] Task 2.2: correct `measure/archive/dsh_measure_token_scan_followup_20261107/spec.md`: the Overview states the exact pre-fix record (Task 4.1 and the verification lines carried SHAs; eight task lines lacked one, the checker reported seven because it skips the deferred task) and FR-4 distinguishes task commits from phase checkpoint SHAs
+- [x] Task 2.3: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; append them under a named "Scan fix2 gates" ledger section and read them back
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records' (Protocol in workflow.md)
 
 ## Phase 3: Gates and closeout
 
-- [ ] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; each phase checkpoint pushed
+- [ ] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_scan_fix2_20261107` and record that it reports only the expected manifest FAIL; each phase checkpoint pushed
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md)

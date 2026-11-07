@@ -14,8 +14,10 @@ and its review found two real gaps in the scan and several record gaps:
   add` anywhere, so `echo git add . && git commit -m "x"` counts `all: true`
   (the old anchored regex returned no paths); a command-boundary rule is needed
   and untested.
-- The follow-up track's own tasks carry no SHAs (its closeout prints seven
-  "lacks commit SHA" FAILs), Task 3.4 names no evidence file/format for the gate
+- The follow-up track's own record was imperfect: Task 4.1 and the four phase
+  verification lines already carried SHAs, but eight task lines lacked one, so
+  its closeout printed seven "lacks commit SHA" FAILs (the checker skips the
+  deferred task), Task 3.4 names no evidence file/format for the gate
   results, the evidence track's Overview still says the record items had "no
   finding ids" (the records spec already named F1–F3), FR-3 names an "escaped
   case" that no test has, and Task 2.1 names no evidence path.
@@ -42,11 +44,13 @@ No shared-core change.
   unterminated cases unchanged. The old scan fails the double-quoted case.
 - **FR-4 (the follow-up track's records).** The archived
   `dsh_measure_add_quoting_followup_20261107` plan's tasks carry their SHAs
-  (1.1/1.2/1.3 = its Phase 1 commit; 2.1 = its Phase 2 commit; 3.1–3.4 = its
-  Phase 3 commit; 4.1 = its archive commit); Task 3.4 names the ledger
-  `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and the format
-  (append the four gate results and read them back); its closeout reports only
-  the expected `automation-supervisor` manifest FAIL.
+  (the **task commits**: 1.1/1.2/1.3 = `21e03a3`, 2.1 = `313c88a`, 3.1–3.4 =
+  `c9eec5e`; 4.1 already carried its archive commit — these are not the phase
+  checkpoint SHAs `3f0a12f`/`964d706`/`e9615ae`); Task 3.4 names the ledger
+  `measure/runs/dsh_measure_midred_records_20261107/closeout.txt` and its
+  "Token-scan follow-up gates" section, and the format (append the four gate
+  results and read them back); its closeout reports only the expected
+  `automation-supervisor` manifest FAIL.
 - **FR-5 (the evidence track's Overview).** The archived evidence track's
   Overview F4 bullet is corrected: the records spec's FR-3 already named F1–F3;
   what was missing was the severity/text for those findings and the ids for the
