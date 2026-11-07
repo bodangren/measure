@@ -19,7 +19,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.3: append the node/parity/CLI/srg results to the mid-red ledger and read them back; run `closeout --track dsh_measure_add_quoting_followup_20261107` and record that it reports only the expected manifest FAIL
 - [x] Task: Measure - User Manual Verification 'Phase 2: The records' (Protocol in workflow.md) `212f576`
 
-## Phase 3: Gates and closeout
+## Phase 3: Gates and closeout [checkpoint: 02e44ee]
 
 - [x] Task 3.1: run the node suite, both parity gates, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`; archive the track and update `measure/tracks.md` `155c602`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Gates and closeout' (Protocol in workflow.md) `02e44ee`
