@@ -17,7 +17,7 @@ rehearsal, then closeout. The gate is
 
 ## Phase 2: Rehearsal protocol docs
 
-- [ ] Task 2.1: add a "Rehearsal" section to `skills/measure-orchestrator/references/dsh.md` (and copy it to `claude-skills/measure-orchestrator/references/dsh.md`): the three spawns with `cwd`, the strict mode override for the fixture root, the per-agent Red record rule (Green must run the failing test itself), the always-allowed `measure/` writes, the evidence to capture, and the cleanup
+- [~] Task 2.1: add a "Rehearsal" section to `skills/measure-orchestrator/references/dsh.md`: the three spawns with `cwd`, the strict mode override for the fixture root, the per-agent Red record rule (Green must run the failing test itself), the always-allowed `measure/` writes, the evidence to capture, and the cleanup
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Rehearsal protocol docs' (Protocol in workflow.md)
 
 ## Phase 3: Executed rehearsal

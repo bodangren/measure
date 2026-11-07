@@ -163,3 +163,40 @@ command line's remaining words are forwarded as `Arguments:`.
 - The `reasoning_effort` values are model-specific; check the model's options
   before passing one.
 - The per-role tool restrictions are prompt-level, not enforced by DSH.
+
+## 10. Rehearsal
+
+A rehearsal runs one Measure phase through real DSH subagents with the guard
+watching, so the role mapping is proven rather than described. It is the
+recommended smoke test after a plugin change.
+
+1. **Build the fixture.**
+   `bash tests/dsh/rehearsal/make-project.sh` prints the canonical root of a
+   disposable git repository with one `[~]` track, one phase, one `[~]` task,
+   and a `metadata.json`. `make-project.sh --cleanup <dir>` removes it later.
+2. **Make the fixture strict.** Preferred: a session whose working directory is
+   the fixture runs `/measure-mode strict repo`. From the Lead's session (whose
+   root is this repository) write the same seam directly:
+   `~/.local/state/measure/dsh-guard/repos.json` gains
+   `{"<fixture root>": {"mode": "strict"}}`, then `bin/measure-dsh reload`.
+3. **Spawn Red** (`subagent` with `cwd` = the fixture): write a failing test and
+   run it, then report the failure. In strict mode a *test-file* write is always
+   allowed, and any write under `measure/` is always allowed.
+4. **Spawn Green** (`subagent` with `cwd` = the fixture): first run the failing
+   test itself, then implement until green, then commit with a git note and put
+   the short SHA on the task line. **The Red record is per agent:** strict mode
+   denies a source edit until *that agent* has both a test-file change and a
+   failed test run, so a Green agent that starts editing immediately is denied
+   — the protocol is to run the failing test first, or to keep the rehearsal in
+   `guard` mode.
+5. **Spawn Review** (read-only, `cwd` = the fixture): compare the result with the
+   plan and report.
+6. **Capture the evidence:** fixture path, the subagent targets, the strict deny
+   text observed (if any), the test failure and pass output, and the commit.
+7. **Clean up:** `/measure-mode default repo` (or remove the `repos.json`
+   entry), `bin/measure-dsh reload`, then `make-project.sh --cleanup <fixture>`.
+
+The integration facts the rehearsal proves: the guard applies to child agents
+through their own working directory; `measure/` writes never need the Red phase;
+and the per-agent Red record makes the role handoff explicit.
+
