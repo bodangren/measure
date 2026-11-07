@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **snapshot invalidation cost:** the Host no longer invalidates every cached snapshot on every `tools/result`; a read-only result (`read`, `grep`, `glob`, `read_image`, `web_search`, `web_fetch`, `todo_write`) skips it, while every other tool — including an unknown name — keeps the fail-safe invalidation; the pre-step invalidation remains, and the within-step external-edit window is the documented residual (node 318 tests; `MUTATION_TOOLS` is exported and the two classifications are tested disjoint). Track `dsh_measure_snapshot_invalidate_20261109`.
+* **snapshot invalidation cost:** the Host no longer invalidates every cached snapshot on every `tools/result`; a read-only result (`read`, `grep`, `glob`, `read_image`, `web_search`, `web_fetch`, `todo_write`) skips it, while every other tool — including an unknown name — keeps the fail-safe invalidation; the pre-step invalidation remains, and the within-step external-edit window is the documented residual (node 318 tests; `MUTATION_TOOLS` is exported and the two classifications are tested disjoint). Tracks `dsh_measure_snapshot_invalidate_20261109` and `dsh_measure_snapshot_invalidate_fix2_20261109`.
 
 ### Features
 

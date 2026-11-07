@@ -64,9 +64,18 @@ within-step window as the residual, and corrects the records.
 
 - Eliminating the within-step window (it would need a per-call change detector).
 
-> **Follow-up correction (2026-11-10, before the review):** the node suite is 318
-> after the new disjoint-set block (317 before it), not 320. The test files are
-> `plugins/dsh-measure-guard/tests/guard-prep.test.js` (predicate and disjoint
-> sets) and `plugins/dsh-measure-guard/tests/plugin.test.js` (read-vs-bash
-> invalidation spy). `MUTATION_TOOLS` is exported from `src/guard.js`. The
-> within-step external-edit window is named as the residual in the perf row.
+
+> **Follow-up correction (2026-11-10, dsh_measure_snapshot_invalidate_fix3_20261109):**
+> the four corrections live here:
+> (1) the test files are `plugins/dsh-measure-guard/tests/guard-prep.test.js`
+> (predicate and disjoint-set checks) and
+> `plugins/dsh-measure-guard/tests/plugin.test.js` (read-vs-bash invalidation
+> spy);
+> (2) the counts — the original snapshot-invalidation track's own suite was
+> 317/317, and this track's single disjoint-set block brings the suite to
+> 318/318;
+> (3) the per-result cost — a cache miss reloads `measure/` and runs one
+> `git rev-parse --is-inside-work-tree` (`src/snapshot.js`), while
+> `git status --porcelain` is read per turn, not per result;
+> (4) the within-step external-edit window — when several tool calls share one
+> step, an edit between two calls is seen at the next `agent/pre-step`.

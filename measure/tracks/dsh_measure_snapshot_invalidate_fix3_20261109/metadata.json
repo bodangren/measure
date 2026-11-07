@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_snapshot_invalidate_fix3_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-10T02:00:00Z",
+  "updated_at": "2026-11-10T02:00:00Z",
+  "description": "Snapshot invalidation fix3 records: put all four corrections in the fix2 spec, fix the original count note, dual-attribute the CHANGELOG, add the rev-parse cost, and consolidate the perf row",
+  "estimated_tasks": 2,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

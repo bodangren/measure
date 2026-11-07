@@ -59,8 +59,8 @@ still invalidates (fail-safe).
 > the test files are
 > `plugins/dsh-measure-guard/tests/guard-prep.test.js` (predicate and
 > disjoint-set checks) and `plugins/dsh-measure-guard/tests/plugin.test.js`
-> (read-vs-bash invalidation spy). The node suite is 318 after the new block (317
-> before it), not 320. `MUTATION_TOOLS` is exported from `src/guard.js` and a test
+> (read-vs-bash invalidation spy). This track's own suite was 317/317 (fix2's
+> disjoint-set block brings it to 318), not 320. `MUTATION_TOOLS` is exported from `src/guard.js` and a test
 > asserts the two classifications are disjoint and cover every mutation tool. The
 > per-result cost is the measure/ reload (no per-result `git status`). The
 > within-step external-edit window is the documented residual: with several calls
