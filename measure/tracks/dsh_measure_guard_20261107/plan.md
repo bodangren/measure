@@ -36,7 +36,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.2: Snapshot service `7107fb5`
     - [ ] `src/snapshot.js`: `canonicalRoot` (`ctx.workingDirectory.get` + `ctx.fs.resolve` + `git rev-parse --show-toplevel` via `ctx.subprocess`), `loadSnapshot` (index.md, tracks.md, plans, guard-allow), per-root cache, invalidation
     - [ ] `tests/snapshot.test.js`: real repository, temp repository, no `measure/`, parse error, canonical root of a subdirectory
-- [~] Task 2.3: Second-writer detection (FR-12)
+- [x] Task 2.3: Second-writer detection (FR-12) `928011e`
     - [ ] `src/roots.js`: `RootWriters` (one writer per canonical root; the second agent gets one warning note and the band suffix)
     - [ ] `tests/roots.test.js`: one writer no notice, second writer one notice, same agent re-entry no second notice, different root no notice
 - [ ] Task 2.4: Rule section and task note
