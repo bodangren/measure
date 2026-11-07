@@ -114,6 +114,7 @@ dispositions: F1=FIX; F2=CONTEST(<evidence>); F3=ESCALATE(<reason>); F4=DECLINE
 Write `dispositions: none` when the role gets routed findings and marks none of them. The line is optional in general and required when the brief of the role held routed findings. The Agent Result Block template does not change.
 
 - `FIX` and `DECLINE` take no text. `CONTEST(<evidence>)` and `ESCALATE(<reason>)` need non-empty text without `;`.
+- The `CONTEST`/`ESCALATE` text must not contain a control character (C0 except tab, DEL), a C1 control, a line or paragraph separator (U+2028/U+2029), a bidi control, or a zero-width character; such a line fails the `role-gate` check with `invalid dispositions line: control or zero-width character`.
 - Items are separated by `;`. An empty value, an empty item, a repeated id, or a word in lowercase fails the `role-gate` check with `invalid dispositions line`.
 - The check reads only the last result block of the log. The block ends at the last `END_MEASURE_AGENT_RESULT` line that has a `MEASURE_AGENT_RESULT` line above it.
 - The block starts at the first `MEASURE_AGENT_RESULT` line after the last `END_MEASURE_AGENT_RESULT` line that comes before the last start line of the block, or at the first start line of the log when no such end line exists.

@@ -84,7 +84,7 @@ DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)
 DISPOSITIONS_PREFIX = "dispositions:"
 # A control character (C0 except tab, and DEL) or a zero-width character inside
 # a dispositions value is invisible or misleading in the rendered finding text.
-CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f\u200b\u200c\u200d\u2060\ufeff]")
+CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f-\x9f\u200b\u200c\u200d\u2028\u2029\u202a-\u202e\u2060\u2066-\u2069\ufeff]")
 AGENT_RESULT_START = "MEASURE_AGENT_RESULT"
 AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
 
@@ -426,7 +426,8 @@ def has_agent_result(log_path: str) -> bool:
     if not path.is_file():
         return False
     text = path.read_text(encoding="utf-8", errors="ignore")
-    return "MEASURE_AGENT_RESULT" in text and "END_MEASURE_AGENT_RESULT" in text
+    markers = {line.strip() for line in text.split("\n")}
+    return AGENT_RESULT_START in markers and AGENT_RESULT_END in markers
 
 
 def dispositions_feedback(log_path: str) -> list[str]:

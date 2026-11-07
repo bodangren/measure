@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-* **srg dispositions parser:** a parseable `dispositions:` value carrying a control character (C0 except tab, DEL) or a zero-width character (U+200B/200C/200D/2060/FEFF) is now rejected with `invalid dispositions line: control or zero-width character`; the S3 contract probes cover CONTEST/ESCALATE text and a tab-in-text pass (95 checks). The parser row keeps the scope-rule item as the residual. Track `dsh_measure_srg_parser_20261108`.
+* **srg dispositions parser:** a parseable `dispositions:` value carrying a control or format character (C0 except tab, DEL, C1 controls, U+2028/U+2029, bidi controls, zero-width characters) is now rejected with `invalid dispositions line: control or zero-width character`; the S3 contract probes cover CONTEST/ESCALATE text and a tab-in-text pass (95 checks). The parser row keeps the scope-rule item as the residual. Track `dsh_measure_srg_parser_20261108`.
 
 ### Features
 

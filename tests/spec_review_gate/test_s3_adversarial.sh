@@ -226,6 +226,26 @@ class Probes:
         self.value_reject(g, "F3=ESCALATE(U+FEFF) (contract)", "F3=ESCALATE(\ufeff)", "control or zero-width character")
         self.value_pass(g, "F2=CONTEST(tab between words) (contract)", "F2=CONTEST(a\tb)")
 
+    def g40_ordering(self):
+        g = "G04b ordering (contract)"
+        self.expect_reject(g, "an invalid item keeps its message with a NUL", enc(blk("dispositions: F2=bad\x00")))
+        code, out, _sec = self.gate(self.log(enc(blk("dispositions: F2=bad\x00"))))
+        ok = code == 1 and "control or zero-width" not in out and "Traceback" not in out
+        self.check(g, "the control message is absent when an item is already invalid", ok, f"exit {code}: {out[-300:]!r}")
+
+    def g41_markers_exact(self):
+        g = "G04c marker look-alikes (contract)"
+        data = enc(["handoff: MEASURE_AGENT_RESULT_EXTRA", "END_MEASURE_AGENT_RESULT2: x"])
+        code, out, _sec = self.gate(self.log(data))
+        ok = code == 1 and "missing MEASURE_AGENT_RESULT block" in out and "Traceback" not in out
+        self.check(g, "look-alike marker text does not count as a result block", ok, f"exit {code}: {out[-300:]!r}")
+
+    def g42_control_classes(self):
+        g = "G04d control classes (contract)"
+        self.value_reject(g, "F2=CONTEST(U+2028)", "F2=CONTEST(a\u2028b)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+0085)", "F2=CONTEST(a\x85b)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+202E)", "F2=CONTEST(a\u202eb)", "control or zero-width character")
+
     def g05_semicolon_in_parens(self):
         g = "G05 ';' inside parentheses (contract, spec Decision 18)"
         self.value_reject(g, "F2=CONTEST(a; b)", "F2=CONTEST(a; b)")

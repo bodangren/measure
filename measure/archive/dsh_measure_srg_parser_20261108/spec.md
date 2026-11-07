@@ -58,3 +58,15 @@ the item invalid; NUL in an item) stays as it is.
 - The scope rule comparing trees rather than intermediate commits (the remaining
   part of the parser row).
 - The opencode and A11/recipe rows.
+
+> **Correction (2026-11-08, dsh_measure_srg_parser_fix2_20261108):** the rejected
+> class is broadened to C1 controls (U+0080–U+009F), U+2028/U+2029, and bidi
+> controls (U+202A–U+202E, U+2066–U+2069) in addition to C0-minus-tab/DEL and the
+> zero-width set; `has_agent_result()` matches the result markers as whole lines,
+> so marker look-alike text no longer counts as a block. The preserved behavior is
+> a NUL that makes an item invalid (not a NUL inside valid CONTEST text); the
+> contract probes are `CONTEST(<NUL>)`, `CONTEST(<ESC>)`, `CONTEST(U+200B)`, and
+> `ESCALATE(U+FEFF)` and assert the exact message `invalid dispositions line:
+> control or zero-width character`. The grammar and doc test live in
+> `contracts.md` and `test_s3_dispositions_docs.sh`; the only remaining parser-row
+> item is the scope rule comparing trees rather than intermediate commits.
