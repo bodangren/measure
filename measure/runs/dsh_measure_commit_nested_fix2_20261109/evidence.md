@@ -6,3 +6,7 @@ Widened recognition: MAX_NESTED_DEPTH=3 (four levels); eval joins all words; she
 Tests: zsh -c, bash -lc, /bin/bash -c, bash -x -c, both multi-word eval forms, X=$(git stage ...), five-level nesting -> all true, unreadable inner -> all true, untracked integration path. Node 308/308.
 Parity ok (adapter-local); CLI 13/13; srg 11/11.
 Residual: arbitrary wrapper scripts and shell functions only.
+
+## Closeout
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_commit_nested_fix2_20261109/automation-supervisor-closeout-manifest.json
