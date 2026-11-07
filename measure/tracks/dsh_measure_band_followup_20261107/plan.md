@@ -19,8 +19,8 @@ then the live cap proof and closeout. The gate is
 
 ## Phase 2: Correct the documentation
 
-- [ ] Task 2.1: README: the band bullet says the full text is available through `bandFull`/the hover title and `measure_status` (the sidebar panel keeps only the status lines plus the goal line); the "Data route" bullet lists the current view fields (`band`, `bandFull`, `status`, `guardsOff`, `problems`, `updatedAt`, `goal`, `mode`, `setup`)
-- [ ] Task 2.2: `docs/dsh.md` "Status band" and the `CHANGELOG.md` entry repeat the corrected full-text statement; a dated correction note is added to the archived band track's `spec.md`, and the archived `plan.md` Task 1.2 notes that the exact-key assertion necessarily changes
+- [x] Task 2.1: README: the band bullet says the full text is available through `bandFull`/the hover title and `measure_status` (the sidebar panel keeps only the status lines plus the goal line); the "Data route" bullet lists the current view fields (`band`, `bandFull`, `status`, `guardsOff`, `problems`, `updatedAt`, `goal`, `mode`, `setup`)
+- [x] Task 2.2: `docs/dsh.md` "Status band" and the `CHANGELOG.md` entry repeat the corrected full-text statement; a dated correction note is added to the archived band track's `spec.md`, and the archived `plan.md` Task 1.2 notes that the exact-key assertion necessarily changes
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Correct the documentation' (Protocol in workflow.md)
 
 ## Phase 3: Live cap proof and closeout
