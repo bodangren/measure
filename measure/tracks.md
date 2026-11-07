@@ -27,6 +27,12 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+- [~] **Track: DSH Measure evolution: strict guards, session-accurate writers, goal binding, and the setup button**
+  *Link: [./tracks/dsh_measure_evolve_20261107/](./tracks/dsh_measure_evolve_20261107/)*
+  *Closes the DSH guard's deferred FR-13 and FR-14 plus the setup button: strict TDD and commit guards, root-only writer slots, a DSH goal bound to the active track, and an in-band setup answer.*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.

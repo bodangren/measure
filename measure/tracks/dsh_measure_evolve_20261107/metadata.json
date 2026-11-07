@@ -1,0 +1,67 @@
+{
+  "track_id": "dsh_measure_evolve_20261107",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-07T09:05:00Z",
+  "updated_at": "2026-11-07T10:40:00Z",
+  "description": "DSH Measure evolution: strict TDD and commit guards, session-accurate writer detection, goal binding to the active Measure track, and the in-band setup answer",
+  "estimated_tasks": 34,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "A DeepSeek Harness session that develops a Measure track gets the rest of the guard rails: strict-mode Red-before-Green and commit checks, a writer count that names real sessions instead of subagents, a DSH goal bound to the active Measure track, and an in-band setup answer.",
+    "stories": [
+      {
+        "id": "S1",
+        "title": "Strict TDD guard (Red before Green)",
+        "size": "L",
+        "priority": "Must",
+        "status": "pending"
+      },
+      {
+        "id": "S2",
+        "title": "Strict commit guard and commit reminder",
+        "size": "L",
+        "priority": "Must",
+        "status": "pending"
+      },
+      {
+        "id": "S3",
+        "title": "Session-accurate writer detection",
+        "size": "S",
+        "priority": "Must",
+        "status": "pending"
+      },
+      {
+        "id": "S4",
+        "title": "Goal binding",
+        "size": "L",
+        "priority": "Should",
+        "status": "pending"
+      },
+      {
+        "id": "S5",
+        "title": "In-band setup answer",
+        "size": "M",
+        "priority": "Should",
+        "status": "pending"
+      },
+      {
+        "id": "S6",
+        "title": "Documentation, live check, and track closeout",
+        "size": "M",
+        "priority": "Must",
+        "status": "pending"
+      },
+      {
+        "id": "S7",
+        "title": "Registry format tolerance for real projects",
+        "size": "S",
+        "priority": "Must",
+        "status": "pending"
+      }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}
