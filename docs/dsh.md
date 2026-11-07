@@ -98,12 +98,13 @@ an absent digest is WARN. Exit code 0 means no item failed; `--json` prints the
 same items as a machine-readable object.
 
 After `install` replaces the plugin copy, the running profile must recompose to
-load the new code. `install` writes the patch file even when the managed block is
-unchanged, and `bin/measure-dsh reload` does the same on demand; both toggle a
-`# measure-dsh reload marker` comment line (a real content change, which is what
-the loader watcher reacts to), leaving every YAML entry byte-equal. Restart DSH
-when `--check --live` still reports a stale digest (some hosts do not watch the
-patch file).
+load the new code. `install` and `bin/measure-dsh reload` both increment the
+managed entry's `reloadNonce` config value — a semantic change in the composed
+configuration, which is what makes the loader recompose — while every other YAML
+line stays byte-equal. (A YAML comment changes no composed configuration, so a
+comment toggle does **not** reliably reload; the plugin accepts and ignores
+`config.reloadNonce`.) Restart DSH when `--check --live` still reports a stale
+digest (some hosts do not watch the patch file).
 
 ## Modes
 

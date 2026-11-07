@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_reload_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T18:20:00Z",
+  "updated_at": "2026-11-07T18:50:00Z",
+  "description": "Make bin/measure-dsh reload and the unchanged-block install change the composed config semantically (a reloadNonce config value) instead of a YAML comment, so the loader recomposes and the plugin re-reads its caches",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "All 10 top-level tasks are done and the 3 phase checkpoints are recorded. (1) The nonce is a config field the plugin accepts and ignores; no schema change was needed (the plugin config is unvalidated). (2) Legacy `# measure-dsh reload marker/probe` lines are dropped on install/reload so old toggles cannot accumulate. (3) The live proof used a temporary `strict` override for this repository; it was cleared afterwards and `--check --live` PASSes. (4) One installed plugin README was stale before the final install (caught by `--check --live`); a normal install refreshed it and bumped the nonce to 3.",
+  "completed": "2026-11-07"
+}

@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **dsh semantic reload:** `bin/measure-dsh reload` and the unchanged-block `install` now increment the managed plugin entry's `reloadNonce` config value instead of toggling a YAML comment. A comment changes no composed configuration, so the loader skipped the recompose and the running plugin kept its cached repository-mode store; the rehearsal found it live (a fixture-rooted session still reported `guard` after `reload`). The fix is proven both directions (override → reload → `strict/repository`; cleared → reload → `guard/config`), and legacy marker lines are dropped on install/reload. Track `dsh_measure_reload_20261107`.
+
+### Features
+
 * **dsh isolated-session rehearsal:** the guard's strict deny is proven in a disposable project by a session whose working directory is the fixture (created through the host session RPC `POST /api/session/create` with `{ cwd }`); the deny text, the session ids, and the cleanup checks are recorded under `measure/runs/dsh_measure_isolated_session_20261107/`. The run also proved that `bin/measure-dsh reload` (a comment-marker toggle) does not refresh the running plugin's cached repository-mode store — the next track fixes that. Track `dsh_measure_isolated_session_20261107`.
 
 ### Features

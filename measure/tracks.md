@@ -94,6 +94,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure isolated-session rehearsal**
   *Link: [./archive/dsh_measure_isolated_session_20261107/](./archive/dsh_measure_isolated_session_20261107/)*
+
+- [x] **Track: DSH Measure semantic reload**
+  *Link: [./archive/dsh_measure_reload_20261107/](./archive/dsh_measure_reload_20261107/)*
+  *`reload` and the unchanged-block `install` now increment the managed entry's `reloadNonce` config value, so the loader recomposes and the running plugin re-reads its caches; proven live both directions and covered by the CLI contract tests. 10 tasks, 3 checkpoints.*
   *Proves the guard's strict deny in a disposable project by a real session whose working directory is the fixture (host session RPC with `cwd`): the deny fired verbatim and the agent did not bypass. Also found that the comment-marker `reload` does not refresh the cached repository-mode store. 10 tasks, 3 checkpoints.*
   *Corrects the rehearsal track's overclaims and rules, hardens the fixture contract test to assert a real commit (with a negative case), defines the acceptance fields and cleanup checks, and records the review with an explicit Accepted Risk for the deferred isolated-session strict path. 9 tasks, 3 checkpoints.*
   *A disposable Measure fixture and contract test, the Red/Green/Review protocol in the orchestrator reference (section 10), and one executed rehearsal: Red and Green subagents ran for real (fail → green → commit + git note) and established that a subagent's `cwd` is its shell directory, not its guard root. 12 tasks, 4 checkpoints.*

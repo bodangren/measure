@@ -215,9 +215,13 @@ module evaluation (`src/digest.js`), so a Host that still runs an older instance
 answers with the old digest. `bin/measure-dsh --check --live` compares it with
 the source digest: a mismatch is FAIL (stale plugin code), an absent header is
 WARN (a pre-digest instance), and a match is PASS. The remediation is
-`bin/measure-dsh reload`, which toggles a `# measure-dsh reload marker` comment
-line in the profile's `cordis.patch.yml` (every YAML entry is unchanged) so the
-running profile sees a real content change and recomposes. `install` performs the same marker toggle when the managed block is unchanged.
+`bin/measure-dsh reload`, which increments the managed entry's `reloadNonce`
+config value in the profile's `cordis.patch.yml` (every other YAML line is
+unchanged) so the composed configuration changes and the running profile
+recomposes and re-reads its caches. The plugin accepts and ignores the
+`config.reloadNonce` field; a YAML comment would not work because it changes no
+composed configuration. `install` increments the same field when the managed
+block is unchanged.
 
 Current state: the test count and the contract suite are in [CHANGELOG.md](../../CHANGELOG.md); the environment CLI's contract tests are `bash tests/dsh/run.sh`.
 
