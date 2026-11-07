@@ -14,7 +14,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: The quoting record corrections
 
-- [ ] Task 2.1: correct the archived quoting track's `spec.md`/`plan.md` (the Overview's old-code claim, FR-2's `--` wording, the quoted-separator claim), add each task its 7-character SHA, and update the installed evidence with the module path and exact `node` invocation; update `plugins/dsh-measure-guard/README.md` and the resolved `measure/tech-debt.md` residual text (only wrapper scripts and command substitution remain)
+- [x] Task 2.1: correct the archived quoting track's `spec.md`/`plan.md` (the Overview's old-code claim, FR-2's `--` wording, the quoted-separator claim), add each task its 7-character SHA, and update the installed evidence with the module path and exact `node` invocation; update `plugins/dsh-measure-guard/README.md` and the resolved `measure/tech-debt.md` residual text (only wrapper scripts and command substitution remain)
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The quoting record corrections' (Protocol in workflow.md)
 
 ## Phase 3: The mid-red records

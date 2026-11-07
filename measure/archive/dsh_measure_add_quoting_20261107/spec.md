@@ -7,8 +7,8 @@ staged files and adds the files the command itself stages, so a commit that also
 runs `git add` cannot hide a file. The `git add` arguments are parsed with a
 regex that splits on whitespace and strips one leading/trailing quote pair
 (`plugins/dsh-measure-guard/src/commit.js`, `addedPaths`), so a quoted path such
-as `git add "src/file with space.ts"` is captured as `"src/file` and a path with
-several spaces or an inner quote can hide a staged file from the guard — the
+as `git add "src/file with space.ts"` is split into `src/file`, `with`, and
+`space.ts` and a path with spaces can hide a staged file from the guard — the
 under-approximation the tech-debt row names.
 
 This track replaces the whitespace split with a small shell-word tokenizer
@@ -64,3 +64,14 @@ conservative over-approximation the guard already uses for `.`/pathspecs).
 - Full shell parsing (subshells, substitutions, wrapper scripts); the tokenizer is
   a bounded improvement, documented as such.
 - The commit staged-read race and the heredoc grammar rows.
+
+> **Follow-up correction (2026-11-07, dsh_measure_add_quoting_followup_20261107):**
+> the first shipped extraction kept the segment regex, which truncated the
+> captured substring at `;`, `&`, `|`, or newline before tokenizing — a
+> backslash-newline continuation could hide the following path, and a quoted
+> separator was conservative (`all`), not exact. The follow-up replaced the
+> segment regex with a whole-command token scan (continuations, quoted
+> separators, comments), so those cases are exact now; the original FR-2 phrase
+> "`--` ends options" is new behavior, not preserved behavior (the old code
+> skipped `--` and then skipped the `-`-prefixed word), and only wrapper scripts
+> and command substitution remain as the documented residual.

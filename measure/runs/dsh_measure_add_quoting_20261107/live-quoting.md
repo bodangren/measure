@@ -4,6 +4,16 @@ Date: 2026-11-07
 
 Installed digest: sha256:3d732c439b706149b (from bin/measure-dsh --check --live PASS).
 
+Installed module: `~/.dsh/profiles/web/plugins/dsh-measure-guard/src/commit.js`,
+invoked as
+
+```
+node --experimental-strip-types --input-type=module -e "… await import('file://' + process.env.HOME + '/.dsh/profiles/web/plugins/dsh-measure-guard/src/commit.js') …"
+```
+
+(from `/home/daniel-bo/Desktop/measure`, so the working tree and the installed copy
+are the same bytes after `install`; the digest above is that copy's).
+
 ## Installed addedPaths on tricky commands
 
 {"command":"git add \"src/a b.ts\" && git commit -m \"feat(a): B\"","added":{"all":false,"trackedOnly":false,"paths":["src/a b.ts"]}}
