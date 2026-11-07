@@ -72,7 +72,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `tests/end-of-turn.test.js`: changed files with no `[~]` reported, `[x]` without SHA reported, strict steer bounded to 2, advise records only
 - [x] Task 3.6: Measure - User Manual Verification 'Phase 3: Guard layer' (Protocol in workflow.md) `f1335a2`
 
-## Phase 4: Client surface
+## Phase 4: Client surface [checkpoint: fa5eacb]
 
 - [x] Task 4.1: Host state resource `3ae621b`
     - [ ] `src/client-state.js` + `ctx.webServer.register({ path: '/measure-guard/state', resource })`: JSON `{ band, status, guardsOff, problems, updatedAt }` for `?sessionId=`; 404 for an unknown session
@@ -86,7 +86,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 4.4: Live load check `51ff2c5`
     - [ ] Add one `- insert:` row to `~/.dsh/profiles/web/cordis.patch.yml` with `name: /home/daniel-bo/Desktop/measure/plugins/dsh-measure-guard/index.js`; HMR recomposes without a restart
     - [ ] Verify from the running GUI's HTTP surface: the boot graph carries a `dsh-measure-guard` entry and `/plugins/dsh-measure-guard/client.js` serves the bundle; record the evidence and the user confirmation in the task git note
-- [ ] Task 4.5: Measure - User Manual Verification 'Phase 4: Client surface' (Protocol in workflow.md)
+- [x] Task 4.5: Measure - User Manual Verification 'Phase 4: Client surface' (Protocol in workflow.md) `fa5eacb`
 
 ## Phase 5: Distribution and docs
 
