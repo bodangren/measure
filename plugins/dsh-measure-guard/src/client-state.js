@@ -3,6 +3,7 @@
 // shared core (design §8, §12) so the Client never re-parses the Measure files.
 import { bandLine, statusLines } from './core/parse.ts'
 import { goalLine, goalOf, goalSummary } from './goal.js'
+import { needsSetup, resolveSetupChoice, setupBandText } from './setup.js'
 
 /** The route the Client fetches: `GET /measure-guard/state?sessionId=<id>`. */
 export const CLIENT_STATE_PATH = '/measure-guard/state'
@@ -14,7 +15,7 @@ export const CLIENT_STATE_PATH = '/measure-guard/state'
  * Host view is built in one place; the band and status lines do not vary with
  * it, and the FR-15 shape keeps the five fields.
  */
-export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, sessionCount = 1, goal = null }) => {
+export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, sessionCount = 1, goal = null, setupChoice = null }) => {
   // An absent snapshot reads as "no read yet"; statusLines() accepts null.
   const project = snapshot === undefined ? null : snapshot
   const line = project === null ? null : bandLine(project, guardsOff)
@@ -30,6 +31,12 @@ export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, ses
     problems: [...problems],
     updatedAt,
     goal: goalSummary(goal),
+    setup: {
+      choice: setupChoice === 'off' || setupChoice === 'setup' ? setupChoice : null,
+      // The offer text exists only where the setup question applies: a git
+      // repository with no measure/ folder (NFR-1).
+      text: needsSetup(project) ? setupBandText(setupChoice) : null,
+    },
   }
 }
 
@@ -37,6 +44,43 @@ export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, ses
 const errorText = error => {
   if (error instanceof Error) return error.message === '' ? error.name : error.message
   return String(error)
+}
+
+/** The route the band's two setup buttons post to: `POST /measure-guard/setup`. */
+export const SETUP_PATH = '/measure-guard/setup'
+
+/**
+ * The resource of the setup route (Story S5): a POST `{ sessionId, choice }`
+ * records the answer in agent state. `off` makes the edit guard pass (the core
+ * treats a non-ask answer as answered); `setup` also delivers the shared core's
+ * setup prompt to the agent, exactly once. Non-POST is 405, a malformed body or
+ * an unknown choice is 400, an unknown session is 404. Every I/O failure is
+ * caught like the state route.
+ */
+export async function setupResponse(deps, request) {
+  try {
+    if (request.method !== 'POST') return jsonResponse({ error: 'method not allowed' }, 405)
+    let body
+    try {
+      body = await request.json()
+    } catch {
+      return jsonResponse({ error: 'malformed body' }, 400)
+    }
+    const sessionId = typeof body?.sessionId === 'string' && body.sessionId !== '' ? body.sessionId : null
+    const choice = body?.choice
+    if (sessionId === null || (choice !== 'off' && choice !== 'setup')) {
+      return jsonResponse({ error: 'invalid setup answer' }, 400)
+    }
+    const agent = deps.agentOf(sessionId)
+    if (agent === undefined || agent === null) return jsonResponse({ error: 'not found' }, 404)
+
+    const before = deps.state.agents.sessionOf(agent.id).setupChoice
+    resolveSetupChoice(deps.state, agent.id, choice)
+    if (choice === 'setup' && before !== 'setup' && typeof deps.injectSetup === 'function') deps.injectSetup(agent)
+    return jsonResponse({ choice }, 200, moduleIdentity(deps))
+  } catch (error) {
+    return jsonResponse({ error: errorText(error) }, 500)
+  }
 }
 
 /** A JSON response with the given status and optional extra headers. */
@@ -78,6 +122,7 @@ export async function clientStateResponse(deps, request) {
       mode: deps.mode,
       sessionCount: deps.roots === undefined ? 1 : deps.roots.countOf(root),
       goal: goalOf(deps, agent),
+      setupChoice: deps.state.agents.sessionOf(agent.id).setupChoice,
       updatedAt: new Date().toISOString(),
     })
     return jsonResponse(view, 200, moduleIdentity(deps))
@@ -92,11 +137,20 @@ export async function clientStateResponse(deps, request) {
  * remote). `deps.agentOf` is wired by the Lead as `id => ctx.agents.get(id)`.
  */
 export function registerClientState(ctx, deps) {
-  return ctx.effect(() =>
-    ctx.webServer.register({
+  return ctx.effect(() => {
+    const state = ctx.webServer.register({
       kind: 'exact',
       path: CLIENT_STATE_PATH,
       resource: request => clientStateResponse(deps, request),
-    }),
-  )
+    })
+    const setup = ctx.webServer.register({
+      kind: 'exact',
+      path: SETUP_PATH,
+      resource: request => setupResponse(deps, request),
+    })
+    return () => {
+      state()
+      setup()
+    }
+  })
 }

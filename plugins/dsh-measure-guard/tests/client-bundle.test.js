@@ -88,3 +88,34 @@ test('the bundle uses theme tokens for every style', () => {
   assert.match(source, /--ds-font-family-code/)
   assert.equal(/['"]#[0-9a-fA-F]{3,8}['"]/.test(source), false, 'no literal color values')
 })
+
+/** The keys of one embedded dictionary literal. */
+const dictionaryKeys = name => {
+  const match = new RegExp(`const ${name} = \\{([\\s\\S]*?)\\n    \\}`).exec(source)
+  assert.ok(match, `the bundle declares the ${name} dictionary`)
+  return [...match[1].matchAll(/^\s{6}([A-Za-z_][A-Za-z0-9_]*):/gm)].map(entry => entry[1])
+}
+
+test('the en and zh dictionaries carry the same keys (dictionary parity)', () => {
+  const en = dictionaryKeys('en')
+  const zh = dictionaryKeys('zh')
+  assert.ok(en.length > 0)
+  assert.deepEqual(zh, en)
+})
+
+test('the band setup actions are localized and post to the setup route', () => {
+  for (const key of ['setupSetUp', 'setupOff']) {
+    assert.match(source, new RegExp(`^\\s{6}${key}:`, 'm'))
+  }
+  assert.match(source, /Set up Measure/)
+  assert.match(source, /Turn off for session/)
+  assert.match(source, /设置 Measure/)
+  assert.match(source, /本会话关闭/)
+  assert.match(source, /fetch\('\/measure-guard\/setup'/)
+  assert.match(source, /JSON\.stringify\(\{ sessionId, choice \}\)/)
+})
+
+test('the band shows the setup actions only while the offer has no answer', () => {
+  assert.match(source, /props\.setup\.choice !== null/)
+  assert.match(source, /h\(SetupActions, \{/)
+})

@@ -25,6 +25,8 @@ window.__ModuleLoader__.load({
       problems: 'Problems',
       guards: 'Guards',
       goal: 'Goal',
+      setupSetUp: 'Set up Measure',
+      setupOff: 'Turn off for session',
       guardsOn: 'on',
       guardsSession: 'off for this session',
       guardsRepo: 'off for this repository',
@@ -40,6 +42,8 @@ window.__ModuleLoader__.load({
       problems: '问题',
       guards: '守卫',
       goal: '目标',
+      setupSetUp: '设置 Measure',
+      setupOff: '本会话关闭',
       guardsOn: '已开启',
       guardsSession: '本会话已关闭',
       guardsRepo: '本仓库已关闭',
@@ -203,13 +207,39 @@ window.__ModuleLoader__.load({
       )
     }
 
-    /** The band body: the Host band line, the localized bypass and the problems. */
+    /** Answer the setup offer from the band: one POST, then refetch the view. */
+    const postSetup = (sessionId, choice, done) => {
+      return fetch('/measure-guard/setup', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ sessionId, choice }),
+      })
+        .then(() => done())
+        .catch(() => done())
+    }
+
+    /** The setup answer buttons, shown while the offer has no answer. */
+    function SetupActions(props) {
+      const t = props.t || fallbackOf(en)
+      if (props.setup === null || props.setup === undefined || props.setup.choice !== null) return null
+      return h(
+        'span',
+        { style: { display: 'inline-flex', gap: '6px' } },
+        h('button', { type: 'button', style: buttonStyle, onClick: () => postSetup(props.sessionId, 'setup', props.answered) }, t('setupSetUp')),
+        h('button', { type: 'button', style: buttonStyle, onClick: () => postSetup(props.sessionId, 'off', props.answered) }, t('setupOff')),
+      )
+    }
+
+    /** The band body: the Host band line, the localized bypass, the goal, the setup answer, and the problems. */
     function BandBody(props) {
       const t = props.t || fallbackOf(en)
       const sessionId = props.session && typeof props.session.sessionId === 'string' ? props.session.sessionId : null
-      const view = useStatusView(sessionId)
+      const [revision, setRevision] = React.useState(0)
+      const view = useStatusView(sessionId, revision)
       if (view === null) return null
-      const band = view.band === null || view.band === undefined ? t('setup') : view.band
+      const setupText = view.setup && view.setup.text ? view.setup.text : null
+      const band = setupText !== null ? setupText : view.band === null || view.band === undefined ? t('setup') : view.band
+      const answered = () => setRevision(value => value + 1)
       return h(
         'div',
         { 'data-measure-guard': 'band', style: bandStyle },
@@ -224,6 +254,7 @@ window.__ModuleLoader__.load({
               { style: { color: 'var(--dsw-alias-label-secondary)' } },
               t('goal') + ': ' + view.goal.phase + ' · round ' + view.goal.round + '/' + view.goal.maxRounds + ' · ' + view.goal.objective,
             ),
+        h(SetupActions, { t, sessionId, setup: view.setup, answered }),
         h(ProblemList, { problems: view.problems, t }),
       )
     }

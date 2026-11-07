@@ -80,7 +80,7 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   const updatedAt = '2026-11-07T03:00:00.000Z'
   const view = clientView({ snapshot, guardsOff: 'session', problems, mode: 'guard', updatedAt })
 
-  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal'])
+  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal', 'setup'])
   assert.equal(view.band, bandLine(snapshot, 'session'))
   assert.match(view.band, /guards off for this session/)
   assert.equal(view.status, statusLines(snapshot, 'session').join('\n'))
@@ -89,6 +89,19 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   assert.notEqual(view.problems, problems)
   assert.equal(view.updatedAt, updatedAt)
   assert.equal(view.goal, null)
+  assert.deepEqual(view.setup, { choice: null, text: null })
+})
+
+test('the setup view is offered only without a measure/ folder', () => {
+  const noMeasure = snapshotOf({ hasMeasure: false, tracks: [], active: null, inProgressCount: 0 })
+  const offer = clientView({ snapshot: noMeasure, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1 })
+  assert.deepEqual(offer.setup, { choice: null, text: 'Measure · this repository has no measure/ folder.' })
+
+  const off = clientView({ snapshot: noMeasure, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, setupChoice: 'off' })
+  assert.deepEqual(off.setup, { choice: 'off', text: null })
+
+  const requested = clientView({ snapshot: noMeasure, guardsOff: null, problems: [], mode: 'guard', updatedAt: 1, setupChoice: 'setup' })
+  assert.deepEqual(requested.setup, { choice: 'setup', text: 'Measure · setup requested.' })
 })
 
 test('clientView carries the goal summary and its line', () => {
@@ -187,12 +200,15 @@ test('registerClientState registers the exact state route and returns the dispos
   const dispose = registerClientState(ctx, deps)
 
   assert.equal(ctx.effects, 1)
-  assert.equal(ctx.registrations.length, 1)
-  const route = ctx.registrations[0]
+  assert.equal(ctx.registrations.length, 2)
+  const [route, setup] = ctx.registrations
   assert.equal(route.kind, 'exact')
   assert.equal(route.path, '/measure-guard/state')
   assert.equal(typeof route.resource, 'function')
   assert.equal(Object.hasOwn(route, 'handler'), false)
+  assert.equal(setup.kind, 'exact')
+  assert.equal(setup.path, '/measure-guard/setup')
+  assert.equal(typeof setup.resource, 'function')
 
   const response = await route.resource(requestOf('?sessionId=session-1'))
   assert.equal(response.status, 200)
@@ -200,7 +216,7 @@ test('registerClientState registers the exact state route and returns the dispos
 
   assert.equal(typeof dispose, 'function')
   dispose()
-  assert.equal(ctx.disposed, 1)
+  assert.equal(ctx.disposed, 2)
 })
 
 test('clientView names a second writer in the band, and only then', () => {

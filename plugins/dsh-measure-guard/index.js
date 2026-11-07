@@ -4,7 +4,7 @@
 // (design §2).
 import { homedir } from 'node:os'
 
-import { parseModeOf, createState } from './src/state.js'
+import { parseModeOf, createState, newUserMessage } from './src/state.js'
 import { Snapshots, canonicalRoot, gitStatus, makeIo } from './src/snapshot.js'
 import { RootWriters } from './src/roots.js'
 import { attachAgent } from './src/context.js'
@@ -15,6 +15,7 @@ import { createDecisions, installToolGuard, postCommitListener, postExecuteListe
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { goalService } from './src/goal.js'
+import { SETUP_PROMPT } from './src/setup.js'
 import { registerClientState } from './src/client-state.js'
 
 export const name = 'measure-guard'
@@ -169,6 +170,17 @@ export function apply(ctx, config) {
     // The installed entry identifies itself on the state route; the CLI's live
     // check compares this URL with the installed copy.
     moduleUrl: import.meta.url,
+    // The setup button's "Set up Measure" answer delivers the shared core's
+    // setup prompt to the receiving agent exactly once (Story S5).
+    injectSetup: agent => {
+      if (agent === null || agent === undefined || typeof agent.inject !== 'function') return
+      agent.inject(
+        newUserMessage({
+          content: [{ type: 'text', text: SETUP_PROMPT }],
+          source: { kind: 'measure-guard', form: 'notice', summary: 'setup requested' },
+        }),
+      )
+    },
   })
 
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the
