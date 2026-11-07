@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Gates and closeout
 
 - [x] Task 2.1: run the node suite (301/301), both parity scripts, and `bash tests/spec_review_gate/run.sh` (11/11) `0686748`
-- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_skill_doctor_fix4_20261109` and record the manifest-only FAIL
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_skill_doctor_fix4_20261109` and record the manifest-only FAIL `8b7d382`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Gates and closeout' (Protocol in workflow.md)
