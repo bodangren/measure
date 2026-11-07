@@ -97,7 +97,7 @@ _Story ref: spec.md#story-s6_
 - [ ] Task 6.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md` (resolve the second-writer and setup-button rows, add the new findings), `metadata.json`, archive the track, update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase S6: Documentation, live check, and track closeout' (Protocol in workflow.md)
 
-## Phase S7: Registry format tolerance for real projects
+## Phase S7: Registry format tolerance for real projects [checkpoint: a893b3b]
 
 _Story ref: spec.md#story-s7_
 
@@ -117,4 +117,4 @@ not overlap the S1–S6 write scopes.
 - [x] Task 7.3: Green: change the canonical mod parser, copy it byte-identically into the OpenCode and DSH core folders, update both detectors, and run the parity gates `92d088e`
     - [ ] `node --test plugins/dsh-measure-guard/tests/*.test.js` passes and both parity scripts print ok; the mod suite (`claude plugin test mods/measure-guard`) and the OpenCode suite (`bun test plugins/opencode-measure-guard`) pass where those runners exist — this host has neither, so the parity gates plus the shared DSH suite are the recorded substitute evidence
 - [x] Task 7.4: Docs: README known-limits note (both registry shapes are read), `CHANGELOG.md` entry; record the live Mediarr parse evidence under `measure/runs/dsh_measure_evolve_20261107/` `a754361`
-- [ ] Task: Measure - User Manual Verification 'Phase S7: Registry format tolerance for real projects' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S7: Registry format tolerance for real projects' (Protocol in workflow.md) `a893b3b`
