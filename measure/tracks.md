@@ -2,30 +2,11 @@
 
 This file tracks all major tracks for the Measure project.
 
----
+## Active Tracks
 
-- [x] **Track: Add lessons-learned memory and tech debt tracking to Measure workflow**
-  *Link: [./archive/lessons_learned_20260307/](./archive/lessons_learned_20260307/)*
-
-- [x] [Visual Refresh: Define Unique Identity](archive/visual_refresh_20260425/index.md)
-
----
-
-- [x] **Track: Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks**
-  *Link: [./archive/scrum_tracks_20260525/](./archive/scrum_tracks_20260525/)*
-
----
-
-- [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
-  *Link: [./archive/graph_integration_20260525/](./archive/graph_integration_20260525/)*
-
----
-
-- [x] **Track: Track sets: create a related set of tracks in one pass (issue #4)**
-  *Link: [./archive/track_sets_20261009/](./archive/track_sets_20261009/)*
-  *One questioning phase, one overview page, two review gates, and a dependency record for a related set of tracks. Three fresh-agent reviews.*
-
----
+- [~] **Track: DSH Measure registry consolidation**
+  *Link: [./tracks/dsh_measure_registry_fix2_20261107/](./tracks/dsh_measure_registry_fix2_20261107/)*
+  *Consolidates the registry to one layout (every archive directory exactly once, full metadata descriptions), hardens the structural check with attribution rules and isolated negative fixtures, and corrects the archived registry track's record. Pushes per phase.*
 
 ---
 
@@ -35,30 +16,15 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - Daily Automation Dashboard — the daily reports stopped, and a dashboard already exists.
   *Link: [./archive/daily_automation_dashboard_20260527/](./archive/daily_automation_dashboard_20260527/)*
+
 - Track Dependency Graph — no current need, and the CLI breaks the no-build-tools rule.
   *Link: [./archive/track_dependency_graph_20260527/](./archive/track_dependency_graph_20260527/)*
+
 - Multi-Project Portfolio View — Fleet Commander owns the multi-project view.
   *Link: [./archive/multi_project_portfolio_view_20260527/](./archive/multi_project_portfolio_view_20260527/)*
+
 - Agent Performance Benchmarking — Fleet Commander owns model routing. `rubric.json` stays for a later audit.
   *Link: [./archive/agent_performance_benchmarking_20260527/](./archive/agent_performance_benchmarking_20260527/)*
-
----
-
-- [x] **Track: measure-guard: Claude Code mod that guards the Measure workflow**
-  *Link: [./archive/measure_guard_20261004/](./archive/measure_guard_20261004/)*
-  *Mod that shows the plan state and guards edits, commits, and closeouts.*
-
----
-
-- [x] **Track: Skill distribution repair: install skills from main by cron, and remove automation-supervisor.py**
-  *Link: [./archive/skill_distribution_repair_20261005/](./archive/skill_distribution_repair_20261005/)*
-  *Copies of the skills and agent roles from `main` by cron, with local edit protection. Deletes the superseded supervisor in all projects.*
-
----
-
-- [x] **Track: OpenCode plugin: measure-guard for OpenCode 2, with agents, commands, a terminal band, and installer targets**
-  *Link: [./archive/opencode_plugin_20261021/](./archive/opencode_plugin_20261021/)*
-  *Server and terminal plugin package `plugins/opencode-measure-guard/`, shared core by copy with a parity gate, the rule in the `measure-orchestrator` agent.*
 
 ---
 
@@ -98,15 +64,15 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure rehearsal follow-up corrections**
   *Link: [./archive/dsh_measure_rehearsal_followup_20261107/](./archive/dsh_measure_rehearsal_followup_20261107/)*
-  *Correct the rehearsal track's overclaims and rules, harden the fixture contract test to assert a real commit, define the acceptance fields, add the cleanup checks, and record the review with an exp…*
+  *Correct the rehearsal track's overclaims and rules, harden the fixture contract test to assert a real commit, define the acceptance fields, add the cleanup checks, and record the review with an explicit Accepted Risk for the deferred isolated-session strict path*
 
 - [x] **Track: DSH Measure isolated-session rehearsal**
   *Link: [./archive/dsh_measure_isolated_session_20261107/](./archive/dsh_measure_isolated_session_20261107/)*
-  *Prove the guard's strict deny in a disposable project by driving a real isolated session whose working directory is the fixture, using the authenticated host session API from the browser bridge con…*
+  *Prove the guard's strict deny in a disposable project by driving a real isolated session whose working directory is the fixture, using the authenticated host session API from the browser bridge context*
 
 - [x] **Track: DSH Measure semantic reload**
   *Link: [./archive/dsh_measure_reload_20261107/](./archive/dsh_measure_reload_20261107/)*
-  *Make bin/measure-dsh reload and the unchanged-block install change the composed config semantically (a reloadNonce config value) instead of a YAML comment, so the loader recomposes and the plugin r…*
+  *Make bin/measure-dsh reload and the unchanged-block install change the composed config semantically (a reloadNonce config value) instead of a YAML comment, so the loader recomposes and the plugin re-reads its caches*
 
 - [x] **Track: DSH Measure reload follow-up corrections**
   *Link: [./archive/dsh_measure_reload_followup_20261107/](./archive/dsh_measure_reload_followup_20261107/)*
@@ -114,7 +80,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure mid-red gate: rename-aware committed files**
   *Link: [./archive/dsh_measure_midred_rename_20261107/](./archive/dsh_measure_midred_rename_20261107/)*
-  *Make the orchestrator checker's committed_files rename-aware (union the old and new path), so the mid-red gate catches a production file renamed into tests/; add the regression test and update the…*
+  *Make the orchestrator checker's committed_files rename-aware (union the old and new path), so the mid-red gate catches a production file renamed into tests/; add the regression test and update the records*
 
 - [x] **Track: DSH Measure mid-red rename follow-up**
   *Link: [./archive/dsh_measure_midred_followup_20261107/](./archive/dsh_measure_midred_followup_20261107/)*
@@ -122,7 +88,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure mid-red record reconciliation**
   *Link: [./archive/dsh_measure_midred_records_20261107/](./archive/dsh_measure_midred_records_20261107/)*
-  *Reconcile the mid-red rename records: closeout-clean archived plans (task markers + SHAs), the missing tests/a.py absence assertion, the archived follow-up spec-review.md, and the archived mid-red…*
+  *Reconcile the mid-red rename records: closeout-clean archived plans (task markers + SHAs), the missing tests/a.py absence assertion, the archived follow-up spec-review.md, and the archived mid-red spec correction note*
 
 - [x] **Track: DSH Measure mid-red evidence and record precision**
   *Link: [./archive/dsh_measure_midred_evidence_20261107/](./archive/dsh_measure_midred_evidence_20261107/)*
@@ -134,11 +100,11 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure commit guard: token-scan `git add` and record corrections**
   *Link: [./archive/dsh_measure_add_quoting_followup_20261107/](./archive/dsh_measure_add_quoting_followup_20261107/)*
-  *Replace the segment regex with a whole-command token scan (continuations, quoted separators, real comments), correct the shipped quoting record, and reconcile the mid-red evidence/record review (le…*
+  *Replace the segment regex with a whole-command token scan (continuations, quoted separators, real comments), correct the shipped quoting record, and reconcile the mid-red evidence/record review (ledger tracked, archived plans closeout-clean, definition, wording)*
 
 - [x] **Track: DSH Measure token scan follow-up**
   *Link: [./archive/dsh_measure_token_scan_followup_20261107/](./archive/dsh_measure_token_scan_followup_20261107/)*
-  *Handle double-quoted backslash-newline continuations and require git at command position in the token scan; add their tests; reconcile the token-scan follow-up record (task SHAs, ledger format, evi…*
+  *Handle double-quoted backslash-newline continuations and require git at command position in the token scan; add their tests; reconcile the token-scan follow-up record (task SHAs, ledger format, evidence Overview wording)*
 
 - [x] **Track: DSH Measure commit scan fix2**
   *Link: [./archive/dsh_measure_scan_fix2_20261107/](./archive/dsh_measure_scan_fix2_20261107/)*
@@ -150,15 +116,15 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: Allow list for the measure guard**
   *Link: [./archive/guard_allow_list_20261101/](./archive/guard_allow_list_20261101/)*
-  *Allow list for the measure guard: a per-repository file measure/guard-allow names folders that may get writes while no task is [~] (PM request A-41, approved by Daniel on 2026-11-01).*
+  *Allow list for the measure guard: a per-repository file measure/guard-allow names folders that may get writes while no task is [~] (PM request A-41, approved by Daniel on 2026-11-01). Shared core of the Claude Code mod and the OpenCode plugin; the advantage-pr list for its scheduled jobs.*
 
 - [x] **Track: Spec review gate, finding dispositions, and doc drift check**
   *Link: [./archive/spec_review_gate_20261030/](./archive/spec_review_gate_20261030/)*
-  *Spec review gate, finding dispositions, and doc drift check: a fresh-subagent review of spec.md and plan.md in new-track, a measure-spec-review orchestrator role with a checker gate, four dispositi…*
+  *Spec review gate, finding dispositions, and doc drift check: a fresh-subagent review of spec.md and plan.md in new-track, a measure-spec-review orchestrator role with a checker gate, four dispositions for routed review findings, and a doc drift detector in the weekly audit. Ideas adapted from Google's Elephant-Goldfish Model (Apache-2.0).*
 
 - [x] **Track: Skill doctor fixes for the Measure skills**
   *Link: [./archive/skill_doctor_fixes_20261031/](./archive/skill_doctor_fixes_20261031/)*
-  *Skill doctor fixes for the Measure skills: fix the findings of the npm skill-doctor 0.1.0 static check and of the Claude Code /skill-doctor usage report for skills/measure, skills/measure-orchestra…*
+  *Skill doctor fixes for the Measure skills: fix the findings of the npm skill-doctor 0.1.0 static check and of the Claude Code /skill-doctor usage report for skills/measure, skills/measure-orchestrator, skills/build-graph, and the claude-skills/measure copy (PM task A-40).*
 
 - [x] **Track: DSH Measure shell grammar: heredoc- and quote-aware scanning**
   *Link: [./archive/dsh_measure_shell_grammar_20261107/](./archive/dsh_measure_shell_grammar_20261107/)*
@@ -166,8 +132,36 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: Visual Refresh: Define Unique Identity**
   *Link: [./archive/visual_refresh_20260425/](./archive/visual_refresh_20260425/)*
-  *Define the project's unique visual identity: palette, typography, and component language.*
+  *Visual Refresh: Define Unique Identity*
 
 - [x] **Track: DSH Measure tracks registry cleanup**
   *Link: [./archive/dsh_measure_registry_20261107/](./archive/dsh_measure_registry_20261107/)*
-  *Rebuilt the tracks registry into one entry per archive directory with one description (37 directories, 0 merged description blocks) and added tests/dsh/test-registry.sh to the CLI suite (11/11). 8 tasks, 3 checkpoints, pushed per phase.*
+  *Rebuild the measure/tracks.md Archived Tracks section (one entry per archive dir with one description) and add a structural registry check to the CLI suite*
+
+- [x] **Track: Add lessons-learned memory and tech debt tracking to Measure workflow**
+  *Link: [./archive/lessons_learned_20260307/](./archive/lessons_learned_20260307/)*
+  *Add lessons-learned memory and tech debt tracking to Measure workflow*
+
+- [x] **Track: Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks**
+  *Link: [./archive/scrum_tracks_20260525/](./archive/scrum_tracks_20260525/)*
+  *Add scrum-style user stories, sprint metadata, and velocity tracking to Measure tracks*
+
+- [x] **Track: Integrate build-graph into Measure new-track, implement, review, and setup workflows**
+  *Link: [./archive/graph_integration_20260525/](./archive/graph_integration_20260525/)*
+  *Integrate build-graph into Measure new-track, implement, review, and setup workflows*
+
+- [x] **Track: Track sets: create a related set of tracks in one pass (issue #4)**
+  *Link: [./archive/track_sets_20261009/](./archive/track_sets_20261009/)*
+  *Track sets: create a related set of tracks in one pass (issue #4)*
+
+- [x] **Track: measure-guard: Claude Code mod that guards the Measure workflow**
+  *Link: [./archive/measure_guard_20261004/](./archive/measure_guard_20261004/)*
+  *measure-guard: a Claude Code mod that shows the Measure plan state and guards edits, commits, and closeouts (from mods/measure-guard/DESIGN.md)*
+
+- [x] **Track: OpenCode plugin: measure-guard for OpenCode 2, with agents, commands, a terminal band, and installer targets**
+  *Link: [./archive/opencode_plugin_20261021/](./archive/opencode_plugin_20261021/)*
+  *OpenCode plugin: measure-guard for OpenCode 2 (server and terminal parts), Measure agents, commands, installer targets, and documents*
+
+- [x] **Track: Skill distribution repair: install skills from main by cron, and remove automation-supervisor.py**
+  *Link: [./archive/skill_distribution_repair_20261005/](./archive/skill_distribution_repair_20261005/)*
+  *Skill distribution repair: install the Measure skills and agent roles from main by cron, protect local edits, and remove automation-supervisor.py everywhere*
