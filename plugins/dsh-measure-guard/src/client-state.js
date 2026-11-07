@@ -31,6 +31,12 @@ export const clientView = ({ snapshot, guardsOff, problems, mode, updatedAt, ses
     problems: [...problems],
     updatedAt,
     goal: goalSummary(goal),
+    mode:
+      mode === null || mode === undefined
+        ? null
+        : typeof mode === 'string'
+          ? { value: mode, source: 'config' }
+          : { value: mode.value, source: mode.source },
     setup: {
       choice: setupChoice === 'off' || setupChoice === 'setup' ? setupChoice : null,
       // The offer text exists only where the setup question applies: a git
@@ -124,6 +130,7 @@ export async function clientStateResponse(deps, request) {
       mode: deps.mode,
       sessionCount: deps.roots === undefined ? 1 : deps.roots.countOf(root),
       goal: goalOf(deps, agent),
+      mode: typeof deps.modeOf === 'function' ? await deps.modeOf(root) : { value: deps.configMode ?? deps.mode ?? 'guard', source: 'config' },
       setupChoice: deps.state.agents.sessionOf(agent.id).setupChoice,
       updatedAt: new Date().toISOString(),
     })

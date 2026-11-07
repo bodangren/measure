@@ -25,6 +25,7 @@ window.__ModuleLoader__.load({
       problems: 'Problems',
       guards: 'Guards',
       goal: 'Goal',
+      mode: 'Mode',
       setupSetUp: 'Set up Measure',
       setupOff: 'Turn off for session',
       guardsOn: 'on',
@@ -42,6 +43,7 @@ window.__ModuleLoader__.load({
       problems: '问题',
       guards: '守卫',
       goal: '目标',
+      mode: '模式',
       setupSetUp: '设置 Measure',
       setupOff: '本会话关闭',
       guardsOn: '已开启',
@@ -247,6 +249,13 @@ window.__ModuleLoader__.load({
         view.guardsOff === null || view.guardsOff === undefined
           ? null
           : h('span', { style: { color: 'var(--dsw-alias-label-secondary)' } }, t('guards') + ': ' + guardsLabel(t, view.guardsOff)),
+        view.mode === null || view.mode === undefined
+          ? null
+          : h(
+              'span',
+              { style: { color: 'var(--dsw-alias-label-secondary)' } },
+              t('mode') + ': ' + view.mode.value + ' (' + view.mode.source + ')',
+            ),
         view.goal === null || view.goal === undefined
           ? null
           : h(

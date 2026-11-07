@@ -16,6 +16,7 @@ import { createDecisions, installToolGuard, postCommitListener, postExecuteListe
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { goalService } from './src/goal.js'
+import { SessionModes, effectiveMode } from './src/modes.js'
 import { loadedDigest } from './src/digest.js'
 import { SETUP_PROMPT } from './src/setup.js'
 import { registerClientState } from './src/client-state.js'
@@ -49,6 +50,8 @@ export function apply(ctx, config) {
   const log = text => console.warn(text)
   const mode = parseModeOf(config?.mode, log)
   const state = createState()
+  /** The in-memory session mode overrides (Story S1); a reload drops them. */
+  const sessionModes = new SessionModes()
   const io = makeIo(ctx)
   const snapshots = new Snapshots(io)
   const roots = new RootWriters()
@@ -82,7 +85,8 @@ export function apply(ctx, config) {
   const commitDue = new Set()
 
   const deps = {
-    mode,
+    configMode: mode,
+    sessionModes,
     state,
     io: guardIo,
     snapshots,
@@ -104,6 +108,9 @@ export function apply(ctx, config) {
    * without the method, or a throwing call, keeps today's behavior and treats
    * every agent as a root.
    */
+  /** The effective mode of a canonical root (Story S1): repository > session > config. */
+  deps.modeOf = root => effectiveMode(deps, root)
+
   /**
    * The goal service as an optional capability (Story S4). It is not in
    * `inject`, so Cordis does not order it before this plugin; the value is
@@ -179,7 +186,7 @@ export function apply(ctx, config) {
     rootOf,
     snapshots,
     state,
-    mode,
+    modeOf: root => deps.modeOf(root),
     roots,
     // The installed entry identifies itself on the state route; the CLI's live
     // check compares this URL with the installed copy.

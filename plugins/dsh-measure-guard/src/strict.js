@@ -53,12 +53,13 @@ export function noteRedFailure(state, agentId, snapshot, command) {
  * Red record is an aid and must never break a finished tool call.
  */
 export async function recordRed(deps, exec, result) {
-  if (deps.mode !== 'strict') return
   const agent = exec?.agent
   if (agent === undefined || agent === null) return
   try {
     const dir = typeof deps.dirOf === 'function' ? deps.dirOf(agent) : null
     if (dir === undefined || dir === null) return
+    const effective = typeof deps.modeOf === 'function' ? await deps.modeOf(await deps.rootOf(agent)) : { value: deps.configMode ?? deps.mode }
+    if (effective.value !== 'strict') return
     const mutation = await normalizeMutation(exec.name, exec.arguments, dir, deps.io)
     const exitCode = result?.value?.exitCode
     const failed = result?.isError === true || (typeof exitCode === 'number' && exitCode !== 0)

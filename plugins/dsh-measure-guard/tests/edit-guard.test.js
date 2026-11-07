@@ -241,3 +241,48 @@ test('a relative shell target resolves against the session directory', async () 
   const decision = await prepareDecision(deps, shellExec('echo hi > out.txt'))
   assert.match(decision.denial ?? '', /is in progress/)
 })
+
+// ---- the effective mode (Story S1) ----------------------------------------
+
+const { SessionModes, effectiveMode } = await import('../src/modes.js')
+const { Agents: ModeAgents, Turns: ModeTurns } = await import('../src/state.js')
+
+const modeDepsOf = ({ repoMode = null, sessionMode = null } = {}) => {
+  const state = {
+    agents: new ModeAgents(),
+    turns: new ModeTurns(),
+    bypass: { async get() { return null } },
+    repos: { async modeOf() { return repoMode }, async setMode() {} },
+  }
+  const sessionModes = new SessionModes()
+  if (sessionMode !== null) sessionModes.set('/repo', sessionMode)
+  const deps = {
+    state,
+    sessionModes,
+    configMode: 'guard',
+    io: ioOf(),
+    snapshots: { async get() { return snapshotOf() }, invalidate() {} },
+    async rootOf() { return '/repo' },
+    dirOf() { return '/repo' },
+  }
+  deps.modeOf = root => effectiveMode(deps, root)
+  return deps
+}
+
+test('a session strict override turns a source edit into the strict deny', async () => {
+  const deps = modeDepsOf({ sessionMode: 'strict' })
+  const decision = await prepareDecision(deps, { name: 'edit', agent, arguments: { file_path: '/repo/src/app.js', old_string: 'a', new_string: 'b' } })
+  assert.match(decision.denial ?? '', /write a failing test first/)
+})
+
+test('a session advise override allows the edit', async () => {
+  const deps = modeDepsOf({ sessionMode: 'advise' })
+  const decision = await prepareDecision(deps, { name: 'edit', agent, arguments: { file_path: '/repo/src/app.js', old_string: 'a', new_string: 'b' } })
+  assert.equal(decision.denial, undefined)
+})
+
+test('a repository override wins over the session override for the decision', async () => {
+  const deps = modeDepsOf({ repoMode: 'advise', sessionMode: 'strict' })
+  const decision = await prepareDecision(deps, { name: 'edit', agent, arguments: { file_path: '/repo/src/app.js', old_string: 'a', new_string: 'b' } })
+  assert.equal(decision.denial, undefined)
+})

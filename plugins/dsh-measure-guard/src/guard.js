@@ -32,9 +32,12 @@ import { shellWritePaths } from './shell.js'
  */
 export async function guardContext(deps, agent, root) {
   const snapshot = (await deps.snapshots.get(root)) ?? null
+  const effective = typeof deps.modeOf === 'function'
+    ? await deps.modeOf(root)
+    : { value: deps.configMode ?? deps.mode, source: 'config' }
   return {
     snapshot,
-    mode: deps.mode,
+    mode: effective.value,
     setupChoice: deps.state.agents.sessionOf(agent.id).setupChoice,
     guardsOff: await deps.state.bypass.get(root),
   }
@@ -151,9 +154,9 @@ export async function closeoutGuardFor(deps, agent, root, mutation) {
  * parse error leaves the shared decision null. The first denial wins.
  */
 export async function tddGuardFor(deps, agent, root, mutation) {
-  if (deps.mode !== 'strict') return null
   if (mutation === null || mutation === undefined || mutation.kind !== 'file') return null
   const context = await guardContext(deps, agent, root)
+  if (context.mode !== 'strict') return null
   if (context.snapshot === null || !context.snapshot.hasMeasure || context.snapshot.parseError !== null) return null
   const red = strictRed(deps.state, agent.id, context.snapshot)
   for (const path of mutation.paths ?? []) {
@@ -174,9 +177,9 @@ export async function tddGuardFor(deps, agent, root, mutation) {
  */
 export async function commitGuardFor(deps, agent, root, mutation) {
   const none = { denial: undefined, note: null, commitDue: false }
-  if (deps.mode !== 'strict') return none
   if (mutation === null || mutation === undefined || mutation.kind !== 'shell') return none
   const context = await guardContext(deps, agent, root)
+  if (context.mode !== 'strict') return none
   if (context.snapshot === null || !context.snapshot.hasMeasure || context.snapshot.parseError !== null) return none
   const check = await commitCheck(deps, context, mutation.command)
   return { denial: check.decision?.deny, note: check.note, commitDue: check.commitDue }
@@ -241,7 +244,8 @@ export async function onTurnStopping(deps, { agent, root, payload }) {
   }
   session.problems = [...problems]
 
-  if (deps.mode !== 'strict' || problems.length === 0) return problems
+  const effective = typeof deps.modeOf === 'function' ? await deps.modeOf(root) : { value: deps.configMode ?? deps.mode }
+  if (effective.value !== 'strict' || problems.length === 0) return problems
   const action = stopAction('strict', problems, turn.blocks)
   if (action.block === null || turn.blocks >= MAX_BLOCKS) return problems
   if (typeof agent.steer !== 'function') return problems
@@ -328,13 +332,14 @@ const MUTATION_TOOLS = new Set(['edit', 'write', 'apply_patch', 'str_replace_edi
 export async function prepareDecision(deps, exec) {
   const none = { denial: undefined, note: null }
   if (exec === undefined || exec === null) return none
-  // Mode `advise` allows every guard; the new Story S3/S2 denies obey that too.
-  if (deps.mode === 'advise') return none
   const { agent } = exec
   if (agent === undefined || agent === null) return none
   if (!MUTATION_TOOLS.has(exec.name)) return none
 
   const root = await deps.rootOf(agent)
+  // Mode `advise` allows every guard; every deny-producing check obeys it.
+  const effective = typeof deps.modeOf === 'function' ? await deps.modeOf(root) : { value: deps.configMode ?? deps.mode }
+  if (effective.value === 'advise') return none
   const dir = typeof deps.dirOf === 'function' ? deps.dirOf(agent) : root
   if (dir === undefined || dir === null) return none
 

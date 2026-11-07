@@ -112,8 +112,22 @@ patch file).
 | `guard` (default) | Edit, closeout, and end-of-turn guards; the band and the reminder. |
 | `strict` | `guard` plus the end-of-turn hold-open (at most twice per turn), the TDD Red-before-Green guard, and the commit format/no-task guard with its post-commit reminder. |
 
-Change the mode by editing the managed block's `config.mode` (the profile
+Change the default by editing the managed block's `config.mode` (the profile
 recomposes on save) or by re-running `install --mode`.
+
+The effective mode of a repository is the persisted per-repository override,
+then the in-memory session override, then `config.mode`. From the chat:
+
+```
+/measure-mode            # reports the effective mode and its source
+/measure-mode strict     # this session only
+/measure-mode strict repo  # persisted for the repository
+/measure-mode default    # clear the session override
+/measure-mode default repo  # clear the repository override
+```
+
+The state route carries `mode: { value, source }`, the band shows the effective
+mode, and `measure_status` appends `Mode: <value> (<source>)`.
 
 ## Goal binding
 

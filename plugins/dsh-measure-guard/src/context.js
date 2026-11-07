@@ -76,7 +76,8 @@ export function preStepHook(agent, root, deps) {
     const key = noteKey(snapshot)
     if (key !== null && key !== session.notedKey) {
       session.notedKey = key
-      const note = taskNote(snapshot, deps.mode)
+      const effective = typeof deps.modeOf === 'function' ? await deps.modeOf(root) : { value: deps.configMode ?? deps.mode }
+      const note = taskNote(snapshot, effective.value)
       if (note !== null) notes.push({ text: note, summary: 'active task changed' })
     }
     if (notes.length === 0) return decision
@@ -115,7 +116,7 @@ export function compactionHandler(state, agentId, event) {
  * stoppings hold the turn open instead). `deps.computeProblems` returns the
  * problems that `onTurnStopping` stored for this turn.
  */
-export function endTurnHandler(agentId, root, event, deps) {
+export async function endTurnHandler(agentId, root, event, deps) {
   const turnNumber = event?.data?.turn
   if (turnNumber === undefined || turnNumber === null) return []
   const turn = deps.state.turns.turnOf(agentId, turnNumber)
@@ -132,7 +133,8 @@ export function endTurnHandler(agentId, root, event, deps) {
   const session = deps.state.agents.sessionOf(agentId)
   session.problems = [...problems]
   const blocks = turn.blocks ?? 0
-  const remind = deps.mode === 'guard' || (deps.mode === 'strict' && blocks >= MAX_BLOCKS)
+  const effective = typeof deps.modeOf === 'function' ? await deps.modeOf(root) : { value: deps.configMode ?? deps.mode }
+  const remind = effective.value === 'guard' || (effective.value === 'strict' && blocks >= MAX_BLOCKS)
   if (remind && problems.length > 0) session.reminder = reminderText(problems)
   deps.state.turns.endTurn(agentId, turnNumber)
   return problems

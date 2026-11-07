@@ -18,11 +18,11 @@ export const STATUS_TOOL_PARAMETERS = { type: 'object', properties: {}, addition
  * The status text: the shared core's statusLines() joined, then the task note
  * when there is one (the OpenCode adapter's behaviour).
  */
-export function statusText({ snapshot = null, guardsOff = null, mode = 'guard', goal = null } = {}) {
+export function statusText({ snapshot = null, guardsOff = null, mode = 'guard', modeLine = null, goal = null } = {}) {
   const lines = statusLines(snapshot, guardsOff).join('\n')
   const note = snapshot === null ? null : taskNote(snapshot, mode)
   const goalText = goalLine(goal)
-  const parts = [lines, goalText, note].filter(part => part !== null && part !== '')
+  const parts = [lines, modeLine, goalText, note].filter(part => part !== null && part !== '')
   return parts.join('\n\n')
 }
 
@@ -47,7 +47,10 @@ export function measureStatusTool(deps) {
       const root = await deps.rootOf(exec?.agent)
       const snapshot = await refreshSnapshotOf(deps, root)
       const guardsOff = await deps.state.bypass.get(root)
-      return statusText({ snapshot, guardsOff, mode: deps.mode, goal: goalOf(deps, exec?.agent) })
+      const mode = typeof deps.modeOf === 'function'
+        ? await deps.modeOf(root)
+        : { value: deps.configMode ?? deps.mode, source: 'config' }
+      return statusText({ snapshot, guardsOff, mode: mode.value, modeLine: `Mode: ${mode.value} (${mode.source})`, goal: goalOf(deps, exec?.agent) })
     },
   }
 }

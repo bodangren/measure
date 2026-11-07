@@ -3,6 +3,7 @@
 // { kind: 'success', text }; the texts mirror plugins/opencode-measure-guard.
 import { statusText, refreshSnapshotOf } from './status.js'
 import { goalOf, measureGoalCommand } from './goal.js'
+import { measureModeCommand } from './modes.js'
 
 /** The scope of `/measure-off|on`: `repo` when the first token says so, else session. */
 export const scopeOf = args => (String(args ?? '').trim().split(/\s+/)[0] === 'repo' ? 'repo' : 'session')
@@ -54,9 +55,16 @@ export function measureCommands(deps) {
         const root = await deps.rootOf(invocation.agent)
         const snapshot = await refreshSnapshotOf(deps, root)
         const guardsOff = await deps.state.bypass.get(root)
-        return { kind: 'success', text: statusText({ snapshot, guardsOff, mode: deps.mode, goal: goalOf(deps, invocation.agent) }) }
+        const mode = typeof deps.modeOf === 'function'
+          ? await deps.modeOf(root)
+          : { value: deps.configMode ?? deps.mode, source: 'config' }
+        return {
+          kind: 'success',
+          text: statusText({ snapshot, guardsOff, mode: mode.value, modeLine: `Mode: ${mode.value} (${mode.source})`, goal: goalOf(deps, invocation.agent) }),
+        }
       },
     },
     measureGoalCommand(deps),
+    measureModeCommand(deps),
   ]
 }

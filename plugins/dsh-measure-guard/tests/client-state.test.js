@@ -80,7 +80,7 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   const updatedAt = '2026-11-07T03:00:00.000Z'
   const view = clientView({ snapshot, guardsOff: 'session', problems, mode: 'guard', updatedAt })
 
-  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal', 'setup'])
+  assert.deepEqual(Object.keys(view), ['band', 'status', 'guardsOff', 'problems', 'updatedAt', 'goal', 'mode', 'setup'])
   assert.equal(view.band, bandLine(snapshot, 'session'))
   assert.match(view.band, /guards off for this session/)
   assert.equal(view.status, statusLines(snapshot, 'session').join('\n'))
@@ -90,6 +90,7 @@ test('clientView returns the FR-15 shape from the shared core', () => {
   assert.equal(view.updatedAt, updatedAt)
   assert.equal(view.goal, null)
   assert.deepEqual(view.setup, { choice: null, text: null })
+  assert.deepEqual(view.mode, { value: 'guard', source: 'config' })
 })
 
 test('the setup view is offered only without a measure/ folder', () => {

@@ -103,7 +103,10 @@ The live check of this repository used route (b) with `mode: advise`. The defaul
 
 ## Modes
 
-`config.mode` selects the level. The plugin validates the value itself: `advise`, `guard`, or `strict`; an unknown value logs one warning and falls back to `guard`.
+`config.mode` sets the default level. The plugin validates the value itself: `advise`, `guard`, or `strict`; an unknown value logs one warning and falls back to `guard`.
+
+The **effective** mode of a repository is: the persisted per-repository override
+> the in-memory session override > `config.mode`. `/measure-mode <advise|guard|strict>` sets the session override, `/measure-mode <mode> repo` persists the repository override, `/measure-mode default` and `/measure-mode default repo` clear them, and `/measure-mode` with no argument reports the effective mode and its source. Every guard path reads the effective mode per call, the state route carries `mode: { value, source }`, the band shows a localized mode label, and the status text appends `Mode: <value> (<source>)`.
 
 | Mode | Behaviour |
 | --- | --- |
