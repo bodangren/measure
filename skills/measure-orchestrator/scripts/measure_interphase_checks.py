@@ -552,6 +552,45 @@ def active_registry_contains(repo: Path, track: str) -> bool:
     return re.search(rf"(?<![A-Za-z0-9_.-]){re.escape(track)}(?![A-Za-z0-9_.-])", active) is not None
 
 
+def registry_description_feedback(repo: Path, track: str) -> list[str]:
+    """The archived track's registry entry must carry the metadata description.
+
+    The registry check (`tests/dsh/test-registry.sh`) compares each entry's
+    description with the archive metadata, but it only runs when someone runs the
+    CLI suite. Closeout runs per finished track, so it is the natural place to
+    catch a post-archive metadata edit that left the registry entry behind.
+    """
+    registry = measure_dir(repo) / "tracks.md"
+    if not registry.exists():
+        return []
+    lines = registry.read_text(encoding="utf-8", errors="ignore").split("\n")
+    link = re.compile(rf"\./archive/{re.escape(track)}/")
+    index = next((i for i, line in enumerate(lines) if link.search(line)), None)
+    if index is None:
+        return [f"missing registry entry for {track}"]
+    description = ""
+    candidate = lines[index + 1] if index + 1 < len(lines) else ""
+    if candidate.startswith("  *") and candidate.endswith("*") and "*Link:" not in candidate:
+        description = candidate[3:-1]
+    if not description:
+        return [f"registry entry has no description for {track}"]
+    expected = ""
+    metadata = measure_dir(repo) / "archive" / track / "metadata.json"
+    if metadata.exists():
+        try:
+            expected = " ".join(str(json.loads(metadata.read_text(encoding="utf-8")).get("description", "")).split())
+        except Exception:
+            expected = ""
+    if not expected and index > 0:
+        title_line = lines[index - 1]
+        match = re.match(r"- \[x\] \*\*Track: (.+)\*\*$", title_line)
+        if match:
+            expected = match.group(1)
+    if expected and description != expected:
+        return [f"registry description differs from metadata for {track}"]
+    return []
+
+
 def plan_closeout_feedback(plan_path: Path) -> list[str]:
     if not plan_path.exists():
         return [f"missing closeout plan: {plan_path}"]
@@ -594,6 +633,7 @@ def closeout_feedback(repo: Path, track: str) -> list[str]:
         feedback.append("track is still listed in the active section of measure/tracks.md")
     feedback.extend(plan_closeout_feedback(archive / "plan.md"))
     feedback.extend(metadata_closeout_feedback(archive / "metadata.json"))
+    feedback.extend(registry_description_feedback(repo, track))
     if not (archive / CLOSEOUT_MANIFEST).exists():
         feedback.append(f"missing closeout manifest: {archive / CLOSEOUT_MANIFEST}")
     return feedback

@@ -205,6 +205,10 @@ Do not archive a track just because a markdown artifact says it passed. Closeout
 - `measure/tracks/<track>` was moved to `measure/archive/<track>`
 - `measure/tracks.md` no longer lists the track in the active section
 - `metadata.json` has `status: "done"` and a completion date
+- the archived track's `measure/tracks.md` entry exists, carries a description, and
+  that description equals the collapsed `metadata.json` description (the check
+  reports `missing registry entry for <track>`, `registry entry has no description
+  for <track>`, or `registry description differs from metadata for <track>`)
 - `automation-supervisor-closeout-manifest.json` exists
 - no anti-pattern anti-A5 (false-claim text) or anti-A6 (registry overstatement) is
   present in `plan.md` or `measure/tracks.md`

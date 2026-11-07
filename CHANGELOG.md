@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **closeout registry check:** `closeout` now verifies the archived track's `measure/tracks.md` entry — it must exist, carry a description, and that description must equal the collapsed `metadata.json` description — so a post-archive metadata edit can no longer drift silently (the recurring failure behind two CLI red runs this session). New test `tests/dsh/test-closeout-registry.sh` covers matching, drifted, missing-description, and missing-entry records. Track `dsh_measure_closeout_registry_20261108`.
+
+### Features
+
 * **A11 doc-drift recipe:** the detection recipe in the anti-pattern catalog (and this project's copy) now reads documents in text mode (`grep -a`) so a NUL or invalid UTF-8 byte cannot hide claims; it checks backticked paths that contain exactly one space between segments (directory claims kept), skips a span whose first word is an existing executable (a command with an argument; shipped by fix2), and reports a document as `does not exist`, `is not a regular file`, or `cannot be read`; the S4 contract rows and sensitivity mutants cover each case (92 checks). Tracks `dsh_measure_a11_recipe_20261108` and `dsh_measure_a11_recipe_fix2_20261108`.
 
 ### Features
