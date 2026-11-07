@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_snapshot_invalidate_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T00:00:00Z",
+  "updated_at": "2026-11-10T00:40:00Z",
+  "description": "Narrow the per-tools/result snapshot invalidation to tools that can change the repository, with a read-only allowlist and fail-safe unknown names",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) Unknown or empty tool names stay conservative (invalidate). (2) The per-step pre-step invalidation and the explicit status refresh are unchanged. (3) The plugin-level test spies on Snapshots.prototype.invalidateAll (restored in finally).",
+  "completed": "2026-11-10"
+}

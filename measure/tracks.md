@@ -259,3 +259,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure allow-list parse hardening**
   *Link: [./archive/dsh_measure_allow_parse_20261109/](./archive/dsh_measure_allow_parse_20261109/)*
   *Make allow-list dedupe linear with a visited set, ignore control-character entries with a reason, add tests, and update the row*
+
+- [x] **Track: DSH Measure snapshot invalidation narrowing**
+  *Link: [./archive/dsh_measure_snapshot_invalidate_20261109/](./archive/dsh_measure_snapshot_invalidate_20261109/)*
+  *Narrow the per-tools/result snapshot invalidation to tools that can change the repository, with a read-only allowlist and fail-safe unknown names*
