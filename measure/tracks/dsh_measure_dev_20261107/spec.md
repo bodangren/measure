@@ -41,8 +41,8 @@ from `$DSH_HOME` or `~/.dsh`, the profile from `--profile` (default `web`), the
 guard mode from `--mode advise|guard|strict` (default `guard`), and the skill
 installer ref from `--ref` (default `main`). `install` accepts `--source DIR` (a plugin
 package directory, default `plugins/dsh-measure-guard/`) and `--dry-run`;
-`--check` accepts `--source`, `--mode`, `--live`, `--session`, and
-`--json`;
+`--check` accepts `--source`, `--mode`, `--project`, `--live`, `--session`,
+and `--json`;
 `uninstall` accepts `--keep-copy` and `--dry-run`. The exact flag, output, and
 JSON contract is `design.md §2`. Every mode prints one line per check with
 `PASS`, `FAIL`, `SKIP`, or `WARN`, and `--check` exits 0 only when no item

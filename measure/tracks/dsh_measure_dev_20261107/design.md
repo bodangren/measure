@@ -54,7 +54,7 @@ README.md, CHANGELOG.md, measure/tech-stack.md
 measure-dsh install   [--dsh-home DIR] [--profile NAME] [--mode MODE]
                       [--ref REF] [--no-skills] [--dry-run]
 measure-dsh --check   [--dsh-home DIR] [--profile NAME] [--source DIR]
-                      [--live] [--session ID] [--json]
+                      [--mode MODE] [--project DIR] [--live] [--session ID] [--json]
 measure-dsh uninstall [--dsh-home DIR] [--profile NAME] [--keep-copy] [--dry-run]
 measure-dsh --help
 ```
@@ -164,7 +164,7 @@ measure-dsh --help
 | `plugin` | `<profile>/plugins/dsh-measure-guard/` | `index.js`, `client.js`, `package.json`, `cordis.patch.yml`, `icon.svg`, `README.md`, and the `src/`, `scripts/`, `locale/` trees exist; the `.measure-dsh-install` stamp lists exactly the copied files (everything in the package except `tests/`) with matching hashes and nothing extra; a node one-liner `await import('<plugin>/index.js')` exits 0 only when the module exports `name === 'measure-guard'`, an `inject` array, and an `apply` function (otherwise 1) |
 | `record` | `<profile>/cordis.patch.yml` | exactly one managed block; `id: measure-guard`; `name: ./plugins/dsh-measure-guard/index.js`; `mode` in the three values; when `--mode` is given, the record's mode must equal it (otherwise `FAIL`), and without it the found mode is reported |
 | `foreign-row` | the same file | no `measure-guard` row outside the block |
-| `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field **and** its `x-measure-guard-module` response header, realpathed, equals the installed `<plugin>/index.js` file URL (a mismatch is `FAIL`: the running host loaded another copy) |
+| `live` (with `--live`) | `$DSH_WEB_URL` or `http://127.0.0.1:3080` | the session id is `--session`, else `$DSH_SESSION_ID`, else the item is `SKIP` with the hint; `GET /measure-guard/state?sessionId=<id>` answers 200 with a `band` field **and** its `x-measure-guard-module` response header, realpathed, equals the installed `<plugin>/index.js` file URL (a mismatch is `FAIL`: the running host loaded another copy; an absent header is `WARN` because the header ships in Phase 5) |
 
 **Skill roots.** One resolution order that mirrors the DSH provider's rank
 order, first existing root wins per skill:
@@ -179,7 +179,8 @@ order, first existing root wins per skill:
    home)
 
 `<sessionRoot>` is `deps.rootOf(agent)` for a command and the `--project`
-directory (default `$PWD`) for `--check`. Each root is realpathed and
+directory (default `$PWD`) for `--check`; `--project` therefore exists on
+`--check` only. Each root is realpathed and
 de-duplicated, so a symlinked `~/.agents/skills` never passes twice and a
 project root never shadows the same directory. The custom root of the DSH
 provider is not read: the CLI does not parse DSH configuration; the design and
