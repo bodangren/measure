@@ -56,3 +56,11 @@ the missing fixtures.
 
 - The commit staged-read race, the opencode rows, and the remaining
   spec_review_gate docs rows.
+
+> **Correction (2026-11-09, dsh_measure_skill_doctor_fix3_20261109):** the
+> shipped folder-link rule skips `#anchor`-only links and scheme targets; a target
+> is a folder claim only when (after removing a `#fragment`) it is empty, ends with
+> `/`, or resolves to a directory relative to the skill folder. The folded `>`
+> block marker is pinned by a fixture (1025 fails, a short folded description
+> passes). The missing-description message is `skill <name> has no description`.
+> The existing 13 CLI tests keep their behavior and no test file is added.

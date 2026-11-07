@@ -153,6 +153,17 @@ try:
     write_skill(block_ok, "blk", "name: blk\ndescription: |\n  short block text")
     if run(block_ok):
         fail("a short block description passes", run(block_ok))
+    # The folded `>` block marker is parsed too.
+    folded_over = TMP / "folded_over"
+    write_skill(folded_over, "fold", "name: fold\ndescription: >\n  " + ("z" * 1025))
+    problems = run(folded_over)
+    if not problems or "fold" not in " ".join(problems) or "1025" not in " ".join(problems):
+        fail("a 1025-character folded description is rejected (folded form parsed)", problems)
+    print("[PASS] a folded description is parsed and its length checked")
+    folded_ok = TMP / "folded_ok"
+    write_skill(folded_ok, "fold", "name: fold\ndescription: >\n  short folded text")
+    if run(folded_ok):
+        fail("a short folded description passes", run(folded_ok))
 
     # `<` and `>` are independent rules.
     for char, label in (("<", "less-than"), (">", "greater-than")):
