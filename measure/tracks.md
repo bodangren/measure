@@ -175,3 +175,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure registry check finalization**
   *Link: [./archive/dsh_measure_registry_fix4_20261107/](./archive/dsh_measure_registry_fix4_20261107/)*
   *Finalize the registry check: pin the label-stripped-title fallback, add empty-fallback and section-only fixtures, name the evidence file and JSON mechanism, and deliver the fix3 review record*
+
+- [x] **Track: DSH Measure spec-review-gate runner hardening**
+  *Link: [./archive/dsh_measure_srg_runner_20261108/](./archive/dsh_measure_srg_runner_20261108/)*
+  *Harden tests/spec_review_gate/run.sh: never run itself, skip symlinked suites, refuse glob-metacharacter names passed as discovery patterns, and fail a zero-test .py suite; add runner probes and records*

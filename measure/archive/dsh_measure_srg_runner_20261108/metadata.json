@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_srg_runner_20261108",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T07:00:00Z",
+  "updated_at": "2026-11-08T07:40:00Z",
+  "description": "Harden tests/spec_review_gate/run.sh: never run itself, skip symlinked suites, refuse glob-metacharacter names passed as discovery patterns, and fail a zero-test .py suite; add runner probes and records",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The zero-test probe uses a stub python3 on PATH so the rule is proven even on a host where zero-test discovery exits nonzero. (2) The glob-metacharacter probe selects the file through the default wildcard and asserts the refusal message and that no suite ran. (3) The MKTEMP item (each S1 suite checking a failed mktemp -d) remains the named residual in tech-debt.",
+  "completed": "2026-11-08"
+}
