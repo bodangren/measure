@@ -217,3 +217,14 @@ test('a probe error reports nothing and a bypass silences the git checks', async
   const bypassed = depsOf({ bypass: 'session', gitAnswers: { 'rev-parse --verify --quiet abcdef0^{commit}': 'missing' } })
   assert.deepEqual(await onTurnStopping(bypassed, { agent: agentOf(), root: ROOT, payload: payloadOf() }), [])
 })
+
+test('the effective mode drives the reminder: a session strict override arms it after the block limit', async () => {
+  const agent = agentOf()
+  const deps = depsOf({ plan: NO_TASK_PLAN, blocks: MAX_BLOCKS, status: [' M src/app.js'] })
+  deps.modeOf = async () => ({ value: 'strict', source: 'session' })
+  const problems = await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
+  assert.equal(problems.length, 1)
+  // The turn-stopping hook returns the problems; endTurnHandler arms the reminder in strict mode.
+  await endTurnHandler(agent.id, ROOT, { type: 'turn/end', data: { turn: 1 } }, deps)
+  assert.match(deps.state.agents.sessionOf(agent.id).reminder ?? '', /these problems were open/)
+})

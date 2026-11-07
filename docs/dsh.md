@@ -99,8 +99,9 @@ same items as a machine-readable object.
 
 After `install` replaces the plugin copy, the running profile must recompose to
 load the new code. `install` writes the patch file even when the managed block is
-unchanged, and `bin/measure-dsh reload` performs the same write on demand; both
-toggle only trailing newlines, so the YAML entries stay byte-equal. Restart DSH
+unchanged, and `bin/measure-dsh reload` does the same on demand; both toggle a
+`# measure-dsh reload marker` comment line (a real content change, which is what
+the loader watcher reacts to), leaving every YAML entry byte-equal. Restart DSH
 when `--check --live` still reports a stale digest (some hosts do not watch the
 patch file).
 
@@ -171,9 +172,11 @@ All of these denies are inert in `advise` mode and under `/measure-off`.
 `/measure-verify` is read-only. It runs the same git-backed checks as the
 end-of-turn verification (each `[x]` task's SHA must be a real commit with its
 git note) plus the active track's `metadata.json` `actual_tasks` verdict, and
-replies with the problems or `verification clean (<n> tasks checked)`. A
-project without `measure/`, no active track, or a git that cannot answer
-degrades to `nothing to verify (<reason>)`.
+replies with the problems or `verification clean (<n> tasks checked)`. An open
+track whose `metadata.json` still has `actual_tasks: null` has no verdict yet, so
+it stays clean until closeout. A project without `measure/`, no active track, a
+non-work-tree, or a git that cannot answer degrades to
+`nothing to verify (<reason>)`.
 
 ## Setup answer
 

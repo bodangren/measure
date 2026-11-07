@@ -16,24 +16,28 @@ fingerprint_before="$(profile_fingerprint)"
 # 1. reload --dry-run writes nothing and says what it would do.
 run reload --dry-run
 assert_rc 0
-assert_out '^PASS reload: would rewrite .*cordis\.patch\.yml'
+assert_out '^PASS reload: would toggle the recompose marker in .*cordis\.patch\.yml'
 assert_eq "$(profile_fingerprint)" "$fingerprint_before"
 
-# 2. reload toggles the trailing newlines only: the YAML text is unchanged
-#    (cat strips trailing newlines) while the file bytes differ.
+# 2. reload toggles a marker comment: the YAML entries stay equal while the
+#    file content changes.
 run reload
 assert_rc 0
-assert_out '^PASS reload: rewrote .*cordis\.patch\.yml'
+assert_out '^PASS reload: toggled the recompose marker in .*cordis\.patch\.yml'
 assert_out 'reload complete'
-assert_eq "$(cat -- "$PATCH")" "$patch_text_before"
+[[ "$(cat -- "$PATCH")" != "$patch_text_before" ]] || fail "reload did not change the patch content"
+grep -qxF '# measure-dsh reload marker' "$PATCH" || fail "the recompose marker is missing"
+assert_eq "$(grep -vxF '# measure-dsh reload marker' "$PATCH" | sed -e :a -e '/^$/{$d;N;ba' -e '}')" "$(printf '%s' "$patch_text_before")"
+[[ "$(wc -c <"$PATCH")" != "$patch_bytes_before" ]] || fail "reload did not change the patch bytes"
 [[ "$(wc -c <"$PATCH")" != "$patch_bytes_before" ]] || fail "reload did not change the patch bytes"
 grep -q '# >>> measure-dsh managed block' "$PATCH" || fail "managed block opener missing"
 grep -q '# <<< measure-dsh managed block' "$PATCH" || fail "managed block closer missing"
 
-# 3. A second reload toggles back; the YAML text is still equal.
+# 3. A second reload removes the marker again; the YAML entries stay equal.
 run reload
 assert_rc 0
-assert_eq "$(cat -- "$PATCH")" "$patch_text_before"
+! grep -qxF '# measure-dsh reload marker' "$PATCH" || fail "the recompose marker was not removed"
+assert_eq "$(grep -vxF '# measure-dsh reload marker' "$PATCH" | sed -e :a -e '/^$/{$d;N;ba' -e '}')" "$(printf '%s' "$patch_text_before")"
 
 # 4. An absent profile is an environment error.
 run reload --profile nope
@@ -48,5 +52,5 @@ assert_out 'KEEP .*cordis\.patch\.yml'
 # 6. A second real install rewrites the patch for a recompose, no plugin files.
 run install --no-skills
 assert_rc 0
-assert_out 'patch rewritten to trigger a live recompose'
+assert_out 'recompose marker toggled to trigger a live recompose'
 assert_not_out '^WRITE .*plugins/'

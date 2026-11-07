@@ -55,10 +55,10 @@ Modes:
              failed, 1 when one failed, 3 on an environment error.
   uninstall  remove the managed record and the plugin copy the CLI owns. Skill
              copies and foreign rows are never touched.
-  reload     rewrite the profile's cordis.patch.yml (its trailing newline is
-             toggled; every YAML entry is unchanged) so the running profile
-             recomposes and loads the installed plugin code. Run it after
-             `install` when `--check --live` reports stale code.
+  reload     rewrite the profile's cordis.patch.yml with a marker comment toggled
+             (a real content change; every YAML entry is unchanged) so the
+             running profile recomposes and loads the installed plugin code.
+             Run it after `install` when `--check --live` reports stale code.
 
 Resolution:
   dsh home   --dsh-home, else $DSH_HOME, else ~/.dsh
@@ -303,20 +303,26 @@ node_supported() {
   ((major > 24 || (major == 24 && minor >= 9)))
 }
 
-# Rewrites the patch file with its trailing-newline count toggled (one <-> two),
-# so a watching loader recomposes the profile. The YAML text and every entry,
-# including the managed block, stay byte-equal apart from those newlines.
+# The comment line a recompose toggles. A real content change is what the
+# loader watcher reacts to; a trailing-newline-only change is not reliable.
+RECOMPOSE_MARKER="# measure-dsh reload marker"
+
+# Rewrites the patch file with the recompose marker line added (or removed when
+# present), so the content changes and a watching loader recomposes the profile.
+# Every YAML entry, including the managed block, stays byte-equal.
 recompose_patch() {
-  local content size stripped trailing
-  content="$(cat -- "$PATCH_FILE")"
-  size="$(wc -c <"$PATCH_FILE")"
-  stripped=${#content}
-  trailing=$((size - stripped))
-  if ((trailing >= 2)); then
-    atomic_write_text "$content"$'\n' "$PATCH_FILE"
+  local tmp="$PATCH_FILE.measure-dsh.tmp"
+  if grep -qxF -- "$RECOMPOSE_MARKER" "$PATCH_FILE"; then
+    awk -v marker="$RECOMPOSE_MARKER" '$0 != marker' "$PATCH_FILE" >"$tmp"
   else
-    atomic_write_text "$content"$'\n\n' "$PATCH_FILE"
+    cp -- "$PATCH_FILE" "$tmp"
+    if [[ -s "$PATCH_FILE" ]] && ! has_trailing_newline "$PATCH_FILE"; then
+      printf '\n' >>"$tmp"
+    fi
+    printf '%s\n' "$RECOMPOSE_MARKER" >>"$tmp"
   fi
+  chmod "$(file_mode "$PATCH_FILE")" -- "$tmp"
+  mv -f -- "$tmp" "$PATCH_FILE"
 }
 
 # The digest the plugin computes over its code files (src/digest.js): sha256
@@ -821,7 +827,7 @@ write_managed_block() {
       return 1
     fi
     add_action WRITE "$PATCH_FILE"
-    add_item record PASS "managed block unchanged (mode: $GUARD_MODE); patch rewritten to trigger a live recompose"
+    add_item record PASS "managed block unchanged (mode: $GUARD_MODE); recompose marker toggled to trigger a live recompose"
     return 0
   fi
 
@@ -1602,7 +1608,7 @@ do_reload() {
     exit 3
   fi
   if ((DRY_RUN)); then
-    add_item reload PASS "would rewrite $PATCH_FILE (trailing newline toggled) to trigger a live recompose"
+    add_item reload PASS "would toggle the recompose marker in $PATCH_FILE to trigger a live recompose"
     print_items
     printf 'dry run: no files written\n'
     exit 0
@@ -1613,7 +1619,7 @@ do_reload() {
     printf 'reload incomplete\n'
     exit 1
   fi
-  add_item reload PASS "rewrote $PATCH_FILE (trailing newline toggled) to trigger a live recompose"
+  add_item reload PASS "toggled the recompose marker in $PATCH_FILE to trigger a live recompose"
   print_items
   printf 'reload complete: the running profile recomposes on the patch-file change.\n'
   exit 0

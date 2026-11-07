@@ -30,7 +30,10 @@ const snapshotOf = (planText = PLAN) => ({
 })
 
 const depsOf = ({ snapshot = snapshotOf(), answers = {}, files = {}, throwProbe = false } = {}) => ({
-  snapshots: { async get() { return snapshot } },
+  snapshots: {
+    invalidate() {},
+    async get() { return snapshot },
+  },
   async rootOf() { return ROOT },
   async gitProbe(args) {
     if (throwProbe) throw new Error('git exploded')
@@ -118,4 +121,59 @@ test('the command is registered read-only with a handler', async () => {
   const reply = await command.handler({ agent: AGENT, rawInput: '' })
   assert.equal(reply.kind, 'success')
   assert.match(reply.text, /verification clean/)
+})
+
+test('an open track with actual_tasks null keeps the report clean', async () => {
+  const reply = await verifyReport(depsOf({ files: { [METADATA_PATH]: JSON.stringify({ actual_tasks: null }) } }), AGENT)
+  assert.match(reply, /verification clean/)
+})
+
+test('git cannot answer and a non-work-tree are nothing-to-verify, not clean', async () => {
+  const errored = depsOf({ answers: { 'rev-parse --verify --quiet HEAD^{commit}': 'error' } })
+  assert.equal(await verifyReport(errored, AGENT), 'measure-guard: nothing to verify (git could not answer).')
+
+  const notRepo = depsOf({ answers: { 'rev-parse --verify --quiet HEAD^{commit}': 'missing' } })
+  assert.equal(await verifyReport(notRepo, AGENT), 'measure-guard: nothing to verify (not a git work tree).')
+})
+
+test('the report refreshes the snapshot before verifying', async () => {
+  let invalidations = 0
+  const deps = depsOf()
+  deps.snapshots = {
+    invalidate() {
+      invalidations += 1
+    },
+    async get() {
+      return snapshotOf()
+    },
+  }
+  await verifyReport(deps, AGENT)
+  assert.equal(invalidations, 1)
+})
+
+test('the command is read-only: it never writes and never mutates the repository state', async () => {
+  let mutations = 0
+  const deps = depsOf({ files: { [METADATA_PATH]: JSON.stringify({ actual_tasks: 7 }) } })
+  deps.io.writeText = async () => {
+    mutations += 1
+  }
+  deps.io.writeFile = async () => {
+    mutations += 1
+  }
+  deps.state = {
+    repos: {
+      async modeOf() {
+        return null
+      },
+      async setMode() {
+        mutations += 1
+      },
+    },
+  }
+  const fileBefore = await deps.io.readText(METADATA_PATH)
+
+  const reply = await verifyReport(deps, AGENT)
+  assert.match(reply, /actual_tasks 7/)
+  assert.equal(mutations, 0)
+  assert.equal(await deps.io.readText(METADATA_PATH), fileBefore)
 })

@@ -290,3 +290,12 @@ test('compactionHandler only arms a re-note for a successful compaction', () => 
   assert.equal(state.agents.sessionOf('agent-1').notedKey, null)
   assert.equal(compactionHandler(state, 'agent-1', { type: 'turn/end', data: {} }), false)
 })
+
+test('the task note reports the effective mode, not the static config mode', async () => {
+  const deps = depsOf()
+  deps.modeOf = async () => ({ value: 'strict', source: 'repository' })
+  const agent = agentOf()
+  const decision = await preStepHook(agent, '/repo', deps)({ turn: 1 }, async () => ({ kind: 'enter', messages: [] }))
+  const text = (decision.messages ?? []).map(message => message.content.map(part => part.text).join('')).join('\n')
+  assert.match(text, /measure-guard \(Mode: strict\)/)
+})

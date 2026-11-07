@@ -119,3 +119,13 @@ test('the band shows the setup actions only while the offer has no answer', () =
   assert.match(source, /props\.setup\.choice !== null/)
   assert.match(source, /h\(SetupActions, \{/)
 })
+
+test('the band renders the effective mode with a localized label', () => {
+  assert.match(source, /view\.mode === null \|\| view\.mode === undefined/)
+  assert.match(source, /t\('mode'\) \+ ': ' \+ view\.mode\.value \+ ' \(' \+ view\.mode\.source \+ '\)'/)
+  for (const name of ['en', 'zh']) {
+    const match = new RegExp(`const ${name} = \\{([\\s\\S]*?)\\n    \\}`).exec(source)
+    assert.ok(match, `${name} dictionary`)
+    assert.match(match[1], /^\s{6}mode:/m, `${name} mode label`)
+  }
+})

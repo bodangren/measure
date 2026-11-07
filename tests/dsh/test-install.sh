@@ -46,14 +46,13 @@ grep -q 'installer ref=t1' "$STUB_INSTALLER_LOG" || fail "the installer stub did
 #    plugin files, stamp, and skills are unchanged and every YAML entry stays
 #    equal (only the trailing-newline count moves).
 before="$(profile_fingerprint)"
-patch_content="$(cat -- "$PATCH")"
 run install --no-skills
 assert_rc 0
-assert_out 'patch rewritten to trigger a live recompose'
+assert_out 'recompose marker toggled to trigger a live recompose'
 assert_not_out '^WRITE .*plugins/'
 assert_not_out '^REMOVE '
 assert_not_out '^MKDIR '
-assert_eq "$(cat -- "$PATCH")" "$patch_content"
+grep -qxF '# measure-dsh reload marker' "$PATCH" || fail "the second install did not toggle the recompose marker"
 [[ "$(profile_fingerprint)" != "$before" ]] || fail "the second install did not rewrite the patch"
 
 # 3. A locally edited destination is kept, warned about, and keeps its old
