@@ -48,7 +48,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.6: Commands `c615685`
     - [ ] `src/commands.js` + `ctx.commands.register`: `measure-off` [repo], `measure-on` [repo], `measure-status`
     - [ ] `tests/commands.test.js`: session and repo scope, unknown argument defaults to session, status text
-- [~] Task 2.7: Setup offer (NFR-1)
+- [x] Task 2.7: Setup offer (NFR-1) `781d43d`
     - [ ] `src/setup.js`: `needsSetup`, `setupChoice` transitions (`pending`/`off`/`setup`), `SETUP_PROMPT`, `setupBandText`; the state lives in agent state
     - [ ] `tests/setup.test.js`: git repo without `measure/` asks, non-repo does not, `off` silences, `setup` keeps the prompt text
 - [ ] Task 2.8: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md)
