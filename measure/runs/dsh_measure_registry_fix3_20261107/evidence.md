@@ -28,3 +28,12 @@ FAIL: completed plan task lacks commit SHA: - [x] Task 2.2: run the node suite (
 FAIL: completed plan task lacks commit SHA: - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix3_20261107` and record the manifest-only FAIL
 FAIL: completed plan task lacks commit SHA: - [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
 FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_registry_fix3_20261107/automation-supervisor-closeout-manifest.json
+
+## Addendum (2026-11-08, after the fix4 review)
+
+The four missing-SHA failures above were repaired: the archived fix3 plan's Tasks 2.1, 2.2, 3.1 and the Phase 3 verification line now carry commit SHAs (2dcc69e / 457a272 / 2dcc69e and the Phase 3 checkpoint).
+
+Current fix3 closeout output:
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_registry_fix3_20261107/automation-supervisor-closeout-manifest.json
+
+The check currently prints fourteen PASS lines (this file lists them above); the original eleven plus the empty-fallback, reason-entry-in-Archived, and active-entry-in-Archived cases.

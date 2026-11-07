@@ -21,3 +21,12 @@ Spec: [./spec.md](./spec.md)
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_registry_fix4_20261107` and record the manifest-only FAIL `20e322a`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `a7b02ce`
+
+> **Review correction (2026-11-08):** this track's evidence file is
+> `measure/runs/dsh_measure_registry_fix4_20261107/evidence.md` (it holds the
+> fourteen PASS lines, the node/parity/CLI/srg results, the archive-referencing
+> count, and both closeout outputs). The executed order was: the check and its
+> fixtures (Task 1.1/1.2), then the gates (Task 2.2) and the closeout (Task 3.1),
+> then the records (Task 2.1) — the plan's listed order was corrected by the
+> review. The fallback half of Task 1.1 was already implemented in the test
+> (label-stripped title), so only the two section rules and the fixtures were new.

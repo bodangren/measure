@@ -70,3 +70,13 @@ registry tuning is out of scope.
 
 - Further registry layout or description tuning.
 - The remaining spec_review_gate runner/parser rows.
+
+> **Correction (2026-11-08, follow-up review):** the evidence file is
+> `measure/runs/dsh_measure_registry_fix4_20261107/evidence.md`; it holds fourteen
+> PASS lines (the original eleven plus the empty-fallback, reason-entry, and
+> active-entry cases), the node/parity/CLI/srg results, the archive-referencing
+> count, and both closeout outputs (manifest-only FAIL for fix3 and fix4 after
+> the fix3 plan SHAs were repaired). The Overview's "four precision items" is
+> five. The fallback logic was already label-stripped in the test, so only the
+> two section rules and the fixtures were new. The fix3 review's findings and
+> dispositions live in `measure/archive/dsh_measure_registry_fix3_20261107/spec-review.md`.
