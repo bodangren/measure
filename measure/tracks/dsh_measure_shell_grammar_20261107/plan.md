@@ -18,10 +18,10 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.1: `bin/measure-dsh install --no-skills`; run the installed `shellWritePaths` on the heredoc, quoted, comment, and real-write commands; record the output and the `--check --live` digest PASS under `measure/runs/dsh_measure_shell_grammar_20261107/`
 - [x] Task: Measure - User Manual Verification 'Phase 2: The live evidence' (Protocol in workflow.md) `40c38ab`
 
-## Phase 3: Records
+## Phase 3: Records [checkpoint: 81b611e]
 
 - [x] Task 3.1: update the plugin README shell-write limit sentence and `docs/dsh.md` scoped to the **redirect scan** (the `tee`/`sed -i` raw-command residual stays named), resolve `measure/tech-debt.md`'s heredoc row with that residual, add the `CHANGELOG.md` bug-fix entry, and run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh` after the docs edits (node 301/301, parity ok, CLI 10/10)
-- [~] Task: Measure - User Manual Verification 'Phase 3: Records' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Records' (Protocol in workflow.md) `81b611e`
 
 ## Phase 4: Closeout
 
