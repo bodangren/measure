@@ -8,11 +8,11 @@ claims and rules, then the evidence and closeout. The gate is
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase 1: Fixture contract hardening
+## Phase 1: Fixture contract hardening [checkpoint: 75bc45a]
 
 - [x] Task 1.1: `tests/dsh/test-rehearsal-fixture.sh` asserts a real commit: `git -C "$PROJECT" rev-parse --verify HEAD` succeeds and `git -C "$PROJECT" log --oneline` lists exactly one commit (the `.git/HEAD` existence check is removed as the commit proof)
 - [x] Task 1.2: run `bash tests/dsh/run.sh`; the new assertion passes alongside the existing contract tests
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Fixture contract hardening' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Fixture contract hardening' (Protocol in workflow.md) `75bc45a`
 
 ## Phase 2: The archived review corrections
 
