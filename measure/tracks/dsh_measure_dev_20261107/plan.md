@@ -10,7 +10,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 
 ## Phase 1: Environment CLI
 
-- [~] Task 1.1: Record the environment CLI in the tech stack
+- [x] Task 1.1: Record the environment CLI in the tech stack `25af03d`
     - [ ] `measure/tech-stack.md` Distribution Formats row for `bin/measure-dsh` (and the note that it replaces the installer's DSH plugin target)
     - [ ] `measure/tech-stack.md` Tooling Exceptions row for this track (`bash tests/dsh/run.sh`, `node --test`)
 - [ ] Task 1.2: CLI skeleton, resolution, and install
