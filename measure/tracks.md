@@ -199,3 +199,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure A11 recipe fix2**
   *Link: [./archive/dsh_measure_a11_recipe_fix2_20261108/](./archive/dsh_measure_a11_recipe_fix2_20261108/)*
   *Skip executable command spans, pin the single-space path rule, retarget the sensitivity mutants, guard the unreadable row for root, and correct the records*
+
+- [x] **Track: DSH Measure A11 recipe fix3**
+  *Link: [./archive/dsh_measure_a11_recipe_fix3_20261108/](./archive/dsh_measure_a11_recipe_fix3_20261108/)*
+  *Record corrections for A11 fix2: replace the stale pattern in its documents, correct the CHANGELOG facts, pin the root branch and live-count wording, and record the fix2 review*
