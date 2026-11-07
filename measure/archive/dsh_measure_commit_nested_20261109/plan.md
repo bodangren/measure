@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: The nested scan and `git stage` [checkpoint: 7d34840]
 
-- [ ] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: treat a command-position `git stage` like `git add`, and recursively scan `bash -c`/`sh -c`/`zsh -c`/`eval` inner commands (depth-capped, merging `all`/`trackedOnly`/`paths`; unreadable inner text fails closed)
+- [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: treat a command-position `git stage` like `git add`, and recursively scan `bash -c`/`sh -c`/`zsh -c`/`eval` inner commands (depth-capped, merging `all`/`trackedOnly`/`paths`; unreadable inner text fails closed) `76b5f65`
 - [x] Task 1.2: `plugins/dsh-measure-guard/tests/commit.test.js`: add `git stage`, `bash -c`, `eval`, doubly nested, no-add inner, and a commitCheck integration case with a conforming message `76b5f65`
 - [x] Task 1.3: run `node --test plugins/dsh-measure-guard/tests/*.test.js` and both parity scripts `76b5f65`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The nested scan and `git stage`' (Protocol in workflow.md) `7d34840`
