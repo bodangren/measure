@@ -88,7 +88,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] Verify from the running GUI's HTTP surface: the boot graph carries a `dsh-measure-guard` entry and `/plugins/dsh-measure-guard/client.js` serves the bundle; record the evidence and the user confirmation in the task git note
 - [x] Task 4.5: Measure - User Manual Verification 'Phase 4: Client surface' (Protocol in workflow.md) `fa5eacb`
 
-## Phase 5: Distribution and docs
+## Phase 5: Distribution and docs [checkpoint: 3c6a47a]
 
 - [x] Task 5.1: Documentation and display resources `e12a914`
     - [ ] `README.md` (install, parity, layout, behavior, known limits), `locale/en.json`, `locale/zh.json`, `icon.svg`
@@ -98,7 +98,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `README.md` names the one selection step the installer cannot do: the profile `cordis.patch.yml` insert row `name: ./plugins/dsh-measure-guard/index.js`, which makes both halves load (the client half is found through the nearest `package.json`); the `dsh plugin --profile web add <abs path>` route stays documented for pnpm users
 - [x] Task 5.3: Track closeout documents `d4da594`
     - [ ] `measure/lessons-learned.md`, `measure/tech-debt.md`, `CHANGELOG.md` entries for this track
-- [ ] Task 5.4: Measure - User Manual Verification 'Phase 5: Distribution and docs' (Protocol in workflow.md)
+- [x] Task 5.4: Measure - User Manual Verification 'Phase 5: Distribution and docs' (Protocol in workflow.md) `3c6a47a`
 
 ## Deferred to a follow-up track
 
