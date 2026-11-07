@@ -91,7 +91,9 @@ if [ -s "$AUDIT" ]; then pass "agents/measure-orchestrator-audit.md exists"; els
 if [ -n "$AUDIT" ] && [ -s "$AUDIT" ]; then
   if grep -qF '"schema_version": 1' "$AUDIT"; then pass "the audit example uses schema_version 1"; else fail "the audit example does not use schema_version 1"; fi
   if grep -qF '"schema_version": 2' "$AUDIT"; then fail "the audit doc still shows schema_version 2"; else pass "the audit doc has no schema_version 2"; fi
-  if grep -qF 'report' "$AUDIT" && grep -qF 'as a candidate' "$AUDIT"; then pass "the audit outputs are proposals"; else fail "the audit outputs do not say the entries are proposals"; fi
+  if grep -qF 'as a candidate' "$AUDIT" && grep -qF 'PROPOSAL:' "$AUDIT"; then pass "the audit outputs are proposals with the PROPOSAL format"; else fail "the audit outputs do not define the proposal format"; fi
+  if grep -qF 'entries get appended' "$AUDIT"; then fail "the audit doc still says entries get appended"; else pass "the audit doc no longer appends catalog entries"; fi
+  if grep -qF 'you may write a focused guard test' "$AUDIT"; then fail "the audit doc still asks the role to write a guard test"; else pass "the audit doc no longer writes guard tests"; fi
 fi
 
 echo "=== audit role: ## Doc drift detector stands after ## A10 and before ## Outputs ==="

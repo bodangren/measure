@@ -374,6 +374,12 @@ class SpecReviewRoleGateTest(unittest.TestCase):
         self.assert_exit(0, code, out)
         self.assertIn("PASS: orchestrator-audit gate passed", out)
 
+    def test_role_measure_orchestrator_audit_alias_passes(self) -> None:
+        self.write_result(pass_payload())
+        code, out = self.gate(role="measure-orchestrator-audit")
+        self.assert_exit(0, code, out)
+        self.assertIn("PASS: orchestrator-audit gate passed", out)
+
     def test_role_orchestrator_audit_rejects_schema_2(self) -> None:
         payload = pass_payload()
         payload["schema_version"] = 2

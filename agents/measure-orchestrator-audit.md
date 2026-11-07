@@ -121,8 +121,8 @@ suite, `measure/tracks.md`, and the plan-truthfulness invariants in `measure/tra
 ## Inputs
 
 Read these in order:
-1. `measure/anti-patterns.md` — the catalog of known anti-patterns (A1–A11 today). New
-   entries get appended when you find a new class.
+1. `measure/anti-patterns.md` — the catalog of known anti-patterns (A1–A11 today). A new
+   class you find is reported as a proposal (see Outputs); this role does not append it.
 2. `tests/*.sh` — every contract test. Apply the vacuous-pass, over-broad-filter,
    digit-only-count, and archived-track-path detectors to each.
 3. `measure/tracks.md` — apply the registry-overstatement detector (A6).
@@ -141,9 +141,10 @@ Run each detection recipe from `measure/anti-patterns.md`. For each finding:
 2. Cross-check whether the test/guard in `tests/` already detects the issue. If yes,
    note the guard is in place; the finding is a *maintenance* item (the test exists, the
    regression hasn't happened yet).
-3. If the test/guard does NOT exist, you may write a focused guard test and link it to
-   the anti-pattern entry. Do not fix the implementation being audited. A new failing
-   guard produces `status: "fail"` and routes remediation to the owning implementation role.
+3. If the test/guard does NOT exist, report the proposed guard test path and its
+   assertion as a candidate (see Outputs); this role does not write it. Do not fix the
+   implementation being audited. A proposed guard that would fail produces `status: "fail"`
+   and routes remediation to the owning implementation role.
 
 ## A2 (consent-blind publish gate) detector
 
@@ -285,6 +286,11 @@ Drift alone does not fail the audit.
      "confidence": "low|medium|high"
    }
    ```
+**Candidate format.** A candidate (a catalog entry or a guard test) is a nonblocking
+finding whose text starts with `PROPOSAL:` and names the proposed path and assertion,
+for example `PROPOSAL: test A12: tests/p4.sh:12 is a vacuous count — add a labeled-integer parse`.
+The orchestrator or a track applies it; this role only reads and reports.
+
 2. **`measure/anti-patterns.md` proposals**: if you find a new class of failure, report
    the proposed entry (description, detection recipe, symptoms, fix, guard) as a candidate
    in the audit result. The orchestrator or a track applies it: this role's edit
