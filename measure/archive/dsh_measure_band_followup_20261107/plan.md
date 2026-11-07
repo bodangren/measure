@@ -23,8 +23,8 @@ then the live cap proof and closeout. The gate is
 - [x] Task 2.2: `docs/dsh.md` "Status band" and the `CHANGELOG.md` entry repeat the corrected full-text statement; a dated correction note is added to the archived band track's `spec.md`, and the archived `plan.md` Task 1.2 notes that the exact-key assertion necessarily changes
 - [x] Task: Measure - User Manual Verification 'Phase 2: Correct the documentation' (Protocol in workflow.md) `06345b7`
 
-## Phase 3: Live cap proof and closeout
+## Phase 3: Live cap proof and closeout [checkpoint: d76bea6]
 
 - [x] Task 3.1: Live: temporarily lengthen the active task title in this track's plan (so the route band exceeds `BAND_MAX`), reload with `bin/measure-dsh install --no-skills`, read `GET /measure-guard/state` and record `band.length` at most 160 ending in `…` and `bandFull.length` greater than 160 under `measure/runs/dsh_measure_band_followup_20261107/`; revert the title and reload again `a94857f`
 - [x] Task 3.2: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md` `98796c4`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Live cap proof and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Live cap proof and closeout' (Protocol in workflow.md) `d76bea6`
