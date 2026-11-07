@@ -343,3 +343,17 @@ test('addedPaths only honors git at a command start', () => {
     paths: ['a.ts'],
   })
 })
+
+// ---- command prefixes (dsh_measure_scan_fix2_20261107)
+
+test('addedPaths counts env-prefixed and wrapper git commands', () => {
+  const cases = [
+    ['FOO=1 git add secret.ts && git commit -m "fix(a): A"', ['secret.ts']],
+    ['env git add a.ts && git commit -m "fix(a): A"', ['a.ts']],
+    ['sudo git add b.ts && git commit -m "fix(b): B"', ['b.ts']],
+    ['env FOO=1 sudo git add c.ts && git commit -m "fix(c): C"', ['c.ts']],
+  ]
+  for (const [command, paths] of cases) {
+    assert.deepEqual(addedPaths(command), { all: false, trackedOnly: false, paths }, command)
+  }
+})

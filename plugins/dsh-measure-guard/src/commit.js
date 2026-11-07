@@ -18,7 +18,9 @@ export const commitShaOf = text => /^\[[^\]\n]* ([0-9a-f]{7,40})\]/m.exec(text)?
  * quotes is also a continuation; a backslash escapes the next character; a `#`
  * that starts a word comments to the end of the line. An unterminated quote
  * returns null so the caller can fail closed. `addedPaths` only honors a `git`
- * word at a command start (the first word or directly after a separator).
+ * word at a command start: the first word, directly after a separator, or after
+ * a run of command prefixes (an env assignment `NAME=value` or one of `env`,
+ * `sudo`, `command`, `exec`, `nice`, `time`).
  */
 function shellTokens(command) {
   const tokens = []
@@ -101,6 +103,28 @@ function shellTokens(command) {
   return tokens
 }
 
+const COMMAND_PREFIXES = new Set(['env', 'sudo', 'command', 'exec', 'nice', 'time'])
+
+/** True for a leading `NAME=value` assignment word. */
+const isEnvAssignment = value => /^[A-Za-z_][A-Za-z0-9_]*=/.test(value)
+
+/**
+ * True when tokens[index] begins a command: the first word, after a separator,
+ * or after a run of command prefixes (env assignments and the wrapper set).
+ */
+function atCommandStart(tokens, index) {
+  let at = index - 1
+  while (at >= 0 && !tokens[at].separator) {
+    const value = tokens[at].value ?? ''
+    if (isEnvAssignment(value) || COMMAND_PREFIXES.has(value)) {
+      at -= 1
+      continue
+    }
+    return false
+  }
+  return true
+}
+
 /**
  * The paths an in-command `git add` contributes (Decision 9): for every `git`
  * [-C <dir>]* `add` token run, the following words until a separator, with the
@@ -118,8 +142,9 @@ export function addedPaths(command) {
   }
   for (let i = 0; i < tokens.length; i += 1) {
     if (tokens[i].separator || tokens[i].value !== 'git') continue
-    // Only a command-position `git` counts: `echo git add .` is not a git call.
-    if (i > 0 && !tokens[i - 1].separator) continue
+    // Only a command-position `git` counts (`echo git add .` is not a git call),
+    // and an env/wrapper prefix keeps the command position (`FOO=1 git add x`).
+    if (!atCommandStart(tokens, i)) continue
     let at = i + 1
     while (at + 1 < tokens.length && tokens[at].value === '-C' && !tokens[at + 1].separator) at += 2
     if (at >= tokens.length || tokens[at].separator || tokens[at].value !== 'add') continue
