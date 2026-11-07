@@ -271,3 +271,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure snapshot invalidation fix3**
   *Link: [./archive/dsh_measure_snapshot_invalidate_fix3_20261109/](./archive/dsh_measure_snapshot_invalidate_fix3_20261109/)*
   *Records-only: put all four corrections in the fix2 spec, fix the original count note, dual-attribute the CHANGELOG, add the rev-parse cost, and consolidate the perf row*
+
+- [x] **Track: DSH Measure contracts matching and scope details**
+  *Link: [./archive/dsh_measure_contracts_scope_20261110/](./archive/dsh_measure_contracts_scope_20261110/)*
+  *Document the marker matching, raw dispositions value, scope names, non-ancestor baseline, unioned changed files, and HEAD-advance rules in contracts.md with doc-test assertions*
