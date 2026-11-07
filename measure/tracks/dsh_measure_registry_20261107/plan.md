@@ -11,11 +11,11 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.2: review the rebuild for lost entries (the archive-directory count equals the entry count) and for unchanged active/cancelled sections; record the before/after counts
 - [x] Task: Measure - User Manual Verification 'Phase 1: Rebuild the registry' (Protocol in workflow.md) `4589f8c`
 
-## Phase 2: The structural check
+## Phase 2: The structural check [checkpoint: 6f34a42]
 
 - [x] Task 2.1: `tests/dsh/test-registry.sh`: assert each `- [x] **Track:` line is followed by a `*Link:` line within two lines, each archive directory has exactly one entry, the active section has at most one `[~]` track, and no merged two-or-more `*…*` description block exists; run it against a fixture with a merged block (must fail) and against the rebuilt registry (must pass)
 - [x] Task 2.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js` (301/301), both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh`; record the results
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The structural check' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The structural check' (Protocol in workflow.md) `6f34a42`
 
 ## Phase 3: Closeout
 
