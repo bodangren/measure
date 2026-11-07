@@ -27,8 +27,8 @@ rehearsal, then closeout. The gate is
 - [x] Task 3.3: clear the mode override, remove the fixture, and record the evidence (fixture path, subagent targets, guard denies/notes, test fail/pass, commit) under `measure/runs/dsh_measure_team_rehearsal_20261107/`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Executed rehearsal' (Protocol in workflow.md) `4223112`
 
-## Phase 4: Documentation and closeout
+## Phase 4: Documentation and closeout [checkpoint: 36782ed]
 
 - [x] Task 4.1: README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, `measure/tech-debt.md` updates; `metadata.json`; archive the track and update `measure/tracks.md` `5f8829e`
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Documentation and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 4: Documentation and closeout' (Protocol in workflow.md) `36782ed`
 
