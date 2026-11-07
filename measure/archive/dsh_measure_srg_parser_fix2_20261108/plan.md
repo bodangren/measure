@@ -18,7 +18,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: write `measure/archive/dsh_measure_srg_parser_20261108/spec-review.md` with F1–F7 and one disposition each, link it from the track's index, add a dated correction note to its spec; update the tech-debt row (resolved: control/format characters and marker substring matching; remaining: scope rule) and the CHANGELOG wording; run the node suite and both parity scripts `4b14af4`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Grammar, records, and gates' (Protocol in workflow.md) `7f844b1`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: 1ba8925]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_srg_parser_fix2_20261108` and record the manifest-only FAIL `c132437`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `1ba8925`
