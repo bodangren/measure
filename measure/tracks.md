@@ -267,3 +267,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure snapshot invalidation fix2**
   *Link: [./archive/dsh_measure_snapshot_invalidate_fix2_20261109/](./archive/dsh_measure_snapshot_invalidate_fix2_20261109/)*
   *Export MUTATION_TOOLS with a disjoint-set test, state the within-step window, and correct the row and spec records*
+
+- [x] **Track: DSH Measure snapshot invalidation fix3**
+  *Link: [./archive/dsh_measure_snapshot_invalidate_fix3_20261109/](./archive/dsh_measure_snapshot_invalidate_fix3_20261109/)*
+  *Records-only: put all four corrections in the fix2 spec, fix the original count note, dual-attribute the CHANGELOG, add the rev-parse cost, and consolidate the perf row*
