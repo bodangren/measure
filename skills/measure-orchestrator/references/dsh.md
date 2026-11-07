@@ -193,8 +193,9 @@ recommended smoke test after a plugin change.
    runs the failing test itself, then implements until green, commits with a
    git note, and records the short SHA. **The Red record is per agent:** strict
    mode denies a source edit until *that agent* has both a test-file change and
-   a failed test run, so a Green agent that starts editing immediately is
-   denied — run the failing test first, or keep the rehearsal in `guard` mode.
+   a failed test run, so a Green agent that only re-runs the Red agent's test is
+   still denied: it must **change a test file** (for example add a case) and
+   run the tests to see them fail, or keep the rehearsal in `guard` mode.
    A write under `measure/` is always allowed and never needs the Red phase.
    (`dsh --profile headless` cannot host the guard: the plugin's required
    `inject` includes `webServer`, so the entry stays pending in the headless
@@ -203,8 +204,12 @@ recommended smoke test after a plugin change.
    plan and report.
 6. **Capture the evidence:** fixture path, the subagent targets, the strict deny
    text observed (if any), the test failure and pass output, and the commit.
-7. **Clean up:** `/measure-mode default repo` (or remove the `repos.json`
-   entry), `bin/measure-dsh reload`, then `make-project.sh --cleanup <fixture>`.
+7. **Clean up:** clear the *fixture root's* override — in a session whose
+   working directory is the fixture `/measure-mode default repo` does that;
+   otherwise remove the root's entry from `repos.json` — then
+   `bin/measure-dsh reload` and `make-project.sh --cleanup <fixture>`. The
+   reload is required in both directions: the plugin caches its repository store
+   for the lifetime of the instance.
 
 The integration facts the rehearsal proves: the guard applies to child agents
 through their own working directory; `measure/` writes never need the Red phase;
