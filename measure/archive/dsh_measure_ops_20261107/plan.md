@@ -55,5 +55,5 @@ _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the effective mode, `/measure-mode`, and `/measure-verify` with their precedence and limits `93cd1a9`
 - [x] Task 3.2: Live check: install + reload; `/measure-mode strict` then a source-edit probe is denied with the strict TDD text; `/measure-mode default` restores `guard`; the state route shows the mode value/source; `/measure-verify` output recorded under `measure/runs/dsh_measure_ops_20261107/` `93cd1a9`
-- [~] Task 3.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase S3: Documentation, live check, and track closeout' (Protocol in workflow.md)
