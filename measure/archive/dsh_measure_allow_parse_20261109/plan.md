@@ -19,7 +19,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.3: update the OpenCode adapter's V6/V7 cases (the control-character entry is ignored) and the ordered ignore-rule tables in `mods/measure-guard/README.md` and `plugins/opencode-measure-guard/README.md` (control character is order 1) `6d2fdcf`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `01df5d9`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: 8596032]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_allow_parse_20261109` and record the manifest-only FAIL `0591b16`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `8596032`
