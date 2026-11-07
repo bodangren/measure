@@ -115,6 +115,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure commit guard: quote-aware `git add` arguments**
   *Link: [./archive/dsh_measure_add_quoting_20261107/](./archive/dsh_measure_add_quoting_20261107/)*
+
+- [x] **Track: DSH Measure commit guard: token-scan `git add` and record corrections**
+  *Link: [./archive/dsh_measure_add_quoting_followup_20261107/](./archive/dsh_measure_add_quoting_followup_20261107/)*
+  *A whole-command token scan (line continuations, quoted separators, comments) replaces the segment regex; the shipped record is corrected and the mid-red archives are closeout-clean with a tracked ledger. 13 tasks, 4 checkpoints, pushed per phase.*
   *The strict commit guard reads `git add` with a shell-word tokenizer (quotes, escapes, comments, `--`), so a quoted path with spaces contributes exactly that path; unterminated quotes fail closed. 9 tasks, 3 checkpoints, pushed per phase.*
   *The named closeout ledger (output, SHAs, parity, node, srg), a defined closeout-clean (manifest out of scope), the corrected archived open-task list, the concrete review record with dispositions, and the parity gate task. 8 tasks, 2 checkpoints.*
   *Reconciles the mid-red records: the archived plans' task SHAs (closeout check now reports only the automation-supervisor manifest), the missing `tests/a.py` absence assertion, the follow-up's `spec-review.md` with responses, and the archived mid-red spec's dated correction note. 7 tasks, 2 checkpoints.*

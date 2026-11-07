@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_add_quoting_followup_20261107",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-07T23:40:00Z",
+  "updated_at": "2026-11-08T00:10:00Z",
+  "description": "Replace the segment regex with a whole-command token scan (continuations, quoted separators, real comments), correct the shipped quoting record, and reconcile the mid-red evidence/record review (ledger tracked, archived plans closeout-clean, definition, wording)",
+  "estimated_tasks": 13,
+  "actual_tasks": 13,
+  "deviation_notes": "All 13 top-level tasks are done and the 4 phase checkpoints are recorded, with a push after each phase. (1) The whole-command token scan replaced the segment regex; the residual is wrapper scripts and command substitution (documented). (2) Quoted separators are now exact paths, and a backslash-newline continuation is followed; these were the review residuals. (3) The mid-red closeout ledger is force-added and tracked; both archived mid-red tracks close with only the expected automation-supervisor manifest FAIL, which is the supervisor artifact a manual track never produces.",
+  "completed": "2026-11-07"
+}
