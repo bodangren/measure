@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_commit_nested_fix4_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T21:00:00Z",
+  "updated_at": "2026-11-09T21:40:00Z",
+  "description": "Step over option arguments by behavior (-euo, --rcfile), pin -- semantics against bash, add the cases, and correct the named records",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The suite is 311 tests (the spec note said 312 before review; corrected). (2) Option-argument forms outside the known set, wrapper scripts, and shell functions remain the residual. (3) All records name their target files and the two previous reviews carry dated corrections.",
+  "completed": "2026-11-09"
+}
