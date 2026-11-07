@@ -4,9 +4,9 @@
   "status": "done",
   "created_at": "2026-11-09T15:00:00Z",
   "updated_at": "2026-11-09T15:30:00Z",
-  "description": "Skill-doc check fix3: add the folded > block fixture, correct the tech-debt row and CHANGELOG to name the Markdown folder-link rule, and record the fix2 review",
-  "estimated_tasks": 6,
-  "actual_tasks": 6,
+  "description": "Add the folded > block fixture, correct the tech-debt row and CHANGELOG to name the Markdown folder-link rule, and record the fix2 review",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
   "deviation_notes": "All 6 top-level tasks are done and the 2 phase checkpoints are recorded, with a push after each phase. (1) The folded > block marker is pinned by a fixture. (2) The tech-debt row and CHANGELOG now name the Markdown folder-link rule (N3) and keep the bundle-symlink rule separate. (3) The fix2 review is recorded with F1-F5 dispositions and its spec carries the correction note.",
   "completed": "2026-11-09"
 }
