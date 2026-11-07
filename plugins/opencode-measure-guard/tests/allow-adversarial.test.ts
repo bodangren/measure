@@ -145,18 +145,19 @@ describe('entries that could widen the match', () => {
     expect(parse.parseAllowList('\uFEFF# comment\nwork/\n').folders).toEqual(['work'])
   })
 
-  test('V6 CR-only line ends are not a separator', () => {
+  test('V6 CR-only line ends are not a separator; the control-character entry is ignored', () => {
     const list = parse.parseAllowList('work/\rassets/\r')
-    expect(list.folders).toEqual(['work/\rassets'])
-    expect(list.ignored).toEqual([])
+    expect(list.folders).toEqual([])
+    expect(list.ignored.map(entry => entry.reason)).toEqual(['has a control character'])
     const snapshot = snapshotOf('/repo', list.folders)
     expect(guards.isAllowed(snapshot, '/repo/work/a.md')).toBe(false)
     expect(guards.isAllowed(snapshot, '/repo/assets/a.md')).toBe(false)
   })
 
-  test('V7 a NUL byte in an entry stays in the folder name', () => {
+  test('V7 a NUL byte in an entry is ignored as a control character', () => {
     const list = parse.parseAllowList('work\u0000x/\n')
-    expect(list.folders).toEqual(['work\u0000x'])
+    expect(list.folders).toEqual([])
+    expect(list.ignored.map(entry => entry.reason)).toEqual(['has a control character'])
     expect(guards.isAllowed(snapshotOf('/repo', list.folders), '/repo/work/a.md')).toBe(false)
   })
 

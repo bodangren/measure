@@ -86,11 +86,12 @@ The file `measure/guard-allow` of the guarded repository is the allow list. A wr
 
   | Order | Rule | Reason |
   | --- | --- | --- |
-  | 1 | The entry starts with `/`. | `absolute path` |
-  | 2 | A segment of the entry is `..`. | `has a .. segment` |
-  | 3 | The entry contains `*`, `?`, `[`, `]`, `{`, or `}`. | `has a wildcard` |
-  | 4 | The entry does not end with `/`. | `not a folder (an entry ends with /)` |
-  | 5 | The entry names the project root (for example `./`). | `names the project root` |
+  | 1 | The entry contains a C0 control character (U+0000–U+001F). | `has a control character` |
+  | 2 | The entry starts with `/`. | `absolute path` |
+  | 3 | A segment of the entry is `..`. | `has a .. segment` |
+  | 4 | The entry contains `*`, `?`, `[`, `]`, `{`, or `}`. | `has a wildcard` |
+  | 5 | The entry does not end with `/`. | `not a folder (an entry ends with /)` |
+  | 6 | The entry names the project root (for example `./`). | `names the project root` |
 
   A kept entry loses the leading `./`, the repeated `/`, and the trailing `/`. Each folder is kept once.
 - **Matching.** A path matches when it is the folder or lies under it. The match is by whole path segments and is case-sensitive. `..` segments resolve before the match. The guard does not resolve symbolic links.

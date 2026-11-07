@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **allow-list parsing:** the allow-list dedupe is linear (visited `Set`, first-seen order) and an entry containing a C0 control character is ignored with `has a control character`, so a binary-corrupted `measure/guard-allow` cannot admit a path; the OpenCode adapter's V6/V7 cases and both README rule tables are updated (control character is order 1). node 315 tests. Track `dsh_measure_allow_parse_20261109`.
+
+### Features
+
 * **commit guard nested commands:** `git stage` now contributes like `git add`, and `bash`/`sh`/`zsh` by basename with any `-c`-bearing option cluster (`-c`, `-lc`, `-x -c`, `/bin/bash`), multi-word `eval`, and `git stage` substitutions are scanned recursively (four-level cap, unreadable inner text fails closed) by the strict commit guard's `addedPaths`, so a non-test file staged through a nested shell cannot bypass the no-task check; node 310 tests, DSH adapter local. Track `dsh_measure_commit_nested_20261109`.
 
 ### Features

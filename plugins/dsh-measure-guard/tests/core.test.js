@@ -129,6 +129,24 @@ test('parseAllowList keeps one folder and reports the ignored entry', () => {
   assert.deepEqual(allow.ignored, [{ line: 3, text: '../outside/', reason: 'has a .. segment' }])
 })
 
+test('parseAllowList dedupes in linear time and keeps first-seen order', () => {
+  const allow = parseAllowList('src/\nsrc/\n./src/\ndocs/\nsrc/')
+  assert.deepEqual(allow.folders, ['src', 'docs'])
+  assert.deepEqual(allow.ignored, [])
+})
+
+test('parseAllowList ignores an entry with a control character', () => {
+  const allow = parseAllowList('docs/\nbi\u0000nary/')
+  assert.deepEqual(allow.folders, ['docs'])
+  assert.equal(allow.ignored.length, 1)
+  assert.equal(allow.ignored[0].reason, 'has a control character')
+})
+
+test('parseAllowList keeps every folder of a wide list', () => {
+  const text = Array.from({ length: 2000 }, (_, i) => `dir${i}/`).join('\n')
+  assert.equal(parseAllowList(text).folders.length, 2000)
+})
+
 test('the package entry exposes name, inject, and apply', async () => {
   const plugin = await import('../index.js')
   assert.equal(plugin.name, 'measure-guard')

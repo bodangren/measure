@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_allow_parse_20261109",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-11-09T23:00:00Z",
+  "updated_at": "2026-11-09T23:00:00Z",
+  "description": "Make allow-list dedupe linear with a visited set, ignore control-character entries with a reason, add tests, and update the row",
+  "estimated_tasks": 4,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

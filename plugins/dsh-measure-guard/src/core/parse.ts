@@ -42,6 +42,7 @@ export const ALLOW_FILE = 'guard-allow'
 
 /** The reason an allow list entry is ignored; null when the entry is kept. */
 const allowProblem = (entry: string): string | null => {
+  if (/[\u0000-\u001f]/.test(entry)) return 'has a control character'
   if (entry.startsWith('/')) return 'absolute path'
   if (entry.split('/').includes('..')) return 'has a .. segment'
   if (/[*?[\]{}]/.test(entry)) return 'has a wildcard'
@@ -57,6 +58,7 @@ const allowProblem = (entry: string): string | null => {
  */
 export const parseAllowList = (text: string): AllowList => {
   const folders: string[] = []
+  const seen = new Set<string>()
   const ignored: AllowIgnored[] = []
   text.split('\n').forEach((raw, i) => {
     const entry = raw.trim()
@@ -67,7 +69,10 @@ export const parseAllowList = (text: string): AllowList => {
       return
     }
     const folder = joinPath(entry)
-    if (!folders.includes(folder)) folders.push(folder)
+    if (!seen.has(folder)) {
+      seen.add(folder)
+      folders.push(folder)
+    }
   })
   return { folders, ignored }
 }
