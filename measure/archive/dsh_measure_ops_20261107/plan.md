@@ -49,11 +49,11 @@ _Story ref: spec.md#story-s2_
 - [x] Task 2.4: Docs: README "Tools and commands" (`/measure-verify`, read-only, fail-open) and `docs/dsh.md` `a20077d`
 - [x] Task: Measure - User Manual Verification 'Phase S2: On-demand verification' (Protocol in workflow.md) `9d41923`
 
-## Phase S3: Documentation, live check, and track closeout
+## Phase S3: Documentation, live check, and track closeout [checkpoint: 9440105]
 
 _Story ref: spec.md#story-s3_
 
 - [x] Task 3.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the effective mode, `/measure-mode`, and `/measure-verify` with their precedence and limits `93cd1a9`
 - [x] Task 3.2: Live check: install + reload; `/measure-mode strict` then a source-edit probe is denied with the strict TDD text; `/measure-mode default` restores `guard`; the state route shows the mode value/source; `/measure-verify` output recorded under `measure/runs/dsh_measure_ops_20261107/` `93cd1a9`
 - [x] Task 3.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md`
-- [ ] Task: Measure - User Manual Verification 'Phase S3: Documentation, live check, and track closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S3: Documentation, live check, and track closeout' (Protocol in workflow.md) `9440105`
