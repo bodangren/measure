@@ -251,3 +251,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit guard nested fix4**
   *Link: [./archive/dsh_measure_commit_nested_fix4_20261109/](./archive/dsh_measure_commit_nested_fix4_20261109/)*
   *Step over option arguments by behavior (-euo, --rcfile), pin -- semantics against bash, add the cases, and correct the named records*
+
+- [x] **Track: DSH Measure commit guard nested fix5**
+  *Link: [./archive/dsh_measure_commit_nested_fix5_20261109/](./archive/dsh_measure_commit_nested_fix5_20261109/)*
+  *Key -c detection on short option clusters (not --norc), add --init-file and --norc cases, and correct the fix3/fix4 records with named targets*

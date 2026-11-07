@@ -22,3 +22,9 @@ Spec: [./spec.md](./spec.md)
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_commit_nested_fix4_20261109` and record the manifest-only FAIL `d4ca811`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `c14e101`
+
+> **Review-target correction (2026-11-09, dsh_measure_commit_nested_fix5_20261109):**
+> Task 2.1's review target was wrong: the fix3 review belongs to
+> `measure/archive/dsh_measure_commit_nested_fix3_20261109/spec-review.md`; this
+> track's own `spec-review.md` holds the fix4 review. Both records exist and are
+> linked from their indexes.

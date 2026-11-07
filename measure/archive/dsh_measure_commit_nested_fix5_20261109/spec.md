@@ -67,3 +67,11 @@ This track tightens the `-c` detection to short option clusters, adds the
 
 > **Correction (2026-11-09, before the review):** the node suite is 312 tests
 > after this track's single case block (not 313); the base was 311.
+
+> **Follow-up correction (2026-11-09, after the review):** the missing record was
+> the fix4 review, written to
+> `measure/archive/dsh_measure_commit_nested_fix4_20261109/spec-review.md`; the
+> fix3 review already existed. This track's two assertions form one test block,
+> so the base 311 becomes 312. The fix4 plan holds a dated review-target
+> correction, and the fix3 spec holds a dated CHANGELOG-count correction (310
+> before fix4, 312 after fix5). Dated corrections are appended, not rewritten.

@@ -80,3 +80,9 @@ nested shells → path; four → `all: true`), and corrects the records.
 > command string; a `--` before any `-c` ends option processing and nothing is
 > scanned. The earlier note said a `--` token before the command word is skipped
 > unconditionally.
+
+> **CHANGELOG-count correction (2026-11-09,
+> dsh_measure_commit_nested_fix5_20261109):** the fix4 correction above says "the
+> CHANGELOG states `node 311 tests`"; at that commit the CHANGELOG said 310. The
+> true trajectory: 310 before fix4, 312 after fix5 (fix4's case block made 311 and
+> fix5's block made 312); the CHANGELOG now states 312.
