@@ -265,8 +265,10 @@ projections would need zod wire schemas, Typert remotes need codegen, and
 3. `src/types.ts` is the mod's `types/index.d.ts` without its `declare module
    'claude-code'` block, plus the two-line header note (the OpenCode precedent).
 
-`npm`-free test gate: `node --test tests/` then `bash scripts/check-parity.sh`,
-exposed as `node --run test` from the package folder.
+`npm`-free test gate: `node --test tests/*.test.js` (the shell expands the
+glob; Node's positional is a file or glob, not a bare directory name) then
+`bash scripts/check-parity.sh`, exposed as `node --run test` from the package
+folder.
 
 ## 10. Test matrix (normal and edge per phase)
 
