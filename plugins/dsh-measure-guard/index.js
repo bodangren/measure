@@ -2,12 +2,15 @@
 // snapshot cache, the I/O seam, and the root writers; apply() only registers.
 // The module imports no Harness package: every capability comes from ctx
 // (design §2).
+import { homedir } from 'node:os'
+
 import { parseModeOf, createState } from './src/state.js'
 import { Snapshots, canonicalRoot, gitStatus, makeIo } from './src/snapshot.js'
 import { RootWriters } from './src/roots.js'
 import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
+import { measureWorkflowCommands } from './src/workflow.js'
 import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { registerClientState } from './src/client-state.js'
@@ -114,6 +117,13 @@ export function apply(ctx, config) {
   ctx.effect(() => ctx.tools.register(measureStatusTool(deps)), 'measure-guard:measure_status')
 
   for (const command of measureCommands(deps)) {
+    ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
+  }
+
+  // The eight Measure workflow commands (FR-6, FR-7): each one resolves the
+  // installed skill reference and steers the receiving agent.
+  const workflowDeps = { ...deps, skillDeps: { env: process.env, home: homedir() } }
+  for (const command of measureWorkflowCommands(workflowDeps)) {
     ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
   }
 

@@ -71,7 +71,7 @@ const ctxOf = ({ agents = [] } = {}) => {
 
 const settle = () => new Promise(resolve => setTimeout(resolve, 25))
 
-test('apply registers measure_status, the three commands, and the lifecycle listeners', async () => {
+test('apply registers measure_status, the eleven commands, and the lifecycle listeners', async () => {
   const plugin = await import('../index.js')
   assert.equal(plugin.name, 'measure-guard')
   assert.equal(plugin.inject.includes('tools'), true)
@@ -84,10 +84,26 @@ test('apply registers measure_status, the three commands, and the lifecycle list
 
   assert.equal(ctx.toolsList.length, 1)
   assert.equal(ctx.toolsList[0].name, 'measure_status')
-  assert.deepEqual(
-    ctx.commandsList.map(command => command.name),
-    ['measure-off', 'measure-on', 'measure-status'],
-  )
+  const names = ctx.commandsList.map(command => command.name)
+  assert.deepEqual(names, [
+    'measure-off',
+    'measure-on',
+    'measure-status',
+    'measure-setup',
+    'measure-new-track',
+    'measure-new-track-set',
+    'measure-implement',
+    'measure-review',
+    'measure-revert',
+    'measure-doctor',
+    'measure-orchestrate',
+  ])
+  assert.equal(new Set(names).size, names.length)
+  for (const command of ctx.commandsList) {
+    assert.equal(typeof command.description, 'string')
+    assert.ok(command.description.trim().length > 0, `${command.name} has no description`)
+    assert.equal(typeof command.handler, 'function')
+  }
   assert.ok(ctx.listeners.has('agent/created'))
   assert.ok(ctx.listeners.has('agent/disposed'))
   // Session events are handled only by the per-agent listeners: a global one
