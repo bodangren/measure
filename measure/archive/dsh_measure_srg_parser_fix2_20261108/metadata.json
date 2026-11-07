@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_srg_parser_fix2_20261108",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T08:40:00Z",
+  "updated_at": "2026-11-08T09:10:00Z",
+  "description": "Broaden the dispositions control/format rejection (C1, U+2028/2029, bidi, zero-width), make the result markers exact lines, add the ordering probe and the grammar/doc test, and record the review",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The rejection now covers the format classes (C1 controls, U+2028/2029, bidi, zero-width) in addition to C0-minus-tab/DEL. (2) has_agent_result matches the markers as whole stripped lines; a probe proves marker look-alike text does not count as a block. (3) The grammar and its doc test are updated; the only remaining parser-row item is the scope rule comparing trees, not intermediate commits.",
+  "completed": "2026-11-08"
+}

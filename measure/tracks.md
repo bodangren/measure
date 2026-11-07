@@ -183,3 +183,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure dispositions parser hardening**
   *Link: [./archive/dsh_measure_srg_parser_20261108/](./archive/dsh_measure_srg_parser_20261108/)*
   *Reject control and zero-width characters in a parseable dispositions value (CONTEST/ESCALATE text), with contract tests; record the resolved parser part and the remaining scope-rule item*
+
+- [x] **Track: DSH Measure dispositions parser fix2**
+  *Link: [./archive/dsh_measure_srg_parser_fix2_20261108/](./archive/dsh_measure_srg_parser_fix2_20261108/)*
+  *Broaden the dispositions control/format rejection (C1, U+2028/2029, bidi, zero-width), make the result markers exact lines, add the ordering probe and the grammar/doc test, and record the review*
