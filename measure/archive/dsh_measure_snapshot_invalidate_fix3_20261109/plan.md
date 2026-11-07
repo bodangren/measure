@@ -13,5 +13,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Closeout
 
-- [x] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_snapshot_invalidate_fix3_20261109` and record the manifest-only FAIL
+- [x] Task 2.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_snapshot_invalidate_fix3_20261109` and record the manifest-only FAIL `6c4391f`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Closeout' (Protocol in workflow.md)
