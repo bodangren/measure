@@ -10,6 +10,7 @@ import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
 import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
+import { registerClientState } from './src/client-state.js'
 
 export const name = 'measure-guard'
 
@@ -115,6 +116,16 @@ export function apply(ctx, config) {
   for (const command of measureCommands(deps)) {
     ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
   }
+
+  // The Client data channel (FR-15): one exact HTTP route that the band and
+  // the panel poll; the browser half is served from client.js by the loader.
+  registerClientState(ctx, {
+    agentOf: id => ctx.agents.get(id),
+    rootOf,
+    snapshots,
+    state,
+    mode,
+  })
 
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the
   // synchronous guard that reports it, the closeout note on the way out, and

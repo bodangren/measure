@@ -48,6 +48,7 @@ const ctxOf = ({ agents = [] } = {}) => {
       readText: async () => '',
       stat: async () => undefined,
     },
+    webServer: { register: () => () => {} },
     subprocess: {
       resolveExecutable: async () => '/usr/bin/git',
       spawn: () => ({
