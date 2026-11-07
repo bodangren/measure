@@ -1,0 +1,6 @@
+# Closeout check — dsh_measure_shell_grammar_20261107
+
+Run: measure_interphase_checks.py closeout --track dsh_measure_shell_grammar_20261107
+Expected: only the automation-supervisor manifest FAIL (a manual track never produces it).
+
+FAIL: missing closeout manifest: /home/daniel-bo/Desktop/measure/measure/archive/dsh_measure_shell_grammar_20261107/automation-supervisor-closeout-manifest.json
