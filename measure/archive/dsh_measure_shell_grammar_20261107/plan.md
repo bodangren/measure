@@ -23,7 +23,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 3.1: update the plugin README shell-write limit sentence and `docs/dsh.md` scoped to the **redirect scan** (the `tee`/`sed -i` raw-command residual stays named), resolve `measure/tech-debt.md`'s heredoc row with that residual, add the `CHANGELOG.md` bug-fix entry, and run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `plugins/dsh-measure-guard/scripts/check-parity.sh` and `plugins/opencode-measure-guard/scripts/check-parity.sh`, and `bash tests/dsh/run.sh` after the docs edits (node 301/301, parity ok, CLI 10/10) `8651e9e`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Records' (Protocol in workflow.md) `81b611e`
 
-## Phase 4: Closeout
+## Phase 4: Closeout [checkpoint: 601f495]
 
 - [x] Task 4.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_shell_grammar_20261107` and record that it reports only the expected manifest FAIL `5ef13dd`
-- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 4: Closeout' (Protocol in workflow.md) `601f495`
