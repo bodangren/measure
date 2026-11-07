@@ -5,12 +5,12 @@ Spec: [./spec.md](./spec.md)
 
 **Each phase checkpoint is pushed to `origin/main` before the next phase.**
 
-## Phase 1: Command prefixes
+## Phase 1: Command prefixes [checkpoint: bda9226]
 
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: a `git` word counts at a command start if it is the first word, directly after a separator, or after a run of command prefixes (an environment assignment matching `^[A-Za-z_][A-Za-z0-9_]*=`, or `env`/`sudo`/`command`/`exec`/`nice`/`time`); documented in the header
 - [x] Task 1.2: tests: `FOO=1 git add secret.ts`, `env git add a.ts`, `sudo git add b.ts`, and `env FOO=1 sudo git add c.ts` all yield their paths; the `echo git add .` negative and existing cases unchanged; the old scan fails the new cases
 - [x] Task 1.3: the suite passes and both parity gates stay ok
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Command prefixes' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Command prefixes' (Protocol in workflow.md) `bda9226`
 
 ## Phase 2: Records
 
