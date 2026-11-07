@@ -53,7 +53,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
     - [ ] `tests/setup.test.js`: git repo without `measure/` asks, non-repo does not, `off` silences, `setup` keeps the prompt text
 - [x] Task 2.8: Measure - User Manual Verification 'Phase 2: Context layer' (Protocol in workflow.md) `891f080`
 
-## Phase 3: Guard layer
+## Phase 3: Guard layer [checkpoint: f1335a2]
 
 - [x] Task 3.1: Decision preparation `8ff0330`
     - [ ] `src/guard.js`: decision `Map` keyed by `exec.token` filled in `tools/pre-execute`, read by the synchronous `ctx.tools.guard`, cleared on `tools/result`; try/catch defaults to allow
@@ -70,7 +70,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 3.5: End-of-turn check `8f5eb0c`
     - [ ] `src/guard.js`: baseline at the first `agent/pre-step`; problems at `agent/turn-stopping`; strict holds the turn open by `agent.steer` at most `MAX_BLOCKS` (2) times; guard mode reminder at the next `pre-step`; band problems
     - [ ] `tests/end-of-turn.test.js`: changed files with no `[~]` reported, `[x]` without SHA reported, strict steer bounded to 2, advise records only
-- [ ] Task 3.6: Measure - User Manual Verification 'Phase 3: Guard layer' (Protocol in workflow.md)
+- [x] Task 3.6: Measure - User Manual Verification 'Phase 3: Guard layer' (Protocol in workflow.md) `f1335a2`
 
 ## Phase 4: Client surface
 
