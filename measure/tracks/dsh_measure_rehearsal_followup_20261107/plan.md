@@ -14,11 +14,11 @@ scripts, `bash tests/dsh/run.sh`, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 1.2: run `bash tests/dsh/run.sh`; the new assertion passes alongside the existing contract tests
 - [x] Task: Measure - User Manual Verification 'Phase 1: Fixture contract hardening' (Protocol in workflow.md) `75bc45a`
 
-## Phase 2: The archived review corrections
+## Phase 2: The archived review corrections [checkpoint: d1c004d]
 
 - [x] Task 2.1: correct the archived rehearsal track's `spec.md` (Overview and FR-4 state exactly what ran; acceptance fields defined), the Rehearsal section in `skills/measure-orchestrator/references/dsh.md` (parent-session root in the closing summary; the exact "always allowed" rule with the closeout/registry/shell exceptions), and its `metadata.json` deviation notes (Accepted Risk for the deferred isolated-session strict path, naming the Host `session.create` cwd lead)
 - [x] Task 2.2: write the archived track's `spec-review.md`: this round's findings, the author responses, and the explicit Accepted Risk for the unexecuted strict path
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The archived review corrections' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The archived review corrections' (Protocol in workflow.md) `d1c004d`
 
 ## Phase 3: Evidence and closeout
 
