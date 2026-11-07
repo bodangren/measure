@@ -45,7 +45,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.5: `measure_status` tool `bcd31ed`
     - [ ] `src/status.js` + `ctx.tools.register`: tracks, active track, position, `[b]` count, next action, spec path; never the whole spec
     - [ ] `tests/status.test.js`: normal, no active track, no `measure/`, parse error
-- [ ] Task 2.6: Commands
+- [~] Task 2.6: Commands
     - [ ] `src/commands.js` + `ctx.commands.register`: `measure-off` [repo], `measure-on` [repo], `measure-status`
     - [ ] `tests/commands.test.js`: session and repo scope, unknown argument defaults to session, status text
 - [ ] Task 2.7: Setup offer (NFR-1)
