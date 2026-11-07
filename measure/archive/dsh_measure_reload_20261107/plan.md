@@ -23,6 +23,6 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 
 ## Phase 3: Documentation and closeout
 
-- [ ] Task 3.1: update `bin/measure-dsh`'s help/usage text, the plugin README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md` (the Medium reload row resolves)
-- [ ] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.1: update `bin/measure-dsh`'s help/usage text, the plugin README, `docs/dsh.md`, `CHANGELOG.md`, `measure/lessons-learned.md`, and `measure/tech-debt.md` (the Medium reload row resolves)
+- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `d4465d8`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Documentation and closeout' (Protocol in workflow.md)
