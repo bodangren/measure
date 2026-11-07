@@ -341,6 +341,14 @@ folder.
   plus the same `cordis.patch.yml` row with `name: ./plugins/dsh-measure-guard/index.js`.
   `dsh.bundle.patch` stays valid for a later real bundle install
   (`dsh plugin --profile web add <abs path>`).
+  - The installer skips a target whose **immediate parent** is missing, and the
+    immediate parent here is `~/.dsh/profiles/web/plugins`, not the profile
+    folder. `README.md` therefore tells the user to create it once
+    (`mkdir -p ~/.dsh/profiles/web/plugins`) before the first install; the
+    installer test covers the skip-then-create sequence.
+  - The target spells the default DSH home (`~/.dsh`). A `DSH_HOME` elsewhere
+    needs the row adjusted or the bundle installed with `dsh plugin add`; the
+    README states both.
 - **No build step, no package manager, no `node_modules`** in the repository.
 
 ## 12. Shared-core symbol map (FR → core symbol)
