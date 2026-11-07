@@ -25,5 +25,5 @@ and `bash tests/spec_review_gate/run.sh`.
 ## Phase 3: Docs and closeout
 
 - [x] Task 3.1: plugin README commit-guard limit sentence, `CHANGELOG.md` bug-fix entry, and the resolved `measure/tech-debt.md` regex row; `bash tests/dsh/run.sh` after the docs edits
-- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `6cc0346`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Docs and closeout' (Protocol in workflow.md)
