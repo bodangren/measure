@@ -19,5 +19,5 @@ scripts.
 ## Phase 2: The corrected record and closeout
 
 - [x] Task 2.1: annotate the archived mid-red track's spec/plan with the single-call approach, the fixture's `mkdir tests` step, the control case, and the executed Red order/evidence; write this track's `spec-review.md` with the review and the responses; update the resolved `measure/tech-debt.md` row's resolution note
-- [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md` `a481293`
 - [ ] Task: Measure - User Manual Verification 'Phase 2: The corrected record and closeout' (Protocol in workflow.md)
