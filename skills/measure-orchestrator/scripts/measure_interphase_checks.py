@@ -82,6 +82,9 @@ ROLE_ALIASES = {
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
 DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
 DISPOSITIONS_PREFIX = "dispositions:"
+# A control character (C0 except tab, and DEL) or a zero-width character inside
+# a dispositions value is invisible or misleading in the rendered finding text.
+CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f\u200b\u200c\u200d\u2060\ufeff]")
 AGENT_RESULT_START = "MEASURE_AGENT_RESULT"
 AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
 
@@ -504,6 +507,8 @@ def dispositions_feedback(log_path: str) -> list[str]:
             feedback.append(f"invalid dispositions line: duplicate finding id {finding_id}")
             continue
         seen.add(finding_id)
+    if not feedback and CONTROL_OR_ZERO_WIDTH_RE.search(value):
+        feedback.append("invalid dispositions line: control or zero-width character")
     return feedback
 
 

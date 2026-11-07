@@ -220,7 +220,11 @@ class Probes:
     def g04_nul(self):
         g = "G04 NUL"
         self.value_reject(g, "F1=FIX NUL (contract)", "F1=FIX\x00")
-        self.report(g, "F2=CONTEST(NUL)", enc(blk("dispositions: F2=CONTEST(\x00)")))
+        self.value_reject(g, "F2=CONTEST(NUL) (contract)", "F2=CONTEST(\x00)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(ESC) (contract)", "F2=CONTEST(\x1b)", "control or zero-width character")
+        self.value_reject(g, "F2=CONTEST(U+200B) (contract)", "F2=CONTEST(a\u200bb)", "control or zero-width character")
+        self.value_reject(g, "F3=ESCALATE(U+FEFF) (contract)", "F3=ESCALATE(\ufeff)", "control or zero-width character")
+        self.value_pass(g, "F2=CONTEST(tab between words) (contract)", "F2=CONTEST(a\tb)")
 
     def g05_semicolon_in_parens(self):
         g = "G05 ';' inside parentheses (contract, spec Decision 18)"

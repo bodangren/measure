@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **srg dispositions parser:** a parseable `dispositions:` value carrying a control character (C0 except tab, DEL) or a zero-width character (U+200B/200C/200D/2060/FEFF) is now rejected with `invalid dispositions line: control or zero-width character`; the S3 contract probes cover CONTEST/ESCALATE text and a tab-in-text pass (95 checks). The parser row keeps the scope-rule item as the residual. Track `dsh_measure_srg_parser_20261108`.
+
+### Features
+
 * **spec-review-gate runner:** `tests/spec_review_gate/run.sh` never runs itself, skips a symlinked suite with `ignored suite (symbolic link)`, refuses a suite name containing a glob metacharacter (`unittest discover -p` would treat it as a pattern), and treats a captured `Ran 0 tests` line as a failing `.py` suite (Python ≤ 3.11 exited 0 for it). The adversarial suite gains five probes (119 checks pass) and the tech-debt row resolves SELF/SYMLINK/PYGLOB/PYZERO with MKTEMP as the residual. Track `dsh_measure_srg_runner_20261108`.
 
 ### Features
