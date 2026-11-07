@@ -196,7 +196,11 @@ recommended smoke test after a plugin change.
    a failed test run, so a Green agent that only re-runs the Red agent's test is
    still denied: it must **change a test file** (for example add a case) and
    run the tests to see them fail, or keep the rehearsal in `guard` mode.
-   A write under `measure/` is always allowed and never needs the Red phase.
+   An edit under `measure/` skips the edit and TDD guards, so it never needs the
+   Red phase — but it is not unconditionally allowed: the closeout guard denies a
+   `tracks.md` close with an open task and a plan phase started without a
+   checkpoint, and the registry tool and shell writes to `tracks.md`/`plan.md`
+   are denied (use the edit/write tools).
    (`dsh --profile headless` cannot host the guard: the plugin's required
    `inject` includes `webServer`, so the entry stays pending in the headless
    app, and the headless profile has no stored LLM credentials.)
@@ -211,7 +215,12 @@ recommended smoke test after a plugin change.
    reload is required in both directions: the plugin caches its repository store
    for the lifetime of the instance.
 
-The integration facts the rehearsal proves: the guard applies to child agents
-through their own working directory; `measure/` writes never need the Red phase;
-and the per-agent Red record makes the role handoff explicit.
+The integration facts the rehearsal established: the guard applies to a child
+agent through the **parent session's** working directory (the `cwd` option
+changes only its shell directory); `measure/` edits never need the Red phase but
+are not unconditionally allowed (the closeout guard and the registry/shell
+denies still apply); and the per-agent Red record makes the role handoff
+explicit. What the run did **not** prove is the strict deny path itself: that
+needs a session whose working directory is the fixture (see the accepted risk in
+the rehearsal track's review record).
 

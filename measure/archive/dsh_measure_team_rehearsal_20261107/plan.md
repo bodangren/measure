@@ -22,9 +22,9 @@ rehearsal, then closeout. The gate is
 
 ## Phase 3: Executed rehearsal [checkpoint: 4223112]
 
-- [x] Task 3.1: build a fixture, set its repository mode override to `strict` through the same `repos.json` seam, and spawn the Red subagent (`cwd` = fixture) to write and run a failing test; capture the target and the failure
-- [x] Task 3.2: spawn the Green subagent (`cwd` = fixture) to run the failing test itself, implement until green, and commit with a git note; capture the guard behaviour and the commit; check whether a first source edit before the Green's own Red is denied as predicted
-- [x] Task 3.3: clear the mode override, remove the fixture, and record the evidence (fixture path, subagent targets, guard denies/notes, test fail/pass, commit) under `measure/runs/dsh_measure_team_rehearsal_20261107/`
+- [x] Task 3.1: build a fixture, set its repository mode override to `strict` through the same `repos.json` seam, and spawn the Red subagent (`cwd` = fixture) to write and run a failing test; capture the target and the failure `6316609`
+- [x] Task 3.2: spawn the Green subagent (`cwd` = fixture) to run the failing test itself, implement until green, and commit with a git note; capture the guard behaviour and the commit; check whether a first source edit before the Green's own Red is denied as predicted `6316609`
+- [x] Task 3.3: clear the mode override, remove the fixture, and record the evidence (fixture path, subagent ids/roles, guard output with the no-deny reason, test fail/pass, commit, cleanup checks) under `measure/runs/dsh_measure_team_rehearsal_20261107/` `6316609`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Executed rehearsal' (Protocol in workflow.md) `4223112`
 
 ## Phase 4: Documentation and closeout [checkpoint: 36782ed]
