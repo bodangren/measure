@@ -16,8 +16,8 @@ scripts.
 - [x] Task 1.3: run the checker tests and `bash tests/spec_review_gate/run.sh`; both pass (the rename and control cases behave identically under the old and simplified implementations)
 - [x] Task: Measure - User Manual Verification 'Phase 1: Simplify and cover' (Protocol in workflow.md) `8cfd295`
 
-## Phase 2: The corrected record and closeout
+## Phase 2: The corrected record and closeout [checkpoint: da75968]
 
 - [x] Task 2.1: annotate the archived mid-red track's spec/plan with the single-call approach, the fixture's `mkdir tests` step, the control case, and the executed Red order/evidence; write this track's `spec-review.md` with the review and the responses; update the resolved `measure/tech-debt.md` row's resolution note
 - [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md` `a481293`
-- [ ] Task: Measure - User Manual Verification 'Phase 2: The corrected record and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: The corrected record and closeout' (Protocol in workflow.md) `da75968`
