@@ -6,6 +6,7 @@
 import { applyEdit } from './core/guards.ts'
 import { joinPath } from './core/parse.ts'
 import { readOrEmpty } from './snapshot.js'
+import { commitReminder, commitShaOf } from './commit.js'
 
 /**
  * The decision map: `exec.token` (opaque) -> deny text or undefined (allow).
@@ -48,7 +49,7 @@ const noteOf = outcome =>
  * preparation; a throw stores undefined, which is the fail-open rule of §5.
  * A standalone call (no `exec.agent`) has no project to guard and is allowed.
  */
-export function preExecuteListener(deps, decisions, notes = new Map()) {
+export function preExecuteListener(deps, decisions, notes = new Map(), commitDue = new Set()) {
   return async (exec, next) => {
     const gate = await next()
     if (gate.kind !== 'allow') return gate
@@ -60,11 +61,44 @@ export function preExecuteListener(deps, decisions, notes = new Map()) {
       const outcome = await deps.decide(exec)
       const note = noteOf(outcome)
       if (note !== null) notes.set(exec.token, note)
-      decisions.set(exec.token, denialOf(outcome))
+      const denial = denialOf(outcome)
+      if (denial === undefined && outcome !== null && typeof outcome === 'object' && outcome.commitDue === true) {
+        commitDue.add(exec.token)
+      }
+      decisions.set(exec.token, denial)
     } catch {
       decisions.set(exec.token, undefined)
     }
     return gate
+  }
+}
+
+/** The text of a finished call's model-facing content, one block per line. */
+export const resultText = result => {
+  const content = result?.content
+  if (!Array.isArray(content)) return ''
+  return content
+    .map(part => (part !== null && typeof part === 'object' && part.type === 'text' && typeof part.text === 'string' ? part.text : ''))
+    .join('\n')
+}
+
+/**
+ * The `tools/post-execute` waterfall handler for an allowed `git commit`: the
+ * SHA exists only in the result, so the shared core's reminder is appended
+ * here, not through the note map (which is prepared before the call). A failed
+ * result is left alone. The token is consumed either way.
+ */
+export function postCommitListener(commitDue) {
+  return async (exec, result, next) => {
+    if (!commitDue.has(exec.token)) return next()
+    commitDue.delete(exec.token)
+    const decision = await next()
+    if (decision === null || decision === undefined || decision.kind !== 'accept') return decision
+    if (Object.hasOwn(decision, 'value')) return decision
+    if (result?.isError === true) return decision
+    const sha = commitShaOf(resultText(result))
+    const base = Array.isArray(decision.content) ? decision.content : Array.isArray(result?.content) ? result.content : []
+    return { ...decision, content: [...base, { type: 'text', text: commitReminder(sha) }] }
   }
 }
 

@@ -11,7 +11,7 @@ import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
 import { measureCommands } from './src/commands.js'
 import { measureWorkflowCommands } from './src/workflow.js'
-import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
+import { createDecisions, installToolGuard, postCommitListener, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { registerClientState } from './src/client-state.js'
@@ -63,6 +63,8 @@ export function apply(ctx, config) {
   const decisions = createDecisions()
   /** The closeout notes of allowed calls, by token, for `tools/post-execute`. */
   const callNotes = new Map()
+  /** The allowed commits of a `[~]` task, by token, for the post-commit reminder. */
+  const commitDue = new Set()
 
   const deps = {
     mode,
@@ -145,11 +147,15 @@ export function apply(ctx, config) {
   // The guard layer (FR-5..FR-9): decision preparation on the way in, the
   // synchronous guard that reports it, the closeout note on the way out, and
   // the cleanup that also drops the cached snapshot for the next call.
-  ctx.on('tools/pre-execute', preExecuteListener(deps, decisions, callNotes))
+  ctx.on('tools/pre-execute', preExecuteListener(deps, decisions, callNotes, commitDue))
   installToolGuard(ctx, decisions)
+  // The commit reminder is the inner listener: the reminder wraps its accepted
+  // decision, so the note append and the reminder compose in that order.
+  ctx.on('tools/post-execute', postCommitListener(commitDue))
   ctx.on('tools/post-execute', postExecuteListener(callNotes))
   ctx.on('tools/result', (exec, result) => {
     callNotes.delete(exec.token)
+    commitDue.delete(exec.token)
     snapshots.invalidateAll()
     // The strict-mode Red record of a finished call (FR-13): a successful
     // test-file write or a failed test command. It runs after the

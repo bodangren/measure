@@ -20,6 +20,7 @@ import { planPathOf, readOrEmpty } from './snapshot.js'
 import { newUserMessage } from './state.js'
 import { normalizeMutation } from './hooks.js'
 import { strictRed, tddDecision } from './strict.js'
+import { commitCheck } from './commit.js'
 
 /**
  * What the guards read (design §7): the snapshot, the mode, the setup answer,
@@ -157,6 +158,23 @@ export async function tddGuardFor(deps, agent, root, mutation) {
 }
 
 /**
+ * The strict-mode commit guard (FR-13): a shell command that makes a commit is
+ * parsed by the shared core, checked against the files it takes, and returned
+ * with the core's deny or note. `commitDue` marks an allowed commit of a `[~]`
+ * task for the post-execute reminder. Outside strict mode, in a bypass, or
+ * with no Measure project the shared decision is null.
+ */
+export async function commitGuardFor(deps, agent, root, mutation) {
+  const none = { denial: undefined, note: null, commitDue: false }
+  if (deps.mode !== 'strict') return none
+  if (mutation === null || mutation === undefined || mutation.kind !== 'shell') return none
+  const context = await guardContext(deps, agent, root)
+  if (context.snapshot === null || !context.snapshot.hasMeasure || context.snapshot.parseError !== null) return none
+  const check = await commitCheck(deps, context, mutation.command)
+  return { denial: check.decision?.deny, note: check.note, commitDue: check.commitDue }
+}
+
+/**
  * The `agent/turn-stopping` check (FR-9, design §7): recompute the snapshot and
  * the git status, turn them into the core's `turnProblems`, and keep them for
  * the agent. A bypass silences everything; `advise` records only; `guard` lets
@@ -240,6 +258,7 @@ export async function prepareDecision(deps, exec) {
   if (dir === undefined || dir === null) return none
 
   const mutation = await normalizeMutation(exec.name, exec.arguments, dir, deps.io)
+  if (mutation.kind === 'shell') return commitGuardFor(deps, agent, root, mutation)
   if (mutation.kind !== 'file') return none
 
   const edit = await editGuardFor(deps, agent, root, mutation)
