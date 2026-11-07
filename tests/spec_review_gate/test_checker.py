@@ -354,6 +354,7 @@ class SpecReviewRoleGateTest(unittest.TestCase):
         self.assert_exit(1, code, out)
         self.assertIn("Mid Red changed non-test/non-Measure files", out)
         self.assertIn("- src/a.py", out)
+        self.assertNotIn("tests/a.py", out)
 
     def test_edge_mid_red_test_only_commit_is_clean(self) -> None:
         """A Red commit that changes only test files keeps the mid-red report clean."""

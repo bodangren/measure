@@ -17,6 +17,16 @@ This is a verification-accuracy fix in the shipped orchestrator skill script
 (`skills/measure-orchestrator/scripts/measure_interphase_checks.py`); no other
 role's behavior changes.
 
+> **Follow-up correction (2026-11-07, dsh_measure_midred_followup_20261107):**
+> the normative text is kept as shipped, with two dated corrections: (1) FR-1 was
+> first implemented as a two-call union (a `--name-only` call plus a
+> `--name-status --diff-filter=R` tab parse); the follow-up replaced it with the
+> single `git diff --name-only --no-renames -z <baseline>..HEAD` call the
+> spec-review scope already uses, and a control case proves a test-only Red commit
+> keeps the clean PASS. (2) FR-3's fixture recipe needs a `mkdir tests` before
+> `git mv src/a.py tests/a.py` (git does not create the destination directory);
+> the executed Red order is recorded in the archived plan.
+
 ## Functional Requirements
 
 - **FR-1 (rename-aware `committed_files`).** `committed_files(repo, baseline)`
