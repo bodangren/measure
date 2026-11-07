@@ -191,3 +191,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure dispositions parser fix3**
   *Link: [./archive/dsh_measure_srg_parser_fix3_20261108/](./archive/dsh_measure_srg_parser_fix3_20261108/)*
   *Search the raw dispositions value, add the remaining Bidi_Control marks (U+061C/200E/200F), strengthen the grammar doc test to the full class sentence, and record the fix2 review*
+
+- [x] **Track: DSH Measure A11 recipe hardening**
+  *Link: [./archive/dsh_measure_a11_recipe_20261108/](./archive/dsh_measure_a11_recipe_20261108/)*
+  *Harden the A11 detection recipe: text-mode grep for NUL/invalid-UTF-8 documents, space-containing path claims, and distinct missing/non-regular/unreadable document messages, with S4 contract cases*
