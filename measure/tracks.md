@@ -27,6 +27,12 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+- [ ] **Track: measure-guard for the DeepSeek Harness**
+  *Link: [./tracks/dsh_measure_guard_20261107/](./tracks/dsh_measure_guard_20261107/)*
+  *A third adapter over the shared core: context and guard layers on Cordis, plain-JS, no build step.*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.

@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_guard_20261107",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-07T03:10:00Z",
+  "updated_at": "2026-11-07T03:20:00Z",
+  "description": "measure-guard for the DeepSeek Harness: a third adapter over the shared Measure core, with DSH-native context and guard layers",
+  "estimated_tasks": 23,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
