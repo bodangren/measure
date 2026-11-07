@@ -17,10 +17,10 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: run `bash tests/dsh/test-registry.sh`, the node suite (301/301), both parity scripts, and `bash tests/dsh/run.sh`; record the results `8dc44d9`
 - [x] Task: Measure - User Manual Verification 'Phase 2: The hardened checker' (Protocol in workflow.md) `a42c993`
 
-## Phase 3: Record corrections and gates
+## Phase 3: Record corrections and gates [checkpoint: ad94ec4]
 
 - [x] Task 3.1: correct `measure/archive/dsh_measure_registry_20261107/{spec.md,plan.md,metadata.json}` (full-description rule, the cancelled exemption, the SHA trail pointing at `b314321` for the rebuild) and add its `spec-review.md` with the review's findings and one disposition each
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Record corrections and gates' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Record corrections and gates' (Protocol in workflow.md) `ad94ec4`
 
 ## Phase 4: Closeout
 
