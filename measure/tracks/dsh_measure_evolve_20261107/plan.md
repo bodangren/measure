@@ -11,7 +11,7 @@ the deferred manual verification. Test files are
 `bash plugins/dsh-measure-guard/scripts/check-parity.sh`, and the environment
 CLI contract is `bash tests/dsh/run.sh`.
 
-## Phase S1: Strict TDD guard (Red before Green)
+## Phase S1: Strict TDD guard (Red before Green) [checkpoint: a8ce9c3]
 
 _Story ref: spec.md#story-s1_
 
@@ -24,7 +24,7 @@ _Story ref: spec.md#story-s1_
     - [ ] `src/guard.js`: in `prepareDecision()` (after the closeout guard), run `tddGuardFor` -> `tddDecision(context, red, path)` for file mutations when the mode is `strict`
     - [ ] `src/index.js` + `src/hooks.js`: a `tools/result` observer that calls `noteRedEdit` for a successful `edit`/`write` of a test file and `noteRedFailure` for a failed `bash` command whose command matches `isTestCommand`
 - [x] Task 1.4: Docs: README "Modes" and "Guards" sections name the strict TDD guard `1baeb84`, with the deny example and the known limit that shell-redirect test edits are invisible; `CHANGELOG.md` Unreleased entry
-- [ ] Task: Measure - User Manual Verification 'Phase S1: Strict TDD guard (Red before Green)' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S1: Strict TDD guard (Red before Green)' (Protocol in workflow.md) `a8ce9c3`
 
 ## Phase S2: Strict commit guard and commit reminder
 
