@@ -39,7 +39,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 - [x] Task 2.3: Second-writer detection (FR-12) `928011e`
     - [ ] `src/roots.js`: `RootWriters` (one writer per canonical root; the second agent gets one warning note and the band suffix)
     - [ ] `tests/roots.test.js`: one writer no notice, second writer one notice, same agent re-entry no second notice, different root no notice
-- [~] Task 2.4: Rule section and task note
+- [x] Task 2.4: Rule section and task note `0ec9891`
     - [ ] `src/context.js`: fixed `ctx.systemPrompt.section`; note from `agent/pre-step` (`{kind:'enter', messages}`); re-note after `compaction/end` and after cache invalidation; `agent/created` attach for existing agents
     - [ ] `tests/context.test.js`: rule text static; note appears exactly once per task change; note after compaction; no note without `measure/`
 - [ ] Task 2.5: `measure_status` tool
