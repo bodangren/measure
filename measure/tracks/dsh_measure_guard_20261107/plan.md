@@ -10,7 +10,7 @@ Every phase follows the Task Workflow in `measure/workflow.md`. Test files are
 
 ## Phase 1: Shared core and package skeleton
 
-- [ ] Task 1.1: Record the plugin runtime in the tech stack
+- [x] Task 1.1: Record the plugin runtime in the tech stack `3afbb9a`
     - [ ] `measure/tech-stack.md` Distribution Formats row for `plugins/dsh-measure-guard/`: a Host plugin and a hand-written `client.js` in the documented lazy-CJS format, loaded by a DSH profile row, Node >= 24.9 type stripping for the shared `.ts` core, no build and no package manager
     - [ ] `measure/tech-stack.md` Tooling Exceptions row for `dsh_measure_guard_20261107`: `node --test plugins/dsh-measure-guard/tests/` and `bash plugins/dsh-measure-guard/scripts/check-parity.sh`; the live check is one DSH profile row
     - [ ] `measure/tech-stack.md` Architecture tree line under `plugins/`
