@@ -5,12 +5,12 @@ Spec: [./spec.md](./spec.md)
 
 **Each phase checkpoint is pushed to `origin/main` before the next phase.**
 
-## Phase 1: The masker and its tests
+## Phase 1: The masker and its tests [checkpoint: 7e7d5ff]
 
 - [x] Task 1.1: `plugins/dsh-measure-guard/src/shell.js`: add the redirect-view masker — heredoc bodies masked from the marker line through the delimiter (leading tabs ignored for `<<-`), single/double-quoted spans masked (double-quote backslash escapes), and a `#` at a word start masked to the end of the line — and run `redirectTargets` on the masked view while `teeTargets`/`sedTargets` keep the original command
 - [x] Task 1.2: Red: `shell.test.js` cases — a heredoc body quoting `> measure/tracks.md` (no target), `cat > measure/a.md <<'EOF' … EOF` (the target), `echo "a > measure/b.md"` (no target), `# > measure/c.md` (no target), `cat > a.md <<'EOF' … EOF; echo x > b.md` (both targets); the current grammar fails the heredoc/quoted/comment cases
 - [x] Task 1.3: Green: the suite passes; the existing shell cases unchanged; both parity gates ok
-- [ ] Task: Measure - User Manual Verification 'Phase 1: The masker and its tests' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: The masker and its tests' (Protocol in workflow.md) `7e7d5ff`
 
 ## Phase 2: The live evidence
 
