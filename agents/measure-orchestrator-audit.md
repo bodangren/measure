@@ -263,7 +263,7 @@ Drift alone does not fail the audit.
 1. **Audit result JSON** at the orchestrator-supplied result path:
    ```json
    {
-      "schema_version": 2,
+      "schema_version": 1,
       "role": "orchestrator-audit",
       "track": "<track id>",
       "phase": "<phase heading or track review>",
@@ -285,11 +285,12 @@ Drift alone does not fail the audit.
      "confidence": "low|medium|high"
    }
    ```
-2. **`measure/anti-patterns.md` updates**: if you find a new class of failure, append an
-   entry following the existing schema (description, detection recipe, symptoms, fix,
-   guard). Increment the catalog summary table.
-3. **New guard tests**: if a finding has no existing guard, write the guard test in
-   `tests/` and link it from the anti-pattern entry.
+2. **`measure/anti-patterns.md` proposals**: if you find a new class of failure, report
+   the proposed entry (description, detection recipe, symptoms, fix, guard) as a candidate
+   in the audit result. The orchestrator or a track applies it: this role's edit
+   permissions cover only `measure/runs/`.
+3. **Guard-test proposals**: if a finding has no existing guard, report the proposed guard
+   test path and assertion as a candidate; the orchestrator or a track writes it.
 
 ## Boundaries
 

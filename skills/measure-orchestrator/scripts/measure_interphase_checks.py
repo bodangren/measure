@@ -77,6 +77,8 @@ ROLE_ALIASES = {
     "spec-review": "spec-review",
     "spec_review": "spec-review",
     "measure-spec-review": "spec-review",
+    "orchestrator-audit": "orchestrator-audit",
+    "measure-orchestrator-audit": "orchestrator-audit",
 }
 
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
@@ -774,6 +776,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         "final-acceptance",
         "closeout",
         "spec-review",
+        "orchestrator-audit",
     }:
         if not args.result_file:
             feedback.append("--result-file is required for audit roles")

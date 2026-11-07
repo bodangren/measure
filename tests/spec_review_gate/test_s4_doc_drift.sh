@@ -88,6 +88,11 @@ a11_block() {
 # Audit role: ## Doc drift detector
 echo "=== audit role: the file exists ==="
 if [ -s "$AUDIT" ]; then pass "agents/measure-orchestrator-audit.md exists"; else fail "agents/measure-orchestrator-audit.md is missing or empty"; fi
+if [ -n "$AUDIT" ] && [ -s "$AUDIT" ]; then
+  if grep -qF '"schema_version": 1' "$AUDIT"; then pass "the audit example uses schema_version 1"; else fail "the audit example does not use schema_version 1"; fi
+  if grep -qF '"schema_version": 2' "$AUDIT"; then fail "the audit doc still shows schema_version 2"; else pass "the audit doc has no schema_version 2"; fi
+  if grep -qF 'report' "$AUDIT" && grep -qF 'as a candidate' "$AUDIT"; then pass "the audit outputs are proposals"; else fail "the audit outputs do not say the entries are proposals"; fi
+fi
 
 echo "=== audit role: ## Doc drift detector stands after ## A10 and before ## Outputs ==="
 L_A10="$(line_with_prefix "$AUDIT" '## A10')"
