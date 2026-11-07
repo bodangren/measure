@@ -26,7 +26,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.4: Docs: README "Modes" and "Guards" sections name the strict TDD guard `1baeb84`, with the deny example and the known limit that shell-redirect test edits are invisible; `CHANGELOG.md` Unreleased entry
 - [x] Task: Measure - User Manual Verification 'Phase S1: Strict TDD guard (Red before Green)' (Protocol in workflow.md) `a8ce9c3`
 
-## Phase S2: Strict commit guard and commit reminder
+## Phase S2: Strict commit guard and commit reminder [checkpoint: 67d29f1]
 
 _Story ref: spec.md#story-s2_
 
@@ -38,7 +38,7 @@ _Story ref: spec.md#story-s2_
     - [ ] `src/guard.js` `prepareDecision`: for a `bash` mutation in `strict` mode call `commitCheck` (staged paths through `deps.gitLines`), and return the deny; when `commitDue` is true record the token in a `commitDue` Set in `index.js`
     - [ ] `src/hooks.js` + `src/index.js`: a dedicated `tools/post-execute` listener keyed by the `commitDue` token reads the result text (`commitShaOf`), appends `commitReminder(sha)` to the content, and drops the token; `tools/result` also clears it. (The existing note map cannot carry the reminder: it is prepared before the call, and the SHA exists only in the result.)
 - [x] Task 2.4: Docs: README "Guards" section (commit format, no-task rule, reminder) `579335a`; `CHANGELOG.md` entry
-- [ ] Task: Measure - User Manual Verification 'Phase S2: Strict commit guard and commit reminder' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S2: Strict commit guard and commit reminder' (Protocol in workflow.md) `67d29f1`
 
 ## Phase S3: Session-accurate writer detection
 
