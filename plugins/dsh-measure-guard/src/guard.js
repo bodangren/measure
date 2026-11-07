@@ -19,6 +19,7 @@ import { dirname, joinPath, parsePlan } from './core/parse.ts'
 import { planPathOf, readOrEmpty } from './snapshot.js'
 import { newUserMessage } from './state.js'
 import { normalizeMutation } from './hooks.js'
+import { strictRed, tddDecision } from './strict.js'
 
 /**
  * What the guards read (design §7): the snapshot, the mode, the setup answer,
@@ -134,6 +135,28 @@ export async function closeoutGuardFor(deps, agent, root, mutation) {
 }
 
 /**
+ * The strict-mode TDD guard (FR-13): every file path of the mutation goes
+ * through the shared `tddDecision` with the agent's kept Red record. The core
+ * decides whether the write is a source file of the `[~]` task that still
+ * needs a failing test; a non-strict mode, a bypass, no Measure project, or a
+ * parse error leaves the shared decision null. The first denial wins.
+ */
+export async function tddGuardFor(deps, agent, root, mutation) {
+  if (deps.mode !== 'strict') return null
+  if (mutation === null || mutation === undefined || mutation.kind !== 'file') return null
+  const context = await guardContext(deps, agent, root)
+  if (context.snapshot === null || !context.snapshot.hasMeasure || context.snapshot.parseError !== null) return null
+  const red = strictRed(deps.state, agent.id, context.snapshot)
+  for (const path of mutation.paths ?? []) {
+    const resolved = await resolveForGuard(deps.io, path, root)
+    if (resolved === null) continue
+    const decision = tddDecision(context, red, resolved)
+    if (decision !== null) return decision
+  }
+  return null
+}
+
+/**
  * The `agent/turn-stopping` check (FR-9, design §7): recompute the snapshot and
  * the git status, turn them into the core's `turnProblems`, and keep them for
  * the agent. A bypass silences everything; `advise` records only; `guard` lets
@@ -222,5 +245,8 @@ export async function prepareDecision(deps, exec) {
   const edit = await editGuardFor(deps, agent, root, mutation)
   if (edit !== null) return { denial: edit.deny, note: null }
   const closeout = await closeoutGuardFor(deps, agent, root, mutation)
-  return { denial: closeout.decision?.deny, note: closeout.note ?? null }
+  if (closeout.decision !== null && closeout.decision !== undefined) return { denial: closeout.decision.deny, note: null }
+  const tdd = await tddGuardFor(deps, agent, root, mutation)
+  if (tdd !== null) return { denial: tdd.deny, note: null }
+  return { denial: undefined, note: closeout.note ?? null }
 }

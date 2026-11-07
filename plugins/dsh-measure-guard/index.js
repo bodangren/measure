@@ -13,6 +13,7 @@ import { measureCommands } from './src/commands.js'
 import { measureWorkflowCommands } from './src/workflow.js'
 import { createDecisions, installToolGuard, postExecuteListener, preExecuteListener } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
+import { recordRed } from './src/strict.js'
 import { registerClientState } from './src/client-state.js'
 
 export const name = 'measure-guard'
@@ -147,8 +148,12 @@ export function apply(ctx, config) {
   ctx.on('tools/pre-execute', preExecuteListener(deps, decisions, callNotes))
   installToolGuard(ctx, decisions)
   ctx.on('tools/post-execute', postExecuteListener(callNotes))
-  ctx.on('tools/result', exec => {
+  ctx.on('tools/result', (exec, result) => {
     callNotes.delete(exec.token)
     snapshots.invalidateAll()
+    // The strict-mode Red record of a finished call (FR-13): a successful
+    // test-file write or a failed test command. It runs after the
+    // invalidation, so the task key is read from a fresh snapshot.
+    void recordRed(deps, exec, result)
   })
 }

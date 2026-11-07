@@ -109,7 +109,7 @@ The live check of this repository used route (b) with `mode: advise`. The defaul
 | --- | --- |
 | `advise` | The context layer and the band only. Every guard allows. |
 | `guard` (default) | The edit guard, the closeout guard, and the end-of-turn check with a UI notice and an agent reminder delivered by the next step. |
-| `strict` | `guard`, plus the end-of-turn hold-open at most twice per turn. The TDD guard and the commit guard are deferred. |
+| `strict` | `guard`, plus the end-of-turn hold-open at most twice per turn, the TDD guard, and the commit guard with its post-commit reminder. |
 
 ## Context
 
@@ -145,6 +145,8 @@ All decisions come from the shared core; the adapter only normalizes the call an
 
 - **Edit guard.** In `guard` and `strict`, a write inside the project root and outside `measure/` is denied when no task in the active plan has `[~]`. The deny text names the next task, or the track, and ends with the shared bypass line: `If this block is wrong, the user can run /measure-off.` A write inside `measure/` passes, a path on the allow list passes, a parse error allows everything, and the deny lists every denied path of a multi-path call (up to five, then "and N more").
 - **Closeout guard.** A track may change to `[x]` only when its plan has no open task; the deny names the open tasks and says that a human-gated task can stay `[b]` with a `deferred:<owner>` field. A task in phase N+1 may change to `[~]` only when the heading of phase N carries `[checkpoint: <sha>]`.
+- **TDD guard (strict).** A source file of the project, outside `measure/` and off the allow list, is denied for the active `[~]` task until the task's Red phase is complete: a test-file write succeeded and a test command ran and failed. The Red record is kept per agent and keyed by the track id plus the task text, so a new task resets it. The deny text is the shared core's `tddDecision` text and names the missing steps. `advise` and `guard` allow the edit.
+- **Commit guard (strict).** A `git commit` whose message is not `<type>(<scope>): <description>` is denied with the shared core's text. A commit whose staged files include a path outside `measure/` while no task is `[~]` is denied and the deny text lists the paths; a commit that takes changes (`-a`, or a `git add` earlier in the command) also counts changed and untracked paths. A message the adapter cannot read (`-F`, a variable, the editor) is allowed with a note instead of a deny. After a successful commit for a `[~]` task the tool result carries the core's `commitReminder`: the git note and the 7-character SHA step.
 - **End-of-turn check.** The baseline is `git status` at the first `agent/pre-step` of the turn; the problems are computed at `agent/turn-stopping`. The problems are files changed outside `measure/` while no task is `[~]`, and `[x]` tasks that lost their SHA. `advise` shows them in the band only, `guard` records them (the band shows them as problem rows) and queues a reminder that the next step delivers, and `strict` holds the turn open by steering, at most twice per turn.
 - **Allow list.** `measure/guard-allow` in the guarded repository names the folders that count as Measure work. It is parsed by the shared core's `parseAllowList` and matched by `isAllowed`, with the same rules as the two existing adapters.
 - **Fail-open policy.** Every guard preparation wraps its I/O in try/catch and allows the call on failure. A parse error in the Measure files allows everything. A shell call (`bash`, `pwsh`) has unknown paths, so the edit guard does not path-check it and the end-of-turn check is its backstop. A tool whose after-text cannot be reconstructed (`apply_patch`, `str_replace_editor`) passes the closeout guard and is covered by the end-of-turn check.
@@ -185,7 +187,7 @@ The script prints `parity: ok` and exits 0, or names the file that differs and e
 ```bash
 node --test 'plugins/dsh-measure-guard/tests/*.test.js'
 bash plugins/dsh-measure-guard/scripts/check-parity.sh
-bash plugins/dsh-measure-guard/tests/install.sh
+bash tests/dsh/run.sh
 ```
 
 From the package folder, `node --run test` runs the first two. The installer test uses a temporary home folder and never touches the real one.
@@ -196,7 +198,7 @@ The live check reads the JSON route of the running GUI:
 curl 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-Current state: 155 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh`.
+Current state: 170 tests pass and 0 fail, the parity check reports `parity: ok`, and the environment CLI's contract tests are `bash tests/dsh/run.sh`.
 
 ## Verified live
 
@@ -214,7 +216,8 @@ The evidence images are [`live-band.png`](../../measure/runs/dsh_measure_guard_2
 ## Known limits
 
 - **Marker-only enforcement.** The plugin checks the `[ ]`, `[~]`, `[x]`, and `[b]` markers and the checkpoint headings. It does not verify a SHA, a git note, a `metadata.json` field, a generated document, or an archival step. A later task may start while an earlier one is still open, a checkpoint SHA may be fabricated, an `[x]` task may carry a SHA no commit owns, a commit may combine implementation and plan changes and skip the git notes, and a track may close without `actual_tasks` or generated-doc verification. The agent may also edit `measure/guard-allow` itself.
-- **Shell writes are not path-checked.** A write through `bash` or `pwsh` is invisible to the edit guard; only the end-of-turn check sees the result through `git status`. No shell path extraction is invented.
+- **Shell writes are not path-checked.** A write through `bash` or `pwsh` is invisible to the edit guard and to the TDD guard's Red record; only the end-of-turn check sees the result through `git status`. No shell path extraction is invented.
+- **The strict guards are name-based.** The TDD guard recognizes a test file and a test command by the shared core's name rules, and the commit guard recognizes the message format and the staged paths. A renamed test, an unusual runner, or a commit message built by a script can slip through; the end-of-turn check is the backstop.
 - **Closeout fails open for `apply_patch` and `str_replace_editor`.** Only `edit` and `write` carry a reconstructable after-text, so the closeout guard decides on those two alone.
 - **POSIX only.** Windows containment fails open and is out of scope.
 - **The setup answer is per agent.** The choice lives in the agent state, so a new session in a repository without `measure/` asks again.
