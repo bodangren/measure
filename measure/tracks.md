@@ -243,3 +243,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit guard nested fix2**
   *Link: [./archive/dsh_measure_commit_nested_fix2_20261109/](./archive/dsh_measure_commit_nested_fix2_20261109/)*
   *Pin the four-level depth cap, join all eval arguments, accept every shell -c spelling and git stage substitutions, add the missing tests, and record the review*
+
+- [x] **Track: DSH Measure commit guard nested fix3**
+  *Link: [./archive/dsh_measure_commit_nested_fix3_20261109/](./archive/dsh_measure_commit_nested_fix3_20261109/)*
+  *Skip shell option arguments while finding -c, pin the depth boundary with a pair test, and correct the fix1/fix2 review records and CHANGELOG count*

@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_commit_nested_fix3_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-09T20:00:00Z",
+  "updated_at": "2026-11-09T20:40:00Z",
+  "description": "Skip shell option arguments while finding -c, pin the depth boundary with a pair test, and correct the fix1/fix2 review records and CHANGELOG count",
+  "estimated_tasks": 9,
+  "actual_tasks": 9,
+  "deviation_notes": "All 9 top-level tasks are done and the 3 phase checkpoints are recorded, with a push after each phase. (1) The option loop steps over -o/-O arguments and skips -- before the command word; unknown-argument options stay a named residual. (2) The cap boundary pair pins depth > 3. (3) The fix1 F5 claim was corrected and the fix2 review recorded with dispositions.",
+  "completed": "2026-11-09"
+}
