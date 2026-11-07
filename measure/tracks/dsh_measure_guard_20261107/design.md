@@ -80,6 +80,25 @@ export function apply(ctx, config) { /* registrations, all ctx.effect-owned */ }
 - Everything registered in `apply` uses `ctx.effect(...)` or `ctx.on(...)` so
   the fiber unwinds it.
 
+The no-import rule has three consequences the adapter must honour:
+
+1. **Tool definition.** `measure_status` cannot call `defineTool` (a bare
+   `@deepseek-ai/dsh-tools` import). It registers a hand-built `ToolDefinition`
+   with the same fields `defineTool` produces (`dsh-tools/lib/index.js:310-345`):
+   `{ name, description, parameters: <JSON Schema>, output: { schema: <JSON
+   Schema>, render: (args, value) => [{ type: 'text', text: value }] },
+   async execute(args, exec) { return text } }`. The tool takes no parameters.
+2. **User messages.** `newUserMessage({ content, source })` reproduces
+   `createUserMessage` (`dsh-llm/lib/index.js:37-64`): `structuredClone` of the
+   input, `role: 'user'`, `id` from `randomUUID()` (`node:crypto`), deep-frozen.
+   `source` is `{ kind: 'measure-guard', form: 'notice', summary }`.
+3. **Files and processes.** Reading uses the `ctx.fs` seam end to end:
+   `const target = await ctx.fs.resolve(path, { cwd, signal })` then
+   `await ctx.fs.readText(target, signal)`; `stat`/`contains` are on the same
+   seam. Git runs through `ctx.subprocess` (design §4); no `node:child_process`
+   and no synchronous calls in the guard path. `node:crypto` and
+   `node:path`/`node:url` are the only Node built-ins the adapter imports.
+
 ## 3. State classes (FR-11)
 
 | Class | Owner | Where |
