@@ -8,11 +8,11 @@ lesson, then the post-docs gate and closeout. Gates: `bash tests/dsh/run.sh`,
 `node --test plugins/dsh-measure-guard/tests/*.test.js` (stays 288), both parity
 scripts, and `bash tests/spec_review_gate/run.sh`.
 
-## Phase 1: Pin the edge cases in the contract tests
+## Phase 1: Pin the edge cases in the contract tests [checkpoint: e0fe6c5]
 
 - [x] Task 1.1: `tests/dsh/test-reload.sh` asserts the exact nonce values (fresh install 0; reload 1; reload 2; unchanged install 3; missing-nonce patch 1), the changed-block install leaves the nonce unchanged (a `mode` change), the no-complete-block reload fails with exit 1 and writes nothing, a non-integer `reloadNonce` reads as 0 (next write 1), and the exact PASS/dry-run strings
 - [x] Task 1.2: run `bash tests/dsh/run.sh`; the CLI suite passes with the new cases
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Pin the edge cases in the contract tests' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: Pin the edge cases in the contract tests' (Protocol in workflow.md) `e0fe6c5`
 
 ## Phase 2: Correct the record and the lesson
 
