@@ -27,6 +27,8 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
@@ -157,3 +159,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Skill doctor fixes for the Measure skills**
   *Link: [./archive/skill_doctor_fixes_20261031/](./archive/skill_doctor_fixes_20261031/)*
   *Fixes for the findings of npm `skill-doctor` 0.1.0 and the Claude Code `/skill-doctor` report: shorter `measure` and `build-graph` descriptions, style guide file links, and an orchestrator quick start.*
+
+- [x] **Track: DSH Measure shell grammar: heredoc- and quote-aware scanning**
+  *Link: [./archive/dsh_measure_shell_grammar_20261107/](./archive/dsh_measure_shell_grammar_20261107/)*
+  *Heredoc bodies, quoted `>` characters, and `#` comments are masked before the redirect scan (markers are quote-aware), so prose quoting a redirect is no longer denied while real writes stay detected; the limit is scoped to the redirect scan with the tee/sed raw-command residual. 11 tasks, 4 checkpoints, pushed per phase.*
