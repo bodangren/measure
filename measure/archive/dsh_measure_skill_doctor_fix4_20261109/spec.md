@@ -59,3 +59,13 @@ CHANGELOG wording, corrects the stale PASS counts, and records the fix3 review.
 
 - The commit staged-read race, the opencode rows, and the remaining
   spec_review_gate docs rows.
+
+> **Correction (2026-11-09, after the review):** the track adds one temporary
+> skill holding both an anchor-only and a scheme link; it prints one PASS line
+> (the test prints 12 PASS lines total). The fix2 review's closing count sentence
+> and the fix3 evidence both state 12, which a run now prints. The CHANGELOG
+> defect was the missing comma after the parenthetical (fixed). The anchor case
+> was partially covered by the real-repository run; the scheme target lacked
+> fixture coverage, and the new fixture pins both. The fix3 correction note now
+> names the omitted bookkeeping writes (review record, metadata,
+> measure/tracks.md, archive), which the plan requires.

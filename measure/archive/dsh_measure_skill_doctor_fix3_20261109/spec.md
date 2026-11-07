@@ -66,6 +66,7 @@ fix2 review with dispositions.
 > with `[top](#top)` and `[site](https://example.com/x)` that must pass. The test
 > prints 12 PASS lines (the previous record said 12 while a run printed 11). The
 > CHANGELOG bullet has its missing conjunction. NFR-1's "no write in the real
-> repository except the record corrections and the test fixture" describes the
-> test's fixtures; this track's own bookkeeping writes (review record, metadata,
-> registry, archive) are expected.
+> repository except the record corrections and the test fixture" omitted the
+> track's own bookkeeping writes, which the plan requires: the fix2 review record
+> (Task 1.3), `metadata.json`, `measure/tracks.md`, and the archived track folder
+> (Task 2.2).
