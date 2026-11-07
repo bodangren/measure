@@ -1,0 +1,22 @@
+{
+  "track_id": "dsh_measure_hardening_20261107",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-07T10:10:00Z",
+  "updated_at": "2026-11-07T10:10:00Z",
+  "description": "DSH Measure hardening: a live check that detects stale plugin code, git-backed verification of the task ceremony, and closure of the apply_patch/shell-write/commit-add bypasses",
+  "estimated_tasks": 19,
+  "actual_tasks": null,
+  "deviation_notes": "",
+  "sprint": {
+    "goal": "The DeepSeek Harness adapter proves what it claims: a live check that detects stale plugin code, git-backed verification of the task ceremony, and guards that see the write paths they previously missed.",
+    "stories": [
+      { "id": "S1", "title": "The live check detects stale plugin code", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S2", "title": "Git-backed verification of the task ceremony", "size": "M", "priority": "Must", "status": "pending" },
+      { "id": "S3", "title": "Close the write-path bypasses", "size": "L", "priority": "Must", "status": "pending" },
+      { "id": "S4", "title": "Documentation, live check, and track closeout", "size": "S", "priority": "Must", "status": "pending" }
+    ],
+    "demo_notes": null,
+    "retro_ref": null
+  }
+}

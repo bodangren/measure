@@ -27,6 +27,12 @@ This file tracks all major tracks for the Measure project.
 
 ---
 
+- [~] **Track: DSH Measure hardening: trustworthy live verification and real guard enforcement**
+  *Link: [./tracks/dsh_measure_hardening_20261107/](./tracks/dsh_measure_hardening_20261107/)*
+  *The live check must detect stale plugin code (load-time digest), the guard must verify real commits and git notes instead of trusting markers, and the apply_patch/shell-write/in-command-git-add bypasses must close.*
+
+---
+
 ## Cancelled Tracks
 
 Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`. These lines have no status marker, so Measure tools do not read them as tracks.
