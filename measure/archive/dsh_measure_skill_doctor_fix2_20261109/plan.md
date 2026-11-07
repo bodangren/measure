@@ -18,7 +18,7 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.2: run the node suite (301/301), both parity scripts, and `bash tests/spec_review_gate/run.sh` (11/11) `8be4295`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Records and gates' (Protocol in workflow.md) `515ffc9`
 
-## Phase 3: Closeout
+## Phase 3: Closeout [checkpoint: 7cfe9e8]
 
 - [x] Task 3.1: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_skill_doctor_fix2_20261109` and record the manifest-only FAIL `80f6b26`
-- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: Closeout' (Protocol in workflow.md) `7cfe9e8`
