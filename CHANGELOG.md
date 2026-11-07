@@ -4,6 +4,10 @@
 
 ### Bug Fixes
 
+* **skill-doc contract:** `tests/dsh/test-skill-docs.sh` now keeps every `skills/*/SKILL.md` frontmatter description within the skill format (at most 1024 characters, no `<`/`>` characters) and rejects symbolic links in the `claude-skills/` bundle, with negative fixtures for each rule; the CLI suite is 13/13. Track `dsh_measure_skill_doctor_check_20261109`.
+
+### Features
+
 * **intermediate-commit scope:** `changed_files()`, `committed_files()`, and the `spec-review` scope rule now union every path a commit in `baseline..HEAD` touched (`git rev-list` + `git diff-tree -z`, exact bytes), so a production file added and later deleted inside a phase can no longer hide from the mid-red, audit, or spec-review scope checks; `test_checker.py` gains spec-review, mid-red, `changed_files`, and `ux_paths` intermediate probes (35 tests). Track `dsh_measure_scope_intermediate_20261109`.
 
 ### Features
