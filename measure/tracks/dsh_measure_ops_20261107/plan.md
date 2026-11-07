@@ -34,21 +34,21 @@ _Story ref: spec.md#story-s1_
 
 _Story ref: spec.md#story-s2_
 
-- [~] Task 2.1: Contract: the verify command
+- [x] Task 2.1: Contract: the verify command `a20077d`
     - [ ] `src/verify.js` (new): `verifyReport(deps, agent)` -> `{ text }` composing `shaProblems` (the end-of-turn texts) and `closeoutMetadataCheck` for the active track when its plan's `[x]` count disagrees with `metadata.json`; exact replies: clean `measure-guard: verification clean (<n> tasks checked).`; problems joined by `\n`; no project `measure-guard: nothing to verify (no measure/ folder).`; no active track `measure-guard: nothing to verify (no track in progress).`; an I/O or git failure `measure-guard: nothing to verify (<reason>).` (never throws)
     - [ ] `src/commands.js`: register `measure-verify` (read-only; no state, node, or plan writes)
-- [ ] Task 2.2: Red: failing tests for the verify command
+- [x] Task 2.2: Red: failing tests for the verify command `a20077d`
     - [ ] `tests/verify.test.js` (new): clean plan, fake SHA, missing note, metadata mismatch, no project, no active track, and a throwing git seam (fail-open reply)
     - [ ] `tests/commands.test.js` (extended): `measure-verify` is registered and its reply comes from `verifyReport`
-- [ ] Task 2.3: Green: implement `src/verify.js` and register the command
-- [ ] Task 2.4: Docs: README "Tools and commands" (`/measure-verify`, read-only, fail-open) and `docs/dsh.md`
+- [x] Task 2.3: Green: implement `src/verify.js` and register the command `a20077d`
+- [x] Task 2.4: Docs: README "Tools and commands" (`/measure-verify`, read-only, fail-open) and `docs/dsh.md` `a20077d`
 - [ ] Task: Measure - User Manual Verification 'Phase S2: On-demand verification' (Protocol in workflow.md)
 
 ## Phase S3: Documentation, live check, and track closeout
 
 _Story ref: spec.md#story-s3_
 
-- [ ] Task 3.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the effective mode, `/measure-mode`, and `/measure-verify` with their precedence and limits
+- [~] Task 3.1: Docs: README, `docs/dsh.md`, and `CHANGELOG.md` name the effective mode, `/measure-mode`, and `/measure-verify` with their precedence and limits
 - [ ] Task 3.2: Live check: install + reload; `/measure-mode strict` then a source-edit probe is denied with the strict TDD text; `/measure-mode default` restores `guard`; the state route shows the mode value/source; `/measure-verify` output recorded under `measure/runs/dsh_measure_ops_20261107/`
 - [ ] Task 3.3: Closeout documents: `measure/lessons-learned.md`, `measure/tech-debt.md`, `metadata.json`, archive the track, update `measure/tracks.md`
 - [ ] Task: Measure - User Manual Verification 'Phase S3: Documentation, live check, and track closeout' (Protocol in workflow.md)
