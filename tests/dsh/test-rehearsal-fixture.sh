@@ -28,7 +28,22 @@ esac
 for file in measure/index.md measure/tracks.md measure/tracks/rehearsal_20260101/plan.md measure/tracks/rehearsal_20260101/metadata.json; do
   [[ -f "$PROJECT/$file" ]] || fail "missing fixture file: $file"
 done
-[[ -f "$PROJECT/.git/HEAD" ]] || fail "the fixture is not a git repository"
+
+# The commit is the fixture's contract: assert the object, not the .git/HEAD file.
+assert_committed() {
+  local dir="$1" count
+  git -C "$dir" rev-parse --verify --quiet HEAD >/dev/null 2>&1 || return 1
+  count="$(git -C "$dir" log --oneline 2>/dev/null | wc -l | tr -d ' ')"
+  [[ "$count" == "1" ]]
+}
+assert_committed "$PROJECT" || fail "the fixture has no single initial commit"
+EMPTY="$(mktemp -d "${TMPDIR:-/tmp}/dsh-fixture-negative.XXXXXX")"
+if git -C "$EMPTY" init -q && assert_committed "$EMPTY"; then
+  rm -rf -- "$EMPTY"
+  fail "a repository with no commit passed the commit assertion"
+fi
+rm -rf -- "$EMPTY"
+echo "[PASS] the fixture carries exactly one initial commit"
 
 OUT="$(PLUGIN_DIR="$PLUGIN_DIR" PROJECT="$PROJECT" node --experimental-strip-types --input-type=module -e '
 import { execFileSync } from "node:child_process"
