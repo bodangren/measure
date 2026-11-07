@@ -20,7 +20,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
 - [x] Task 1.3: Check `14213ba`
     - [ ] `--check` items from `design.md §4`: `dsh-install`, `node`, `skill-measure`, `skill-orchestrator`, `plugin`, `record`, `foreign-row`, `live`; `--json` with the exact object of `design.md §2`; `--source`; `--live`/`--session`/`$DSH_SESSION_ID`; the resolved skill roots named
     - [ ] `tests/dsh/test-check.sh`: green after install; each red case (missing plugin, stale stamp, missing block, two blocks, incomplete skill copy, invalid mode in the record, an import that does not export `name`/`inject`/`apply`); `live` SKIP without the flag and without a session id; source-missing SKIP; `--json` item/action element schema
-- [ ] Task 1.4: Uninstall and safety
+- [~] Task 1.4: Uninstall and safety
     - [ ] `uninstall` removes the managed block and the owned plugin copy (stamped files only; edited files kept and listed), `--keep-copy` keeps the copy, `--dry-run` writes nothing; keeps skills and foreign rows; writes `[]` when only comments would remain; non-zero only when an owned item could not be removed
     - [ ] `tests/dsh/test-foreign-row.sh`, `tests/dsh/test-uninstall.sh`, `tests/dsh/test-atomic-write.sh`: block and flow, quoted and plain foreign rows (`- { id: measure-guard }`, `name: "…dsh-measure-guard"`) refuse install/check with the line number and survive uninstall byte-identically; atomic write preserves the rest of the file; a patch file without a trailing newline; a CLI-created patch becomes `[]` after uninstall; read-only profile exits 3 with the original intact; a user-edited copy file is kept with WARN
 - [ ] Task 1.5: Measure - User Manual Verification 'Phase 1: Environment CLI' (Protocol in workflow.md)
