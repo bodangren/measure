@@ -20,8 +20,8 @@ scripts, and `bash tests/spec_review_gate/run.sh`.
 - [x] Task 2.2: fix `measure/lessons-learned.md` (no "toggle a marker comment" guidance; the semantic-value rule with the nonce example) within 50 lines
 - [x] Task: Measure - User Manual Verification 'Phase 2: Correct the record and the lesson' (Protocol in workflow.md) `52feb65`
 
-## Phase 3: The post-docs gate and closeout
+## Phase 3: The post-docs gate and closeout [checkpoint: 930835b]
 
 - [x] Task 3.1: run `bash tests/dsh/run.sh` after the docs/archive edits and record the result (the doc checks must pass) — 10/10 passed on the final tree, `9d8c428`
 - [x] Task 3.2: `metadata.json`, archive the track, update `measure/tracks.md` `9d8c428`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: The post-docs gate and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 3: The post-docs gate and closeout' (Protocol in workflow.md) `930835b`
