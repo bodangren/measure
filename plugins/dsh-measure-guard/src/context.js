@@ -3,7 +3,7 @@
 // compaction re-note. Every function takes its dependencies, so the module runs
 // without the DSH runtime. The end-of-turn computation itself is a Phase 3 seam.
 import { noteKey, ruleSection, taskNote } from './core/parse.ts'
-import { unshaTasks } from './core/guards.ts'
+import { MAX_BLOCKS, unshaTasks } from './core/guards.ts'
 import { newUserMessage } from './state.js'
 import { secondWriterText } from './roots.js'
 
@@ -109,9 +109,11 @@ export function compactionHandler(state, agentId, event) {
 }
 
 /**
- * The end-of-turn seam: end the turn state, record the problems, and in guard
- * mode keep a reminder for the next pre-step. `deps.computeProblems` is the
- * Phase 3 computation; without it the problems are empty.
+ * The end-of-turn seam: end the turn state, record the problems, and keep a
+ * reminder for the next pre-step. `guard` always arms it; `strict` arms it only
+ * after the block limit, so the final report is not lost (the earlier turn
+ * stoppings hold the turn open instead). `deps.computeProblems` returns the
+ * problems that `onTurnStopping` stored for this turn.
  */
 export function endTurnHandler(agentId, root, event, deps) {
   const turnNumber = event?.data?.turn
@@ -129,7 +131,9 @@ export function endTurnHandler(agentId, root, event, deps) {
   }
   const session = deps.state.agents.sessionOf(agentId)
   session.problems = [...problems]
-  if (deps.mode === 'guard' && problems.length > 0) session.reminder = reminderText(problems)
+  const blocks = turn.blocks ?? 0
+  const remind = deps.mode === 'guard' || (deps.mode === 'strict' && blocks >= MAX_BLOCKS)
+  if (remind && problems.length > 0) session.reminder = reminderText(problems)
   deps.state.turns.endTurn(agentId, turnNumber)
   return problems
 }
