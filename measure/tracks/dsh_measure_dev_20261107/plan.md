@@ -67,7 +67,7 @@ The script under test is `bin/measure-dsh`; the plugin under test is
     - [ ] Record the agent-side evidence (route JSON + identity header naming the installed copy, record check, module export check) in the task git note and `measure/runs/dsh_measure_dev_20261107/`
     - [ ] Edge: when the identity header still names the working-tree copy, `--check --live` fails, the phase records a pending restart, and the track does not claim the runtime proof
     - [ ] Ask the operator to restart DSH and confirm the band, the panel, and the eight commands (human-gated stage); record the pending restart until that confirmation
-- [~] Task 5.2: Track closeout documents
+- [x] Task 5.2: Track closeout documents `faf0fe9`
     - [ ] `measure/lessons-learned.md` and `measure/tech-debt.md` entries for the environment CLI, the identity header, and the installer-row ownership change
     - [ ] `measure/tracks/dsh_measure_dev_20261107/metadata.json` actual tasks and deviation notes; `measure/tracks.md` archive entry; `CHANGELOG.md` final wording
 - [ ] Task 5.3: Measure - User Manual Verification 'Phase 5: Live environment and closeout' (Protocol in workflow.md)
