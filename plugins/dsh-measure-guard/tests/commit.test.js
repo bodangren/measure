@@ -287,3 +287,35 @@ test('addedPaths ignores a trailing comment and fails closed on an unterminated 
     paths: [],
   })
 })
+
+// ---- whole-command token scan (dsh_measure_add_quoting_followup_20261107)
+
+test('addedPaths follows a backslash-newline continuation', () => {
+  const command = 'git add measure/a.ts \\\nsrc/new.ts && git commit -m "fix(a): A"'
+  assert.deepEqual(addedPaths(command), {
+    all: false,
+    trackedOnly: false,
+    paths: ['measure/a.ts', 'src/new.ts'],
+  })
+})
+
+test('addedPaths keeps a quoted separator inside one path', () => {
+  assert.deepEqual(addedPaths('git add "a;b.ts" && git commit -m "fix(a): A"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['a;b.ts'],
+  })
+})
+
+test('addedPaths handles a real trailing comment and a quoted wildcard', () => {
+  assert.deepEqual(addedPaths('git add src/a.ts # note'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['src/a.ts'],
+  })
+  assert.deepEqual(addedPaths('git add "a*b.ts" && git commit -m "fix(a): A"'), {
+    all: true,
+    trackedOnly: false,
+    paths: [],
+  })
+})

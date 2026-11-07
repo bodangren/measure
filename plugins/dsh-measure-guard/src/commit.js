@@ -10,23 +10,27 @@ export { commitDecision, commitReminder, parseCommitCommand }
 /** The SHA of a finished commit line: `[main abc1234] message`. */
 export const commitShaOf = text => /^\[[^\]\n]* ([0-9a-f]{7,40})\]/m.exec(text)?.[1] ?? null
 
-/** One `git add` segment before the commit, its arguments as a string. */
-const GIT_ADD_SEGMENT = /(?:^|[;&|\n])\s*git\s+(?:-[Cc]\s+\S+\s+)*add\b([^;&|\n]*)/g
-
 /**
- * The words of one `git add` segment (Decision 9): whitespace separates; a
+ * The words and separators of one shell command (Decision 9): whitespace
+ * separates words; `;`, newline, `&`/`&&`, and `|`/`||` are separators; a
  * single-quoted span is literal; a double-quoted span takes `\"` and `\\`
- * escapes; a backslash outside quotes escapes the next character; a `#` that
- * starts a word begins a comment. An unterminated quote returns null so the
- * caller can fail closed.
+ * escapes; a backslash-newline is a line continuation; a backslash escapes the
+ * next character; a `#` that starts a word comments to the end of the line. An
+ * unterminated quote returns null so the caller can fail closed.
  */
-function shellWords(text) {
-  const words = []
+function shellTokens(command) {
+  const tokens = []
   let word = ''
   let inWord = false
   let quote = null
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i]
+  const flush = () => {
+    if (!inWord) return
+    tokens.push({ value: word })
+    word = ''
+    inWord = false
+  }
+  for (let i = 0; i < command.length; i += 1) {
+    const char = command[i]
     if (quote === "'") {
       if (char === "'") {
         quote = null
@@ -39,8 +43,8 @@ function shellWords(text) {
     if (quote === '"') {
       if (char === '"') {
         quote = null
-      } else if (char === '\\' && (text[i + 1] === '"' || text[i + 1] === '\\')) {
-        word += text[i + 1]
+      } else if (char === '\\' && (command[i + 1] === '"' || command[i + 1] === '\\')) {
+        word += command[i + 1]
         inWord = true
         i += 1
       } else {
@@ -49,74 +53,95 @@ function shellWords(text) {
       }
       continue
     }
-    if (char === ' ' || char === '\t') {
-      if (inWord) {
-        words.push(word)
-        word = ''
-        inWord = false
-      }
-      continue
-    }
-    if (char === '#' && !inWord) break
-    if (char === "'" || char === '"') {
-      quote = char
-      inWord = true
-      continue
-    }
     if (char === '\\') {
-      if (i + 1 < text.length) {
-        word += text[i + 1]
+      if (command[i + 1] === '\n') {
+        i += 1
+      } else if (i + 1 < command.length) {
+        word += command[i + 1]
         inWord = true
         i += 1
       }
+      continue
+    }
+    if (char === ' ' || char === '\t') {
+      flush()
+      continue
+    }
+    if (char === '\n' || char === ';') {
+      flush()
+      tokens.push({ separator: char })
+      continue
+    }
+    if (char === '&' || char === '|') {
+      flush()
+      const next = command[i + 1] === char ? char + char : char
+      tokens.push({ separator: next })
+      i += next.length - 1
+      continue
+    }
+    if (char === '#' && !inWord) {
+      while (i < command.length && command[i] !== '\n') i += 1
+      tokens.push({ separator: '\n' })
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      inWord = true
       continue
     }
     word += char
     inWord = true
   }
   if (quote !== null) return null
-  if (inWord) words.push(word)
-  return words
+  flush()
+  return tokens
 }
 
 /**
- * The paths an in-command `git add` contributes (Decision 9): the non-option
- * words of every `git add` segment, with shell quoting and escaping respected.
- * `.`, a pathspec (`:/…`), or a wildcard cannot be resolved without the status,
- * so they set `all`; an unterminated quote is unreadable and also sets `all`
- * (fail closed).
+ * The paths an in-command `git add` contributes (Decision 9): for every `git`
+ * [-C <dir>]* `add` token run, the following words until a separator, with the
+ * shell quoting and escaping respected. `.`, a pathspec (`:/…`), or a wildcard
+ * cannot be resolved without the status, so they set `all`; an unterminated
+ * quote is unreadable and also sets `all` (fail closed).
  */
 export function addedPaths(command) {
   const added = { all: false, trackedOnly: false, paths: [] }
   if (typeof command !== 'string' || command === '') return added
-  for (const match of command.matchAll(GIT_ADD_SEGMENT)) {
-    const words = shellWords(match[1] ?? '')
-    if (words === null) {
-      added.all = true
-      continue
-    }
+  const tokens = shellTokens(command)
+  if (tokens === null) {
+    added.all = true
+    return added
+  }
+  for (let i = 0; i < tokens.length; i += 1) {
+    if (tokens[i].separator || tokens[i].value !== 'git') continue
+    let at = i + 1
+    while (at + 1 < tokens.length && tokens[at].value === '-C' && !tokens[at + 1].separator) at += 2
+    if (at >= tokens.length || tokens[at].separator || tokens[at].value !== 'add') continue
+    at += 1
     let afterDashDash = false
-    for (const token of words) {
-      if (token === '') continue
-      if (!afterDashDash && token === '--') {
+    for (; at < tokens.length && !tokens[at].separator; at += 1) {
+      const value = tokens[at].value
+      if (value === '') continue
+      if (!afterDashDash && value === '--') {
         afterDashDash = true
         continue
       }
-      if (!afterDashDash && (token === '-A' || token === '--all')) {
+      if (!afterDashDash && (value === '-A' || value === '--all')) {
         added.all = true
         continue
       }
-      if (!afterDashDash && (token === '-u' || token === '--update')) {
+      if (!afterDashDash && (value === '-u' || value === '--update')) {
         added.trackedOnly = true
         continue
       }
-      if (!afterDashDash && token.startsWith('-')) continue
-      if (token === '.' || token.startsWith(':/') || token.includes('*')) {
+      if (!afterDashDash && value.startsWith('-')) continue
+      if (value === '.' || value.startsWith(':/') || value.includes('*')) {
         added.all = true
         continue
       }
-      if (!added.paths.includes(token)) added.paths.push(token)
+      if (!added.paths.includes(value)) added.paths.push(value)
     }
+    i = at
   }
   return added
 }
