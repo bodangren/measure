@@ -5,7 +5,9 @@ description: Orchestrate Measure track execution with dedicated subagents, role-
 
 # Measure Orchestrator
 
-Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-spec-review`, `measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are registered subagent types. Start each one with the subagent tool of the harness, and give the role name as the subagent type. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
+Use this skill to turn a Measure track into a coordinated sequence of focused subagents. The Measure subagents (`measure-spec-review`, `measure-strategy`, `measure-mid-red`, `measure-jr-green`, `measure-review-a-correctness`, `measure-review-b-security`, `measure-review-c-ux-api`, `measure-phase-acceptance`, `measure-adversarial-testing`, `measure-ux-browser-review`, `measure-final-acceptance`, `measure-closeout`, `measure-orchestrator-audit`) are registered subagent types on harnesses with a role registry. Start each one with the subagent tool of the harness, and give the role name as the subagent type. `scripts/measure_interphase_checks.py` provides mechanical checks between handoffs.
+
+On the DeepSeek Harness there is no role registry: a role is a prompt given to a subagent, and the orchestrator supplies the provider and model. Read `references/dsh.md` for the subagent tools, the fixed role-to-model table, the prompt template, the per-role restrictions, the independence rule, and the guard-marker handoffs before spawning a Measure role there.
 
 ## Quick start
 
