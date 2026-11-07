@@ -30,7 +30,7 @@ _Story ref: spec.md#story-s1_
 - [x] Task 1.4: Docs: README "Modes" (precedence, `/measure-mode`, the route field) and `docs/dsh.md` `0741326`
 - [x] Task: Measure - User Manual Verification 'Phase S1: The effective mode and the mode command' (Protocol in workflow.md) `2d54132`
 
-## Phase S2: On-demand verification
+## Phase S2: On-demand verification [checkpoint: 9d41923]
 
 _Story ref: spec.md#story-s2_
 
@@ -42,7 +42,7 @@ _Story ref: spec.md#story-s2_
     - [ ] `tests/commands.test.js` (extended): `measure-verify` is registered and its reply comes from `verifyReport`
 - [x] Task 2.3: Green: implement `src/verify.js` and register the command `a20077d`
 - [x] Task 2.4: Docs: README "Tools and commands" (`/measure-verify`, read-only, fail-open) and `docs/dsh.md` `a20077d`
-- [ ] Task: Measure - User Manual Verification 'Phase S2: On-demand verification' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase S2: On-demand verification' (Protocol in workflow.md) `9d41923`
 
 ## Phase S3: Documentation, live check, and track closeout
 
