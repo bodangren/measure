@@ -89,6 +89,24 @@ DISPOSITIONS_PREFIX = "dispositions:"
 CONTROL_OR_ZERO_WIDTH_RE = re.compile("[\x00-\x08\x0b-\x1f\x7f-\x9f\u061c\u200b\u200c\u200d\u200e\u200f\u2028\u2029\u202a-\u202e\u2060\u2066-\u2069\ufeff]")
 AGENT_RESULT_START = "MEASURE_AGENT_RESULT"
 AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
+# The two forms of a commit's track id: the subject tag `(track_id: <id>)` and a
+# whole body line `track_id: <id>`. git parses no trailer key with `_`, so the
+# checker reads the lines itself.
+TRACK_ID_PATTERN = r"[A-Za-z0-9][A-Za-z0-9_.-]*"
+TRACK_TAG_RE = re.compile(rf"\(track_id: ({TRACK_ID_PATTERN})\)")
+TRACK_LINE_RE = re.compile(rf"track_id: ({TRACK_ID_PATTERN})")
+TEST_SUFFIXES = (
+    ".test.ts",
+    ".test.tsx",
+    ".spec.ts",
+    ".spec.tsx",
+    ".test.js",
+    ".test.jsx",
+    ".spec.js",
+    ".spec.jsx",
+    "_test.go",
+    ".bats",
+)
 
 
 @dataclass(frozen=True)
@@ -196,29 +214,82 @@ def committed_files(repo: Path, baseline: str) -> list[str]:
     return sorted(files)
 
 
-def non_test_committed_files(repo: Path, baseline: str) -> list[str]:
-    test_suffixes = (
-        ".test.ts",
-        ".test.tsx",
-        ".spec.ts",
-        ".spec.tsx",
-        ".test.js",
-        ".test.jsx",
-        ".spec.js",
-        ".spec.jsx",
-        "_test.go",
-        ".bats",
-    )
+def non_test_paths(paths: list[str] | set[str]) -> list[str]:
     result: list[str] = []
-    for path in committed_files(repo, baseline):
+    for path in sorted(paths):
         if path.startswith("measure/"):
             continue
-        if path.endswith(test_suffixes):
+        if path.endswith(TEST_SUFFIXES):
             continue
         if "/__tests__/" in path or "/tests/" in path or path.startswith("tests/"):
             continue
         result.append(path)
     return result
+
+
+def non_test_committed_files(repo: Path, baseline: str) -> list[str]:
+    return non_test_paths(committed_files(repo, baseline))
+
+
+def commit_track_ids(message: str) -> list[str]:
+    """The track ids of one commit message, in first-seen order, each one time.
+
+    The subject line gives each `(track_id: <id>)` tag. A later line gives an id
+    when its whole text, after the strip of spaces, is `track_id: <id>`.
+    """
+    lines = message.split("\n")
+    ids = TRACK_TAG_RE.findall(lines[0])
+    for line in lines[1:]:
+        match = TRACK_LINE_RE.fullmatch(line.strip())
+        if match:
+            ids.append(match.group(1))
+    return list(dict.fromkeys(ids))
+
+
+def is_track_folder(repo: Path, track_id: str) -> bool:
+    return any((measure_dir(repo) / folder / track_id).is_dir() for folder in ("tracks", "archive"))
+
+
+@dataclass(frozen=True)
+class RedScope:
+    own: list[str]
+    skipped: list[tuple[str, list[str]]]
+
+
+def red_scope(repo: Path, baseline: str, track: str) -> RedScope | None:
+    """Sort each commit of `baseline..HEAD` as a commit of `track` or of another track.
+
+    A commit belongs to another track when it has one or more track ids, no id is
+    `track`, and each id names a folder in `measure/tracks/` or `measure/archive/`.
+    Every other commit belongs to `track` (fail closed). The result is None when the
+    range has no commit of another track or git cannot list the range: the mid-red
+    gate then reads the full range, as before.
+    """
+    if not baseline:
+        return None
+    listed = git(repo, "log", "-z", "--no-show-signature", "--format=%H%n%B", f"{baseline}..HEAD")
+    if listed.returncode != 0:
+        return None
+    own: list[str] = []
+    skipped: list[tuple[str, list[str]]] = []
+    for record in listed.stdout.split("\0"):
+        sha, _, message = record.strip("\n").partition("\n")
+        if not sha:
+            continue
+        ids = commit_track_ids(message)
+        if ids and track not in ids and all(is_track_folder(repo, track_id) for track_id in ids):
+            skipped.append((sha, ids))
+        else:
+            own.append(sha)
+    return RedScope(own, skipped) if skipped else None
+
+
+def commit_paths(repo: Path, revision: str) -> set[str] | None:
+    """Every path one commit changed; for a merge, only the paths the merge changed itself."""
+    result = git(repo, "diff-tree", "-r", "--root", "--cc", "--no-renames", "-z", "--name-only", "--no-commit-id", revision)
+    if result.returncode != 0:
+        return None
+    return {path for path in result.stdout.split("\0") if path}
 
 
 def strip_checkpoint(heading: str) -> str:
@@ -743,14 +814,34 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if not strategy.exists():
             feedback.append(f"missing test strategy: {strategy}")
     elif role == "mid-red":
-        if args.baseline and git_head(repo) == args.baseline:
-            feedback.append("expected committed Red-phase test change, but HEAD did not advance")
+        scope = red_scope(repo, args.baseline, args.track)
+        if scope is None:
+            if args.baseline and git_head(repo) == args.baseline:
+                feedback.append("expected committed Red-phase test change, but HEAD did not advance")
+        else:
+            print(f"INFO: mid-red skipped {len(scope.skipped)} commits of other tracks")
+            for sha, ids in scope.skipped:
+                print(f"INFO: - {sha[:12]} {','.join(ids)}")
+            if not scope.own:
+                feedback.append(
+                    f"expected committed Red-phase test change, but baseline..HEAD has no commit of track {args.track}"
+                )
         total, _complete, in_progress, incomplete, _with_sha = phase_counts(plan, args.phase)
         if total == 0:
             feedback.append(f"could not find phase {args.phase!r} in {plan}")
         elif in_progress == 0 and incomplete > 0:
             feedback.append("expected at least one current phase task marked [~]")
-        non_test = non_test_committed_files(repo, args.baseline)
+        if scope is None:
+            non_test = non_test_committed_files(repo, args.baseline)
+        else:
+            own_paths: set[str] = set()
+            for sha in scope.own:
+                paths = commit_paths(repo, sha)
+                if paths is None:
+                    feedback.append(f"mid-red could not list the files of commit {sha[:12]}")
+                else:
+                    own_paths.update(paths)
+            non_test = non_test_paths(own_paths)
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)

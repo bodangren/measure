@@ -1,0 +1,32 @@
+Monorepo look Phase 2 Red range, read-only sparse clone /tmp/monoclone at 126189088 (git clone --shared --no-checkout; sparse measure/).
+Command: RED_TEST_COMMAND=false python3 -I <checker> role-gate --repo /tmp/monoclone --role mid-red --track storytime_look_20261107 --phase 'Phase 2: Look port of the picked option' --baseline 08e60c7959ff7e2a175b7a5fca9552a8fcfdb1ca
+Range: 20 commits (8 storytime_look_20261107, 6 storytime_at_home_release_20261106, 6 per_app_cicd_20261107).
+
+== old checker (~/.agents copy, before this track): exit 1
+FAIL: Mid Red changed non-test/non-Measure files
+FAIL: - .github/workflows/ci.yml
+FAIL: - apps/storytime/app/[locale]/st/[level]/[week]/decodable.tsx
+FAIL: - apps/storytime/app/[locale]/st/[level]/[week]/questions.tsx
+FAIL: - apps/storytime/app/[locale]/st/[level]/[week]/reader.tsx
+FAIL: - apps/storytime/app/[locale]/st/[level]/[week]/song.tsx
+FAIL: - apps/storytime/app/api/auth/sign-in/route.ts
+FAIL: - apps/storytime/app/api/auth/sign-out/route.ts
+FAIL: - apps/storytime/lib/auth/same-origin.ts
+FAIL: - docs/runbooks/traffic-moves.md
+FAIL: - scripts/ci/affected-apps.mjs
+
+== new checker (working tree, Task 3.1): exit 0
+INFO: mid-red skipped 12 commits of other tracks
+INFO: - 341d91cc0c6e storytime_at_home_release_20261106
+INFO: - 47859f2cbadc storytime_at_home_release_20261106
+INFO: - 37d4089edecb storytime_at_home_release_20261106
+INFO: - 79f86404b4ac per_app_cicd_20261107
+INFO: - 049eef53f714 per_app_cicd_20261107
+INFO: - e99512251628 per_app_cicd_20261107
+INFO: - 36b2b7bb9084 per_app_cicd_20261107
+INFO: - 60ae4e72f61c storytime_at_home_release_20261106
+INFO: - 90f51d444458 storytime_at_home_release_20261106
+INFO: - 253a68ad9115 storytime_at_home_release_20261106
+INFO: - a0b5f7209c12 per_app_cicd_20261107
+INFO: - e72e4b8ae634 per_app_cicd_20261107
+PASS: mid-red gate passed
