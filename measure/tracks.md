@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure band width**
-  *Link: [./tracks/dsh_measure_band_width_20261110/](./tracks/dsh_measure_band_width_20261110/)*
-  *Cap the band line by terminal columns so wide East Asian text cannot overflow and zero-width text is not over-counted*
+- (none)
 
 ---
 
