@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure commit wrapper closure (closing)**
-  *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -345,3 +343,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure count pins**
   *Link: [./archive/dsh_measure_count_pins_20261110/](./archive/dsh_measure_count_pins_20261110/)*
   *Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals*
+
+- [x] **Track: DSH Measure commit wrapper closure**
+  *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
+  *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
