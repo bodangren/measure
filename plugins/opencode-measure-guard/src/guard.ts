@@ -18,7 +18,7 @@ import {
   taskKey,
   tddDecision,
   trackCloseDecision,
-} from './core/guards'
+  shellWritePaths,} from './core/guards'
 import { gitStatus, loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
 import { endTurn, isFollowUp, startTurn } from './hooks/turn'
 import type { IdleAction } from './hooks/turn'
@@ -162,8 +162,9 @@ export class Guard {
     session.agent = event.agent
     const paths = writtenPaths(event.tool, event.input, this.root)
     const command = isShellTool(event.tool) ? commandOf(event.input) : null
+    const shellTargets = command === null ? [] : shellWritePaths(command)
     const commit = command !== null && this.mode === 'strict' ? parseCommitCommand(command) : null
-    if (paths.length === 0 && commit === null) return
+    if (paths.length === 0 && commit === null && shellTargets.length === 0) return
     const context = await this.guardContext(event.sessionID)
     const notes: string[] = []
     for (const path of paths) {
@@ -172,6 +173,14 @@ export class Guard {
       this.deny(closed.decision)
       if (closed.note !== null) notes.push(closed.note)
       this.deny(tddDecision(context, session.red, path))
+    }
+    // Shell writes: the bounded grammar's targets go through the edit and strict TDD guards
+    // (the closeout guard still cannot read a shell write's after-text; the end-of-turn check
+    // is its backstop).
+    for (const target of shellTargets) {
+      const resolved = target.startsWith('/') ? joinPath(target) : joinPath(this.root, target)
+      this.deny(this.editGuard(context, session, resolved))
+      this.deny(tddDecision(context, session.red, resolved))
     }
     if (commit !== null) {
       const check = commitDecision(context, commit, await commitFiles(this.root, commit.takesChanges))
