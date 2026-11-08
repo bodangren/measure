@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_commit_wrapper_20261110",
+  "type": "bug",
+  "status": "in_progress",
+  "created_at": "2026-11-10T16:10:00Z",
+  "updated_at": "2026-11-10T16:10:00Z",
+  "description": "Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan",
+  "estimated_tasks": 7,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}

@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure commit wrapper closure**
+  *Link: [./tracks/dsh_measure_commit_wrapper_20261110/](./tracks/dsh_measure_commit_wrapper_20261110/)*
+  *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
 
 ---
 
