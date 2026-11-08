@@ -41,6 +41,10 @@ Track: `guard_session_track_20261109`. Spec: [spec.md](./spec.md).
   - F1 [Major] (a parse error keeps `inProgress`, against FR-3): FIX in `83e099a`. AC-20 asserts an empty `inProgress` and kills the mutant (`review-a-f1-mutant.log`).
   - F2 [Nit] (the README rule for the project-wide note is not exact): FIX in `83e099a`.
   - After the fixes: `session-track.test.ts` 19 pass; `bun test` 150 pass, 1 fail (V18, pre-existing); `tsc` exit 0; `parity: ok` (`review-a-fix-bun-test.log`).
-- [~] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed `src` with `main` (AC-18).
-- [ ] Task 4.3: Run the live check of AC-19 through the OpenCode service HTTP API. Record the stored user messages.
-- [ ] Task 4.4: Send the PM one line: the commit, the test name, the install result, and the live result.
+- [x] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed `src` with `main` (AC-18). `902e729`
+  - Install step: `bin/install-measure-skill` from `main` `902e729` exits 0 (`written=6`). `bin/install-measure-skill --check` prints "No differences: every target matches main (902e729)." and exits 0. `diff -r` of `plugins/opencode-measure-guard/src` and the installed `src` shows no difference. The install has no `tests/` folder. Log: `measure/runs/guard_session_track_20261109/green-p4-install.log`.
+  - OpenCode loaded the new plugin with no restart: `loading plugin` at 2026-11-08T18:36:24Z, 5 s after the install.
+- [x] Task 4.3: Run the live check of AC-19 through the OpenCode service HTTP API. Record the stored user messages. `902e729`
+  - The service password is in the environment of the OpenChamber-managed server, so the check used the OpenChamber session tool on the same server (port 39005) in place of direct HTTP calls.
+  - Evidence: in `/tmp/gst-live-20261109` (3 `[~]` tracks), session `ses_e438c7909ffeW1aQOEdS2OdZ4Z` names `beta_20261109`, and its stored user message holds `Active track: Beta (measure/tracks/beta_20261109/).` and `Current task: [~] Task 1.1: Beta work`. Session `ses_e438c6f7cffeoAiGqiF5auYXZw` names no track, and its stored user message holds the work list with the 3 tracks. Log: `green-p4-live-check.log`.
+- [~] Task 4.4: Send the PM one line: the commit, the test name, the install result, and the live result.

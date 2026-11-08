@@ -1,0 +1,27 @@
+Live check of AC-19, guard_session_track_20261109, 2026-11-08T18:37Z (2026-11-09 01:37 +0700).
+Installed plugin: ~/.config/opencode/plugins/opencode-measure-guard from main 902e729 (stamp installed_at 2026-11-08T18:36:19Z).
+OpenCode log: "loading plugin" id=/home/daniebo/.config/opencode/plugins/opencode-measure-guard at 2026-11-08T18:36:24.115Z.
+Server: the OpenChamber-managed `opencode serve --port 39005` (pid 2441). Sessions were created and read through the OpenChamber session tool (session.create, session.messages).
+Project: /tmp/gst-live-20261109, a git repository (commit e1e275c) with measure/index.md (plugin fixture), tracks.md with 3 [~] tracks (alpha_20261109 Alpha, beta_20261109 Beta, gamma_20261109 Gamma), and one plan for each with one [~] task "Task 1.1: <Name> work".
+Agent: measure-orchestrator (the default agent). Model: deepseek/deepseek-flash. No tool ran.
+
+== Session A ses_e438c7909ffeW1aQOEdS2OdZ4Z (title "Guard live check A (named)"), stored user message msg_1bc738883001QbW6jzGRUQqVm2:
+Live check of the measure-guard note for track beta_20261109. Reply with the single word ok. Do not run any tool.
+
+measure-guard (Mode: guard)
+Active track: Beta (measure/tracks/beta_20261109/).
+Current task: [~] Task 1.1: Beta work
+-- assistant: ok
+
+== Session B ses_e438c6f7cffeoAiGqiF5auYXZw (title "Guard live check B (unnamed)"), stored user message msg_1bc73941f001veVv4DsEJ3NvWN:
+Live check of the measure-guard note. Reply with the single word ok. Do not run any tool.
+
+measure-guard (Mode: guard)
+This session names no track. 3 tracks have a task in progress:
+- alpha_20261109: Alpha
+- beta_20261109: Beta
+- gamma_20261109: Gamma
+To get the task of one track, write its id in a prompt.
+-- assistant: ok
+
+Result: AC-19 passes. The old plugin gives both sessions "Active track: Alpha" (the first [~] track with a [~] task).

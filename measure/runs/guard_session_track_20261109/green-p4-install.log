@@ -1,0 +1,12 @@
+main 902e729
+installer exit 0
+2026-11-08T18:36:19Z ref=main commit=902e729 written=6 removed=0 kept=0 exit=0
+No differences: every target matches main (902e729).
+check exit 0
+diff -r: the installed src equals the working tree src
+the working tree src equals main
+ls: cannot access '/home/daniebo/.config/opencode/plugins/opencode-measure-guard/tests': No such file or directory
+ref main
+commit 902e729be2fc97bbbe49531b335acf991010cfec
+installed_at 2026-11-08T18:36:19Z
+2026-11-08T18:36:24Z
