@@ -165,8 +165,9 @@ the closeout guard cannot read it. Before the redirect scan, heredoc bodies,
 quoted `>`, and `#` comments are masked, so prose that quotes a redirect is not
 treated as a write; `tee`/`sed -i` keep the raw command (a prose mention of those
 can still be denied), and command substitution and helper scripts remain the
-documented limit. The destination of `cp`, `mv`, and `install` is also a checked
-write target (`-t`/`--target-directory` stays with the end-of-turn backstop).
+documented limit. The destination of `cp`, `mv`, `install`, and `ln` is also a checked
+write target (`-t`/`--target-directory` stays with the end-of-turn backstop), and
+the noclobber override `>|` redirects like `>`.
 `apply_patch` and `str_replace_editor` no longer fail closed on every registry
 write: their after-text is reconstructed (add/delete/update hunks with exact
 context matching; `create`/`str_replace`/`insert`), so the closeout guard checks
