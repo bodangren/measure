@@ -14,7 +14,9 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 1: Spec review
 
-- [~] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/gate_track_scope_20261108/`. Record the findings and the responses in `spec-review.md`.
+- [x] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/gate_track_scope_20261108/`. Record the findings and the responses in `spec-review.md`. `1a510ee`
+  - Round 1 on `9d67250`: fail, 2 Blocker, 2 Major, 3 Nit (`4fd7751`). Revision: `ab95c03`.
+  - Round 2 on `ab95c03`: pass, 0 Blocker, 0 Major, 1 Nit (`1a510ee`). The spec-review gate passed. F8: FIX in the Phase 1 checkpoint commit.
 
 ## Phase 2: Red tests
 

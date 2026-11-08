@@ -17,3 +17,13 @@ Author model: claude-code/claude-opus-5-5 (Claude family).
 | F5 | Nit | AC-1 does not say which file each `login_track` commit changes. | FIX. A new paragraph defines the two `login_track` commits: one file each. |
 | F6 | Nit | D2 "the same file set" has no meaning for the `jr-green` HEAD check. | FIX. D2 now says that the old mode of `jr-green` keeps the HEAD check. |
 | F7 | Nit | The fixture paragraph does not name `webbridge_evidence`. | FIX. The paragraph names `webbridge_evidence` with its three empty lists. |
+
+## Round 2
+
+- Reviewer: `measure-spec-review`, model `deepseek/deepseek-flash#high` (DeepSeek family), the same subagent session as round 1.
+- Baseline: `ab95c03`. Result: `measure/runs/gate_track_scope_20261108/spec-review-ab95c03.json` (committed in `1a510ee`).
+- Status: pass. 0 Blocker, 0 Major, 1 Nit. F1 to F7 are closed. The `role-gate --role spec-review` check passed on `1a510ee`.
+
+| Id | Severity | Finding (short) | Response |
+| --- | --- | --- | --- |
+| F8 | Nit | D4 "run first" names no reference point, and the result-file check runs before the baseline checks. | FIX. D4 now says that the result-file check and the checks of `--baseline` keep their order and their messages, and that the tree diff runs after them. |
