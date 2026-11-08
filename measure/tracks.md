@@ -295,3 +295,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit global options**
   *Link: [./archive/dsh_measure_commit_git_options_20261110/](./archive/dsh_measure_commit_git_options_20261110/)*
   *Keep the in-command git add visible through the documented git global options and fail closed on an unknown one*
+
+- [x] **Track: DSH Measure commit global detection**
+  *Link: [./archive/dsh_measure_commit_global_detect_20261110/](./archive/dsh_measure_commit_global_detect_20261110/)*
+  *Recognize the documented git global options before commit and add so the strict commit guard cannot be skipped*
