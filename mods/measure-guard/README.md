@@ -69,7 +69,7 @@ In `guard` and `strict` mode, the mod denies an `Edit`, `Write`, or `NotebookEdi
 
 The deny text tells the agent the next action: mark the next task `[~]` (with the plan path and the task), or create a track. Edits inside `measure/` always pass, so the agent can always update the plan. Files outside the project root (for example a scratch folder) also pass. If the mod cannot read the Measure files, all edits pass.
 
-Limit: the guard does not see file writes through `Bash` (`sed -i`, `cat >`). The end-of-turn check finds these changes.
+Shell writes are path-checked too: the shared bounded grammar (in `hooks/guards.ts`, so all three adapters use one implementation) extracts the file targets of a `Bash` command — `>`/`>>`/`>|` redirection, `tee` arguments, `sed -i` file arguments, and the destination of `cp`/`mv`/`install`/`ln` — and each target inside the project goes through the edit guard and, in `strict` mode, the TDD guard. A write the grammar cannot name (a wrapper script, `cp -t`) is not path-checked and the end-of-turn check remains the backstop, as does the closeout guard for a shell-written plan or registry (its after-text is unknown).
 
 ## Projects with no measure/ folder
 
