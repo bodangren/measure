@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_accepted_closure_20261110",
+  "type": "chore",
+  "status": "in_progress",
+  "created_at": "2026-11-10T19:50:00Z",
+  "updated_at": "2026-11-10T19:50:00Z",
+  "description": "Close the accepted design rows with recorded rationale and pin the read-only agent tool surface",
+  "estimated_tasks": 7,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}

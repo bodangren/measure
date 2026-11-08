@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure accepted-risk closure**
+  *Link: [./tracks/dsh_measure_accepted_closure_20261110/](./tracks/dsh_measure_accepted_closure_20261110/)*
+  *Close the accepted design rows with recorded rationale and pin the read-only agent tool surface*
 
 ---
 
