@@ -260,7 +260,7 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
 const TEST_FILES = [
   /\.(test|spec)\.[cm]?[jt]sx?$/,
   /(^|\/)test_[^/]+\.(py|sh)$/,
-  /_test\.(py|go|rs|exs?)$/,
+  /_test\.(py|go|rs|exs?|dart|rb)$/,
   /_spec\.rb$/,
   /(^|\/)test-[^/]+\.sh$/,
   /(^|\/)(tests?|__tests__|spec)\/.+\.(rs|[cm]?[jt]sx?|py|rb|go)$/,
@@ -274,8 +274,10 @@ const TEST_COMMANDS = [
   /\b(npm|pnpm|yarn|bun)\s+(run\s+)?test\b/,
   /\b(vitest|jest|mocha|ava|pytest|rspec|phpunit|ctest)\b/,
   /\bnode\s+(?:(?:--?[A-Za-z][\w-]*(?:=\S+)?|-[A-Za-z]+)\s+)*--test(?:-only)?\b/,
+  /\bnode\s+--run\s+test\b/,
+  /\bcargo\s+nextest\s+run\b/,
   /\bpython3?\s+-m\s+(pytest|unittest)\b/,
-  /\b(go|cargo|deno|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
+  /\b(go|cargo|deno|dart|flutter|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
   /\bclaude\s+plugin\s+test\b/,
   /(^|[\s/])test[-_][\w.-]*\.sh\b/,
 ]
