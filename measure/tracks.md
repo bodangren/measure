@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure installer atomicity**
+  *Link: [./tracks/dsh_measure_installer_atomic_20261110/](./tracks/dsh_measure_installer_atomic_20261110/)*
+  *Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path*
 
 ---
 

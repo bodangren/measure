@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_installer_atomic_20261110",
+  "type": "bug",
+  "status": "in_progress",
+  "created_at": "2026-11-10T17:50:00Z",
+  "updated_at": "2026-11-10T17:50:00Z",
+  "description": "Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path",
+  "estimated_tasks": 7,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}
