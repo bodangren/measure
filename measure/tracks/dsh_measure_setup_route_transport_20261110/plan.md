@@ -13,6 +13,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Live proof, records, and closeout
 
-- [~] Task 2.1: install + reload, prove the live POST transport with curl (400/404 with identity), record the evidence; update the README route paragraph, resolve the tech-debt row, add the `CHANGELOG.md` entry; run the gates again
-- [ ] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_setup_route_transport_20261110` and record the manifest-only FAIL
+- [x] Task 2.1: install + reload, prove the live POST transport with curl (400/404 with identity), record the evidence; update the README route paragraph, resolve the tech-debt row, add the `CHANGELOG.md` entry; run the gates again `c074654`
+- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_setup_route_transport_20261110` and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Live proof, records, and closeout' (Protocol in workflow.md)
