@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure band width (closing)**
-  *Link: [./archive/dsh_measure_band_width_20261110/](./archive/dsh_measure_band_width_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -365,6 +363,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure shell visibility for every adapter**
   *Link: [./archive/dsh_measure_shell_visibility_adapters_20261110/](./archive/dsh_measure_shell_visibility_adapters_20261110/)*
   *Share the bounded shell-write grammar in the core and feed its targets to the mod and OpenCode edit and TDD guards*
+
+- [x] **Track: DSH Measure band width**
+  *Link: [./archive/dsh_measure_band_width_20261110/](./archive/dsh_measure_band_width_20261110/)*
+  *Cap the band line by terminal columns so wide East Asian text cannot overflow and zero-width text is not over-counted*
 
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
