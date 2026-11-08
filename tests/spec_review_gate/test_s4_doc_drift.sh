@@ -192,8 +192,10 @@ in_flat "audit role: Inputs section says 'A1–A11 today'" "$INPUTS" 'A1–A11 t
 
 # ---------------------------------------------------------------------------
 # CHANGELOG and README
-UNRELEASED="$(section "$CHANGELOG" '## Unreleased' '^## ')"
-in_text "CHANGELOG.md: the Unreleased section credits elephant-goldfish-model" "$UNRELEASED" 'elephant-goldfish-model'
+# The credit may move out of Unreleased when a release is cut: search the whole file so a
+# release commit cannot fail this check (Group (b)).
+CHANGELOG_ALL="$(cat "$CHANGELOG" 2>/dev/null)"
+in_text "CHANGELOG.md: the file credits elephant-goldfish-model" "$CHANGELOG_ALL" 'elephant-goldfish-model'
 
 echo "=== README.md: the measure-orchestrator-audit row says doc-to-code drift ==="
 ROW="$(grep -F -- '| `measure-orchestrator-audit` |' "$README" 2>/dev/null | head -n 1)"
