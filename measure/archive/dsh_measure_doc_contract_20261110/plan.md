@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/dsh/run.sh` (13/13), `bash tests/spec_review_gate/run.sh` (11/11), the node suite, and both parity gates `0deea61`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The rule, the span, and the lint' (Protocol in workflow.md) `923e10d`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 848dc3b]
 
 - [x] Task 2.1: resolve the metadata-schema and broken-span tech-debt rows, add the `CHANGELOG.md` entry; record the live check, run the gates again `755b942`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_doc_contract_20261110` and record the manifest-only FAIL `293be89`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `848dc3b`
