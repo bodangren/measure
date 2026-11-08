@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_measure_band_width_20261110",
+  "type": "bug",
+  "status": "in_progress",
+  "created_at": "2026-11-10T18:50:00Z",
+  "updated_at": "2026-11-10T18:50:00Z",
+  "description": "Cap the band line by terminal columns so wide East Asian text cannot overflow and zero-width text is not over-counted",
+  "estimated_tasks": 7,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}
