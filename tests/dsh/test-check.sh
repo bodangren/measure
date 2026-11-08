@@ -31,6 +31,16 @@ assert_out '^SKIP live:'
 assert_not_out '^FAIL '
 assert_eq "$(profile_fingerprint)" "$before"
 
+# 1b. A generated __pycache__ in the repository skill source is not part of the
+# installed copy (the installer copies tracked files from the ref), so --check stays green.
+mkdir -p "$SKILL_SRC/measure-orchestrator/scripts/__pycache__"
+printf 'x' >"$SKILL_SRC/measure-orchestrator/scripts/__pycache__/x.pyc"
+check
+assert_rc 0
+assert_out '^PASS skill-orchestrator:'
+assert_not_out '^FAIL skill-orchestrator'
+rm -rf "$SKILL_SRC/measure-orchestrator/scripts/__pycache__"
+
 # 2. --json prints exactly the documented object and element schema.
 check --json
 assert_rc 0

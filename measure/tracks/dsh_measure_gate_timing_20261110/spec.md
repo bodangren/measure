@@ -30,7 +30,8 @@ where the old 5 s constant failed.
 - **FR-3 (load proof).** With four busy loops running beside the suite, the S4 adversarial
   suite passes (the measured G5 time may exceed 5 s), and it fails if the recipe is replaced
   by a quadratic mutant under the same budget.
-- **FR-4 (records).** The gate-timing tech-debt row becomes `Resolved`;
+- **FR-4 (generated artifacts).** `bin/measure-dsh --check` prunes `__pycache__`/`*.pyc` from the skill-source file list, because the installer copies tracked files from the ref and never installs generated artifacts; a local `__pycache__` left by a Measure script must not report an incomplete skill copy (observed live during this track: a closeout run recreated it and made `--check --live` red). `tests/dsh/test-check.sh` pins the case.
+- **FR-5 (records).** The gate-timing tech-debt row becomes `Resolved`;
   `CHANGELOG.md` records the change; the live check passes (no plugin code change).
 - **FR-5 (verification).** srg 11/11 under load and idle, CLI 13/13, node 352/352, both
   parity gates ok; the track is archived with a manifest-only closeout FAIL.
