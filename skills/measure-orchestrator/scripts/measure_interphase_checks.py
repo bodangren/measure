@@ -8,6 +8,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -183,16 +184,22 @@ def history_files(repo: Path, baseline: str) -> set[str]:
     return files
 
 
+def diff_names(repo: Path, *args: str) -> set[str]:
+    result = git(repo, "diff", "--name-only", *args)
+    if result.returncode != 0:
+        return set()
+    return {line.strip() for line in result.stdout.splitlines() if line.strip()}
+
+
+def worktree_files(repo: Path) -> set[str]:
+    """The unstaged and the staged changes. They have no track id."""
+    return diff_names(repo) | diff_names(repo, "--cached")
+
+
 def changed_files(repo: Path, baseline: str) -> list[str]:
-    files: set[str] = set()
-    commands: list[list[str]] = []
+    files = worktree_files(repo)
     if baseline:
-        commands.append(["diff", "--name-only", f"{baseline}..HEAD"])
-    commands.extend((["diff", "--name-only"], ["diff", "--name-only", "--cached"]))
-    for command in commands:
-        result = git(repo, *command)
-        if result.returncode == 0:
-            files.update(line.strip() for line in result.stdout.splitlines() if line.strip())
+        files.update(diff_names(repo, f"{baseline}..HEAD"))
     files.update(history_files(repo, baseline))
     return sorted(files)
 
@@ -251,19 +258,19 @@ def is_track_folder(repo: Path, track_id: str) -> bool:
 
 
 @dataclass(frozen=True)
-class RedScope:
+class TrackScope:
     own: list[str]
     skipped: list[tuple[str, list[str]]]
 
 
-def red_scope(repo: Path, baseline: str, track: str) -> RedScope | None:
+def track_scope(repo: Path, baseline: str, track: str) -> TrackScope | None:
     """Sort each commit of `baseline..HEAD` as a commit of `track` or of another track.
 
     A commit belongs to another track when it has one or more track ids, no id is
     `track`, and each id names a folder in `measure/tracks/` or `measure/archive/`.
     Every other commit belongs to `track` (fail closed). The result is None when the
-    range has no commit of another track or git cannot list the range: the mid-red
-    gate then reads the full range, as before.
+    range has no commit of another track or git cannot list the range: the check
+    then reads the full range, as before.
     """
     if not baseline:
         return None
@@ -281,7 +288,27 @@ def red_scope(repo: Path, baseline: str, track: str) -> RedScope | None:
             skipped.append((sha, ids))
         else:
             own.append(sha)
-    return RedScope(own, skipped) if skipped else None
+    return TrackScope(own, skipped) if skipped else None
+
+
+def print_skipped(name: str, scope: TrackScope, stream=None) -> None:
+    """Name each skipped commit, the newest first, so a reader can check its tag."""
+    print(f"INFO: {name} skipped {len(scope.skipped)} commits of other tracks", file=stream)
+    for sha, ids in scope.skipped:
+        print(f"INFO: - {sha[:12]} {','.join(ids)}", file=stream)
+
+
+def scoped_files(repo: Path, scope: TrackScope, name: str) -> tuple[set[str], list[str]]:
+    """The paths of the commits of the track, and one failure for each commit git cannot list."""
+    paths: set[str] = set()
+    errors: list[str] = []
+    for sha in scope.own:
+        files = commit_paths(repo, sha)
+        if files is None:
+            errors.append(f"{name} could not list the files of commit {sha[:12]}")
+        else:
+            paths.update(files)
+    return paths, errors
 
 
 def commit_paths(repo: Path, revision: str) -> set[str] | None:
@@ -365,6 +392,22 @@ def split_env_list(name: str, default: str) -> tuple[str, ...]:
 
 
 def ux_paths(repo: Path, baseline: str) -> list[str]:
+    return ux_relevant(changed_files(repo, baseline))
+
+
+def track_ux_paths(repo: Path, baseline: str, track: str, name: str) -> tuple[list[str], TrackScope | None, list[str]]:
+    """`ux_paths` in the track scope: the paths, the scope (None in the old mode), and the failures.
+
+    A working-tree change has no track id, so it counts in each mode.
+    """
+    scope = track_scope(repo, baseline, track)
+    if scope is None:
+        return ux_paths(repo, baseline), None, []
+    own, errors = scoped_files(repo, scope, name)
+    return ux_relevant(sorted(own | worktree_files(repo))), scope, errors
+
+
+def ux_relevant(paths: list[str]) -> list[str]:
     include_prefixes = split_env_list("UX_INCLUDE_PREFIXES", "app/src/,app/public/,src/,frontend/,web/,client/")
     include_suffixes = split_env_list("UX_INCLUDE_SUFFIXES", ".tsx,.jsx,.ts,.js,.css,.scss,.html,.dart")
     exclude_prefixes = split_env_list("UX_EXCLUDE_PREFIXES", "measure/,docs/,server/,scripts/,tests/,.github/")
@@ -374,7 +417,7 @@ def ux_paths(repo: Path, baseline: str) -> list[str]:
         ".test.ts,.test.tsx,.spec.ts,.spec.tsx,.test.js,.test.jsx,.spec.js,.spec.jsx,_test.dart,.stories.tsx,.stories.jsx,.md,.mdx",
     )
     relevant: list[str] = []
-    for path in changed_files(repo, baseline):
+    for path in paths:
         normalized = path.replace("\\", "/").lstrip("./")
         if normalized.startswith(exclude_prefixes):
             continue
@@ -777,7 +820,17 @@ def cmd_audit_result(args: argparse.Namespace) -> int:
 
 def cmd_ux_paths(args: argparse.Namespace) -> int:
     repo = repo_root(args.repo)
-    paths = ux_paths(repo, args.baseline)
+    if args.track:
+        paths, scope, errors = track_ux_paths(repo, args.baseline, args.track, "ux-paths")
+        if scope is not None:
+            # stderr keeps stdout one path on each line.
+            print_skipped("ux-paths", scope, stream=sys.stderr)
+        if errors:
+            for item in errors:
+                print(f"FAIL: {item}")
+            return 1
+    else:
+        paths = ux_paths(repo, args.baseline)
     for path in paths:
         print(path)
     if args.require and not paths:
@@ -814,14 +867,12 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if not strategy.exists():
             feedback.append(f"missing test strategy: {strategy}")
     elif role == "mid-red":
-        scope = red_scope(repo, args.baseline, args.track)
+        scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
             if args.baseline and git_head(repo) == args.baseline:
                 feedback.append("expected committed Red-phase test change, but HEAD did not advance")
         else:
-            print(f"INFO: mid-red skipped {len(scope.skipped)} commits of other tracks")
-            for sha, ids in scope.skipped:
-                print(f"INFO: - {sha[:12]} {','.join(ids)}")
+            print_skipped(role, scope)
             if not scope.own:
                 feedback.append(
                     f"expected committed Red-phase test change, but baseline..HEAD has no commit of track {args.track}"
@@ -834,21 +885,24 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if scope is None:
             non_test = non_test_committed_files(repo, args.baseline)
         else:
-            own_paths: set[str] = set()
-            for sha in scope.own:
-                paths = commit_paths(repo, sha)
-                if paths is None:
-                    feedback.append(f"mid-red could not list the files of commit {sha[:12]}")
-                else:
-                    own_paths.update(paths)
+            own_paths, errors = scoped_files(repo, scope, role)
+            feedback.extend(errors)
             non_test = non_test_paths(own_paths)
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)
         feedback.extend(gate_command(repo, "RED_TEST_COMMAND", os.environ.get("RED_TEST_COMMAND", ""), expect_failure=True))
     elif role == "jr-green":
-        if args.baseline and git_head(repo) == args.baseline:
-            feedback.append("expected committed Green-phase implementation change, but HEAD did not advance")
+        scope = track_scope(repo, args.baseline, args.track)
+        if scope is None:
+            if args.baseline and git_head(repo) == args.baseline:
+                feedback.append("expected committed Green-phase implementation change, but HEAD did not advance")
+        else:
+            print_skipped(role, scope)
+            if not scope.own:
+                feedback.append(
+                    f"expected committed Green-phase implementation change, but baseline..HEAD has no commit of track {args.track}"
+                )
         total, complete, _in_progress, incomplete, with_sha = phase_counts(plan, args.phase)
         if total == 0:
             feedback.append(f"could not find phase {args.phase!r} in {plan}")
@@ -882,7 +936,10 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if role == "adversarial-testing":
             feedback.extend(gate_command(repo, "PROJECT_TESTS", os.environ.get("PROJECT_TESTS", "")))
         if role == "ux-browser-review":
-            paths = ux_paths(repo, args.baseline)
+            paths, scope, errors = track_ux_paths(repo, args.baseline, args.track, role)
+            if scope is not None:
+                print_skipped(role, scope)
+            feedback.extend(errors)
             if paths and not os.environ.get("PROJECT_DEV_URL"):
                 feedback.append("UX-relevant files changed but PROJECT_DEV_URL is unset")
         if role == "final-acceptance":
@@ -908,10 +965,18 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                         line = lines[0] if lines else ""
                         feedback.append(f"spec-review could not list committed files: {line}")
                     else:
-                        paths = listed.stdout.split("\0")
-                        if paths and paths[-1] == "":
-                            paths.pop()
-                        paths.extend(sorted(history_files(repo, args.baseline) - set(paths)))
+                        # The tree diff runs in each mode, so a failure of git fails the gate first.
+                        scope = track_scope(repo, args.baseline, args.track)
+                        if scope is None:
+                            paths = listed.stdout.split("\0")
+                            if paths and paths[-1] == "":
+                                paths.pop()
+                            paths.extend(sorted(history_files(repo, args.baseline) - set(paths)))
+                        else:
+                            print_skipped(role, scope)
+                            own_paths, errors = scoped_files(repo, scope, role)
+                            feedback.extend(errors)
+                            paths = list(own_paths)
                         paths.sort()
                         outside = [path for path in paths if not path.startswith("measure/runs/")]
                         if outside:
@@ -943,6 +1008,7 @@ def build_parser() -> argparse.ArgumentParser:
     ux = sub.add_parser("ux-paths", help="print user-facing changed files since baseline")
     ux.add_argument("--repo", default="")
     ux.add_argument("--baseline", default="")
+    ux.add_argument("--track", default="", help="optional track id: skip the commits of other tracks")
     ux.add_argument("--require", action="store_true")
     ux.set_defaults(func=cmd_ux_paths)
 
