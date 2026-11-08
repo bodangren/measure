@@ -292,6 +292,32 @@ def commit_paths(repo: Path, revision: str) -> set[str] | None:
     return {path for path in result.stdout.split("\0") if path}
 
 
+def scoped_changed_files(repo: Path, baseline: str, track: str) -> list[str] | None:
+    """Every path the track's own commits of `baseline..HEAD` changed, or None.
+
+    None means "no usable track scope" — no baseline, no track, no commit of another
+    track in the range, or a commit whose paths cannot be read — and the caller keeps the
+    full-range behavior. A commit of another track is proven by `red_scope` (its ids name
+    track folders and none is this track), so narrowing is fail closed.
+    """
+    scope = red_scope(repo, baseline, track) if track else None
+    if scope is None:
+        return None
+    paths: set[str] = set()
+    for sha in scope.own:
+        commit = commit_paths(repo, sha)
+        if commit is None:
+            return None
+        paths.update(commit)
+    return sorted(paths)
+
+
+def own_commits_after(repo: Path, baseline: str, track: str) -> list[str] | None:
+    """The track's own commits in `baseline..HEAD`, or None when the track scope does not apply."""
+    scope = red_scope(repo, baseline, track) if track else None
+    return None if scope is None else scope.own
+
+
 def strip_checkpoint(heading: str) -> str:
     return re.sub(r" *\[(checkpoint|final-verification):[^\]]*\]", "", heading)
 
@@ -364,7 +390,7 @@ def split_env_list(name: str, default: str) -> tuple[str, ...]:
     return tuple(item.strip() for item in raw.split(",") if item.strip())
 
 
-def ux_paths(repo: Path, baseline: str) -> list[str]:
+def ux_paths(repo: Path, baseline: str, track: str = "") -> list[str]:
     include_prefixes = split_env_list("UX_INCLUDE_PREFIXES", "app/src/,app/public/,src/,frontend/,web/,client/")
     include_suffixes = split_env_list("UX_INCLUDE_SUFFIXES", ".tsx,.jsx,.ts,.js,.css,.scss,.html,.dart")
     exclude_prefixes = split_env_list("UX_EXCLUDE_PREFIXES", "measure/,docs/,server/,scripts/,tests/,.github/")
@@ -374,7 +400,11 @@ def ux_paths(repo: Path, baseline: str) -> list[str]:
         ".test.ts,.test.tsx,.spec.ts,.spec.tsx,.test.js,.test.jsx,.spec.js,.spec.jsx,_test.dart,.stories.tsx,.stories.jsx,.md,.mdx",
     )
     relevant: list[str] = []
-    for path in changed_files(repo, baseline):
+    # With a track, only the track's own commits are read (spec-review/UX track scope);
+    # without one, or when the scope does not apply, the full range is read as before.
+    scoped = scoped_changed_files(repo, baseline, track)
+    changed = scoped if scoped is not None else changed_files(repo, baseline)
+    for path in changed:
         normalized = path.replace("\\", "/").lstrip("./")
         if normalized.startswith(exclude_prefixes):
             continue
@@ -777,7 +807,7 @@ def cmd_audit_result(args: argparse.Namespace) -> int:
 
 def cmd_ux_paths(args: argparse.Namespace) -> int:
     repo = repo_root(args.repo)
-    paths = ux_paths(repo, args.baseline)
+    paths = ux_paths(repo, args.baseline, args.track)
     for path in paths:
         print(path)
     if args.require and not paths:
@@ -847,7 +877,13 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             feedback.extend(f"- {path}" for path in non_test)
         feedback.extend(gate_command(repo, "RED_TEST_COMMAND", os.environ.get("RED_TEST_COMMAND", ""), expect_failure=True))
     elif role == "jr-green":
-        if args.baseline and git_head(repo) == args.baseline:
+        own = own_commits_after(repo, args.baseline, args.track)
+        if own is not None:
+            if not own:
+                feedback.append(
+                    "expected committed Green-phase implementation change, but baseline..HEAD has only commits of another track"
+                )
+        elif args.baseline and git_head(repo) == args.baseline:
             feedback.append("expected committed Green-phase implementation change, but HEAD did not advance")
         total, complete, _in_progress, incomplete, with_sha = phase_counts(plan, args.phase)
         if total == 0:
@@ -882,7 +918,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if role == "adversarial-testing":
             feedback.extend(gate_command(repo, "PROJECT_TESTS", os.environ.get("PROJECT_TESTS", "")))
         if role == "ux-browser-review":
-            paths = ux_paths(repo, args.baseline)
+            paths = ux_paths(repo, args.baseline, args.track)
             if paths and not os.environ.get("PROJECT_DEV_URL"):
                 feedback.append("UX-relevant files changed but PROJECT_DEV_URL is unset")
         if role == "final-acceptance":
@@ -902,17 +938,26 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                 if resolved.returncode != 0:
                     feedback.append(f"--baseline does not resolve to a commit: {args.baseline}")
                 else:
-                    listed = git(repo, "diff", "--name-only", "--no-renames", "-z", f"{args.baseline}..HEAD")
-                    if listed.returncode != 0:
-                        lines = listed.stdout.splitlines()
-                        line = lines[0] if lines else ""
-                        feedback.append(f"spec-review could not list committed files: {line}")
+                    # A shared branch can hold commits of another track; when the track
+                    # scope applies, only this track's own commits are read (fail closed to
+                    # the full range when the scope cannot be proven).
+                    scoped = scoped_changed_files(repo, args.baseline, args.track)
+                    paths: list[str] = []
+                    if scoped is not None:
+                        paths = scoped
                     else:
-                        paths = listed.stdout.split("\0")
-                        if paths and paths[-1] == "":
-                            paths.pop()
-                        paths.extend(sorted(history_files(repo, args.baseline) - set(paths)))
-                        paths.sort()
+                        listed = git(repo, "diff", "--name-only", "--no-renames", "-z", f"{args.baseline}..HEAD")
+                        if listed.returncode != 0:
+                            lines = listed.stdout.splitlines()
+                            line = lines[0] if lines else ""
+                            feedback.append(f"spec-review could not list committed files: {line}")
+                        else:
+                            paths = listed.stdout.split("\0")
+                            if paths and paths[-1] == "":
+                                paths.pop()
+                            paths.extend(sorted(history_files(repo, args.baseline) - set(paths)))
+                            paths.sort()
+                    if any(path for path in paths):
                         outside = [path for path in paths if not path.startswith("measure/runs/")]
                         if outside:
                             feedback.append("spec-review committed files outside measure/runs/")
@@ -943,6 +988,7 @@ def build_parser() -> argparse.ArgumentParser:
     ux = sub.add_parser("ux-paths", help="print user-facing changed files since baseline")
     ux.add_argument("--repo", default="")
     ux.add_argument("--baseline", default="")
+    ux.add_argument("--track", default="", help="optional track id: only its own commits are read")
     ux.add_argument("--require", action="store_true")
     ux.set_defaults(func=cmd_ux_paths)
 

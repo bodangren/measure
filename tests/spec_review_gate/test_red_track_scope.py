@@ -10,6 +10,7 @@ host gate variable and no host git configuration reaches it.
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
@@ -47,6 +48,33 @@ def clean_env(extra: dict[str, str] | None = None) -> dict[str, str]:
     if extra:
         env.update(extra)
     return env
+
+
+def checker_module():
+    """The checker as an importable module, for the two scope helpers."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("measure_interphase_checks", CHECKER)
+    module = importlib.util.module_from_spec(spec)
+    # Dataclasses resolve their module through sys.modules; register it before exec.
+    sys.modules["measure_interphase_checks"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+SPEC_REVIEW_RESULT = {
+    "schema_version": 1,
+    "status": "pass",
+    "summary": "the spec matches the implementation",
+    "blocking_findings": [],
+    "nonblocking_findings": [],
+    "evidence": [],
+    "commands": [],
+    "changed_files": [],
+    "retry_recommendation": "none",
+    "confidence": "high",
+    "paraphrase": {"proposes": "a track-scoped gate", "current_system": "a full-range gate"},
+}
 
 
 class RedTrackScopeTest(unittest.TestCase):
@@ -101,24 +129,34 @@ class RedTrackScopeTest(unittest.TestCase):
         self.write(rel, f"# {rel}\n")
         return self.commit(*paragraphs)
 
-    def gate(self, *, baseline: str | None = None, env: dict[str, str] | None = None) -> tuple[int, str]:
+    def role_gate(
+        self,
+        role: str,
+        *,
+        baseline: str | None = None,
+        result_file: str | None = None,
+        env: dict[str, str] | None = None,
+    ) -> tuple[int, str]:
+        args = [
+            sys.executable,
+            "-I",
+            str(CHECKER),
+            "role-gate",
+            "--repo",
+            str(self.repo),
+            "--role",
+            role,
+            "--track",
+            LOOK,
+            "--phase",
+            PHASE,
+            "--baseline",
+            baseline or self.baseline,
+        ]
+        if result_file is not None:
+            args += ["--result-file", result_file]
         proc = subprocess.run(
-            [
-                sys.executable,
-                "-I",
-                str(CHECKER),
-                "role-gate",
-                "--repo",
-                str(self.repo),
-                "--role",
-                "mid-red",
-                "--track",
-                LOOK,
-                "--phase",
-                PHASE,
-                "--baseline",
-                baseline or self.baseline,
-            ],
+            args,
             cwd=self.tmp,
             env=env if env is not None else clean_env(),
             text=True,
@@ -128,6 +166,9 @@ class RedTrackScopeTest(unittest.TestCase):
         )
         self.assertNotIn("Traceback", proc.stdout)
         return proc.returncode, proc.stdout
+
+    def gate(self, *, baseline: str | None = None, env: dict[str, str] | None = None) -> tuple[int, str]:
+        return self.role_gate("mid-red", baseline=baseline, env=env)
 
     def look_test_and_plan(self) -> None:
         self.change("tests/test_look.py", f"test(look): pin the look rules (track_id: {LOOK})")
@@ -318,6 +359,59 @@ class RedTrackScopeTest(unittest.TestCase):
         self.assertIn("FAIL: - src/merge_only.py", lines)
         self.assertNotIn("src/login.py", out)
         self.assertIn(info_line(1), out)
+
+    # ------------------------------------------------- track-scoped gates
+    def test_scoped_changed_files_reads_only_the_tracks_own_commits(self) -> None:
+        """The helper narrows a mixed range to the track's own paths."""
+        self.write("measure/runs/look/red.md", "red evidence\n")
+        self.commit(f"docs(measure): record the look Red evidence (track_id: {LOOK})")
+        self.change("src/login.py", f"feat(login): add the sign-in form (track_id: {LOGIN})")
+        scoped = checker_module().scoped_changed_files(self.repo, self.baseline, LOOK)
+        self.assertEqual(scoped, ["measure/runs/look/red.md"])
+        self.assertNotIn("src/login.py", scoped or [])
+
+    def test_scoped_changed_files_is_none_without_another_track(self) -> None:
+        """A single-track range keeps the full-range behavior (the helper says None)."""
+        self.look_test_and_plan()
+        self.assertIsNone(checker_module().scoped_changed_files(self.repo, self.baseline, LOOK))
+        self.assertIsNone(checker_module().scoped_changed_files(self.repo, self.baseline, ""))
+
+    def test_ux_paths_with_a_track_ignores_another_tracks_ui_file(self) -> None:
+        """ux-paths reads only the track's own commits when a track is given."""
+        self.write("src/look.ts", "export const look = 1\n")
+        self.commit(f"feat(look): add the look view (track_id: {LOOK})")
+        self.change("src/login.ts", f"feat(login): add the login view (track_id: {LOGIN})")
+        module = checker_module()
+        self.assertEqual(module.ux_paths(self.repo, self.baseline, LOOK), ["src/look.ts"])
+        unscoped = module.ux_paths(self.repo, self.baseline)
+        self.assertIn("src/look.ts", unscoped)
+        self.assertIn("src/login.ts", unscoped)
+
+    def test_own_commits_after_is_empty_for_another_track_only(self) -> None:
+        """The own-commit helper proves which side advanced HEAD."""
+        self.change("src/login.py", f"feat(login): add the sign-in form (track_id: {LOGIN})")
+        module = checker_module()
+        self.assertEqual(module.own_commits_after(self.repo, self.baseline, LOOK), [])
+        self.assertIsNone(module.own_commits_after(self.repo, self.baseline, ""))
+
+    def test_spec_review_ignores_another_tracks_production_file(self) -> None:
+        """The spec-review scope rule judges only the track's own commits."""
+        self.write("measure/runs/look/red.md", "red evidence\n")
+        self.commit(f"docs(measure): record the look Red evidence (track_id: {LOOK})")
+        self.change("src/login.py", f"feat(login): add the sign-in form (track_id: {LOGIN})")
+        result = Path(self.tmp) / "spec-review.json"
+        result.write_text(json.dumps(SPEC_REVIEW_RESULT), encoding="utf-8")
+        code, out = self.role_gate("spec-review", result_file=str(result))
+        self.assertEqual(code, 0, out)
+        self.assertIn("PASS: spec-review gate passed", out)
+        self.assertNotIn("spec-review committed files outside measure/runs/", out)
+
+    def test_jr_green_fails_when_only_another_track_advanced_head(self) -> None:
+        """Jr Green no longer passes on another track's commit."""
+        self.change("src/login.py", f"feat(login): add the sign-in form (track_id: {LOGIN})")
+        code, out = self.role_gate("jr-green")
+        self.assertEqual(code, 1, out)
+        self.assertIn("only commits of another track", out)
 
     # ------------------------------------------------- no other track
     def test_single_track_range_prints_no_info(self) -> None:
