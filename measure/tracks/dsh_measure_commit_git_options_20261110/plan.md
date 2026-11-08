@@ -14,6 +14,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and closeout
 
-- [~] Task 2.1: update the guard README commit bullet and tech-debt row 45, add the `CHANGELOG.md` entry, install + reload the plugin and record the live check; run the gates again
-- [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_commit_git_options_20261110` and record the manifest-only FAIL
+- [x] Task 2.1: update the guard README commit bullet and tech-debt row 45, add the `CHANGELOG.md` entry, install + reload the plugin and record the live check; run the gates again `6f0d76f`
+- [~] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_commit_git_options_20261110` and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
