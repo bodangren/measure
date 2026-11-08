@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: record the closure and residual in the tech-debt row, update both adapter READMEs and `CHANGELOG.md`; install + reload the plugin, record the live check, run the gates again `19f10ef`
-- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_shell_visibility_adapters_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_shell_visibility_adapters_20261110` and record the manifest-only FAIL `896d021`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
