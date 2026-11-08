@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure setup route transport (closing)**
+  *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
+  *Temporary closing entry; the final commit records `- (none)`*
 
 ---
 
