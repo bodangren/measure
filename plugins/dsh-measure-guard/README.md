@@ -209,9 +209,12 @@ The live check reads the JSON route of the running GUI:
 curl -D - 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-The response carries two identity headers: `x-measure-guard-module` names the
-loaded module's path, and `x-measure-guard-digest: sha256:<hex>` is the digest
-of the code bytes the running instance loaded. The digest is captured once, at
+Every response of the two routes carries two identity headers: the 200 view, the
+setup route's 200/400/404/405 answers, and the 404 and 500 errors of both routes.
+A missing route has no such headers, so a caller can tell "the plugin is not
+loaded here" from "the request failed on a present route". `x-measure-guard-module`
+names the loaded module's path, and `x-measure-guard-digest: sha256:<hex>` is the
+digest of the code bytes the running instance loaded. The digest is captured once, at
 module evaluation (`src/digest.js`), so a Host that still runs an older instance
 answers with the old digest. `bin/measure-dsh --check --live` compares it with
 the source digest: a mismatch is FAIL (stale plugin code), an absent header is
