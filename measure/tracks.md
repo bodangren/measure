@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure apply_patch visibility**
-  *Link: [./tracks/dsh_measure_apply_patch_visibility_20261110/](./tracks/dsh_measure_apply_patch_visibility_20261110/)*
-  *Reconstruct the apply_patch and str_replace_editor after-text for the closeout guard and fail closed on shell writes to plans*
+- (none)
 
 ---
 
@@ -289,3 +287,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure audit contract fix3**
   *Link: [./archive/dsh_measure_audit_contract_fix3_20261110/](./archive/dsh_measure_audit_contract_fix3_20261110/)*
   *Pin the proposal status rule, make the doc checks whole-file and format-complete, and reconcile the fix2 review*
+
+- [x] **Track: DSH Measure apply_patch visibility**
+  *Link: [./archive/dsh_measure_apply_patch_visibility_20261110/](./archive/dsh_measure_apply_patch_visibility_20261110/)*
+  *Reconstruct the apply_patch and str_replace_editor after-text for the closeout guard and close the cp/mv/install shell-write gap*
