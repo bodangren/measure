@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (11/11), `bash tests/dsh/run.sh` (13/13), the node suite, and both parity gates `c81f051`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The tolerant budgets and the load proof' (Protocol in workflow.md) `6f19da5`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 0e1c553]
 
 - [x] Task 2.1: resolve the gate-timing tech-debt row, add the `CHANGELOG.md` entry; prune generated `__pycache__`/`*.pyc` from `bin/measure-dsh --check`'s skill file list (a closeout run recreated it and made `--check --live` red) with a `test-check.sh` pin; record the live check, run the gates again `e1cdaec`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_gate_timing_20261110` and record the manifest-only FAIL `2b16e9d`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `0e1c553`
