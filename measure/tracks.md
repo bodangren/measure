@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Guard session track**
-  *Link: [./tracks/guard_session_track_20261109/](./tracks/guard_session_track_20261109/)*
-  *Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).*
+- (none)
 
 ---
 
@@ -369,3 +367,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Gate track scope**
   *Link: [./archive/gate_track_scope_20261108/](./archive/gate_track_scope_20261108/)*
   *Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).*
+
+- [x] **Track: Guard session track**
+  *Link: [./archive/guard_session_track_20261109/](./archive/guard_session_track_20261109/)*
+  *Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).*

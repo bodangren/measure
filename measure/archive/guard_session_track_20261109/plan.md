@@ -34,7 +34,7 @@ Track: `guard_session_track_20261109`. Spec: [spec.md](./spec.md).
 - [x] Task 3.2: Update the plugin `README.md` and `CHANGELOG.md` (FR-8). `aac6755`
   - Evidence: `tests/dsh/test-docs.sh` exits 0.
 
-## Phase 4: Review and distribution
+## Phase 4: Review and distribution [checkpoint: 96a75a5]
 
 - [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `83e099a`
   - Review A on `bfd6dc2` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 1 Major, 1 Nit. Result: `measure/runs/guard_session_track_20261109/review-a-bfd6dc2.json` (`952368d`). The reviewer reached its step limit in its first message; a second message in the same session made it write and validate the file itself. `audit-result` passes, and the review-a gate passes.

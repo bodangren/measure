@@ -1,9 +1,0 @@
-{
-  "track_id": "guard_session_track_20261109",
-  "type": "bug",
-  "status": "in_progress",
-  "created_at": "2026-11-08T18:10:00Z",
-  "updated_at": "2026-11-08T18:10:00Z",
-  "description": "Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).",
-  "estimated_tasks": 8
-}

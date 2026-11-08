@@ -1,0 +1,12 @@
+{
+  "track_id": "guard_session_track_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T18:10:00Z",
+  "updated_at": "2026-11-08T18:45:00Z",
+  "description": "Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "The spec review passed in round 1 (4 Major, 3 Nit; 6 fixed, 1 kept with a reason). Five test cases got one more step after the Green mutant run, and Review A added one assertion. bun test fails 1 of 151 on V18 of allow-adversarial.test.ts, a failure that exists before this track (tech-debt row). The live check used the OpenChamber session tool on the OpenCode server.",
+  "completed": "2026-11-09"
+}
