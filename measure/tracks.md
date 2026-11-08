@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure contract clarity (closing)**
-  *Link: [./archive/dsh_measure_contract_clarity_20261110/](./archive/dsh_measure_contract_clarity_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -305,3 +303,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure shell redirect safety**
   *Link: [./archive/dsh_measure_shell_redirect_safety_20261110/](./archive/dsh_measure_shell_redirect_safety_20261110/)*
   *Recognize the noclobber redirect and the ln destination in the bounded shell-write grammar*
+
+- [x] **Track: DSH Measure contract clarity**
+  *Link: [./archive/dsh_measure_contract_clarity_20261110/](./archive/dsh_measure_contract_clarity_20261110/)*
+  *Write and pin the phase-acceptance HEAD exception, the new-track step-9 decisions, and the audit-result identity fields*
