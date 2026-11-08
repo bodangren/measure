@@ -39,7 +39,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Evidence: on `b88ef8a` (after the Review A fixes), through `heavy-run.sh` with `HEAVY_PRIORITY=p2`: `13 suites (PASS=13, FAIL=0)`, `run.sh exit 0`. Log: `measure/runs/gate_track_scope_20261108/green-p3-full-suite.log`.
   - A first job on `5734bd2` was stopped in the queue before it started, so that one run covers the Review A fixes.
 
-## Phase 4: Review and distribution
+## Phase 4: Review and distribution [checkpoint: 6f49eb4]
 
 - [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `54b4280`
   - Review A on `5734bd2` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 0 Major, 3 Nit. Result: `measure/runs/gate_track_scope_20261108/review-a-5734bd2.json` (`4a50bd4`). The reviewer reached its step limit before the file write, so the orchestrator wrote the JSON of its final answer with no change. `audit-result` passes.

@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Gate track scope**
-  *Link: [./tracks/gate_track_scope_20261108/](./tracks/gate_track_scope_20261108/)*
-  *Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).*
+- (none)
 
 ---
 
@@ -365,3 +363,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*
+
+- [x] **Track: Gate track scope**
+  *Link: [./archive/gate_track_scope_20261108/](./archive/gate_track_scope_20261108/)*
+  *Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).*

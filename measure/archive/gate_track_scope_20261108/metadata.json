@@ -1,11 +1,12 @@
 {
   "track_id": "gate_track_scope_20261108",
   "type": "feature",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-08T11:29:35Z",
-  "updated_at": "2026-11-08T11:29:35Z",
+  "updated_at": "2026-11-08T13:00:00Z",
   "description": "Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).",
   "estimated_tasks": 9,
-  "actual_tasks": null,
-  "deviation_notes": ""
+  "actual_tasks": 9,
+  "deviation_notes": "Spec review needed 2 rounds (round 1: 2 Blocker). Review A added 1 test case (19 in place of 18). The Review A result file was written from the final answer of the reviewer (step limit).",
+  "completed": "2026-11-08"
 }
