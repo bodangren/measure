@@ -361,3 +361,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure installer atomicity**
   *Link: [./archive/dsh_measure_installer_atomic_20261110/](./archive/dsh_measure_installer_atomic_20261110/)*
   *Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path*
+
+- [x] **Track: Red gate track scope**
+  *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
+  *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*

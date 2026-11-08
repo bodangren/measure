@@ -1,0 +1,190 @@
+FFFFFFFFFFFFFFFF.FF
+======================================================================
+FAIL: test_body_line_marks_another_track (test_red_track_scope.RedTrackScopeTest.test_body_line_marks_another_track)
+AC-3: a body line `track_id: <id>` marks a commit of another track.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 183, in test_body_line_marks_another_track
+    self.assertEqual(code, 0, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : FAIL: Mid Red changed non-test/non-Measure files
+FAIL: - src/login.py
+
+
+======================================================================
+FAIL: test_commit_with_both_ids_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_commit_with_both_ids_counts_as_own)
+AC-4: a commit that also names the track under check is a commit of the track.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 222, in test_commit_with_both_ids_counts_as_own
+    self.assertIn(info_line(2), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 2 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/login.py\nFAIL: - src/shared.py\nFAIL: - src/shared_body.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='dot-dot id')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_0.py\nFAIL: - src/m0.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='path id')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_1.py\nFAIL: - src/m1.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='file, not a folder')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_2.py\nFAIL: - src/m2.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='empty id')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_3.py\nFAIL: - src/m3.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='no closing parenthesis')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_4.py\nFAIL: - src/m4.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='other key case in the subject')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_5.py\nFAIL: - src/m5.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='other key case in the body')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_6.py\nFAIL: - src/m6.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='body line with more text')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_7.py\nFAIL: - src/m7.py\n'
+
+======================================================================
+FAIL: test_malformed_tag_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_malformed_tag_counts_as_own) (case='body tag form, not a line')
+AC-4: text outside the two id forms or the id grammar gives no id.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 245, in test_malformed_tag_counts_as_own
+    self.assertIn(info_line(1), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 1 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login_8.py\nFAIL: - src/m8.py\n'
+
+======================================================================
+FAIL: test_mixed_range_fails_when_own_commit_touches_production (test_red_track_scope.RedTrackScopeTest.test_mixed_range_fails_when_own_commit_touches_production)
+AC-2: a production file in a commit of the track fails the gate, and only that file is listed.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 173, in test_mixed_range_fails_when_own_commit_touches_production
+    self.assertNotIn("src/login.py", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'src/login.py' unexpectedly found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/login.py\nFAIL: - src/look.py\n'
+
+======================================================================
+FAIL: test_mixed_range_passes_when_own_commits_are_test_or_plan (test_red_track_scope.RedTrackScopeTest.test_mixed_range_passes_when_own_commits_are_test_or_plan)
+AC-1: commits of another track that touch production code do not fail the gate.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 152, in test_mixed_range_passes_when_own_commits_are_test_or_plan
+    self.assertEqual(code, 0, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : FAIL: Mid Red changed non-test/non-Measure files
+FAIL: - packages/db/schema.sql
+FAIL: - src/login.py
+
+
+======================================================================
+FAIL: test_own_merge_change_is_listed (test_red_track_scope.RedTrackScopeTest.test_own_merge_change_is_listed)
+AC-7: a merge commit of the track lists the paths that the merge changes itself.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 296, in test_own_merge_change_is_listed
+    self.assertNotIn("src/login.py", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'src/login.py' unexpectedly found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - src/login.py\nFAIL: - src/merge_only.py\n'
+
+======================================================================
+FAIL: test_own_rename_into_tests_lists_old_path (test_red_track_scope.RedTrackScopeTest.test_own_rename_into_tests_lists_old_path)
+AC-6: in the scoped mode, a rename lists its old production path.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 280, in test_own_rename_into_tests_lists_old_path
+    self.assertIn(info_line(2), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 2 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/a.py\nFAIL: - src/login.py\n'
+
+======================================================================
+FAIL: test_range_without_own_commit_fails (test_red_track_scope.RedTrackScopeTest.test_range_without_own_commit_fails)
+AC-5: a range with only commits of other tracks has no Red change.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 255, in test_range_without_own_commit_fails
+    self.assertIn(NO_OWN_MSG, out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 'expected committed Red-phase test change, but baseline..HEAD has no commit of track look_track' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/login.py\n'
+
+======================================================================
+FAIL: test_unknown_track_id_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_unknown_track_id_counts_as_own)
+AC-4: an id that names no track folder does not move a commit out of the scope.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 209, in test_unknown_track_id_counts_as_own
+    self.assertIn(info_line(2), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 2 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/ghost.py\nFAIL: - src/login.py\n'
+
+======================================================================
+FAIL: test_untagged_commit_counts_as_own (test_red_track_scope.RedTrackScopeTest.test_untagged_commit_counts_as_own)
+AC-4: a commit with no id is a commit of the track.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_red_track_scope.py", line 198, in test_untagged_commit_counts_as_own
+    self.assertIn(info_line(2), out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: mid-red skipped 2 commits of other tracks' not found in 'FAIL: Mid Red changed non-test/non-Measure files\nFAIL: - packages/db/schema.sql\nFAIL: - src/login.py\nFAIL: - src/misc.py\n'
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.600s
+
+FAILED (failures=18)

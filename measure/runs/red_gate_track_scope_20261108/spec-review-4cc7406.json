@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Spec review of red_gate_track_scope_20261108. No Blocker. The scope rule fixes the reported failure: the Monorepo commit subjects carry the track tag, and each concurrent track folder exists. Four Major findings ask to bound the self-tagging bypass, to pin the merge case of D5, to amend the Baseline bullet of contracts.md, and to name the fixture precondition of AC-1 to AC-8.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] spec.md Known limits: A role can tag its own production commit with another real track id and the gate passes. D7 only prints the skipped commits and no rule or test bounds this. Rationale: the mechanical gate becomes self-attestable, and the current gate has no such route.",
+    "F2 [Major] spec.md D5 and AC-7: AC-7 passes for a `--cc` diff and also for a first-parent (`-m`) diff, so the test does not pin the D5 rule. Rationale: a first-parent diff lists the files of a merged side branch, so a merge of another track commits fails the gate again and no test shows it.",
+    "F3 [Major] spec.md FR-6: FR-6 says to state the scope rule in contracts.md, but it does not say to amend the Baseline bullet that claims a gate reads the tree diff unioned with every commit path. The mid-red gate breaks that claim in the scoped mode. Rationale: the contract would state a false rule next to the new rule.",
+    "F4 [Major] plan.md Phase 4 Task 4.1: The task says to fix each Blocker or record the reason to decline it. Rationale: contracts.md and the spec review standard forbid DECLINE for a Blocker finding, so the plan permits a declined Blocker.",
+    "F5 [Major] spec.md AC-1 to AC-8: The section names the fixture tracks and RED_TEST_COMMAND=false, but it does not name the `--phase` argument, the plan file, or the `[~]` task in that phase. Rationale: the mid-red gate fails when the phase is missing or has no `[~]` task, so AC-1 cannot exit 0 as written.",
+    "F6 [Nit] spec.md AC-3: The case names no observation, such as the exit code, the message, or the INFO line. Rationale: the implementer must invent the assertion, while AC-1, AC-2, and AC-4 name theirs.",
+    "F7 [Nit] spec.md D2: D2 fixes the grammar of `<id>` but not the spaces inside `(track_id: <id>)`. Rationale: each implementer chooses the tolerant or the strict form, and only the strict single-space form appears in the Monorepo history.",
+    "F8 [Nit] plan.md Rules for every phase: `scripts/jobs/slot wait` names no repository. The file exists only at /home/daniebo/Desktop/advantage-pr/scripts/jobs/slot. Rationale: the role must guess the root, while the line above gives an absolute path for heavy-run.sh.",
+    "F9 [Nit] spec.md D7: The line `- <12-character sha> <ids>` leaves the separator and the order of several ids open, and the spec does not say whether the INFO lines print on a failing gate. Rationale: output format only."
+  ],
+  "evidence": [
+    "HEAD equals 4cc7406923feb155313cc37a2ee686c3917d118c, so the audited head equals the baseline SHA.",
+    "cmd_role_gate lines 745-757 run four mid-red checks. non_test_committed_files at line 199 reads committed_files at line 182, which unions the tree diff with history_files at line 147. history_files calls `git diff-tree --no-commit-id --name-only -r -z --no-renames` and has no `--cc` and no `--root`.",
+    "history_files passes no `--cc`, so a merge commit gives no path today. D5 adds `--cc` and `--root`, which matches the intent of AC-7.",
+    "`git log -12 --format=%s` in /home/daniebo/Desktop/reading-advantage-monorepo shows the form `test(storytime): ... (track_id: storytime_look_20261107)`. `git log -25 | grep -v track_id` gives no line, so the recent commits carry the tag.",
+    "measure/tracks holds storytime_look_20261107, per_app_cicd_20261107, and storytime_at_home_release_20261106. measure/archive holds the closed tracks. D3 rule 3 therefore matches the real folders.",
+    "bin/install-targets.tsv line 6 names `~/.agents/skills/measure-orchestrator`, so D9 and AC-10 match the installer. bin/install-measure-skill defaults to `--ref main` and supports `--check`.",
+    "tests/spec_review_gate/run.sh runs each `test_*.py` file with `python3 -m unittest discover`, so AC-9 covers the new file. tests/spec_review_gate/test_checker.py shows the fixture style, including `--phase \"Phase S1: Fixture\"` and a plan with a `[~]` task.",
+    "spec.md line 39 (D4) and line 41 (D6) keep the non-scoped behaviour and replace check 1 in the scoped mode, so a range with no commit of the track fails and no bypass opens there."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git branch --show-current",
+    "grep -n 'def cmd_role_gate' -A 200 skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "grep -n 'def committed_files' -A 40 skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "sed -n '1,60p' tests/spec_review_gate/test_checker.py",
+    "cat tests/spec_review_gate/run.sh",
+    "git -C /home/daniebo/Desktop/reading-advantage-monorepo log -12 --format=%s",
+    "ls /home/daniebo/Desktop/reading-advantage-monorepo/measure/tracks",
+    "ls /home/daniebo/Desktop/reading-advantage-monorepo/measure/archive",
+    "grep -n measure-orchestrator bin/install-targets.tsv"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "The track scopes the mid-red role gate to the commits of the track under check. The checker reads the track id from the commit subject or from a body line. A commit is a commit of another track only when all its ids name real track folders and none equals --track. The gate then reads only the files of the track commits and prints each skipped commit. A range with no commit of the track fails. The change lands on main and installs to ~/.agents/skills/measure-orchestrator.",
+    "current_system": "The mid-red gate runs four checks. HEAD must advance past the baseline. The phase must have an in-progress task. No committed file outside measure/ may fail the test patterns. The Red test command must fail. Check three reads the tree diff of baseline..HEAD and adds every path each commit in the range touched. A production commit of a concurrent track in the same range therefore fails the gate."
+  }
+}
