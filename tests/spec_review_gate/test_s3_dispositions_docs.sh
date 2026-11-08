@@ -127,6 +127,7 @@ in_text 'contracts.md: changed files union' "$MS" 'unioned with every path any c
 in_text 'contracts.md: working-tree union' "$MS" 'also unions the unstaged and staged diffs'
 in_text 'contracts.md: spec-review resolves the baseline' "$MS" 'The `spec-review` gate resolves `--baseline` to a commit'
 in_text 'contracts.md: HEAD advance rule' "$MS" 'Mid Red and Jr Green fail when HEAD still equals the baseline'
+in_text 'contracts.md: commit detection through global options' "$MS" 'cannot skip the message-format and no-task rules'
 
 # ---------------------------------------------------------------------------
 # Green role
