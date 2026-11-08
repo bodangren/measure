@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure gate robustness**
+  *Link: [./tracks/dsh_measure_gate_robustness_20261110/](./tracks/dsh_measure_gate_robustness_20261110/)*
+  *Make the live corpus the committed one and tolerate empty documents under pipefail in the A11 recipe*
 
 ---
 
