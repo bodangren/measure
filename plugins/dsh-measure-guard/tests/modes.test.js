@@ -4,7 +4,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { MODE_USAGE, SessionModes, effectiveMode, measureModeCommand } from '../src/modes.js'
+import { MODE_USAGE, SessionModes, effectiveMode, measureModeCommand, measureModeTool } from '../src/modes.js'
 
 const ROOT = '/repo'
 const AGENT = { id: 'agent-1', session: { id: 'agent-1' } }
@@ -74,6 +74,20 @@ test('SessionModes validates the mode and clears with null', () => {
 })
 
 // ---- the command ----------------------------------------------------------
+
+test('the measure_mode tool reports the effective value and source without writing', async () => {
+  const deps = depsOf({ configMode: 'guard', repoMode: 'strict' })
+  const tool = measureModeTool(deps)
+  assert.equal(tool.name, 'measure_mode')
+  assert.deepEqual(tool.parameters, { type: 'object', properties: {}, additionalProperties: false })
+  const text = await tool.execute({}, { agent: AGENT })
+  assert.equal(text, 'measure-guard: effective mode strict (repository).')
+  assert.equal(Object.hasOwn(deps, 'writtenRepoMode'), false)
+  const session = depsOf({ configMode: 'advise', session: 'strict' })
+  assert.equal(await measureModeTool(session).execute({}, { agent: AGENT }), 'measure-guard: effective mode strict (session).')
+  const config = depsOf({ configMode: 'advise' })
+  assert.equal(await measureModeTool(config).execute({}, { agent: AGENT }), 'measure-guard: effective mode advise (config).')
+})
 
 test('/measure-mode reports the effective mode and source', async () => {
   const reply = await run(depsOf({ session: 'strict' }))

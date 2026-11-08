@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { parseAllowList, parsePlan, parseTracks } from '../src/core/parse.ts'
-import { measureVerifyCommand, verifyReport } from '../src/verify.js'
+import { measureVerifyCommand, measureVerifyTool, verifyReport } from '../src/verify.js'
 
 const tracks = parseTracks(TRACKS)
 const ROOT = '/repo'
@@ -54,6 +54,19 @@ const NO_TASK_PLAN = `# Implementation Plan
 
 - [x] Task: Done \`abcdef0\`
 `
+
+test('the measure_verify tool carries the read-only report for the agent', async () => {
+  const tool = measureVerifyTool(depsOf())
+  assert.equal(tool.name, 'measure_verify')
+  assert.equal(typeof tool.execute, 'function')
+  assert.deepEqual(tool.parameters, { type: 'object', properties: {}, additionalProperties: false })
+  assert.equal(tool.output.schema.type, 'string')
+  const clean = await tool.execute({}, { agent: AGENT })
+  assert.equal(clean, 'measure-guard: verification clean (1 tasks checked).')
+  const missingNote = depsOf({ answers: { 'notes show abcdef0': 'missing' } })
+  const problems = await measureVerifyTool(missingNote).execute({}, { agent: AGENT })
+  assert.match(problems, /has no git note/)
+})
 
 test('a clean plan reports the checked task count', async () => {
   const reply = await verifyReport(depsOf(), AGENT)

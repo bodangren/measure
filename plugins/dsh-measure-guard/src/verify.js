@@ -85,3 +85,16 @@ export function measureVerifyCommand(deps) {
     handler: async invocation => ({ kind: 'success', text: await verifyReport(deps, invocation.agent) }),
   }
 }
+
+/** The `measure_verify` tool: the same read-only report as the command, for agents. */
+export function measureVerifyTool(deps) {
+  return {
+    name: 'measure_verify',
+    description: 'Verify the active plan: real commits, git notes, and metadata actual_tasks (read-only)',
+    parameters: { type: 'object', properties: {}, additionalProperties: false },
+    output: { schema: { type: 'string' }, render: (_args, value) => [{ type: 'text', text: value }] },
+    async execute(_args, exec) {
+      return verifyReport(deps, exec === undefined ? undefined : exec.agent)
+    },
+  }
+}

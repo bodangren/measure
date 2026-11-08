@@ -10,13 +10,14 @@ import { Snapshots, canonicalRoot, gitStatus, makeIo } from './src/snapshot.js'
 import { RootWriters } from './src/roots.js'
 import { attachAgent } from './src/context.js'
 import { measureStatusTool } from './src/status.js'
+import { measureVerifyTool } from './src/verify.js'
 import { measureCommands } from './src/commands.js'
 import { measureWorkflowCommands } from './src/workflow.js'
 import { createDecisions, installToolGuard, postCommitListener, postExecuteListener, preExecuteListener, repoMutationLikely } from './src/hooks.js'
 import { onTurnStopping, prepareDecision } from './src/guard.js'
 import { recordRed } from './src/strict.js'
 import { goalService } from './src/goal.js'
-import { SessionModes, effectiveMode } from './src/modes.js'
+import { SessionModes, effectiveMode, measureModeTool } from './src/modes.js'
 import { loadedDigest } from './src/digest.js'
 import { SETUP_PROMPT } from './src/setup.js'
 import { registerClientState } from './src/client-state.js'
@@ -167,6 +168,8 @@ export function apply(ctx, config) {
   })
 
   ctx.effect(() => ctx.tools.register(measureStatusTool(deps)), 'measure-guard:measure_status')
+  ctx.effect(() => ctx.tools.register(measureVerifyTool(deps)), 'measure-guard:measure_verify')
+  ctx.effect(() => ctx.tools.register(measureModeTool(deps)), 'measure-guard:measure_mode')
 
   for (const command of measureCommands(deps)) {
     ctx.effect(() => ctx.commands.register(command), `measure-guard:${command.name}`)
