@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure setup route transport (closing)**
-  *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -325,3 +323,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure route identity**
   *Link: [./archive/dsh_measure_route_identity_20261110/](./archive/dsh_measure_route_identity_20261110/)*
   *Attach the module identity headers to every state- and setup-route response, not only the 200 view*
+
+- [x] **Track: DSH Measure setup route transport**
+  *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
+  *Register the setup route as a handler so a POST reaches setupResponse on the Host, and prove it live*
