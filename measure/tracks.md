@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure track-scoped gates**
+  *Link: [./tracks/dsh_measure_red_scope_gates_20261110/](./tracks/dsh_measure_red_scope_gates_20261110/)*
+  *Apply the Mid Red track scope to the spec-review scope rule, ux-paths, and the Jr Green HEAD-advance check*
 
 ---
 
