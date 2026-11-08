@@ -53,7 +53,6 @@ HEADING = "## A11 — Doc-to-code drift after closeout"
 P = "measure/product.md"
 T = "measure/tech-stack.md"
 NODOC = "DRIFT candidate: the document does not exist"
-TIME_LIMIT = 5.0
 RUN_TIMEOUT = 10
 
 total = 0
@@ -382,14 +381,24 @@ record("G4 live: git status of the repository does not change", rc0 == 0 and sta
        f"before={status0[:200]!r} after={status1[:200]!r}")
 
 # --- G5 time ----------------------------------------------------------------------------------
+# The budget is wall-clock on a possibly loaded machine, so it is calibrated: the same recipe
+# runs on a tenth-size fixture and the 10k-case budget is 5x the linear extrapolation with a
+# 20 s floor. The old fixed 5 s constant failed a loaded run (5.62 s with no regression); a
+# quadratic regression is orders of magnitude slower than this budget, so the detection stays.
 N = 10000
+CALIB_N = N // 10
+calib = "".join(f"Claim `cal/d{i % 10}/f{i}.txt` here.\n" for i in range(CALIB_N)).encode()
+calib_case = make_case(calib, tech=calib, dirs=["cal/d0"])
+_c_rc, _c_out, _c_err, calib_secs = run_recipe(RECIPE_FILE, calib_case)
+TIME_BUDGET = max(20.0, calib_secs * (N / CALIB_N) * 5.0)
 big = "".join(f"Claim `big/d{i % 100}/f{i}.txt` here.\n" for i in range(N)).encode()
 case = make_case(big, tech=big, dirs=["big/d0"])
 rc, out, err, secs = run_recipe(RECIPE_FILE, case)
 count = len(out.splitlines())
-print(f"  time: {N} path claims in each document: {secs:.3f}s, candidate lines: {count}")
-record(f"G5 time: {N} path claims in each document end in less than {TIME_LIMIT:.0f} seconds",
-       rc == 0 and secs < TIME_LIMIT, f"rc={rc} seconds={secs:.3f}")
+print(f"  time: calibration {calib_secs:.3f}s for {CALIB_N}/document -> budget {TIME_BUDGET:.1f}s; "
+      f"{N} path claims in each document: {secs:.3f}s, candidate lines: {count}")
+record(f"G5 time: {N} path claims in each document end in less than {TIME_BUDGET:.0f} seconds (calibrated)",
+       rc == 0 and secs < TIME_BUDGET, f"rc={rc} seconds={secs:.3f}")
 record("G5 time: the run gives exactly 20000 candidate lines", count == 2 * N, f"lines={count}")
 
 # --- G6 sensitivity: broken copies of the recipe --------------------------------------------

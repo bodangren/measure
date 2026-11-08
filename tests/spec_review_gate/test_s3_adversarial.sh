@@ -57,7 +57,10 @@ BLOCK_LINES = [
     "commits: abc1234", "tests_run: true: pass", "files_changed: src.txt", "plan_updates: none",
     "known_failures: none", "handoff: none",
 ]
-TIME_LIMIT = 5.0
+# The G18 probes are wall-clock checks for algorithmic blowups (a quadratic loop or a
+# per-item subprocess), not scheduler policing: a loaded machine took 5.62 s in a sibling
+# suite with no regression, so the budget is 30 s — still far below any quadratic run.
+TIME_LIMIT = 30.0
 
 
 def base_env(extra=None):
