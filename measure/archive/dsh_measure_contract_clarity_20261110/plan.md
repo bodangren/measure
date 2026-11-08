@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (11/11), `bash tests/dsh/run.sh` (13/13), the node suite, and both parity gates `8793c78`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The rules and their pins' (Protocol in workflow.md) `cc348fe`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 30acdf8]
 
 - [x] Task 2.1: flip the Group (d)/(f)/(g) tech-debt rows to Resolved with evidence, state the Group (b)/(e) remaining scope, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again `f51a64e`
 - [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_contract_clarity_20261110` and record the manifest-only FAIL `487f334`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `30acdf8`
