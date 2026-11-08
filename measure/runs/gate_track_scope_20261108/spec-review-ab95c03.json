@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "gate_track_scope_20261108",
+  "phase": "track setup",
+  "baseline_sha": "ab95c039855fce7a7eaf00c07270dbf402fc9ad7",
+  "audited_head_sha": "ab95c039855fce7a7eaf00c07270dbf402fc9ad7",
+  "status": "pass",
+  "summary": "HEAD equals the audited head, ab95c03. The revision closes all seven round 1 findings. D4 now runs the tree diff first in each mode and fails closed on an unreadable baseline tree. The unlistable-commit definition keeps the tree diff valid and makes the D3 failure the only cause of the failure. AC-5, AC-6, AC-14, and AC-18 pin the failure paths. One new Nit remains about the reference point of the D4 sentence \"run first\". No Blocker and no Major remains.",
+  "paraphrase": {
+    "proposes": "The track gives the track scope of the mid-red gate to the spec-review and ux-browser-review gates, the ux-paths command, and the jr-green HEAD check. Each scoped check reads only the files of the track and prints the skipped commits as INFO lines. The spec-review gate runs the tree diff first in each mode and fails closed when the tree is unreadable. The change adds ux_relevant, the ux-paths --track option, the contracts text, and the install.",
+    "current_system": "The spec-review gate lists the tree diff and the per-commit history, then fails when a committed file is outside measure/runs/. The ux-browser-review gate fails when ux_paths finds a UX file and PROJECT_DEV_URL is unset. The jr-green gate HEAD check passes when any commit moves HEAD. The ux-paths command prints the UX paths of the whole range and has no --track option. The mid-red gate already scopes by track id through red_scope and commit_paths."
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F8 [Nit] spec.md Decisions D4: the sentence \"The checks of `--baseline` run first and do not change\" does not name the reference point of \"first\", and the result-file check runs before the baseline checks in the current code. Rationale: the implementer must guess whether to move the result-file check; with a failing result and an unresolvable baseline the messages would print in a different order, and no acceptance criterion pins that order."
+  ],
+  "evidence": [
+    "F1 closed: AC-21 now uses a new passing spec-review payload outside the clone, and it names the real result as status fail; the old checker exits 1 on the six files and the new checker exits 0.",
+    "F2 closed: D4 runs the tree diff of baseline..HEAD first in each mode, keeps the old message on a tree-diff failure, and does not sort the range; AC-5 uses an unlistable commit that is not HEAD, and AC-6 pins the missing baseline tree.",
+    "F3 closed: D5 adds ux_relevant(paths) and says ux_paths(repo, baseline) keeps its signature and result; tests/spec_review_gate/test_checker.py:112 keeps its call.",
+    "F4 closed: AC-14 covers the ux-browser-review D3 failure and AC-18 covers the ux-paths D3 failure and its exact stdout.",
+    "F5 closed: the new fixture paragraph says the first login commit changes only src/login.py and the second changes only measure/tracks/login_track/plan.md.",
+    "F6 closed: D2 says the jr-green old mode keeps the HEAD check.",
+    "F7 closed: the fixture paragraph names webbridge_evidence with three empty lists.",
+    "Empirical check in a temporary git repo: after the baseline root tree object is deleted, git rev-parse --verify <baseline>^{commit} exits 0 and git diff baseline..HEAD exits 128 with fatal: unable to read tree; this matches AC-6.",
+    "Empirical check in a temporary git repo: with the root tree of a commit that is not HEAD deleted, git diff baseline..HEAD exits 0 and git diff-tree on the commit exits 128; this matches AC-5, AC-14, and AC-18.",
+    "The Monorepo range 39d019003..bd5dc101d holds two commits of storytime_at_home_release_20261106 and six changed files; the track folder exists, so the sort skips both commits.",
+    "The G20 mutant lines of tests/spec_review_gate/test_s2_adversarial.sh stay available in the revised D4: the tree diff keeps the -z arguments, and if listed.returncode != 0 remains the tree-diff failure check."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> ab95c039855fce7a7eaf00c07270dbf402fc9ad7, exit 0",
+    "git show ab95c03:measure/tracks/gate_track_scope_20261108/spec.md -> read, exit 0",
+    "git show ab95c03:measure/tracks/gate_track_scope_20261108/spec-review.md -> read, exit 0",
+    "git show ab95c03:measure/tracks/gate_track_scope_20261108/plan.md -> read, exit 0",
+    "python3 temporary git repo: delete baseline root tree; git rev-parse --verify <baseline>^{commit} -> exit 0; git diff baseline..HEAD -> exit 128",
+    "python3 temporary git repo: delete a non-HEAD root tree; git diff baseline..HEAD -> exit 0; git diff-tree <commit> -> exit 128",
+    "git -C /home/daniebo/Desktop/reading-advantage-monorepo log --oneline 39d019003..bd5dc101d -> 2 commits, exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role spec-review --file measure/runs/gate_track_scope_20261108/spec-review-ab95c03.json -> PASS"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}
