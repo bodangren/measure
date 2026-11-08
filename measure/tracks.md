@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure limits documentation**
+  *Link: [./tracks/dsh_measure_limits_docs_20261110/](./tracks/dsh_measure_limits_docs_20261110/)*
+  *Document the Host and OpenCode runtime constraints in the adapter READMEs, pin the sections, and close the constraint rows*
 
 ---
 
