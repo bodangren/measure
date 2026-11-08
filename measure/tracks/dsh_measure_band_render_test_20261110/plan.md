@@ -14,6 +14,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and closeout
 
-- [~] Task 2.1: record the known-limits closure in the guard README and `measure/tech-debt.md`, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again
-- [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_band_render_test_20261110` and record the manifest-only FAIL
+- [x] Task 2.1: record the known-limits closure in the guard README and `measure/tech-debt.md`, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again `a41debf`
+- [~] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_band_render_test_20261110` and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
