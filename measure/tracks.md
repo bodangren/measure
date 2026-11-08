@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure band poll pause (closing)**
-  *Link: [./archive/dsh_measure_band_poll_pause_20261110/](./archive/dsh_measure_band_poll_pause_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -329,3 +327,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure setup route transport**
   *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
   *Register the setup route as a handler so a POST reaches setupResponse on the Host, and prove it live*
+
+- [x] **Track: DSH Measure band poll pause**
+  *Link: [./archive/dsh_measure_band_poll_pause_20261110/](./archive/dsh_measure_band_poll_pause_20261110/)*
+  *Pause the band and panel state poll while the page is hidden and refresh on return to visibility*
