@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Red gate track scope**
+  *Link: [./tracks/red_gate_track_scope_20261108/](./tracks/red_gate_track_scope_20261108/)*
+  *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*
 
 ---
 
