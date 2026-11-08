@@ -1,0 +1,14 @@
+main 34648f4
+installer exit 0
+2026-11-08T12:52:49Z ref=main commit=34648f4 written=2 removed=0 kept=0 exit=0
+No differences: every target matches main (34648f4).
+check exit 0
+cmp: the installed checker equals main
+cmp: the installed contracts.md equals main
+
+== installed copy on the Monorepo replay (clone /tmp/monoclone-gts at bd5dc101d)
+INFO: spec-review skipped 2 commits of other tracks
+INFO: - bd5dc101dd38 storytime_at_home_release_20261106
+INFO: - 1fa196df875f storytime_at_home_release_20261106
+PASS: spec-review gate passed
+exit 0

@@ -26,7 +26,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Passing (guards of the old behavior): `test_spec_review_missing_baseline_tree_fails_in_scoped_mode`, `test_spec_review_single_track_range_keeps_output`, `test_ux_review_own_ui_commit_needs_dev_url`, `test_ux_review_working_tree_change_counts`, `test_ux_paths_without_track_keeps_full_range`.
   - The run is direct, not through `heavy-run.sh`: one unittest file is a light run (PM, 2026-11-08).
 
-## Phase 3: Green change
+## Phase 3: Green change [checkpoint: 34648f4]
 
 - [x] Task 3.1: Change `measure_interphase_checks.py` (FR-1 to FR-6). Run the new test file, `test_red_track_scope.py`, and `test_checker.py` (AC-19). `94db90d`
   - Evidence: `test_gate_track_scope.py` gives `Ran 18 tests`, `OK`. `test_red_track_scope.py` gives `Ran 13 tests`, `OK`. `test_checker.py` gives `Ran 38 tests`, `OK`. Logs: `measure/runs/gate_track_scope_20261108/green-p3-test_*.log`.
@@ -47,5 +47,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - F2 [Nit] (contracts omit the Jr Green fallback when `git log` fails): FIX in `54b4280`.
   - F3 [Nit] (the changelog INFO sentence is not exact on a tree-diff failure): FIX in `54b4280`.
   - The review ran before Task 3.4, so one full-suite run covers the fixes.
-- [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-22).
+- [x] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-22). `34648f4`
+  - Evidence: the install from `main` (`34648f4`) exits 0 (`written=2`: the checker and `contracts.md`). `--check` prints "No differences: every target matches main (34648f4)." and exits 0. `cmp` shows that the installed checker and `contracts.md` equal `main`.
+  - Evidence: the installed copy on the Monorepo replay (`bd5dc101d`, `--baseline 39d019003`) exits 0 and skips 2 commits of other tracks. Log: `measure/runs/gate_track_scope_20261108/green-p4-install.log`.
 - [ ] Task 4.3: Send the PM one line: the commit, the test name, and the install result.
