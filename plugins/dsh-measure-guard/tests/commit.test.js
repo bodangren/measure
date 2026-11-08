@@ -210,6 +210,27 @@ test('addedPaths sees the add through the documented git global options', async 
   }
 })
 
+test('a wrapper script fails closed instead of hiding its add', async () => {
+  const all = { all: true, trackedOnly: false, paths: [] }
+  for (const command of [
+    'bash scripts/add.sh && git commit -m "feat(app): Add"',
+    'sh -e add.sh && git commit -m "feat(app): Add"',
+    'source add.sh && git commit -m "feat(app): Add"',
+    '. add.sh && git commit -m "feat(app): Add"',
+    './scripts/add.sh && git commit -m "feat(app): Add"',
+    '/tmp/add.sh && git commit -m "feat(app): Add"',
+  ]) {
+    assert.deepEqual(addedPaths(command), all, command)
+  }
+  assert.deepEqual(addedPaths('bash -c "git add src/app.js" && git commit -m "feat(app): Add"'), {
+    all: false,
+    trackedOnly: false,
+    paths: ['src/app.js'],
+  })
+  assert.deepEqual(addedPaths('bash && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('git status --short && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: [] })
+})
+
 test('an unknown git global option before the add fails closed', async () => {
   assert.deepEqual(addedPaths('git --future-option add secret.txt && git commit -m "feat(app): Add"'), {
     all: true,
@@ -255,19 +276,19 @@ test('addedPaths skips shell option arguments while hunting for -c', async () =>
 
 test('addedPaths handles option-argument clusters and -- semantics', async () => {
   const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
-  const none = { all: false, trackedOnly: false, paths: [] }
   assert.deepEqual(addedPaths('bash -euo pipefail -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
   assert.deepEqual(addedPaths('bash --rcfile /dev/null -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
   assert.deepEqual(addedPaths('bash -c -- "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
-  assert.deepEqual(addedPaths('bash -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
-  assert.deepEqual(addedPaths('bash -o pipefail -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
+  // `--` before -c makes bash treat -c as a script file name: unreadable, so fail closed.
+  assert.deepEqual(addedPaths('bash -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
+  assert.deepEqual(addedPaths('bash -o pipefail -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
 })
 
 test('addedPaths handles --init-file and does not treat --norc as -c', async () => {
   const paths = { all: false, trackedOnly: false, paths: ['src/app.js'] }
-  const none = { all: false, trackedOnly: false, paths: [] }
   assert.deepEqual(addedPaths('bash --init-file /dev/null -c "git add src/app.js" && git commit -m "feat(app): Add"'), paths)
-  assert.deepEqual(addedPaths('bash --norc -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), none)
+  // --norc is a flag, then `--` makes -c a script file name: fail closed.
+  assert.deepEqual(addedPaths('bash --norc -- -c "git add src/app.js" && git commit -m "feat(app): Add"'), { all: true, trackedOnly: false, paths: [] })
 })
 
 test('addedPaths fails closed at the fourth nested level but scans three', async () => {

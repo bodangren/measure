@@ -326,9 +326,24 @@ function scanAddedPaths(command, depth) {
         const takesArgument = optionArguments.has(option) || (shortCluster && /[oO]$/.test(option))
         j += takesArgument ? 2 : 1
       }
-      if (takesCommand && j < tokens.length && !tokens[j].separator) {
-        merge(scanAddedPaths(tokens[j].value, depth + 1))
+      if (takesCommand) {
+        if (j < tokens.length && !tokens[j].separator) merge(scanAddedPaths(tokens[j].value, depth + 1))
+        continue
       }
+      // A nested shell running a script file (`bash add.sh`) cannot be read by
+      // the bounded parser: fail closed instead of silently missing its `git add`.
+      if (j < tokens.length && !tokens[j].separator) added.all = true
+      continue
+    }
+    // A sourced or directly invoked script cannot be read here either. A shell
+    // function defined inline remains the documented residual (its body is not a
+    // command position for the bounded tokenizer).
+    if (current === 'source' || current === '.') {
+      added.all = true
+      continue
+    }
+    if (/^\.{1,2}\//.test(current) || current.endsWith('.sh')) {
+      added.all = true
       continue
     }
     if (current !== 'git') continue
