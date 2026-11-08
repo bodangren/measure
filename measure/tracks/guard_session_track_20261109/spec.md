@@ -28,13 +28,16 @@ The change gives each OpenCode session its own track for the task note. A sessio
   - (a) The text of each user prompt of the session, before the plugin adds a note. The role brief of a subagent is the first prompt of its session. A follow-up prompt of strict mode is not a clue.
   - (b) The title of the session, from `ctx.session.get`. The plugin reads the title at each prompt, before the prompt text, and only while `track` is `null`. A title cannot replace a track that a clue set.
   - (c) Each path that a completed edit tool call (`edit`, `write`, `multiedit`, `apply_patch`) writes, relative to the project root. A failed call gives no clue. A shell command gives no clue.
-- **D3 (the naming rule).** A clue names a track when exactly one id of a `[~]` track in `tracks.md` occurs in it as a whole word. A whole word has no character of `[A-Za-z0-9_-]` just before it and just after it. A clue that names 2 or more `[~]` tracks names no track, and `track` keeps its value. The id of a track that is not `[~]` does not count.
-- **D4 (the session track).** The plugin selects the track of a session in this order:
-  - When `track` is the id of a `[~]` track with a plan that has a `## Phase` heading, that track is the session track. This is true also when its plan has no `[~]` task.
-  - Else, when 0 or 1 `[~]` tracks have a `[~]` task, the session track is `Snapshot.active`. This is the old rule with no change.
-  - Else, 2 or more tracks have a `[~]` task, and the session has no single track. The note lists the tracks (D5).
-  - The note text of a session track does not change: `Active track: <name> (measure/<folder>/).` and the task line.
-- **D5 (the list note).** The list note has these lines:
+- **D3 (the naming rule).** A clue names a track when exactly one id of a `[~]` track in `tracks.md` occurs in it as a whole word. A whole word has no character of `[A-Za-z0-9_-]` just before it and just after it. The match is case-sensitive. A clue that names 2 or more `[~]` tracks names no track, and `track` keeps its value. The id of a track that is not `[~]` does not count.
+- **D4 (the session track).** The plugin selects the note of a session with the first step that applies:
+  1. When the project has no `measure/` folder, or the snapshot has a parse error, the note is the old `taskNote` note: no note, or the parse-error note.
+  2. When `track` is the id of a track in `inProgress` whose plan has a `## Phase` heading, that track is the session track. This is true also when its plan has no `[~]` task.
+  3. When 2 or more tracks in `inProgress` have a `[~]` task, the note is the work list (D5).
+  4. When exactly 1 track in `inProgress` has a `[~]` task, the session track is `Snapshot.active`. This is the old rule with no change.
+  5. When no track has a `[~]` task and `inProgress` has 2 or more tracks, the note is the idle list (D5).
+  6. Else, the session track is `Snapshot.active`: the only `[~]` track, or `null`. This is the old rule with no change.
+  - The note of a session track is the old `taskNote` text for that track: `Active track: <name> (measure/<folder>/).` and the task lines.
+- **D5 (the list notes).** A list has one line for each listed track, in `tracks.md` order. The work list lists each track of `inProgress` with a `[~]` task:
 
   ```text
   measure-guard (Mode: <mode>)
@@ -43,15 +46,29 @@ The change gives each OpenCode session its own track for the task note. A sessio
   To get the task of one track, write its id in a prompt.
   ```
 
-  The list has one line for each `[~]` track with a `[~]` task, in `tracks.md` order. The note key of the list is `list|` and the ids joined by `,`. A task change in a listed track does not send a new list. A new or a removed track in the list sends a new list.
-- **D6 (the guards keep the project rule).** The edit guard, the closeout guard, the end-of-turn check, the TDD guard, the commit guard, the TUI band, `/measure-status`, and the status tool keep `Snapshot.active`. Only the task note (prompt, tool result, and compaction) uses the session track. Reason: a session-scoped guard can deny an edit that the plugin allows today, so it needs its own request.
+  Its note key is `list|` and the ids joined by `,`, for example `list|alpha_20261109,beta_20261109,gamma_20261109`. The idle list lists each track of `inProgress`:
+
+  ```text
+  measure-guard (Mode: <mode>)
+  This session names no track. No track has a task in progress. <n> tracks have the marker [~]:
+  - <id>: <name>
+  To get the next task of one track, write its id in a prompt.
+  ```
+
+  Its note key is `idle|` and the ids joined by `,`. A task change in a listed track does not change the key, so it sends no new list. A new or a removed track in the list changes the key.
+- **D6 (the guards keep the project rule).** The edit guard, the closeout guard, the end-of-turn check, the TDD guard, the commit guard, the TUI band, `/measure-status`, and the status tool keep `Snapshot.active`. Only the task note (prompt, tool result, and compaction) uses the session track. Reason: the PM's WHY names the sessions and the role gates of the orchestrator, which read the note. A plugin guard that allows a call names no track. A session-scoped edit guard can deny an edit that a parallel session makes today, so it needs its own request.
 - **D7 (no change to the shared core).** The new pure functions go into a new plugin file, `src/track.ts`. `src/core/parse.ts`, `src/core/guards.ts`, `src/types.ts`, and the mod do not change, so the parity check stays green. `loadSnapshot` returns `Snapshot & { inProgress: ActiveTrack[] }`: each `[~]` track that has a plan, in `tracks.md` order. The Guard keeps this type, and the guards read it as a `Snapshot`.
 - **D8 (title failure).** The Guard gets the title through a function that index.ts gives to it. When the call fails, gives no title, or takes more than 1000 ms, the title gives no clue, and the prompt continues.
 - **D9 (distribution).** The change lands on the local `main`. `bin/install-measure-skill` installs the plugin, and `bin/install-measure-skill --check` compares the installed files with `main`. A live check runs through the OpenCode service HTTP API in a temporary git project with 3 `[~]` tracks. Nothing is pushed without the PM's word.
 
 ## Functional requirements
 
-- **FR-1.** `src/track.ts` exports `namedTrack(clue, tracks)` (D3), `sessionActive(snapshot, track)` and `sessionList(snapshot, track)` (D4), and `sessionNoteKey(snapshot, track)` and `sessionNote(snapshot, track, mode)` (D4, D5). The functions are pure.
+- **FR-1.** `src/track.ts` exports these pure functions and one type:
+  - `type SessionSnapshot = Snapshot & { inProgress: ActiveTrack[] }`.
+  - `namedTrack(clue: string, tracks: readonly TrackEntry[]): string | null`: the id that the clue names (D3); `null` when the clue names no `[~]` track, or 2 or more.
+  - `sessionActive(snapshot: SessionSnapshot, track: string | null): ActiveTrack | null`: the session track of D4 steps 2, 4, and 6, and `Snapshot.active` in step 1; `null` when the note is a list or no track is in progress.
+  - `sessionList(snapshot: SessionSnapshot, track: string | null): { kind: 'work' | 'idle'; tracks: ActiveTrack[] } | null`: the list of D4 steps 3 and 5; `null` in each other step.
+  - `sessionNoteKey(snapshot: SessionSnapshot, track: string | null): string | null` and `sessionNote(snapshot: SessionSnapshot, track: string | null, mode: Mode): string | null`: the key and the text of D4 and D5. In steps 1, 2, 4, and 6 they give `noteKey` and `taskNote` of the snapshot with `active` set to `sessionActive`.
 - **FR-2.** `SessionState` has `track` (D1). `Sessions.sessionOf` starts it as `null`.
 - **FR-3.** `loadSnapshot` fills `inProgress` (D7). A snapshot with no `measure/` folder or a parse error has an empty `inProgress`.
 - **FR-4.** `Guard.onPrompt` reads the title clue and the prompt clue (D2 a, b) before it computes the note. `Guard.onToolAfter` reads the path clues of a completed call (D2 c) before it computes the note. When a path clue changes `track`, the tool result gets the new note, also for a path outside `measure/`.
@@ -65,31 +82,34 @@ The change gives each OpenCode session its own track for the task note. A sessio
 The new test file is `plugins/opencode-measure-guard/tests/session-track.test.ts`. Its fixture is a temporary git project with `measure/index.md` (the plugin fixture) and a `tracks.md` with 3 `[~]` tracks in this order: `alpha_20261109` (name `Alpha`), `beta_20261109` (`Beta`), and `gamma_20261109` (`Gamma`). Each track has a `plan.md` with one phase and one `[~]` task: `Task 1.1: Alpha work`, `Task 1.1: Beta work`, and `Task 1.1: Gamma work`. A case may change a plan or a marker before it runs.
 
 - **AC-1 (the PM case: a session that names a track).** A prompt `Work on track beta_20261109.` gets a note with `Active track: Beta (measure/tracks/beta_20261109/).` and `Current task: [~] Task 1.1: Beta work`. The note does not contain `Alpha`.
-- **AC-2 (the PM case: a session that names no track).** A prompt `hello` gets the D5 list note. The note contains `This session names no track. 3 tracks have a task in progress:` and the lines `- alpha_20261109: Alpha`, `- beta_20261109: Beta`, and `- gamma_20261109: Gamma`, in this order. The note does not contain `Active track:`.
+- **AC-2 (the PM case: a session that names no track).** A prompt `hello` gets the D5 work list. The note contains `This session names no track. 3 tracks have a task in progress:` and the lines `- alpha_20261109: Alpha`, `- beta_20261109: Beta`, and `- gamma_20261109: Gamma`, in this order. The note does not contain `Active track:`.
 - **AC-3 (each session has its own track).** In one Guard, session `ses_a` names `gamma_20261109` and session `ses_b` names `alpha_20261109`. Each note names only the track of its session.
 - **AC-4 (the latest clue wins).** A session names `beta_20261109`. A later prompt names `gamma_20261109`. The later prompt gets the Gamma note.
-- **AC-5 (two ids name no track).** A prompt that names `alpha_20261109` and `beta_20261109` gets the list note. In a session with the track `gamma_20261109`, the same prompt gets no new note, and `track` stays `gamma_20261109`.
-- **AC-6 (whole words only).** A prompt with `beta_202611090` or `xbeta_20261109` gets the list note.
-- **AC-7 (only `[~]` tracks count).** `gamma_20261109` is `[x]` in `tracks.md`. A prompt that names `gamma_20261109` gets the list note with 2 lines.
+- **AC-5 (two ids name no track).** A prompt that names `alpha_20261109` and `beta_20261109` gets the work list. In a session with the track `gamma_20261109`, the same prompt gets no new note, and `track` stays `gamma_20261109`.
+- **AC-6 (whole words only).** A prompt with `beta_202611090`, `xbeta_20261109`, or `BETA_20261109` gets the work list.
+- **AC-7 (only `[~]` tracks count).** `gamma_20261109` is `[x]` in `tracks.md`. A prompt that names `gamma_20261109` gets the work list with 2 lines.
 - **AC-8 (the title clue).** The fake title function gives `Review of gamma_20261109`. The first prompt `hello` gets the Gamma note. A later prompt names `beta_20261109` and gets the Beta note. The prompt after it, `again`, gets no new note: the title does not replace the track.
-- **AC-9 (a failed or slow title).** The title function throws in one Guard and never resolves in a second Guard. In each Guard, the prompt `hello` gets the list note. In the second Guard, the prompt hook returns in less than 2000 ms.
+- **AC-9 (a failed or slow title).** The title function throws in one Guard and never resolves in a second Guard. In each Guard, the prompt `hello` gets the work list. In the second Guard, the prompt hook returns in less than 2000 ms.
 - **AC-10 (the path clue).** In a session with no track, a completed `write` call to `measure/tracks/gamma_20261109/plan.md` gets the Gamma note in its result. In a second session with no track, a completed `write` to `notes/gamma_20261109/x.md`, outside `measure/`, also gets the Gamma note.
-- **AC-11 (a failed call gives no clue).** A `write` call to `measure/tracks/gamma_20261109/plan.md` with status `error` does not set `track`. The next prompt `hello` gets the list note.
+- **AC-11 (a failed call gives no clue).** A `write` call to `measure/tracks/gamma_20261109/plan.md` with status `error` does not set `track`. The next prompt `hello` gets the work list.
 - **AC-12 (a named track with no task).** The plan of `beta_20261109` has no `[~]` task and has one `[ ]` task. A prompt that names `beta_20261109` gets `Active track: Beta (measure/tracks/beta_20261109/).` and `No task is in progress.`.
 - **AC-13 (one working track keeps the old note).** Only the plan of `beta_20261109` has a `[~]` task. The prompt `hello` gets the Beta note, as before this track.
-- **AC-14 (the list key).** After the list note, a task change in `alpha_20261109` gives no new note on the next prompt. When the plan of `gamma_20261109` loses its `[~]` task, the next prompt gets a list note with 2 lines.
-- **AC-15 (compaction).** In a session with the track `gamma_20261109`, the compaction system part contains the Gamma note. In a session with no track, it contains the list note.
+- **AC-14 (the list key).** After the work list, a task change in `alpha_20261109` gives no new note on the next prompt. When the plan of `gamma_20261109` loses its `[~]` task, the next prompt gets a work list with 2 lines.
+- **AC-15 (compaction).** In a session with the track `gamma_20261109`, the compaction system part contains the Gamma note. In a session with no track, it contains the work list.
 - **AC-16 (the guards keep the project rule).** In a session with no track, the edit guard allows a `write` to `src/x.ts`. In a session with the track `beta_20261109` and a Beta plan with no `[~]` task, the edit guard also allows a `write` to `src/x.ts`, because Alpha has a `[~]` task.
+- **AC-20 (a parse error).** A `tracks.md` with only the track line `- [~] Track without a known format` gives the prompt `hello` a note that contains `the Measure files could not be read`.
+- **AC-21 (the pure functions).** `namedTrack` on the fixture tracks gives `beta_20261109` for `beta_20261109`, `(track_id: beta_20261109)`, `measure/tracks/beta_20261109/plan.md`, and `track beta_20261109.`. It gives `null` for `BETA_20261109`, `alpha_20261109 beta_20261109`, and the empty text. On the fixture, `sessionList` with `track` `null` gives kind `work` and 3 tracks, and `sessionNoteKey` gives `list|alpha_20261109,beta_20261109,gamma_20261109`.
+- **AC-22 (the idle list).** No plan has a `[~]` task, and each plan has one `[ ]` task. The prompt `hello` gets the idle list: `This session names no track. No track has a task in progress. 3 tracks have the marker [~]:` and the 3 track lines. The note does not contain `Active track:` or `Next task:`.
 - **AC-17 (the old suite).** `bun test` in `plugins/opencode-measure-guard` passes with no change to the old test files. `bun x tsc --noEmit -p .` and `bash scripts/check-parity.sh` exit 0.
 - **AC-18 (install).** `bin/install-measure-skill` exits 0, and `bin/install-measure-skill --check` exits 0. `diff -r` of `plugins/opencode-measure-guard/src` and the installed `src` shows no difference.
-- **AC-19 (live check).** In a temporary git project with the AC fixture, two sessions run through the OpenCode service HTTP API. The stored user message of the session that names `beta_20261109` holds the Beta note. The stored user message of the session that names no track holds the list note with 3 lines.
+- **AC-19 (live check).** In a temporary git project with the AC fixture, two sessions run through the OpenCode service HTTP API. The stored user message of the session that names `beta_20261109` holds the Beta note. The stored user message of the session that names no track holds the work list with 3 lines.
 
 ## Out of scope
 
 - The guards, the band, `/measure-status`, and the status tool keep the project rule (D6).
 - The Claude Code mod (`mods/measure-guard/`) and the dsh plugin (`plugins/dsh-measure-guard/`) keep their notes.
 - A child session does not get the track of its parent session.
-- The rule that takes the first `[~]` track when no plan has a `[~]` task does not change.
+- A project with 0 or 1 `[~]` tracks with a plan keeps the old note (D4 step 6).
 
 ## Known limits
 
