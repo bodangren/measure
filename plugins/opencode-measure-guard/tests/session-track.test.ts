@@ -262,9 +262,11 @@ describe('the selection', () => {
     expect(await send(guard, 'hello')).toContain('the Measure files could not be read')
     const missing = await project({ tasks: { [BETA]: ' ', [GAMMA]: ' ' } })
     rmSync(planPath(missing, ALPHA))
-    const note = await send(makeGuard(missing), 'hello')
+    const broken = makeGuard(missing)
+    const note = await send(broken, 'hello')
     expect(note).toContain('the Measure files could not be read')
     expect(note).not.toContain('This session names no track.')
+    expect((await broken.current()).inProgress).toEqual([])
   })
 
   test('AC-22: with no [~] task, a session that names no track gets the idle list', async () => {

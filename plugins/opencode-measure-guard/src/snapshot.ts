@@ -121,10 +121,10 @@ export const loadSnapshot = async (root: string): Promise<SessionSnapshot> => {
     const plan = plans.get(entry.id)
     const planPath = planPaths.get(entry.id)
     if (plan === undefined || planPath === undefined) {
-      return { ...loaded, parseError: `no plan.md for the active track ${entry.id}` }
+      return { ...loaded, inProgress: [], parseError: `no plan.md for the active track ${entry.id}` }
     }
     if (plan.phases.length === 0) {
-      return { ...loaded, parseError: `${planPath} has no "## Phase" heading` }
+      return { ...loaded, inProgress: [], parseError: `${planPath} has no "## Phase" heading` }
     }
     return { ...loaded, active: { entry, planPath, plan } }
   } catch (error) {
