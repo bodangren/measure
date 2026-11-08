@@ -11,8 +11,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.2: run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `check-parity.sh` gates, `bash tests/spec_review_gate/run.sh` (11/11), and `bash tests/dsh/run.sh` (13/13) `925e44f`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The handler route and its tests' (Protocol in workflow.md) `65db0de`
 
-## Phase 2: Live proof, records, and closeout
+## Phase 2: Live proof, records, and closeout [checkpoint: 5f8bd18]
 
 - [x] Task 2.1: install + reload, prove the live POST transport with curl (400/404 with identity), record the evidence; update the README route paragraph, resolve the tech-debt row, add the `CHANGELOG.md` entry; run the gates again `c074654`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_setup_route_transport_20261110` and record the manifest-only FAIL `84788f7`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Live proof, records, and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Live proof, records, and closeout' (Protocol in workflow.md) `5f8bd18`
