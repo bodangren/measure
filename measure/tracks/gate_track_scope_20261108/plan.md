@@ -28,10 +28,14 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 3: Green change
 
-- [x] Task 3.1: Change `measure_interphase_checks.py` (FR-1 to FR-6). Run the new test file, `test_red_track_scope.py`, and `test_checker.py` (AC-19).
-- [ ] Task 3.2: Run the Monorepo replay of AC-21 on a read-only clone. Record the old and the new output.
-- [ ] Task 3.3: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-7).
-- [ ] Task 3.4: Run `bash tests/spec_review_gate/run.sh` through `heavy-run.sh` (AC-20).
+- [x] Task 3.1: Change `measure_interphase_checks.py` (FR-1 to FR-6). Run the new test file, `test_red_track_scope.py`, and `test_checker.py` (AC-19). `94db90d`
+  - Evidence: `test_gate_track_scope.py` gives `Ran 18 tests`, `OK`. `test_red_track_scope.py` gives `Ran 13 tests`, `OK`. `test_checker.py` gives `Ran 38 tests`, `OK`. Logs: `measure/runs/gate_track_scope_20261108/green-p3-test_*.log`.
+  - Evidence: 9 mutants of the new lines, each killed by 1 or more cases of the new file (`green-p3-mutants.log`). Each G20 mutant line of `test_s2_adversarial.sh` occurs one time in the checker.
+- [x] Task 3.2: Run the Monorepo replay of AC-21 on a read-only clone. Record the old and the new output. `24e678d`
+  - Evidence: on a read-only clone at `bd5dc101d` with `--baseline 39d019003`, the old checker exits 1 and lists the five `apps/storytime/` files and the plan of `storytime_at_home_release_20261106`. The new checker exits 0 and skips 2 commits. Log: `green-p3-monorepo-replay.log`.
+- [x] Task 3.3: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-7). `a79c8ce`
+  - Evidence: `test_s2_role_docs.sh` 51/51, `test_s3_dispositions_docs.sh` 98/98, `test_s4_doc_drift.sh` 34/34.
+- [~] Task 3.4: Run `bash tests/spec_review_gate/run.sh` through `heavy-run.sh` (AC-20).
 
 ## Phase 4: Review and distribution
 
