@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (12/12 with the extended suite), `bash tests/dsh/run.sh` (14/14), the node suite, and both parity gates `bc3c63e`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The two helpers and the three gates' (Protocol in workflow.md) `6e4a55d`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 0bbf104]
 
 - [x] Task 2.1: update the contracts.md Baseline/HEAD-advance bullets and the (deduplicated) tech-debt row, add the `CHANGELOG.md` entry; record the live check, run the gates again `4705f24`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_red_scope_gates_20261110` and record the manifest-only FAIL `ed648b8`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `0bbf104`
