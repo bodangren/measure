@@ -1,0 +1,21 @@
+Monorepo spec-review replay, read-only sparse clone /tmp/monoclone-gts at bd5dc101d (git clone --shared --no-checkout; sparse measure/).
+Command: python3 -I <checker> role-gate --repo /tmp/monoclone-gts --role spec-review --track sales_traffic_source_binding_20261108 --phase 'track setup' --baseline 39d019003 --result-file /tmp/gts-replay-result.json
+Result file: a new passing payload; the real spec-review-39d019003.json has status fail (spec review F1).
+Range: bd5dc101d docs(measure): record the 2b.7b green evidence (track_id: storytime_at_home_release_20261106);1fa196df8 fix(storytime): keep the username on a wrong sign-in (track_id: storytime_at_home_release_20261106);
+
+== old checker (main f182beb, equal to the installed copy before this track)
+FAIL: spec-review committed files outside measure/runs/
+FAIL: - apps/storytime/app/[locale]/sign-in/page.tsx
+FAIL: - apps/storytime/app/api/auth/sign-in/route.ts
+FAIL: - apps/storytime/lib/auth/cookie.ts
+FAIL: - apps/storytime/lib/auth/index.ts
+FAIL: - apps/storytime/proxy.ts
+FAIL: - measure/tracks/storytime_at_home_release_20261106/plan.md
+exit 1
+
+== new checker (main 94db90d)
+INFO: spec-review skipped 2 commits of other tracks
+INFO: - bd5dc101dd38 storytime_at_home_release_20261106
+INFO: - 1fa196df875f storytime_at_home_release_20261106
+PASS: spec-review gate passed
+exit 0

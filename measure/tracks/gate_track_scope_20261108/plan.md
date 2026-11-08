@@ -18,7 +18,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Round 1 on `9d67250`: fail, 2 Blocker, 2 Major, 3 Nit (`4fd7751`). Revision: `ab95c03`.
   - Round 2 on `ab95c03`: pass, 0 Blocker, 0 Major, 1 Nit (`1a510ee`). The spec-review gate passed. F8: FIX in the Phase 1 checkpoint commit.
 
-## Phase 2: Red tests
+## Phase 2: Red tests [checkpoint: f182beb]
 
 - [x] Task 2.1: Write `tests/spec_review_gate/test_gate_track_scope.py` with the cases of AC-1 to AC-18. Run the file against the unchanged checker. Record each failing case name as the Red evidence. `3ac3771`
   - Evidence: the unchanged checker gives `Ran 18 tests`, `FAILED (failures=13)`. Log: `measure/runs/gate_track_scope_20261108/red-p2-unchanged-checker.log`.
@@ -28,7 +28,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 3: Green change
 
-- [ ] Task 3.1: Change `measure_interphase_checks.py` (FR-1 to FR-6). Run the new test file, `test_red_track_scope.py`, and `test_checker.py` (AC-19).
+- [x] Task 3.1: Change `measure_interphase_checks.py` (FR-1 to FR-6). Run the new test file, `test_red_track_scope.py`, and `test_checker.py` (AC-19).
 - [ ] Task 3.2: Run the Monorepo replay of AC-21 on a read-only clone. Record the old and the new output.
 - [ ] Task 3.3: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-7).
 - [ ] Task 3.4: Run `bash tests/spec_review_gate/run.sh` through `heavy-run.sh` (AC-20).
