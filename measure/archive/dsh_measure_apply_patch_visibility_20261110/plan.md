@@ -13,8 +13,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.4: run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `check-parity.sh` gates, `bash tests/spec_review_gate/run.sh` (11/11), and `bash tests/dsh/run.sh` (13/13) `6ff0bcb`
 - [x] Task: Measure - User Manual Verification 'Phase 1: After-text reconstruction and the closeout guard' (Protocol in workflow.md) `566e14c`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: af0f84a]
 
 - [x] Task 2.1: update the adapter READMEs and the tech-debt rows (apply_patch residual, shell-write row), add the CHANGELOG entry, record the live installed-plugin evidence; run the gates again `3c0857c`
-- [~] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_apply_patch_visibility_20261110` and record the manifest-only FAIL
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_apply_patch_visibility_20261110` and record the manifest-only FAIL `7e0f740`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `af0f84a`
