@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: resolve the gate-timing tech-debt row, add the `CHANGELOG.md` entry; prune generated `__pycache__`/`*.pyc` from `bin/measure-dsh --check`'s skill file list (a closeout run recreated it and made `--check --live` red) with a `test-check.sh` pin; record the live check, run the gates again `e1cdaec`
-- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_gate_timing_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_gate_timing_20261110` and record the manifest-only FAIL `2b16e9d`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
