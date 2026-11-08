@@ -1,11 +1,12 @@
 {
   "track_id": "dsh_measure_agent_tools_20261110",
   "type": "feature",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-10T15:10:00Z",
-  "updated_at": "2026-11-10T15:10:00Z",
+  "updated_at": "2026-11-10T15:30:00Z",
   "description": "Add read-only measure_verify and measure_mode tools so agents can use the verify and mode report without the GUI",
   "estimated_tasks": 7,
-  "actual_tasks": 0,
-  "deviation_notes": ""
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
 }
