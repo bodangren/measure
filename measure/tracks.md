@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure band render test (closing)**
-  *Link: [./archive/dsh_measure_band_render_test_20261110/](./archive/dsh_measure_band_render_test_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -313,3 +311,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure gate robustness**
   *Link: [./archive/dsh_measure_gate_robustness_20261110/](./archive/dsh_measure_gate_robustness_20261110/)*
   *Make the live corpus the committed one and tolerate empty documents under pipefail in the A11 recipe*
+
+- [x] **Track: DSH Measure band render test**
+  *Link: [./archive/dsh_measure_band_render_test_20261110/](./archive/dsh_measure_band_render_test_20261110/)*
+  *Render the shipped client bundle in a dependency-free fake React and assert the band, panel, i18n, and apply registrations*
