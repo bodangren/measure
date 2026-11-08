@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure A11 dotdot scope**
+  *Link: [./tracks/dsh_measure_a11_dotdot_scope_20261110/](./tracks/dsh_measure_a11_dotdot_scope_20261110/)*
+  *Keep the A11 doc-drift recipe inside the repository by skipping claims with a dotdot segment*
 
 ---
 
