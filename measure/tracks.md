@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure track-scoped gates (closing)**
-  *Link: [./archive/dsh_measure_red_scope_gates_20261110/](./archive/dsh_measure_red_scope_gates_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -381,6 +379,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure limits documentation**
   *Link: [./archive/dsh_measure_limits_docs_20261110/](./archive/dsh_measure_limits_docs_20261110/)*
   *Document the Host and OpenCode runtime constraints in the adapter READMEs, pin the sections, and close the constraint rows*
+
+- [x] **Track: DSH Measure track-scoped gates**
+  *Link: [./archive/dsh_measure_red_scope_gates_20261110/](./archive/dsh_measure_red_scope_gates_20261110/)*
+  *Apply the Mid Red track scope to the spec-review scope rule, ux-paths, and the Jr Green HEAD-advance check*
 
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
