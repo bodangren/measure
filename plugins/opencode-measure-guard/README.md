@@ -152,3 +152,9 @@ bun install && bun x tsc --noEmit -p .   # type check against the published @ope
 ```
 
 `node_modules/` and `bun.lock` are not committed. OpenCode provides `@opencode/plugin`, `@opencode/plugin/tui`, `solid-js`, and the OpenTUI packages at runtime.
+
+## Known limitations (OpenCode 2.0.32)
+
+- **A command reply is synthetic and arrives with the next prompt.** The plugin answers a slash command with a synthetic message that OpenCode 2.0.32 delivers with the next prompt, so `/measure-off` shows no text at once in the transcript; the terminal band shows the bypass from the state file instead.
+- **The end-of-turn check is debounced.** `session.idle` does not reach plugin subscriptions in this release, so the check triggers on `session.execution.*` (succeeded, failed, and interrupted) with a 1-second debounce, and two events within a second count as one; re-check the trigger set on the next OpenCode release.
+- **`multiedit` is listed but absent.** The release has no `multiedit` tool; the plugin keeps the name in its tool list so a release that adds it is covered, and the missing call is ignored while it is absent.

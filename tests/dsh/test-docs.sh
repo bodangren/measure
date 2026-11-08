@@ -94,7 +94,34 @@ if stack:
 PY
 }
 
+# check_limits FILE HEADING: the named `## ` section exists and holds at least two bullets.
+check_limits() { # file heading
+  python3 - "$1" "$2" <<'PY'
+import re, sys
+path, heading = sys.argv[1], sys.argv[2]
+lines = open(path, encoding="utf-8").read().splitlines()
+start = None
+for i, line in enumerate(lines):
+    if line.strip() == f"## {heading}":
+        start = i
+        break
+if start is None:
+    print(f"{path}: no '## {heading}' section", file=sys.stderr)
+    sys.exit(1)
+bullets = 0
+for line in lines[start + 1:]:
+    if line.startswith("## "):
+        break
+    if re.match(r"^[-*] \S", line):
+        bullets += 1
+if bullets < 2:
+    print(f"{path}: the '## {heading}' section has {bullets} bullets", file=sys.stderr)
+    sys.exit(1)
+PY
+}
+
 check_targets() { # file
+
   if grep -q 'dsh-measure-guard' "$1"; then
     echo "install-targets.tsv still carries a DSH plugin row; bin/measure-dsh owns that copy" >&2
     return 1
@@ -123,6 +150,10 @@ for doc in "$GUIDE" "$ROOT/plugins/dsh-measure-guard/README.md" "$ROOT/plugins/o
   check_code_spans "$doc" || fail "unbalanced inline code span in $doc"
 done
 echo "[PASS] the guide and both plugin READMEs hold balanced inline code spans"
+check_limits "$ROOT/plugins/dsh-measure-guard/README.md" 'Known limits' || fail "the DSH README does not document its known limits"
+check_limits "$ROOT/plugins/opencode-measure-guard/README.md" 'Known limitations (OpenCode 2.0.32)' ||
+  fail "the OpenCode README does not document its known limitations"
+echo "[PASS] both adapter READMEs document their known limits"
 
 # Fixture edges: each mutant must be rejected by the same checks.
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/measure-dsh-docs.XXXXXX")"
@@ -137,6 +168,10 @@ cp "$ROOT/plugins/opencode-measure-guard/README.md" "$WORK/spans.md"
 printf '\nA broken `span here.\n' >>"$WORK/spans.md"
 if check_code_spans "$WORK/spans.md" >/dev/null 2>&1; then fail "the unbalanced-span fixture passed, it must fail"; fi
 echo "[PASS] the unbalanced-span fixture is rejected"
+
+printf '# Fixture\n\n## Other\n\n- one\n- two\n' >"$WORK/nolimits.md"
+if check_limits "$WORK/nolimits.md" 'Known limits' >/dev/null 2>&1; then fail "the missing-limits fixture passed, it must fail"; fi
+echo "[PASS] the missing-limits fixture is rejected"
 
 cp "$GUIDE" "$WORK/commands.md"
 sed -i 's/measure-doctor//' "$WORK/commands.md"

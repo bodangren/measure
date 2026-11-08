@@ -264,6 +264,8 @@ The evidence images are [`live-band.png`](../../measure/runs/dsh_measure_guard_2
 - **The writer count trusts `ctx.agents.roots()`.** A host whose registry cannot tell a root from a child (no `roots()` method, or a throwing call) falls back to counting every agent, so the pre-fix false positive can return there.
 - **A path-form row shows the technical package id** in the Plugins page, because a row that names a file path has no display metadata. The bundle install shows the localized title and the icon.
 - **The profile target spells the default `~/.dsh`.** A different `DSH_HOME` needs the row adjusted, or the bundle installed with `dsh plugin add`.
+- **The guard root comes from the working directory.** A `subagent` started with a `cwd` option keeps the parent session's root, so edits in that project are outside this guard's root and pass unchecked; `dsh --profile headless` cannot host this plugin, because the band and the panel are web-client surfaces. This build has no Host API to re-root a plugin per agent.
+- **An extremely wide allow list costs memory.** `measure/guard-allow` is read as one text file per snapshot and kept in memory; a file with a very large number of entries is an operator risk, not an agent one (`allowProblem` bounds each entry's shape, not the count).
 
 ## Deferred
 
