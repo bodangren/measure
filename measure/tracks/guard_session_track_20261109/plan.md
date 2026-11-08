@@ -47,4 +47,5 @@ Track: `guard_session_track_20261109`. Spec: [spec.md](./spec.md).
 - [x] Task 4.3: Run the live check of AC-19 through the OpenCode service HTTP API. Record the stored user messages. `902e729`
   - The service password is in the environment of the OpenChamber-managed server, so the check used the OpenChamber session tool on the same server (port 39005) in place of direct HTTP calls.
   - Evidence: in `/tmp/gst-live-20261109` (3 `[~]` tracks), session `ses_e438c7909ffeW1aQOEdS2OdZ4Z` names `beta_20261109`, and its stored user message holds `Active track: Beta (measure/tracks/beta_20261109/).` and `Current task: [~] Task 1.1: Beta work`. Session `ses_e438c6f7cffeoAiGqiF5auYXZw` names no track, and its stored user message holds the work list with the 3 tracks. Log: `green-p4-live-check.log`.
-- [~] Task 4.4: Send the PM one line: the commit, the test name, the install result, and the live result.
+- [x] Task 4.4: Send the PM one line: the commit, the test name, the install result, and the live result. `04173f0`
+  - Line: fix `f9db4ac` (and the Review A fix `83e099a`), test `plugins/opencode-measure-guard/tests/session-track.test.ts` (19 cases; the PM cases are AC-1 and AC-2), installed from `main` `902e729` (`--check` exit 0), live sessions show the Beta note and the 3-track list, not pushed.
