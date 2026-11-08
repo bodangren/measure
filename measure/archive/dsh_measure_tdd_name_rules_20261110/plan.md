@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: note the widened coverage in the guard README and the tech-debt name-rule row, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again `c46a607`
-- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_tdd_name_rules_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_tdd_name_rules_20261110` and record the manifest-only FAIL `7c4c938`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
