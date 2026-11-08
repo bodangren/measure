@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: The option table and the substitution scan [checkpoint: 267463a]
 
-- [~] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: skip the bounded git global-option table before the `add`/`stage` subcommand (separate, attached, and flag arities) and fail closed on an unknown option; `commit.test.js` cases for each form and the fail-closed case
+- [x] Task 1.1: `plugins/dsh-measure-guard/src/commit.js`: skip the bounded git global-option table before the `add`/`stage` subcommand (separate, attached, and flag arities) and fail closed on an unknown option; `commit.test.js` cases for each form and the fail-closed case `8999bbb`
 - [x] Task 1.2: the command-substitution scanner recognizes the same option run, so `$(git -c k=v add f)` still sets `all`; test `8999bbb`
 - [x] Task 1.3: run `node --test plugins/dsh-measure-guard/tests/*.test.js`, both `check-parity.sh` gates, `bash tests/spec_review_gate/run.sh` (11/11), and `bash tests/dsh/run.sh` (13/13) `8999bbb`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The option table and the substitution scan' (Protocol in workflow.md) `267463a`
