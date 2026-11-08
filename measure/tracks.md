@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure band render test**
+  *Link: [./tracks/dsh_measure_band_render_test_20261110/](./tracks/dsh_measure_band_render_test_20261110/)*
+  *Render the shipped client bundle in a dependency-free fake React and assert the band, panel, i18n, and apply registrations*
 
 ---
 
