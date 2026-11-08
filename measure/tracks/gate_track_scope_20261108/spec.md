@@ -71,7 +71,7 @@ The "two `login_track` commits" are two subject-tagged commits: the first change
 
 - **AC-11** (`test_ux_review_other_track_ui_commit_passes`). The range has one `look_track` commit that changes `tests/test_look.py` and one `login_track` commit that changes `app/src/login.tsx`. The gate exits 0, prints `PASS: ux-browser-review gate passed`, and prints `INFO: ux-browser-review skipped 1 commits of other tracks`.
 - **AC-12** (`test_ux_review_own_ui_commit_needs_dev_url`). The AC-11 range has one more `look_track` commit that changes `app/src/look.tsx`. The gate exits 1 and prints `FAIL: UX-relevant files changed but PROJECT_DEV_URL is unset`.
-- **AC-13** (`test_ux_review_working_tree_change_counts`). The repo has the AC-11 range. Then the test changes `app/src/a.tsx` in the working tree and does not stage the change. The gate exits 1 with the AC-12 message.
+- **AC-13** (`test_ux_review_working_tree_change_counts`). The repo has the AC-11 range. Then the test changes `app/src/a.tsx` in the working tree and does not stage the change. The gate exits 1 with the AC-12 message. A second case (`test_ux_review_staged_change_counts`) stages the change, with the same result.
 - **AC-14** (`test_ux_review_unlistable_own_commit_fails`). The range has one unlistable `look_track` commit that changes `tests/test_look.py`, and then one `login_track` commit that changes `app/src/login.tsx`. The gate exits 1 and prints `FAIL: ux-browser-review could not list the files of commit <12-character sha>`.
 
 `ux-paths` (`ux-paths --baseline <fixture commit>`):

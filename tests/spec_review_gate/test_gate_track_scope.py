@@ -339,6 +339,15 @@ class UxReviewScopeTest(GateTrackScopeBase):
         self.assertEqual(code, 1, out)
         self.assertIn(UX_MSG, out.splitlines())
 
+    def test_ux_review_staged_change_counts(self) -> None:
+        """AC-13: a staged change has no track id, so it always counts (Review A F1)."""
+        self.look_test_and_login_ui()
+        self.write("app/src/a.tsx", "export const a = 2;\n")
+        self.git("add", "app/src/a.tsx")
+        code, out = self.gate()
+        self.assertEqual(code, 1, out)
+        self.assertIn(UX_MSG, out.splitlines())
+
     def test_ux_review_unlistable_own_commit_fails(self) -> None:
         """AC-14: a commit of the track whose files git cannot list fails the gate."""
         look, _login = self.look_test_and_login_ui()
