@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure band poll pause (closing)**
+  *Link: [./archive/dsh_measure_band_poll_pause_20261110/](./archive/dsh_measure_band_poll_pause_20261110/)*
+  *Temporary closing entry; the final commit records `- (none)`*
 
 ---
 

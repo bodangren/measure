@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: note the pause in the guard README, flip the band-polling tech-debt row to Resolved, add the `CHANGELOG.md` entry; make `bin/measure-dsh reload` touch the installed entry (a client-only change otherwise keeps the old module cached; pin it in `test-reload.sh`); install + reload the plugin, record the live check, run the gates again `57233b6`
-- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_band_poll_pause_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_band_poll_pause_20261110` and record the manifest-only FAIL `1c7bdc6`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
