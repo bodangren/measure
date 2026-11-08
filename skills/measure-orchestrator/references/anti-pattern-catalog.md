@@ -231,7 +231,7 @@ for doc in measure/product.md measure/tech-stack.md; do
       continue
     fi
     [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"
-  done
+  done || true
 done
 ```
 This recipe finds only path claims and missing documents. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.

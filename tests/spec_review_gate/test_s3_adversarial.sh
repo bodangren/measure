@@ -409,31 +409,35 @@ for _g, label, ok, detail in results:
 for line in main.reports:
     print(f"REPORT: {line}")
 
-# --- G19 backward compatibility, live corpus (read-only) ---------------------------------------
+# --- G19 backward compatibility, committed corpus (read-only) ---------------------------------
+# The corpus is the committed one: a gitignored or foreign log on disk must not fail the gate
+# without an implementation regression (Group (b)), and every clone runs the same checks.
 g = "G19 live corpus"
-runs = ROOT / "measure" / "runs"
-archive = ROOT / "measure" / "archive"
-if not runs.is_dir():
-    record(f"{g}: {runs} is absent (fresh clone); the frozen corpus carries the proof", True)
+listed = subprocess.run(
+    ["git", "ls-files", "-z", "--", "measure/runs", "measure/archive"],
+    cwd=ROOT, env=base_env(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+)
+if listed.returncode != 0:
+    record(f"{g}: git ls-files lists the committed corpus", False, f"exit {listed.returncode}")
+    logs = []
 else:
-    logs = sorted(p for p in runs.rglob("*.log") if p.is_file())
-    if archive.is_dir():
-        logs += sorted(p for d in archive.iterdir() if d.is_dir() for p in d.rglob("*.log") if p.is_file())
-    record(f"{g}: measure/runs/ holds at least one log", len(logs) > 0, "0 logs")
-    live = Probes(CHECKER)
-    bad, not_zero, exact = [], [], 0
-    for p in logs:
-        code, out, _ = live.gate(p)
-        if INVALID in out or "Traceback" in out:
-            bad.append(f"{p.relative_to(ROOT)}: {out[-200:]!r}")
-        lines = [ln.rstrip("\r") for ln in p.read_bytes().decode("utf-8", "ignore").split("\n")]
-        if START in lines and END in lines:
-            exact += 1
-            if code != 0:
-                not_zero.append(f"{p.relative_to(ROOT)}: exit {code}")
-    print(f"REPORT: {g}: {len(logs)} logs, {exact} with both exact lines")
-    record(f"{g}: no log gives dispositions feedback or a Traceback", not bad, "; ".join(bad[:5]))
-    record(f"{g}: each log with both exact lines exits 0", not not_zero, "; ".join(not_zero[:5]))
+    tracked = listed.stdout.decode("utf-8", "surrogateescape").split("\0")
+    logs = sorted(ROOT / p for p in tracked if p.endswith(".log"))
+    record(f"{g}: the committed corpus holds at least one log", len(logs) > 0, "0 tracked logs")
+live = Probes(CHECKER)
+bad, not_zero, exact = [], [], 0
+for p in logs:
+    code, out, _ = live.gate(p)
+    if INVALID in out or "Traceback" in out:
+        bad.append(f"{p.relative_to(ROOT)}: {out[-200:]!r}")
+    lines = [ln.rstrip("\r") for ln in p.read_bytes().decode("utf-8", "ignore").split("\n")]
+    if START in lines and END in lines:
+        exact += 1
+        if code != 0:
+            not_zero.append(f"{p.relative_to(ROOT)}: exit {code}")
+print(f"REPORT: {g}: {len(logs)} logs, {exact} with both exact lines")
+record(f"{g}: no log gives dispositions feedback or a Traceback", not bad, "; ".join(bad[:5]))
+record(f"{g}: each log with both exact lines exits 0", not not_zero, "; ".join(not_zero[:5]))
 
 # --- G20 lint: no pipe into grep -q in the bash suites (F14) --------------------------------
 suite_dir = ROOT / "tests" / "spec_review_gate"
