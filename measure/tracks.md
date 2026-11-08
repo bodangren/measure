@@ -346,7 +346,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: DSH Measure commit wrapper closure**
   *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
-  *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
+  *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard add scan*
 
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
