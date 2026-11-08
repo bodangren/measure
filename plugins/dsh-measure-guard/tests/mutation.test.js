@@ -67,7 +67,7 @@ test('write becomes a Write FileEdit and its after-text is the content', async (
   assert.equal(mutation.afterTexts.get('/repo/src/new.js'), 'export {}\n')
 })
 
-test('apply_patch lists every patch path and has no after-texts', async () => {
+test('apply_patch lists every patch path and reconstructs the after-texts', async () => {
   const patch = [
     '*** Begin Patch',
     '*** Update File: src/a.js',
@@ -79,27 +79,50 @@ test('apply_patch lists every patch path and has no after-texts', async () => {
     '*** Delete File: src/c.js',
     '*** End Patch',
   ].join('\n')
-  const mutation = await normalizeMutation('apply_patch', { input: patch }, '/repo', ioOf())
+  const files = { '/repo/src/a.js': 'a\n' }
+  const mutation = await normalizeMutation('apply_patch', { input: patch }, '/repo', ioOf(files))
   assert.equal(mutation.kind, 'file')
   assert.deepEqual(mutation.paths, ['/repo/src/a.js', '/repo/src/b.js', '/repo/src/c.js'])
-  assert.equal(mutation.afterTexts.size, 0)
+  assert.equal(mutation.afterTexts.get('/repo/src/a.js'), 'b\n')
+  assert.equal(mutation.afterTexts.get('/repo/src/b.js'), 'new\n')
+  assert.equal(mutation.afterTexts.get('/repo/src/c.js'), '')
   assert.equal(mutation.edit, null)
 
   const alternate = await normalizeMutation('apply_patch', { patchText: '*** Update File: docs/x.md\n' }, '/repo', ioOf())
   assert.deepEqual(alternate.paths, ['/repo/docs/x.md'])
+  assert.equal(alternate.afterTexts.size, 0)
 })
 
-test('str_replace_editor is a file mutation except view', async () => {
-  for (const command of ['create', 'str_replace', 'insert']) {
-    const mutation = await normalizeMutation('str_replace_editor', { path: 'src/app.js', command }, '/repo', ioOf(files))
-    assert.equal(mutation.kind, 'file')
-    assert.deepEqual(mutation.paths, [APP])
-    assert.equal(mutation.afterTexts.size, 0)
-    assert.equal(mutation.edit, null)
-  }
-  assert.deepEqual(await normalizeMutation('str_replace_editor', { path: 'src/app.js', command: 'view' }, '/repo', ioOf(files)), {
+test('an apply_patch whose hunk does not apply has no after-text', async () => {
+  const patch = '*** Begin Patch\n*** Update File: src/a.js\n@@\n-missing\n+x\n*** End Patch'
+  const mutation = await normalizeMutation('apply_patch', { input: patch }, '/repo', ioOf({ '/repo/src/a.js': 'a\n' }))
+  assert.deepEqual(mutation.paths, ['/repo/src/a.js'])
+  assert.equal(mutation.afterTexts.size, 0)
+})
+
+test('str_replace_editor reconstructs create, str_replace, and insert; view is not a mutation', async () => {
+  const before = { [APP]: 'one\ntwo\n' }
+  const created = await normalizeMutation('str_replace_editor', { path: 'src/new.js', command: 'create', file_text: 'x\n' }, '/repo', ioOf({}))
+  assert.equal(created.afterTexts.get('/repo/src/new.js'), 'x\n')
+  const replaced = await normalizeMutation('str_replace_editor', { path: 'src/app.js', command: 'str_replace', old_str: 'two', new_str: 'three' }, '/repo', ioOf(before))
+  assert.deepEqual(replaced.paths, [APP])
+  assert.equal(replaced.afterTexts.get(APP), 'one\nthree\n')
+  const inserted = await normalizeMutation('str_replace_editor', { path: 'src/app.js', command: 'insert', insert_line: 1, new_str: 'mid' }, '/repo', ioOf(before))
+  assert.equal(inserted.afterTexts.get(APP), 'one\nmid\ntwo\n')
+  assert.deepEqual(await normalizeMutation('str_replace_editor', { path: 'src/app.js', command: 'view' }, '/repo', ioOf(before)), {
     kind: 'other',
   })
+})
+
+test('a str_replace_editor call that cannot be reconstructed has no after-text', async () => {
+  const mutation = await normalizeMutation(
+    'str_replace_editor',
+    { path: 'src/app.js', command: 'str_replace', old_str: 'missing', new_str: 'x' },
+    '/repo',
+    ioOf({ [APP]: 'one\n' }),
+  )
+  assert.deepEqual(mutation.paths, [APP])
+  assert.equal(mutation.afterTexts.size, 0)
 })
 
 test('bash and pwsh are shell calls with their command', async () => {

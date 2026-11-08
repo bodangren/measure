@@ -1,6 +1,7 @@
 // Story S3: the bounded shell-write grammar. The recognized forms are `>` and
-// `>>` redirection, `tee` arguments, and `sed -i` file arguments; stream
-// devices, fd duplications, options, and sed scripts are not targets.
+// `>>` redirection, `tee` arguments, `sed -i` file arguments, and the
+// destination of `cp`/`mv`/`install`; stream devices, fd duplications, options,
+// sed scripts, and `-t` destinations are not targets.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -42,6 +43,22 @@ test('a command without a write form has no targets', () => {
 
 test('duplicate targets appear once, in command order', () => {
   assert.deepEqual(shellWritePaths('echo a > out.txt; echo b >> out.txt'), ['out.txt'])
+})
+
+// ---- cp, mv, and install destinations (dsh_measure_apply_patch_visibility_20261110)
+
+test('cp, mv, and install destinations are extracted', () => {
+  assert.deepEqual(shellWritePaths('cp /tmp/p measure/tracks/a/plan.md'), ['measure/tracks/a/plan.md'])
+  assert.deepEqual(shellWritePaths('cp -R src/ dst/'), ['dst/'])
+  assert.deepEqual(shellWritePaths('mv old.md new.md'), ['new.md'])
+  assert.deepEqual(shellWritePaths('install -m 644 /tmp/x measure/tracks.md'), ['measure/tracks.md'])
+  assert.deepEqual(shellWritePaths('cp a.txt b.txt c.txt'), ['c.txt'])
+})
+
+test('cp and mv option arguments and -t destinations are not targets', () => {
+  assert.deepEqual(shellWritePaths('cp -t /tmp a.txt b.txt'), [])
+  assert.deepEqual(shellWritePaths('ls -la'), [])
+  assert.deepEqual(shellWritePaths('git commit -m "cp x"'), [])
 })
 
 // ---- heredoc, quote, and comment masking (dsh_measure_shell_grammar_20261107)

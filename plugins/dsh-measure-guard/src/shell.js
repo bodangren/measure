@@ -12,6 +12,7 @@ const STREAM_DEVICES = new Set(['/dev/null', '/dev/stdout', '/dev/stderr'])
 const REDIRECT = /(?:^|[\s;|&()])(?:\d?>>?)\s*([^\s;|&<>()]+)/g
 const TEE = /(?:^|[\s;|&()])tee\b([^;|&\n]*)/g
 const SED = /(?:^|[\s;|&()])sed\b([^;|&\n]*)/g
+const COPY = /(?:^|[\s;|&()])(?:cp|mv|install)\b([^;|&\n]*)/g
 
 const clean = token => token.replace(/^['"]|['"]$/g, '')
 
@@ -157,10 +158,25 @@ const sedTargets = command => {
   return out
 }
 
+/** The destination arguments of `cp`, `mv`, and `install` (the last non-option word). */
+const copyTargets = command => {
+  const out = []
+  for (const match of command.matchAll(COPY)) {
+    const segment = match[1] ?? ''
+    // `-t DIR` / `--target-directory` name the destination as an option argument;
+    // that form is left to the end-of-turn backstop instead of guessing the token.
+    if (/(?:^|\s)(?:-t|--target-directory)(?:\s|=|$)/.test(segment)) continue
+    const words = segment.trim().split(/\s+/).filter(word => word !== '' && !word.startsWith('-'))
+    const last = words[words.length - 1]
+    if (last !== undefined) out.push(clean(last))
+  }
+  return out
+}
+
 /** The write targets of a bash command, in command order, without duplicates. */
 export function shellWritePaths(command) {
   if (typeof command !== 'string' || command === '') return []
-  const paths = [...redirectTargets(command), ...teeTargets(command), ...sedTargets(command)]
+  const paths = [...redirectTargets(command), ...teeTargets(command), ...sedTargets(command), ...copyTargets(command)]
   const seen = []
   for (const path of paths) {
     if (!seen.includes(path)) seen.push(path)

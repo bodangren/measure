@@ -1,8 +1,9 @@
 // The closeout guard (FR-8): a track may change to [x] only when its plan has
 // no open task, and a task may start in phase N+1 only when phase N's heading
-// has a checkpoint. The after-text exists only for edit/write; every other
-// mutation fails open here and is caught by the end-of-turn check. On an allow
-// the core's [b] note rides on the tool result through the post-execute append.
+// has a checkpoint. The after-text exists for edit, write, apply_patch, and
+// str_replace_editor; the shell calls fail open here and are caught by the
+// end-of-turn check. On an allow the core's [b] note rides on the tool result
+// through the post-execute append.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -274,16 +275,51 @@ test('closing a track without metadata.json is denied', async () => {
 
 const patchOf = path => `*** Begin Patch\n*** Update File: ${path}\n@@\n-a\n+b\n*** End Patch\n`
 const editorOf = path => ({ command: 'str_replace', path, old_str: 'a', new_str: 'b' })
+const closingPatch = () =>
+  [
+    '*** Begin Patch',
+    `*** Update File: ${REGISTRY}`,
+    '@@',
+    ' # Project Tracks',
+    ' ',
+    '-- [~] **Track: DSH measure guard**',
+    '+- [x] **Track: DSH measure guard**',
+    '*** End Patch',
+  ].join('\n')
 
-test('apply_patch and str_replace_editor on the registry files are denied', async () => {
+test('an apply_patch on a registry file is checked by the closeout guard when it is readable', async () => {
   const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
-  for (const path of [REGISTRY, PLAN_PATH]) {
-    for (const [tool, args] of [['apply_patch', { input: patchOf(path) }], ['str_replace_editor', editorOf(path)]]) {
-      const decision = await prepareDecision(deps, { name: tool, agent, arguments: args })
-      assert.match(decision.denial ?? '', /cannot read the after-text/, `${tool} ${path}`)
-      assert.match(decision.denial ?? '', /Use edit or write/)
-    }
-  }
+  const decision = await prepareDecision(deps, { name: 'apply_patch', agent, arguments: { input: closingPatch() } })
+  assert.match(decision.denial ?? '', /a track can change to \[x\] only when its plan has no open task/)
+  assert.match(decision.denial ?? '', /\[~\] Task: Guard the edits/)
+})
+
+test('an unreadable apply_patch hunk on a registry file still fails closed', async () => {
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
+  const decision = await prepareDecision(deps, { name: 'apply_patch', agent, arguments: { input: patchOf(REGISTRY) } })
+  assert.match(decision.denial ?? '', /cannot read the after-text/)
+  assert.match(decision.denial ?? '', /Use edit or write/)
+})
+
+test('a str_replace_editor on a plan is checked, and a valid replacement is allowed', async () => {
+  const deps = depsOf({ files: { [REGISTRY]: TRACKS, [PLAN_PATH]: PLAN } })
+  const allowed = await prepareDecision(deps, {
+    name: 'str_replace_editor',
+    agent,
+    arguments: { command: 'str_replace', path: PLAN_PATH, old_str: 'Guard the edits', new_str: 'Guard the shell edits' },
+  })
+  assert.equal(allowed.denial, undefined)
+  const closing = await prepareDecision(deps, {
+    name: 'str_replace_editor',
+    agent,
+    arguments: {
+      command: 'str_replace',
+      path: REGISTRY,
+      old_str: '- [~] **Track: DSH measure guard**',
+      new_str: '- [x] **Track: DSH measure guard**',
+    },
+  })
+  assert.match(closing.denial ?? '', /a track can change to \[x\] only when its plan has no open task/)
 })
 
 test('advise mode allows the registry deny and the metadata closeout check', async () => {
