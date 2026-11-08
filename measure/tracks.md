@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure gate timing (closing)**
-  *Link: [./archive/dsh_measure_gate_timing_20261110/](./archive/dsh_measure_gate_timing_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -349,3 +347,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit wrapper closure**
   *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
   *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
+
+- [x] **Track: DSH Measure gate timing**
+  *Link: [./archive/dsh_measure_gate_timing_20261110/](./archive/dsh_measure_gate_timing_20261110/)*
+  *Make the adversarial-suite wall-clock budgets tolerant of a loaded machine while still catching algorithmic blowups*
