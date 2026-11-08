@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure band poll pause**
+  *Link: [./tracks/dsh_measure_band_poll_pause_20261110/](./tracks/dsh_measure_band_poll_pause_20261110/)*
+  *Pause the band and panel state poll while the page is hidden and refresh on return to visibility*
 
 ---
 
