@@ -1,0 +1,65 @@
+# Review A (correctness) for track red_gate_track_scope_20261108, Phase 3
+
+- phase base: 232bc29ac8fb51b7cd389da8cd3fca29e2c03227 (Red commit)
+- audited HEAD: b09dd9c5aa1ad6ce7618bab16c6841cf5affd08c (equals HEAD)
+- green author model: claude-code/claude-opus-5-5 (Claude family)
+- result JSON: measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.json
+
+## Result
+
+Status pass. No Blocker. Four nonblocking findings (F1 Major, F2 to F4 Nit).
+
+## What I checked
+
+1. The audited diff of measure_interphase_checks.py against D2 to D7.
+2. Both test files at HEAD: `test_red_track_scope.py` (Ran 11 tests, OK) and
+   `test_checker.py` (Ran 38 tests, OK).
+3. The git parse with a probe repo: `git log -z --format=%H%n%B` gives one record
+   per commit. The tag form, the body line form, the subject-only line form, and
+   the uppercase id behave as D2 and D3 state.
+4. The merge path with a probe repo: `diff-tree --cc --no-renames` lists the
+   conflict file and the merge-only file, and hides a path that the merge takes
+   unchanged from a parent. This matches D5.
+5. The Monorepo range evidence: I ran the checker at HEAD on /tmp/monoclone for
+   range 08e60c795..126189088. It printed the same 12 INFO lines and the PASS
+   line as green-p3-monorepo-look-range.log.
+6. The docs: contracts.md, CHANGELOG.md, and measure/tech-debt.md.
+
+## Findings
+
+- F1 [Major] No test covers the `all()` rule of D3 or the `measure/archive/`
+  folder. Either mutation keeps all 11 tests green.
+- F2 [Nit] `is_track_folder` reads the working tree. One commit can make its own
+  id valid by adding the track folder.
+- F3 [Nit] The contracts bullet omits the diff-tree failure and the git-log
+  fallback of D5.
+- F4 [Nit] AC-9 has no result yet. Task 3.3 is [~] and the full-suite log is
+  incomplete. The plan makes no AC-9 claim.
+
+## Gate check of these artifacts
+
+- `audit-result --role review-a` gives `PASS: audit result is valid`.
+- `role-gate --role review-a` gives `FAIL: current phase still has 1 non-deferred
+  incomplete tasks`. The cause is the [~] mark of Task 3.3 (AC-9). No source
+  finding comes from that FAIL.
+
+## Reproduction
+
+- `python3 -m unittest discover -s tests/spec_review_gate -p test_red_track_scope.py`
+- `python3 -m unittest discover -s tests/spec_review_gate -p test_checker.py`
+- `RED_TEST_COMMAND=false python3 -I skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo /tmp/monoclone --role mid-red --track storytime_look_20261107 --phase 'Phase 2: Look port of the picked option' --baseline 08e60c7959ff7e2a175b7a5fca9552a8fcfdb1ca`
+
+I wrote no file outside measure/runs/. I made no commit.
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: pass
+track: red_gate_track_scope_20261108
+phase: Phase 3: Green change
+commits: 232bc29ac8fb51b7cd389da8cd3fca29e2c03227..b09dd9c5aa1ad6ce7618bab16c6841cf5affd08c
+tests_run: test_red_track_scope.py (11, OK); test_checker.py (38, OK); Monorepo range 08e60c795..126189088 on /tmp/monoclone (PASS)
+files_changed: measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.json; measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.log
+plan_updates: none (audit-only)
+known_failures: none; AC-9 full suite is still running (Task 3.3 [~])
+handoff: F1 to F4 go to the phase 4 fix step. No Blocker. Do not record the phase as suite-verified until Task 3.3 ends with PASS.
+END_MEASURE_AGENT_RESULT

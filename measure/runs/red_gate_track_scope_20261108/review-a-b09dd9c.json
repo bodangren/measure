@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "The scoped mid-red gate follows D2 to D7. Both test files pass at HEAD. I reproduced the Monorepo range evidence exactly on the read-only clone. The docs match the code. No bypass exists beyond the accepted F1 claim limit. I found four nonblocking points: two D3 clauses have no test, the folder check reads the working tree, the contracts bullet omits two D5 failure rules, and AC-9 is still open.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] review-a: No test covers the all() rule of D3 or the measure/archive/ folder. Replace all() with any() in red_scope, or remove archive from is_track_folder, and all 11 tests still pass. A wrong any() rule would skip a production commit that carries one real track id and one unknown id. The code at HEAD is correct; the test file is shallow on these two points.",
+    "F2 [Nit] review-a: is_track_folder reads the working tree at HEAD, not the tree of the commit. One commit can add measure/tracks/<new-id>/ and tag its production change (track_id: <new-id>); the gate then skips that commit. I built this fixture and saw the skip. The INFO line stays visible, so this is a variant of the accepted claim limit.",
+    "F3 [Nit] review-a: The 'Track scope (Mid Red)' bullet of contracts.md omits two D5 rules: the 'mid-red could not list the files of commit' failure and the old-file-set fallback when git log fails. FR-6 does not require these rules, but this section is the operator contract.",
+    "F4 [Nit] review-a: AC-9 has no result. Task 3.3 is [~], and green-p3-full-suite.log stops at '--- suite: test_s3_adversarial.sh ---' with no suite result and no total. The plan makes no AC-9 claim, so no false claim exists. The review-a role gate returns FAIL with 'current phase still has 1 non-deferred incomplete tasks' until Task 3.3 becomes [x]. Do not record the phase as suite-verified until the run ends with PASS."
+  ],
+  "evidence": [
+    "audited diff 232bc29..b09dd9c adds commit_track_ids, is_track_folder, RedScope, red_scope, commit_paths, non_test_paths, and the scoped mid-red branch of cmd_role_gate.",
+    "python3 -m unittest discover -s tests/spec_review_gate -p test_red_track_scope.py gives 'Ran 11 tests ... OK'. This matches the Task 3.1 plan claim.",
+    "python3 -m unittest discover -s tests/spec_review_gate -p test_checker.py gives 'Ran 38 tests ... OK'. This matches the Task 3.1 plan claim, and it covers the unchanged single-track output of D4.",
+    "A probe repo shows git log -z --format=%H%n%B gives one record per commit (7 records for 7 commits). The subject tag form reads two ids in order, the body line form reads one id, a subject of 'track_id: login' reads no id, and '(track_id: LOGIN)' reads an id that names no folder, so that commit counts as own (fail closed).",
+    "The probe shows diff-tree -r --root --cc --no-renames --name-only on a merge lists the conflict file and the merge-only file, and hides a path that the merge takes unchanged from a parent. This matches D5.",
+    "I ran the checker at HEAD on /tmp/monoclone for range 08e60c795..126189088. It printed the same 12 INFO lines and 'PASS: mid-red gate passed' as measure/runs/red_gate_track_scope_20261108/green-p3-monorepo-look-range.log. That range has 20 commits.",
+    "The diff of contracts.md names the mid-red exception in the Baseline and HEAD advance bullets. The new Track scope bullet matches D2, D3, D4, D5, and D7. CHANGELOG.md and measure/tech-debt.md record the change and the D8 follow-up row.",
+    "The tests fail for these wrong implementations: a full committed-file set (AC-2), a plain diff-tree on a merge (AC-7), per-parent or -m output (AC-7), rename detection on (AC-6), a scan of all message lines for the tag form (AC-4), a weak key case (AC-4), a scope built with no skipped commit (AC-8), and oldest-first INFO lines (AC-1).",
+    "No vacuous-pass (A4) check is added: a missing commit or a missing folder makes a commit own, so the gate fails closed. No digit-only count (A3) assertion exists; every count assertion uses a labeled string. The plan makes no 'all checks pass' or PASS=N claim (A5), and AC-9 is honestly [~].",
+    "`audit-result --role review-a` reports PASS for this result file. `role-gate --role review-a` returns FAIL with only 'current phase still has 1 non-deferred incomplete tasks', because phase_counts counts a [~] task as incomplete. No source finding comes from that FAIL."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git diff --stat 232bc29..b09dd9c",
+    "git diff 232bc29..b09dd9c -- skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "git diff 232bc29..b09dd9c -- skills/measure-orchestrator/references/contracts.md CHANGELOG.md measure/tech-debt.md measure/tracks/red_gate_track_scope_20261108/plan.md",
+    "python3 -m unittest discover -s tests/spec_review_gate -p test_red_track_scope.py",
+    "python3 -m unittest discover -s tests/spec_review_gate -p test_checker.py",
+    "RED_TEST_COMMAND=false python3 -I skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo /tmp/monoclone --role mid-red --track storytime_look_20261107 --phase 'Phase 2: Look port of the picked option' --baseline 08e60c7959ff7e2a175b7a5fca9552a8fcfdb1ca",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role review-a --file measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.json",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --role review-a --track red_gate_track_scope_20261108 --phase 'Phase 3: Green change' --baseline 232bc29 --log-file measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.log --result-file measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.json"
+  ],
+  "changed_files": [
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "skills/measure-orchestrator/references/contracts.md",
+    "CHANGELOG.md",
+    "measure/tech-debt.md",
+    "measure/tracks/red_gate_track_scope_20261108/plan.md",
+    "measure/runs/red_gate_track_scope_20261108/green-p3-checker.log",
+    "measure/runs/red_gate_track_scope_20261108/green-p3-scope.log",
+    "measure/runs/red_gate_track_scope_20261108/green-p3-monorepo-look-range.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "phase_base_sha": "232bc29ac8fb51b7cd389da8cd3fca29e2c03227",
+  "role_base_sha": "232bc29ac8fb51b7cd389da8cd3fca29e2c03227",
+  "audited_head_sha": "b09dd9c5aa1ad6ce7618bab16c6841cf5affd08c"
+}
