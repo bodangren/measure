@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Guard session track**
+  *Link: [./tracks/guard_session_track_20261109/](./tracks/guard_session_track_20261109/)*
+  *Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).*
 
 ---
 
