@@ -14,6 +14,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and closeout
 
-- [~] Task 2.1: resolve the six constraint rows with their document reference, add the `CHANGELOG.md` entry; record the live check, run the gates again
-- [ ] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_limits_docs_20261110` and record the manifest-only FAIL
+- [x] Task 2.1: resolve the six constraint rows with their document reference, add the `CHANGELOG.md` entry; record the live check, run the gates again `8b043b8`
+- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_limits_docs_20261110` and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
