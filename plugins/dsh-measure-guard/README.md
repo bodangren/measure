@@ -209,8 +209,13 @@ The live check reads the JSON route of the running GUI:
 curl -D - 'http://127.0.0.1:3080/measure-guard/state?sessionId=<id>'
 ```
 
-Every response of the two routes carries two identity headers: the 200 view, the
-setup route's 200/400/404/405 answers, and the 404 and 500 errors of both routes.
+The setup route is registered as a `webServer` **handler**, not a resource: the Host
+answers a resource only GET and HEAD, so a resource route would turn the band's setup
+POST into the web server's own 405. The handler reads the POST body (at most 8 KiB;
+larger bodies answer 413), replays it as a Fetch `Request`, and writes the
+`setupResponse` status, headers, and body back. Every response of the two routes carries
+two identity headers: the 200 view, the setup route's 200/400/404/405/413 answers, and
+the 404 and 500 errors of both routes.
 A missing route has no such headers, so a caller can tell "the plugin is not
 loaded here" from "the request failed on a present route". `x-measure-guard-module`
 names the loaded module's path, and `x-measure-guard-digest: sha256:<hex>` is the
