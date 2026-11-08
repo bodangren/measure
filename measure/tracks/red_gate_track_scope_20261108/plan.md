@@ -25,8 +25,8 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 - [x] Task 3.1: Change the `mid-red` branch of `measure_interphase_checks.py` (FR-1 to FR-5). Run the new test file and `tests/spec_review_gate/test_checker.py`. `7691a39`
   - Evidence: `test_red_track_scope.py` gives `Ran 11 tests`, `OK`. `test_checker.py` gives `Ran 38 tests`, `OK`.
   - Evidence: on the Monorepo look Phase 2 Red range (`08e60c795..126189088`, read-only clone), the old checker exits 1 with 10 files of other tracks. The new checker exits 0 and skips 12 commits. Log: `measure/runs/red_gate_track_scope_20261108/green-p3-monorepo-look-range.log`.
-- [~] Task 3.2: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-6).
-- [ ] Task 3.3: Run `bash tests/spec_review_gate/run.sh` (AC-9).
+- [x] Task 3.2: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-6). `78878d4`
+- [~] Task 3.3: Run `bash tests/spec_review_gate/run.sh` (AC-9).
 
 ## Phase 4: Review and distribution
 
