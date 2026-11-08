@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure agent tools**
-  *Link: [./tracks/dsh_measure_agent_tools_20261110/](./tracks/dsh_measure_agent_tools_20261110/)*
-  *Add read-only measure_verify and measure_mode tools so agents can use the verify and mode report without the GUI*
+- (none)
 
 ---
 
