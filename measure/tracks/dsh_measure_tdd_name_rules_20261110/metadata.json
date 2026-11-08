@@ -1,11 +1,12 @@
 {
   "track_id": "dsh_measure_tdd_name_rules_20261110",
   "type": "bug",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-10T14:40:00Z",
-  "updated_at": "2026-11-10T14:40:00Z",
+  "updated_at": "2026-11-10T15:00:00Z",
   "description": "Recognize nested test-directory files and the node --test runner in the shared TDD name rules",
   "estimated_tasks": 7,
-  "actual_tasks": 0,
-  "deviation_notes": ""
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
 }
