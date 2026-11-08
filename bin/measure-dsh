@@ -1095,7 +1095,9 @@ skill_check() { # skill item
   fi
   local -a all=() missing=()
   local abs rel
-  mapfile -d '' all < <(find "$src" -type f -print0 | LC_ALL=C sort -z)
+  # Generated Python artifacts are never installed (the installer copies tracked files from
+  # the ref), so a local __pycache__ left by a Measure script must not read as "incomplete".
+  mapfile -d '' all < <(find "$src" \( -name __pycache__ -o -name '*.pyc' \) -prune -o -type f -print0 | LC_ALL=C sort -z)
   for abs in "${all[@]}"; do
     rel="${abs#"$src"/}"
     [[ -e "$SKILL_ROOT_FOUND/$rel" ]] || missing+=("$rel")

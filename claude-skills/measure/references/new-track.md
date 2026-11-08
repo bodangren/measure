@@ -346,3 +346,5 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 11. Announce completion:
     > "New track '<track_id>' has been created and added to the tracks file. You can now start implementation by running `implement`."
+
+**Project metadata keys (after step 4).** Read every `metadata.json` in the Tracks Directory (or in `measure/archive/` when the directory has no track). Add the keys that every one of those files has and that the Measure schema does not have (for example `workstream` or `evidence`), with a value for this track. Do not copy a key that only some tracks have. If a project rule needs a field to be non-empty, fill it. ([new-track-set.md](new-track-set.md) §2.9 step 4 item 5 applies the same rule to set members.)

@@ -8,8 +8,11 @@ set -euo pipefail
 #
 # Each target gets a stamp file (.measure-install) with the hash of each
 # installed file. A target file that differs from its stamp hash is a local
-# edit: the installer keeps it, warns, and exits with 2. Files are written in
-# place, so hard links to them stay.
+# edit: the installer keeps it, warns, and exits with 2. Each file (and the
+# stamp) is written to a sibling temporary file and renamed into place, so an
+# interrupted install leaves the previous file intact instead of a truncated
+# one; the trade-off is that a hard link to an old target no longer follows the
+# new file.
 #
 # Usage:
 #   install-measure-skill [--ref <ref>] [--check | --adopt]
@@ -157,12 +160,21 @@ report() { # kind path (--check only)
 
 # Writes the source over the target in place (the inode and hard links stay),
 # then sets the target mode to the source mode.
+# Replaces the target atomically: a sibling temporary file with the source mode is
+# renamed over it, so an interrupted or failed write leaves the previous file intact.
 put() {
-  local src="$1" dst="$2" src_mode
-  mkdir -p -- "$(dirname -- "$dst")"
-  cat -- "$src" >"$dst"
-  src_mode="$(stat -c %a -- "$src")"
-  [[ "$(stat -c %a -- "$dst")" == "$src_mode" ]] || chmod "$src_mode" -- "$dst"
+  local src="$1" dst="$2" src_mode tmp
+  mkdir -p -- "$(dirname -- "$dst")" || return 1
+  src_mode="$(stat -c %a -- "$src")" || return 1
+  tmp="$dst.measure-install.tmp.$$"
+  if ! cat -- "$src" >"$tmp"; then
+    rm -f -- "$tmp"
+    return 1
+  fi
+  if ! chmod "$src_mode" -- "$tmp" || ! mv -f -- "$tmp" "$dst"; then
+    rm -f -- "$tmp"
+    return 1
+  fi
 }
 
 # Removes the empty folders between a removed file and the target folder.
@@ -209,7 +221,7 @@ for i in "${!targets[@]}"; do
     src_hash="$(sha_of "$src")"
     if [[ ! -e "$dst" ]]; then
       if [[ "$mode" == check ]]; then report missing "$dst"; continue; fi
-      put "$src" "$dst"
+      put "$src" "$dst" || die "cannot write $(show "$dst")"
       written=$((written + 1)) new_stamp[$rel]="$src_hash"
       continue
     fi
@@ -222,14 +234,14 @@ for i in "${!targets[@]}"; do
       new_stamp[$rel]="$src_hash"
     elif [[ -n "${stamped[$rel]:-}" && "$dst_hash" == "${stamped[$rel]}" ]]; then
       if [[ "$mode" == check ]]; then report different "$dst"; continue; fi
-      put "$src" "$dst"
+      put "$src" "$dst" || die "cannot write $(show "$dst")"
       written=$((written + 1)) new_stamp[$rel]="$src_hash"
     elif [[ -n "${stamped[$rel]:-}" ]]; then
       if [[ "$mode" == check ]]; then report local-edit "$dst"; continue; fi
       warn local-edit "$dst"
       kept=$((kept + 1)) new_stamp[$rel]="${stamped[$rel]}"
     elif [[ "$mode" == adopt ]]; then
-      put "$src" "$dst"
+      put "$src" "$dst" || die "cannot write $(show "$dst")"
       written=$((written + 1)) new_stamp[$rel]="$src_hash"
     else
       if [[ "$mode" == check ]]; then report unstamped "$dst"; continue; fi
@@ -256,14 +268,22 @@ for i in "${!targets[@]}"; do
   done
 
   if [[ "$mode" != check ]]; then
-    {
+    stamp_tmp="$target/$stamp_name.tmp.$$"
+    if ! {
       echo "# measure install stamp v1"
       echo "ref $ref"
       echo "commit $commit"
       echo "installed_at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
       echo "bundle $bundle"
       for rel in "${!new_stamp[@]}"; do printf 'file %s  %s\n' "${new_stamp[$rel]}" "$rel"; done | sort -k3
-    } >"$target/$stamp_name"
+    } >"$stamp_tmp"; then
+      rm -f -- "$stamp_tmp"
+      die "cannot write $(show "$target/$stamp_name")"
+    fi
+    if ! mv -f -- "$stamp_tmp" "$target/$stamp_name"; then
+      rm -f -- "$stamp_tmp"
+      die "cannot write $(show "$target/$stamp_name")"
+    fi
     echo "installed $(show "$target") from $ref ($short)"
   fi
   unset source_files stamped new_stamp

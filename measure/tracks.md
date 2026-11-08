@@ -348,6 +348,18 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
   *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
 
+- [x] **Track: DSH Measure gate timing**
+  *Link: [./archive/dsh_measure_gate_timing_20261110/](./archive/dsh_measure_gate_timing_20261110/)*
+  *Make the adversarial-suite wall-clock budgets tolerant of a loaded machine while still catching algorithmic blowups*
+
+- [x] **Track: DSH Measure doc contract**
+  *Link: [./archive/dsh_measure_doc_contract_20261110/](./archive/dsh_measure_doc_contract_20261110/)*
+  *Copy a project's metadata keys in new-track and lint inline code spans in the guide and plugin READMEs*
+
+- [x] **Track: DSH Measure installer atomicity**
+  *Link: [./archive/dsh_measure_installer_atomic_20261110/](./archive/dsh_measure_installer_atomic_20261110/)*
+  *Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path*
+
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*

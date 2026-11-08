@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_gate_timing_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T16:40:00Z",
+  "updated_at": "2026-11-10T17:00:00Z",
+  "description": "Make the adversarial-suite wall-clock budgets tolerant of a loaded machine while still catching algorithmic blowups",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}
