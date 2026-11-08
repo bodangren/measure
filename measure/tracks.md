@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure count pins (closing)**
-  *Link: [./archive/dsh_measure_count_pins_20261110/](./archive/dsh_measure_count_pins_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -341,3 +339,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure agent tools**
   *Link: [./archive/dsh_measure_agent_tools_20261110/](./archive/dsh_measure_agent_tools_20261110/)*
   *Add read-only measure_verify and measure_mode tools so agents can use the verify and mode report without the GUI*
+
+- [x] **Track: DSH Measure count pins**
+  *Link: [./archive/dsh_measure_count_pins_20261110/](./archive/dsh_measure_count_pins_20261110/)*
+  *Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals*
