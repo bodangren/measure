@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure doc contract (closing)**
-  *Link: [./archive/dsh_measure_doc_contract_20261110/](./archive/dsh_measure_doc_contract_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -353,3 +351,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure gate timing**
   *Link: [./archive/dsh_measure_gate_timing_20261110/](./archive/dsh_measure_gate_timing_20261110/)*
   *Make the adversarial-suite wall-clock budgets tolerant of a loaded machine while still catching algorithmic blowups*
+
+- [x] **Track: DSH Measure doc contract**
+  *Link: [./archive/dsh_measure_doc_contract_20261110/](./archive/dsh_measure_doc_contract_20261110/)*
+  *Copy a project's metadata keys in new-track and lint inline code spans in the guide and plugin READMEs*
