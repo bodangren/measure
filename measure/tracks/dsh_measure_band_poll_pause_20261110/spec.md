@@ -30,6 +30,7 @@ shipped bundle) is extended with a fake `document` and proves pause/resume; a ho
 - **FR-4 (records).** The guard README's poll paragraph states the pause; the band-polling
   tech-debt row becomes `Resolved` with the channel decision unchanged; `CHANGELOG.md`
   records it; the installed plugin is reloaded and the live check passes.
+- **FR-6 (reload reaches the client bundle).** `bin/measure-dsh reload` touches the installed plugin entry after bumping the nonce, so a change confined to a sibling file (`client.js`, a README) is re-evaluated by the loader; without it the live check kept seeing the old digest after a client-only change (observed while proving this track live). `tests/dsh/test-reload.sh` pins the touch.
 - **FR-5 (verification).** node suite green with the new cases, both parity gates ok,
   srg 11/11, CLI 13/13; the track is archived with a manifest-only closeout FAIL.
 

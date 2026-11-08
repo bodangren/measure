@@ -1682,6 +1682,13 @@ do_reload() {
     printf 'reload incomplete\n'
     exit 1
   fi
+  # A change confined to a sibling file (for example client.js) may not change
+  # the entry module's cache key, so the loader can keep the old instance; touch
+  # the installed entry so the next evaluation sees every changed file.
+  local entry="$PROFILE_DIR/${BLOCK_NAME#./}"
+  if [[ -f "$entry" ]]; then
+    touch -- "$entry" 2>/dev/null || true
+  fi
   add_item reload PASS "incremented the reloadNonce in $PATCH_FILE (now $RELOAD_NONCE) to trigger a live recompose"
   print_items
   printf 'reload complete: the running profile recomposes on the patch-file change.\n'

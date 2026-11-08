@@ -98,7 +98,7 @@ an absent digest is WARN. Exit code 0 means no item failed; `--json` prints the
 same items as a machine-readable object.
 
 After `install` replaces the plugin copy, the running profile must recompose to
-load the new code. `install` and `bin/measure-dsh reload` both increment the
+load the new code. `install` and `bin/measure-dsh reload` (which also touches the installed plugin entry, so a change confined to `client.js` or a README is re-evaluated) both increment the
 managed entry's `reloadNonce` config value — a semantic change in the composed
 configuration, which is what makes the loader recompose — while every other YAML
 line stays byte-equal. (A YAML comment changes no composed configuration, so a
