@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure shell redirect safety**
+  *Link: [./tracks/dsh_measure_shell_redirect_safety_20261110/](./tracks/dsh_measure_shell_redirect_safety_20261110/)*
+  *Recognize the noclobber redirect and the ln destination in the bounded shell-write grammar*
 
 ---
 
