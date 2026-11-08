@@ -14,6 +14,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Records and closeout
 
-- [~] Task 2.1: resolve the metadata-schema and broken-span tech-debt rows, add the `CHANGELOG.md` entry; record the live check, run the gates again
-- [ ] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_doc_contract_20261110` and record the manifest-only FAIL
+- [x] Task 2.1: resolve the metadata-schema and broken-span tech-debt rows, add the `CHANGELOG.md` entry; record the live check, run the gates again `755b942`
+- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_doc_contract_20261110` and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
