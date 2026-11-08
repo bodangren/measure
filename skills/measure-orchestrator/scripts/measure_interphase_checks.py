@@ -267,12 +267,12 @@ def red_scope(repo: Path, baseline: str, track: str) -> RedScope | None:
     """
     if not baseline:
         return None
-    listed = git(repo, "log", "-z", "--no-show-signature", "--format=%H%n%B", f"{baseline}..HEAD")
-    if listed.returncode != 0:
+    log = git(repo, "log", "-z", "--no-show-signature", "--format=%H%n%B", f"{baseline}..HEAD")
+    if log.returncode != 0:
         return None
     own: list[str] = []
     skipped: list[tuple[str, list[str]]] = []
-    for record in listed.stdout.split("\0"):
+    for record in log.stdout.split("\0"):
         sha, _, message = record.strip("\n").partition("\n")
         if not sha:
             continue
