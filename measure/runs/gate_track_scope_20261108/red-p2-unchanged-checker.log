@@ -1,0 +1,158 @@
+FFF.FFF.FFFFF.F.F.
+======================================================================
+FAIL: test_jr_green_mixed_range_passes (tests.spec_review_gate.test_gate_track_scope.JrGreenScopeTest.test_jr_green_mixed_range_passes)
+AC-9: one commit of the track in a mixed range passes the HEAD check.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 296, in test_jr_green_mixed_range_passes
+    self.assert_skipped(out, "jr-green", [first, second])
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 187, in assert_skipped
+    self.assertIn(info_line(name, len(shas)), lines)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: jr-green skipped 2 commits of other tracks' not found in ['PASS: jr-green gate passed']
+
+======================================================================
+FAIL: test_jr_green_range_without_own_commit_fails (tests.spec_review_gate.test_gate_track_scope.JrGreenScopeTest.test_jr_green_range_without_own_commit_fails)
+AC-8: commits of another track do not count as the Green change of the track.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 283, in test_jr_green_range_without_own_commit_fails
+    self.assertEqual(code, 1, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : PASS: jr-green gate passed
+
+
+======================================================================
+FAIL: test_jr_green_untagged_commit_counts_as_own (tests.spec_review_gate.test_gate_track_scope.JrGreenScopeTest.test_jr_green_untagged_commit_counts_as_own)
+AC-10: a commit with no id counts as a commit of the track (fail closed).
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 305, in test_jr_green_untagged_commit_counts_as_own
+    self.assert_skipped(out, "jr-green", login)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 187, in assert_skipped
+    self.assertIn(info_line(name, len(shas)), lines)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'INFO: jr-green skipped 2 commits of other tracks' not found in ['PASS: jr-green gate passed']
+
+======================================================================
+FAIL: test_spec_review_mixed_range_passes (tests.spec_review_gate.test_gate_track_scope.SpecReviewScopeTest.test_spec_review_mixed_range_passes)
+AC-1: commits of another track outside measure/runs/ do not fail the gate.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 203, in test_spec_review_mixed_range_passes
+    self.assertEqual(code, 0, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : FAIL: spec-review committed files outside measure/runs/
+FAIL: - measure/tracks/login_track/plan.md
+FAIL: - src/login.py
+
+
+======================================================================
+FAIL: test_spec_review_only_other_tracks_passes (tests.spec_review_gate.test_gate_track_scope.SpecReviewScopeTest.test_spec_review_only_other_tracks_passes)
+AC-3: a range with no commit of the track passes the scope rule.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 229, in test_spec_review_only_other_tracks_passes
+    self.assertEqual(code, 0, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : FAIL: spec-review committed files outside measure/runs/
+FAIL: - measure/tracks/login_track/plan.md
+FAIL: - src/login.py
+
+
+======================================================================
+FAIL: test_spec_review_own_commit_outside_runs_fails (tests.spec_review_gate.test_gate_track_scope.SpecReviewScopeTest.test_spec_review_own_commit_outside_runs_fails)
+AC-2: a file outside measure/runs/ in a commit of the track fails the gate.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 221, in test_spec_review_own_commit_outside_runs_fails
+    self.assertNotIn("src/login.py", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'src/login.py' unexpectedly found in 'FAIL: spec-review committed files outside measure/runs/\nFAIL: - measure/tracks/login_track/plan.md\nFAIL: - measure/tracks/look_track/spec.md\nFAIL: - src/login.py\n'
+
+======================================================================
+FAIL: test_spec_review_unlistable_own_commit_fails (tests.spec_review_gate.test_gate_track_scope.SpecReviewScopeTest.test_spec_review_unlistable_own_commit_fails)
+AC-5: a commit of the track whose files git cannot list fails the gate.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 251, in test_spec_review_unlistable_own_commit_fails
+    self.assertIn(f"FAIL: spec-review could not list the files of commit {look[:12]}", out.splitlines())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'FAIL: spec-review could not list the files of commit 2e437b69be6c' not found in ['FAIL: spec-review committed files outside measure/runs/', 'FAIL: - measure/tracks/login_track/plan.md', 'FAIL: - src/login.py']
+
+======================================================================
+FAIL: test_spec_review_untagged_commit_counts_as_own (tests.spec_review_gate.test_gate_track_scope.SpecReviewScopeTest.test_spec_review_untagged_commit_counts_as_own)
+AC-4: a commit with no id is a commit of the track (fail closed).
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 242, in test_spec_review_untagged_commit_counts_as_own
+    self.assertNotIn("src/login.py", out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'src/login.py' unexpectedly found in 'FAIL: spec-review committed files outside measure/runs/\nFAIL: - measure/tracks/login_track/plan.md\nFAIL: - src/login.py\nFAIL: - src/misc.py\n'
+
+======================================================================
+FAIL: test_ux_paths_require_with_only_other_tracks_fails (tests.spec_review_gate.test_gate_track_scope.UxPathsScopeTest.test_ux_paths_require_with_only_other_tracks_fails)
+AC-17: --require fails when only commits of other tracks change user-facing files.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 378, in test_ux_paths_require_with_only_other_tracks_fails
+    self.assertEqual(code, 1, out + err)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1 : usage: measure_interphase_checks.py [-h]
+                                    {status,audit-result,ux-paths,closeout,role-gate} ...
+measure_interphase_checks.py: error: unrecognized arguments: --track look_track
+
+
+======================================================================
+FAIL: test_ux_paths_track_option_scopes_stdout (tests.spec_review_gate.test_gate_track_scope.UxPathsScopeTest.test_ux_paths_track_option_scopes_stdout)
+AC-15: with --track, stdout lists only the paths of the track, and stderr names the skips.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 362, in test_ux_paths_track_option_scopes_stdout
+    self.assertEqual(code, 0, out + err)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: measure_interphase_checks.py [-h]
+                                    {status,audit-result,ux-paths,closeout,role-gate} ...
+measure_interphase_checks.py: error: unrecognized arguments: --track look_track
+
+
+======================================================================
+FAIL: test_ux_paths_unlistable_own_commit_fails (tests.spec_review_gate.test_gate_track_scope.UxPathsScopeTest.test_ux_paths_unlistable_own_commit_fails)
+AC-18: a commit of the track whose files git cannot list fails the command, with no path.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 386, in test_ux_paths_unlistable_own_commit_fails
+    self.assertEqual(code, 1, out + err)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1 : usage: measure_interphase_checks.py [-h]
+                                    {status,audit-result,ux-paths,closeout,role-gate} ...
+measure_interphase_checks.py: error: unrecognized arguments: --track look_track
+
+
+======================================================================
+FAIL: test_ux_review_other_track_ui_commit_passes (tests.spec_review_gate.test_gate_track_scope.UxReviewScopeTest.test_ux_review_other_track_ui_commit_passes)
+AC-11: a user-facing file of another track does not need PROJECT_DEV_URL.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 321, in test_ux_review_other_track_ui_commit_passes
+    self.assertEqual(code, 0, out)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : FAIL: UX-relevant files changed but PROJECT_DEV_URL is unset
+
+
+======================================================================
+FAIL: test_ux_review_unlistable_own_commit_fails (tests.spec_review_gate.test_gate_track_scope.UxReviewScopeTest.test_ux_review_unlistable_own_commit_fails)
+AC-14: a commit of the track whose files git cannot list fails the gate.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/daniebo/Desktop/measure/tests/spec_review_gate/test_gate_track_scope.py", line 348, in test_ux_review_unlistable_own_commit_fails
+    self.assertIn(f"FAIL: ux-browser-review could not list the files of commit {look[:12]}", out.splitlines())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'FAIL: ux-browser-review could not list the files of commit 917fd9c3afe6' not found in ['FAIL: UX-relevant files changed but PROJECT_DEV_URL is unset']
+
+----------------------------------------------------------------------
+Ran 18 tests in 42.692s
+
+FAILED (failures=13)
