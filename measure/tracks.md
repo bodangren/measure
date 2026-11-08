@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure shell visibility for every adapter**
+  *Link: [./tracks/dsh_measure_shell_visibility_adapters_20261110/](./tracks/dsh_measure_shell_visibility_adapters_20261110/)*
+  *Share the bounded shell-write grammar in the core and feed its targets to the mod and OpenCode edit and TDD guards*
 
 ---
 
