@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure gate robustness (closing)**
-  *Link: [./archive/dsh_measure_gate_robustness_20261110/](./archive/dsh_measure_gate_robustness_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -309,3 +307,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure contract clarity**
   *Link: [./archive/dsh_measure_contract_clarity_20261110/](./archive/dsh_measure_contract_clarity_20261110/)*
   *Write and pin the phase-acceptance HEAD exception, the new-track step-9 decisions, and the audit-result identity fields*
+
+- [x] **Track: DSH Measure gate robustness**
+  *Link: [./archive/dsh_measure_gate_robustness_20261110/](./archive/dsh_measure_gate_robustness_20261110/)*
+  *Make the live corpus the committed one and tolerate empty documents under pipefail in the A11 recipe*
