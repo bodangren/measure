@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure doc contract**
-  *Link: [./tracks/dsh_measure_doc_contract_20261110/](./tracks/dsh_measure_doc_contract_20261110/)*
-  *Copy a project's metadata keys in new-track and lint inline code spans in the guide and plugin READMEs*
+- (none)
 
 ---
 
