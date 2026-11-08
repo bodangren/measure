@@ -137,12 +137,12 @@ Choose a model by plan budget first and by role difficulty second.
 | Tier | Plan | Model prefix | Use |
 |---|---|---|---|
 | Frontier, capped | Claude Max | `claude-code/*` | Planning, review, acceptance |
-| Frontier, capped | ChatGPT (OAuth) | `openai/*` | Planning, review, acceptance |
+| Last resort | ChatGPT (OAuth) | `openai/*` | Only when no other family is GO: Daniel uses Codex for his work (Daniel, 2026-11-06). `ra-quota` lists it last. |
 | Liberal | Kimi CN plan | `kimi-code-plan-cn/*` | Volume review and test work |
 | Liberal | MiniMax CN plan | `minimax-cn-coding-plan/*` | Volume and mechanical work |
 | Very high | Volcano Ark Agent Plan (500 CNY a month) | `volcengine-agent-plan/*` | Green, audits, one-off coders |
 | High | Volcano Ark Coding Plan | `coding-plan/*` | Overflow for the Ark Agent Plan |
-| Reserved | OpenCode Go | `opencode-go/*` | The lending-desk-bench executor. Do not spawn roles or coders on it. |
+| Liberal (open again, Daniel 2026-11-05) | OpenCode Go | `opencode-go/deepseek-v4.1-flash`, `opencode-go/mimo-v2.6-flash`, `opencode-go/muse-spark-1.3-contributor#high` | Volume roles through `ra-quota pick`. Never use `opencode/muse-spark-1.3`. |
 | Metered | Pay per token | `deepseek/*`, `xiaomi/*`, paid `openrouter/*` | Only with explicit user approval |
 
 On the Ark plans, use `glm-5.3-flash` for routine work and `glm-latest` as the escalation.
@@ -153,16 +153,16 @@ On the Ark plans, use `glm-5.3-flash` for routine work and `glm-latest` as the e
 |---|---|---|
 | `measure-spec-review` | `kimi-code-plan-cn/kimi-for-coding#high` | Kimi CN |
 | `measure-strategy` | `claude-code/claude-opus-5-5[1m]#high` | Claude |
-| `measure-mid-red` | `openai/gpt-6.1-sol#high` | ChatGPT |
+| `measure-mid-red` | `ra-quota pick red` (was Sol; Codex last resort since 2026-11-06) | by pick |
 | `measure-jr-green` | `volcengine-agent-plan/glm-5.3-flash#high` | Ark Agent |
 | `measure-review-a-correctness` | `claude-code/claude-opus-5-5[1m]#high` | Claude |
-| `measure-review-b-security` | `openai/gpt-6.1-sol#high` | ChatGPT |
+| `measure-review-b-security` | `ra-quota pick review-b` (was Sol; Codex last resort since 2026-11-06) | by pick |
 | `measure-review-c-ux-api` | `kimi-code-plan-cn/kimi-for-coding#high` | Kimi CN |
 | `measure-adversarial-testing` | `kimi-code-plan-cn/k3-256k#high` | Kimi CN |
 | `measure-ux-browser-review` | `minimax-cn-coding-plan/MiniMax-M3.1-Flash` | MiniMax |
 | `measure-phase-acceptance` | `claude-code/claude-opus-5-5[1m]#medium` | Claude |
 | `measure-orchestrator-audit` | `volcengine-agent-plan/glm-latest#high` | Ark Agent |
-| `measure-final-acceptance` | `openai/gpt-6.1-sol#xhigh` | ChatGPT |
+| `measure-final-acceptance` | `ra-quota pick final-acceptance` (was Sol; Codex last resort since 2026-11-06) | by pick |
 | `measure-closeout` | `minimax-cn-coding-plan/MiniMax-M3.1-Flash` | MiniMax |
 
 Every model in this table started as a subagent on 2026-10-18.
@@ -182,7 +182,8 @@ The role table follows these rules. Keep them when you substitute a model.
 
 Model families: Anthropic (`claude-code/*`), OpenAI (`openai/*`), GLM (`*/glm-*`),
 Kimi (`kimi-code-plan-cn/*` and `*/kimi-*`), MiniMax (`minimax-cn-coding-plan/*` and
-`*/minimax-*`), DeepSeek (`*/deepseek-*`), ByteDance (`*/ark-code-*` and `*/doubao-*`).
+`*/minimax-*`), DeepSeek (`*/deepseek-*`), ByteDance (`*/ark-code-*` and `*/doubao-*`),
+MiMo (`*/mimo-*`), Muse (`*/muse-*`).
 
 ### Substitution
 
@@ -190,6 +191,13 @@ Use the table model by default. Substitute a model only when its plan quota is l
 the model fails to start. Pick the replacement from the same tier first, then from the
 next tier, and keep the independence rules. Record each substitution as a deviation in
 the role handoff and in the final report.
+
+For each new role, run
+`/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick <role> --why`
+(PM rule, 2026-11-05). Add `--not-family <family>` for each family that the
+independence rules exclude. `ra-quota roles` lists the valid role names. Use the
+route that it prints, and record a route that differs from the role table as a
+substitution.
 
 ### Quota check
 
