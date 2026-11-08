@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure TDD names and fixture paths (closing)**
-  *Link: [./archive/dsh_measure_tdd_names_fixture_20261110/](./archive/dsh_measure_tdd_names_fixture_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -369,6 +367,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure band width**
   *Link: [./archive/dsh_measure_band_width_20261110/](./archive/dsh_measure_band_width_20261110/)*
   *Cap the band line by terminal columns so wide East Asian text cannot overflow and zero-width text is not over-counted*
+
+- [x] **Track: DSH Measure TDD names and fixture paths**
+  *Link: [./archive/dsh_measure_tdd_names_fixture_20261110/](./archive/dsh_measure_tdd_names_fixture_20261110/)*
+  *Cover two more test-file conventions and test commands, and point the real-data fixture generator at the archived plans*
 
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
