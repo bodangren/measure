@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/dsh/run.sh` (14/14), `bash tests/spec_review_gate/run.sh` (11/11), the node suite, and both parity gates `625b73e`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Atomic writes and their test' (Protocol in workflow.md) `c3b4c77`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 4302302]
 
 - [x] Task 2.1: update the installer tech-debt row with the resolved atomicity/log part and the remaining shared-skill uninstall design, add the `CHANGELOG.md` entry; record the live check, run the gates again `52f55e4`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_installer_atomic_20261110` and record the manifest-only FAIL `2638eaa`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `4302302`
