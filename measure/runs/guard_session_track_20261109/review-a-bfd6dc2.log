@@ -1,0 +1,14 @@
+measure-review-a-correctness, track guard_session_track_20261109, range f04e8af..bfd6dc2.
+Model: deepseek/deepseek-flash#high (DeepSeek family), picked by `ra-quota pick review-a --not-family claude`. Subagent session ses_e4394f9c5ffeYpTGqsdT0yfuqX.
+The reviewer reached its step limit in the first message before it wrote the result file. A second message in the same session asked it to write and validate the file, and it wrote review-a-bfd6dc2.json itself (audit-result: PASS).
+
+- F1 [Major] plugins/opencode-measure-guard/src/snapshot.ts (FR-3): the two parse-error returns of the active track keep loaded.inProgress; FR-3 says that a parse error gives an empty inProgress.
+- F2 [Nit] plugins/opencode-measure-guard/README.md:63: "when 0 or 1 tracks have a [~] task" is not exact; with 0 tasks and 2 or more [~] tracks the session gets the idle list.
+
+MEASURE_AGENT_RESULT
+role: review-a
+track: guard_session_track_20261109
+status: pass
+result_file: measure/runs/guard_session_track_20261109/review-a-bfd6dc2.json
+findings: 0 Blocker, 1 Major, 1 Nit
+END_MEASURE_AGENT_RESULT
