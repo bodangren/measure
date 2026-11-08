@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure track-scoped gates (closing)**
+  *Link: [./archive/dsh_measure_red_scope_gates_20261110/](./archive/dsh_measure_red_scope_gates_20261110/)*
+  *Temporary closing entry; the final commit records `- (none)`*
 
 ---
 
