@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure apply_patch visibility**
+  *Link: [./tracks/dsh_measure_apply_patch_visibility_20261110/](./tracks/dsh_measure_apply_patch_visibility_20261110/)*
+  *Reconstruct the apply_patch and str_replace_editor after-text for the closeout guard and fail closed on shell writes to plans*
 
 ---
 
