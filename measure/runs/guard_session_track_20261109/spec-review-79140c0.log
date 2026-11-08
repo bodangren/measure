@@ -1,0 +1,29 @@
+Spec review log: guard_session_track_20261109
+Reviewer: measure spec-review subagent (DeepSeek family)
+Baseline and audited head: 79140c0b77619265027f77cd48ee81ae239f2eb1
+Date: 2026-11-09
+
+Inputs read
+- ~/.agents/skills/measure/references/spec-review.md (standard)
+- spec.md and plan.md from commit 79140c0 (git show)
+- plugins/opencode-measure-guard: src/core/parse.ts (selectActive, noteKey, taskNote), src/snapshot.ts (loadSnapshot), src/guard.ts (onPrompt, onToolAfter, onCompaction, pendingNote), src/state.ts (SessionState, Sessions), src/index.ts, src/hooks/tools.ts (writtenPaths, callFailed), src/hooks/types.ts, tests/context.test.ts, tests/fake.ts
+- src/core/guards.ts (editDecision)
+- node_modules/@opencode/plugin/dist/promise/session.d.ts (SessionDomain.get)
+- node_modules/@opencode/client/dist/promise/generated/types.d.ts (SessionGetInput, SessionInfo.title)
+
+Checks
+1. Paraphrase: written for the proposal and the current system. No comprehension gap.
+2. Zoom-out: the note part meets the PM's DONE WHEN. A simpler design is available: reuse `Snapshot.active` for the session track and skip the title clue. The spec keeps the design because the PM names the title. D6 keeps the guards on the project rule, so the note and the guard can name different tracks (F2). D7 keeps parity and moves the new logic to src/track.ts.
+3. Zero-decision: D2 to D5 fix the clue order (title, then prompt, then path; last clue wins), the whole-word rule, the note text, and the list key. Open: the fallback note for a parse error or no active track (F1), the pure-function signatures (F4), the list key string (F5), and the case rule (F6).
+4. Testability: each AC uses the plugin test style (direct hook calls with fake events over a temp git project), except AC-18 (install shell) and AC-19 (live service check), which the plan places in Phase 4 with named steps.
+
+Findings
+- F1 [Major] D4/FR-5: fallback note not defined.
+- F2 [Major] D6/AC-16: note track and guard track differ; the PM's WHY names gates.
+- F3 [Major] plan rules/Task 4.4: task commits versus the PM's one commit.
+- F4 [Major] FR-1: return types and null meaning open.
+- F5 [Nit] D5: list key string not exact.
+- F6 [Nit] D3: case sensitivity not stated.
+- F7 [Nit] Out of scope: old first-track rule with 2+ [~] tracks and no task.
+
+Status: pass (no Blocker). Retry: none.

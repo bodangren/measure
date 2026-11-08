@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "guard_session_track_20261109",
+  "phase": "track setup",
+  "baseline_sha": "79140c0b77619265027f77cd48ee81ae239f2eb1",
+  "audited_head_sha": "79140c0b77619265027f77cd48ee81ae239f2eb1",
+  "status": "pass",
+  "summary": "The spec answers the PM's DONE WHEN for the task note: a session names its track by a prompt, the title, or a written path, and a session that names no track gets a short list. No Blocker. Four Major findings stay open: the fallback note for a parse error or no active track, the gate and note mismatch in D6, the commit count in the plan, and the loose pure-function API. Three Nit findings concern the list key, the case of the whole-word match, and the old rule for tracks with no task.",
+  "paraphrase": {
+    "proposes": "The track gives each OpenCode session its own Measure track. A user prompt, the session title, or a written path names the track. The plugin lists every in-progress track in the task note when the session names no track and 2 or more tracks have a `[~]` task. The guards, the band, `/measure-status`, and the status tool keep the project rule. The change lives in a new `src/track.ts` and keeps the shared core unchanged.",
+    "current_system": "`loadSnapshot` reads `tracks.md` and the plans, then `selectActive` takes the first `[~]` track whose plan has a `[~]` task. The `Guard` keeps one snapshot for each project root, and `pendingNote` and `onCompaction` give every session the note of `Snapshot.active`. The session record only stops a second note with the same key. The edit guard, the band, `/measure-status`, and the status tool read the same `Snapshot.active`."
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] spec.md D4 and FR-5: The note for a parse error, no active track, or no `measure/` folder is not defined, so `sessionNote` can drop the current parse-error text. Rationale: `taskNote` in `src/core/parse.ts` sends that text today, and no AC pins it, so a silent regression passes `bun test`.",
+    "F2 [Major] spec.md D6 and AC-16: The note and the edit guard use different tracks, because AC-16 allows a `src/x.ts` write in a Beta session when Alpha has a `[~]` task. Rationale: the PM's WHY says a wrong name misleads gates, and D6 defers the gate part without the PM's word.",
+    "F3 [Major] plan.md 'Rules for every phase' and Task 4.4: The plan records a git note on each task commit, but the PM's DONE WHEN asks for one commit with the install step. Rationale: the plan does not say how the work reaches `main` in one commit.",
+    "F4 [Major] spec.md FR-1: The five exported functions have no return type and no null meaning; `sessionActive` must signal both a track and the list case. Rationale: the zero-decision check fails on the API shape, and no AC calls the pure functions.",
+    "F5 [Nit] spec.md D5: The list key is '`list|` and the ids joined by `,`' with no exact string. Rationale: two implementations can produce different keys, and AC-14 checks only the behavior.",
+    "F6 [Nit] spec.md D3: The whole-word match does not state case sensitivity. Rationale: a clue with `BETA_20261109` may name a track or not by implementer choice.",
+    "F7 [Nit] spec.md 'Out of scope': With 2 or more `[~]` tracks and no `[~]` task, the note still names the first `[~]` track. Rationale: the PM's DONE WHEN asks for a list when 3 `[~]` tracks exist and the session names none."
+  ],
+  "evidence": [
+    "HEAD equals 79140c0b77619265027f77cd48ee81ae239f2eb1, so the review covers the spec and plan at the requested commit.",
+    "`src/core/parse.ts` `taskNote` returns the parse-error text, the no-track text, and null for no `measure/` folder; `tests/context.test.ts` pins only the no-measure and no-task cases.",
+    "`src/core/guards.ts` `editDecision` reads `snapshot.active` and `currentTask`; `AC-16` states the Beta-session allow that follows from `Snapshot.active`.",
+    "`src/guard.ts` `onToolAfter` computes `failed = callFailed(...)` and calls `pendingNote` only when a path is inside `measure/` or the tool is a shell.",
+    "`src/state.ts` `SessionState` fields are readonly; D1 adds `track` with no setter, and `Sessions.sessionOf` returns the record.",
+    "`tests/fake.ts` `makeGuard` passes five constructor arguments; FR-6 adds `titleOf` as the optional last argument.",
+    "`node_modules/@opencode/plugin/dist/promise/session.d.ts` `SessionDomain` includes `get`; `SessionInfo.title` is optional in the client types."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git show 79140c0:measure/tracks/guard_session_track_20261109/spec.md",
+    "git show 79140c0:measure/tracks/guard_session_track_20261109/plan.md",
+    "sed -n '150,270p' plugins/opencode-measure-guard/src/core/parse.ts",
+    "sed -n '100,270p' plugins/opencode-measure-guard/src/guard.ts",
+    "sed -n '1,80p' plugins/opencode-measure-guard/tests/fake.ts",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role spec-review --file measure/runs/guard_session_track_20261109/spec-review-79140c0.json"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}
