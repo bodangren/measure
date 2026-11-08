@@ -96,7 +96,7 @@ The file `measure/guard-allow` of the guarded repository is the allow list. A wr
   A kept entry loses the leading `./`, the repeated `/`, and the trailing `/`. Each folder is kept once.
 - **Matching.** A path matches when it is the folder or lies under it. The match is by whole path segments and is case-sensitive. `..` segments resolve before the match. The guard does not resolve symbolic links.
 - **Effect.** A path on the list counts as Measure work, as a path inside `measure/` does, in four rules: the edit guard, the end-of-turn check, the commit guard (strict), and the TDD guard (strict). The setup deny, the closeout guard, the bypass, and `advise` mode do not change. A call that writes several paths is denied when one of its paths is denied.
-- **Status lines.** ``/measure-guard`, the `measure_status` tool, and the terminal sidebar` shows `Allow list (measure/guard-allow): <folders>` directly before the `Guards:` line, and one `  ignored line <n>: <text> (<reason>)` line for each ignored entry. It shows nothing when the list is empty.
+- **Status lines.** `/measure-guard`, the `measure_status` tool, and the terminal sidebar show `Allow list (measure/guard-allow): <folders>` directly before the `Guards:` line, and one `  ignored line <n>: <text> (<reason>)` line for each ignored entry. It shows nothing when the list is empty.
 - **Limits.** No wildcards. No file entries. No symbolic link resolution. No deny text names the list, so an agent does not learn to add its own path. The check does not find a change of `measure/guard-allow` made by an agent.
 
 ## End of turn

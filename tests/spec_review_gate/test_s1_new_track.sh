@@ -56,6 +56,8 @@ in_block() {
 S25="$(section "$NT" '### 2.5 Create Artifacts' '^###? ')"
 L6="" L9="" L10="" L11=""
 if [ -n "${S25//[[:space:]]/}" ]; then
+  in_text 'new-track §2.5: project metadata keys rule' "$S25" 'Project metadata keys'
+  in_flat 'new-track §2.5: only the common extra keys are copied' "$S25" 'Do not copy a key that only some tracks have'
   L6=$(line_of "$S25" '6. Write files:')
   L9=$(line_of "$S25" '9. **Spec Review (fresh subagent):**')
   L10=$(line_of "$S25" '10. **Commit Changes:**')

@@ -53,6 +53,47 @@ check_techstack() { # file
   grep -q 'dsh_measure_dev_20261107' "$1" || { echo "tech-stack has no tooling exception for this track" >&2; return 1; }
 }
 
+# check_code_spans FILE: inline code spans pair up (a backtick run closes with an equal
+# run; fenced blocks and escaped backticks are skipped; a different run inside an open span
+# is content). Catches a stray backtick in a guide or README.
+check_code_spans() { # file
+  python3 - "$1" <<'PY'
+import sys
+path = sys.argv[1]
+stack = []
+fence = None
+for number, line in enumerate(open(path, encoding="utf-8").read().splitlines(), 1):
+    stripped = line.lstrip()
+    if stripped.startswith("```") or stripped.startswith("~~~"):
+        marker = stripped[:3]
+        if fence is None:
+            fence = marker
+        elif fence == marker:
+            fence = None
+        continue
+    if fence is not None:
+        continue
+    i = 0
+    while i < len(line):
+        if line[i] != "`" or (i > 0 and line[i - 1] == "\\"):
+            i += 1
+            continue
+        j = i
+        while j < len(line) and line[j] == "`":
+            j += 1
+        run = j - i
+        if stack and stack[-1][1] == run:
+            stack.pop()
+        elif not stack:
+            stack.append((number, run))
+        i = j
+if stack:
+    print(f"{path}:{stack[0][0]}: an inline code span opened with {stack[0][1]} backticks never closes",
+          file=sys.stderr)
+    sys.exit(1)
+PY
+}
+
 check_targets() { # file
   if grep -q 'dsh-measure-guard' "$1"; then
     echo "install-targets.tsv still carries a DSH plugin row; bin/measure-dsh owns that copy" >&2
@@ -78,6 +119,10 @@ check_techstack "$TECHSTACK" || fail "the tech stack is missing the CLI rows"
 echo "[PASS] the tech stack records the CLI and its tooling exception"
 check_targets "$TARGETS" || fail "the installer still carries the DSH plugin row"
 echo "[PASS] the installer carries no DSH plugin row"
+for doc in "$GUIDE" "$ROOT/plugins/dsh-measure-guard/README.md" "$ROOT/plugins/opencode-measure-guard/README.md"; do
+  check_code_spans "$doc" || fail "unbalanced inline code span in $doc"
+done
+echo "[PASS] the guide and both plugin READMEs hold balanced inline code spans"
 
 # Fixture edges: each mutant must be rejected by the same checks.
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/measure-dsh-docs.XXXXXX")"
@@ -87,6 +132,11 @@ cp "$GUIDE" "$WORK/guide.md"
 printf '\n[broken](./no-such-doc.md)\n' >>"$WORK/guide.md"
 if check_links "$WORK/guide.md" >/dev/null 2>&1; then fail "the dangling-link fixture passed, it must fail"; fi
 echo "[PASS] the dangling-link fixture is rejected"
+
+cp "$ROOT/plugins/opencode-measure-guard/README.md" "$WORK/spans.md"
+printf '\nA broken `span here.\n' >>"$WORK/spans.md"
+if check_code_spans "$WORK/spans.md" >/dev/null 2>&1; then fail "the unbalanced-span fixture passed, it must fail"; fi
+echo "[PASS] the unbalanced-span fixture is rejected"
 
 cp "$GUIDE" "$WORK/commands.md"
 sed -i 's/measure-doctor//' "$WORK/commands.md"
