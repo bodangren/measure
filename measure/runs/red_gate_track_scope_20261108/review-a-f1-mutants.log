@@ -1,0 +1,4 @@
+Review A F1 mutation check (scratch copy /tmp/redscope, checker with the G20 rename):
+fixed checker: test_red_track_scope.py Ran 13 tests, OK
+mutant 'any instead of all' (red_scope D3 rule 3): exit 1; failing: test_known_and_unknown_ids_count_as_own
+mutant 'tracks folder only' (is_track_folder without archive/): exit 1; failing: test_archived_track_id_marks_another_track

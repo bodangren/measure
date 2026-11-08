@@ -221,6 +221,29 @@ class RedTrackScopeTest(unittest.TestCase):
         self.assertIn("FAIL: - src/shared_body.py", lines)
         self.assertIn(info_line(2), out)
 
+    def test_known_and_unknown_ids_count_as_own(self) -> None:
+        """AC-4: each id must name a track folder; one unknown id keeps the commit in the scope."""
+        self.look_test_and_plan()
+        self.login_production()
+        self.change("src/mixed.py", f"feat: add mixed code (track_id: {LOGIN}) (track_id: ghost_track)")
+        code, out = self.gate()
+        self.assertEqual(code, 1, out)
+        self.assertIn("FAIL: - src/mixed.py", out.splitlines())
+        self.assertIn(info_line(2), out)
+
+    def test_archived_track_id_marks_another_track(self) -> None:
+        """D3: an id that names a folder in measure/archive/ marks a commit of another track."""
+        self.write("measure/archive/old_track/plan.md", "# Plan\n")
+        self.commit("chore(measure): archive old_track")
+        base = self.head()
+        self.look_test_and_plan()
+        self.change("src/old.py", "fix: a late fix of the old track (track_id: old_track)")
+        code, out = self.gate(baseline=base)
+        self.assertEqual(code, 0, out)
+        self.assertIn(PASS_LINE, out)
+        self.assertIn(info_line(1), out)
+        self.assertNotIn("src/old.py", out)
+
     def test_malformed_tag_counts_as_own(self) -> None:
         """AC-4: text outside the two id forms or the id grammar gives no id."""
         cases = [
