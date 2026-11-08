@@ -35,7 +35,9 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Evidence: on a read-only clone at `bd5dc101d` with `--baseline 39d019003`, the old checker exits 1 and lists the five `apps/storytime/` files and the plan of `storytime_at_home_release_20261106`. The new checker exits 0 and skips 2 commits. Log: `green-p3-monorepo-replay.log`.
 - [x] Task 3.3: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-7). `a79c8ce`
   - Evidence: `test_s2_role_docs.sh` 51/51, `test_s3_dispositions_docs.sh` 98/98, `test_s4_doc_drift.sh` 34/34.
-- [~] Task 3.4: Run `bash tests/spec_review_gate/run.sh` through `heavy-run.sh` (AC-20).
+- [x] Task 3.4: Run `bash tests/spec_review_gate/run.sh` through `heavy-run.sh` (AC-20). `b88ef8a`
+  - Evidence: on `b88ef8a` (after the Review A fixes), through `heavy-run.sh` with `HEAVY_PRIORITY=p2`: `13 suites (PASS=13, FAIL=0)`, `run.sh exit 0`. Log: `measure/runs/gate_track_scope_20261108/green-p3-full-suite.log`.
+  - A first job on `5734bd2` was stopped in the queue before it started, so that one run covers the Review A fixes.
 
 ## Phase 4: Review and distribution
 

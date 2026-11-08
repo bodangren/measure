@@ -1,0 +1,1452 @@
+HEAD b88ef8a
+--- suite: test_checker.py ---
+......................................
+----------------------------------------------------------------------
+Ran 38 tests in 7.449s
+
+OK
+--- suite result: PASS: test_checker.py ---
+--- suite: test_gate_track_scope.py ---
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 3.353s
+
+OK
+--- suite result: PASS: test_gate_track_scope.py ---
+--- suite: test_mktemp_failure.sh ---
+PASS: a stub mktemp makes test_s1_adversarial.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s1_new_track.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s1_standard.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s2_adversarial.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s2_role_docs.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s3_adversarial.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s3_dispositions_docs.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s4_adversarial.sh exit 1 with the guard message
+PASS: a stub mktemp makes test_s4_doc_drift.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s1_adversarial.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s1_new_track.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s1_standard.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s2_adversarial.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s2_role_docs.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s3_adversarial.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s3_dispositions_docs.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s4_adversarial.sh exit 1 with the guard message
+PASS: a mktemp that returns a file makes test_s4_doc_drift.sh exit 1 with the guard message
+PASS: the stubbed runs leave the repository unchanged (including ignored paths)
+=== Total: 19 checks (PASS=19, FAIL=0) ===
+--- suite result: PASS: test_mktemp_failure.sh ---
+--- suite: test_red_track_scope.py ---
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 3.724s
+
+OK
+--- suite result: PASS: test_red_track_scope.py ---
+--- suite: test_s1_adversarial.sh ---
+=== runner: a pattern that matches nothing ===
+PASS: zero match: exit 1
+PASS: zero match prints 'no suites matched'
+PASS: zero match summary: 0 suites (PASS=0, FAIL=0)
+=== runner: a pattern that matches only files that are not .sh or .py ===
+PASS: non-suite match: exit 1
+PASS: non-suite match prints 'no suites matched'
+PASS: non-suite match summary: 0 suites (PASS=0, FAIL=0)
+=== runner: patterns with '..' or '/' run nothing and exit 1 ===
+PASS: pattern '../test_out.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '../*.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '/tmp/tmp.9jeFaS6rf8/outside/tests/test_out.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern 'sub/test_in.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern 'sub/*.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern './test_none.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '..' runs nothing, exits 1, prints 'no suites matched'
+=== runner: a bad pattern next to a good pattern runs only the good suite ===
+PASS: bad and good pattern: exit 0
+PASS: the bad pattern ran nothing
+PASS: bad and good pattern summary: 1 suites (PASS=1, FAIL=0)
+=== runner: a pattern with shell syntax is not executed ===
+PASS: no pattern with shell syntax ran a command
+=== runner: one failing suite among three passing suites ===
+PASS: one failing suite of four: exit 1
+PASS: one failing suite of four summary: 4 suites (PASS=3, FAIL=1)
+PASS: all four suites ran after the failing suite
+=== runner: suite exit codes other than 1 count as FAIL, and the runner exits 1 ===
+PASS: exit 7 and a killed suite: exit 1
+PASS: exit 7 and a killed suite summary: 3 suites (PASS=1, FAIL=2)
+=== runner: a suite that prints a false summary line cannot change the result ===
+PASS: false summary suite: exit 1
+PASS: false summary suite summary: 1 suites (PASS=0, FAIL=1)
+=== runner: file names with a space ===
+PASS: space names, one fails: exit 1
+PASS: space names summary: 2 suites (PASS=1, FAIL=1)
+PASS: no space name was split
+PASS: both space-name suites ran
+PASS: explicit pattern with a space: exit 0
+PASS: explicit pattern with a space summary: 1 suites (PASS=1, FAIL=0)
+=== runner: .py suites with an import error or a syntax error, among passing suites ===
+PASS: import and syntax errors: exit 1
+PASS: import and syntax errors summary: 4 suites (PASS=2, FAIL=2)
+PASS: test_imp.py is reported as FAIL
+PASS: test_syn.py is reported as FAIL
+=== runner: a failing .py test fails the suite ===
+PASS: failing .py test: exit 1
+PASS: failing .py test summary: 1 suites (PASS=0, FAIL=1)
+=== runner: duplicate and overlapping patterns run each file once ===
+PASS: duplicate patterns: exit 0
+PASS: duplicate patterns summary: 1 suites (PASS=1, FAIL=0)
+PASS: test_a.sh ran once
+=== runner: default patterns do not select run.sh ===
+PASS: default patterns: exit 0
+PASS: default patterns summary: 1 suites (PASS=1, FAIL=0)
+PASS: default patterns did not select run.sh
+=== runner: a pattern that selects run.sh ends, and N = PASS + FAIL ===
+PASS: pattern '*.sh': exit 0
+PASS: pattern '*.sh': 1 suites (PASS=1, FAIL=0)
+=== runner: the runner works from another working folder ===
+PASS: run from /: exit 0
+PASS: run from / summary: 1 suites (PASS=1, FAIL=0)
+=== runner: a pattern that matches the runner itself ===
+PASS: self-selection alone: exit 1
+PASS: self-selection alone prints 'no suites matched'
+PASS: self-selection alone summary: 0 suites (PASS=0, FAIL=0)
+PASS: self-selection beside a real suite: exit 0
+PASS: self-selection beside a real suite summary: 1 suites (PASS=1, FAIL=0)
+PASS: the real suite ran beside the runner
+=== runner: a symbolic-linked suite is skipped ===
+PASS: symlinked suite skipped: exit 0
+PASS: symlinked suite skipped summary: 1 suites (PASS=1, FAIL=0)
+PASS: the symlinked suite did not run
+PASS: the symlink skip is reported
+=== runner: a suite name with a glob metacharacter is refused ===
+PASS: glob metacharacter name: exit 1
+PASS: the glob metacharacter refusal is reported
+PASS: no suite ran after the refusal
+=== runner: a zero-test python suite is FAIL (stub python exits 0) ===
+PASS: zero-test python suite (stub exits 0): exit 1
+PASS: zero-test python suite summary: 1 suites (PASS=0, FAIL=1)
+PASS: the zero-test suite is reported
+=== mutation baseline: test_s1_standard.sh copy ===
+PASS: standard baseline copy: exit 0
+PASS: standard baseline: 'Reviewer Input: sources and the no-history sentence' is PASS
+PASS: standard baseline: 'eight headings in contract order' is PASS
+PASS: standard baseline: 'Severity: three levels and Decision 11 rules' is PASS
+PASS: standard baseline: 'standard has 'Spec review: not run (no subagent tool)'' is PASS
+PASS: standard baseline: 'line 1 is '# Spec Review Standard'' is PASS
+PASS: standard baseline: 'intro credits EGM with the URL and Apache-2.0' is PASS
+PASS: standard baseline: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' is PASS
+=== mutation baseline: test_s1_new_track.sh copy ===
+PASS: new-track baseline: 'step 9 line '9. **Spec Review (fresh subagent):**'' is PASS
+PASS: new-track baseline: 'step 9 forbids a review in this context' is PASS
+PASS: new-track baseline: 'step 9 gives the re-review limit' is PASS
+PASS: new-track baseline: 'step 5 block is non-empty and has no 'spec-review'' is PASS
+PASS: new-track baseline: 'new-track-set.md is non-empty and has no 'spec-review'' is PASS
+PASS: new-track baseline: 'numbers 1 to 11 occur once each' is PASS
+PASS: new-track baseline: 'exact spec-review.md line sits between' is PASS
+PASS: new-track baseline: 'skills/measure equals claude-skills/measure' is PASS
+PASS: new-track baseline: 'runner exits 1, prints 'no suites matched' before the summary' is PASS
+PASS: new-track baseline: 'exit 1 when one suite fails' is PASS
+PASS: new-track baseline: 'default patterns exit 0 for passing suites' is PASS
+=== mutation: A7 no-history sentence only outside Reviewer Input ===
+PASS: A7 no-history sentence only outside Reviewer Input: 'Reviewer Input: sources and the no-history sentence' has no PASS line
+PASS: A7 no-history sentence only outside Reviewer Input: 'Reviewer Input: sources and the no-history sentence' is FAIL
+=== mutation: A4 Severity heading renamed ===
+PASS: A4 Severity heading renamed: 'eight headings in contract order' has no PASS line
+PASS: A4 Severity heading renamed: 'heading order:' is FAIL
+=== mutation: A4 Severity section absent ===
+PASS: A4 Severity section absent: 'Severity: three levels and Decision 11 rules' has no PASS line
+PASS: A4 Severity section absent: 'Severity: three levels and Decision 11 rules' is FAIL
+=== mutation: not-run line changed ===
+PASS: not-run line changed: 'standard has 'Spec review: not run (no subagent tool)'' has no PASS line
+PASS: not-run line changed: 'standard lacks 'Spec review: not run (no subagent tool)'' is FAIL
+=== mutation: title changed ===
+PASS: title changed: 'line 1 is '# Spec Review Standard'' has no PASS line
+PASS: title changed: 'line 1 is '' is FAIL
+=== mutation: A7 Apache-2.0 only outside the intro ===
+PASS: A7 Apache-2.0 only outside the intro: 'intro credits EGM with the URL and Apache-2.0' has no PASS line
+PASS: A7 Apache-2.0 only outside the intro: 'intro lacks:' is FAIL
+=== mutation: A7 row command only outside the row ===
+PASS: A7 row command only outside the row: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' has no PASS line
+PASS: A7 row command only outside the row: 'row lacks:' is FAIL
+=== mutation: A3 track id only outside the table ===
+PASS: A3 track id only outside the table: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' has no PASS line
+PASS: A3 track id only outside the table: 'Tooling Exceptions table has no row' is FAIL
+=== mutation: A4 step 9 title changed ===
+PASS: A4 step 9 title changed: 'step 9 line '9. **Spec Review (fresh subagent):**'' has no PASS line
+PASS: A4 step 9 title changed: '§2.5 has no line starting '9. **Spec Review (fresh subagent):**'' is FAIL
+=== mutation: A7 forbid sentence only in the step 10 block ===
+PASS: A7 forbid sentence only in the step 10 block: 'step 9 forbids a review in this context' has no PASS line
+PASS: A7 forbid sentence only in the step 10 block: 'step 9 forbids a review in this context' is FAIL
+=== mutation: re-review limit removed ===
+PASS: re-review limit removed: 'step 9 gives the re-review limit' has no PASS line
+PASS: re-review limit removed: 'step 9 gives the re-review limit' is FAIL
+=== mutation: A7 negated spec-review line in the step 5 block ===
+PASS: A7 negated spec-review line in the step 5 block: 'step 5 block is non-empty and has no 'spec-review'' has no PASS line
+PASS: A7 negated spec-review line in the step 5 block: 'step 5 index template contains 'spec-review'' is FAIL
+=== mutation: A7 negated spec-review line in new-track-set.md ===
+PASS: A7 negated spec-review line in new-track-set.md: 'new-track-set.md is non-empty and has no 'spec-review'' has no PASS line
+PASS: A7 negated spec-review line in new-track-set.md: 'new-track-set.md contains 'spec-review'' is FAIL
+=== mutation: A4 a twelfth numbered step ===
+PASS: A4 a twelfth numbered step: 'numbers 1 to 11 occur once each' has no PASS line
+PASS: A4 a twelfth numbered step: 'numbering:' is FAIL
+=== mutation: A4 directory line changed ===
+PASS: A4 directory line changed: 'exact spec-review.md line sits between' has no PASS line
+PASS: A4 directory line changed: 'Directory Structure lines missing' is FAIL
+=== mutation: A5 one byte differs in the bundle ===
+PASS: A5 one byte differs in the bundle: 'skills/measure equals claude-skills/measure' has no PASS line
+PASS: A5 one byte differs in the bundle: 'bundle differs' is FAIL
+=== mutation: A4 runner stub that always exits 0, zero match ===
+PASS: A4 runner stub that always exits 0, zero match: 'runner exits 1, prints 'no suites matched' before the summary' has no PASS line
+PASS: A4 runner stub that always exits 0, zero match: 'runner exit code is 0 for a pattern that matches nothing' is FAIL
+=== mutation: A4 runner stub that always exits 0, mixed suites ===
+PASS: A4 runner stub that always exits 0, mixed suites: 'exit 1 when one suite fails' has no PASS line
+PASS: A4 runner stub that always exits 0, mixed suites: 'exit 0 when one suite fails' is FAIL
+=== mutation: A4 runner stub that always reports no suites ===
+PASS: A4 runner stub that always reports no suites: 'default patterns exit 0 for passing suites' has no PASS line
+PASS: A4 runner stub that always reports no suites: 'default patterns exit 1 for passing suites' is FAIL
+
+=== Results ===
+PASS: zero match: exit 1
+PASS: zero match prints 'no suites matched'
+PASS: zero match summary: 0 suites (PASS=0, FAIL=0)
+PASS: non-suite match: exit 1
+PASS: non-suite match prints 'no suites matched'
+PASS: non-suite match summary: 0 suites (PASS=0, FAIL=0)
+PASS: pattern '../test_out.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '../*.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '/tmp/tmp.9jeFaS6rf8/outside/tests/test_out.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern 'sub/test_in.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern 'sub/*.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern './test_none.sh' runs nothing, exits 1, prints 'no suites matched'
+PASS: pattern '..' runs nothing, exits 1, prints 'no suites matched'
+PASS: bad and good pattern: exit 0
+PASS: the bad pattern ran nothing
+PASS: bad and good pattern summary: 1 suites (PASS=1, FAIL=0)
+PASS: no pattern with shell syntax ran a command
+PASS: one failing suite of four: exit 1
+PASS: one failing suite of four summary: 4 suites (PASS=3, FAIL=1)
+PASS: all four suites ran after the failing suite
+PASS: exit 7 and a killed suite: exit 1
+PASS: exit 7 and a killed suite summary: 3 suites (PASS=1, FAIL=2)
+PASS: false summary suite: exit 1
+PASS: false summary suite summary: 1 suites (PASS=0, FAIL=1)
+PASS: space names, one fails: exit 1
+PASS: space names summary: 2 suites (PASS=1, FAIL=1)
+PASS: no space name was split
+PASS: both space-name suites ran
+PASS: explicit pattern with a space: exit 0
+PASS: explicit pattern with a space summary: 1 suites (PASS=1, FAIL=0)
+PASS: import and syntax errors: exit 1
+PASS: import and syntax errors summary: 4 suites (PASS=2, FAIL=2)
+PASS: test_imp.py is reported as FAIL
+PASS: test_syn.py is reported as FAIL
+PASS: failing .py test: exit 1
+PASS: failing .py test summary: 1 suites (PASS=0, FAIL=1)
+PASS: duplicate patterns: exit 0
+PASS: duplicate patterns summary: 1 suites (PASS=1, FAIL=0)
+PASS: test_a.sh ran once
+PASS: default patterns: exit 0
+PASS: default patterns summary: 1 suites (PASS=1, FAIL=0)
+PASS: default patterns did not select run.sh
+PASS: pattern '*.sh': exit 0
+PASS: pattern '*.sh': 1 suites (PASS=1, FAIL=0)
+PASS: run from /: exit 0
+PASS: run from / summary: 1 suites (PASS=1, FAIL=0)
+PASS: self-selection alone: exit 1
+PASS: self-selection alone prints 'no suites matched'
+PASS: self-selection alone summary: 0 suites (PASS=0, FAIL=0)
+PASS: self-selection beside a real suite: exit 0
+PASS: self-selection beside a real suite summary: 1 suites (PASS=1, FAIL=0)
+PASS: the real suite ran beside the runner
+PASS: symlinked suite skipped: exit 0
+PASS: symlinked suite skipped summary: 1 suites (PASS=1, FAIL=0)
+PASS: the symlinked suite did not run
+PASS: the symlink skip is reported
+PASS: glob metacharacter name: exit 1
+PASS: the glob metacharacter refusal is reported
+PASS: no suite ran after the refusal
+PASS: zero-test python suite (stub exits 0): exit 1
+PASS: zero-test python suite summary: 1 suites (PASS=0, FAIL=1)
+PASS: the zero-test suite is reported
+PASS: standard baseline copy: exit 0
+PASS: standard baseline: 'Reviewer Input: sources and the no-history sentence' is PASS
+PASS: standard baseline: 'eight headings in contract order' is PASS
+PASS: standard baseline: 'Severity: three levels and Decision 11 rules' is PASS
+PASS: standard baseline: 'standard has 'Spec review: not run (no subagent tool)'' is PASS
+PASS: standard baseline: 'line 1 is '# Spec Review Standard'' is PASS
+PASS: standard baseline: 'intro credits EGM with the URL and Apache-2.0' is PASS
+PASS: standard baseline: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' is PASS
+PASS: new-track baseline: 'step 9 line '9. **Spec Review (fresh subagent):**'' is PASS
+PASS: new-track baseline: 'step 9 forbids a review in this context' is PASS
+PASS: new-track baseline: 'step 9 gives the re-review limit' is PASS
+PASS: new-track baseline: 'step 5 block is non-empty and has no 'spec-review'' is PASS
+PASS: new-track baseline: 'new-track-set.md is non-empty and has no 'spec-review'' is PASS
+PASS: new-track baseline: 'numbers 1 to 11 occur once each' is PASS
+PASS: new-track baseline: 'exact spec-review.md line sits between' is PASS
+PASS: new-track baseline: 'skills/measure equals claude-skills/measure' is PASS
+PASS: new-track baseline: 'runner exits 1, prints 'no suites matched' before the summary' is PASS
+PASS: new-track baseline: 'exit 1 when one suite fails' is PASS
+PASS: new-track baseline: 'default patterns exit 0 for passing suites' is PASS
+PASS: A7 no-history sentence only outside Reviewer Input: 'Reviewer Input: sources and the no-history sentence' has no PASS line
+PASS: A7 no-history sentence only outside Reviewer Input: 'Reviewer Input: sources and the no-history sentence' is FAIL
+PASS: A4 Severity heading renamed: 'eight headings in contract order' has no PASS line
+PASS: A4 Severity heading renamed: 'heading order:' is FAIL
+PASS: A4 Severity section absent: 'Severity: three levels and Decision 11 rules' has no PASS line
+PASS: A4 Severity section absent: 'Severity: three levels and Decision 11 rules' is FAIL
+PASS: not-run line changed: 'standard has 'Spec review: not run (no subagent tool)'' has no PASS line
+PASS: not-run line changed: 'standard lacks 'Spec review: not run (no subagent tool)'' is FAIL
+PASS: title changed: 'line 1 is '# Spec Review Standard'' has no PASS line
+PASS: title changed: 'line 1 is '' is FAIL
+PASS: A7 Apache-2.0 only outside the intro: 'intro credits EGM with the URL and Apache-2.0' has no PASS line
+PASS: A7 Apache-2.0 only outside the intro: 'intro lacks:' is FAIL
+PASS: A7 row command only outside the row: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' has no PASS line
+PASS: A7 row command only outside the row: 'row lacks:' is FAIL
+PASS: A3 track id only outside the table: 'Tooling Exceptions row for spec_review_gate_20261030 is complete' has no PASS line
+PASS: A3 track id only outside the table: 'Tooling Exceptions table has no row' is FAIL
+PASS: A4 step 9 title changed: 'step 9 line '9. **Spec Review (fresh subagent):**'' has no PASS line
+PASS: A4 step 9 title changed: '§2.5 has no line starting '9. **Spec Review (fresh subagent):**'' is FAIL
+PASS: A7 forbid sentence only in the step 10 block: 'step 9 forbids a review in this context' has no PASS line
+PASS: A7 forbid sentence only in the step 10 block: 'step 9 forbids a review in this context' is FAIL
+PASS: re-review limit removed: 'step 9 gives the re-review limit' has no PASS line
+PASS: re-review limit removed: 'step 9 gives the re-review limit' is FAIL
+PASS: A7 negated spec-review line in the step 5 block: 'step 5 block is non-empty and has no 'spec-review'' has no PASS line
+PASS: A7 negated spec-review line in the step 5 block: 'step 5 index template contains 'spec-review'' is FAIL
+PASS: A7 negated spec-review line in new-track-set.md: 'new-track-set.md is non-empty and has no 'spec-review'' has no PASS line
+PASS: A7 negated spec-review line in new-track-set.md: 'new-track-set.md contains 'spec-review'' is FAIL
+PASS: A4 a twelfth numbered step: 'numbers 1 to 11 occur once each' has no PASS line
+PASS: A4 a twelfth numbered step: 'numbering:' is FAIL
+PASS: A4 directory line changed: 'exact spec-review.md line sits between' has no PASS line
+PASS: A4 directory line changed: 'Directory Structure lines missing' is FAIL
+PASS: A5 one byte differs in the bundle: 'skills/measure equals claude-skills/measure' has no PASS line
+PASS: A5 one byte differs in the bundle: 'bundle differs' is FAIL
+PASS: A4 runner stub that always exits 0, zero match: 'runner exits 1, prints 'no suites matched' before the summary' has no PASS line
+PASS: A4 runner stub that always exits 0, zero match: 'runner exit code is 0 for a pattern that matches nothing' is FAIL
+PASS: A4 runner stub that always exits 0, mixed suites: 'exit 1 when one suite fails' has no PASS line
+PASS: A4 runner stub that always exits 0, mixed suites: 'exit 0 when one suite fails' is FAIL
+PASS: A4 runner stub that always reports no suites: 'default patterns exit 0 for passing suites' has no PASS line
+PASS: A4 runner stub that always reports no suites: 'default patterns exit 1 for passing suites' is FAIL
+=== Total: 119 checks (PASS=119, FAIL=0) ===
+--- suite result: PASS: test_s1_adversarial.sh ---
+--- suite: test_s1_new_track.sh ---
+/home/daniebo/Desktop/measure/tests/spec_review_gate/test_s1_new_track.sh: line 59: in_text: command not found
+/home/daniebo/Desktop/measure/tests/spec_review_gate/test_s1_new_track.sh: line 60: in_flat: command not found
+=== section 2.5 exists ===
+PASS: new-track.md has a non-empty §2.5
+=== step 9 starts with the review title ===
+PASS: step 9 line '9. **Spec Review (fresh subagent):**' at §2.5 line 68
+=== step 10 is Commit Changes ===
+PASS: step 10 line '10. **Commit Changes:**' at §2.5 line 102
+=== step 11 is the announcement ===
+PASS: step 11 line '11. Announce completion:' at §2.5 line 104
+=== step order: 6 < 9 < 10 < 11 ===
+PASS: step lines in order (6=53 9=68 10=102 11=104)
+=== step 9 block is non-empty ===
+PASS: step 9 block has content
+=== step 9 names the standard ===
+PASS: step 9 names the standard
+=== step 9 names the report path ===
+PASS: step 9 names the report path
+=== step 9 gives the index line ===
+PASS: step 9 gives the index line
+=== step 9 gives the not-run message ===
+PASS: step 9 gives the not-run message
+=== step 9 forbids a review in this context ===
+PASS: step 9 forbids a review in this context
+=== step 9 gives the re-review limit ===
+PASS: step 9 gives the re-review limit
+=== step 9 gives the author model line ===
+PASS: step 9 gives the author model line
+=== step 9 gives the no-history sentence ===
+PASS: step 9 gives the no-history sentence
+=== step 9 routes the not-run case to step 10 ===
+PASS: step 9 routes the not-run case to step 10
+=== step 9 sub-steps keep their order ===
+PASS: first occurrences are in contract order
+=== edge: each number 1 to 11 starts exactly one numbered line in §2.5 ===
+PASS: numbers 1 to 11 occur once each, 11 numbered lines
+=== edge: steps 1 to 8 are unchanged from the track base ===
+PASS: steps 1 to 8 equal the track base
+=== edge: step 5 block has no spec-review ===
+PASS: step 5 block is non-empty and has no 'spec-review'
+=== edge: new-track-set.md has no spec-review ===
+PASS: new-track-set.md is non-empty and has no 'spec-review'
+=== edge: new-track-set.md keeps its step citations ===
+PASS: new-track-set.md cites §2.5 steps 4, 5, and 8
+=== SKILL.md New Track paragraph names the standard ===
+PASS: New Track paragraph contains references/spec-review.md
+=== SKILL.md Directory Structure block lists spec-review.md ===
+PASS: Directory Structure block contains spec-review.md
+=== SKILL.md Directory Structure has the exact line after spec.md ===
+PASS: exact spec-review.md line sits between the spec.md and plan.md lines
+=== bundle equality: diff -r skills/measure claude-skills/measure ===
+PASS: skills/measure equals claude-skills/measure
+=== runner exists ===
+PASS: tests/spec_review_gate/run.sh exists
+=== runner: pattern test_none_*.sh exits 1 and prints 'no suites matched' ===
+PASS: runner exits 1, prints 'no suites matched' before the summary
+=== runner: zero-match summary is 0 suites (PASS=0, FAIL=0) ===
+PASS: zero-match summary: 0 suites (PASS=0, FAIL=0)
+=== runner: one failing suite among passing suites gives exit 1 ===
+PASS: exit 1 when one suite fails (exit 1)
+PASS: mixed summary: 2 suites (PASS=1, FAIL=1)
+=== runner: suites run in sorted order ===
+PASS: test_a.sh ran before test_b.sh
+=== runner: a pattern selects only matching suites ===
+PASS: pattern test_a*.sh exits 0
+PASS: pattern summary: 1 suites (PASS=1, FAIL=0)
+PASS: pattern test_a*.sh did not run test_b.sh
+=== runner: default patterns run .sh and .py suites ===
+PASS: default patterns exit 0 for passing suites
+PASS: default summary: 2 suites (PASS=2, FAIL=0)
+=== runner: a .py suite with an import error counts as a failure ===
+PASS: import error gives exit 1
+PASS: import error summary: 1 suites (PASS=0, FAIL=1)
+=== runner: a file name with a space runs ===
+PASS: suite 'test_with space.sh' ran
+PASS: space summary: 1 suites (PASS=1, FAIL=0)
+=== runner: a pattern outside the suite folder runs nothing ===
+PASS: no file outside tests/spec_review_gate/ ran
+
+=== Results ===
+PASS: new-track.md has a non-empty §2.5
+PASS: step 9 line '9. **Spec Review (fresh subagent):**' at §2.5 line 68
+PASS: step 10 line '10. **Commit Changes:**' at §2.5 line 102
+PASS: step 11 line '11. Announce completion:' at §2.5 line 104
+PASS: step lines in order (6=53 9=68 10=102 11=104)
+PASS: step 9 block has content
+PASS: step 9 names the standard
+PASS: step 9 names the report path
+PASS: step 9 gives the index line
+PASS: step 9 gives the not-run message
+PASS: step 9 forbids a review in this context
+PASS: step 9 gives the re-review limit
+PASS: step 9 gives the author model line
+PASS: step 9 gives the no-history sentence
+PASS: step 9 routes the not-run case to step 10
+PASS: first occurrences are in contract order
+PASS: numbers 1 to 11 occur once each, 11 numbered lines
+PASS: steps 1 to 8 equal the track base
+PASS: step 5 block is non-empty and has no 'spec-review'
+PASS: new-track-set.md is non-empty and has no 'spec-review'
+PASS: new-track-set.md cites §2.5 steps 4, 5, and 8
+PASS: New Track paragraph contains references/spec-review.md
+PASS: Directory Structure block contains spec-review.md
+PASS: exact spec-review.md line sits between the spec.md and plan.md lines
+PASS: skills/measure equals claude-skills/measure
+PASS: tests/spec_review_gate/run.sh exists
+PASS: runner exits 1, prints 'no suites matched' before the summary
+PASS: zero-match summary: 0 suites (PASS=0, FAIL=0)
+PASS: exit 1 when one suite fails (exit 1)
+PASS: mixed summary: 2 suites (PASS=1, FAIL=1)
+PASS: test_a.sh ran before test_b.sh
+PASS: pattern test_a*.sh exits 0
+PASS: pattern summary: 1 suites (PASS=1, FAIL=0)
+PASS: pattern test_a*.sh did not run test_b.sh
+PASS: default patterns exit 0 for passing suites
+PASS: default summary: 2 suites (PASS=2, FAIL=0)
+PASS: import error gives exit 1
+PASS: import error summary: 1 suites (PASS=0, FAIL=1)
+PASS: suite 'test_with space.sh' ran
+PASS: space summary: 1 suites (PASS=1, FAIL=0)
+PASS: no file outside tests/spec_review_gate/ ran
+=== Total: 41 checks (PASS=41, FAIL=0) ===
+--- suite result: PASS: test_s1_new_track.sh ---
+--- suite: test_s1_standard.sh ---
+=== standard file exists ===
+PASS: standard file exists and is non-empty
+=== line 1 is the title ===
+PASS: line 1 is '# Spec Review Standard'
+=== EGM credit in the intro paragraph ===
+PASS: intro credits EGM with the URL and Apache-2.0
+=== eight level-2 headings in contract order ===
+PASS: eight headings in contract order
+=== Reviewer Input: sources and the no-history sentence ===
+PASS: Reviewer Input: sources and the no-history sentence
+=== Paraphrase First: two sections, size, Blocker rule ===
+PASS: Paraphrase First: two sections, size, Blocker rule
+=== Zoom-Out Check: six checks ===
+PASS: Zoom-Out Check: six checks
+=== Zero-Decision Check: five kinds ===
+PASS: Zero-Decision Check: five kinds
+=== Severity: three levels and Decision 11 rules ===
+PASS: Severity: three levels and Decision 11 rules
+=== Finding Format: literal line, comprehension gap, term rule ===
+PASS: Finding Format: literal line, comprehension gap, term rule
+=== Re-Review Limit: one re-review and Accepted Risks ===
+PASS: Re-Review Limit: one re-review and Accepted Risks
+=== Report Layout: template lines ===
+PASS: Report Layout: template lines
+=== not-run form in the standard ===
+PASS: standard has 'Spec review: not run (no subagent tool)'
+=== Tooling Exceptions row in measure/tech-stack.md ===
+PASS: Tooling Exceptions row for spec_review_gate_20261030 is complete
+=== edge: order check fails for a copy without '## Severity' ===
+PASS: order check reports FAIL for the copy: heading '## Severity' occurs 0 times, expected 1
+=== harness: order function on synthetic fixtures ===
+PASS: order function accepts the two good fixtures and rejects the five bad ones
+
+=== Results ===
+PASS: standard file exists and is non-empty
+PASS: line 1 is '# Spec Review Standard'
+PASS: intro credits EGM with the URL and Apache-2.0
+PASS: eight headings in contract order
+PASS: Reviewer Input: sources and the no-history sentence
+PASS: Paraphrase First: two sections, size, Blocker rule
+PASS: Zoom-Out Check: six checks
+PASS: Zero-Decision Check: five kinds
+PASS: Severity: three levels and Decision 11 rules
+PASS: Finding Format: literal line, comprehension gap, term rule
+PASS: Re-Review Limit: one re-review and Accepted Risks
+PASS: Report Layout: template lines
+PASS: standard has 'Spec review: not run (no subagent tool)'
+PASS: Tooling Exceptions row for spec_review_gate_20261030 is complete
+PASS: order check reports FAIL for the copy: heading '## Severity' occurs 0 times, expected 1
+PASS: order function accepts the two good fixtures and rejects the five bad ones
+=== Total: 16 checks (PASS=16, FAIL=0) ===
+--- suite result: PASS: test_s1_standard.sh ---
+--- suite: test_s2_adversarial.sh ---
+PASS: probe groups produced checks
+PASS: G01 bad --baseline values: value '03fcacbe946a0a42f7ae7c80ab82cb37f83bdbf7' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '63499e4ea8e096b831515ceb1d5a7593e4d87ae5' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '2e3f5e42bfe8820695906c1f7c1268c799ce714a' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '042e9c4d1d713ee14f89f883a72007ab2c38b4e7..HEAD' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '--all' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '-h' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value '--output=/tmp/tmp.OsdGd476qh/output-probe-2/x' exits 1 with the resolve message
+PASS: G01 bad --baseline values: value ' ' exits 1 with the resolve message
+PASS: G01 bad --baseline values: --output=<tmp>/x leaves no file
+PASS: G02 empty --baseline: --baseline= exits 1 with the required message
+PASS: G02 empty --baseline: no --baseline exits 1 with the required message
+PASS: G03 bad baseline skips the scope check: not-a-ref with src/app.py gives only the resolve message
+PASS: G04 good baseline forms: short SHA passes
+PASS: G04 good baseline forms: annotated tag passes
+PASS: G04 good baseline forms: HEAD with no new commit passes
+PASS: G05 finding formats: 'F01 [Major] x: y' is rejected
+PASS: G05 finding formats: 'F1 [Major] x:' is rejected
+PASS: G05 finding formats: 'F1 [Major] x: ' is rejected
+PASS: G05 finding formats: ' F1 [Major] x: y' is rejected
+PASS: G05 finding formats: 'F1 [major] x: y' is rejected
+PASS: G05 finding formats: 'F1 [Major]x: y' is rejected
+PASS: G05 finding formats: 'F1 [Critical] x: y' is rejected
+PASS: G05 finding formats: 'F１ [Major] x: y' is rejected
+PASS: G05 finding formats: 'Major: no id' is rejected
+PASS: G05 finding formats: '' is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after LF with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after CR with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after CRLF with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after U+2028 with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after U+2029 with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): second [Blocker] line after NEL with status pass is rejected
+PASS: G06 multi-line findings (remediation regression): a trailing LF is rejected
+PASS: G07 non-string finding items: 5 is rejected
+PASS: G07 non-string finding items: None is rejected
+PASS: G07 non-string finding items: {} is rejected
+PASS: G07 non-string finding items: ['F1 [Major] x: y'] is rejected
+PASS: G08 paraphrase types: paraphrase ['a', 'b'] is rejected
+PASS: G08 paraphrase types: paraphrase 5 is rejected
+PASS: G08 paraphrase types: paraphrase 'text' is rejected
+PASS: G08 paraphrase types: paraphrase None is rejected
+PASS: G08 paraphrase types: paraphrase {} is rejected
+PASS: G09 paraphrase field types: proposes=5 is rejected
+PASS: G09 paraphrase field types: proposes=['a'] is rejected
+PASS: G09 paraphrase field types: current_system=None is rejected
+PASS: G09 paraphrase field types: proposes='\xa0' is rejected
+PASS: G10 unicode edge text: proposes U+200B (report: exit 0 or 1, no Traceback)
+PASS: G10 unicode edge text: extra paraphrase key (report: exit 0 or 1, no Traceback)
+PASS: G10 unicode edge text: finding with a trailing CR and no second line (report: exit 0 or 1, no Traceback)
+PASS: G10 unicode edge text: finding with a trailing VT and no second line (report: exit 0 or 1, no Traceback)
+PASS: G10 unicode edge text: finding with a trailing U+2028 and no second line (report: exit 0 or 1, no Traceback)
+PASS: G10 unicode edge text: finding with a description of one space (report: exit 0 or 1, no Traceback)
+PASS: G11 huge and unicode strings: 5 MB proposes passes in less than 5 s
+PASS: G11 huge and unicode strings: 1 MB finding with no ': ' fails in less than 5 s
+PASS: G11 huge and unicode strings: emoji and right-to-left text pass
+PASS: G11 huge and unicode strings: 3000 ': ' pairs with a trailing LF fail
+PASS: G12 result file not JSON: plain text is rejected
+PASS: G12 result file not JSON: empty file is rejected
+PASS: G12 result file not JSON: [] is rejected
+PASS: G12 result file not JSON: null is rejected
+PASS: G12 result file not JSON: a missing path is rejected
+PASS: G13 result file not readable as text: bytes ff fe 00 fail closed (report)
+PASS: G13 result file not readable as text: a folder fails closed (report)
+PASS: G14 scope: renames and deletions: rename out of measure/runs/ names src/a.txt
+PASS: G14 scope: renames and deletions: deletion names src/b.py
+PASS: G14 scope: renames and deletions: measure/runsX/a is named
+PASS: G14 scope: renames and deletions: Measure/runs/a is named
+PASS: G14 scope: renames and deletions: a mode change names src/m.sh
+PASS: G15 scope: rename into measure/runs/ (amendment ccdaae2): pinned config: exit 1 and names src/a.py
+PASS: G15 scope: rename into measure/runs/ (amendment ccdaae2): diff.renames=true: exit 1 and names src/a.py
+PASS: G15 scope: rename into measure/runs/ (amendment ccdaae2): diff.renames=copies: exit 1 and names src/a.py
+PASS: G15 scope: rename into measure/runs/ (amendment ccdaae2): diff.renames=false: exit 1 and names src/a.py
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): measure/runs/demo_track/ü.txt passes (default core.quotePath)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading space path ' measure/runs/x' fails and is named (default)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading space path ' measure/runs/x' fails and is named (core.quotePath=false)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading TAB path '\tmeasure/runs/x' fails and is named (default)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading TAB path '\tmeasure/runs/x' fails and is named (core.quotePath=false)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading U+3000 path '\u3000measure/runs/x' fails and is named (default)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): leading U+3000 path '\u3000measure/runs/x' fails and is named (core.quotePath=false)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): runsX path 'measure/runsX/a' fails and is named (default)
+PASS: G16 scope: non-ASCII and whitespace paths (remediation regression): runsX path 'measure/runsX/a' fails and is named (core.quotePath=false)
+PASS: G17 scope: uncommitted file: uncommitted src/x.py passes (Decision 17)
+PASS: G18 alias case: --role SPEC-REVIEW (report: exit 0 or 1, no Traceback)
+PASS: G19 scope: git failure and net-zero history: a missing baseline tree gives the could-not-list message
+PASS: G19 scope: git failure and net-zero history: add then remove src/tmp.py in two commits (report: exit 0 or 1, no Traceback)
+PASS: G19 scope: git failure and net-zero history: non-UTF-8 byte in a measure/runs/ file name fails closed (report)
+REPORT: G10 unicode edge text: proposes U+200B: exit 0; last line: PASS: spec-review gate passed
+REPORT: G10 unicode edge text: extra paraphrase key: exit 0; last line: PASS: spec-review gate passed
+REPORT: G10 unicode edge text: finding with a trailing CR and no second line: exit 0; last line: PASS: spec-review gate passed
+REPORT: G10 unicode edge text: finding with a trailing VT and no second line: exit 0; last line: PASS: spec-review gate passed
+REPORT: G10 unicode edge text: finding with a trailing U+2028 and no second line: exit 0; last line: PASS: spec-review gate passed
+REPORT: G10 unicode edge text: finding with a description of one space: exit 0; last line: PASS: spec-review gate passed
+REPORT: G11 huge and unicode strings: 3000 ': ' pairs with a trailing LF: exit 1 in 0.26 s
+REPORT: G13 result file not readable as text: bytes ff fe 00: exit 1; Traceback=True
+REPORT: G13 result file not readable as text: folder: exit 1; Traceback=True
+REPORT: G18 alias case: --role SPEC-REVIEW: exit 1; last line: ERROR: unknown role 'SPEC-REVIEW'. Valid roles: adversarial-testing, closeout, final-acceptance, jr-green, mid-red, orchestrator-audit, phase-acceptance, review
+REPORT: G19 scope: git failure and net-zero history: add then remove src/tmp.py in two commits: exit 1; last line: FAIL: - src/tmp.py
+REPORT: G19 scope: git failure and net-zero history: non-UTF-8 byte in a measure/runs/ file name: exit 1; Traceback=True
+PASS: G20 sensitivity: mutant 're.match instead of fullmatch' fails at least one probe of ['g06_multiline_findings']
+  killed by: G06 multi-line findings (remediation regression): a trailing LF is rejected
+PASS: G20 sensitivity: mutant 'no splitlines check' fails at least one probe of ['g06_multiline_findings']
+  killed by: G06 multi-line findings (remediation regression): second [Blocker] line after CR with status pass is rejected
+PASS: G20 sensitivity: mutant 'strip() on paths' fails at least one probe of ['g16_non_ascii']
+  killed by: G16 scope: non-ASCII and whitespace paths (remediation regression): leading space path ' measure/runs/x' fails and is named (default)
+PASS: G20 sensitivity: mutant 'no -z flag' fails at least one probe of ['g16_non_ascii']
+  killed by: G16 scope: non-ASCII and whitespace paths (remediation regression): measure/runs/demo_track/ü.txt passes (default core.quotePath)
+PASS: G20 sensitivity: mutant 'no baseline check' fails at least one probe of ['g01_bad_baselines', 'g03_bad_baseline_skips_scope']
+  killed by: G01 bad --baseline values: value '03fcacbe946a0a42f7ae7c80ab82cb37f83bdbf7' exits 1 with the resolve message
+PASS: G20 sensitivity: mutant 'startswith without slash' fails at least one probe of ['g14_renames_deletions', 'g16_non_ascii']
+  killed by: G14 scope: renames and deletions: measure/runsX/a is named
+PASS: G20 sensitivity: mutant 'no paraphrase type check' fails at least one probe of ['g08_paraphrase_types']
+  killed by: G08 paraphrase types: paraphrase ['a', 'b'] is rejected
+PASS: G20 sensitivity: mutant 'git failure ignored' fails at least one probe of ['g19_extra_scope']
+  killed by: G19 scope: git failure and net-zero history: a missing baseline tree gives the could-not-list message
+=== Total: 94 checks (PASS=94, FAIL=0) ===
+--- suite result: PASS: test_s2_adversarial.sh ---
+--- suite: test_s2_role_docs.sh ---
+=== role file exists ===
+PASS: agents/measure-spec-review.md exists
+=== role frontmatter exists ===
+PASS: role frontmatter has content
+=== frontmatter: description is one non-empty line ===
+PASS: one description: line
+=== frontmatter: mode: subagent ===
+PASS: frontmatter line [mode: subagent]
+=== frontmatter: steps: 40 ===
+PASS: frontmatter line [steps: 40]
+=== frontmatter: permissions: ===
+PASS: frontmatter line [permissions:]
+=== frontmatter: OpenCode 2 fields only, no pinned model ===
+PASS: no V1 field and no model: line
+=== frontmatter: rule actions are edit, shell, skill, subagent, question in order ===
+PASS: rule actions: edit shell skill subagent question 
+=== edit rules are exactly the three contract rules ===
+PASS: edit rules equal the three contract rules
+=== shell rules equal the shell rules of review A ===
+PASS: shell rules are equal (26 rules)
+=== frontmatter tail is skill allow, then subagent and question deny-all ===
+PASS: tail equals skill allow, subagent deny, question deny
+=== body starts with the role sentence ===
+PASS: body starts with 'You are the Measure Spec Review subagent.'
+=== body: installed standard path ===
+PASS: body: installed standard path
+=== body: repository standard path ===
+PASS: body: repository standard path
+=== body: JSON artifact name ===
+PASS: body: JSON artifact name
+=== body: log artifact name ===
+PASS: body: log artifact name
+=== body: escalate_human ===
+PASS: body: escalate_human
+=== body: infrastructure_retry ===
+PASS: body: infrastructure_retry
+=== body: inconclusive status ===
+PASS: body: inconclusive status
+=== body: paraphrase ===
+PASS: body: paraphrase
+=== body: role_base_sha ===
+PASS: body: role_base_sha
+=== body: audited_head_sha ===
+PASS: body: audited_head_sha
+=== body: track setup ===
+PASS: body: track setup
+=== body: MEASURE_AGENT_RESULT ===
+PASS: body: MEASURE_AGENT_RESULT
+=== body: result role ===
+PASS: body: result role
+=== SKILL.md: first paragraph role list starts with measure-spec-review ===
+PASS: SKILL.md: first paragraph role list starts with measure-spec-review
+=== SKILL.md: Role Order item 0 comes before item 1 ===
+PASS: item 0 at line 9 before item 1 at line 10
+=== SKILL.md: 'Spec review gate:' paragraph directly follows item 12 ===
+PASS: the first line after item 12 starts with 'Spec review gate:'
+=== SKILL.md: gate paragraph names escalate_human ===
+PASS: SKILL.md: gate paragraph names escalate_human
+=== SKILL.md: spec reviewer family rule ===
+PASS: SKILL.md: spec reviewer family rule
+=== SKILL.md: Author model line source ===
+PASS: SKILL.md: Author model line source
+=== SKILL.md: spec-review.md path in the model rule ===
+PASS: SKILL.md: spec-review.md path in the model rule
+=== SKILL.md: unknown author model fallback ===
+PASS: SKILL.md: unknown author model fallback
+=== SKILL.md: deviation record in the model rule ===
+PASS: SKILL.md: deviation record in the model rule
+=== SKILL.md: Inter-Phase Checks example line ===
+PASS: SKILL.md: Inter-Phase Checks example line
+=== contracts.md: ## Spec Review JSON comes after the UX block ===
+PASS: heading at line 63 after the UX block at line 49
+=== contracts.md: Spec Review JSON has "paraphrase" ===
+PASS: contracts.md: Spec Review JSON has "paraphrase"
+=== contracts.md: Spec Review JSON has "proposes" ===
+PASS: contracts.md: Spec Review JSON has "proposes"
+=== contracts.md: Spec Review JSON has "current_system" ===
+PASS: contracts.md: Spec Review JSON has "current_system"
+=== contracts.md: Spec Review JSON gives the finding format ===
+PASS: contracts.md: Spec Review JSON gives the finding format
+=== contracts.md: Spec Review JSON gives the fail route ===
+PASS: contracts.md: Spec Review JSON gives the fail route
+=== agents/measure-orchestrator.md: first Role Handoff Rules bullet ===
+PASS: first bullet starts with the contract text
+=== agents/measure-orchestrator.md: the S2 change kept the other sections (Decision 22) ===
+PASS: at the S2 checkpoint, text outside Role Handoff Rules equals the phase base
+=== command description ===
+PASS: command description
+=== README: measure-spec-review row follows the measure-orchestrator row ===
+PASS: spec-review row at line 233 directly after the orchestrator row at line 232
+=== product.md role count ===
+PASS: product.md role count: 14 role definitions, 14 files
+=== tech-stack.md role count ===
+PASS: tech-stack.md role count: 14 role definitions, 14 files
+=== edge: the fallback standard exists ===
+PASS: skills/measure/references/spec-review.md exists
+=== edge: every --role name in the skill is accepted by audit-result ===
+PASS: no unknown role among: mid-red phase-acceptance spec-review
+=== edge: the skill names spec-review in a --role example ===
+PASS: --role spec-review occurs in the skill
+=== edge: no stale role count of 13 ===
+PASS: neither file contains '13 role definitions' or '13 measure-*'
+
+=== Results ===
+PASS: agents/measure-spec-review.md exists
+PASS: role frontmatter has content
+PASS: one description: line
+PASS: frontmatter line [mode: subagent]
+PASS: frontmatter line [steps: 40]
+PASS: frontmatter line [permissions:]
+PASS: no V1 field and no model: line
+PASS: rule actions: edit shell skill subagent question 
+PASS: edit rules equal the three contract rules
+PASS: shell rules are equal (26 rules)
+PASS: tail equals skill allow, subagent deny, question deny
+PASS: body starts with 'You are the Measure Spec Review subagent.'
+PASS: body: installed standard path
+PASS: body: repository standard path
+PASS: body: JSON artifact name
+PASS: body: log artifact name
+PASS: body: escalate_human
+PASS: body: infrastructure_retry
+PASS: body: inconclusive status
+PASS: body: paraphrase
+PASS: body: role_base_sha
+PASS: body: audited_head_sha
+PASS: body: track setup
+PASS: body: MEASURE_AGENT_RESULT
+PASS: body: result role
+PASS: SKILL.md: first paragraph role list starts with measure-spec-review
+PASS: item 0 at line 9 before item 1 at line 10
+PASS: the first line after item 12 starts with 'Spec review gate:'
+PASS: SKILL.md: gate paragraph names escalate_human
+PASS: SKILL.md: spec reviewer family rule
+PASS: SKILL.md: Author model line source
+PASS: SKILL.md: spec-review.md path in the model rule
+PASS: SKILL.md: unknown author model fallback
+PASS: SKILL.md: deviation record in the model rule
+PASS: SKILL.md: Inter-Phase Checks example line
+PASS: heading at line 63 after the UX block at line 49
+PASS: contracts.md: Spec Review JSON has "paraphrase"
+PASS: contracts.md: Spec Review JSON has "proposes"
+PASS: contracts.md: Spec Review JSON has "current_system"
+PASS: contracts.md: Spec Review JSON gives the finding format
+PASS: contracts.md: Spec Review JSON gives the fail route
+PASS: first bullet starts with the contract text
+PASS: at the S2 checkpoint, text outside Role Handoff Rules equals the phase base
+PASS: command description
+PASS: spec-review row at line 233 directly after the orchestrator row at line 232
+PASS: product.md role count: 14 role definitions, 14 files
+PASS: tech-stack.md role count: 14 role definitions, 14 files
+PASS: skills/measure/references/spec-review.md exists
+PASS: no unknown role among: mid-red phase-acceptance spec-review
+PASS: --role spec-review occurs in the skill
+PASS: neither file contains '13 role definitions' or '13 measure-*'
+=== Total: 51 checks (PASS=51, FAIL=0) ===
+--- suite result: PASS: test_s2_role_docs.sh ---
+--- suite: test_s3_adversarial.sh ---
+PASS: probe groups produced checks
+PASS: G00 control: a block without a dispositions line (exit 0)
+PASS: G00 control: dispositions: none (exit 0)
+PASS: G00 control: a valid line with all four dispositions (exit 0)
+PASS: G00 control: dispositions: F1=bad (exit 1, 'invalid dispositions line')
+PASS: G01 line ends (contract): whole log in CRLF with dispositions: none (exit 0)
+PASS: G01 line ends (contract): whole log in CRLF with F1=FIX; F2=DECLINE (exit 0)
+PASS: G02 embedded CR: F1=FIX CR F2=CONTEST() (report: exit 0 or 1, no Traceback)
+PASS: G02 embedded CR: F1=FIX CR ; F2=DECLINE (report: exit 0 or 1, no Traceback)
+PASS: G02 embedded CR: docstring LF-only rule: F1=FIX CR F2=bad (exit 1, 'invalid dispositions line')
+PASS: G02 embedded CR: docstring LF-only rule: F1=FIX U+2028 F2=bad (exit 1, 'invalid dispositions line')
+PASS: G03 Unicode line separators: F1=FIX U+2028 F2=CONTEST() (report: exit 0 or 1, no Traceback)
+PASS: G03 Unicode line separators: F1=FIX U+0085 F2=bad (report: exit 0 or 1, no Traceback)
+PASS: G03 Unicode line separators: handoff value x U+2028 MEASURE_AGENT_RESULT before a real block (report: exit 0 or 1, no Traceback)
+PASS: G04 NUL: F1=FIX NUL (contract) (exit 1, 'invalid dispositions line')
+PASS: G04 NUL: F2=CONTEST(NUL) (contract) (exit 1, 'invalid dispositions line')
+PASS: G04 NUL: F2=CONTEST(ESC) (contract) (exit 1, 'invalid dispositions line')
+PASS: G04 NUL: F2=CONTEST(U+200B) (contract) (exit 1, 'invalid dispositions line')
+PASS: G04 NUL: F3=ESCALATE(U+FEFF) (contract) (exit 1, 'invalid dispositions line')
+PASS: G04 NUL: F2=CONTEST(tab between words) (contract) (exit 0)
+PASS: G05 ';' inside parentheses (contract, spec Decision 18): F2=CONTEST(a; b) (exit 1, 'invalid dispositions line')
+PASS: G05 ';' inside parentheses (contract, spec Decision 18): F3=ESCALATE(x;) (exit 1, 'invalid dispositions line')
+PASS: G06 nested and unbalanced parentheses (contract): F2=CONTEST(a(b)) (exit 0)
+PASS: G06 nested and unbalanced parentheses (contract): F2=CONTEST(a)b) (exit 0)
+PASS: G06 nested and unbalanced parentheses (contract): F2=CONTEST((a) (exit 0)
+PASS: G07 spaces: F1=FIX ;F2=DECLINE (contract) (exit 0)
+PASS: G07 spaces: two spaces around F1=FIX (contract) (exit 0)
+PASS: G07 spaces: F2=CONTEST(U+00A0) (contract) (exit 1, 'invalid dispositions line')
+PASS: G07 spaces: F2=CONTEST( ) (report: exit 0 or 1, no Traceback)
+PASS: G07 spaces: F2=CONTEST(U+200B) (report: exit 0 or 1, no Traceback)
+PASS: G07 spaces: dispositions:none (report: exit 0 or 1, no Traceback)
+PASS: G07 spaces: dispositions: and four spaces (report: exit 0 or 1, no Traceback)
+PASS: G08 id forms (contract): 'F01=FIX' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'F１=FIX' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'f1=FIX' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'F1=Fix' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'F1 = FIX' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'F1=FIXX' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): 'F1=DECLINE()' (exit 1, 'invalid dispositions line')
+PASS: G08 id forms (contract): F1=FIX; F1=FIX (exit 1, 'invalid dispositions line')
+PASS: G09 several blocks (contract): last block valid, earlier block invalid (exit 0)
+PASS: G09 several blocks (contract): last block invalid, earlier block valid (exit 1, 'invalid dispositions line')
+PASS: G09 several blocks (contract): two dispositions lines in the last block (none, then F1=bad) (exit 1, 'invalid dispositions line')
+PASS: G10 start line as a substring: handoff: see MEASURE_AGENT_RESULT inside the block (contract) (exit 0)
+PASS: G11 log not UTF-8: bytes FF FE outside the block, valid block (contract) (exit 0)
+PASS: G11 log not UTF-8: bytes FF FE inside the dispositions line (report: exit 0 or 1, no Traceback)
+PASS: G12 log path: --log-file is a folder (report: exit 0 or 1, no Traceback)
+PASS: G12 log path: missing log file (contract: exit 1, missing block message, no dispositions message)
+PASS: G13 every role (contract): --role strategy reports 'invalid dispositions line'
+PASS: G13 every role (contract): --role mid-red reports 'invalid dispositions line'
+PASS: G13 every role (contract): --role review-a reports 'invalid dispositions line'
+PASS: G13 every role (contract): --role spec-review reports 'invalid dispositions line'
+PASS: G14 fail-open order (contract): valid line and GREEN_TEST_COMMAND=false exit 1 with the GREEN_TEST_COMMAND failure
+PASS: G15 documented example (contract): contracts.md holds at least one example line
+PASS: G15 documented example (contract): example line 1 of 2 (exit 0)
+PASS: G15 documented example (contract): example line 2 of 2 (exit 0)
+PASS: G16 backward compatibility, frozen corpus (contract): S1 shape: no dispositions line (exit 0)
+PASS: G16 backward compatibility, frozen corpus (contract): S2 shape: dispositions: F1=FIX; F2=FIX (exit 0)
+PASS: G16 backward compatibility, frozen corpus (contract): JSON summary above the block (exit 0)
+PASS: G17 block range rule (contract, durable regression): an inner start line hides nothing (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): a trailing start line after an invalid block (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): a second dispositions line (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): START / bad / START / END / END (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): START / END / bad / END (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): an end line before the first start line (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): CRLF line endings (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): an end line with trailing spaces (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): a dispositions line with leading spaces (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): a dispositions line with a leading tab (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): a start line on line 1 counts (exit 1, 'invalid dispositions line')
+PASS: G17 block range rule (contract, durable regression): two complete blocks, the first invalid (exit 0)
+PASS: G17 block range rule (contract, durable regression): a dispositions line after the last end line (exit 0)
+PASS: G17 block range rule (contract, durable regression): a valid one-block log (exit 0)
+PASS: G18 time limits (contract): 20000 end lines, then 20000 start lines and one complete block (exit 0 in less than 30 s)
+PASS: G18 time limits (contract): 50,000 items F<n>=FIX (exit 0 in less than 30 s)
+PASS: G18 time limits (contract): one CONTEST( item with 5 MB of evidence (exit 0 in less than 30 s)
+PASS: G18 time limits (contract): 50,000 items with one duplicate at the end (exit 1 in less than 30 s)
+PASS: G04b ordering (contract): an invalid item keeps its message with a NUL (exit 1, 'invalid dispositions line')
+PASS: G04b ordering (contract): the control message is absent when an item is already invalid
+PASS: G04c marker look-alikes (contract): look-alike marker text does not count as a result block
+PASS: G04d control classes (contract): F2=CONTEST(U+2028) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): F2=CONTEST(U+0085) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): F2=CONTEST(U+202E) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): F2=CONTEST(U+200E) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): F2=CONTEST(U+061C) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): F2=CONTEST(U+200F) (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): a trailing U+2028 after the value (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): a leading U+0085 before the value (exit 1, 'invalid dispositions line')
+PASS: G04d control classes (contract): none with a leading U+2028 (exit 1, 'invalid dispositions line')
+REPORT: G02 embedded CR: F1=FIX CR F2=CONTEST(): exit 1; invalid
+REPORT: G02 embedded CR: F1=FIX CR ; F2=DECLINE: exit 1; invalid
+REPORT: G03 Unicode line separators: F1=FIX U+2028 F2=CONTEST(): exit 1; invalid
+REPORT: G03 Unicode line separators: F1=FIX U+0085 F2=bad: exit 1; invalid
+REPORT: G03 Unicode line separators: handoff value x U+2028 MEASURE_AGENT_RESULT before a real block: exit 0; no dispositions feedback
+REPORT: G07 spaces: F2=CONTEST( ): exit 1; invalid
+REPORT: G07 spaces: F2=CONTEST(U+200B): exit 1; invalid
+REPORT: G07 spaces: dispositions:none: exit 0; no dispositions feedback
+REPORT: G07 spaces: dispositions: and four spaces: exit 1; invalid
+REPORT: G11 log not UTF-8: bytes FF FE inside the dispositions line: exit 0; no dispositions feedback
+REPORT: G12 log path: --log-file is a folder: exit 1; no dispositions feedback
+REPORT: G18 time limits (contract): 20000 end lines, then 20000 start lines and one complete block (exit 0 in less than 30 s): 0.125 s
+REPORT: G18 time limits (contract): 50,000 items F<n>=FIX (exit 0 in less than 30 s): 0.185 s
+REPORT: G18 time limits (contract): one CONTEST( item with 5 MB of evidence (exit 0 in less than 30 s): 0.182 s
+REPORT: G18 time limits (contract): 50,000 items with one duplicate at the end (exit 1 in less than 30 s): 0.177 s
+PASS: G19 live corpus: the committed corpus holds at least one log
+REPORT: G19 live corpus: 114 logs, 99 with both exact lines
+PASS: G19 live corpus: no log gives dispositions feedback or a Traceback
+PASS: G19 live corpus: each log with both exact lines exits 0
+PASS: G20 lint: the suite folder holds .sh files
+PASS: G20 lint: no .sh file under tests/spec_review_gate/ has a pipe into grep -q
+PASS: G21 sensitivity: mutant 're.match instead of fullmatch' fails at least one probe
+  killed by: G08 id forms (contract): 'F1=FIXX' (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'the first start line, not the block range' fails at least one probe
+  killed by: G09 several blocks (contract): last block valid, earlier block invalid (exit 0)
+PASS: G21 sensitivity: mutant 'the first block, not the last' fails at least one probe
+  killed by: G09 several blocks (contract): last block valid, earlier block invalid (exit 0)
+PASS: G21 sensitivity: mutant 'only the first dispositions line' fails at least one probe
+  killed by: G09 several blocks (contract): two dispositions lines in the last block (none, then F1=bad) (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'no duplicate check' fails at least one probe
+  killed by: G08 id forms (contract): F1=FIX; F1=FIX (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 're.IGNORECASE' fails at least one probe
+  killed by: G08 id forms (contract): 'f1=FIX' (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'no strip() of each item' fails at least one probe
+  killed by: G00 control: a valid line with all four dispositions (exit 0)
+PASS: G21 sensitivity: mutant 'no strip() of each line' fails at least one probe
+  killed by: G17 block range rule (contract, durable regression): a dispositions line with leading spaces (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'exact end line without strip()' fails at least one probe
+  killed by: G17 block range rule (contract, durable regression): CRLF line endings (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'splitlines() in place of the LF split' fails at least one probe
+  killed by: G02 embedded CR: docstring LF-only rule: F1=FIX CR F2=bad (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'the call only for jr-green' fails at least one probe
+  killed by: G13 every role (contract): --role strategy reports 'invalid dispositions line'
+PASS: G21 sensitivity: mutant 'no call' fails at least one probe
+  killed by: G00 control: dispositions: F1=bad (exit 1, 'invalid dispositions line')
+PASS: G21 sensitivity: mutant 'the old quadratic any(...) loop' fails at least one probe
+  killed by: G18 time limits (contract): 20000 end lines, then 20000 start lines and one complete block (exit 0 in less than 30 s)
+=== Total: 107 checks (PASS=107, FAIL=0) ===
+--- suite result: PASS: test_s3_adversarial.sh ---
+--- suite: test_s3_dispositions_docs.sh ---
+=== contracts.md: ## Finding Dispositions comes after ## Spec Review JSON ===
+PASS: heading at line 85 after Spec Review JSON at line 63
+=== contracts.md: routed finding form ===
+PASS: contracts.md: routed finding form
+=== contracts.md: scope name review-a ===
+PASS: contracts.md: scope name review-a
+=== contracts.md: scope name review-b ===
+PASS: contracts.md: scope name review-b
+=== contracts.md: scope name review-c ===
+PASS: contracts.md: scope name review-c
+=== contracts.md: scope name adversarial-testing ===
+PASS: contracts.md: scope name adversarial-testing
+=== contracts.md: scope name ux-browser-review ===
+PASS: contracts.md: scope name ux-browser-review
+=== contracts.md: scope name phase-acceptance ===
+PASS: contracts.md: scope name phase-acceptance
+=== contracts.md: bullet FIX ===
+PASS: contracts.md: bullet FIX
+=== contracts.md: bullet CONTEST ===
+PASS: contracts.md: bullet CONTEST
+=== contracts.md: bullet ESCALATE ===
+PASS: contracts.md: bullet ESCALATE
+=== contracts.md: bullet DECLINE ===
+PASS: contracts.md: bullet DECLINE
+=== contracts.md: evidence sentence ===
+PASS: contracts.md: evidence sentence
+=== contracts.md: dispositions: none ===
+PASS: contracts.md: dispositions: none
+=== contracts.md: dispositions line form ===
+PASS: contracts.md: dispositions line form
+=== contracts.md: control/zero-width rejection ===
+PASS: contracts.md: control/zero-width rejection
+=== contracts.md: control class names C1 controls ===
+PASS: contracts.md: control class names C1 controls
+=== contracts.md: control class names line/paragraph separators ===
+PASS: contracts.md: control class names line/paragraph separators
+=== contracts.md: control class names bidi controls ===
+PASS: contracts.md: control class names bidi controls
+=== contracts.md: control class names zero-width characters ===
+PASS: contracts.md: control class names zero-width characters
+=== contracts.md: CONTEST kept form ===
+PASS: contracts.md: CONTEST kept form
+=== contracts.md: withdrawn form ===
+PASS: contracts.md: withdrawn form
+=== contracts.md: Comprehension gap rule ===
+PASS: contracts.md: Comprehension gap rule
+=== contracts.md: no-FIX round rule ===
+PASS: contracts.md: no-FIX round rule
+=== contracts.md: marker whole-line matching ===
+PASS: contracts.md: marker whole-line matching
+=== contracts.md: marker in another word ===
+PASS: contracts.md: marker in another word
+=== contracts.md: raw value and CRLF allowance ===
+PASS: contracts.md: raw value and CRLF allowance
+=== contracts.md: item strip ===
+PASS: contracts.md: item strip
+=== contracts.md: audit scope names ===
+PASS: contracts.md: audit scope names
+=== contracts.md: spec-review scope is the section ===
+PASS: contracts.md: spec-review scope is the section
+=== contracts.md: baseline need not be an ancestor ===
+PASS: contracts.md: baseline need not be an ancestor
+=== contracts.md: changed files union ===
+PASS: contracts.md: changed files union
+=== contracts.md: working-tree union ===
+PASS: contracts.md: working-tree union
+=== contracts.md: spec-review resolves the baseline ===
+PASS: contracts.md: spec-review resolves the baseline
+=== contracts.md: HEAD advance rule ===
+PASS: contracts.md: HEAD advance rule
+=== contracts.md: commit detection through global options ===
+PASS: contracts.md: commit detection through global options
+=== contracts.md: role result identity fields ===
+PASS: contracts.md: role result identity fields
+=== contracts.md: model default wording ===
+PASS: contracts.md: model default wording
+=== Green role: ## Routed findings comes directly before ## Fabricate-vs-block decision ===
+PASS: the heading after '## Routed findings' is '## Fabricate-vs-block decision'
+=== Green role: names Finding Dispositions ===
+PASS: Green role: names Finding Dispositions
+=== Green role: names the dispositions: line ===
+PASS: Green role: names the dispositions: line
+=== Green role: Routed findings section names Finding Dispositions ===
+PASS: Green role: Routed findings section names Finding Dispositions
+=== Green role: Routed findings section requires the dispositions: line ===
+PASS: Green role: Routed findings section requires the dispositions: line
+=== Green role: Routed findings section states the no-FIX rule ===
+PASS: Green role: Routed findings section states the no-FIX rule
+=== measure-review-a-correctness.md: withdrawn: ===
+PASS: measure-review-a-correctness.md: withdrawn:
+=== measure-review-a-correctness.md: | CONTEST kept: ===
+PASS: measure-review-a-correctness.md: | CONTEST kept:
+=== measure-review-a-correctness.md: escalate_human ===
+PASS: measure-review-a-correctness.md: escalate_human
+=== measure-review-a-correctness.md: the contested-item paragraph is directly before the closing role paragraph ===
+PASS: measure-review-a-correctness.md: the paragraph before the closing role paragraph holds the three strings
+=== measure-review-b-security.md: withdrawn: ===
+PASS: measure-review-b-security.md: withdrawn:
+=== measure-review-b-security.md: | CONTEST kept: ===
+PASS: measure-review-b-security.md: | CONTEST kept:
+=== measure-review-b-security.md: escalate_human ===
+PASS: measure-review-b-security.md: escalate_human
+=== measure-review-b-security.md: the contested-item paragraph is directly before the closing role paragraph ===
+PASS: measure-review-b-security.md: the paragraph before the closing role paragraph holds the three strings
+=== measure-review-c-ux-api.md: withdrawn: ===
+PASS: measure-review-c-ux-api.md: withdrawn:
+=== measure-review-c-ux-api.md: | CONTEST kept: ===
+PASS: measure-review-c-ux-api.md: | CONTEST kept:
+=== measure-review-c-ux-api.md: escalate_human ===
+PASS: measure-review-c-ux-api.md: escalate_human
+=== measure-review-c-ux-api.md: the contested-item paragraph is directly before the closing role paragraph ===
+PASS: measure-review-c-ux-api.md: the paragraph before the closing role paragraph holds the three strings
+=== measure-phase-acceptance.md: withdrawn: ===
+PASS: measure-phase-acceptance.md: withdrawn:
+=== measure-phase-acceptance.md: | CONTEST kept: ===
+PASS: measure-phase-acceptance.md: | CONTEST kept:
+=== measure-phase-acceptance.md: escalate_human ===
+PASS: measure-phase-acceptance.md: escalate_human
+=== measure-phase-acceptance.md: the contested-item paragraph is directly before the closing role paragraph ===
+PASS: measure-phase-acceptance.md: the paragraph before the closing role paragraph holds the three strings
+=== measure-spec-review.md: withdrawn: ===
+PASS: measure-spec-review.md: withdrawn:
+=== measure-spec-review.md: | CONTEST kept: ===
+PASS: measure-spec-review.md: | CONTEST kept:
+=== measure-spec-review.md: escalate_human ===
+PASS: measure-spec-review.md: escalate_human
+=== measure-spec-review.md: the contested-item paragraph is directly before the closing role paragraph ===
+PASS: measure-spec-review.md: the paragraph before the closing role paragraph holds the three strings
+=== phase acceptance: test-only HEAD advance exception ===
+PASS: phase acceptance: test-only HEAD advance exception
+=== phase acceptance: records the exact HEAD and the test-only commits ===
+PASS: phase acceptance: records the exact HEAD and the test-only commits
+=== orchestrator SKILL.md Delegation: Finding Dispositions ===
+PASS: orchestrator SKILL.md Delegation: Finding Dispositions
+=== orchestrator SKILL.md Delegation: ESCALATE ===
+PASS: orchestrator SKILL.md Delegation: ESCALATE
+=== orchestrator SKILL.md Delegation: no FIX item ===
+PASS: orchestrator SKILL.md Delegation: no FIX item
+=== review.md: finding heading of section 2.5 has the F<n> id ===
+PASS: section 2.5 has the heading '### F<n> [Critical/High/Medium/Low] Description of Issue'
+=== review.md: 3.1 item 3 Record Dispositions comes after item 2 ===
+PASS: item 3 at line 10 after item 2 at line 6
+=== review.md 3.1 item 3: FIX ===
+PASS: review.md 3.1 item 3: FIX
+=== review.md 3.1 item 3: CONTEST ===
+PASS: review.md 3.1 item 3: CONTEST
+=== review.md 3.1 item 3: ESCALATE ===
+PASS: review.md 3.1 item 3: ESCALATE
+=== review.md 3.1 item 3: DECLINE ===
+PASS: review.md 3.1 item 3: DECLINE
+=== standard: ## Finding Dispositions comes before ## Report Layout ===
+PASS: heading at line 78 before Report Layout at line 89
+=== standard: a comprehension gap cannot be contested ===
+PASS: standard: a comprehension gap cannot be contested
+=== standard Report Layout: secret replacement exception ===
+PASS: standard Report Layout: secret replacement exception
+=== standard Report Layout: response form [- F<n>: FIX] ===
+PASS: standard Report Layout: response form [- F<n>: FIX]
+=== standard Report Layout: response form [- F<n>: CONTEST(<evidence>)] ===
+PASS: standard Report Layout: response form [- F<n>: CONTEST(<evidence>)]
+=== standard Report Layout: response form [- F<n>: ESCALATE(<reason>)] ===
+PASS: standard Report Layout: response form [- F<n>: ESCALATE(<reason>)]
+=== standard Report Layout: response form [- F<n>: DECLINE] ===
+PASS: standard Report Layout: response form [- F<n>: DECLINE]
+=== new-track step 9: CONTEST( ===
+PASS: new-track step 9: CONTEST(
+=== new-track step 9: ESCALATE( ===
+PASS: new-track step 9: ESCALATE(
+=== new-track step 9: exactly one sub-step 7 line ===
+PASS: one line matches the sub-step 7 start
+=== new-track sub-step 7: Round 2 secret check ===
+PASS: new-track sub-step 7: Round 2 secret check
+=== new-track sub-step 7: replace the value with its file and line ===
+PASS: new-track sub-step 7: replace the value with its file and line
+=== new-track sub-step 7: secret sentences come directly before the Append sentence ===
+PASS: new-track sub-step 7: secret sentences come directly before the Append sentence
+=== new-track step 9: finding id selection ===
+PASS: new-track step 9: finding id selection
+=== new-track step 9: item id selection ===
+PASS: new-track step 9: item id selection
+=== new-track step 9: unknown secret location ===
+PASS: new-track step 9: unknown secret location
+=== new-track step 9: Stop leaves the files uncommitted ===
+PASS: new-track step 9: Stop leaves the files uncommitted
+=== new-track step 9: resume after Stop ===
+PASS: new-track step 9: resume after Stop
+=== new-track step 9: approval finalises the report ===
+PASS: new-track step 9: approval finalises the report
+=== bundle: diff -r skills/measure claude-skills/measure is empty ===
+PASS: no difference
+=== edge: the Agent Result Block template is unchanged ===
+PASS: the template has the same 12 lines and no dispositions line
+=== edge: no file in skills/ or agents/ contains 'not fixed —' ===
+PASS: no file contains 'not fixed —'
+=== edge: the standard does not contain the old sentence ===
+PASS: the old sentence is gone
+
+=== Results ===
+PASS: heading at line 85 after Spec Review JSON at line 63
+PASS: contracts.md: routed finding form
+PASS: contracts.md: scope name review-a
+PASS: contracts.md: scope name review-b
+PASS: contracts.md: scope name review-c
+PASS: contracts.md: scope name adversarial-testing
+PASS: contracts.md: scope name ux-browser-review
+PASS: contracts.md: scope name phase-acceptance
+PASS: contracts.md: bullet FIX
+PASS: contracts.md: bullet CONTEST
+PASS: contracts.md: bullet ESCALATE
+PASS: contracts.md: bullet DECLINE
+PASS: contracts.md: evidence sentence
+PASS: contracts.md: dispositions: none
+PASS: contracts.md: dispositions line form
+PASS: contracts.md: control/zero-width rejection
+PASS: contracts.md: control class names C1 controls
+PASS: contracts.md: control class names line/paragraph separators
+PASS: contracts.md: control class names bidi controls
+PASS: contracts.md: control class names zero-width characters
+PASS: contracts.md: CONTEST kept form
+PASS: contracts.md: withdrawn form
+PASS: contracts.md: Comprehension gap rule
+PASS: contracts.md: no-FIX round rule
+PASS: contracts.md: marker whole-line matching
+PASS: contracts.md: marker in another word
+PASS: contracts.md: raw value and CRLF allowance
+PASS: contracts.md: item strip
+PASS: contracts.md: audit scope names
+PASS: contracts.md: spec-review scope is the section
+PASS: contracts.md: baseline need not be an ancestor
+PASS: contracts.md: changed files union
+PASS: contracts.md: working-tree union
+PASS: contracts.md: spec-review resolves the baseline
+PASS: contracts.md: HEAD advance rule
+PASS: contracts.md: commit detection through global options
+PASS: contracts.md: role result identity fields
+PASS: contracts.md: model default wording
+PASS: the heading after '## Routed findings' is '## Fabricate-vs-block decision'
+PASS: Green role: names Finding Dispositions
+PASS: Green role: names the dispositions: line
+PASS: Green role: Routed findings section names Finding Dispositions
+PASS: Green role: Routed findings section requires the dispositions: line
+PASS: Green role: Routed findings section states the no-FIX rule
+PASS: measure-review-a-correctness.md: withdrawn:
+PASS: measure-review-a-correctness.md: | CONTEST kept:
+PASS: measure-review-a-correctness.md: escalate_human
+PASS: measure-review-a-correctness.md: the paragraph before the closing role paragraph holds the three strings
+PASS: measure-review-b-security.md: withdrawn:
+PASS: measure-review-b-security.md: | CONTEST kept:
+PASS: measure-review-b-security.md: escalate_human
+PASS: measure-review-b-security.md: the paragraph before the closing role paragraph holds the three strings
+PASS: measure-review-c-ux-api.md: withdrawn:
+PASS: measure-review-c-ux-api.md: | CONTEST kept:
+PASS: measure-review-c-ux-api.md: escalate_human
+PASS: measure-review-c-ux-api.md: the paragraph before the closing role paragraph holds the three strings
+PASS: measure-phase-acceptance.md: withdrawn:
+PASS: measure-phase-acceptance.md: | CONTEST kept:
+PASS: measure-phase-acceptance.md: escalate_human
+PASS: measure-phase-acceptance.md: the paragraph before the closing role paragraph holds the three strings
+PASS: measure-spec-review.md: withdrawn:
+PASS: measure-spec-review.md: | CONTEST kept:
+PASS: measure-spec-review.md: escalate_human
+PASS: measure-spec-review.md: the paragraph before the closing role paragraph holds the three strings
+PASS: phase acceptance: test-only HEAD advance exception
+PASS: phase acceptance: records the exact HEAD and the test-only commits
+PASS: orchestrator SKILL.md Delegation: Finding Dispositions
+PASS: orchestrator SKILL.md Delegation: ESCALATE
+PASS: orchestrator SKILL.md Delegation: no FIX item
+PASS: section 2.5 has the heading '### F<n> [Critical/High/Medium/Low] Description of Issue'
+PASS: item 3 at line 10 after item 2 at line 6
+PASS: review.md 3.1 item 3: FIX
+PASS: review.md 3.1 item 3: CONTEST
+PASS: review.md 3.1 item 3: ESCALATE
+PASS: review.md 3.1 item 3: DECLINE
+PASS: heading at line 78 before Report Layout at line 89
+PASS: standard: a comprehension gap cannot be contested
+PASS: standard Report Layout: secret replacement exception
+PASS: standard Report Layout: response form [- F<n>: FIX]
+PASS: standard Report Layout: response form [- F<n>: CONTEST(<evidence>)]
+PASS: standard Report Layout: response form [- F<n>: ESCALATE(<reason>)]
+PASS: standard Report Layout: response form [- F<n>: DECLINE]
+PASS: new-track step 9: CONTEST(
+PASS: new-track step 9: ESCALATE(
+PASS: one line matches the sub-step 7 start
+PASS: new-track sub-step 7: Round 2 secret check
+PASS: new-track sub-step 7: replace the value with its file and line
+PASS: new-track sub-step 7: secret sentences come directly before the Append sentence
+PASS: new-track step 9: finding id selection
+PASS: new-track step 9: item id selection
+PASS: new-track step 9: unknown secret location
+PASS: new-track step 9: Stop leaves the files uncommitted
+PASS: new-track step 9: resume after Stop
+PASS: new-track step 9: approval finalises the report
+PASS: no difference
+PASS: the template has the same 12 lines and no dispositions line
+PASS: no file contains 'not fixed —'
+PASS: the old sentence is gone
+=== Total: 98 checks (PASS=98, FAIL=0) ===
+--- suite result: PASS: test_s3_dispositions_docs.sh ---
+--- suite: test_s4_adversarial.sh ---
+PASS: G1 extract: the A11 bash block of the skills catalog is non-empty
+PASS: G1 extract: measure/anti-patterns.md holds a non-empty A11 bash block
+PASS: G1 extract: both A11 bash blocks are the same
+PASS: G1 extract: bash -n accepts the recipe
+PASS: G2 contract: a backtick path that exists gives no line
+PASS: G2 contract: a backtick folder that exists gives no line
+PASS: G2 contract: a backtick path that does not exist gives one line
+PASS: G2 contract: a missing path in tech-stack.md gives one line with the tech-stack.md prefix
+PASS: G2 contract: missing paths in both documents give lines in document order
+PASS: G2 contract: a repeated missing path gives one line, and the lines are sorted
+PASS: G2 contract: a path with '..' to a file that exists gives no line
+PASS: G2 contract: a '..' claim that leaves the repository is skipped (never read outside)
+PASS: G2 contract: a '..' claim that resolves inside the repository is also skipped (conservative rule)
+PASS: G2 contract: a missing product.md gives exit 0 and exactly one line
+PASS: G2 contract: a missing tech-stack.md gives exit 0 and exactly one line
+PASS: G2 contract: both documents missing give exit 0 and two lines
+PASS: G2 contract: a missing product.md does not hide a candidate of tech-stack.md
+PASS: G2 contract: an empty document gives no line
+PASS: G2 contract: a backtick path with a space is checked like any other path
+PASS: G2 contract: an existing backtick path with a space gives no line
+PASS: G2 contract: a command span whose first word is an executable gives no line
+PASS: G2 contract: an executable command span with a missing argument gives no line
+PASS: G2 contract: a span with two spaces is not a path claim
+PASS: G2 contract: a span with a space right after the slash is not a path claim
+PASS: G2 contract: a span with a trailing space is not a path claim
+PASS: G2 contract: a span with characters after the path is not a path claim
+PASS: G2 contract: a NUL byte in the document does not hide a missing claim
+PASS: G2 contract: a NUL byte in the document does not hide an existing claim
+PASS: G2 contract: invalid UTF-8 bytes do not hide an ASCII missing claim
+PASS: G2 contract: a document path that is a directory gives the not-a-regular-file line
+PASS: G2 contract: an unreadable document gives the cannot-be-read line
+PASS: G2 contract: a backtick command such as `git log` gives no line
+PASS: G2 contract: a backtick word without '/' gives no line
+  report [hostile text: $(...), a backtick split, ';', '|', '&&', ESC bytes]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/ does not exist'] stderr=''
+PASS: G3 report: hostile text: $(...), a backtick split, ';', '|', '&&', ESC bytes: exit 0 or 1, no hang
+PASS: G3 report: hostile text: $(...), a backtick split, ';', '|', '&&', ESC bytes: no file created
+  report [CRLF line ends]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/crlf.txt does not exist'] stderr=''
+PASS: G3 report: CRLF line ends: exit 0 or 1, no hang
+PASS: G3 report: CRLF line ends: no file created
+  report [a path that starts with '-']: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: --help/x does not exist', 'measure/product.md: DRIFT candidate: -e/x does not exist', 'measure/product.md: DRIFT candidate: -rf/x does not exist'] stderr=''
+PASS: G3 report: a path that starts with '-': exit 0 or 1, no hang
+PASS: G3 report: a path that starts with '-': no file created
+  report [an absolute path such as /etc/x]: rc=0 0.03s stdout=[] stderr=''
+PASS: G3 report: an absolute path such as /etc/x: exit 0 or 1, no hang
+PASS: G3 report: an absolute path such as /etc/x: no file created
+  report [a glob such as tests/*.sh]: rc=0 0.02s stdout=[] stderr=''
+PASS: G3 report: a glob such as tests/*.sh: exit 0 or 1, no hang
+PASS: G3 report: a glob such as tests/*.sh: no file created
+  report [a fenced code block with three backticks]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/after.txt does not exist'] stderr=''
+PASS: G3 report: a fenced code block with three backticks: exit 0 or 1, no hang
+PASS: G3 report: a fenced code block with three backticks: no file created
+  report [a NUL byte]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/ok_zz.txt does not exist'] stderr=''
+PASS: G3 report: a NUL byte: exit 0 or 1, no hang
+PASS: G3 report: a NUL byte: no file created
+  report [non-UTF-8 bytes]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/ok_zz.txt does not exist'] stderr=''
+PASS: G3 report: non-UTF-8 bytes: exit 0 or 1, no hang
+PASS: G3 report: non-UTF-8 bytes: no file created
+  report [a document path that is a folder]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: the document is not a regular file'] stderr=''
+PASS: G3 report: a document path that is a folder: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a folder: no file created
+  report [a document path that is a FIFO]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: the document is not a regular file'] stderr=''
+PASS: G3 report: a document path that is a FIFO: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a FIFO: no file created
+  report [a document path that is a symbolic link to a file]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: gone/x.txt does not exist'] stderr=''
+PASS: G3 report: a document path that is a symbolic link to a file: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a symbolic link to a file: no file created
+  report [a document path that is a symbolic link to /dev/zero]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: the document is not a regular file'] stderr=''
+PASS: G3 report: a document path that is a symbolic link to /dev/zero: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a symbolic link to /dev/zero: no file created
+  report [a document path that is a dangling symbolic link]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: the document does not exist'] stderr=''
+PASS: G3 report: a document path that is a dangling symbolic link: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a dangling symbolic link: no file created
+  report [a document path that is a symbolic link to a folder]: rc=0 0.01s stdout=['measure/product.md: DRIFT candidate: the document is not a regular file'] stderr=''
+PASS: G3 report: a document path that is a symbolic link to a folder: exit 0 or 1, no hang
+PASS: G3 report: a document path that is a symbolic link to a folder: no file created
+  report [bash -o pipefail: a missing document]: rc=0 0.00s stdout=['measure/product.md: DRIFT candidate: the document does not exist', 'measure/tech-stack.md: DRIFT candidate: the document does not exist'] stderr=''
+PASS: G3 report: bash -o pipefail: a missing document: exit 0 or 1, no hang
+PASS: G3 report: bash -o pipefail: a missing document: no file created
+  report [bash -o pipefail: an empty document]: rc=0 0.01s stdout=[] stderr=''
+PASS: G3 report: bash -o pipefail: an empty document: exit 0 or 1, no hang
+PASS: G3 report: bash -o pipefail: an empty document: no file created
+  report [bash -o pipefail: one missing path]: rc=0 0.02s stdout=['measure/product.md: DRIFT candidate: src/missing.txt does not exist', 'measure/tech-stack.md: DRIFT candidate: src/m2.txt does not exist'] stderr=''
+PASS: G3 report: bash -o pipefail: one missing path: exit 0 or 1, no hang
+PASS: G3 report: bash -o pipefail: one missing path: no file created
+  report [bash -o pipefail: a path that exists]: rc=0 0.03s stdout=[] stderr=''
+PASS: G3 report: bash -o pipefail: a path that exists: exit 0 or 1, no hang
+PASS: G3 report: bash -o pipefail: a path that exists: no file created
+PASS: G3 report: bash -o pipefail: an empty document exits 0
+PASS: G4 safety: no PWNED marker appears in the fixtures, the repository, or the temp parent
+PASS: G4 safety: no run creates a file outside its fixture folders
+PASS: G4 safety: a hostile run adds no file in its fixture folder
+A11 DRIFT candidates: 3
+PASS: G4 live: the recipe exits 0 in the repository root
+PASS: G4 live: each output line holds 'DRIFT candidate:'
+PASS: G4 live: git status of the repository does not change
+  time: calibration 0.239s for 1000/document -> budget 20.0s; 10000 path claims in each document: 1.504s, candidate lines: 20000
+PASS: G5 time: 10000 path claims in each document end in less than 20 seconds (calibrated)
+PASS: G5 time: the run gives exactly 20000 candidate lines
+PASS: G6 sensitivity: mutant 'no missing-document branch' fails at least one Contract row
+  killed by: a missing product.md gives exit 0 and exactly one line
+PASS: G6 sensitivity: mutant 'no continue after a missing document' fails at least one Contract row
+  killed by: a missing product.md gives exit 0 and exactly one line
+PASS: G6 sensitivity: mutant 'grep -E loosened to '.'' fails at least one Contract row
+  killed by: a span with two spaces is not a path claim
+PASS: G6 sensitivity: mutant 'no '/' in the regex' fails at least one Contract row
+  killed by: a span with a space right after the slash is not a path claim
+PASS: G6 sensitivity: mutant 'no '$' anchor in the regex' fails at least one Contract row
+  killed by: a backtick path that exists gives no line
+PASS: G6 sensitivity: mutant '[ -e "$p" ] negated' fails at least one Contract row
+  killed by: a backtick path that exists gives no line
+PASS: G6 sensitivity: mutant 'no tr -d of the backticks' fails at least one Contract row
+  killed by: a backtick path that does not exist gives one line
+PASS: G6 sensitivity: mutant 'sort -u replaced by cat' fails at least one Contract row
+  killed by: a repeated missing path gives one line, and the lines are sorted
+PASS: G6 sensitivity: mutant 'only product.md in the loop' fails at least one Contract row
+  killed by: a missing path in tech-stack.md gives one line with the tech-stack.md prefix
+PASS: G6 sensitivity: mutant 'a different candidate text' fails at least one Contract row
+  killed by: a backtick path that does not exist gives one line
+PASS: G6 sensitivity: mutant 'a different missing-document text' fails at least one Contract row
+  killed by: a missing product.md gives exit 0 and exactly one line
+PASS: G6 sensitivity: mutant 'no grep -a (text mode)' fails at least one Contract row
+  killed by: a NUL byte in the document does not hide a missing claim
+PASS: G6 sensitivity: mutant 'no space in the path pattern' fails at least one Contract row
+  killed by: a backtick path with a space is checked like any other path
+PASS: G6 sensitivity: mutant 'no executable-command skip' fails at least one Contract row
+  killed by: a command span whose first word is an executable gives no line
+PASS: G6 sensitivity: mutant 'multiple spaces allowed in the span' fails at least one Contract row
+  killed by: a backtick path that exists gives no line
+PASS: G6 sensitivity: mutant 'no not-a-regular-file branch' fails at least one Contract row
+  killed by: a document path that is a directory gives the not-a-regular-file line
+=== Total: 94 checks (PASS=94, FAIL=0) ===
+--- suite result: PASS: test_s4_adversarial.sh ---
+--- suite: test_s4_doc_drift.sh ---
+=== audit role: the file exists ===
+PASS: agents/measure-orchestrator-audit.md exists
+PASS: the audit example uses schema_version 1
+PASS: the audit doc has no schema_version 2
+PASS: the candidate format is pinned as one sentence (nonblocking finding, PROPOSAL, path, assertion)
+PASS: a proposed failing guard is nonblocking and keeps the audit status pass
+PASS: the audit doc no longer fails the audit for a proposed guard
+PASS: the audit doc no longer appends catalog entries (whole-file, collapsed)
+PASS: the audit doc no longer writes guard tests (whole-file, collapsed)
+=== audit role: ## Doc drift detector stands after ## A10 and before ## Outputs ===
+PASS: A10 line 230 < Doc drift detector line 240 < Outputs line 265
+=== detector section: states that it runs in the scheduled audit ===
+PASS: detector section: states that it runs in the scheduled audit
+=== detector section: names measure/product.md ===
+PASS: detector section: names measure/product.md
+=== detector section: names measure/tech-stack.md ===
+PASS: detector section: names measure/tech-stack.md
+=== detector section: has the 30 days window ===
+PASS: detector section: has the 30 days window
+=== detector section: names the completed field ===
+PASS: detector section: names the completed field
+=== detector section: names the updated_at field ===
+PASS: detector section: names the updated_at field
+=== detector section: excludes cancelled tracks ===
+PASS: detector section: excludes cancelled tracks
+=== detector section: has the DRIFT: finding form ===
+PASS: detector section: has the DRIFT: finding form
+=== detector section: Drift alone does not fail the audit. ===
+PASS: detector section: Drift alone does not fail the audit.
+=== detector section: Do not report code that no document covers. ===
+PASS: detector section: Do not report code that no document covers.
+=== catalog skills/measure-orchestrator/references/anti-pattern-catalog.md: A11 heading stands after A10 and before the extend heading ===
+PASS: skills/measure-orchestrator/references/anti-pattern-catalog.md: A10 line 189 < A11 line 208 < extend heading line 250
+=== catalog skills/measure-orchestrator/references/anti-pattern-catalog.md: entry headings, labeled count ===
+PASS: skills/measure-orchestrator/references/anti-pattern-catalog.md: A-entry headings: 11
+=== catalog measure/anti-patterns.md: A11 heading stands after A10 and before the extend heading ===
+PASS: measure/anti-patterns.md: A10 line 190 < A11 line 209 < extend heading line 251
+=== catalog measure/anti-patterns.md: entry headings, labeled count ===
+PASS: measure/anti-patterns.md: A-entry headings: 11
+=== catalog: derive the A-entry count and the highest class number ===
+PASS: derived: 11 entries, highest class A11
+=== orchestrator SKILL.md: Anti-Patterns Registry has '11 entries (A1–A11)' ===
+PASS: orchestrator SKILL.md: Anti-Patterns Registry has '11 entries (A1–A11)'
+=== orchestrator SKILL.md: Role Order item 10 is the audit role ===
+PASS: item 10 names the audit role
+=== orchestrator SKILL.md: Role Order item 10 names the doc drift detector ===
+PASS: orchestrator SKILL.md: Role Order item 10 names the doc drift detector
+=== agents/measure-strategy.md: '(A1–A11 today)' ===
+PASS: the strategy role says (A1–A11 today)
+=== audit role: Inputs section says 'A1–A11 today' ===
+PASS: audit role: Inputs section says 'A1–A11 today'
+=== CHANGELOG.md: the file credits elephant-goldfish-model ===
+PASS: CHANGELOG.md: the file credits elephant-goldfish-model
+=== README.md: the measure-orchestrator-audit row says doc-to-code drift ===
+PASS: the audit row says doc-to-code drift
+=== edge: the A11 block is the same in both catalogs ===
+PASS: the A11 block is the same in both catalogs (41 lines)
+=== edge: no file in agents/ or skills/measure-orchestrator/ contains 'A1–A10' ===
+PASS: no file contains 'A1–A10' (files scanned: agents 14, skills/measure-orchestrator 7)
+=== edge: the A11 recipe, extracted from the catalog, parses and exits 0 in the repository root ===
+PASS: the A11 recipe parsed and exited 0 (A11 DRIFT candidates: 3; the value is not asserted)
+
+=== Results ===
+PASS: agents/measure-orchestrator-audit.md exists
+PASS: the audit example uses schema_version 1
+PASS: the audit doc has no schema_version 2
+PASS: the candidate format is pinned as one sentence (nonblocking finding, PROPOSAL, path, assertion)
+PASS: a proposed failing guard is nonblocking and keeps the audit status pass
+PASS: the audit doc no longer fails the audit for a proposed guard
+PASS: the audit doc no longer appends catalog entries (whole-file, collapsed)
+PASS: the audit doc no longer writes guard tests (whole-file, collapsed)
+PASS: A10 line 230 < Doc drift detector line 240 < Outputs line 265
+PASS: detector section: states that it runs in the scheduled audit
+PASS: detector section: names measure/product.md
+PASS: detector section: names measure/tech-stack.md
+PASS: detector section: has the 30 days window
+PASS: detector section: names the completed field
+PASS: detector section: names the updated_at field
+PASS: detector section: excludes cancelled tracks
+PASS: detector section: has the DRIFT: finding form
+PASS: detector section: Drift alone does not fail the audit.
+PASS: detector section: Do not report code that no document covers.
+PASS: skills/measure-orchestrator/references/anti-pattern-catalog.md: A10 line 189 < A11 line 208 < extend heading line 250
+PASS: skills/measure-orchestrator/references/anti-pattern-catalog.md: A-entry headings: 11
+PASS: measure/anti-patterns.md: A10 line 190 < A11 line 209 < extend heading line 251
+PASS: measure/anti-patterns.md: A-entry headings: 11
+PASS: derived: 11 entries, highest class A11
+PASS: orchestrator SKILL.md: Anti-Patterns Registry has '11 entries (A1–A11)'
+PASS: item 10 names the audit role
+PASS: orchestrator SKILL.md: Role Order item 10 names the doc drift detector
+PASS: the strategy role says (A1–A11 today)
+PASS: audit role: Inputs section says 'A1–A11 today'
+PASS: CHANGELOG.md: the file credits elephant-goldfish-model
+PASS: the audit row says doc-to-code drift
+PASS: the A11 block is the same in both catalogs (41 lines)
+PASS: no file contains 'A1–A10' (files scanned: agents 14, skills/measure-orchestrator 7)
+PASS: the A11 recipe parsed and exited 0 (A11 DRIFT candidates: 3; the value is not asserted)
+=== Total: 34 checks (PASS=34, FAIL=0) ===
+--- suite result: PASS: test_s4_doc_drift.sh ---
+=== spec_review_gate: 13 suites (PASS=13, FAIL=0) ===
+run.sh exit 0
