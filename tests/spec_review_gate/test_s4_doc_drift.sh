@@ -16,6 +16,17 @@ PROJECT_CATALOG="$ROOT/measure/anti-patterns.md"
 CHANGELOG="$ROOT/CHANGELOG.md"
 README="$ROOT/README.md"
 
+# Group (b): the anti-pattern class count and the highest class number are derived
+# from the catalog, so adding a class updates every expectation instead of breaking
+# frozen literals; a missing or empty catalog fails before any count is used.
+CATALOG_COUNT=""
+CATALOG_LAST=""
+if [ -s "$CATALOG" ]; then
+  CATALOG_COUNT="$(grep -cE '^## A[0-9]+ — ' "$CATALOG")"
+  CATALOG_LAST="$(grep -oE '^## A[0-9]+ — ' "$CATALOG" | sed -E 's/^## A([0-9]+) .*/\1/' | sort -n | tail -n 1)"
+fi
+PREV_LAST=$(( ${CATALOG_LAST:-0} - 1 ))
+
 A11_HEADING='## A11 — Doc-to-code drift after closeout'
 EXTEND_HEADING='## How projects extend this catalog'
 
@@ -163,15 +174,21 @@ for entry in "$CATALOG|skills/measure-orchestrator/references/anti-pattern-catal
   if [ ! -s "$file" ]; then fail "$name is missing or empty"
   else
     n="$(grep -cE '^## A[0-9]+ — ' "$file")"
-    if [ "$n" -eq 11 ]; then pass "$name: A-entry headings: $n"
-    else fail "$name: A-entry headings: $n, expected 11"; fi
+    if [ "$n" -eq "${CATALOG_COUNT:-0}" ]; then pass "$name: A-entry headings: $n"
+    else fail "$name: A-entry headings: $n, expected ${CATALOG_COUNT:-0}"; fi
   fi
 done
+
+echo "=== catalog: derive the A-entry count and the highest class number ==="
+if [ ! -s "$CATALOG" ]; then fail "$CATALOG is missing or empty"
+elif [ -z "$CATALOG_COUNT" ] || [ "${CATALOG_COUNT:-0}" -lt 1 ]; then fail "the catalog has no A entries"
+elif [ -z "$CATALOG_LAST" ] || [ "${CATALOG_LAST:-0}" -lt 1 ]; then fail "the catalog has no A class number"
+else pass "derived: $CATALOG_COUNT entries, highest class A$CATALOG_LAST"; fi
 
 # ---------------------------------------------------------------------------
 # Count text and Role Order
 REGISTRY="$(section "$ORCH_SKILL" '## Anti-Patterns Registry' '^## ')"
-in_flat "orchestrator SKILL.md: Anti-Patterns Registry has '11 entries (A1–A11)'" "$REGISTRY" '11 entries (A1–A11)'
+in_flat "orchestrator SKILL.md: Anti-Patterns Registry has '$CATALOG_COUNT entries (A1–A$CATALOG_LAST)'" "$REGISTRY" "$CATALOG_COUNT entries (A1–A$CATALOG_LAST)"
 
 ROLE_ORDER="$(section "$ORCH_SKILL" '## Role Order' '^## ')"
 ITEM10="$(grep -E '^10\. ' <<< "$ROLE_ORDER" 2>/dev/null | head -n 1)"
@@ -182,13 +199,13 @@ elif grep -qF -- '`measure-orchestrator-audit`' <<< "$ITEM10"; then pass "item 1
 else fail "item 10 does not name the audit role: $ITEM10"; fi
 in_flat "orchestrator SKILL.md: Role Order item 10 names the doc drift detector" "$ITEM10" 'doc drift detector'
 
-echo "=== agents/measure-strategy.md: '(A1–A11 today)' ==="
+echo "=== agents/measure-strategy.md: '(A1–A$CATALOG_LAST today)' ==="
 if [ ! -s "$STRATEGY" ]; then fail "agents/measure-strategy.md is missing or empty"
-elif grep -qF -- '(A1–A11 today)' "$STRATEGY"; then pass "the strategy role says (A1–A11 today)"
-else fail "agents/measure-strategy.md lacks '(A1–A11 today)'"; fi
+elif grep -qF -- "(A1–A$CATALOG_LAST today)" "$STRATEGY"; then pass "the strategy role says (A1–A$CATALOG_LAST today)"
+else fail "agents/measure-strategy.md lacks '(A1–A$CATALOG_LAST today)'"; fi
 
 INPUTS="$(section "$AUDIT" '## Inputs' '^## ')"
-in_flat "audit role: Inputs section says 'A1–A11 today'" "$INPUTS" 'A1–A11 today'
+in_flat "audit role: Inputs section says 'A1–A$CATALOG_LAST today'" "$INPUTS" "A1–A$CATALOG_LAST today"
 
 # ---------------------------------------------------------------------------
 # CHANGELOG and README
@@ -215,15 +232,15 @@ elif [ "$(printf '%s\n' "$BLOCK_PROJECT" | tail -n 1)" != '---' ]; then fail "th
 elif [ "$BLOCK_SKILL" = "$BLOCK_PROJECT" ]; then pass "the A11 block is the same in both catalogs ($(printf '%s\n' "$BLOCK_SKILL" | wc -l) lines)"
 else fail "the A11 block differs between the catalogs"; fi
 
-echo "=== edge: no file in agents/ or skills/measure-orchestrator/ contains 'A1–A10' ==="
+echo "=== edge: no file in agents/ or skills/measure-orchestrator/ contains 'A1–A$PREV_LAST' ==="
 n_agents="$(find "$ROOT/agents" -type f 2>/dev/null | wc -l)"
 n_orch="$(find "$ROOT/skills/measure-orchestrator" -type f 2>/dev/null | wc -l)"
 if [ "$n_agents" -eq 0 ]; then fail "agents/ holds no files"
 elif [ "$n_orch" -eq 0 ]; then fail "skills/measure-orchestrator/ holds no files"
 else
-  hits="$(grep -rnF -- 'A1–A10' "$ROOT/agents" "$ROOT/skills/measure-orchestrator" 2>/dev/null | sed "s|^$ROOT/||" | cut -d: -f1,2 | tr '\n' ' ')"
-  if [ -z "$hits" ]; then pass "no file contains 'A1–A10' (files scanned: agents $n_agents, skills/measure-orchestrator $n_orch)"
-  else fail "'A1–A10' occurs at: $hits"; fi
+  hits="$(grep -rnF -- "A1–A$PREV_LAST" "$ROOT/agents" "$ROOT/skills/measure-orchestrator" 2>/dev/null | sed "s|^$ROOT/||" | cut -d: -f1,2 | tr '\n' ' ')"
+  if [ -z "$hits" ]; then pass "no file contains 'A1–A$PREV_LAST' (files scanned: agents $n_agents, skills/measure-orchestrator $n_orch)"
+  else fail "'A1–A$PREV_LAST' occurs at: $hits"; fi
 fi
 
 echo "=== edge: the A11 recipe, extracted from the catalog, parses and exits 0 in the repository root ==="

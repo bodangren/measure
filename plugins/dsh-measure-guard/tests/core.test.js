@@ -18,7 +18,7 @@ import {
   position,
   statusLines,
 } from '../src/core/parse.ts'
-import { editDecision } from '../src/core/guards.ts'
+import { editDecision, isTestCommand, isTestFile } from '../src/core/guards.ts'
 
 const ROOT = '/repo'
 
@@ -162,6 +162,33 @@ test('the package entry exposes name, inject, and apply', async () => {
     'webServer',
   ])
   assert.equal(typeof plugin.apply, 'function')
+})
+
+test('the TDD name rules cover nested test directories and the node --test runner', () => {
+  for (const path of [
+    'tests/x.py',
+    'tests/unit/x.py',
+    'src/__tests__/deep/x.ts',
+    'plugins/a/tests/deep/y.js',
+    'src/app.test.ts',
+  ]) {
+    assert.equal(isTestFile(path), true, path)
+  }
+  for (const path of ['tests/README.md', 'src/app.js', 'docs/spec/guide.md']) {
+    assert.equal(isTestFile(path), false, path)
+  }
+  for (const command of [
+    'node --test tests/*.test.js',
+    'node --experimental-strip-types --test x.ts',
+    'node --test-only x.ts',
+    'npm test',
+    'pytest -q',
+  ]) {
+    assert.equal(isTestCommand(command), true, command)
+  }
+  for (const command of ['node -e "run()"', 'node script.js', 'git status --short']) {
+    assert.equal(isTestCommand(command), false, command)
+  }
 })
 
 test('makeRepo writes the fixture into a temporary measure/ tree', async () => {

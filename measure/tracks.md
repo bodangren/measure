@@ -328,6 +328,22 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
   *Register the setup route as a handler so a POST reaches setupResponse on the Host, and prove it live*
 
+- [x] **Track: DSH Measure band poll pause**
+  *Link: [./archive/dsh_measure_band_poll_pause_20261110/](./archive/dsh_measure_band_poll_pause_20261110/)*
+  *Pause the band and panel state poll while the page is hidden and refresh on return to visibility*
+
+- [x] **Track: DSH Measure TDD name rules**
+  *Link: [./archive/dsh_measure_tdd_name_rules_20261110/](./archive/dsh_measure_tdd_name_rules_20261110/)*
+  *Recognize nested test-directory files and the node --test runner in the shared TDD name rules*
+
+- [x] **Track: DSH Measure agent tools**
+  *Link: [./archive/dsh_measure_agent_tools_20261110/](./archive/dsh_measure_agent_tools_20261110/)*
+  *Add read-only measure_verify and measure_mode tools so agents can use the verify and mode report without the GUI*
+
+- [x] **Track: DSH Measure count pins**
+  *Link: [./archive/dsh_measure_count_pins_20261110/](./archive/dsh_measure_count_pins_20261110/)*
+  *Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals*
+
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*

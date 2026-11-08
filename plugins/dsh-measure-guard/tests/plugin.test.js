@@ -74,7 +74,7 @@ const settle = () => new Promise(resolve => setTimeout(resolve, 25))
 /** The text of a user message the plugin injected or steered. */
 const textOf = message => (message?.content ?? []).map(part => part?.text ?? '').join('')
 
-test('apply registers measure_status, the eleven commands, and the lifecycle listeners', async () => {
+test('apply registers measure_status, measure_verify, measure_mode, the eleven commands, and the lifecycle listeners', async () => {
   const plugin = await import('../index.js')
   assert.equal(plugin.name, 'measure-guard')
   assert.equal(plugin.inject.includes('tools'), true)
@@ -85,8 +85,10 @@ test('apply registers measure_status, the eleven commands, and the lifecycle lis
   apply(ctx, { mode: 'strict' })
   await settle()
 
-  assert.equal(ctx.toolsList.length, 1)
-  assert.equal(ctx.toolsList[0].name, 'measure_status')
+  assert.deepEqual(
+    ctx.toolsList.map(tool => tool.name),
+    ['measure_status', 'measure_verify', 'measure_mode'],
+  )
   const names = ctx.commandsList.map(command => command.name)
   assert.deepEqual(names, [
     'measure-off',

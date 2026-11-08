@@ -28,9 +28,14 @@ assert_rc 0
 assert_out '^PASS reload: would increment the reloadNonce in .*cordis\.patch\.yml'
 assert_eq "$(profile_fingerprint)" "$fingerprint_before"
 
-# 2. reload increments the config value; every other line stays equal.
+# 2. reload increments the config value; every other line stays equal. It also
+# touches the installed entry, so a change confined to a sibling file (client.js)
+# is re-evaluated by the loader (round-31 live finding).
+entry_before="$(stat -c %y -- "$PLUGIN_DST/index.js")"
 run reload
 assert_rc 0
+entry_after="$(stat -c %y -- "$PLUGIN_DST/index.js")"
+[[ "$entry_after" != "$entry_before" ]] || fail "reload did not touch the installed plugin entry"
 assert_out '^PASS reload: incremented the reloadNonce in .*cordis\.patch\.yml'
 assert_out 'reload complete'
 nonce_after="$(nonce_of)"

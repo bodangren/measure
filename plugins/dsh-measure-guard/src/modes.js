@@ -93,3 +93,18 @@ export function measureModeCommand(deps) {
     },
   }
 }
+
+/** The `measure_mode` tool: the effective mode and its source, read-only. */
+export function measureModeTool(deps) {
+  return {
+    name: 'measure_mode',
+    description: 'Report the effective measure-guard mode and its source: config, session, or repository (read-only)',
+    parameters: { type: 'object', properties: {}, additionalProperties: false },
+    output: { schema: { type: 'string' }, render: (_args, value) => [{ type: 'text', text: value }] },
+    async execute(_args, exec) {
+      const root = await deps.rootOf(exec === undefined ? undefined : exec.agent)
+      const mode = await effectiveMode(deps, root)
+      return `measure-guard: effective mode ${mode.value} (${mode.source}).`
+    },
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_count_pins_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T15:40:00Z",
+  "updated_at": "2026-11-10T16:00:00Z",
+  "description": "Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

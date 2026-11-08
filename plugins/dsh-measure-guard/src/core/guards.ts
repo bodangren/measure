@@ -263,7 +263,7 @@ const TEST_FILES = [
   /_test\.(py|go|rs|exs?)$/,
   /_spec\.rb$/,
   /(^|\/)test-[^/]+\.sh$/,
-  /(^|\/)(tests?|__tests__|spec)\/[^/]+\.(rs|[cm]?[jt]sx?|py|rb|go)$/,
+  /(^|\/)(tests?|__tests__|spec)\/.+\.(rs|[cm]?[jt]sx?|py|rb|go)$/,
   /Tests?\.(java|kt|scala|cs|swift)$/,
 ]
 
@@ -273,6 +273,7 @@ const CODE_FILE =
 const TEST_COMMANDS = [
   /\b(npm|pnpm|yarn|bun)\s+(run\s+)?test\b/,
   /\b(vitest|jest|mocha|ava|pytest|rspec|phpunit|ctest)\b/,
+  /\bnode\s+(?:(?:--?[A-Za-z][\w-]*(?:=\S+)?|-[A-Za-z]+)\s+)*--test(?:-only)?\b/,
   /\bpython3?\s+-m\s+(pytest|unittest)\b/,
   /\b(go|cargo|deno|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
   /\bclaude\s+plugin\s+test\b/,

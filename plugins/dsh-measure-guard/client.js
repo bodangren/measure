@@ -135,7 +135,13 @@ window.__ModuleLoader__.load({
       background: 'var(--dsw-alias-bg-layer-2)',
     }
 
-    /** Polls the Host state route for one session; keeps the last good value. */
+    /**
+     * Polls the Host state route for one session; keeps the last good value.
+     * A hidden page does not need the poll, so the interval is cleared while
+     * `document.visibilityState` is hidden and the view refreshes once when the
+     * page becomes visible again; a host without `document` keeps the plain 2 s
+     * poll. The cleanup removes the listener, the interval, and the request.
+     */
     function useStatusView(sessionId, revision) {
       const [view, setView] = React.useState(null)
       React.useEffect(() => {
@@ -143,6 +149,7 @@ window.__ModuleLoader__.load({
         // failed fetch can never show another session's status.
         setView(null)
         if (typeof sessionId !== 'string' || sessionId === '') return undefined
+        const page = typeof document === 'undefined' ? null : document
         const controller = new AbortController()
         let live = true
         let timer = null
@@ -159,11 +166,31 @@ window.__ModuleLoader__.load({
             // renders the previous state instead of blanking its slot.
           }
         }
+        const startPolling = () => {
+          if (timer !== null) return
+          if (page !== null && page.visibilityState === 'hidden') return
+          timer = setInterval(load, POLL_MS)
+        }
+        const stopPolling = () => {
+          if (timer === null) return
+          clearInterval(timer)
+          timer = null
+        }
+        const onVisibility = () => {
+          if (page !== null && page.visibilityState === 'hidden') {
+            stopPolling()
+            return
+          }
+          load()
+          startPolling()
+        }
         load()
-        timer = setInterval(load, POLL_MS)
+        startPolling()
+        if (page !== null && typeof page.addEventListener === 'function') page.addEventListener('visibilitychange', onVisibility)
         return () => {
           live = false
-          if (timer !== null) clearInterval(timer)
+          stopPolling()
+          if (page !== null && typeof page.removeEventListener === 'function') page.removeEventListener('visibilitychange', onVisibility)
           controller.abort()
         }
       }, [sessionId, revision])
