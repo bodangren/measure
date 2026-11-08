@@ -12,8 +12,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.3: run `bash tests/spec_review_gate/run.sh` (11/11) and `bash tests/dsh/run.sh` (13/13) `e0d9eac`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Status semantics and whole-file checks' (Protocol in workflow.md) `f3abe17`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 011376f]
 
-- [~] Task 2.1: write `measure/archive/dsh_measure_audit_contract_fix2_20261110/spec-review.md` (F1–F5 with dispositions), link it, add the dated correction note to its spec (F4); mark the Group (a) row `Resolved` (F5); update `CHANGELOG.md`; run the node suite (318/318) and both parity gates
-- [ ] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_audit_contract_fix3_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.1: write `measure/archive/dsh_measure_audit_contract_fix2_20261110/spec-review.md` (F1–F5 with dispositions), link it, add the dated correction note to its spec (F4); mark the Group (a) row `Resolved` (F5); update `CHANGELOG.md`; run the node suite (318/318) and both parity gates `2a6d290`
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_audit_contract_fix3_20261110` and record the manifest-only FAIL `2a6d290`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `011376f`
