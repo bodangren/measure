@@ -1,11 +1,12 @@
 {
   "track_id": "dsh_measure_tdd_names_fixture_20261110",
   "type": "bug",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-10T19:20:00Z",
-  "updated_at": "2026-11-10T19:20:00Z",
+  "updated_at": "2026-11-10T19:40:00Z",
   "description": "Cover two more test-file conventions and test commands, and point the real-data fixture generator at the archived plans",
   "estimated_tasks": 7,
-  "actual_tasks": 0,
-  "deviation_notes": ""
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
 }
