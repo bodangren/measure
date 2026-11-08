@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Red gate track scope**
-  *Link: [./tracks/red_gate_track_scope_20261108/](./tracks/red_gate_track_scope_20261108/)*
-  *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*
+- (none)
 
 ---
 
@@ -301,3 +299,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit global detection**
   *Link: [./archive/dsh_measure_commit_global_detect_20261110/](./archive/dsh_measure_commit_global_detect_20261110/)*
   *Recognize the documented git global options before commit and add so the strict commit guard cannot be skipped*
+
+- [x] **Track: Red gate track scope**
+  *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
+  *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*
