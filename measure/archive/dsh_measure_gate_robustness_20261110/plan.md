@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: update the Group (b) tech-debt row with the resolved parts (G19 corpus, pipefail tolerance, Unreleased credit) and the remaining fixed-count literal scope, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again `5f77360`
-- [~] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_gate_robustness_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_gate_robustness_20261110` and record the manifest-only FAIL `1847327`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)

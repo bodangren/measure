@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure gate robustness (closing)**
+  *Link: [./archive/dsh_measure_gate_robustness_20261110/](./archive/dsh_measure_gate_robustness_20261110/)*
+  *Temporary closing entry; the final commit records `- (none)`*
 
 ---
 
