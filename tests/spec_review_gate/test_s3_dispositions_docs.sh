@@ -128,6 +128,8 @@ in_text 'contracts.md: working-tree union' "$MS" 'also unions the unstaged and s
 in_text 'contracts.md: spec-review resolves the baseline' "$MS" 'The `spec-review` gate resolves `--baseline` to a commit'
 in_text 'contracts.md: HEAD advance rule' "$MS" 'Mid Red and Jr Green fail when HEAD still equals the baseline'
 in_text 'contracts.md: commit detection through global options' "$MS" 'cannot skip the message-format and no-task rules'
+in_text 'contracts.md: role result identity fields' "$MS" 'the two SHA fields bind the result to the exact diff it judged'
+in_text 'contracts.md: model default wording' "$MS" 'Role files do not pin a model'
 
 # ---------------------------------------------------------------------------
 # Green role
@@ -167,6 +169,13 @@ for role_file in "${AUDIT_ROLES[@]}"; do
   elif [[ "$para" == *'withdrawn:'* && "$para" == *'| CONTEST kept:'* && "$para" == *'escalate_human'* ]]; then pass "$name: the paragraph before the closing role paragraph holds the three strings"
   else fail "$name: the paragraph before the closing role paragraph lacks one of withdrawn:, | CONTEST kept:, escalate_human: [${para:0:140}]"; fi
 done
+
+# ---------------------------------------------------------------------------
+# Phase acceptance: the test-only HEAD-advance exception (Group f)
+ACCEPT="$ROOT/agents/measure-phase-acceptance.md"
+ACCEPT_ALL="$(cat "$ACCEPT" 2>/dev/null)"
+in_flat 'phase acceptance: test-only HEAD advance exception' "$ACCEPT_ALL" 'touches only test files or `measure/runs/`'
+in_flat 'phase acceptance: records the exact HEAD and the test-only commits' "$ACCEPT_ALL" 'records the exact HEAD it accepted and names the test-only commits it allowed'
 
 # ---------------------------------------------------------------------------
 # Orchestrator skill: Delegation section
@@ -234,6 +243,15 @@ in_text 'new-track sub-step 7: Round 2 secret check' "$LINE7" 'Before you append
 in_text 'new-track sub-step 7: replace the value with its file and line' "$LINE7" 'replace the value with its file and line'
 in_text 'new-track sub-step 7: secret sentences come directly before the Append sentence' "$LINE7" \
   'Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line. Append the returned sections under that heading, and show the result to the user.'
+
+# Step-9 decisions (Group g): id selection, Stop/resume, unknown secret location,
+# and the approval wording that finalises the report.
+in_text 'new-track step 9: finding id selection' "$S9" 'Name each finding by its id'
+in_text 'new-track step 9: item id selection' "$S9" 'Name each item by its id'
+in_text 'new-track step 9: unknown secret location' "$S9" 'secret redacted (location unknown)'
+in_text 'new-track step 9: Stop leaves the files uncommitted' "$S9" 'The track files stay on disk uncommitted'
+in_text 'new-track step 9: resume after Stop' "$S9" 'To resume later, re-run this step'
+in_text 'new-track step 9: approval finalises the report' "$S9" 'Approving also writes the remaining findings under `## Accepted Risks` and finalises the report.'
 
 echo "=== bundle: diff -r skills/measure claude-skills/measure is empty ==="
 if [ ! -d "$ROOT/skills/measure" ] || [ ! -d "$ROOT/claude-skills/measure" ]; then fail "a bundle folder is missing"
