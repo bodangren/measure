@@ -1,0 +1,11 @@
+{
+  "track_id": "gate_track_scope_20261108",
+  "type": "feature",
+  "status": "in_progress",
+  "created_at": "2026-11-08T11:29:35Z",
+  "updated_at": "2026-11-08T11:29:35Z",
+  "description": "Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).",
+  "estimated_tasks": 9,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

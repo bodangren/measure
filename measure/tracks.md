@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Gate track scope**
+  *Link: [./tracks/gate_track_scope_20261108/](./tracks/gate_track_scope_20261108/)*
+  *Give the spec-review, jr-green, and ux-browser-review gates and the ux-paths command the mid-red track scope, so commits of other tracks in the range do not change their result (PM request, 2026-11-08).*
 
 ---
 
