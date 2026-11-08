@@ -12,7 +12,7 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 - Keep each G20 mutant line of `tests/spec_review_gate/test_s2_adversarial.sh` one time in the checker.
 - Push nothing without the PM's word.
 
-## Phase 1: Spec review
+## Phase 1: Spec review [checkpoint: 33488f0]
 
 - [x] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/gate_track_scope_20261108/`. Record the findings and the responses in `spec-review.md`. `1a510ee`
   - Round 1 on `9d67250`: fail, 2 Blocker, 2 Major, 3 Nit (`4fd7751`). Revision: `ab95c03`.
@@ -20,7 +20,11 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 2: Red tests
 
-- [ ] Task 2.1: Write `tests/spec_review_gate/test_gate_track_scope.py` with the cases of AC-1 to AC-18. Run the file against the unchanged checker. Record each failing case name as the Red evidence.
+- [x] Task 2.1: Write `tests/spec_review_gate/test_gate_track_scope.py` with the cases of AC-1 to AC-18. Run the file against the unchanged checker. Record each failing case name as the Red evidence. `3ac3771`
+  - Evidence: the unchanged checker gives `Ran 18 tests`, `FAILED (failures=13)`. Log: `measure/runs/gate_track_scope_20261108/red-p2-unchanged-checker.log`.
+  - Failing: `test_spec_review_mixed_range_passes`, `test_spec_review_own_commit_outside_runs_fails`, `test_spec_review_only_other_tracks_passes`, `test_spec_review_untagged_commit_counts_as_own`, `test_spec_review_unlistable_own_commit_fails`, `test_jr_green_range_without_own_commit_fails`, `test_jr_green_mixed_range_passes`, `test_jr_green_untagged_commit_counts_as_own`, `test_ux_review_other_track_ui_commit_passes`, `test_ux_review_unlistable_own_commit_fails`, `test_ux_paths_track_option_scopes_stdout`, `test_ux_paths_require_with_only_other_tracks_fails`, `test_ux_paths_unlistable_own_commit_fails`.
+  - Passing (guards of the old behavior): `test_spec_review_missing_baseline_tree_fails_in_scoped_mode`, `test_spec_review_single_track_range_keeps_output`, `test_ux_review_own_ui_commit_needs_dev_url`, `test_ux_review_working_tree_change_counts`, `test_ux_paths_without_track_keeps_full_range`.
+  - The run is direct, not through `heavy-run.sh`: one unittest file is a light run (PM, 2026-11-08).
 
 ## Phase 3: Green change
 
