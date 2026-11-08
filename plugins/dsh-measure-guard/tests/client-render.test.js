@@ -173,6 +173,7 @@ const stubs = {
   queue: [],
   calls: [],
   intervals: [],
+  clears: [],
 }
 
 globalThis.fetch = async (url, options = {}) => {
@@ -184,12 +185,34 @@ globalThis.setInterval = (fn, ms) => {
   stubs.intervals.push({ fn, ms })
   return stubs.intervals.length
 }
-globalThis.clearInterval = () => {}
+globalThis.clearInterval = id => {
+  stubs.clears.push(id)
+}
+
+/** A fake document: the visibility state plus the listener pair the bundle uses. */
+const page = {
+  visibilityState: 'visible',
+  listeners: new Set(),
+  addEventListener(name, listener) {
+    if (name === 'visibilitychange') this.listeners.add(listener)
+  },
+  removeEventListener(name, listener) {
+    if (name === 'visibilitychange') this.listeners.delete(listener)
+  },
+  dispatch(name) {
+    if (name !== 'visibilitychange') return
+    for (const listener of [...this.listeners]) listener()
+  },
+}
+globalThis.document = page
 
 const resetStubs = () => {
   stubs.queue = []
   stubs.calls = []
   stubs.intervals = []
+  stubs.clears = []
+  page.visibilityState = 'visible'
+  page.listeners.clear()
 }
 
 /** The bundle, its applied context, and the captured registrations. */
@@ -389,6 +412,38 @@ test('the zh dictionary renders its own labels while the host line stays as sent
     buttonsOf(tree).map(button => textOf(button)),
     ['设置 Measure', '本会话关闭'],
   )
+})
+
+test('the poll pauses while the page is hidden and refreshes on return', async () => {
+  const harness = makeBundle()
+  await renderBand(harness, bandProps(), [HOST_VIEW])
+  const stateCalls = () => stubs.calls.filter(call => call.url.startsWith('/measure-guard/state')).length
+  assert.equal(stubs.intervals.length, 1, 'the initial poll')
+  assert.equal(stateCalls(), 1)
+  page.visibilityState = 'hidden'
+  page.dispatch('visibilitychange')
+  assert.equal(stubs.clears.length, 1, 'a hidden page clears its interval')
+  assert.equal(stubs.intervals.length, 1, 'no new interval while hidden')
+  page.visibilityState = 'visible'
+  page.dispatch('visibilitychange')
+  await Promise.resolve()
+  await Promise.resolve()
+  await Promise.resolve()
+  assert.equal(stateCalls(), 2, 'an immediate fetch on return')
+  assert.equal(stubs.intervals.length, 2, 'a poll restarts on return')
+})
+
+test('a host without a document keeps the plain poll', async () => {
+  const saved = globalThis.document
+  delete globalThis.document
+  try {
+    const harness = makeBundle()
+    await renderBand(harness, bandProps(), [HOST_VIEW])
+    assert.equal(stubs.intervals.length, 1)
+    assert.equal(stubs.intervals[0].ms, 2000)
+  } finally {
+    globalThis.document = saved
+  }
 })
 
 test('the panel renders the empty state without a session list', async () => {
