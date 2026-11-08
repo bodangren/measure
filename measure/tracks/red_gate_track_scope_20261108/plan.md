@@ -7,12 +7,12 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 - Work on `main` in `/home/daniebo/Desktop/measure`. Never stage `extensions/`.
 - Attach a git note to each task commit.
 - Run each test command through `/home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh`.
-- Get each subagent slot through `scripts/jobs/slot wait` in the background. Storytime roles go first.
+- Get each subagent slot through `/home/daniebo/Desktop/advantage-pr/scripts/jobs/slot wait` in the background. Storytime roles go first.
 - Push nothing without the PM's word.
 
 ## Phase 1: Spec review
 
-- [~] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/red_gate_track_scope_20261108/`. Record the findings and the responses in `spec-review.md`.
+- [x] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/red_gate_track_scope_20261108/`. Record the findings and the responses in `spec-review.md`.
 
 ## Phase 2: Red tests
 
@@ -26,6 +26,6 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 4: Review and distribution
 
-- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker, or record the reason to decline it.
+- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan.
 - [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-10).
 - [ ] Task 4.3: Send the PM one line: the commit and the test name.
