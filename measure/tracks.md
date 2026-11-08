@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure shell redirect safety (closing)**
-  *Link: [./archive/dsh_measure_shell_redirect_safety_20261110/](./archive/dsh_measure_shell_redirect_safety_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -301,3 +299,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure commit global detection**
   *Link: [./archive/dsh_measure_commit_global_detect_20261110/](./archive/dsh_measure_commit_global_detect_20261110/)*
   *Recognize the documented git global options before commit and add so the strict commit guard cannot be skipped*
+
+- [x] **Track: DSH Measure shell redirect safety**
+  *Link: [./archive/dsh_measure_shell_redirect_safety_20261110/](./archive/dsh_measure_shell_redirect_safety_20261110/)*
+  *Recognize the noclobber redirect and the ln destination in the bounded shell-write grammar*
