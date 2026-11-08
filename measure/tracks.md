@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure commit global options**
+  *Link: [./tracks/dsh_measure_commit_git_options_20261110/](./tracks/dsh_measure_commit_git_options_20261110/)*
+  *Keep the in-command git add visible through the documented git global options and fail closed on an unknown one*
 
 ---
 
