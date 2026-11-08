@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure contract clarity**
+  *Link: [./tracks/dsh_measure_contract_clarity_20261110/](./tracks/dsh_measure_contract_clarity_20261110/)*
+  *Write and pin the phase-acceptance HEAD exception, the new-track step-9 decisions, and the audit-result identity fields*
 
 ---
 
