@@ -25,7 +25,7 @@ Track: `guard_session_track_20261109`. Spec: [spec.md](./spec.md).
   - Failing: AC-1 to AC-12, AC-14, AC-15, AC-16, AC-21, AC-22. The old note names Alpha, the session record has no `track`, or `src/track.ts` does not exist.
   - Passing (guards of the old behavior): AC-13 (one working track), AC-20 (the parse-error note).
 
-## Phase 3: Green change
+## Phase 3: Green change [checkpoint: bfd6dc2]
 
 - [x] Task 3.1: Add `src/track.ts`, and change `src/state.ts`, `src/snapshot.ts`, `src/guard.ts`, and `src/index.ts` (FR-1 to FR-7). Run the new test file, `bun test`, `tsc`, and the parity check (AC-17). `f9db4ac`
   - Evidence: `tests/session-track.test.ts` gives `19 pass`, `0 fail`. `tsc` exits 0, and `check-parity.sh` prints `parity: ok`. Logs: `measure/runs/guard_session_track_20261109/green-p3-*.log`.
@@ -36,7 +36,11 @@ Track: `guard_session_track_20261109`. Spec: [spec.md](./spec.md).
 
 ## Phase 4: Review and distribution
 
-- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan.
-- [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed `src` with `main` (AC-18).
+- [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `83e099a`
+  - Review A on `bfd6dc2` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 1 Major, 1 Nit. Result: `measure/runs/guard_session_track_20261109/review-a-bfd6dc2.json` (`952368d`). The reviewer reached its step limit in its first message; a second message in the same session made it write and validate the file itself. `audit-result` passes, and the review-a gate passes.
+  - F1 [Major] (a parse error keeps `inProgress`, against FR-3): FIX in `83e099a`. AC-20 asserts an empty `inProgress` and kills the mutant (`review-a-f1-mutant.log`).
+  - F2 [Nit] (the README rule for the project-wide note is not exact): FIX in `83e099a`.
+  - After the fixes: `session-track.test.ts` 19 pass; `bun test` 150 pass, 1 fail (V18, pre-existing); `tsc` exit 0; `parity: ok` (`review-a-fix-bun-test.log`).
+- [~] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed `src` with `main` (AC-18).
 - [ ] Task 4.3: Run the live check of AC-19 through the OpenCode service HTTP API. Record the stored user messages.
 - [ ] Task 4.4: Send the PM one line: the commit, the test name, the install result, and the live result.
