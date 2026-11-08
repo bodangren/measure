@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure audit contract fix3**
-  *Link: [./tracks/dsh_measure_audit_contract_fix3_20261110/](./tracks/dsh_measure_audit_contract_fix3_20261110/)*
-  *Pin the audit status for a proposed failing guard, make the doc checks whole-file and format-complete, and reconcile the fix2 review*
+- (none)
 
 ---
 
@@ -285,3 +283,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure audit contract fix2**
   *Link: [./archive/dsh_measure_audit_contract_fix2_20261110/](./archive/dsh_measure_audit_contract_fix2_20261110/)*
   *Remove the remaining append/write instructions, define the PROPOSAL candidate format, pin the measure-orchestrator-audit alias and negative doc checks, and record the review*
+
+- [x] **Track: DSH Measure audit contract fix3**
+  *Link: [./archive/dsh_measure_audit_contract_fix3_20261110/](./archive/dsh_measure_audit_contract_fix3_20261110/)*
+  *Pin the proposal status rule, make the doc checks whole-file and format-complete, and reconcile the fix2 review*

@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* **audit contract fix3:** Detectors item 3 now states that a proposed guard which would fail is a nonblocking candidate that leaves the audit `status` at `pass` — a proposal cannot fail the gate that carries it — and the S4 test replaced its line-based negatives with whole-file whitespace-collapsed checks and pins the full candidate-format sentence (suite 33 checks). The fix2 review F1–F5 is recorded with dispositions, the fix2 spec carries a dated correction note, and the Group (a) tech-debt row is `Resolved`. Mutation-proved: wrapped phrases, a weakened format sentence, and a flipped status rule each fail. Track `dsh_measure_audit_contract_fix3_20261110`.
 * **audit role contract:** the audit example uses `schema_version` 1; `role-gate --role orchestrator-audit` (and the `measure-orchestrator-audit` alias) validates the audit result; Inputs, Detectors, and Outputs describe catalog/guard-test proposals only with the `PROPOSAL:` candidate format; doc tests pin the schema version, format, and the absence of the append/write instructions. Tracks `dsh_measure_audit_contract_20261110` and `dsh_measure_audit_contract_fix2_20261110`.
 
 ### Features

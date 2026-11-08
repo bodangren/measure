@@ -51,3 +51,15 @@ instructions are gone; the metadata task count matches the plan.
   when the old phrases return.
 - Given the gates, Then srg 11/11, CLI 13/13, node 318/318, parity ok; the
   checkpoint is pushed.
+
+> **Correction (2026-11-10, after the review):** the Overview's claim that "the doc
+> tests were positive-only" is inaccurate for the baseline: `test_s4_doc_drift.sh`
+> already had file-wide negative checks (no `"schema_version": 2` line, no `A1–A10`
+> text) before this track; only the audit-outputs assertion was positive-only, and it is
+> the one this track hardened. Separately, the status rule this track delivered ("A
+> proposed guard that would fail produces `status: "fail"`") was inconsistent with the
+> nonblocking candidate definition and with `passing_audit_feedback()`; the fix3 track
+> replaces it with a nonblocking proposal that leaves the audit status `pass`, pins the
+> full candidate-format sentence, and moves the two negatives to whole-file
+> whitespace-collapsed searches.
+
