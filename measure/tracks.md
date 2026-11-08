@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure TDD name rules**
-  *Link: [./tracks/dsh_measure_tdd_name_rules_20261110/](./tracks/dsh_measure_tdd_name_rules_20261110/)*
-  *Recognize nested test-directory files and the node --test runner in the shared TDD name rules*
+- (none)
 
 ---
 
