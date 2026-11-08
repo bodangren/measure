@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure setup route transport**
+  *Link: [./tracks/dsh_measure_setup_route_transport_20261110/](./tracks/dsh_measure_setup_route_transport_20261110/)*
+  *Register the setup route as a handler so a POST reaches setupResponse on the Host, and prove it live*
 
 ---
 
