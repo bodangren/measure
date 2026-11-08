@@ -332,8 +332,18 @@ export const tddDecision = (context: GuardContext, red: RedState | null, path: s
 /** The commit message format: `<type>(<scope>): <description>`. */
 export const COMMIT_FORMAT = /^[a-z]+\([^)]+\)!?: \S/
 
-const GIT_COMMIT = /\bgit\s+(?:-[Cc]\s+\S+\s+)*commit\b/
-const GIT_ADD = /\bgit\s+(?:-[Cc]\s+\S+\s+)*add\b/
+/**
+ * The documented git global options that may sit between `git` and its
+ * subcommand: `-C <dir>` and `-c <value>` (separate or attached),
+ * `--git-dir`/`--work-tree`/`--namespace`/`--super-prefix`/`--config-env`/
+ * `--attr-source` (separate or `=`), the short flags, and the documented long
+ * flags. Without it, `git --no-pager commit …` is not recognized as a commit
+ * and the strict guards skip it entirely (fail open).
+ */
+export const GIT_GLOBAL_OPTION = String.raw`(?:-[Cc]\s+\S+|-[Cc]\S+|--(?:git-dir|work-tree|namespace|super-prefix|config-env|attr-source)=[^\s]+|--(?:git-dir|work-tree|namespace|super-prefix|config-env|attr-source)\s+\S+|-[A-Za-z]+|--(?:paginate|no-pager|bare|no-replace-objects|literal-pathspecs|glob-pathspecs|noglob-pathspecs|icase-pathspecs|no-optional-locks|version|help|html-path|man-path|info-path))`
+
+const GIT_COMMIT = new RegExp(String.raw`\bgit(?:\s+${GIT_GLOBAL_OPTION})*\s+commit\b`)
+const GIT_ADD = new RegExp(String.raw`\bgit(?:\s+${GIT_GLOBAL_OPTION})*\s+add\b`)
 const HEREDOC = /<<-?\s*['"]?(\w+)['"]?\n([\s\S]*?)\n\s*\1\b/
 const MESSAGE = /(?:^|\s)(?:-[a-zA-Z]*m|--message)(?:=|\s+)(?:"((?:[^"\\]|\\.)*)"|'([^']*)'|(\S+))/
 

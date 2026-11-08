@@ -2,7 +2,7 @@
 // core's (`parseCommitCommand`, `commitDecision`, `commitReminder`); this module
 // reads the staged files through the adapter's git seam and shapes the
 // decision, the note, and the post-commit reminder flag.
-import { commitDecision, commitReminder, parseCommitCommand, pathsOfStatus, taskKey } from './core/guards.ts'
+import { GIT_GLOBAL_OPTION, commitDecision, commitReminder, parseCommitCommand, pathsOfStatus, taskKey } from './core/guards.ts'
 import { gitStatus } from './snapshot.js'
 
 export { commitDecision, commitReminder, parseCommitCommand }
@@ -395,7 +395,7 @@ export async function stagedFiles(deps, root, takesChanges, added = { all: false
 
 /** True when the commit command itself carries `-a`/`--all` (not an earlier `git add`). */
 const commitTakesAll = command => {
-  const match = /\bgit\s+(?:-[Cc]\s+\S+\s+)*commit\b([\s\S]*)/.exec(command)
+  const match = new RegExp(String.raw`\bgit(?:\s+${GIT_GLOBAL_OPTION})*\s+commit\b([\s\S]*)`).exec(command)
   return match !== null && /(?:^|\s)(?:-[a-zA-Z]*a[a-zA-Z]*|--all)(?=\s|$)/.test(match[1] ?? '')
 }
 

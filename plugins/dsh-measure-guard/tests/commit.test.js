@@ -8,7 +8,7 @@ import assert from 'node:assert/strict'
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { parseAllowList, parsePlan, parseTracks } from '../src/core/parse.ts'
 import { Agents, Turns } from '../src/state.js'
-import { addedPaths, commitCheck, commitShaOf, stagedFiles } from '../src/commit.js'
+import { addedPaths, commitCheck, commitShaOf, parseCommitCommand, stagedFiles } from '../src/commit.js'
 import { prepareDecision } from '../src/guard.js'
 import { postCommitListener, preExecuteListener } from '../src/hooks.js'
 import { commitReminder } from '../src/core/guards.ts'
@@ -110,6 +110,44 @@ test('stagedFiles adds the tracked changes for -a, and added paths exactly', asy
   assert.deepEqual(await stagedFiles(deps, '/repo', true), ['src/app.js', 'measure/tracks.md'])
   assert.deepEqual(await stagedFiles(deps, '/repo', false, { all: false, paths: ['notes.md'] }), ['src/app.js', 'notes.md'])
   assert.deepEqual(await stagedFiles(deps, '/repo', false, { all: true, paths: [] }), ['src/app.js', 'measure/tracks.md', 'notes.md'])
+})
+
+test('parseCommitCommand recognizes the documented git global options', () => {
+  for (const command of [
+    'git commit -m "feat(app): Add"',
+    'git -C /tmp commit -m "feat(app): Add"',
+    'git -C/tmp commit -m "feat(app): Add"',
+    'git -c user.name=x commit -m "feat(app): Add"',
+    'git --no-pager commit -m "feat(app): Add"',
+    'git -p commit -m "feat(app): Add"',
+    'git --bare commit -m "feat(app): Add"',
+    'git --literal-pathspecs commit -m "feat(app): Add"',
+    'git --git-dir /tmp/.git commit -m "feat(app): Add"',
+    'git --git-dir=/tmp/.git commit -m "feat(app): Add"',
+  ]) {
+    assert.deepEqual(parseCommitCommand(command), { message: 'feat(app): Add', takesChanges: false }, command)
+  }
+})
+
+test('a non-commit git command stays unrecognized with a global option', () => {
+  assert.equal(parseCommitCommand('git log --oneline'), null)
+  assert.equal(parseCommitCommand('git --no-pager log --oneline'), null)
+  assert.equal(parseCommitCommand('git --no-pager status'), null)
+})
+
+test('the strict no-task deny fires through a git global option', async () => {
+  const io = ioOf({ staged: ['src/app.js'], status: [' M src/app.js'] })
+  const deps = depsOf({ io, plan: NO_TASK_PLAN })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'git --no-pager commit -m "feat(app): Add"')
+  assert.match(check.decision?.deny ?? '', /belongs to no task/)
+  assert.match(check.decision?.deny ?? '', /src\/app\.js/)
+})
+
+test('commitTakesAll reads -a through a global option', async () => {
+  const io = ioOf({ staged: [], status: [' M src/app.js'] })
+  const deps = depsOf({ io, plan: NO_TASK_PLAN })
+  const check = await commitCheck(deps, contextOf(deps, NO_TASK_PLAN), 'git --no-pager commit -a -m "feat(app): Add"')
+  assert.match(check.decision?.deny ?? '', /src\/app\.js/)
 })
 
 // ---- the strict decision ---------------------------------------------------
