@@ -1,0 +1,336 @@
+HEAD f04e8af (plugin source unchanged; new file tests/session-track.test.ts)
+Command: bun test tests/session-track.test.ts
+bun test v1.3.14 (0d9b296a)
+
+tests/session-track.test.ts:
+111 | 
+112 | describe('the session track (PM case)', () => {
+113 |   test('AC-1: a session that names a track gets the note of that track', async () => {
+114 |     const guard = makeGuard(await project())
+115 |     const note = await send(guard, `Work on track ${BETA}.`)
+116 |     expect(note).toBe(added(noteOf(BETA)))
+                       ^
+error: expect(received).toBe(expected)
+
+@@ -3,3 +3,3 @@
+  measure-guard (Mode: guard)
+- Active track: Beta (measure/tracks/beta_20261109/).
+- Current task: [~] Task 1.1: Beta work"
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:116:18)
+(fail) the session track (PM case) > AC-1: a session that names a track gets the note of that track [540.73ms]
+118 |   })
+119 | 
+120 |   test('AC-2: a session that names no track gets the work list', async () => {
+121 |     const guard = makeGuard(await project())
+122 |     const note = await send(guard, 'hello')
+123 |     expect(note).toBe(added(workList(IDS)))
+                       ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 3 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 5
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:123:18)
+(fail) the session track (PM case) > AC-2: a session that names no track gets the work list [71.67ms]
+128 | describe('the prompt clue', () => {
+129 |   test('AC-3: each session has its own track', async () => {
+130 |     const guard = makeGuard(await project())
+131 |     const a = await send(guard, `Work on ${GAMMA}.`, 'ses_a')
+132 |     const b = await send(guard, `Work on ${ALPHA}.`, 'ses_b')
+133 |     expect(a).toBe(added(noteOf(GAMMA)))
+                    ^
+error: expect(received).toBe(expected)
+
+@@ -3,3 +3,3 @@
+  measure-guard (Mode: guard)
+- Active track: Gamma (measure/tracks/gamma_20261109/).
+- Current task: [~] Task 1.1: Gamma work"
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:133:15)
+(fail) the prompt clue > AC-3: each session has its own track [68.31ms]
+134 |     expect(b).toBe(added(noteOf(ALPHA)))
+135 |   })
+136 | 
+137 |   test('AC-4: the latest clue wins', async () => {
+138 |     const guard = makeGuard(await project())
+139 |     expect(await send(guard, `Work on ${BETA}.`)).toBe(added(noteOf(BETA)))
+                                                        ^
+error: expect(received).toBe(expected)
+
+@@ -3,3 +3,3 @@
+  measure-guard (Mode: guard)
+- Active track: Beta (measure/tracks/beta_20261109/).
+- Current task: [~] Task 1.1: Beta work"
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:139:51)
+(fail) the prompt clue > AC-4: the latest clue wins [147.21ms]
+140 |     expect(await send(guard, `Now work on ${GAMMA}.`)).toBe(added(noteOf(GAMMA)))
+141 |   })
+142 | 
+143 |   test('AC-5: a prompt that names two tracks names no track and keeps the track', async () => {
+144 |     const guard = makeGuard(await project())
+145 |     expect(await send(guard, `Compare ${ALPHA} with ${BETA}.`)).toBe(added(workList(IDS)))
+                                                                      ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 3 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 5
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:145:65)
+(fail) the prompt clue > AC-5: a prompt that names two tracks names no track and keeps the track [48.61ms]
+149 |   })
+150 | 
+151 |   test('AC-6: only a whole, case-sensitive id names a track', async () => {
+152 |     const guard = makeGuard(await project())
+153 |     for (const [i, text] of ['See beta_202611090.', 'See xbeta_20261109.', 'See BETA_20261109.'].entries()) {
+154 |       expect(await send(guard, text, `ses_${i}`)).toBe(added(workList(IDS)))
+                                                        ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 3 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 5
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:154:51)
+(fail) the prompt clue > AC-6: only a whole, case-sensitive id names a track [75.66ms]
+155 |     }
+156 |   })
+157 | 
+158 |   test('AC-7: the id of a track that is not [~] names no track', async () => {
+159 |     const guard = makeGuard(await project({ markers: { [GAMMA]: 'x' } }))
+160 |     expect(await send(guard, `Work on ${GAMMA}.`)).toBe(added(workList([ALPHA, BETA])))
+                                                         ^
+error: expect(received).toBe(expected)
+
+@@ -3,5 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 2 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 4
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:160:52)
+(fail) the prompt clue > AC-7: the id of a track that is not [~] names no track [39.71ms]
+162 | })
+163 | 
+164 | describe('the title clue', () => {
+165 |   test('AC-8: the title names the track until a clue sets one', async () => {
+166 |     const guard = titledGuard(await project(), async () => `Review of ${GAMMA}`)
+167 |     expect(await send(guard, 'hello')).toBe(added(noteOf(GAMMA)))
+                                             ^
+error: expect(received).toBe(expected)
+
+@@ -3,3 +3,3 @@
+  measure-guard (Mode: guard)
+- Active track: Gamma (measure/tracks/gamma_20261109/).
+- Current task: [~] Task 1.1: Gamma work"
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 2
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:167:40)
+(fail) the title clue > AC-8: the title names the track until a clue sets one [21.74ms]
+171 | 
+172 |   test('AC-9: a title that fails or never comes gives no clue, and the prompt continues', async () => {
+173 |     const failing = titledGuard(await project(), async () => {
+174 |       throw new Error('no title')
+175 |     })
+176 |     expect(await send(failing, 'hello')).toBe(added(workList(IDS)))
+                                               ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 3 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 5
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:176:42)
+(fail) the title clue > AC-9: a title that fails or never comes gives no clue, and the prompt continues [16.21ms]
+185 |   test('AC-10: a completed write in a track folder or with the id in its path names the track', async () => {
+186 |     const root = await project()
+187 |     const guard = makeGuard(root)
+188 |     const inMeasure = completed(writeCall(planPath(root, GAMMA), 'ses_m'))
+189 |     await guard.onToolAfter(inMeasure)
+190 |     expect(outputOf(inMeasure)).toContain(noteOf(GAMMA))
+                                      ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "measure-guard (Mode: guard)\nActive track: Gamma (measure/tracks/gamma_20261109/).\nCurrent task: [~] Task 1.1: Gamma work"
+Received: "done\n\nmeasure-guard (Mode: guard)\nActive track: Alpha (measure/tracks/alpha_20261109/).\nCurrent task: [~] Task 1.1: Alpha work"
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:190:33)
+(fail) the path clue > AC-10: a completed write in a track folder or with the id in its path names the track [154.16ms]
+196 |   test('AC-11: a failed call gives no clue', async () => {
+197 |     const root = await project()
+198 |     const guard = makeGuard(root)
+199 |     const failed = { ...completed(writeCall(planPath(root, GAMMA), 'ses_1')), status: 'error', error: { message: 'no' } } as ToolAfterEvent
+200 |     await guard.onToolAfter(failed)
+201 |     expect(guard.session('ses_1').track).toBeNull()
+                                               ^
+error: expect(received).toBeNull()
+
+Received: undefined
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:201:42)
+(fail) the path clue > AC-11: a failed call gives no clue [16.37ms]
+205 | 
+206 | describe('the selection', () => {
+207 |   test('AC-12: a named track with no [~] task gets its own note', async () => {
+208 |     const guard = makeGuard(await project({ tasks: { [BETA]: ' ' } }))
+209 |     const note = await send(guard, `Work on ${BETA}.`)
+210 |     expect(note).toContain(`Active track: Beta (measure/tracks/${BETA}/).`)
+                       ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "Active track: Beta (measure/tracks/beta_20261109/)."
+Received: "\n\nmeasure-guard (Mode: guard)\nActive track: Alpha (measure/tracks/alpha_20261109/).\nCurrent task: [~] Task 1.1: Alpha work"
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:210:18)
+(fail) the selection > AC-12: a named track with no [~] task gets its own note [111.37ms]
+218 |   })
+219 | 
+220 |   test('AC-14: the list key changes only with the listed tracks', async () => {
+221 |     const root = await project()
+222 |     const guard = makeGuard(root)
+223 |     expect(await send(guard, 'hello')).toBe(added(workList(IDS)))
+                                             ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,3 @@
+  measure-guard (Mode: guard)
+- This session names no track. 3 tracks have a task in progress:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ Current task: [~] Task 1.1: Alpha work"
+
+- Expected  - 5
++ Received  + 2
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:223:40)
+(fail) the selection > AC-14: the list key changes only with the listed tracks [35.05ms]
+230 |   test('AC-15: a compaction carries the note of the session', async () => {
+231 |     const guard = makeGuard(await project())
+232 |     await send(guard, `Work on ${GAMMA}.`, 'ses_g')
+233 |     const named: CompactionEvent = { sessionID: 'ses_g', agent: 'build', system: [], messages: [] }
+234 |     await guard.onCompaction(named)
+235 |     expect(named.system.map(part => part.text)).toContain(noteOf(GAMMA))
+                                                      ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "measure-guard (Mode: guard)\nActive track: Gamma (measure/tracks/gamma_20261109/).\nCurrent task: [~] Task 1.1: Gamma work"
+Received: [
+  "measure-guard (Mode: guard)\nActive track: Alpha (measure/tracks/alpha_20261109/).\nCurrent task: [~] Task 1.1: Alpha work"
+]
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:235:49)
+(fail) the selection > AC-15: a compaction carries the note of the session [39.46ms]
+241 |   test('AC-16: the edit guard keeps the project rule', async () => {
+242 |     const root = await project({ tasks: { [BETA]: ' ' } })
+243 |     const guard = makeGuard(root)
+244 |     await expect(guard.onToolBefore(writeCall(join(root, 'src/x.ts'), 'ses_n'))).resolves.toBeUndefined()
+245 |     await send(guard, `Work on ${BETA}.`, 'ses_b')
+246 |     expect(guard.session('ses_b').track).toBe(BETA)
+                                               ^
+error: expect(received).toBe(expected)
+
+Expected: "beta_20261109"
+Received: undefined
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:246:42)
+(fail) the selection > AC-16: the edit guard keeps the project rule [64.09ms]
+255 |   })
+256 | 
+257 |   test('AC-22: with no [~] task, a session that names no track gets the idle list', async () => {
+258 |     const guard = makeGuard(await project({ tasks: { [ALPHA]: ' ', [BETA]: ' ', [GAMMA]: ' ' } }))
+259 |     const note = await send(guard, 'hello')
+260 |     expect(note).toBe(added(idleList(IDS)))
+                       ^
+error: expect(received).toBe(expected)
+
+@@ -3,6 +3,4 @@
+  measure-guard (Mode: guard)
+- This session names no track. No track has a task in progress. 3 tracks have the marker [~]:
+- - alpha_20261109: Alpha
+- - beta_20261109: Beta
+- - gamma_20261109: Gamma
+- To get the next task of one track, write its id in a prompt."
++ Active track: Alpha (measure/tracks/alpha_20261109/).
++ No task is in progress.
++ Next task: Task 1.1: Alpha work. Mark it `[~]` in plan.md before you change files outside measure/."
+
+- Expected  - 5
++ Received  + 3
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts:260:18)
+(fail) the selection > AC-22: with no [~] task, a session that names no track gets the idle list [56.61ms]
+error: Cannot find module '../src/track' from '/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/session-track.test.ts'
+(fail) the pure functions > AC-21: namedTrack, sessionList, and sessionNoteKey [3.73ms]
+
+ 2 pass
+ 17 fail
+ 19 expect() calls
+Ran 19 tests across 1 file. [3.07s]
+bun test exit 1
