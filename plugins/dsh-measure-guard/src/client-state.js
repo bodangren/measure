@@ -89,27 +89,27 @@ export const SETUP_PATH = '/measure-guard/setup'
  */
 export async function setupResponse(deps, request) {
   try {
-    if (request.method !== 'POST') return jsonResponse({ error: 'method not allowed' }, 405)
+    if (request.method !== 'POST') return respond(deps, { error: 'method not allowed' }, 405)
     let body
     try {
       body = await request.json()
     } catch {
-      return jsonResponse({ error: 'malformed body' }, 400)
+      return respond(deps, { error: 'malformed body' }, 400)
     }
     const sessionId = typeof body?.sessionId === 'string' && body.sessionId !== '' ? body.sessionId : null
     const choice = body?.choice
     if (sessionId === null || (choice !== 'off' && choice !== 'setup')) {
-      return jsonResponse({ error: 'invalid setup answer' }, 400)
+      return respond(deps, { error: 'invalid setup answer' }, 400)
     }
     const agent = deps.agentOf(sessionId)
-    if (agent === undefined || agent === null) return jsonResponse({ error: 'not found' }, 404)
+    if (agent === undefined || agent === null) return respond(deps, { error: 'not found' }, 404)
 
     const before = deps.state.agents.sessionOf(agent.id).setupChoice
     resolveSetupChoice(deps.state, agent.id, choice)
     if (choice === 'setup' && before !== 'setup' && typeof deps.injectSetup === 'function') deps.injectSetup(agent)
-    return jsonResponse({ choice }, 200, moduleIdentity(deps))
+    return respond(deps, { choice }, 200)
   } catch (error) {
-    return jsonResponse({ error: errorText(error) }, 500)
+    return respond(deps, { error: errorText(error) }, 500)
   }
 }
 
@@ -119,6 +119,16 @@ const jsonResponse = (value, status = 200, headers = {}) =>
     status,
     headers: { 'content-type': 'application/json', ...headers },
   })
+
+/**
+ * A JSON response that carries the loaded module identity on every status, so a
+ * caller can tell a missing route (no identity headers) from a failed request on
+ * a present route (identity present).
+ */
+const respond = (deps, value, status = 200) => jsonResponse(value, status, moduleIdentity(deps))
+
+/** A plain-text response with the given status and the module identity headers. */
+const textResponse = (deps, text, status) => new Response(text, { status, headers: moduleIdentity(deps) })
 
 /**
  * The identity of the loaded Host module, as the installed entry reports it.
@@ -141,7 +151,7 @@ export async function clientStateResponse(deps, request) {
   try {
     const sessionId = new URL(request.url).searchParams.get('sessionId')
     const agent = sessionId === null ? undefined : deps.agentOf(sessionId)
-    if (agent === undefined || agent === null) return new Response('not found', { status: 404 })
+    if (agent === undefined || agent === null) return textResponse(deps, 'not found', 404)
 
     const root = await deps.rootOf(agent)
     const snapshot = await deps.snapshots.get(root)
@@ -158,9 +168,9 @@ export async function clientStateResponse(deps, request) {
       setupChoice: deps.state.agents.sessionOf(agent.id).setupChoice,
       updatedAt: new Date().toISOString(),
     })
-    return jsonResponse(view, 200, moduleIdentity(deps))
+    return respond(deps, view, 200)
   } catch (error) {
-    return jsonResponse({ error: errorText(error) }, 500)
+    return respond(deps, { error: errorText(error) }, 500)
   }
 }
 

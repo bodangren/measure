@@ -7,7 +7,7 @@ import assert from 'node:assert/strict'
 
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { bandLine, parseAllowList, parsePlan, parseTracks, statusLines } from '../src/core/parse.ts'
-import { BAND_MAX, clientStateResponse, clientView, compactBand, registerClientState } from '../src/client-state.js'
+import { BAND_MAX, clientStateResponse, clientView, compactBand, registerClientState, setupResponse } from '../src/client-state.js'
 
 const tracks = parseTracks(TRACKS)
 
@@ -257,6 +257,52 @@ test('clientStateResponse omits the digest header when the entry has none', asyn
 test('clientStateResponse omits the module header when the entry passes no moduleUrl', async () => {
   const response = await clientStateResponse(depsOf(), requestOf('?sessionId=session-1'))
   assert.equal(response.headers.get('x-measure-guard-module'), null)
+})
+
+test('the state route carries the identity on its error responses too', async () => {
+  const identity = { moduleUrl: 'file:///opt/dsh/plugins/dsh-measure-guard/index.js', digest: 'sha256:abc123' }
+  const notFound = await clientStateResponse(depsOf(identity), requestOf('?sessionId=nobody'))
+  assert.equal(notFound.status, 404)
+  assert.equal(notFound.headers.get('x-measure-guard-module'), identity.moduleUrl)
+  assert.equal(notFound.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  assert.equal(await notFound.text(), 'not found')
+  const failed = await clientStateResponse(
+    depsOf({
+      ...identity,
+      snapshots: {
+        get: async () => {
+          throw new Error('boom')
+        },
+      },
+    }),
+    requestOf('?sessionId=session-1'),
+  )
+  assert.equal(failed.status, 500)
+  assert.equal(failed.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  assert.deepEqual(await failed.json(), { error: 'boom' })
+})
+
+test('the setup route carries the identity on every error response', async () => {
+  const identity = { moduleUrl: 'file:///opt/x/index.js', digest: 'sha256:abc123' }
+  const deps = depsOf(identity)
+  const request = (method, body) =>
+    new Request('http://localhost/measure-guard/setup', {
+      method,
+      headers: { 'content-type': 'application/json' },
+      ...(body === undefined ? {} : { body }),
+    })
+  const method = await setupResponse(deps, request('GET'))
+  assert.equal(method.status, 405)
+  assert.equal(method.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const malformed = await setupResponse(deps, request('POST', 'not json'))
+  assert.equal(malformed.status, 400)
+  assert.equal(malformed.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const invalid = await setupResponse(deps, request('POST', JSON.stringify({ sessionId: 'session-1', choice: 'nope' })))
+  assert.equal(invalid.status, 400)
+  assert.equal(invalid.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const unknown = await setupResponse(deps, request('POST', JSON.stringify({ sessionId: 'nobody', choice: 'off' })))
+  assert.equal(unknown.status, 404)
+  assert.equal(unknown.headers.get('x-measure-guard-digest'), 'sha256:abc123')
 })
 
 // ---- the compact band (Story S1 of the band track) ------------------------
