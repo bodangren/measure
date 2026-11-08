@@ -142,6 +142,58 @@ const moduleIdentity = deps => {
   return headers
 }
 
+/** The most bytes the setup route reads from a POST body. */
+export const SETUP_MAX_BODY = 8 * 1024
+
+/** Reads at most SETUP_MAX_BODY bytes; null when the body is over the limit. */
+const readSetupBody = async request => {
+  const chunks = []
+  let size = 0
+  for await (const chunk of request) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+    size += buffer.length
+    if (size > SETUP_MAX_BODY) return null
+    chunks.push(buffer)
+  }
+  return Buffer.concat(chunks)
+}
+
+/**
+ * The node:http adapter of the setup route. The route is registered as a handler
+ * because a `webServer` resource answers only GET and HEAD: the handler reads the
+ * POST body (bounded), replays the exchange as a Fetch Request, and writes the
+ * `setupResponse` status, headers, and body to the node response. Every answer
+ * keeps the module identity headers, and a failure never throws out of it.
+ */
+export const setupHandler = deps => async (request, response) => {
+  const method = typeof request.method === 'string' ? request.method : 'GET'
+  let result
+  try {
+    const body = method === 'GET' || method === 'HEAD' ? Buffer.alloc(0) : await readSetupBody(request)
+    if (body === null) {
+      result = jsonResponse({ error: 'request body too large' }, 413, moduleIdentity(deps))
+    } else {
+      const headers = {}
+      for (const [name, value] of Object.entries(request.headers ?? {})) {
+        if (typeof value === 'string') headers[name] = value
+      }
+      result = await setupResponse(
+        deps,
+        new Request(`http://localhost${SETUP_PATH}`, {
+          method,
+          headers,
+          body: method === 'GET' || method === 'HEAD' ? undefined : body,
+        }),
+      )
+    }
+  } catch (error) {
+    result = jsonResponse({ error: errorText(error) }, 500, moduleIdentity(deps))
+  }
+  response.statusCode = result.status
+  for (const [name, value] of result.headers) response.setHeader(name, value)
+  response.end(await result.text())
+}
+
 /**
  * The resource of the state route. Every I/O failure is caught: the response
  * is a 500 JSON `{ error }` and the request never throws (a throwing resource
@@ -189,7 +241,7 @@ export function registerClientState(ctx, deps) {
     const setup = ctx.webServer.register({
       kind: 'exact',
       path: SETUP_PATH,
-      resource: request => setupResponse(deps, request),
+      handler: setupHandler(deps),
     })
     return () => {
       state()
