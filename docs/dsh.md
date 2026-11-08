@@ -165,8 +165,12 @@ the closeout guard cannot read it. Before the redirect scan, heredoc bodies,
 quoted `>`, and `#` comments are masked, so prose that quotes a redirect is not
 treated as a write; `tee`/`sed -i` keep the raw command (a prose mention of those
 can still be denied), and command substitution and helper scripts remain the
-documented limit. `apply_patch` and `str_replace_editor` are
-denied on those same registry files for the same reason. The commit guard now
+documented limit. The destination of `cp`, `mv`, and `install` is also a checked
+write target (`-t`/`--target-directory` stays with the end-of-turn backstop).
+`apply_patch` and `str_replace_editor` no longer fail closed on every registry
+write: their after-text is reconstructed (add/delete/update hunks with exact
+context matching; `create`/`str_replace`/`insert`), so the closeout guard checks
+them like `edit`/`write`, and only an unreadable patch is denied. The commit guard now
 narrows its file set instead of over-approximating: an in-command
 `git add <paths>` contributes exactly those paths, `git add -A` every status
 path, `git add -u` the tracked paths, and `git commit -a` the tracked paths only.
