@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "gate_track_scope_20261108",
+  "phase": "track setup",
+  "baseline_sha": "9d67250b7ca0b669d1293ad0362c3e1305710aa6",
+  "audited_head_sha": "9d67250b7ca0b669d1293ad0362c3e1305710aa6",
+  "status": "fail",
+  "summary": "HEAD equals the audited head, 9d67250. The spec names the right root cause and the right set of checks. Two Blocker findings remain. AC-18 names a result file whose status is fail, so the required replay cannot exit 0. D4 does not say whether the tree-diff check runs in the scoped mode, so AC-5 and fail-closed behavior conflict. Two Major findings and three Nit findings are also open.",
+  "paraphrase": {
+    "proposes": "This track gives the track scope of the mid-red gate to the spec-review gate, the ux-browser-review gate, the ux-paths command, and the jr-green HEAD check. Each check reads only the files of the track when baseline..HEAD also holds commits of another track. Each scoped check prints the skipped commits as INFO lines. The change renames red_scope and RedScope to track_scope and TrackScope, updates the contracts, and installs the checker.",
+    "current_system": "The spec-review gate fails when a committed file in baseline..HEAD is outside measure/runs/. The ux-browser-review gate fails when ux_paths finds a UX file and PROJECT_DEV_URL is unset. The jr-green gate passes its HEAD check when any commit moves HEAD. The ux-paths command prints the UX paths of the whole range and has no --track option. The mid-red gate already scopes by track id through red_scope and commit_paths."
+  },
+  "blocking_findings": [
+    "F1 [Blocker] spec.md Acceptance criteria AC-18: the required Monorepo replay cannot exit 0, because the named result file records status fail. Rationale: measure/runs/sales_traffic_source_binding_20261108/spec-review-39d019003.json:10 has \"status\": \"fail\", and measure_interphase_checks.py:503 rejects a result whose status is not pass; the gate exits 1 at the result check before the scope rule can pass, so plan Task 3.2 cannot meet AC-18.",
+    "F2 [Blocker] spec.md Decisions D4 and Acceptance criteria AC-5: D4 says the --baseline checks run first and do not change, but AC-5 expects the D3 message when the own commit tree is unreadable; the two rules select different messages, and the choice also decides fail-closed behavior. Rationale: the tree-diff check at measure_interphase_checks.py:905-909 fails closed on a missing baseline tree (tests/spec_review_gate/test_s2_adversarial.sh:473-488, G19); if the scoped mode keeps that check, AC-5 prints \"could not list committed files\"; if it drops the check, a missing baseline tree with an other-track commit passes; the spec must name which failure wins."
+  ],
+  "nonblocking_findings": [
+    "F3 [Major] spec.md Decisions D5 and D6; plan.md Phase 3 Task 3.1: the spec does not say how ux_paths receives the track id, and AC-16 requires test_checker.py to pass unchanged. Rationale: tests/spec_review_gate/test_checker.py:112 calls mic.ux_paths(repo, baseline); the implementer must choose an optional third parameter or a second function, and the spec leaves that API choice open.",
+    "F4 [Major] spec.md Decisions D3 and D6; plan.md Phase 2 Task 2.1: D3 defines a failure message for spec-review, ux-browser-review, and ux-paths, but only AC-5 covers that failure. Rationale: D6 gives the exact \"FAIL: ux-paths could not list the files of commit <sha>\" message, and no acceptance criterion or phase test names it or the ux-browser-review case; the standard requires each phase to name its edge test cases.",
+    "F5 [Nit] spec.md Acceptance criteria AC-1: the sentence \"two subject-tagged login_track commits that change src/login.py and measure/tracks/login_track/plan.md\" does not say whether each commit changes both files or one file each. Rationale: the skip count and the output are the same either way, but the fixture differs.",
+    "F6 [Nit] spec.md Decisions D2: the clause \"the check reads the same file set as before\" has no meaning for the jr-green HEAD check, which has no file set. Rationale: the implementer must infer that jr-green keeps its HEAD check; the clause should say so.",
+    "F7 [Nit] spec.md Acceptance criteria fixture paragraph: the passing ux-browser-review payload names ux_applicability and webbridge_status but not webbridge_evidence, which validate_ux_payload requires as an object with three lists. Rationale: the implementer must read measure_interphase_checks.py:427-445 to build a payload that passes; the acceptance criteria do not name the field."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned 9d67250b7ca0b669d1293ad0362c3e1305710aa6; it equals the audited head.",
+    "Read spec.md, plan.md, and metadata.json at 9d67250 with git show.",
+    "Read cmd_role_gate, red_scope, commit_paths, ux_paths, changed_files, history_files, cmd_ux_paths, validate_ux_payload, passing_audit_feedback, and build_parser in skills/measure-orchestrator/scripts/measure_interphase_checks.py.",
+    "The real spec-review result measure/runs/sales_traffic_source_binding_20261108/spec-review-39d019003.json has status fail and retry_recommendation escalate_human.",
+    "The Monorepo range 39d019003..bd5dc101d holds two commits of storytime_at_home_release_20261106 and six changed files; measure/tracks/storytime_at_home_release_20261106 exists, so the scope sorts both commits as another track.",
+    "The Monorepo .gitignore line 56 ignores measure/runs/.",
+    "The G20 mutant list requires one exact copy of each pinned line, including paths.sort(), the -z tree-diff arguments, if resolved.returncode != 0, path.startswith(\"measure/runs/\"), and if listed.returncode != 0.",
+    "tests/spec_review_gate/test_checker.py:112 calls mic.ux_paths(repo, baseline), which AC-16 requires to keep working."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> 9d67250b7ca0b669d1293ad0362c3e1305710aa6, exit 0",
+    "git show 9d67250:measure/tracks/gate_track_scope_20261108/spec.md -> 96 lines, exit 0",
+    "git -C /home/daniebo/Desktop/reading-advantage-monorepo log --oneline 39d019003..bd5dc101d -> 2 commits, exit 0",
+    "git -C /home/daniebo/Desktop/reading-advantage-monorepo diff --name-only 39d019003..bd5dc101d -> 6 paths, exit 0",
+    "python3 read of measure/runs/sales_traffic_source_binding_20261108/spec-review-39d019003.json -> status fail, exit 0",
+    "grep of measure_interphase_checks.py for history_files, changed_files, committed_files, ux_paths, and git_head -> no other range check, exit 0"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high"
+}

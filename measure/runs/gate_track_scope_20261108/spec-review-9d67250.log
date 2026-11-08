@@ -1,0 +1,18 @@
+measure-spec-review round 1, track gate_track_scope_20261108, baseline 9d67250.
+Model: deepseek/deepseek-flash#high (DeepSeek family), picked by `ra-quota pick review-a --not-family claude`. Subagent session ses_e45101757ffeTtHDpj16uf9zGq.
+
+- F1 [Blocker] spec.md Acceptance criteria AC-18: the required Monorepo replay cannot exit 0, because the named result file records status fail.
+- F2 [Blocker] spec.md Decisions D4 and Acceptance criteria AC-5: D4 and AC-5 select different messages when a tree is unreadable; the spec must name which failure wins.
+- F3 [Major] spec.md Decisions D5 and D6; plan.md Phase 3 Task 3.1: the spec does not say how ux_paths receives the track id.
+- F4 [Major] spec.md Decisions D3 and D6; plan.md Phase 2 Task 2.1: only AC-5 covers the D3 failure.
+- F5 [Nit] spec.md Acceptance criteria AC-1: one file for each login commit, or both files in each commit.
+- F6 [Nit] spec.md Decisions D2: "the same file set" has no meaning for the jr-green HEAD check.
+- F7 [Nit] spec.md Acceptance criteria fixture paragraph: the ux payload does not name webbridge_evidence.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+track: gate_track_scope_20261108
+status: fail
+result_file: measure/runs/gate_track_scope_20261108/spec-review-9d67250.json
+findings: 2 Blocker, 2 Major, 3 Nit
+END_MEASURE_AGENT_RESULT
