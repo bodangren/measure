@@ -188,7 +188,7 @@ function substitutionAdds(command) {
       i = j
     }
   }
-  const add = /\bgit(?:\s+-C\s+\S+)?\s+["']?(?:add|stage)["']?\b/
+  const add = /\bgit(?:\s+(?:-[Cc]\s+\S+|-[Cc]\S+|--[\w-]+(?:=\S+)?|-[A-Za-z]+))*\s+["']?(?:add|stage)["']?\b/
   return spans.some(span => add.test(span))
 }
 
@@ -214,6 +214,55 @@ export function addedPaths(command) {
 
 const NESTED_SHELLS = new Set(['bash', 'sh', 'zsh'])
 const MAX_NESTED_DEPTH = 3
+
+/** The documented git global options that take a separate argument word. */
+const GIT_GLOBAL_ARG_OPTIONS = new Set([
+  '-C',
+  '-c',
+  '--git-dir',
+  '--work-tree',
+  '--namespace',
+  '--super-prefix',
+  '--config-env',
+  '--attr-source',
+])
+
+/** The documented git global options that take no argument word. */
+const GIT_GLOBAL_FLAG_OPTIONS = new Set([
+  '-p',
+  '--paginate',
+  '--no-pager',
+  '--bare',
+  '--no-replace-objects',
+  '--literal-pathspecs',
+  '--glob-pathspecs',
+  '--noglob-pathspecs',
+  '--icase-pathspecs',
+  '--no-optional-locks',
+  '--version',
+  '--help',
+  '-h',
+  '--html-path',
+  '--man-path',
+  '--info-path',
+  '--exec-path',
+])
+
+/** The attached form of a global option that also accepts a separate argument. */
+const GIT_GLOBAL_ATTACHED = [/^-[Cc].+/, /^--(?:git-dir|work-tree|namespace|super-prefix|config-env|attr-source|exec-path)=.+/]
+
+/**
+ * The number of words a git global option consumes before the subcommand (its
+ * own word included), or null when the option is outside the documented table.
+ * A null makes the caller fail closed: an unknown arity could swallow the
+ * `add`/`stage` word that follows it.
+ */
+const gitGlobalOptionStep = value => {
+  if (GIT_GLOBAL_ARG_OPTIONS.has(value)) return 2
+  if (GIT_GLOBAL_FLAG_OPTIONS.has(value)) return 1
+  if (GIT_GLOBAL_ATTACHED.some(pattern => pattern.test(value))) return 1
+  return null
+}
 
 function scanAddedPaths(command, depth) {
   const added = { all: false, trackedOnly: false, paths: [] }
@@ -285,8 +334,23 @@ function scanAddedPaths(command, depth) {
     if (current !== 'git') continue
     // Only a command-position `git` counts (`echo git add .` is not a git call),
     // and an env/wrapper prefix keeps the command position (`FOO=1 git add x`).
+    // The documented git global options may sit between `git` and `add`; an
+    // option outside the table has an unknown arity, so the add may hide behind
+    // it: fail closed instead of returning an empty path set.
     let at = i + 1
-    while (at + 1 < tokens.length && tokens[at].value === '-C' && !tokens[at + 1].separator) at += 2
+    let unreadable = false
+    while (at < tokens.length && !tokens[at].separator) {
+      const value = tokens[at].value ?? ''
+      if (!value.startsWith('-') || value === 'add' || value === 'stage') break
+      const step = gitGlobalOptionStep(value)
+      if (step === null) {
+        added.all = true
+        unreadable = true
+        break
+      }
+      at += step
+    }
+    if (unreadable) continue
     if (at >= tokens.length || tokens[at].separator) continue
     if (tokens[at].value !== 'add' && tokens[at].value !== 'stage') continue
     at += 1

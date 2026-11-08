@@ -151,6 +151,43 @@ test('addedPaths reads git stage like git add', async () => {
   assert.deepEqual(addedPaths('git stage -u && git commit -m "feat(app): Add"'), { all: false, trackedOnly: true, paths: [] })
 })
 
+test('addedPaths sees the add through the documented git global options', async () => {
+  for (const command of [
+    'git -C /tmp add secret.txt',
+    'git -C/tmp add secret.txt',
+    'git -c core.quotepath=false add secret.txt',
+    'git -ccore.quotepath=false add secret.txt',
+    'git --no-pager add secret.txt',
+    'git --git-dir /tmp/g add secret.txt',
+    'git --git-dir=/tmp/g add secret.txt',
+    'git -p add secret.txt',
+    'git --literal-pathspecs add secret.txt',
+    'git -c a=b -C /tmp add secret.txt',
+  ]) {
+    assert.deepEqual(
+      addedPaths(`${command} && git commit -m "feat(app): Add"`),
+      { all: false, trackedOnly: false, paths: ['secret.txt'] },
+      command,
+    )
+  }
+})
+
+test('an unknown git global option before the add fails closed', async () => {
+  assert.deepEqual(addedPaths('git --future-option add secret.txt && git commit -m "feat(app): Add"'), {
+    all: true,
+    trackedOnly: false,
+    paths: [],
+  })
+})
+
+test('a command substitution with a global option fails closed too', async () => {
+  assert.deepEqual(addedPaths('X=$(git -c k=v add secret.txt) && git commit -m "feat(app): Add"'), {
+    all: true,
+    trackedOnly: false,
+    paths: [],
+  })
+})
+
 test('addedPaths scans nested shell and eval commands', async () => {
   assert.deepEqual(addedPaths('bash -c "git add src/app.js" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
   assert.deepEqual(addedPaths('sh -c "git stage src/app.js" && git commit -m "feat(app): Add"'), { all: false, trackedOnly: false, paths: ['src/app.js'] })
