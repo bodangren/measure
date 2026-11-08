@@ -1,6 +1,6 @@
 # dsh-measure-guard
 
-Measure guard rails for the DeepSeek Harness (DSH). This is the third adapter of the shared Measure guard core, after the Claude Code mod (`mods/measure-guard/`) and the OpenCode plugin (`plugins/opencode-measure-guard/`). It reads the project's `measure/` files, keeps the agent on the active track and task, and denies work the active plan does not cover. The Host half registers the system-prompt rule, the task note, the `measure_status` tool, the three commands, the edit, closeout and end-of-turn guards, and one JSON route; the Client half draws the status band and the Measure panel.
+Measure guard rails for the DeepSeek Harness (DSH). This is the third adapter of the shared Measure guard core, after the Claude Code mod (`mods/measure-guard/`) and the OpenCode plugin (`plugins/opencode-measure-guard/`). It reads the project's `measure/` files, keeps the agent on the active track and task, and denies work the active plan does not cover. The Host half registers the system-prompt rule, the task note, the `measure_status`, `measure_verify`, and `measure_mode` tools, the commands, the edit, closeout and end-of-turn guards, and the JSON routes; the Client half draws the status band and the Measure panel.
 
 Track: [`measure/archive/dsh_measure_guard_20261107/`](../../measure/archive/dsh_measure_guard_20261107/) (specification, design, and plan).
 
@@ -126,7 +126,9 @@ The **effective** mode of a repository is: the persisted per-repository override
 ## Tools and commands
 
 - **`measure_status`.** A tool with no parameters. It returns the shared core's status lines: the tracks with their markers, the active plan path, each phase with its closed count and checkpoint SHA, the `[b]` tasks, the allow list, and the bypass state, followed by the task note (the active track with the current or the next task). It never returns the whole specification.
-- **Commands.** Four host commands, each registered through `ctx.commands.register`; the first three take an optional `repo` argument that widens the scope from the session to the repository:
+- **`measure_verify`.** A read-only tool with no parameters. It returns the same text as `/measure-verify`: the git-backed task problems (a SHA no commit owns, a commit without a git note), the active track's `metadata.json` `actual_tasks` verdict, or `measure-guard: verification clean (<n> tasks checked).`. This is the agent-tool form of the command, so a hosted agent can verify without the GUI.
+- **`measure_mode`.** A read-only tool with no parameters. It reports `measure-guard: effective mode <value> (<source>).` from the same `effectiveMode` seam the command uses. Setting a mode stays with `/measure-mode`: agent tools never change the guard configuration.
+- **Commands.** Host commands, each registered through `ctx.commands.register`; the scope commands take an optional `repo` argument that widens the scope from the session to the repository:
 
   | Command | Effect |
   | --- | --- |
