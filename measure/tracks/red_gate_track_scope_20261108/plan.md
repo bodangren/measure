@@ -20,14 +20,15 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Evidence: the unchanged checker gives `Ran 11 tests`, `FAILED (failures=18)`. Only `test_single_track_range_prints_no_info` passes. Log: `measure/runs/red_gate_track_scope_20261108/red-p2-unchanged-checker.log`.
   - The run is direct, not through `heavy-run.sh`: the PM said on 2026-11-08 that one unittest file is a light run.
 
-## Phase 3: Green change
+## Phase 3: Green change [checkpoint: 1901799]
 
 - [x] Task 3.1: Change the `mid-red` branch of `measure_interphase_checks.py` (FR-1 to FR-5). Run the new test file and `tests/spec_review_gate/test_checker.py`. `7691a39`
   - Evidence: `test_red_track_scope.py` gives `Ran 11 tests`, `OK`. `test_checker.py` gives `Ran 38 tests`, `OK`.
   - Evidence: on the Monorepo look Phase 2 Red range (`08e60c795..126189088`, read-only clone), the old checker exits 1 with 10 files of other tracks. The new checker exits 0 and skips 12 commits. Log: `measure/runs/red_gate_track_scope_20261108/green-p3-monorepo-look-range.log`.
 - [x] Task 3.2: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-6). `78878d4`
-- [~] Task 3.3: Run `bash tests/spec_review_gate/run.sh` (AC-9).
+- [x] Task 3.3: Run `bash tests/spec_review_gate/run.sh` (AC-9). `1901799`
   - Run 1 (on `b09dd9c`): 12 suites, PASS=11, FAIL=1. `test_s2_adversarial.sh` G20 failed: `if listed.returncode != 0:` occurred two times, so the mutant did not apply once. Fix: `0306a7b`. Log: `measure/runs/red_gate_track_scope_20261108/green-p3-full-suite.log`.
+  - Run 2 (on `1901799`, through `heavy-run.sh`): `12 suites (PASS=12, FAIL=0)`, `run.sh exit 0`. Log: `green-p3-full-suite-r2.log`.
 
 ## Phase 4: Review and distribution
 
@@ -37,5 +38,5 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - F2 [Nit] (`is_track_folder` reads the working tree, so a commit can add its own track folder): DECLINE. A check at the baseline makes a track that starts during the phase count as own, and the gate then fails on its commits again. The INFO line names the id, and the new folder shows in the range. Same limit as spec F1.
   - F3 [Nit] (contracts omit the D5 failure rules): FIX in `0306a7b`.
   - F4 [Nit] (AC-9 has no result yet): Task 3.3 run 2 closes it.
-- [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-10).
+- [~] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-10).
 - [ ] Task 4.3: Send the PM one line: the commit and the test name.
