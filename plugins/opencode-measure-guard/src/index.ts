@@ -16,7 +16,12 @@ export default Plugin.define({
   id: PLUGIN_ID,
   async setup(ctx) {
     const mode = modeFrom(ctx.options, process.env)
-    const guard = new Guard(ctx.location.directory, mode, new Sessions(), new Bypass(ctx.storage))
+    // The session title is a track clue (src/track.ts); the Guard waits at most TITLE_WAIT_MS for it.
+    const titleOf = async (sessionID: string): Promise<string | null> => {
+      const info = await ctx.session.get({ sessionID })
+      return typeof info.title === 'string' ? info.title : null
+    }
+    const guard = new Guard(ctx.location.directory, mode, new Sessions(), new Bypass(ctx.storage), undefined, titleOf)
 
     await ctx.session.hook('context', event => guard.onContext(event as unknown as ContextEvent))
     await ctx.session.hook('prompt', event => guard.onPrompt(event as unknown as PromptEvent))

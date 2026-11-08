@@ -12,6 +12,8 @@ export type SessionState = {
   readonly sessionID: string
   /** The agent of the session, from the last prompt or tool call. */
   agent: string | null
+  /** The `[~]` track the session named last (a prompt, its title, or a written path); null until a clue names one. */
+  track: string | null
   /** The noteKey of the last task note the agent got; null sends the next one. */
   notedKey: string | null
   /** The answer to the setup question; null where no question is asked. */
@@ -55,6 +57,7 @@ export class Sessions {
     const made: SessionState = {
       sessionID,
       agent: null,
+      track: null,
       notedKey: null,
       setupChoice: null,
       turn: null,

@@ -1,0 +1,32 @@
+HEAD 8882405 + working tree (Task 3.1 change)
+bun test v1.3.14 (0d9b296a)
+
+tests/allow-adversarial.test.ts:
+250 |   })
+251 | 
+252 |   test('V18 a CR-only file loads one folder and opens no real path', async () => {
+253 |     const root = await project({ plan: noTaskPlan() }, 'scripts/daily-report/work/\rsrc/\r')
+254 |     const snapshot = await loadSnapshot(root)
+255 |     expect(snapshot.allow.folders).toEqual(['scripts/daily-report/work/\rsrc'])
+                                         ^
+error: expect(received).toEqual(expected)
+
+- [
+-   
+- "scripts/daily-report/work/
+- src"
+- ,
+- ]
++ []
+
+- Expected  - 6
++ Received  + 1
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/allow-adversarial.test.ts:255:36)
+(fail) loader with a hostile file > V18 a CR-only file loads one folder and opens no real path [42.22ms]
+
+ 150 pass
+ 1 fail
+ 490 expect() calls
+Ran 151 tests across 14 files. [4.64s]
+bun test exit 1

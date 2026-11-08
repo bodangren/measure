@@ -4,7 +4,8 @@ import { execFile } from 'node:child_process'
 import { readFile, stat } from 'node:fs/promises'
 import { ALLOW_FILE, dirname, findLink, joinPath, parseAllowList, parsePlan, parseTracks, selectActive } from './core/parse'
 import { statusLinesOf } from './core/guards'
-import type { AllowList, Plan, Snapshot } from './types'
+import type { SessionSnapshot } from './track'
+import type { AllowList, Plan } from './types'
 
 const exists = async (path: string): Promise<boolean> => {
   try {
@@ -68,8 +69,8 @@ const readAllow = async (path: string): Promise<AllowList> => {
 }
 
 /** Reads index.md, tracks.md, and the plans of the `[~]` tracks under `<root>/measure/`. */
-export const loadSnapshot = async (root: string): Promise<Snapshot> => {
-  const base: Snapshot = {
+export const loadSnapshot = async (root: string): Promise<SessionSnapshot> => {
+  const base: SessionSnapshot = {
     root,
     hasMeasure: false,
     isRepo: await isGitRepo(root),
@@ -79,6 +80,7 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
     inProgressCount: 0,
     parseError: null,
     allow: { folders: [], ignored: [] },
+    inProgress: [],
   }
   const measure = joinPath(root, 'measure')
   if (!base.isRepo || !(await exists(measure))) return base
@@ -105,7 +107,15 @@ export const loadSnapshot = async (root: string): Promise<Snapshot> => {
       planPaths.set(track.id, path)
     }
 
-    const loaded: Snapshot = { ...base, allow, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length }
+    // Every `[~]` track with a plan, for the track of each session (src/track.ts).
+    const inProgress = tracks
+      .filter(t => t.marker === '~')
+      .flatMap(entry => {
+        const plan = plans.get(entry.id)
+        const planPath = planPaths.get(entry.id)
+        return plan === undefined || planPath === undefined ? [] : [{ entry, planPath, plan }]
+      })
+    const loaded: SessionSnapshot = { ...base, allow, hasMeasure: true, tracksPath, tracks, inProgressCount: tracks.filter(t => t.marker === '~').length, inProgress }
     const entry = selectActive(tracks, plans)
     if (entry === null) return loaded
     const plan = plans.get(entry.id)

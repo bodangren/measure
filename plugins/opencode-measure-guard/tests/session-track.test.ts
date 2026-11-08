@@ -1,7 +1,7 @@
 // The track of each session in the task note (track guard_session_track_20261109):
 // the prompt, title, and path clues, the work and idle lists, and the guards that keep the project rule.
 import { describe, expect, test } from 'bun:test'
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Guard } from '../src/guard'
@@ -158,6 +158,7 @@ describe('the prompt clue', () => {
   test('AC-7: the id of a track that is not [~] names no track', async () => {
     const guard = makeGuard(await project({ markers: { [GAMMA]: 'x' } }))
     expect(await send(guard, `Work on ${GAMMA}.`)).toBe(added(workList([ALPHA, BETA])))
+    expect(await send(guard, `Move from ${GAMMA} to ${BETA}.`, 'ses_2')).toBe(added(noteOf(BETA)))
   })
 })
 
@@ -200,6 +201,10 @@ describe('the path clue', () => {
     await guard.onToolAfter(failed)
     expect(guard.session('ses_1').track).toBeNull()
     expect(await send(guard, 'hello')).toBe(added(workList(IDS)))
+    const exited = completed(writeCall(planPath(root, GAMMA), 'ses_2', 'call_2'))
+    exited.result.metadata = { exit: 1 }
+    await guard.onToolAfter(exited)
+    expect(guard.session('ses_2').track).toBeNull()
   })
 })
 
@@ -210,6 +215,9 @@ describe('the selection', () => {
     expect(note).toContain(`Active track: Beta (measure/tracks/${BETA}/).`)
     expect(note).toContain('No task is in progress.')
     expect(note).not.toContain('Alpha')
+    const root = await project()
+    writeFileSync(planPath(root, BETA), '# Implementation Plan: Beta\n\n- [~] Task 1.1: Beta work\n')
+    expect(await send(makeGuard(root), `Work on ${BETA}.`)).toBe(added(workList([ALPHA, GAMMA])))
   })
 
   test('AC-13: one working track keeps the old note', async () => {
@@ -252,6 +260,11 @@ describe('the selection', () => {
     writeFileSync(join(root, 'measure/tracks.md'), '# Project Tracks\n\n- [~] Track without a known format\n')
     const guard = makeGuard(root)
     expect(await send(guard, 'hello')).toContain('the Measure files could not be read')
+    const missing = await project({ tasks: { [BETA]: ' ', [GAMMA]: ' ' } })
+    rmSync(planPath(missing, ALPHA))
+    const note = await send(makeGuard(missing), 'hello')
+    expect(note).toContain('the Measure files could not be read')
+    expect(note).not.toContain('This session names no track.')
   })
 
   test('AC-22: with no [~] task, a session that names no track gets the idle list', async () => {
@@ -260,6 +273,11 @@ describe('the selection', () => {
     expect(note).toBe(added(idleList(IDS)))
     expect(note).not.toContain('Active track:')
     expect(note).not.toContain('Next task:')
+    const root = await project()
+    const moving = makeGuard(root)
+    expect(await send(moving, 'hello')).toBe(added(workList(IDS)))
+    for (const id of IDS) writeFileSync(planPath(root, id), planText(id, ' '))
+    expect(await send(moving, 'later')).toBe(added(idleList(IDS)))
   })
 })
 

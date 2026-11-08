@@ -1,7 +1,7 @@
 // The guard runtime: one per plugin instance (one project root). It owns the
 // snapshot cache, the sessions, the bypass, and the hook handlers. index.ts
 // wires the handlers to the OpenCode hooks; the tests call them directly.
-import { dirname, joinPath, noteKey, parsePlan, ruleSection, taskNote } from './core/parse'
+import { dirname, joinPath, parsePlan, ruleSection } from './core/parse'
 import {
   SETUP_DENY,
   applyEdit,
@@ -15,6 +15,7 @@ import {
   parseCommitCommand,
   phaseStartDecision,
   redFor,
+  relative,
   taskKey,
   tddDecision,
   trackCloseDecision,
@@ -24,7 +25,9 @@ import { endTurn, isFollowUp, startTurn } from './hooks/turn'
 import type { IdleAction } from './hooks/turn'
 import { writeStateFile } from './state'
 import type { Bypass, SessionState, Sessions } from './state'
-import type { ClosingTrack, Decision, GuardContext, Mode, Snapshot } from './types'
+import { namedTrack, sessionNote, sessionNoteKey } from './track'
+import type { SessionSnapshot } from './track'
+import type { ClosingTrack, Decision, GuardContext, Mode } from './types'
 import {
   SETUP_DENY_OPENCODE,
   appendResult,
@@ -47,8 +50,22 @@ export const NOTE_MARK = 'measure-guard'
 /** The agent whose prompt holds the rule itself (spec decision 1). */
 export const RULE_AGENT = 'measure-orchestrator'
 
+/** How long a prompt waits for the session title; then the title gives no clue. */
+export const TITLE_WAIT_MS = 1000
+
+/** The value of `promise`, or `fallback` when it fails or takes more than `ms`. */
+const within = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> =>
+  new Promise(resolve => {
+    const timer = setTimeout(() => resolve(fallback), ms)
+    const done = (value: T): void => {
+      clearTimeout(timer)
+      resolve(value)
+    }
+    promise.then(done, () => done(fallback))
+  })
+
 export class Guard {
-  private snapshot: Snapshot | null = null
+  private snapshot: SessionSnapshot | null = null
   /** Notes an allowed call earned in the before hook, by call id, for the after hook. */
   private readonly callNotes = new Map<string, string[]>()
   /** The ids of the allowed commit calls of a `[~]` task, which get the commit reminder. */
@@ -61,16 +78,18 @@ export class Guard {
     readonly bypass: Bypass,
     /** The state file base folder; the default is under ~/.local/state. */
     readonly stateBase?: string,
+    /** The title of a session, a track clue; index.ts reads it from the host. */
+    readonly titleOf?: (sessionID: string) => Promise<string | null>,
   ) {}
 
   /** Reads the Measure files again and keeps the result. */
-  async refresh(): Promise<Snapshot> {
+  async refresh(): Promise<SessionSnapshot> {
     this.snapshot = await loadSnapshot(this.root)
     return this.snapshot
   }
 
   /** The kept snapshot, read on first use. */
-  async current(): Promise<Snapshot> {
+  async current(): Promise<SessionSnapshot> {
     return this.snapshot ?? this.refresh()
   }
 
@@ -108,13 +127,16 @@ export class Guard {
 
   /**
    * Starts the turn, and appends the reminder and the task note to the prompt
-   * text. The plugin's own follow-up prompt (strict mode) keeps the running
+   * text. The title and then the prompt text can name the track of the session
+   * first. The plugin's own follow-up prompt (strict mode) keeps the running
    * turn and its count, so the next idle sees the same problems.
    */
   async onPrompt(event: PromptEvent): Promise<void> {
     if (isFollowUp(event.prompt.text)) return
     const snapshot = await this.refresh()
     const session = this.session(event.sessionID)
+    await this.noticeTitle(session, snapshot)
+    this.notice(session, event.prompt.text, snapshot)
     session.turn = snapshot.hasMeasure ? startTurn(snapshot, await gitStatus(this.root)) : null
     const reminder = session.reminder
     session.reminder = null
@@ -147,7 +169,7 @@ export class Guard {
   /** Adds the task note to the compaction request, and sends it again after the compaction. */
   async onCompaction(event: CompactionEvent): Promise<void> {
     const snapshot = await this.current()
-    const note = taskNote(snapshot, this.mode)
+    const note = sessionNote(snapshot, this.session(event.sessionID).track, this.mode)
     if (note !== null) event.system.push({ type: 'text', text: note })
     this.session(event.sessionID).notedKey = null
   }
@@ -182,7 +204,10 @@ export class Guard {
     if (notes.length > 0) this.callNotes.set(event.id, notes)
   }
 
-  /** After a tool call: the notes the before hook earned, and the task note when the call could change the plan. */
+  /**
+   * After a tool call: the notes the before hook earned, and the task note when
+   * the call could change the plan or a written path names a new track.
+   */
   async onToolAfter(event: ToolAfterEvent): Promise<void> {
     const notes = this.callNotes.get(event.id) ?? []
     this.callNotes.delete(event.id)
@@ -194,8 +219,9 @@ export class Guard {
     if (result === null) return
     if (failed) notes.length = 0
     else if (commitDue) notes.push(commitReminder(commitShaOf(resultText(result))))
+    const moved = !failed && (await this.noticePaths(event.sessionID, paths))
     const touchesPlan = isShellTool(event.tool) || paths.some(path => isInside(joinPath(this.root, 'measure'), path))
-    if (touchesPlan) {
+    if (touchesPlan || moved) {
       const note = await this.pendingNote(event.sessionID, await this.refresh())
       if (note !== null) notes.push(note)
     }
@@ -245,12 +271,38 @@ export class Guard {
     return trackCloseDecision(context, closing)
   }
 
-  /** The task note when the track or the task changed since the last note of the session; null otherwise. */
-  async pendingNote(sessionID: string, snapshot: Snapshot): Promise<string | null> {
-    const key = noteKey(snapshot)
+  /** Sets the track of the session when the clue names one `[~]` track; true when the track changed. */
+  private notice(session: SessionState, clue: string, snapshot: SessionSnapshot): boolean {
+    const id = namedTrack(clue, snapshot.tracks)
+    if (id === null || id === session.track) return false
+    session.track = id
+    return true
+  }
+
+  /** The title clue: only while the session has no track, and at most TITLE_WAIT_MS. */
+  private async noticeTitle(session: SessionState, snapshot: SessionSnapshot): Promise<void> {
+    const { titleOf } = this
+    if (titleOf === undefined || session.track !== null || !snapshot.hasMeasure) return
+    const title = await within(Promise.resolve().then(() => titleOf(session.sessionID)), TITLE_WAIT_MS, null)
+    if (title !== null) this.notice(session, title, snapshot)
+  }
+
+  /** The path clues of a completed call, relative to the root; true when the track changed. */
+  private async noticePaths(sessionID: string, paths: readonly string[]): Promise<boolean> {
+    if (paths.length === 0) return false
+    const snapshot = await this.current()
     const session = this.session(sessionID)
+    let moved = false
+    for (const path of paths) moved = this.notice(session, relative(snapshot, path), snapshot) || moved
+    return moved
+  }
+
+  /** The task note of the session when its track or task changed since its last note; null otherwise. */
+  async pendingNote(sessionID: string, snapshot: SessionSnapshot): Promise<string | null> {
+    const session = this.session(sessionID)
+    const key = sessionNoteKey(snapshot, session.track)
     if (key === null || session.notedKey === key) return null
     session.notedKey = key
-    return taskNote(snapshot, this.mode)
+    return sessionNote(snapshot, session.track, this.mode)
   }
 }

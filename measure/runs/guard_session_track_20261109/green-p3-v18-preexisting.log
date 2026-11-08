@@ -1,0 +1,8 @@
+Clean copy of HEAD 8882405 (git archive, before the Task 3.1 change): bun test tests/allow-adversarial.test.ts
+error: expect(received).toEqual(expected)
+- Expected  - 6
++ Received  + 1
+(fail) loader with a hostile file > V18 a CR-only file loads one folder and opens no real path [10.34ms]
+ 18 pass
+ 1 fail
+The V6 and V7 cases of 6d2fdcf (dsh_measure_allow_parse_20261109) have the new control-character rule; V18 keeps the old expectation.
