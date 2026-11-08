@@ -26,6 +26,7 @@ columns, at most 80 characters), a mixed line, and the combining-mark case.
   `max` characters either.
 - **FR-2 (ASCII unchanged).** For text whose code points are all width 1, the result is
   identical to the old character-based contract (the pinned tests stay green).
+- **FR-2b (chips).** The secondary band chips (`Guards:`, `Mode:`, `Goal:`) get a shared chip style: `whiteSpace: nowrap`, `overflow: hidden`, `textOverflow: ellipsis`, `flexShrink: 0`, and a bounded `maxWidth` (33%, the goal chip 40%), so on a narrow viewport a chip ellipsizes instead of clipping and the primary line keeps its share. A render test pins the style on every chip and the goal bound.
 - **FR-3 (tests).** `client-state.test.js` adds: an 80-wide-character line (160 columns)
   passes unchanged; a 100-wide-character line compacts to at most 80 characters with `…`;
   a mixed ASCII/CJK line compacts at the column boundary; a combining-mark line is not

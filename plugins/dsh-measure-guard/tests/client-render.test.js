@@ -362,6 +362,25 @@ test('the band renders the host line, full text, guards, mode, goal, setup butto
   assert.equal(title.props.title, HOST_VIEW.bandFull)
 })
 
+test('the band chips never wrap or shrink, and the goal chip is bounded', async () => {
+  const harness = makeBundle()
+  const tree = await renderBand(harness, bandProps(), [HOST_VIEW])
+  const band = byGuardTag(tree, 'band')
+  const chips = []
+  walk(band, node => {
+    const style = node.tag === 'span' && node.props !== undefined ? node.props.style : undefined
+    if (style !== undefined && style.whiteSpace === 'nowrap' && style.flexShrink === 0) chips.push(style)
+  })
+  assert.ok(chips.length >= 3, `chips ${chips.length}`)
+  for (const style of chips) {
+    assert.equal(style.overflow, 'hidden')
+    assert.equal(style.textOverflow, 'ellipsis')
+    assert.ok(typeof style.maxWidth === 'string')
+  }
+  const goal = chips.find(style => style.maxWidth === '40%')
+  assert.ok(goal !== undefined, 'the goal chip is not bounded')
+})
+
 test('the band requests the state route for its session and polls every 2 s', async () => {
   const harness = makeBundle()
   await renderBand(harness, bandProps(), [HOST_VIEW])
