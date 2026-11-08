@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure count pins**
-  *Link: [./tracks/dsh_measure_count_pins_20261110/](./tracks/dsh_measure_count_pins_20261110/)*
-  *Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals*
+- (none)
 
 ---
 
