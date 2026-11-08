@@ -344,6 +344,10 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/dsh_measure_count_pins_20261110/](./archive/dsh_measure_count_pins_20261110/)*
   *Derive the anti-pattern class count and range from the catalog so the doc-drift count checks stop being frozen literals*
 
+- [x] **Track: DSH Measure commit wrapper closure**
+  *Link: [./archive/dsh_measure_commit_wrapper_20261110/](./archive/dsh_measure_commit_wrapper_20261110/)*
+  *Fail closed on a nested-shell script, a directly invoked script, and a sourced script in the commit guard's add scan*
+
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*
