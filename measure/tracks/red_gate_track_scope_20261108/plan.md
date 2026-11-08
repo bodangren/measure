@@ -27,9 +27,15 @@ Track: `red_gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
   - Evidence: on the Monorepo look Phase 2 Red range (`08e60c795..126189088`, read-only clone), the old checker exits 1 with 10 files of other tracks. The new checker exits 0 and skips 12 commits. Log: `measure/runs/red_gate_track_scope_20261108/green-p3-monorepo-look-range.log`.
 - [x] Task 3.2: Update `references/contracts.md`, `CHANGELOG.md`, and `measure/tech-debt.md` (FR-6). `78878d4`
 - [~] Task 3.3: Run `bash tests/spec_review_gate/run.sh` (AC-9).
+  - Run 1 (on `b09dd9c`): 12 suites, PASS=11, FAIL=1. `test_s2_adversarial.sh` G20 failed: `if listed.returncode != 0:` occurred two times, so the mutant did not apply once. Fix: `0306a7b`. Log: `measure/runs/red_gate_track_scope_20261108/green-p3-full-suite.log`.
 
 ## Phase 4: Review and distribution
 
-- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan.
+- [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `0306a7b`
+  - Review A on `b09dd9c` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 1 Major, 3 Nit. Result: `measure/runs/red_gate_track_scope_20261108/review-a-b09dd9c.json` (`6ac18db`).
+  - F1 [Major] (no test for the each-id rule or the archive folder): FIX in `041ba4f`. Two new cases. Each case fails for its mutant (`review-a-f1-mutants.log`).
+  - F2 [Nit] (`is_track_folder` reads the working tree, so a commit can add its own track folder): DECLINE. A check at the baseline makes a track that starts during the phase count as own, and the gate then fails on its commits again. The INFO line names the id, and the new folder shows in the range. Same limit as spec F1.
+  - F3 [Nit] (contracts omit the D5 failure rules): FIX in `0306a7b`.
+  - F4 [Nit] (AC-9 has no result yet): Task 3.3 run 2 closes it.
 - [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-10).
 - [ ] Task 4.3: Send the PM one line: the commit and the test name.
