@@ -205,7 +205,7 @@ test('a shell redirect with a [~] task is allowed', async () => {
 
 test('a shell write to the registry or a plan is denied with the after-text text', async () => {
   const deps = depsOf()
-  for (const command of ['echo hi > /repo/measure/tracks.md', "sed -i 's/a/b/' /repo/measure/tracks/x/plan.md"]) {
+  for (const command of ['echo hi > /repo/measure/tracks.md', "sed -i 's/a/b/' /repo/measure/tracks/x/plan.md", 'echo hi >| /repo/measure/tracks/x/plan.md']) {
     const decision = await prepareDecision(deps, shellExec(command))
     assert.match(decision.denial ?? '', /cannot read the after-text of a shell write/)
     assert.match(decision.denial ?? '', /Use edit or write/)

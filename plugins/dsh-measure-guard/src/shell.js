@@ -1,18 +1,20 @@
 // The bounded shell-write grammar (Story S3): the write targets a bash call can
 // name without a full parser. Recognised forms:
-//   - `> target` and `>> target` (fd labels and `>&` duplications excluded,
-//     and the stream devices /dev/null, /dev/stdout, /dev/stderr, /dev/fd/*);
+//   - `> target`, `>> target`, and the noclobber override `>| target` (fd labels
+//     and `>&` duplications excluded, and the stream devices /dev/null,
+//     /dev/stdout, /dev/stderr, /dev/fd/*);
 //   - `tee target...` (non-option arguments, `-` excluded);
+//   - the last argument of `cp`, `mv`, `install`, and `ln` (the destination);
 //   - `sed -i 'script' target...` (non-option arguments after the script; the
 //     script is recognised by a leading s/y/ or a delimiter, and `-e` scripts
 //     are skipped).
 // Everything outside those forms is allowed: the end-of-turn check remains the
 // backstop, and no shell content is reconstructed.
 const STREAM_DEVICES = new Set(['/dev/null', '/dev/stdout', '/dev/stderr'])
-const REDIRECT = /(?:^|[\s;|&()])(?:\d?>>?)\s*([^\s;|&<>()]+)/g
+const REDIRECT = /(?:^|[\s;|&()])(?:\d?(?:>>?|>\|))\s*([^\s;|&<>()]+)/g
 const TEE = /(?:^|[\s;|&()])tee\b([^;|&\n]*)/g
 const SED = /(?:^|[\s;|&()])sed\b([^;|&\n]*)/g
-const COPY = /(?:^|[\s;|&()])(?:cp|mv|install)\b([^;|&\n]*)/g
+const COPY = /(?:^|[\s;|&()])(?:cp|mv|install|ln)\b([^;|&\n]*)/g
 
 const clean = token => token.replace(/^['"]|['"]$/g, '')
 

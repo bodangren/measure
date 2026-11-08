@@ -300,6 +300,34 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/dsh_measure_commit_global_detect_20261110/](./archive/dsh_measure_commit_global_detect_20261110/)*
   *Recognize the documented git global options before commit and add so the strict commit guard cannot be skipped*
 
+- [x] **Track: DSH Measure shell redirect safety**
+  *Link: [./archive/dsh_measure_shell_redirect_safety_20261110/](./archive/dsh_measure_shell_redirect_safety_20261110/)*
+  *Recognize the noclobber redirect and the ln destination in the bounded shell-write grammar*
+
+- [x] **Track: DSH Measure contract clarity**
+  *Link: [./archive/dsh_measure_contract_clarity_20261110/](./archive/dsh_measure_contract_clarity_20261110/)*
+  *Write and pin the phase-acceptance HEAD exception, the new-track step-9 decisions, and the audit-result identity fields*
+
+- [x] **Track: DSH Measure gate robustness**
+  *Link: [./archive/dsh_measure_gate_robustness_20261110/](./archive/dsh_measure_gate_robustness_20261110/)*
+  *Make the live corpus the committed one and tolerate empty documents under pipefail in the A11 recipe*
+
+- [x] **Track: DSH Measure band render test**
+  *Link: [./archive/dsh_measure_band_render_test_20261110/](./archive/dsh_measure_band_render_test_20261110/)*
+  *Render the shipped client bundle in a dependency-free fake React and assert the band, panel, i18n, and apply registrations*
+
+- [x] **Track: DSH Measure A11 dotdot scope**
+  *Link: [./archive/dsh_measure_a11_dotdot_scope_20261110/](./archive/dsh_measure_a11_dotdot_scope_20261110/)*
+  *Keep the A11 doc-drift recipe inside the repository by skipping claims with a dotdot segment*
+
+- [x] **Track: DSH Measure route identity**
+  *Link: [./archive/dsh_measure_route_identity_20261110/](./archive/dsh_measure_route_identity_20261110/)*
+  *Attach the module identity headers to every state- and setup-route response, not only the 200 view*
+
+- [x] **Track: DSH Measure setup route transport**
+  *Link: [./archive/dsh_measure_setup_route_transport_20261110/](./archive/dsh_measure_setup_route_transport_20261110/)*
+  *Register the setup route as a handler so a POST reaches setupResponse on the Host, and prove it live*
+
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*

@@ -312,10 +312,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    1. Resolve the standard as `references/spec-review.md` in the base directory of this skill.
    2. When the harness has no tool that starts a subagent with a fresh context, tell the user: "This harness cannot start a fresh subagent, so the spec review did not run. I recorded this in spec-review.md." Write the not-run form to `measure/tracks/<track_id>/spec-review.md`, and add the line `- [Spec Review](./spec-review.md)` to the track `index.md`. The not-run form holds the line `Spec review: not run (no subagent tool)`. Then go to step 10, and do not wait. Never run the review in this context.
    3. Spawn one fresh subagent. Give the subagent the absolute paths of the standard, `spec.md`, and `plan.md`. Give it the absolute paths of the resolved Product Definition, Tech Stack, and Workflow. Give the subagent no conversation history, no answers from the questioning phase, and no summary of your own. Give it no secrets, credentials, tokens, or environment values.
-   4. Check the returned text for a secret value (a key, a token, a password). When one occurs, replace the value with its file and line. Write the returned text without other changes below the header lines of the Report Layout in `measure/tracks/<track_id>/spec-review.md`. The reviewer writes only the three `###` subsections of one round. The author (the main agent) writes the other lines. Set `Author model:` to the model id that the harness reports for this session, or `unknown`. Set `Reviewer:` to the subagent type and the model id that it was given, or `unknown`. Write `Date:`. Add the line `- [Spec Review](./spec-review.md)` to the track `index.md`.
+   4. Check the returned text for a secret value (a key, a token, a password). When one occurs, replace the value with its file and line; when the location is unknown, write `secret redacted (location unknown)`. Write the returned text without other changes below the header lines of the Report Layout in `measure/tracks/<track_id>/spec-review.md`. The reviewer writes only the three `###` subsections of one round. The author (the main agent) writes the other lines. Set `Author model:` to the model id that the harness reports for this session, or `unknown`. Set `Reviewer:` to the subagent type and the model id that it was given, or `unknown`. Write `Date:`. Add the line `- [Spec Review](./spec-review.md)` to the track `index.md`.
    5. Show the user the two paraphrase sections and each Blocker and Major finding. Ask the user to compare the paraphrase with the intent and to pick the findings to fix.
       - Header: `Spec review findings`
-      - Question: "Which findings should I fix?"
+      - Question: "Which findings should I fix? Name each finding by its id, for example F1 or F3."
       - Options:
         - **Fix the selected findings** — Apply the user's picks to `spec.md` and `plan.md`.
         - **Fix none** — Apply no fix.
@@ -325,7 +325,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    7. When `spec.md` or `plan.md` changed, or when a finding has a `CONTEST` disposition, run one second round with a new fresh subagent, even when neither file changed. Give it the same paths and the Round 1 findings with the author responses. Give it each CONTEST item with its evidence, and give it each ESCALATE item. The reviewer withdraws or keeps each CONTEST item. The author (the main agent) writes the `## Round 2` heading. Before you append the Round 2 text, check it for a secret value (a key, a token, a password), as in sub-step 4. When one occurs, replace the value with its file and line. Append the returned sections under that heading, and show the result to the user.
    8. There is at most one re-review. Show the user each ESCALATE item and each CONTEST item that the reviewer kept. Ask the user to decide each item.
       - Header: `Spec review dispositions`
-      - Question: "Should I fix each item, or accept it as a risk?"
+      - Question: "Should I fix each item, or accept it as a risk? Name each item by its id."
       - Options:
         - **Fix the selected items** — Apply the user's picks to `spec.md` and `plan.md`.
         - **Accept the selected items as risks** — Record the items under `## Accepted Risks`.
@@ -333,10 +333,10 @@ Validate every tool call. If any fails, halt immediately and inform the user.
       Wait for the user's response.
       Ask the user to approve the commit or to stop.
       - Header: `Spec review commit`
-      - Question: "Do you approve the commit?"
+      - Question: "Do you approve the commit? Approving also writes the remaining findings under `## Accepted Risks` and finalises the report."
       - Options:
         - **Approve the commit** — Continue to step 10.
-        - **Stop** — End the workflow without a commit. The track files stay on disk uncommitted, and you tell the user so.
+        - **Stop** — End the workflow without a commit. The track files stay on disk uncommitted, and you tell the user so. To resume later, re-run this step (the review text and the pending report lines are already on disk), then commit after the user approves.
         - Type your own answer
       Wait for the user's response. Step 10 runs only after the user approves the commit.
       The author (the main agent) writes each remaining Blocker and Major finding under `## Accepted Risks` of the report. This happens only after the user approves the commit. Until then, the remaining findings stay in the round sections.

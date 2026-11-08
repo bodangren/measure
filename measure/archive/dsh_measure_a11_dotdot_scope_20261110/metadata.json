@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_a11_dotdot_scope_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T12:30:00Z",
+  "updated_at": "2026-11-10T12:50:00Z",
+  "description": "Keep the A11 doc-drift recipe inside the repository by skipping claims with a dotdot segment",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

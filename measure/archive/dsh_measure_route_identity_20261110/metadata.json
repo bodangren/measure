@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_route_identity_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T13:00:00Z",
+  "updated_at": "2026-11-10T13:20:00Z",
+  "description": "Attach the module identity headers to every state- and setup-route response, not only the 200 view",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

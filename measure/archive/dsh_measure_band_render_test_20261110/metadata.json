@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_band_render_test_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T11:50:00Z",
+  "updated_at": "2026-11-10T12:20:00Z",
+  "description": "Render the shipped client bundle in a dependency-free fake React and assert the band, panel, i18n, and apply registrations",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

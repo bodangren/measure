@@ -1,7 +1,8 @@
 // Story S3: the bounded shell-write grammar. The recognized forms are `>` and
 // `>>` redirection, `tee` arguments, `sed -i` file arguments, and the
-// destination of `cp`/`mv`/`install`; stream devices, fd duplications, options,
-// sed scripts, and `-t` destinations are not targets.
+// destination of `cp`/`mv`/`install`/`ln`; the noclobber override `>|` redirects
+// like `>`; stream devices, fd duplications, options, sed scripts, and `-t`
+// destinations are not targets.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -12,6 +13,14 @@ test('redirection targets are extracted', () => {
   assert.deepEqual(shellWritePaths('echo hi >> logs/out.txt'), ['logs/out.txt'])
   assert.deepEqual(shellWritePaths('make 1>build.log 2>errors.log'), ['build.log', 'errors.log'])
   assert.deepEqual(shellWritePaths('cat x > /tmp/a > /tmp/b'), ['/tmp/a', '/tmp/b'])
+})
+
+test('the noclobber override >| is a redirection target', () => {
+  assert.deepEqual(shellWritePaths('echo hi >| out.txt'), ['out.txt'])
+  assert.deepEqual(shellWritePaths('echo hi >|out.txt'), ['out.txt'])
+  assert.deepEqual(shellWritePaths('echo hi >| measure/tracks.md'), ['measure/tracks.md'])
+  assert.deepEqual(shellWritePaths('echo hi 2>| err.log'), ['err.log'])
+  assert.deepEqual(shellWritePaths('echo hi >| /dev/null'), [])
 })
 
 test('stream devices, fd duplications, and labels are not targets', () => {
@@ -53,6 +62,12 @@ test('cp, mv, and install destinations are extracted', () => {
   assert.deepEqual(shellWritePaths('mv old.md new.md'), ['new.md'])
   assert.deepEqual(shellWritePaths('install -m 644 /tmp/x measure/tracks.md'), ['measure/tracks.md'])
   assert.deepEqual(shellWritePaths('cp a.txt b.txt c.txt'), ['c.txt'])
+})
+
+test('ln destinations are extracted', () => {
+  assert.deepEqual(shellWritePaths('ln -s target plan.md'), ['plan.md'])
+  assert.deepEqual(shellWritePaths('ln -sf /tmp/x measure/tracks/a/plan.md'), ['measure/tracks/a/plan.md'])
+  assert.deepEqual(shellWritePaths('ln -t /tmp a b'), [])
 })
 
 test('cp and mv option arguments and -t destinations are not targets', () => {

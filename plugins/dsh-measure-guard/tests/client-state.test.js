@@ -7,7 +7,7 @@ import assert from 'node:assert/strict'
 
 import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { bandLine, parseAllowList, parsePlan, parseTracks, statusLines } from '../src/core/parse.ts'
-import { BAND_MAX, clientStateResponse, clientView, compactBand, registerClientState } from '../src/client-state.js'
+import { BAND_MAX, SETUP_MAX_BODY, clientStateResponse, clientView, compactBand, registerClientState, setupHandler, setupResponse } from '../src/client-state.js'
 
 const tracks = parseTracks(TRACKS)
 
@@ -209,7 +209,9 @@ test('registerClientState registers the exact state route and returns the dispos
   assert.equal(Object.hasOwn(route, 'handler'), false)
   assert.equal(setup.kind, 'exact')
   assert.equal(setup.path, '/measure-guard/setup')
-  assert.equal(typeof setup.resource, 'function')
+  // A resource answers only GET/HEAD on this Host, so the setup route is a handler.
+  assert.equal(typeof setup.handler, 'function')
+  assert.equal(Object.hasOwn(setup, 'resource'), false)
 
   const response = await route.resource(requestOf('?sessionId=session-1'))
   assert.equal(response.status, 200)
@@ -257,6 +259,119 @@ test('clientStateResponse omits the digest header when the entry has none', asyn
 test('clientStateResponse omits the module header when the entry passes no moduleUrl', async () => {
   const response = await clientStateResponse(depsOf(), requestOf('?sessionId=session-1'))
   assert.equal(response.headers.get('x-measure-guard-module'), null)
+})
+
+test('the state route carries the identity on its error responses too', async () => {
+  const identity = { moduleUrl: 'file:///opt/dsh/plugins/dsh-measure-guard/index.js', digest: 'sha256:abc123' }
+  const notFound = await clientStateResponse(depsOf(identity), requestOf('?sessionId=nobody'))
+  assert.equal(notFound.status, 404)
+  assert.equal(notFound.headers.get('x-measure-guard-module'), identity.moduleUrl)
+  assert.equal(notFound.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  assert.equal(await notFound.text(), 'not found')
+  const failed = await clientStateResponse(
+    depsOf({
+      ...identity,
+      snapshots: {
+        get: async () => {
+          throw new Error('boom')
+        },
+      },
+    }),
+    requestOf('?sessionId=session-1'),
+  )
+  assert.equal(failed.status, 500)
+  assert.equal(failed.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  assert.deepEqual(await failed.json(), { error: 'boom' })
+})
+
+test('the setup route carries the identity on every error response', async () => {
+  const identity = { moduleUrl: 'file:///opt/x/index.js', digest: 'sha256:abc123' }
+  const deps = depsOf(identity)
+  const request = (method, body) =>
+    new Request('http://localhost/measure-guard/setup', {
+      method,
+      headers: { 'content-type': 'application/json' },
+      ...(body === undefined ? {} : { body }),
+    })
+  const method = await setupResponse(deps, request('GET'))
+  assert.equal(method.status, 405)
+  assert.equal(method.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const malformed = await setupResponse(deps, request('POST', 'not json'))
+  assert.equal(malformed.status, 400)
+  assert.equal(malformed.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const invalid = await setupResponse(deps, request('POST', JSON.stringify({ sessionId: 'session-1', choice: 'nope' })))
+  assert.equal(invalid.status, 400)
+  assert.equal(invalid.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+  const unknown = await setupResponse(deps, request('POST', JSON.stringify({ sessionId: 'nobody', choice: 'off' })))
+  assert.equal(unknown.status, 404)
+  assert.equal(unknown.headers.get('x-measure-guard-digest'), 'sha256:abc123')
+})
+
+/** A node:http-shaped request for the setup handler tests. */
+const handlerRequest = (method, body = '') => ({
+  method,
+  headers: { 'content-type': 'application/json' },
+  async *[Symbol.asyncIterator]() {
+    if (body !== '') yield Buffer.from(body)
+  },
+})
+
+/** A node:http-shaped response that records what the handler writes. */
+const handlerResponse = () => {
+  const result = { statusCode: 0, headers: {}, body: '' }
+  const response = {
+    result,
+    setHeader(name, value) {
+      result.headers[name.toLowerCase()] = value
+    },
+    end(text) {
+      result.body = text
+    },
+  }
+  Object.defineProperty(response, 'statusCode', {
+    get: () => result.statusCode,
+    set: value => {
+      result.statusCode = value
+    },
+  })
+  return response
+}
+
+test('the setup handler records a POST answer and keeps the identity', async () => {
+  const session = { problems: [], setupChoice: null }
+  const deps = depsOf({
+    moduleUrl: 'file:///opt/x/index.js',
+    digest: 'sha256:abc123',
+    state: { bypass: { get: async () => null }, agents: { sessionOf: () => session } },
+  })
+  const handler = setupHandler(deps)
+  const response = handlerResponse()
+  await handler(handlerRequest('POST', JSON.stringify({ sessionId: 'session-1', choice: 'off' })), response)
+  assert.equal(response.result.statusCode, 200)
+  assert.equal(response.result.headers['x-measure-guard-digest'], 'sha256:abc123')
+  assert.deepEqual(JSON.parse(response.result.body), { choice: 'off' })
+  assert.equal(session.setupChoice, 'off')
+})
+
+test('the setup handler answers every error status with the identity and never throws', async () => {
+  const deps = depsOf({ digest: 'sha256:abc123' })
+  const handler = setupHandler(deps)
+  const call = async (method, body) => {
+    const response = handlerResponse()
+    await handler(handlerRequest(method, body), response)
+    return response.result
+  }
+  const get = await call('GET')
+  assert.equal(get.statusCode, 405)
+  assert.equal(get.headers['x-measure-guard-digest'], 'sha256:abc123')
+  const malformed = await call('POST', 'not json')
+  assert.equal(malformed.statusCode, 400)
+  const unknown = await call('POST', JSON.stringify({ sessionId: 'nobody', choice: 'off' }))
+  assert.equal(unknown.statusCode, 404)
+  assert.equal(unknown.headers['x-measure-guard-digest'], 'sha256:abc123')
+  const oversized = await call('POST', 'x'.repeat(SETUP_MAX_BODY + 1))
+  assert.equal(oversized.statusCode, 413)
+  assert.equal(oversized.headers['x-measure-guard-digest'], 'sha256:abc123')
 })
 
 // ---- the compact band (Story S1 of the band track) ------------------------

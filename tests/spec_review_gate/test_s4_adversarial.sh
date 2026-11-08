@@ -196,8 +196,10 @@ CONTRACT = [
     ("dotdot_present", "a path with '..' to a file that exists gives no line",
      lambda: make_case(b"`../../present.txt`\n", setup=lambda c: (c.parent.parent / "present.txt").write_bytes(b"x")),
      0, []),
-    ("dotdot_absent", "a path with '..' to a file that does not exist gives one line",
-     lambda: make_case(b"`../absent_zz.txt`\n"), 0, [f"{P}: DRIFT candidate: ../absent_zz.txt does not exist"]),
+    ("dotdot_outside", "a '..' claim that leaves the repository is skipped (never read outside)",
+     lambda: make_case(b"`../absent_zz.txt`\n"), 0, []),
+    ("dotdot_inside", "a '..' claim that resolves inside the repository is also skipped (conservative rule)",
+     lambda: make_case(b"`src/../src/missing.txt`\n"), 0, []),
     ("no_product", "a missing product.md gives exit 0 and exactly one line",
      lambda: make_case(None), 0, [f"{P}: {NODOC}"]),
     ("no_tech", "a missing tech-stack.md gives exit 0 and exactly one line",
@@ -330,6 +332,13 @@ for label, factory, opts in REPORT:
     print(f"  report [{label}]: rc={rc} {secs:.2f}s stdout={out.splitlines()!r} stderr={err.strip()[:200]!r}")
     record(f"G3 report: {label}: exit 0 or 1, no hang", rc in (0, 1), f"rc={rc}")
     record(f"G3 report: {label}: no file created", not new, ", ".join(new[:5]))
+
+# The recipe's per-document pipeline ends with `|| true` (Group (b)): an empty document
+# has no claims, so it must exit 0 even under `bash -o pipefail`.
+empty_case = make_case(b"", tech=b"")
+rc, out, err, _s = run_recipe(RECIPE_FILE, empty_case, ("-o", "pipefail"), timeout=5)
+record("G3 report: bash -o pipefail: an empty document exits 0", rc == 0 and out == "" and err == "",
+       f"rc={rc} stdout={out!r} stderr={err!r}")
 
 # --- G4 safety ------------------------------------------------------------------------------
 def git_status():
