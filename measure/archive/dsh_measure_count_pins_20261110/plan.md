@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: flip the Group (b) tech-debt row to Resolved, add the `CHANGELOG.md` entry; re-sync the installed skill copies, record the live check, run the gates again `19c3bf7`
-- [~] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_count_pins_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_count_pins_20261110` and record the manifest-only FAIL `9852571`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
