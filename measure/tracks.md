@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure route identity**
-  *Link: [./tracks/dsh_measure_route_identity_20261110/](./tracks/dsh_measure_route_identity_20261110/)*
-  *Attach the module identity headers to every state- and setup-route response, not only the 200 view*
+- (none)
 
 ---
 
