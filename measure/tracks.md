@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH Measure gate timing**
+  *Link: [./tracks/dsh_measure_gate_timing_20261110/](./tracks/dsh_measure_gate_timing_20261110/)*
+  *Make the adversarial-suite wall-clock budgets tolerant of a loaded machine while still catching algorithmic blowups*
 
 ---
 
