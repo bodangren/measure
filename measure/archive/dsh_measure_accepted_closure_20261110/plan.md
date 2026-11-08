@@ -11,8 +11,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.2: run the node suite, both parity gates, srg 12/12, and CLI 14/14 `f410697`
 - [x] Task: Measure - User Manual Verification 'Phase 1: The two pins' (Protocol in workflow.md) `e42c45b`
 
-## Phase 2: Records and closeout
+## Phase 2: Records and closeout [checkpoint: 6df9920]
 
 - [x] Task 2.1: resolve the five accepted rows with their rationale, add the `CHANGELOG.md` entry; record the live check, run the gates again `5fee09e`
 - [x] Task 2.2: `metadata.json`, archive the track, update the tracks registry; run `closeout --track dsh_measure_accepted_closure_20261110` and record the manifest-only FAIL `7850933`
-- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md) `6df9920`
