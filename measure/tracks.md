@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure TDD names and fixture paths**
-  *Link: [./tracks/dsh_measure_tdd_names_fixture_20261110/](./tracks/dsh_measure_tdd_names_fixture_20261110/)*
-  *Cover two more test-file conventions and test commands, and point the real-data fixture generator at the archived plans*
+- (none)
 
 ---
 
