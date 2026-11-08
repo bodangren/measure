@@ -39,6 +39,11 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 
 ## Phase 4: Review and distribution
 
-- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan.
+- [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `54b4280`
+  - Review A on `5734bd2` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 0 Major, 3 Nit. Result: `measure/runs/gate_track_scope_20261108/review-a-5734bd2.json` (`4a50bd4`). The reviewer reached its step limit before the file write, so the orchestrator wrote the JSON of its final answer with no change. `audit-result` passes.
+  - F1 [Nit] (no case stages a change): FIX in `54b4280`. New case `test_ux_review_staged_change_counts`. It kills the mutant that drops the staged union (`review-a-f1-mutant.log`).
+  - F2 [Nit] (contracts omit the Jr Green fallback when `git log` fails): FIX in `54b4280`.
+  - F3 [Nit] (the changelog INFO sentence is not exact on a tree-diff failure): FIX in `54b4280`.
+  - The review ran before Task 3.4, so one full-suite run covers the fixes.
 - [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-22).
 - [ ] Task 4.3: Send the PM one line: the commit, the test name, and the install result.
