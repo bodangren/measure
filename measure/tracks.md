@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH Measure installer atomicity (closing)**
-  *Link: [./archive/dsh_measure_installer_atomic_20261110/](./archive/dsh_measure_installer_atomic_20261110/)*
-  *Temporary closing entry; the final commit records `- (none)`*
+- (none)
 
 ---
 
@@ -357,3 +355,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure doc contract**
   *Link: [./archive/dsh_measure_doc_contract_20261110/](./archive/dsh_measure_doc_contract_20261110/)*
   *Copy a project's metadata keys in new-track and lint inline code spans in the guide and plugin READMEs*
+
+- [x] **Track: DSH Measure installer atomicity**
+  *Link: [./archive/dsh_measure_installer_atomic_20261110/](./archive/dsh_measure_installer_atomic_20261110/)*
+  *Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path*
