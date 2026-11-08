@@ -1,0 +1,54 @@
+# Spec review log: red_gate_track_scope_20261108
+
+- Reviewer model: DeepSeek V4.1 Flash 1017 (deepseek/deepseek-flash), not the Claude family of the author.
+- Phase: track setup. Round: 1.
+- Baseline SHA: 4cc7406923feb155313cc37a2ee686c3917d118c. HEAD at role start: the same value. The audited head equals HEAD.
+- Result file: measure/runs/red_gate_track_scope_20261108/spec-review-4cc7406.json
+- Standard: ~/.agents/skills/measure/references/spec-review.md (read).
+- Result shape: skills/measure-orchestrator/references/contracts.md, section "## Spec Review JSON".
+
+## Paraphrase
+
+What this track proposes: the track scopes the mid-red role gate to the commits of the track under check. The checker reads the track id from the subject or from a body line. A commit is a commit of another track only when all its ids name real track folders and none equals `--track`. The gate reads only the files of the track commits, prints each skipped commit, and fails a range with no commit of the track. The change lands on main and installs to `~/.agents/skills/measure-orchestrator`.
+
+How the current system works: the mid-red gate runs four checks. HEAD must advance past the baseline. The phase must have an in-progress task. No committed file outside `measure/` may fail the test patterns. The Red test command must fail. Check three reads the tree diff of `baseline..HEAD` and adds every path each commit in the range touched. A production commit of a concurrent track in the same range fails the gate.
+
+## Checks that I ran
+
+1. Current-system claims. Verified in `skills/measure-orchestrator/scripts/measure_interphase_checks.py`. `cmd_role_gate` lines 745-757 run the four checks. `non_test_committed_files` (line 199) reads `committed_files` (line 182), which unions the tree diff with `history_files` (line 147). No claim is wrong.
+2. Root problem. I read the Monorepo history. The form `test(storytime): ... (track_id: storytime_look_20261107)` holds. `git log -25 | grep -v track_id` gives no line, so the recent concurrent commits carry the tag. The folders `storytime_look_20261107`, `per_app_cicd_20261107`, and `storytime_at_home_release_20261106` exist in `measure/tracks`. D3 rule 3 therefore matches the real data. The scope rule fixes the reported failure.
+3. D1 to D9 and AC-1 to AC-10 against the code. No Blocker. Findings F1 to F9.
+4. Merge behaviour. `history_files` passes no `--cc`, so a merge commit gives no path today. D5 adds `--cc` and `--root`, which is the correct direction for AC-7. AC-7 does not separate `--cc` from a first-parent diff (F2).
+5. Distribution. `bin/install-targets.tsv` line 6 names `~/.agents/skills/measure-orchestrator`. The installer defaults to `--ref main` and supports `--check`. D9 and AC-10 match the tools.
+6. Test style. `tests/spec_review_gate/run.sh` discovers each `test_*.py` file. `test_checker.py` shows the fixture, including `--phase` and a plan with a `[~]` task. The AC section omits that precondition (F5).
+
+## Findings
+
+- F1 [Major] spec.md Known limits: A role can tag its own production commit with another real track id and the gate passes. D7 only prints the skipped commits and no rule or test bounds this. Rationale: the mechanical gate becomes self-attestable, and the current gate has no such route.
+- F2 [Major] spec.md D5 and AC-7: AC-7 passes for a `--cc` diff and also for a first-parent (`-m`) diff, so the test does not pin the D5 rule. Rationale: a first-parent diff lists the files of a merged side branch, so a merge of another track commits fails the gate again and no test shows it.
+- F3 [Major] spec.md FR-6: FR-6 says to state the scope rule in contracts.md, but it does not say to amend the Baseline bullet that claims a gate reads the tree diff unioned with every commit path. The mid-red gate breaks that claim in the scoped mode. Rationale: the contract would state a false rule next to the new rule.
+- F4 [Major] plan.md Phase 4 Task 4.1: The task says to fix each Blocker or record the reason to decline it. Rationale: contracts.md and the spec review standard forbid DECLINE for a Blocker finding, so the plan permits a declined Blocker.
+- F5 [Major] spec.md AC-1 to AC-8: The section names the fixture tracks and RED_TEST_COMMAND=false, but it does not name the `--phase` argument, the plan file, or the `[~]` task in that phase. Rationale: the mid-red gate fails when the phase is missing or has no `[~]` task, so AC-1 cannot exit 0 as written.
+- F6 [Nit] spec.md AC-3: The case names no observation, such as the exit code, the message, or the INFO line. Rationale: the implementer must invent the assertion, while AC-1, AC-2, and AC-4 name theirs.
+- F7 [Nit] spec.md D2: D2 fixes the grammar of `<id>` but not the spaces inside `(track_id: <id>)`. Rationale: each implementer chooses the tolerant or the strict form, and only the strict single-space form appears in the Monorepo history.
+- F8 [Nit] plan.md Rules for every phase: `scripts/jobs/slot wait` names no repository. The file exists only at /home/daniebo/Desktop/advantage-pr/scripts/jobs/slot. Rationale: the role must guess the root, while the line above gives an absolute path for heavy-run.sh.
+- F9 [Nit] spec.md D7: The line `- <12-character sha> <ids>` leaves the separator and the order of several ids open, and the spec does not say whether the INFO lines print on a failing gate. Rationale: output format only.
+
+## Result
+
+Status: pass. No Blocker. Retry recommendation: none.
+
+I edited no file outside `measure/runs/`. I ran no git command that changes the repo. I made no commit. My changed files are the two artifacts of this review; I did not commit them.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: pass
+track: red_gate_track_scope_20261108
+phase: track setup
+commits: none
+tests_run: none (a read-only review; no test command ran)
+files_changed: measure/runs/red_gate_track_scope_20261108/spec-review-4cc7406.json, measure/runs/red_gate_track_scope_20261108/spec-review-4cc7406.log (untracked, not committed)
+plan_updates: none
+known_failures: none
+handoff: No Blocker. Fix F1 to F5 before Red if the user wants the scope rule bounded; F1 is an accepted trade-off unless the user adds a rule, F2 needs one more test case, F3 and F4 are document wording, F5 is a fixture precondition. F6 to F9 are optional.
+END_MEASURE_AGENT_RESULT
