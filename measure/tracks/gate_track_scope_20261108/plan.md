@@ -50,4 +50,5 @@ Track: `gate_track_scope_20261108`. Spec: [spec.md](./spec.md).
 - [x] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed checker with `main` (AC-22). `34648f4`
   - Evidence: the install from `main` (`34648f4`) exits 0 (`written=2`: the checker and `contracts.md`). `--check` prints "No differences: every target matches main (34648f4)." and exits 0. `cmp` shows that the installed checker and `contracts.md` equal `main`.
   - Evidence: the installed copy on the Monorepo replay (`bd5dc101d`, `--baseline 39d019003`) exits 0 and skips 2 commits of other tracks. Log: `measure/runs/gate_track_scope_20261108/green-p4-install.log`.
-- [ ] Task 4.3: Send the PM one line: the commit, the test name, and the install result.
+- [x] Task 4.3: Send the PM one line: the commit, the test name, and the install result. `34648f4`
+  - Line: fix `94db90d` (and `54b4280`), test `tests/spec_review_gate/test_gate_track_scope.py` (19 cases; the request case is `test_spec_review_mixed_range_passes`), installed from `main` `34648f4` (`--check` exit 0), not pushed.
