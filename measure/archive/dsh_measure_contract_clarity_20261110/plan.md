@@ -15,5 +15,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Records and closeout
 
 - [x] Task 2.1: flip the Group (d)/(f)/(g) tech-debt rows to Resolved with evidence, state the Group (b)/(e) remaining scope, add the `CHANGELOG.md` entry; install + reload the plugin, record the live check, run the gates again `f51a64e`
-- [~] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_contract_clarity_20261110` and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
+- [x] Task 2.2: `metadata.json`, archive the track, update `measure/tracks.md`; run `closeout --track dsh_measure_contract_clarity_20261110` and record the manifest-only FAIL `487f334`
+- [~] Task: Measure - User Manual Verification 'Phase 2: Records and closeout' (Protocol in workflow.md)
