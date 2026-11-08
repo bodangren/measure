@@ -231,11 +231,14 @@ for doc in measure/product.md measure/tech-stack.md; do
     if [ "$first" != "$p" ] && [ -f "$first" ] && [ -x "$first" ]; then
       continue
     fi
+    case "$p" in
+      ../*|*/../*|*/..) continue ;;
+    esac
     [ -e "$p" ] || echo "$doc: DRIFT candidate: $p does not exist"
   done || true
 done
 ```
-This recipe finds only path claims and missing documents. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
+This recipe finds only path claims and missing documents. A claim that contains a `..` segment is skipped, so the recipe never reads outside the repository. The candidates are reports, not confirmed drift: the audit confirms them. The doc drift detector of `measure-orchestrator-audit` also checks symbols, commands, fields, counts, and behavior.
 
 **Symptoms:** A document that agents read names a file, a field, a command, a count, or a behavior that the code no longer has. Example: `product.md` says "13 role definitions" after a 14th role file was added.
 
