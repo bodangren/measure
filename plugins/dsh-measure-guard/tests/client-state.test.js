@@ -390,6 +390,26 @@ test('compactBand caps a long line on a word boundary and keeps a short one', ()
   assert.ok(!compact.slice(0, -1).includes('  '))
 })
 
+test('compactBand caps by terminal columns, not characters', () => {
+  const wide = '字'.repeat(80) // exactly 160 columns
+  assert.equal(compactBand(wide), wide)
+
+  const over = '字'.repeat(100) // 200 columns, 100 characters
+  const compact = compactBand(over)
+  assert.ok(compact.endsWith('…'))
+  assert.equal([...compact].length, 80)
+  assert.equal(compact.slice(0, -1), '字'.repeat(79))
+
+  const mixed = `Task: ${'字'.repeat(90)} done`
+  const mixedCompact = compactBand(mixed)
+  assert.ok(mixedCompact.endsWith('…'))
+  assert.ok([...mixedCompact].length < 90)
+
+  // A zero-width (combining) run adds no columns: 240 characters stay under the cap.
+  const marks = `${'a'.repeat(40)}${'\u0301'.repeat(200)}`
+  assert.equal(compactBand(marks), marks)
+})
+
 test('a long task line keeps the band to one capped line and bandFull complete', () => {
   const longTask = `Task: ${'validate the very long release acceptance flow '.repeat(15)}done`
   const plan = parsePlan(`# Plan\n\n## Phase 1: Work\n\n- [~] ${longTask}\n`)
