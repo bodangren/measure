@@ -49,6 +49,7 @@ plugins/dsh-measure-guard/
 │   ├── end-of-turn.test.js   # the problems, the strict hold, the reminder
 │   ├── client-state.test.js  # the JSON route, the 404, the failure path
 │   ├── client-bundle.test.js # the client text, its id, its surfaces
+│   ├── client-render.test.js # the shipped bundle rendered: band, panel, i18n, apply
 │   ├── plugin.test.js        # the Host registrations of index.js
 │   └── install.sh            # the installer target contract (bash)
 └── README.md
