@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Guard phase start**
+  *Link: [./tracks/guard_phase_start_20261109/](./tracks/guard_phase_start_20261109/)*
+  *Remove the phase-start rule of the measure-guard closeout guard, so a task in a phase can start or close while an earlier phase has no checkpoint (PM request, 2026-11-09).*
 
 ---
 
