@@ -40,5 +40,9 @@ Track: `guard_phase_start_20261109`. Spec: [spec.md](./spec.md).
   - F2 [Nit] (the DSH `closeoutGuardFor` docstring names only the `[b]` note): FIX in `b71d38c`.
   - F3 [Nit] (the docstrings of the mod `closeout` and the DSH post-execute hook name only the `[b]` note): FIX in `b71d38c`.
   - After the fixes: DSH 352 pass, 0 fail, parity ok; OpenCode `closeout.test.ts` 7 pass, parity ok; mod 92 pass, 0 fail (`review-a-fix-suites.log`).
-- [~] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed guard with `main` (AC-7).
-- [ ] Task 4.3: Send the PM one status line: the commit, the test names, and the install result.
+- [x] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed guard with `main` (AC-7). `65963b9`
+  - Install step: `bin/install-measure-skill` from `main` `65963b9` exits 0 (`written=4`). `--check` prints "No differences: every target matches main (65963b9)." and exits 0. The installed `src/core/guards.ts` and `src/guard.ts` equal these files at the stamp commit `65963b9`, and they have no `phaseStartDecision`. The installed `references/dsh.md` equals `main`. Log: `measure/runs/guard_phase_start_20261109/green-p4-install.log`.
+  - OpenCode loaded the new plugin with no restart (`loading plugin` at 2026-11-09T03:36:18Z, 3 s after the install).
+  - Check of the installed code: bun imports the installed `src/guard.ts`. In a temporary git project with the Workbooks phases, the `[ ]` to `[~]` edit of Task 6.1 is allowed, and the tool output gets the phase-start note. No model call. Log: `green-p4-installed-check.log`.
+- [x] Task 4.3: Send the PM one status line: the commit, the test names, and the install result. `65963b9`
+  - Line: fix `1d36e19` (comments `b71d38c`), tests: the `phase start` cases of the OpenCode `closeout.test.ts` (AC-1 is the Workbooks case), the mod `closeout.test.ts`, and the DSH `closeout.test.js`; installed from `main` `65963b9` (`--check` exit 0); not pushed.

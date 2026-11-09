@@ -1,0 +1,12 @@
+The installed ~/.config/opencode/plugins/opencode-measure-guard/src/guard.ts (stamp 65963b9), imported with bun; temp git project /tmp/gps-installed-check/proj with Phase 4 [checkpoint], Phase 5 (no checkpoint, no task started), Phase 6 Task 6.1 [ ]. Edit: [ ] to [~] of Task 6.1, guard mode.
+onToolBefore: allowed
+tool output:
+done
+
+measure-guard: "Phase 6: Hand-offs" starts while the heading of "Phase 5: Print build" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "Phase 5: Print build" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.
+
+measure-guard (Mode: guard)
+Active track: Workbooks case (measure/tracks/wb_20261106/).
+No task is in progress.
+Next task: Task 5.1: Proof build. Mark it `[~]` in plan.md before you change files outside measure/.
+exit 0

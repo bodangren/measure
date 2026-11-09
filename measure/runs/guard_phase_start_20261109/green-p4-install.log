@@ -1,0 +1,13 @@
+main 65963b9
+installer exit 0
+2026-11-09T03:36:15Z ref=main commit=65963b9 written=4 removed=0 kept=0 exit=0
+No differences: every target matches main (65963b9).
+check exit 0
+stamp commit 65963b96431da834a3e5b1c980657a1f3fc004d2
+cmp: installed src/core/guards.ts equals src/core/guards.ts at the stamp commit
+cmp: installed src/guard.ts equals src/guard.ts at the stamp commit
+/home/daniebo/.config/opencode/plugins/opencode-measure-guard/src/core/guards.ts:0
+/home/daniebo/.config/opencode/plugins/opencode-measure-guard/src/guard.ts:0
+/home/daniebo/.config/opencode/plugins/opencode-measure-guard/src/core/guards.ts:1
+/home/daniebo/.config/opencode/plugins/opencode-measure-guard/src/guard.ts:2
+cmp: installed references/dsh.md equals main
