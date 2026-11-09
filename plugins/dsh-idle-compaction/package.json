@@ -1,0 +1,25 @@
+{
+  "name": "dsh-idle-compaction",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DeepSeek Harness Host plugin: compact a live session after an idle window, once per window, skipping it when nothing new was recorded since the last compaction",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./policy": "./src/policy.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=24.9.0",
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}
