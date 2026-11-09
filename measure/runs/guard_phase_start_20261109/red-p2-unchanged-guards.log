@@ -1,0 +1,232 @@
+HEAD 4a6d86e (guards unchanged; changed tests only)
+== OpenCode plugin: bun test tests/closeout.test.ts
+bun test v1.3.14 (0d9b296a)
+
+tests/closeout.test.ts:
+72 |     writeFileSync(planPath, plan)
+73 |     const guard = makeGuard(root)
+74 |     const line = plan.split('\n').find(l => l.startsWith('- [ ] Task 2.1:'))
+75 |     expect(line).toBeDefined()
+76 |     const start = before(planPath, line as string, (line as string).replace('[ ]', '[~]'))
+77 |     await expect(guard.onToolBefore(start)).resolves.toBeUndefined()
+                                                          ^
+error: 
+
+Expected promise that resolves
+Received promise that rejected: Promise { <rejected> }
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/closeout.test.ts:77:54)
+(fail) phase start > AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint [49.34ms]
+107 |     test(`AC-1: Task 6.1 starts while Phase 5 has no checkpoint (${mode} mode)`, async () => {
+108 |       const root = await withMeasure(await tempProject(), { plan: OVERLAP_PLAN })
+109 |       const guard = makeGuard(root, mode)
+110 |       const planPath = join(root, 'measure/tracks', TRACK, 'plan.md')
+111 |       const start = before(planPath, '- [ ] Task 6.1: Song audio', '- [~] Task 6.1: Song audio')
+112 |       await expect(guard.onToolBefore(start)).resolves.toBeUndefined()
+                                                             ^
+error: 
+
+Expected promise that resolves
+Received promise that rejected: Promise { <rejected> }
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/closeout.test.ts:112:56)
+(fail) phase start > AC-1: Task 6.1 starts while Phase 5 has no checkpoint (guard mode) [37.44ms]
+107 |     test(`AC-1: Task 6.1 starts while Phase 5 has no checkpoint (${mode} mode)`, async () => {
+108 |       const root = await withMeasure(await tempProject(), { plan: OVERLAP_PLAN })
+109 |       const guard = makeGuard(root, mode)
+110 |       const planPath = join(root, 'measure/tracks', TRACK, 'plan.md')
+111 |       const start = before(planPath, '- [ ] Task 6.1: Song audio', '- [~] Task 6.1: Song audio')
+112 |       await expect(guard.onToolBefore(start)).resolves.toBeUndefined()
+                                                             ^
+error: 
+
+Expected promise that resolves
+Received promise that rejected: Promise { <rejected> }
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/closeout.test.ts:112:56)
+(fail) phase start > AC-1: Task 6.1 starts while Phase 5 has no checkpoint (strict mode) [11.12ms]
+
+ 4 pass
+ 3 fail
+ 7 expect() calls
+Ran 7 tests across 1 file. [2.05s]
+exit 1
+== Claude Code mod: claude plugin test mods/measure-guard
+
+tests/allow.test.ts:
+(pass) allow list in the mod > M1 the tool hook allows the list and denies the near misses [1219.73ms]
+(pass) allow list in the mod > M2 /measure-status shows the list line [848.90ms]
+(pass) allow list in the mod > M3 a folder at measure/guard-allow gives no list and no crash [545.77ms]
+(pass) allow list in the mod > M4 the list survives a parseError [673.47ms]
+
+tests/band.test.ts:
+(pass) bandLine > shows the phase, the task, and the [b] count [12.87ms]
+(pass) bandLine > warns when 2 or more tracks have [~] [4.94ms]
+(pass) bandLine > shows the next task when no task has [~] [1.66ms]
+(pass) bandLine > says so when all tasks are closed [1.02ms]
+(pass) bandLine > shows a parse error and that the guards allow all calls [6.00ms]
+(pass) bandLine > shows no track in progress, and nothing without measure/ [1.53ms]
+(pass) the band shows the real plan and follows an edit of plan.md [1200.16ms]
+(pass) no band outside a Measure project [618.14ms]
+
+tests/closeout.test.ts:
+(pass) a track with all tasks closed can change to [x], and the agent gets the [b] list [734.95ms]
+(pass) a track with open tasks cannot change to [x], and the deny lists them [548.00ms]
+(pass) a [b] task with no owner keeps the track open [811.95ms]
+(pass) a Write of the whole tracks.md is checked too [555.65ms]
+(pass) advise mode lets the close pass [781.39ms]
+(fail) a task in phase N+1 can start before phase N has a checkpoint, with a note [468.09ms]
+  AssertionError: expect(received).toBeUndefined()
+  
+  Expected: undefined
+  Received: "measure-guard: \"Phase 2: B\" cannot start, because the heading of \"Phase 1: A\" has no [checkpoint: <sha>]. Run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for \"Phase 1: A\" first. If this block is wrong, the user can run /measure-off."
+(pass) a task in the first phase can start with no checkpoint [501.19ms]
+(pass) applyEdit and closedTracks > apply an Edit and a Write [9.87ms]
+(pass) applyEdit and closedTracks > find the tracks that change to [x] [11.23ms]
+
+tests/commands.test.ts:
+(pass) /measure-off lets every call pass for the session and shows it in the band [771.57ms]
+(pass) /measure-on turns the guards on again [402.48ms]
+(pass) /measure-off repo keeps the choice in the store [953.30ms]
+(pass) a new session in a repository turned off keeps the guards off [817.71ms]
+(pass) a new session after a session-only /measure-off has the guards on [536.40ms]
+(pass) /measure-on repo removes the choice from the store [284.59ms]
+(pass) /measure-status opens a pane with the tracks, the progress, and the [b] tasks [749.98ms]
+(pass) /measure-status opens the pane so that Escape closes it [660.35ms]
+(pass) /measure-status closes the pane when it is open [805.54ms]
+(pass) statusLines > lists the phases with closed counts and checkpoints, the [b] tasks, and the guards [3.47ms]
+
+tests/commit.test.ts:
+(pass) strict: a message not in the format is denied [703.44ms]
+(pass) strict: a commit of source files with no [~] task is denied [394.43ms]
+(pass) strict: a commit of measure/ files only passes with no [~] task [920.46ms]
+(pass) strict: git add in the same command counts the changed files [650.21ms]
+(pass) strict: a commit for a [~] task passes and reminds the agent of the note and the SHA [362.78ms]
+(pass) strict: a heredoc message not in the format is denied [741.90ms]
+(pass) strict: a message from a file passes with a note [597.23ms]
+(pass) guard mode has no commit guard [433.78ms]
+(pass) parseCommitCommand > reads the message forms and the flags [24.08ms]
+
+tests/context.test.ts:
+(pass) the rule section names the workflow and stays the same when the task changes [1085.26ms]
+(pass) no rule section and no note without a measure/ folder [904.85ms]
+(pass) the first prompt gets a note with the track, the task, and the mode [1128.62ms]
+(pass) the mode in the note follows the userConfig value [606.84ms]
+(pass) no second note while the task stays the same [1041.86ms]
+(pass) an edit that changes the task gets the new note in its result [915.42ms]
+(pass) an edit outside measure/ gets no note [777.01ms]
+(pass) a compaction sends the note again at the next prompt [732.56ms]
+
+tests/edit-guard.test.ts:
+(pass) an edit outside measure/ with a [~] task passes [595.69ms]
+(pass) an edit outside measure/ with no [~] task is denied with the next action [918.97ms]
+(pass) Write and NotebookEdit are guarded too [520.29ms]
+(pass) an edit with no track in progress is denied and asks for a track [741.50ms]
+(pass) an edit inside measure/ always passes [928.93ms]
+(pass) advise mode lets the edit pass [567.58ms]
+(pass) the guard follows the plan: marking a task [~] opens the edits [564.14ms]
+(pass) editDecision > allows a path outside the project root [13.20ms]
+(pass) editDecision > allows on a parse error and before the first read [4.13ms]
+
+tests/end-of-turn.test.ts:
+(pass) advise: a task marked [x] with no SHA shows in the band only [1050.39ms]
+(pass) guard: changes with no [~] task give a band line, a toast, and a reminder [910.65ms]
+(pass) files that were dirty before the turn, and changes in measure/, are not problems [784.29ms]
+(pass) strict: the turn stays open twice, then ends with a report [837.21ms]
+(pass) strict: a new prompt starts the block count again [716.00ms]
+(pass) a clean turn has no problem and no block [796.61ms]
+(pass) turn helpers > read porcelain lines and the paths that changed in the turn [10.51ms]
+(pass) turn helpers > list the [x] tasks with no SHA [4.73ms]
+
+tests/parse.test.ts:
+(pass) parseMode > is guard when unset or unknown [26.50ms]
+(pass) joinPath > resolves . and .. segments [8.12ms]
+(pass) parseTracks > reads numbered entries and a same-line link (the Mediarr registry) [16.90ms]
+(pass) parseTracks > reads both entry formats in the real tracks.md [16.76ms]
+(pass) parsePlan > counts only top-level lines under Phase headings in the real benchmarking plan [11.73ms]
+(pass) parsePlan > reads SHAs, checkpoints, and [b] owners in the edge plan [5.38ms]
+(pass) parsePlan > a [b] task is open until it has a deferred:<owner> field [5.16ms]
+(pass) selectActive > prefers the [~] track whose plan has a [~] task (real data) [5.17ms]
+(pass) selectActive > selects the second track when only its plan has a [~] task [8.76ms]
+(pass) selectActive > falls back to the first [~] track when no plan has a [~] task [0.85ms]
+(pass) selectActive > is null when no track has [~] [11.80ms]
+
+tests/setup.test.ts:
+(pass) the band asks the setup question with 2 buttons [603.17ms]
+(pass) before an answer, an edit is denied and the agent must ask the user [396.00ms]
+(pass) advise mode shows the question and denies nothing [786.42ms]
+(pass) [ Turn off for session ] lets the edits pass and hides the band [416.92ms]
+(pass) [ Set up Measure ] sends the setup prompt and lets the edits pass [663.11ms]
+(pass) outside a git repository the mod does nothing [465.03ms]
+
+tests/tdd.test.ts:
+(pass) strict: a source edit before the Red phase is denied [997.95ms]
+(pass) strict: a test file edit passes [646.82ms]
+(pass) strict: a test change alone, or a failed command that is no test, is not enough [447.63ms]
+(pass) strict: a test change and a failed test command open the source edits [407.08ms]
+(pass) strict: Markdown and JSON files pass [337.91ms]
+(pass) strict: the next task starts the Red phase again [338.95ms]
+(pass) guard mode has no TDD guard [134.82ms]
+(pass) name rules > test files [2.49ms]
+(pass) name rules > source files [2.97ms]
+(pass) name rules > test commands [2.05ms]
+
+ 91 pass
+ 1 fail
+Ran 92 tests across 11 files. [16.75s]
+exit 1
+== DSH plugin: node --test tests/closeout.test.js
+✔ closing a track with open tasks is denied and lists them (9.134255ms)
+✔ closing a track with a deferred [b] task is allowed with the [b] note (2.33908ms)
+✖ starting a task in phase N+1 without a checkpoint passes with a note (8.190809ms)
+✔ starting a task in phase N+1 with a checkpoint passes (0.84852ms)
+✔ a plan edit that starts no new phase passes (2.054971ms)
+✔ an unreadable or missing plan fails open on a track close (1.42057ms)
+✔ apply_patch, str_replace_editor, and shell calls fail open (1.248554ms)
+✔ a bypass, advise mode, and a parse error all fail open (1.085799ms)
+✔ the post-execute append adds the closeout note to the tool result content (1.365004ms)
+✔ the post-execute append leaves a call without a note, or a failure, untouched (1.157721ms)
+✔ prepareDecision carries the closeout note to the post-execute append (3.426681ms)
+✔ closing a track whose metadata actual_tasks disagrees is denied with both numbers (0.944715ms)
+✔ closing a track without metadata.json is denied (1.088272ms)
+✔ an apply_patch on a registry file is checked by the closeout guard when it is readable (3.261218ms)
+✔ an unreadable apply_patch hunk on a registry file still fails closed (1.738601ms)
+✔ a str_replace_editor on a plan is checked, and a valid replacement is allowed (5.851097ms)
+✔ advise mode allows the registry deny and the metadata closeout check (1.3745ms)
+✔ the same tools on other files keep the fail-open closeout behavior (2.16628ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 17
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 462.213509
+
+✖ failing tests:
+
+test at tests/closeout.test.js:109:1
+✖ starting a task in phase N+1 without a checkpoint passes with a note (8.190809ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   decision: {
+  +     deny: 'measure-guard: "Phase 2: Adapter" cannot start, because the heading of "Phase 1: Skeleton" has no [checkpoint: <sha>]. Run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for "Phase 1: Skeleton" first. If this block is wrong, the user can run /measure-off.'
+  +   },
+  +   note: null
+  -   decision: null,
+  -   note: 'measure-guard: "Phase 2: Adapter" starts while the heading of "Phase 1: Skeleton" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "Phase 1: Skeleton" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.'
+    }
+  
+      at TestContext.<anonymous> (file:///home/daniebo/Desktop/measure/plugins/dsh-measure-guard/tests/closeout.test.js:122:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { decision: { deny: 'measure-guard: "Phase 2: Adapter" cannot start, because the heading of "Phase 1: Skeleton" has no [checkpoint: <sha>]. Run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for "Phase 1: Skeleton" first. If this block is wrong, the user can run /measure-off.' }, note: null },
+    expected: { decision: null, note: 'measure-guard: "Phase 2: Adapter" starts while the heading of "Phase 1: Skeleton" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "Phase 1: Skeleton" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+exit 1

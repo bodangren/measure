@@ -30,6 +30,10 @@ const after = (event: ToolBeforeEvent, output = 'done'): CompletedEvent => ({
 
 const TRACK_LINE = '- [~] **Track: OpenCode plugin: measure-guard'
 
+/** The D2 note of guard_phase_start_20261109: phase `next` starts while phase `previous` has no checkpoint. */
+const phaseNote = (next: string, previous: string): string =>
+  `measure-guard: "${next}" starts while the heading of "${previous}" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "${previous}" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.`
+
 describe('track close', () => {
   test('a track with open tasks cannot change to [x]', async () => {
     const root = await withMeasure(await tempProject())
@@ -56,7 +60,7 @@ describe('track close', () => {
 })
 
 describe('phase start', () => {
-  test('a task of the next phase cannot start while the previous phase has no checkpoint', async () => {
+  test('AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint', async () => {
     const root = await withMeasure(await tempProject())
     const planPath = join(root, 'measure/tracks', TRACK, 'plan.md')
     // No checkpoints and no task started: starting Task 2.1 needs the Phase S1 checkpoint.
@@ -69,8 +73,48 @@ describe('phase start', () => {
     const guard = makeGuard(root)
     const line = plan.split('\n').find(l => l.startsWith('- [ ] Task 2.1:'))
     expect(line).toBeDefined()
-    await expect(guard.onToolBefore(before(planPath, line as string, (line as string).replace('[ ]', '[~]')))).rejects.toThrow(/checkpoint/)
+    const start = before(planPath, line as string, (line as string).replace('[ ]', '[~]'))
+    await expect(guard.onToolBefore(start)).resolves.toBeUndefined()
+    const started = after(start)
+    await guard.onToolAfter(started)
+    expect(String(started.result.output)).toContain(phaseNote('Phase S2: Project snapshot and plugin state', 'Phase S1: Package skeleton and shared core'))
+    const close = before(planPath, line as string, (line as string).replace('[ ]', '[x]'), 'call_2')
+    await expect(guard.onToolBefore(close)).resolves.toBeUndefined()
+    const closed = after(close)
+    await guard.onToolAfter(closed)
+    expect(String(closed.result.output)).not.toContain('measure-guard: "')
   })
+
+  // The PM case of 2026-11-09: Workbooks storytime_l2_unit2_20261106 starts Task 6.1 while Phase 5 has no checkpoint.
+  const OVERLAP_PLAN = [
+    '# Implementation Plan: Overlap',
+    '',
+    '## Phase 4: Unit scope [checkpoint: 1234567]',
+    '',
+    '- [x] Task 4.1: Unit scope `1234567`',
+    '',
+    '## Phase 5: Print build',
+    '',
+    '- [ ] Task 5.1: Proof build',
+    '',
+    '## Phase 6: Hand-offs',
+    '',
+    '- [ ] Task 6.1: Song audio',
+    '',
+  ].join('\n')
+
+  for (const mode of ['guard', 'strict'] as const) {
+    test(`AC-1: Task 6.1 starts while Phase 5 has no checkpoint (${mode} mode)`, async () => {
+      const root = await withMeasure(await tempProject(), { plan: OVERLAP_PLAN })
+      const guard = makeGuard(root, mode)
+      const planPath = join(root, 'measure/tracks', TRACK, 'plan.md')
+      const start = before(planPath, '- [ ] Task 6.1: Song audio', '- [~] Task 6.1: Song audio')
+      await expect(guard.onToolBefore(start)).resolves.toBeUndefined()
+      const started = after(start)
+      await guard.onToolAfter(started)
+      expect(String(started.result.output)).toContain(phaseNote('Phase 6: Hand-offs', 'Phase 5: Print build'))
+    })
+  }
 })
 
 describe('notes after a call', () => {

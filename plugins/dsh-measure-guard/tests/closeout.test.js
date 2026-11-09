@@ -106,7 +106,7 @@ test('closing a track with a deferred [b] task is allowed with the [b] note', as
   assert.match(note, /List them for the user/)
 })
 
-test('starting a task in phase N+1 without a checkpoint is denied naming the phase', async () => {
+test('starting a task in phase N+1 without a checkpoint passes with a note', async () => {
   const before = `# Plan
 
 ## Phase 1: Skeleton
@@ -119,10 +119,12 @@ test('starting a task in phase N+1 without a checkpoint is denied naming the pha
 `
   const after = before.replace('- [ ] Task: Second', '- [~] Task: Second')
   const deps = depsOf({ files: { [PLAN_PATH]: before } })
-  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(PLAN_PATH, after))
-  assert.notEqual(decision, null)
-  assert.match(decision.deny, /"Phase 2: Adapter" cannot start/)
-  assert.match(decision.deny, /heading of "Phase 1: Skeleton" has no \[checkpoint: <sha>\]/)
+  assert.deepEqual(await closeoutGuardFor(deps, agent, ROOT, mutationOf(PLAN_PATH, after)), {
+    decision: null,
+    note: 'measure-guard: "Phase 2: Adapter" starts while the heading of "Phase 1: Skeleton" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "Phase 1: Skeleton" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.',
+  })
+  const closed = before.replace('- [ ] Task: Second', '- [x] Task: Second')
+  assert.deepEqual(await closeoutGuardFor(deps, agent, ROOT, mutationOf(PLAN_PATH, closed)), { decision: null, note: null })
 })
 
 test('starting a task in phase N+1 with a checkpoint passes', async () => {

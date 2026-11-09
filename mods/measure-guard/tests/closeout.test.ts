@@ -47,6 +47,10 @@ const files = (): Record<string, string> => ({
   [`${M}/tracks/phase_4/plan.md`]: PHASE_PLAN,
 })
 
+/** The D2 note of guard_phase_start_20261109: phase `next` starts while phase `previous` has no checkpoint. */
+const phaseNote = (next: string, previous: string): string =>
+  `measure-guard: "${next}" starts while the heading of "${previous}" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "${previous}" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.`
+
 const denied = (ran: ToolCallResult): string | undefined =>
   ran.deny ?? (ran.isError === true ? ran.text : undefined)
 
@@ -99,19 +103,26 @@ test('advise mode lets the close pass', { options: { mode: 'advise' } }, async (
   expect(denied(await close($, 'Open work'))).toBeUndefined()
 })
 
-test('a task in phase N+1 cannot start before phase N has a checkpoint', async ($, on) => {
+test('a task in phase N+1 can start before phase N has a checkpoint, with a note', async ($, on) => {
   const w = world(on, files())
   await $.session.start(START)
   const plan = `${M}/tracks/phase_4/plan.md`
-  const start = () =>
-    $.tool.call({ tool: 'Edit', file_path: plan, old_string: '- [ ] Task: Two', new_string: '- [~] Task: Two' })
+  const change = (marker: string) =>
+    $.tool.call({ tool: 'Edit', file_path: plan, old_string: '- [ ] Task: Two', new_string: `- [${marker}] Task: Two` })
 
-  const reason = denied(await start()) ?? ''
-  expect(reason).toContain('Phase 2: B')
-  expect(reason).toContain('[checkpoint: <sha>]')
+  const started = await change('~')
+  expect(denied(started)).toBeUndefined()
+  expect(started.context?.join('\n')).toContain(phaseNote('Phase 2: B', 'Phase 1: A'))
+
+  w.files[plan] = PHASE_PLAN
+  const closed = await change('x')
+  expect(denied(closed)).toBeUndefined()
+  expect(closed.context?.join('\n') ?? '').not.toContain('measure-guard: "')
 
   w.files[plan] = PHASE_PLAN.replace('## Phase 1: A', '## Phase 1: A [checkpoint: 1111111]')
-  expect(denied(await start())).toBeUndefined()
+  const checked = await change('~')
+  expect(denied(checked)).toBeUndefined()
+  expect(checked.context?.join('\n') ?? '').not.toContain('measure-guard: "')
 })
 
 test('a task in the first phase can start with no checkpoint', async ($, on) => {
