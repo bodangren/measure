@@ -1,0 +1,34 @@
+# Review A (correctness): guard_phase_start_20261109, Phase 3
+
+Role: review-a, model deepseek/deepseek-flash (DeepSeek family). Author family: Claude.
+Baseline, phase base, and role base: `4a6d86e7692c40acf62db0739eeb6e581a903240`.
+Audited HEAD: `2b2574c80bf584fc7647561bacc4f0703d3ec9f5`. `git rev-parse HEAD` equals it.
+
+## What I read
+
+- `spec.md` (D1 to D5, FR-1 to FR-4, AC-1 to AC-7), `plan.md`, `spec-review.md`.
+- One diff of `4a6d86e..2b2574c -- mods plugins skills CHANGELOG.md`.
+- The three adapters and the shared core: `register.tsx`, `guard.ts`, `guard.js`, the three `guards.ts` copies, `hooks.js`.
+- The five evidence logs in `measure/runs/guard_phase_start_20261109/`.
+
+## Checks and results
+
+1. FR-1 to FR-4 and AC-1 to AC-7: each one is implemented and covered by a test with the exact D2 text. The D2 literal in the core equals the spec text word for word. AC-4 asserts the whole `{ decision, note }` object. AC-7 belongs to Task 4.2 and is not in this phase.
+2. No adapter denies a `plan.md` task status change: the plan-edit branch of each adapter returns no decision (`register.tsx:221`, `guard.ts:265`, `guard.js:142-143`). The note is dropped for a failed call (`guard.ts:220`, `register.tsx:374`, `hooks.js:358`). The track-close branch did not change.
+3. A repository search finds no `phaseStartDecision` caller outside `measure/archive/` and the track docs.
+4. `bash scripts/check-parity.sh` rerun: `parity: ok` in both plugins.
+5. Docs and `CHANGELOG.md` state the allow-with-note behavior. No live doc states the old deny.
+
+The brief allowed `bun test` and `node --test`, but the shell permission of this session denied both. I used the logs `green-p3-suites.log` and `red-p2-unchanged-guards.log`, whose counts match the plan, plus direct code inspection. This is the reason for confidence `medium`.
+
+## Findings
+
+No Blocker. No Major. Three Nit findings (plan mutant wording, two stale docstring texts). The full text is in `review-a-2b2574c.json`.
+
+MEASURE_AGENT_RESULT
+role: review-a
+track: guard_phase_start_20261109
+status: pass
+result_file: measure/runs/guard_phase_start_20261109/review-a-2b2574c.json
+findings: 0 Blocker, 0 Major, 3 Nit
+END_MEASURE_AGENT_RESULT
