@@ -24,16 +24,21 @@ Track: `guard_phase_start_20261109`. Spec: [spec.md](./spec.md).
   - Evidence: on the unchanged guards, `bun test tests/closeout.test.ts` (OpenCode) gives 4 pass, 3 fail; `claude plugin test mods/measure-guard` gives 91 pass, 1 fail; `node --test tests/closeout.test.js` (DSH) gives 17 pass, 1 fail. Log: `measure/runs/guard_phase_start_20261109/red-p2-unchanged-guards.log`.
   - Failing: OpenCode `AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint`, `AC-1: Task 6.1 starts while Phase 5 has no checkpoint (guard mode)` and `(strict mode)`; mod `a task in phase N+1 can start before phase N has a checkpoint, with a note`; DSH `starting a task in phase N+1 without a checkpoint passes with a note`. Each one fails because the guard denies the `[~]` edit.
 
-## Phase 3: Green change
+## Phase 3: Green change [checkpoint: 2b2574c]
 
 - [x] Task 3.1: Replace `phaseStartDecision` with `phaseStartNote` in the mod source, copy `guards.ts` to the two plugins, and change the three closeout functions (FR-1 to FR-3). Run the suites of AC-5 and AC-6. `1d36e19`
   - Evidence (AC-5, AC-6): in `plugins/opencode-measure-guard`, `bun test` gives 152 pass, 1 fail (the old V18 case), `tsc` exits 0, and `check-parity.sh` prints `parity: ok`. `claude plugin test mods/measure-guard` gives 92 pass, 0 fail, and `claude plugin validate` passes. In `plugins/dsh-measure-guard`, `node --test tests/*.test.js` gives 352 pass, 0 fail, and `check-parity.sh` prints `parity: ok`. The old track-close cases pass with no change. Logs: `measure/runs/guard_phase_start_20261109/green-p3-*.log`.
-  - Evidence: 5 mutant runs of the new lines, each killed (`green-p3-mutants.log`). The checkpoint mutant survives the OpenCode file, which has no case with a checkpoint, and the DSH case `starting a task in phase N+1 with a checkpoint passes` kills it.
+  - Evidence: 4 mutants of the new lines in 5 runs (`green-p3-mutants.log`). Each mutant is killed by 1 or more suites. The checkpoint mutant survives the OpenCode file, which has no case with a checkpoint, and the DSH case `starting a task in phase N+1 with a checkpoint passes` kills it.
 - [x] Task 3.2: Update the three READMEs, `mods/measure-guard/DESIGN.md`, `skills/measure-orchestrator/references/dsh.md`, and `CHANGELOG.md` (FR-4). `82411ec`
   - Evidence: `tests/dsh/test-docs.sh` passes; `test_s2_role_docs.sh` 51/51, `test_s3_dispositions_docs.sh` 98/98, `test_s4_doc_drift.sh` 34/34 (`green-p3-docs.log`).
 
 ## Phase 4: Review and distribution
 
-- [ ] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan.
-- [ ] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed guard with `main` (AC-7).
+- [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `b71d38c`
+  - Review A on `2b2574c` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 0 Major, 3 Nit. Result: `measure/runs/guard_phase_start_20261109/review-a-2b2574c.json` (`20ff545`). `audit-result` passes, and the review-a gate passes. The shell permission of the reviewer denied its test commands, so it read the logs (confidence medium).
+  - F1 [Nit] (the plan says each mutant run is killed): FIX in the plan (Task 3.1 evidence).
+  - F2 [Nit] (the DSH `closeoutGuardFor` docstring names only the `[b]` note): FIX in `b71d38c`.
+  - F3 [Nit] (the docstrings of the mod `closeout` and the DSH post-execute hook name only the `[b]` note): FIX in `b71d38c`.
+  - After the fixes: DSH 352 pass, 0 fail, parity ok; OpenCode `closeout.test.ts` 7 pass, parity ok; mod 92 pass, 0 fail (`review-a-fix-suites.log`).
+- [~] Task 4.2: Run `bin/install-measure-skill`, then `bin/install-measure-skill --check`. Compare the installed guard with `main` (AC-7).
 - [ ] Task 4.3: Send the PM one status line: the commit, the test names, and the install result.
