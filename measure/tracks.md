@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Guard phase start**
-  *Link: [./tracks/guard_phase_start_20261109/](./tracks/guard_phase_start_20261109/)*
-  *Remove the phase-start rule of the measure-guard closeout guard, so a task in a phase can start or close while an earlier phase has no checkpoint (PM request, 2026-11-09).*
+- (none)
 
 ---
 
@@ -373,3 +371,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Guard session track**
   *Link: [./archive/guard_session_track_20261109/](./archive/guard_session_track_20261109/)*
   *Give each OpenCode session its own track in the measure-guard task note, from its prompts, its title, or the files it writes, and list the tracks in progress when a session names none (PM request, 2026-11-09).*
+
+- [x] **Track: Guard phase start**
+  *Link: [./archive/guard_phase_start_20261109/](./archive/guard_phase_start_20261109/)*
+  *Make the phase-start rule of the measure-guard closeout guard a note in place of a deny, so a task can start or close while an earlier phase has no checkpoint (PM request, 2026-11-09).*

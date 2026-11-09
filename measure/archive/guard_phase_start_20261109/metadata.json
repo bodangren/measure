@@ -1,0 +1,12 @@
+{
+  "track_id": "guard_phase_start_20261109",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-08T19:00:00Z",
+  "updated_at": "2026-11-09T03:40:00Z",
+  "description": "Make the phase-start rule of the measure-guard closeout guard a note in place of a deny, so a task can start or close while an earlier phase has no checkpoint (PM request, 2026-11-09).",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "completed": "2026-11-09",
+  "deviation_notes": "The spec review (round 1 pass, 3 Major) changed the design from a removal of the rule to a note in place of the deny. The OpenCode bun test keeps the old V18 failure (tech-debt row of 2026-11-09). The Review A reviewer read the logs because its shell permission denied the test commands."
+}

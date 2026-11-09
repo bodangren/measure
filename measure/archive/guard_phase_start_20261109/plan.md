@@ -32,7 +32,7 @@ Track: `guard_phase_start_20261109`. Spec: [spec.md](./spec.md).
 - [x] Task 3.2: Update the three READMEs, `mods/measure-guard/DESIGN.md`, `skills/measure-orchestrator/references/dsh.md`, and `CHANGELOG.md` (FR-4). `82411ec`
   - Evidence: `tests/dsh/test-docs.sh` passes; `test_s2_role_docs.sh` 51/51, `test_s3_dispositions_docs.sh` 98/98, `test_s4_doc_drift.sh` 34/34 (`green-p3-docs.log`).
 
-## Phase 4: Review and distribution
+## Phase 4: Review and distribution [checkpoint: f9ab40a]
 
 - [x] Task 4.1: Run `measure-review-a-correctness` with a fresh agent of a family other than Claude. Fix each Blocker. Fix each other finding, or record the reason in the plan. `b71d38c`
   - Review A on `2b2574c` with `deepseek/deepseek-flash#high`: status pass, 0 Blocker, 0 Major, 3 Nit. Result: `measure/runs/guard_phase_start_20261109/review-a-2b2574c.json` (`20ff545`). `audit-result` passes, and the review-a gate passes. The shell permission of the reviewer denied its test commands, so it read the logs (confidence medium).
