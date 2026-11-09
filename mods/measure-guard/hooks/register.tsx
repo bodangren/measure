@@ -200,7 +200,8 @@ const readOrEmpty = async ($: EngineInterface, path: string): Promise<string> =>
 
 /**
  * The closeout guard for an Edit or Write of tracks.md or a plan.md: the
- * decision, and the [b] note for an allowed track close.
+ * decision, and the note of an allowed call (the [b] list of a track close,
+ * or the phase-start note of a plan edit).
  */
 const closeout = async (
   $: EngineInterface,

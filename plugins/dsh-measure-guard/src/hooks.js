@@ -344,7 +344,7 @@ export async function normalizeMutation(name, args, dir, io) {
 
 /**
  * The `tools/post-execute` waterfall handler: a note that the preparation set
- * for this token (an allowed closeout's `[b]` list) is appended to the tool
+ * for this token (an allowed closeout's `[b]` list or phase-start note) is appended to the tool
  * result content the model reads. The note never changes the decision and is
  * dropped for a failed result; `tools/result` clears the map entry.
  */

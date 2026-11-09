@@ -106,9 +106,10 @@ const isPlanPath = path => path === 'plan.md' || path.endsWith('/plan.md')
 /**
  * The closeout guard (FR-8): a `tracks.md` edit is checked against every track
  * it closes (`closedTracks` + each plan's `trackCloseDecision`); a `plan.md`
- * edit gets the `phaseStartNote` and is never denied. Only `edit`/`write` carry an after-text, so
- * every other mutation returns allow (fail open, design §13.6). On an allow the
- * core's `[b]` note is returned for the post-execute append.
+ * edit gets the `phaseStartNote` and is never denied. Only `edit`/`write` carry
+ * an after-text, so every other mutation returns allow (fail open, design
+ * §13.6). On an allow the core's notes (the `[b]` list, the phase-start note)
+ * are returned for the post-execute append.
  */
 export async function closeoutGuardFor(deps, agent, root, mutation) {
   const none = { decision: null, note: null }
