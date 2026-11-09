@@ -1,0 +1,11 @@
+{
+  "track_id": "dsh_idle_compaction_20261110",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-11-09T22:52:00Z",
+  "updated_at": "2026-11-09T22:52:00Z",
+  "description": "Compact a live session after 55 minutes without activity, but skip it when nothing new was recorded since the last compaction",
+  "estimated_tasks": 11,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

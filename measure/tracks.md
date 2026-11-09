@@ -4,7 +4,8 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: DSH idle-session compaction**
+  *Link: [./tracks/dsh_idle_compaction_20261110/](./tracks/dsh_idle_compaction_20261110/)*
 
 ---
 
