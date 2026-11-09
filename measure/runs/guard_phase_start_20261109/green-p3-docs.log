@@ -1,0 +1,4 @@
+tests/dsh/test-docs.sh exit 0 [PASS] test-docs.sh
+tests/spec_review_gate/test_s2_role_docs.sh exit 0 === Total: 51 checks (PASS=51, FAIL=0) ===
+tests/spec_review_gate/test_s3_dispositions_docs.sh exit 0 === Total: 98 checks (PASS=98, FAIL=0) ===
+tests/spec_review_gate/test_s4_doc_drift.sh exit 0 === Total: 34 checks (PASS=34, FAIL=0) ===

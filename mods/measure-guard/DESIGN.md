@@ -45,8 +45,9 @@ The mod has a `userConfig` field `mode` with the values `advise`, `guard`, and
    `<type>(<scope>): <description>` and check that a task has `[~]`. After the
    commit, remind the agent to add the git note and to record the SHA in `plan.md`.
 6. **Closeout guard.** Deny a change of a track to `[x]` in `tracks.md` while its
-   `plan.md` has open tasks. Deny the start of a new phase when the previous phase
-   heading has no `[checkpoint: <sha>]`.
+   `plan.md` has open tasks. When a new phase starts while the previous phase
+   heading has no `[checkpoint: <sha>]`, send a note that names the checkpoint
+   protocol. (Until guard_phase_start_20261109, the guard denied this start.)
 7. **End-of-turn check.** At turn end, find a task with `[x]` and no commit SHA, and
    find changed files while no task has `[~]`. In `strict`, use `classic.Stop` with
    `{ block: reason }` to keep the turn open. Stop after 2 attempts and report.

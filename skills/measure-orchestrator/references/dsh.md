@@ -139,9 +139,9 @@ The guard plugin is the harness-level contract between roles:
 2. A Green role commits the task and the orchestrator records the short SHA on
    the task line. The guard's end-of-turn check reports an `[x]` task without a
    SHA.
-3. A phase starts only when the previous phase heading carries
-   `[checkpoint: <sha>]`; the closeout guard denies a task in phase N+1 started
-   without it.
+3. A phase can start while the previous phase heading has no
+   `[checkpoint: <sha>]`, because phases can run at the same time. The closeout
+   guard then sends a note that names the checkpoint protocol.
 4. A track may be archived only when every task is closed; the closeout guard
    denies `[x]` on `tracks.md` while a plan has an open task.
 
