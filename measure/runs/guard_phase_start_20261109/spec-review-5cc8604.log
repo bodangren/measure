@@ -1,0 +1,45 @@
+# Spec review: guard_phase_start_20261109
+
+Reviewer: measure spec-review subagent, DeepSeek V4.1 Flash (deepseek/deepseek-flash), family other than Claude.
+Author model: claude-code/claude-opus-5-5 (Claude family).
+Date: 2026-11-09.
+Baseline and audited head: 5cc86044b3688212dd28af5aaa8d758d3955b781 (equal to HEAD at the start of the review).
+Round: 1.
+
+## What this track proposes
+
+The track removes the phase-start rule from the measure-guard closeout guard. After the change, the guard allows each `plan.md` task status edit, and only a `tracks.md` track close is checked. The three adapters, their two shared core copies, four documents, and the CHANGELOG change. Three old phase-start cases become allow cases, and one new case copies the PM case for the OpenCode plugin. The track then installs the OpenCode plugin and sends the PM one status line.
+
+## How the current system works, per this spec
+
+In guard and strict modes, `phaseStartDecision` denies a `plan.md` edit that changes a task to `[~]` in phase N+1 while the heading of phase N has no `[checkpoint: <sha>]`. The three adapters call it for a plan edit, and the two plugin core files are copies with a parity check. No guard checks a checkpoint SHA against a commit. The Workbooks plan has Phase 5 and Phase 6 with overlapping dates, and Phase 5 has no started task and no checkpoint. The rule denied Task 6.1, and the role then made the edit through the shell.
+
+## Findings
+
+- F1 [Major] spec.md Decisions D1 and Known limits: The spec deletes the rule and with it the only automated reminder of the phase checkpoint. A narrower change is available: return a note in place of a deny, through the `closeout` note channel that `trackCloseDecision` already uses. The PM asks for an allow, and a note allows every status change. After the change, no signal names the Phase Completion Verification and Checkpointing Protocol: the gates read task markers and drop the marker (`strip_checkpoint`, `phase_counts` in measure_interphase_checks.py). Rationale: the PM objects to the block, not to the reminder, and measure/workflow.md step 8 needs the `[checkpoint: <sha>]` line. A narrower blocking rule is not available: a rule that needs a started task in phase N still blocks Task 6.2 when Phase 5 has a `[~]` task, because the two phases overlap.
+- F2 [Major] spec.md FR-4: The document list omits `mods/measure-guard/DESIGN.md` item 6, which states the rule in the present tense. FR-4's own scope sentence ('The docs that describe the rule') covers this file, so the implementer must choose to edit it or to keep it as a record of `measure_guard_20261004`. Rationale: the requirement contradicts its own list, and a current document keeps a false statement.
+- F3 [Major] spec.md AC-6: The four commands have no working directory. The repository has no root `package.json`. `bun test` and `bun x tsc --noEmit -p .` run only inside `plugins/opencode-measure-guard`, and `node --test tests/*.test.js` only inside `plugins/dsh-measure-guard`. Rationale: at the root the first two commands find no project and the third finds no file, so the AC cannot confirm the change.
+- F4 [Nit] spec.md AC-2, AC-3, AC-4: The `[x]` assertions, and the second half of the mod case (add the checkpoint, expect no deny), pass before the change, because `phaseStartDecision` reads only `~`. Plan Task 2.1 asks for each failing case name as Red evidence, and these parts give none. Rationale: Red evidence should come from the changed behavior.
+- F5 [Nit] spec.md D2: The clause 'returns allow for a `plan.md` edit before it reads the file' does not fit `closeoutGuardFor` in `plugins/dsh-measure-guard/src/guard.js`, which loops over `afterTexts` and reads the before-text first. Either cut gives the same result, so the implementer picks. Rationale: the clause adds a restructuring step with no behavior change.
+- F6 [Nit] spec.md AC-7: 'The installed `src/core/guards.ts` and `src/guard.ts` equal `main`' names no revision, and the second clause (no `phaseStartDecision`) follows from the first when `main` holds the change. Rationale: the implementer must decide what to compare with what.
+
+## Checks
+
+- Paraphrase: written above; both sections are clear, so there is no paraphrase Blocker.
+- PM DONE WHEN: the spec allows `[~]` and `[x]` in a phase with no checkpoint (AC-1 to AC-4), keeps no invented-marker block because none exists today (D3), and installs the fix (AC-7). The spec meets the request.
+- Zoom-out: the spec fixes the false block, not its symptom, and it adds no feature and no optimization. One narrower design exists and is F1.
+- Zero-decision: each FR and each AC names a file, a symbol, a case, or a command. F2, F3, F5, and F6 name the remaining small choices.
+- Testability: each AC fits the suite it names; the OpenCode helper `makeGuard(root, mode)` accepts strict mode, the mod case uses `denied()`, and the DSH case uses `closeoutGuardFor` with `mutationOf`.
+- V18: the tech-debt row `2026-11-09 guard_session_track_20261109` exists, so the AC-6 exception is current.
+
+Commands run: `git rev-parse HEAD`; `git show 5cc8604:<path>` for spec.md and plan.md; `grep` for the call sites, the docs, and the checkpoint text; `bin/measure-dsh --check`; the audit-result validator.
+
+No repository file changed except the two result files.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+track: guard_phase_start_20261109
+status: pass
+result_file: measure/runs/guard_phase_start_20261109/spec-review-5cc8604.json
+findings: 0 Blocker, 3 Major, 3 Nit
+END_MEASURE_AGENT_RESULT

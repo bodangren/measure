@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "guard_phase_start_20261109",
+  "phase": "track setup",
+  "baseline_sha": "5cc86044b3688212dd28af5aaa8d758d3955b781",
+  "audited_head_sha": "5cc86044b3688212dd28af5aaa8d758d3955b781",
+  "status": "pass",
+  "summary": "The spec and the plan meet the PM request and are implementable. The plan names the rule, the three adapter call sites, the two parity copies, the three test files, and the docs. Three Major findings ask for a narrower note-only rule, the missing DESIGN.md document, and the working directory of the AC-6 commands. Three Nit findings concern redundant assertions, the D2 placement clause, and the AC-7 comparison. No Blocker: an implementer can write each FR and each AC, and each AC is testable in the suite it names.",
+  "paraphrase": {
+    "proposes": "The track removes the phase-start rule from the measure-guard closeout guard. After the change, the guard allows each `plan.md` task status edit, and only a `tracks.md` track close is checked. The three adapters, their two shared core copies, four documents, and the CHANGELOG change. Three old phase-start cases become allow cases, and one new case copies the PM case for the OpenCode plugin. The track then installs the OpenCode plugin and sends the PM one status line.",
+    "current_system": "In guard and strict modes, `phaseStartDecision` denies a `plan.md` edit that changes a task to `[~]` in phase N+1 while the heading of phase N has no `[checkpoint: <sha>]`. The three adapters call it for a plan edit, and the two plugin core files are copies with a parity check. No guard checks a checkpoint SHA against a commit. The Workbooks plan has Phase 5 and Phase 6 with overlapping dates, and Phase 5 has no started task and no checkpoint. The rule denied Task 6.1, and the role then made the edit through the shell."
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] spec.md Decisions D1 and Known limits: The spec deletes the rule and with it the only automated reminder of the phase checkpoint. A narrower change is available: return a note in place of a deny, through the `closeout` note channel that `trackCloseDecision` already uses. The PM asks for an allow, and a note allows every status change. After the change, no signal names the Phase Completion Verification and Checkpointing Protocol: the gates read task markers and drop the marker (`strip_checkpoint`, `phase_counts` in measure_interphase_checks.py). Rationale: the PM objects to the block, not to the reminder, and measure/workflow.md step 8 needs the `[checkpoint: <sha>]` line. A narrower blocking rule is not available: a rule that needs a started task in phase N still blocks Task 6.2 when Phase 5 has a `[~]` task, because the two phases overlap.",
+    "F2 [Major] spec.md FR-4: The document list omits `mods/measure-guard/DESIGN.md` item 6, which states the rule in the present tense. FR-4's own scope sentence ('The docs that describe the rule') covers this file, so the implementer must choose to edit it or to keep it as a record of `measure_guard_20261004`. Rationale: the requirement contradicts its own list, and a current document keeps a false statement.",
+    "F3 [Major] spec.md AC-6: The four commands have no working directory. The repository has no root `package.json`. `bun test` and `bun x tsc --noEmit -p .` run only inside `plugins/opencode-measure-guard`, and `node --test tests/*.test.js` only inside `plugins/dsh-measure-guard`. Rationale: at the root the first two commands find no project and the third finds no file, so the AC cannot confirm the change.",
+    "F4 [Nit] spec.md AC-2, AC-3, AC-4: The `[x]` assertions, and the second half of the mod case (add the checkpoint, expect no deny), pass before the change, because `phaseStartDecision` reads only `~`. Plan Task 2.1 asks for each failing case name as Red evidence, and these parts give none. Rationale: Red evidence should come from the changed behavior.",
+    "F5 [Nit] spec.md D2: The clause 'returns allow for a `plan.md` edit before it reads the file' does not fit `closeoutGuardFor` in `plugins/dsh-measure-guard/src/guard.js`, which loops over `afterTexts` and reads the before-text first. Either cut gives the same result, so the implementer picks. Rationale: the clause adds a restructuring step with no behavior change.",
+    "F6 [Nit] spec.md AC-7: 'The installed `src/core/guards.ts` and `src/guard.ts` equal `main`' names no revision, and the second clause (no `phaseStartDecision`) follows from the first when `main` holds the change. Rationale: the implementer must decide what to compare with what."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returns 5cc86044b3688212dd28af5aaa8d758d3955b781, equal to audited_head_sha.",
+    "mods/measure-guard/hooks/guards.ts: phaseStartDecision at line 165 denies only a new `~` marker; `parsePlan` at line 18 is used only at lines 167 and 168, so FR-1's import removal is correct.",
+    "mods/measure-guard/hooks/register.tsx line 221, plugins/opencode-measure-guard/src/guard.ts line 265, and plugins/dsh-measure-guard/src/guard.js lines 141 to 143 are the only call sites; each returns a `{decision, note}` pair, so the note channel exists.",
+    "plugins/*/scripts/check-parity.sh compare `hooks/guards.ts` with each `src/core/guards.ts`, so the copies follow the source (FR-3 is sound).",
+    "mods/measure-guard/DESIGN.md lines 47 to 49 state the rule; mods/measure-guard/README.md line 90, plugins/opencode-measure-guard/README.md line 71, plugins/dsh-measure-guard/README.md line 158, and skills/measure-orchestrator/references/dsh.md lines 142 to 143 state the rule and are named in FR-4.",
+    "No root package.json exists; plugins/opencode-measure-guard/package.json has `bun test`, `bun x tsc --noEmit -p .`, and `bash scripts/check-parity.sh`; plugins/dsh-measure-guard/package.json has `node --test tests/*.test.js && bash scripts/check-parity.sh`.",
+    "measure/tech-debt.md row 2026-11-09 guard_session_track_20261109 records the V18 failure that AC-6 allows.",
+    "bin/install-measure-skill installs `plugins/opencode-measure-guard` to `~/.config/opencode/plugins/opencode-measure-guard` from a git ref; `--check` exists. `bin/measure-dsh --check` reports the DSH plugin as missing. The Current system claims are correct.",
+    "Workbooks measure/tracks/storytime_l2_unit2_20261106/plan.md: Phase 5 (2026-12-01 to 2026-12-08) and Phase 6 (2026-12-01 to 2026-12-09) overlap; Phase 5 has no `[~]` task and no checkpoint; Task 6.1 is `[~]` with the note that the mark went in through the shell.",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py: `strip_checkpoint` removes the marker before a phase match, and `phase_counts` counts task markers only, so the gates do not check the checkpoint line.",
+    "The mod, OpenCode, and DSH old cases exist at mods/measure-guard/tests/closeout.test.ts line 102, plugins/opencode-measure-guard/tests/closeout.test.ts lines 58 to 60, and plugins/dsh-measure-guard/tests/closeout.test.js line 118, so AC-2 to AC-4 name real cases."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git show 5cc8604:measure/tracks/guard_phase_start_20261109/spec.md",
+    "git show 5cc8604:measure/tracks/guard_phase_start_20261109/plan.md",
+    "grep -n phaseStartDecision mods/measure-guard/hooks/guards.ts mods/measure-guard/hooks/register.tsx plugins/*/src/guard.*",
+    "bin/measure-dsh --check",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role spec-review --file measure/runs/guard_phase_start_20261109/spec-review-5cc8604.json"
+  ],
+  "changed_files": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}
