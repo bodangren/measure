@@ -1,0 +1,521 @@
+HEAD fec33f5 + working tree (Task 3.1 change)
+== OpenCode plugin: bun test
+bun test v1.3.14 (0d9b296a)
+
+tests/allow-adversarial.test.ts:
+250 |   })
+251 | 
+252 |   test('V18 a CR-only file loads one folder and opens no real path', async () => {
+253 |     const root = await project({ plan: noTaskPlan() }, 'scripts/daily-report/work/\rsrc/\r')
+254 |     const snapshot = await loadSnapshot(root)
+255 |     expect(snapshot.allow.folders).toEqual(['scripts/daily-report/work/\rsrc'])
+                                         ^
+error: expect(received).toEqual(expected)
+
+- [
+-   
+- "scripts/daily-report/work/
+- src"
+- ,
+- ]
++ []
+
+- Expected  - 6
++ Received  + 1
+
+      at <anonymous> (/home/daniebo/Desktop/measure/plugins/opencode-measure-guard/tests/allow-adversarial.test.ts:255:36)
+(fail) loader with a hostile file > V18 a CR-only file loads one folder and opens no real path [25.76ms]
+
+ 152 pass
+ 1 fail
+ 498 expect() calls
+Ran 153 tests across 14 files. [5.93s]
+exit 1
+== OpenCode plugin: tsc and parity
+tsc exit 0
+parity: ok
+parity exit 0
+== Claude Code mod: claude plugin test mods/measure-guard
+
+tests/allow.test.ts:
+(pass) allow list in the mod > M1 the tool hook allows the list and denies the near misses [1146.59ms]
+(pass) allow list in the mod > M2 /measure-status shows the list line [1158.81ms]
+(pass) allow list in the mod > M3 a folder at measure/guard-allow gives no list and no crash [802.10ms]
+(pass) allow list in the mod > M4 the list survives a parseError [736.26ms]
+
+tests/band.test.ts:
+(pass) bandLine > shows the phase, the task, and the [b] count [29.13ms]
+(pass) bandLine > warns when 2 or more tracks have [~] [6.95ms]
+(pass) bandLine > shows the next task when no task has [~] [1.90ms]
+(pass) bandLine > says so when all tasks are closed [11.63ms]
+(pass) bandLine > shows a parse error and that the guards allow all calls [6.19ms]
+(pass) bandLine > shows no track in progress, and nothing without measure/ [1.40ms]
+(pass) the band shows the real plan and follows an edit of plan.md [1288.79ms]
+(pass) no band outside a Measure project [909.87ms]
+
+tests/closeout.test.ts:
+(pass) a track with all tasks closed can change to [x], and the agent gets the [b] list [1026.46ms]
+(pass) a track with open tasks cannot change to [x], and the deny lists them [1028.77ms]
+(pass) a [b] task with no owner keeps the track open [1117.50ms]
+(pass) a Write of the whole tracks.md is checked too [780.84ms]
+(pass) advise mode lets the close pass [996.70ms]
+(pass) a task in phase N+1 can start before phase N has a checkpoint, with a note [1206.12ms]
+(pass) a task in the first phase can start with no checkpoint [773.69ms]
+(pass) applyEdit and closedTracks > apply an Edit and a Write [2.40ms]
+(pass) applyEdit and closedTracks > find the tracks that change to [x] [11.51ms]
+
+tests/commands.test.ts:
+(pass) /measure-off lets every call pass for the session and shows it in the band [922.51ms]
+(pass) /measure-on turns the guards on again [758.12ms]
+(pass) /measure-off repo keeps the choice in the store [963.44ms]
+(pass) a new session in a repository turned off keeps the guards off [758.01ms]
+(pass) a new session after a session-only /measure-off has the guards on [726.95ms]
+(pass) /measure-on repo removes the choice from the store [532.30ms]
+(pass) /measure-status opens a pane with the tracks, the progress, and the [b] tasks [760.55ms]
+(pass) /measure-status opens the pane so that Escape closes it [1118.95ms]
+(pass) /measure-status closes the pane when it is open [1311.94ms]
+(pass) statusLines > lists the phases with closed counts and checkpoints, the [b] tasks, and the guards [15.00ms]
+
+tests/commit.test.ts:
+(pass) strict: a message not in the format is denied [1468.74ms]
+(pass) strict: a commit of source files with no [~] task is denied [768.08ms]
+(pass) strict: a commit of measure/ files only passes with no [~] task [1181.19ms]
+(pass) strict: git add in the same command counts the changed files [976.76ms]
+(pass) strict: a commit for a [~] task passes and reminds the agent of the note and the SHA [658.70ms]
+(pass) strict: a heredoc message not in the format is denied [566.15ms]
+(pass) strict: a message from a file passes with a note [711.76ms]
+(pass) guard mode has no commit guard [569.58ms]
+(pass) parseCommitCommand > reads the message forms and the flags [34.13ms]
+
+tests/context.test.ts:
+(pass) the rule section names the workflow and stays the same when the task changes [1685.59ms]
+(pass) no rule section and no note without a measure/ folder [676.15ms]
+(pass) the first prompt gets a note with the track, the task, and the mode [836.00ms]
+(pass) the mode in the note follows the userConfig value [912.79ms]
+(pass) no second note while the task stays the same [506.38ms]
+(pass) an edit that changes the task gets the new note in its result [599.35ms]
+(pass) an edit outside measure/ gets no note [536.94ms]
+(pass) a compaction sends the note again at the next prompt [651.95ms]
+
+tests/edit-guard.test.ts:
+(pass) an edit outside measure/ with a [~] task passes [1127.33ms]
+(pass) an edit outside measure/ with no [~] task is denied with the next action [652.54ms]
+(pass) Write and NotebookEdit are guarded too [526.49ms]
+(pass) an edit with no track in progress is denied and asks for a track [644.66ms]
+(pass) an edit inside measure/ always passes [536.68ms]
+(pass) advise mode lets the edit pass [481.10ms]
+(pass) the guard follows the plan: marking a task [~] opens the edits [819.61ms]
+(pass) editDecision > allows a path outside the project root [6.71ms]
+(pass) editDecision > allows on a parse error and before the first read [2.41ms]
+
+tests/end-of-turn.test.ts:
+(pass) advise: a task marked [x] with no SHA shows in the band only [1425.69ms]
+(pass) guard: changes with no [~] task give a band line, a toast, and a reminder [916.13ms]
+(pass) files that were dirty before the turn, and changes in measure/, are not problems [703.95ms]
+(pass) strict: the turn stays open twice, then ends with a report [718.35ms]
+(pass) strict: a new prompt starts the block count again [603.93ms]
+(pass) a clean turn has no problem and no block [548.72ms]
+(pass) turn helpers > read porcelain lines and the paths that changed in the turn [3.21ms]
+(pass) turn helpers > list the [x] tasks with no SHA [2.15ms]
+
+tests/parse.test.ts:
+(pass) parseMode > is guard when unset or unknown [23.97ms]
+(pass) joinPath > resolves . and .. segments [6.24ms]
+(pass) parseTracks > reads numbered entries and a same-line link (the Mediarr registry) [5.15ms]
+(pass) parseTracks > reads both entry formats in the real tracks.md [5.56ms]
+(pass) parsePlan > counts only top-level lines under Phase headings in the real benchmarking plan [5.08ms]
+(pass) parsePlan > reads SHAs, checkpoints, and [b] owners in the edge plan [4.57ms]
+(pass) parsePlan > a [b] task is open until it has a deferred:<owner> field [1.16ms]
+(pass) selectActive > prefers the [~] track whose plan has a [~] task (real data) [2.07ms]
+(pass) selectActive > selects the second track when only its plan has a [~] task [1.24ms]
+(pass) selectActive > falls back to the first [~] track when no plan has a [~] task [1.62ms]
+(pass) selectActive > is null when no track has [~] [4.09ms]
+
+tests/setup.test.ts:
+(pass) the band asks the setup question with 2 buttons [1123.95ms]
+(pass) before an answer, an edit is denied and the agent must ask the user [670.40ms]
+(pass) advise mode shows the question and denies nothing [417.55ms]
+(pass) [ Turn off for session ] lets the edits pass and hides the band [427.66ms]
+(pass) [ Set up Measure ] sends the setup prompt and lets the edits pass [395.25ms]
+(pass) outside a git repository the mod does nothing [316.29ms]
+
+tests/tdd.test.ts:
+(pass) strict: a source edit before the Red phase is denied [696.66ms]
+(pass) strict: a test file edit passes [343.28ms]
+(pass) strict: a test change alone, or a failed command that is no test, is not enough [594.91ms]
+(pass) strict: a test change and a failed test command open the source edits [342.81ms]
+(pass) strict: Markdown and JSON files pass [462.19ms]
+(pass) strict: the next task starts the Red phase again [478.34ms]
+(pass) guard mode has no TDD guard [211.33ms]
+(pass) name rules > test files [3.70ms]
+(pass) name rules > source files [4.47ms]
+(pass) name rules > test commands [3.68ms]
+
+ 92 pass
+ 0 fail
+Ran 92 tests across 11 files. [17.86s]
+exit 0
+== DSH plugin: node --test tests/*.test.js and parity
+✔ the client bundle is valid JavaScript (node --check) (140.859267ms)
+✔ the factory id equals the package name (3.743183ms)
+✔ the bundle requires only react from the page module table (14.281383ms)
+✔ the bundle injects the five client services (0.928977ms)
+✔ the bundle registers the band in the conversation input dock (14.492763ms)
+✔ the bundle registers the keyed main panel and its sidebar entry (72.401898ms)
+✔ the bundle decorates measure-status with a panel action, never registers it (122.757877ms)
+✔ the bundle carries the en and zh dictionaries under one namespace (41.353406ms)
+✔ the bundle uses theme tokens for every style (0.863215ms)
+✔ the en and zh dictionaries carry the same keys (dictionary parity) (14.73203ms)
+✔ the band setup actions are localized and post to the setup route (3.294215ms)
+✔ the band shows the setup actions only while the offer has no answer (5.801688ms)
+✔ the band renders the effective mode with a localized label (6.333089ms)
+✔ the compact band is one ellipsized line with the full text in the title (0.460384ms)
+✔ the bundle loads through the module loader and registers its slots, locale, and command (40.687243ms)
+✔ the band renders the host line, full text, guards, mode, goal, setup buttons, and problems (15.392931ms)
+✔ the band requests the state route for its session and polls every 2 s (20.05134ms)
+✔ a setup button POSTs the answer and refetches the view (7.28987ms)
+✔ a null host view renders nothing, and the band falls back to the setup sentence (13.205373ms)
+✔ the zh dictionary renders its own labels while the host line stays as sent (1.376899ms)
+✔ the poll pauses while the page is hidden and refreshes on return (6.722892ms)
+✔ a host without a document keeps the plain poll (19.787311ms)
+✔ the panel renders the empty state without a session list (3.637283ms)
+✔ the panel renders a session select, the guards row, and the status block (3.782225ms)
+✔ the sidebar entry renders the icon artwork with the size prop (1.889901ms)
+✔ clientView returns the FR-15 shape from the shared core (62.731553ms)
+✔ the setup view is offered only without a measure/ folder (17.432178ms)
+✔ clientView carries the goal summary and its line (1.595181ms)
+✔ clientView handles a project with no measure/ folder (8.305952ms)
+✔ clientStateResponse serves the JSON body of a known session (367.009661ms)
+✔ clientStateResponse names the repository bypass in the body (34.878371ms)
+✔ clientStateResponse answers 404 for an unknown session and for no session id (18.164741ms)
+✔ clientStateResponse answers 404 before touching rootOf for an unknown session (18.485901ms)
+✔ clientStateResponse returns a 500 JSON error when snapshot I/O throws (25.172621ms)
+✔ clientStateResponse returns a 500 JSON error when the root lookup throws (2.030991ms)
+✔ registerClientState registers the exact state route and returns the disposer (86.902137ms)
+✔ clientView names a second writer in the band, and only then (32.782964ms)
+✔ clientStateResponse carries the writer count from deps.roots (5.417201ms)
+✔ clientStateResponse identifies the loaded Host module (15.304481ms)
+✔ clientStateResponse carries the loaded digest when the entry has one (1.483995ms)
+✔ clientStateResponse omits the digest header when the entry has none (2.376285ms)
+✔ clientStateResponse omits the module header when the entry passes no moduleUrl (3.158063ms)
+✔ the state route carries the identity on its error responses too (5.259951ms)
+✔ the setup route carries the identity on every error response (82.578672ms)
+✔ the setup handler records a POST answer and keeps the identity (23.58799ms)
+✔ the setup handler answers every error status with the identity and never throws (30.216438ms)
+✔ compactBand caps a long line on a word boundary and keeps a short one (2.196289ms)
+✔ a long task line keeps the band to one capped line and bandFull complete (0.614513ms)
+✔ the sessions suffix is part of the compacted band (0.455975ms)
+✔ a project without measure/ keeps both band fields null (0.298379ms)
+✔ compactBand drops the space at the cut and strips a trailing separator (17.700027ms)
+✔ compactBand pins the 160/161 boundary (2.622207ms)
+✔ compactBand keeps the first max - 1 characters when there is no space (1.050298ms)
+✔ a space at index 0 is a cut and the kept prefix is trimmed (0.308966ms)
+✔ closing a track with open tasks is denied and lists them (10.435568ms)
+✔ closing a track with a deferred [b] task is allowed with the [b] note (3.100503ms)
+✔ starting a task in phase N+1 without a checkpoint passes with a note (3.933779ms)
+✔ starting a task in phase N+1 with a checkpoint passes (3.949795ms)
+✔ a plan edit that starts no new phase passes (1.749283ms)
+✔ an unreadable or missing plan fails open on a track close (2.225831ms)
+✔ apply_patch, str_replace_editor, and shell calls fail open (1.376419ms)
+✔ a bypass, advise mode, and a parse error all fail open (1.927842ms)
+✔ the post-execute append adds the closeout note to the tool result content (0.925387ms)
+✔ the post-execute append leaves a call without a note, or a failure, untouched (0.935863ms)
+✔ prepareDecision carries the closeout note to the post-execute append (5.893897ms)
+✔ closing a track whose metadata actual_tasks disagrees is denied with both numbers (1.504974ms)
+✔ closing a track without metadata.json is denied (0.950556ms)
+✔ an apply_patch on a registry file is checked by the closeout guard when it is readable (2.985159ms)
+✔ an unreadable apply_patch hunk on a registry file still fails closed (1.67686ms)
+✔ a str_replace_editor on a plan is checked, and a valid replacement is allowed (5.964455ms)
+✔ advise mode allows the registry deny and the metadata closeout check (1.622344ms)
+✔ the same tools on other files keep the fail-open closeout behavior (4.465674ms)
+✔ the host commands have the expected names and descriptions (76.927999ms)
+✔ scopeOf reads repo from the first token and defaults to session (0.673108ms)
+✔ /measure-off turns the guards off for the session, and /measure-on turns them on again (17.215629ms)
+✔ /measure-off repo and /measure-on repo use the repository scope (1.040485ms)
+✔ an unknown argument defaults to the session scope (1.066657ms)
+✔ /measure-status refreshes the snapshot and returns the status text (7.625622ms)
+✔ /measure-status shows the bypass state (14.064344ms)
+✔ offText and onText cover both scopes (0.662727ms)
+✔ commitShaOf reads the short SHA of a commit line (5.372079ms)
+✔ stagedFiles adds the tracked changes for -a, and added paths exactly (7.703562ms)
+✔ parseCommitCommand recognizes the documented git global options (4.354658ms)
+✔ a non-commit git command stays unrecognized with a global option (0.816718ms)
+✔ the strict no-task deny fires through a git global option (6.094807ms)
+✔ commitTakesAll reads -a through a global option (3.678407ms)
+✔ a commit message off the format is denied with the core text (2.527409ms)
+✔ an unreadable commit message is allowed with a format note (1.459933ms)
+✔ a no-task commit of files outside measure/ is denied and names them (1.847398ms)
+✔ a no-task commit of only measure/ files is allowed with no reminder (2.198731ms)
+✔ addedPaths reads git stage like git add (1.161616ms)
+✔ addedPaths sees the add through the documented git global options (4.830831ms)
+✔ a wrapper script fails closed instead of hiding its add (26.777079ms)
+✔ an unknown git global option before the add fails closed (0.528067ms)
+✔ a command substitution with a global option fails closed too (0.868679ms)
+✔ addedPaths scans nested shell and eval commands (4.760518ms)
+✔ addedPaths accepts every shell -c spelling and git stage substitutions (1.431651ms)
+✔ addedPaths skips shell option arguments while hunting for -c (1.360955ms)
+✔ addedPaths handles option-argument clusters and -- semantics (0.778901ms)
+✔ addedPaths handles --init-file and does not treat --norc as -c (0.616252ms)
+✔ addedPaths fails closed at the fourth nested level but scans three (1.280393ms)
+✔ addedPaths fails closed beyond the depth cap and for unreadable inner text (1.39676ms)
+✔ a nested shell git add reaches the no-task commit rule (2.944882ms)
+✔ a substitution-hidden git add reaches the no-task commit rule (1.763387ms)
+✔ a commit with -a takes the modified tracked paths and not untracked files (1.393975ms)
+✔ an in-command git add contributes exactly its paths (6.404464ms)
+✔ addedPaths reads every git add segment (3.289097ms)
+✔ addedPaths fails closed when a substitution hides a git add (2.814647ms)
+✔ the commit guard is inert outside strict mode (4.479839ms)
+✔ prepareDecision denies a bad commit and marks a good commit for the reminder (3.226989ms)
+✔ preExecuteListener records the commit-due token only for an allowed commit (5.256147ms)
+✔ postCommitListener appends the reminder from the result and drops the token (1.298919ms)
+✔ postCommitListener leaves a failed commit alone and drops its token (0.639674ms)
+✔ the reminder text is the shared core commitment (0.332848ms)
+✔ git add -A contributes every status path and -u only the tracked ones (1.179734ms)
+✔ addedPaths keeps a quoted path with spaces exact (0.548343ms)
+✔ addedPaths treats words after -- as paths even when they start with - (1.903192ms)
+✔ addedPaths ignores a trailing comment and fails closed on an unterminated quote (0.347595ms)
+✔ addedPaths follows a backslash-newline continuation (0.371359ms)
+✔ addedPaths keeps a quoted separator inside one path (0.405332ms)
+✔ addedPaths handles a real trailing comment and a quoted wildcard (0.436785ms)
+✔ addedPaths joins a double-quoted backslash-newline continuation (0.407713ms)
+✔ addedPaths only honors git at a command start (1.194538ms)
+✔ addedPaths counts env-prefixed and wrapper git commands (2.553713ms)
+✔ the rule section is present with measure/ and absent without it (22.031235ms)
+✔ attachAgent registers the section and the three agent-scoped listeners, and disposes them (2.574594ms)
+✔ the task note appears exactly once per task change and never on the next step (7.135474ms)
+✔ compaction/end without an error sends the note again; an errored compaction does not (3.556458ms)
+✔ the pending reminder is delivered first and cleared (2.037383ms)
+✔ a rejected pre-step is passed through untouched (0.941717ms)
+✔ the first step of a turn captures the baseline once (2.500957ms)
+✔ the agent-scoped session/event listener only handles its own session (2.728956ms)
+✔ the second writer gets one injected warning and the first one gets none (2.049594ms)
+✔ compactionHandler only arms a re-note for a successful compaction (1.585066ms)
+✔ the task note reports the effective mode, not the static config mode (3.280716ms)
+✔ parseTracks reads the bold-with-link and the linked entry formats (21.15856ms)
+✔ parsePlan finds two phases, the checkpoint, and every task (2.722263ms)
+✔ currentTask, nextTask, and position follow the markers (1.152043ms)
+✔ bandLine names the active track, the position, and the [b] count (7.180886ms)
+✔ statusLines lists the tracks, the plan, the blocked task, and the allow list (6.232562ms)
+✔ editDecision denies a write outside measure/ when no task is [~] (1.449814ms)
+✔ editDecision allows the same write while a task is [~] (0.87933ms)
+✔ editDecision always allows a write inside measure/ (0.852373ms)
+✔ parseAllowList keeps one folder and reports the ignored entry (0.975617ms)
+✔ parseAllowList dedupes in linear time and keeps first-seen order (3.884185ms)
+✔ parseAllowList ignores an entry with a control character (0.669955ms)
+✔ parseAllowList keeps every folder of a wide list (26.332766ms)
+✔ the package entry exposes name, inject, and apply (96.139716ms)
+✔ the TDD name rules cover nested test directories and the node --test runner (6.085649ms)
+✔ makeRepo writes the fixture into a temporary measure/ tree (83.770024ms)
+✔ the real package digest is stable and covers the code files (27.956678ms)
+✔ the digest is independent of file creation order (71.936472ms)
+✔ a changed covered byte changes the digest (29.724526ms)
+✔ tests and docs are outside the digest (24.819099ms)
+✔ loadedDigest returns null when the folder cannot be read (2.353274ms)
+✔ the digest is captured once, at module evaluation (748.486866ms)
+✔ a write outside measure/ without a [~] task is denied and names the next task (9.052384ms)
+✔ a write with a [~] task passes (3.322946ms)
+✔ writes inside measure/ and on the allow list pass (1.258192ms)
+✔ a path outside the project root is not Measure work and passes (8.44407ms)
+✔ session and repository bypass pass every path (3.017426ms)
+✔ advise mode allows even without a [~] task (2.597252ms)
+✔ a parse error allows everything (8.376233ms)
+✔ a multi-path call is denied and lists the denied path (3.576719ms)
+✔ a multi-path call lists every denied path, up to five and then the rest (2.547455ms)
+✔ a path that cannot resolve allows (fail open) (1.412361ms)
+✔ setup: the shared deny fires once, then the answer off makes edits pass (2.175937ms)
+✔ guardContext reads the snapshot, mode, setup answer, and bypass (1.526903ms)
+✔ shell and other mutations are not path-checked by the edit guard (0.591748ms)
+✔ prepareDecision denies through the pre-execute listener and the decision map (3.054454ms)
+✔ a shell redirect outside measure/ without a task is denied with the core edit text (5.971373ms)
+✔ a shell redirect with a [~] task is allowed (1.709424ms)
+✔ a shell write to the registry or a plan is denied with the after-text text (14.537292ms)
+✔ a shell write to another measure/ file, an outside path, or /dev/null is allowed (3.086934ms)
+✔ strict mode denies a source shell target without a Red phase (2.292923ms)
+✔ advise mode and the bypass allow the shell and registry denies (3.431727ms)
+✔ a relative shell target resolves against the session directory (0.757565ms)
+✔ a session strict override turns a source edit into the strict deny (2.94574ms)
+✔ a session advise override allows the edit (0.298842ms)
+✔ a repository override wins over the session override for the decision (4.093489ms)
+✔ changed files outside measure/ with no [~] task are reported (10.097124ms)
+✔ changed files are not reported while a [~] task is in progress (1.856476ms)
+✔ changed files inside measure/ are not reported (0.842649ms)
+✔ an [x] task without a SHA is reported (0.769764ms)
+✔ an [x] task that already had no SHA at the turn start is not reported (1.118588ms)
+✔ advise records the problems but does not escalate (1.466416ms)
+✔ guard records the problems and arms the reminder through endTurnHandler (2.117255ms)
+✔ strict steers once and twice, and the third turn-stopping does not steer (4.401021ms)
+✔ strict arms no reminder while it still holds the turn open (1.783364ms)
+✔ a bypass silences every problem and never steers (1.763625ms)
+✔ an allow-list folder is not a changed file outside measure/ (3.95599ms)
+✔ git-backed verification reports a missing commit at turn end (0.755878ms)
+✔ a probe error reports nothing and a bypass silences the git checks (1.039739ms)
+✔ the effective mode drives the reminder: a session strict override arms it after the block limit (0.887629ms)
+✔ planCompletedCount counts only [x] tasks (3.802299ms)
+✔ a bad SHA and a missing note each produce one problem naming the task (2.241214ms)
+✔ a verified task is silent and a probe error fails open (2.804934ms)
+✔ a plan with no verified SHA has no problems (1.18639ms)
+✔ metadata actual_tasks must equal the completed count (8.038769ms)
+✔ missing or malformed metadata denies the close (3.409773ms)
+✔ a close with no plan is left to the shared core (0.394301ms)
+✔ goalSummary and goalLine carry the phase and the round position (5.386756ms)
+✔ seedObjective names the active track, and is null without one (3.599767ms)
+✔ goalOf fails open when the host or the service is missing (1.235552ms)
+✔ goalProblems flags a complete goal while a task is [~] (1.42738ms)
+✔ goalProblems flags a current goal while no track is in progress (1.711766ms)
+✔ goalProblems is silent without a goal or without tracks (2.321314ms)
+✔ /measure-goal creates a goal from the active track (2.410341ms)
+✔ /measure-goal reports an existing goal instead of overwriting it (1.346043ms)
+✔ /measure-goal replaces a complete goal (0.95102ms)
+✔ /measure-goal without a goal service reports it (0.976047ms)
+✔ /measure-goal with no [~] track does not create a goal (0.96675ms)
+✔ /measure-goal reports a goal-service refusal (0.599503ms)
+✔ statusText appends the goal line (1.175533ms)
+✔ the end-of-turn check appends the goal/track mismatch (1.903704ms)
+✔ createDecisions stores, reads, deletes, and counts by token (4.339713ms)
+✔ a non-allow gate is passed through untouched and stores nothing (1.366431ms)
+✔ an allow call stores the denial and the synchronous guard returns it (3.908313ms)
+✔ the mutation tools invalidate and the two classifications are disjoint (0.625323ms)
+✔ repoMutationLikely is false only for the read-only tools (0.958107ms)
+✔ tools/result clears the stored decision (0.752351ms)
+✔ a throwing preparation allows the call (fail open) (1.594949ms)
+✔ a call with no agent is allowed without preparing anything (0.739308ms)
+✔ an allowed call may carry a note for the post-execute append (2.104514ms)
+✔ the config default is the fallback (5.769903ms)
+✔ a session override wins over the config default and is in memory (0.991963ms)
+✔ a repository override wins over the session and survives in the store (0.741288ms)
+✔ an unreadable repository store fails open to the session/config levels (1.355504ms)
+✔ SessionModes validates the mode and clears with null (1.271499ms)
+✔ the measure_mode tool reports the effective value and source without writing (1.181881ms)
+✔ /measure-mode reports the effective mode and source (1.154321ms)
+✔ /measure-mode sets the session override without persisting (0.78213ms)
+✔ /measure-mode <mode> repo persists the repository override (1.325154ms)
+✔ /measure-mode default clears the session or repository override (2.405314ms)
+✔ /measure-mode rejects unknown modes, unknown scopes, and too many tokens (1.773536ms)
+✔ edit becomes a file mutation with a core FileEdit and the after-text (15.92483ms)
+✔ edit accepts path and filePath and replace_all (1.109136ms)
+✔ write becomes a Write FileEdit and its after-text is the content (0.562347ms)
+✔ apply_patch lists every patch path and reconstructs the after-texts (2.935056ms)
+✔ an apply_patch whose hunk does not apply has no after-text (1.294251ms)
+✔ str_replace_editor reconstructs create, str_replace, and insert; view is not a mutation (3.698871ms)
+✔ a str_replace_editor call that cannot be reconstructed has no after-text (0.73614ms)
+✔ bash and pwsh are shell calls with their command (1.946207ms)
+✔ an unknown tool is not a mutation (3.026548ms)
+✔ an edit whose old_string does not match yields a null after-text (1.010945ms)
+✔ a path that cannot resolve keeps the joined absolute form and does not throw (1.128363ms)
+✔ apply registers measure_status, measure_verify, measure_mode, the eleven commands, and the lifecycle listeners (44.544147ms)
+✔ tools/result invalidates the snapshot only for a mutating tool (82.282968ms)
+✔ apply attaches every existing agent and disposes it on agent/disposed (27.469277ms)
+✔ a new agent is attached on agent/created and its session events are filtered (30.903915ms)
+✔ an unknown mode falls back to guard with one warning (2.459707ms)
+✔ the module imports only local modules and Node built-ins (15.739569ms)
+✔ one root and its child are one session: no second-writer note (26.730982ms)
+✔ two root sessions get exactly one second-writer note naming both (26.544211ms)
+✔ the goal service is read per call, so a later registration is seen (28.016203ms)
+✔ one writer gets no notice (2.797612ms)
+✔ the second distinct writer gets one notice (0.416095ms)
+✔ the same agent claiming twice gets no second notice (0.583599ms)
+✔ a different root gets no notice (3.07353ms)
+✔ release frees the root and lets a later writer claim it (0.881682ms)
+✔ release of an unknown agent is a no-op (0.392191ms)
+✔ a child agent never claims a writer slot or counts as a session (1.386104ms)
+✔ the route is the documented exact path (2.441057ms)
+✔ POST off records the answer and the edit guard stops asking (84.724773ms)
+✔ POST setup records the answer and delivers the setup prompt exactly once (3.338821ms)
+✔ an unknown session is 404 and records nothing (1.952561ms)
+✔ a malformed body, a missing session, and an unknown choice are 400 (5.259904ms)
+✔ a non-POST method on the route is 405 (1.256475ms)
+✔ the setup prompt is the shared core text (0.811948ms)
+✔ a git repository without measure/ asks for setup, a non-repo and a Measure project do not (14.30108ms)
+✔ the setup band text silences itself for off and keeps the prompt text for setup (3.620157ms)
+✔ SETUP_PROMPT is the shared core string, not a copy (3.760021ms)
+✔ resolveSetupChoice stores pending, off, and setup, and rejects anything else (0.879978ms)
+✔ isSetupChoice accepts exactly the three answers (2.147354ms)
+✔ redirection targets are extracted (24.656018ms)
+✔ the noclobber override >| is a redirection target (3.162151ms)
+✔ stream devices, fd duplications, and labels are not targets (0.955895ms)
+✔ tee arguments are extracted, options and `-` are not (1.105717ms)
+✔ sed -i file arguments are extracted, the script is not (1.932699ms)
+✔ a command without a write form has no targets (0.646033ms)
+✔ duplicate targets appear once, in command order (0.649152ms)
+✔ cp, mv, and install destinations are extracted (1.713721ms)
+✔ ln destinations are extracted (2.164334ms)
+✔ cp and mv option arguments and -t destinations are not targets (1.316742ms)
+✔ a heredoc body quoting a redirect is not a write (0.992134ms)
+✔ a quoted redirect and a comment redirect are not writes (0.631551ms)
+✔ a quoted heredoc marker is not a heredoc (1.475303ms)
+✔ quoted delimiters, tab-stripped delimiters, and quoted targets (1.869563ms)
+✔ canonicalRoot resolves a subdirectory to the repository root (235.510654ms)
+✔ canonicalRoot falls back to the realpathed directory outside git (31.913434ms)
+✔ loadSnapshot reads the fixture project, its plans, and the allow list (223.367227ms)
+✔ loadSnapshot reports a tracks file in no known format as a parse error (148.238749ms)
+✔ loadSnapshot reads a numbered, same-line-link registry (the Mediarr shape) (135.244297ms)
+✔ loadSnapshot still reports a numbered registry with nothing parseable as a parse error (108.125789ms)
+✔ loadSnapshot reports an active track without a plan and a plan with no phase (122.391041ms)
+✔ a git repository without measure/ is a repo with no snapshot data (52.307501ms)
+✔ a folder outside git with measure/ stays inert (28.24929ms)
+✔ gitStatus returns the porcelain lines of the project (244.280456ms)
+✔ Snapshots reads once, shares the promise, and invalidates per root and all (106.319345ms)
+✔ makeIo maps the ctx seams and caps the git output (2.600273ms)
+✔ makeIo returns safe values for every failure path (0.950243ms)
+✔ loadSnapshot and canonicalRoot survive an io that throws everywhere (1.628414ms)
+✔ Repos round-trips the mode and the repository bypass through repos.json (73.046057ms)
+✔ Repos tolerates a missing and a corrupt repos.json (16.605581ms)
+✔ Bypass precedence is repo > session > null (11.375213ms)
+✔ Agents keeps one record per agent id and forgets it (2.545986ms)
+✔ Turns are keyed by agent id and turn, and never leak between turns (1.559958ms)
+✔ newUserMessage deep-clones and deep-freezes a user message with a fresh id (10.151008ms)
+✔ parseModeOf accepts the three modes, defaults to guard, and warns once on an unknown value (2.082379ms)
+✔ createState builds the four state classes (15.326482ms)
+✔ statusText is the status lines plus the task note (6.571422ms)
+✔ statusText names the bypass state (2.218077ms)
+✔ statusText handles no active track, no measure/, and a parse error (2.214715ms)
+✔ measureStatusTool is a complete hand-built ToolDefinition (12.113074ms)
+✔ measureStatusTool refreshes the snapshot and returns the status text (31.331577ms)
+✔ measureStatusTool falls back to invalidate + get without a refresh dep (2.909727ms)
+✔ noteRedEdit keeps a successful test-file write and ignores a source write (18.491005ms)
+✔ noteRedFailure keeps a failed test command only (2.15038ms)
+✔ a new [~] task resets the Red record (1.132015ms)
+✔ strict mode denies a source edit until the task has a failing test (4.123573ms)
+✔ strict mode allows the source edit after a test edit and a failed test command (4.227954ms)
+✔ the TDD guard is inert outside strict mode and with a bypass (6.570407ms)
+✔ the TDD guard ignores test files, measure/ files, and files outside the root (1.96694ms)
+✔ prepareDecision denies a source edit in strict mode (4.303058ms)
+✔ recordRed keeps a successful test-file edit and a failed test command (1.821745ms)
+✔ recordRed ignores a passing test run, a failing non-test command, and a non-strict mode (5.25047ms)
+✔ recordRed never throws on a malformed call (0.830956ms)
+✔ the measure_verify tool carries the read-only report for the agent (13.441415ms)
+✔ a clean plan reports the checked task count (2.209971ms)
+✔ a fake SHA and a missing note are reported with the end-of-turn texts (2.849773ms)
+✔ a metadata actual_tasks mismatch is reported with both numbers (1.439808ms)
+✔ malformed metadata is reported with its path (1.978598ms)
+✔ matching metadata keeps the report clean (3.065855ms)
+✔ a missing project, no active track, and a failing probe degrade to nothing-to-verify (1.976475ms)
+✔ the command is registered read-only with a handler (1.822379ms)
+✔ an open track with actual_tasks null keeps the report clean (2.777469ms)
+✔ git cannot answer and a non-work-tree are nothing-to-verify, not clean (0.978673ms)
+✔ the report refreshes the snapshot before verifying (0.989288ms)
+✔ the command is read-only: it never writes and never mutates the repository state (0.849593ms)
+✔ a non-numeric actual_tasks adds no verdict (0.726648ms)
+✔ WORKFLOWS holds the eight commands in order with the exact descriptions (6.083249ms)
+✔ measureWorkflowCommands registers one whole definition per command (1.086238ms)
+✔ every handler steers exactly one message with the resolved reference path (81.614635ms)
+✔ measure-new-track appends a trimmed Arguments line only when rawInput is non-empty (31.425822ms)
+✔ a project without measure/ errors and steers nothing (except measure-setup) (18.187905ms)
+✔ a missing reference errors and steers nothing (17.813347ms)
+✔ measure-setup works without a measure/ folder (31.822364ms)
+✔ measure-orchestrate resolves its own skill root, not the measure skill (11.73612ms)
+✔ the skill roots follow the documented order and a project root wins (24.619239ms)
+✔ a symlinked agents home is deduplicated against the Claude root (20.738136ms)
+✔ resolveSkillFile does not cache: repairing a missing file makes the next call succeed (23.766726ms)
+✔ a throwing root or snapshot becomes an error result and never throws (30.243117ms)
+ℹ tests 352
+ℹ suites 0
+ℹ pass 352
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6965.211005
+node exit 0
+parity: ok
+parity exit 0

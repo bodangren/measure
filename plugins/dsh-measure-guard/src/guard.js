@@ -8,7 +8,7 @@ import {
   changedDuringTurn,
   closedTracks,
   editDecision,
-  phaseStartDecision,
+  phaseStartNote,
   isInside,
   relative,
   stopAction,
@@ -106,7 +106,7 @@ const isPlanPath = path => path === 'plan.md' || path.endsWith('/plan.md')
 /**
  * The closeout guard (FR-8): a `tracks.md` edit is checked against every track
  * it closes (`closedTracks` + each plan's `trackCloseDecision`); a `plan.md`
- * edit uses `phaseStartDecision`. Only `edit`/`write` carry an after-text, so
+ * edit gets the `phaseStartNote` and is never denied. Only `edit`/`write` carry an after-text, so
  * every other mutation returns allow (fail open, design §13.6). On an allow the
  * core's `[b]` note is returned for the post-execute append.
  */
@@ -139,8 +139,8 @@ export async function closeoutGuardFor(deps, agent, root, mutation) {
       if (metadata !== null) return { decision: metadata.decision, note: null }
       if (result.note !== null) notes.push(result.note)
     } else if (isPlanPath(path) && isInside(joinPath(root, 'measure'), path)) {
-      const decision = phaseStartDecision(context, before, after)
-      if (decision !== null) return { decision, note: null }
+      const note = phaseStartNote(context, before, after)
+      if (note !== null) notes.push(note)
     }
   }
   return { decision: null, note: notes.length === 0 ? null : notes.join('\n\n') }

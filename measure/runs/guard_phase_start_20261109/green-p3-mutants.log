@@ -1,0 +1,6 @@
+Mutants of the new lines in the OpenCode plugin copy, run against tests/closeout.test.ts.
+MUTANT a note for [x] too: KILLED by ['AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint']
+MUTANT a note with a checkpoint: SURVIVED by []
+MUTANT the note is a deny again: KILLED by ['AC-1: Task 6.1 starts while Phase 5 has no checkpoint (guard mode)', 'AC-1: Task 6.1 starts while Phase 5 has no checkpoint (strict mode)', 'AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint']
+MUTANT no note: KILLED by ['AC-1: Task 6.1 starts while Phase 5 has no checkpoint (guard mode)', 'AC-1: Task 6.1 starts while Phase 5 has no checkpoint (strict mode)', 'AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint']
+MUTANT a note with a checkpoint (DSH copy, tests/closeout.test.js): KILLED by ✖ failing tests:;✖ starting a task in phase N+1 with a checkpoint passes;

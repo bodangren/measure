@@ -1,0 +1,41 @@
+Validating plugin manifest: /home/daniebo/Desktop/measure/mods/measure-guard/.claude-plugin/plugin.json
+
+  ❯ types ./types/index.d.ts declares on $: nothing (no EngineInterface member)
+  ❯ types ./types/index.d.ts declares state: measure-guard.snapshot, measure-guard.notedKey, measure-guard.setupChoice, measure-guard.guardsOff, measure-guard.turn, measure-guard.problems, measure-guard.reminder, measure-guard.red
+
+Validating hooks: /home/daniebo/Desktop/measure/mods/measure-guard/hooks/hooks.json
+
+  ❯ ./register.tsx hooks: session.start, command.run{command=measure-status}, command.run{command=measure-off}, command.run{command=measure-on}, prompt.compose, classic.UserPromptSubmit, classic.Stop, tool.call, ui.render{component=AbovePrompt}, ui.render{component=Pane, requestId=measure-status}, session.compact
+  ❯ ./register.tsx answers its own command: command.run{command=measure-status}
+  ❯ ./register.tsx answers its own command: command.run{command=measure-off}
+  ❯ ./register.tsx answers its own command: command.run{command=measure-on}
+  ❯ ./register.tsx gating hook without .catch: classic.UserPromptSubmit
+  ❯ ./register.tsx gating hook without .catch: classic.Stop
+  ❯ ./register.tsx gating hook without .catch: tool.call
+  ❯ ./register.tsx gating hook without .catch: session.compact
+  ❯ ./register.tsx calls: $.command.register, $.fs.exists (via loadSnapshot, planPathOf, readAllow, readOrEmpty), $.fs.read (via closeout, loadSnapshot, planPathOf, readAllow, readOrEmpty), $.process.run (via commitFiles, gitStatus), $.prompt.submit, $.session.repo (via loadSnapshot), $.session.root, $.state.get, $.state.set, $.store.delete, $.store.get, $.store.set, $.ui.close, $.ui.open, $.ui.panes, $.ui.resolve, $.ui.toast
+  ❯ ./register.tsx state writes: measure-guard.guardsOff, measure-guard.notedKey, measure-guard.problems, measure-guard.red, measure-guard.reminder, measure-guard.setupChoice, measure-guard.snapshot, measure-guard.turn
+  ❯ ./register.tsx state reads: measure-guard.guardsOff, measure-guard.notedKey, measure-guard.problems, measure-guard.red, measure-guard.reminder, measure-guard.setupChoice, measure-guard.snapshot, measure-guard.turn
+
+Plugin directory checks for /home/daniebo/Desktop/measure/mods/measure-guard. The plugin directory is the catalog that plugins are submitted to; this is a subset of what it runs.
+
+⚠ Found 1 plugin directory warning:
+
+  ❯ .claude-plugin/plugin.json icon: No icon (ICON_MISSING). No icon found in the plugin. The validator looked for `icon` in plugin.json and for a file at .claude-plugin/icon.png or .svg, assets/icon.png or .svg, or a similar path.
+    Fix: Add a square PNG to the plugin folder at .claude-plugin/icon.png, or set `icon` in plugin.json to the path of a square PNG or JPEG in the plugin: 512 to 2048 px on each side, under 2 MB. SVG and WebP are not accepted. That file may become the listing icon only once: the first time the plugin is saved or submitted in the developer portal. Adding or changing it later does not change the icon.
+
+About these checks:
+
+  ❯ The repository root was taken to be /home/daniebo/Desktop/measure, the nearest parent folder with a .git folder or file. LICENSE was taken from it, because this plugin folder has none of its own. For a plugin submitted from a git repository, the repository root is the top folder of that repository, with only what is committed there, so check that the folder named above is that top folder.
+  ❯ hooks/hooks.json names a hooks module (a code file listed under `modules`). The plugin directory has rules of its own for such code, and these checks apply none of them, so passing here does not mean the directory accepts the plugin. The developer portal's own validation applies those rules.
+
+These plugin directory checks do not change the result below.
+
+The directory also runs a safety scan and a policy review that this command does not.
+
+ℹ Advice (does not change the verdict):
+
+  ❯ /home/daniebo/Desktop/measure/mods/measure-guard/README.md: This README has no line that installs "measure-guard" from a marketplace. Add the install line, which works in one step on Claude Code 2.1.275 or later. Validate the folder that holds its marketplace.json to have <owner>/<repo> filled in, and the name its marketplace lists it under.
+      /plugin install measure-guard --marketplace <owner>/<repo>
+
+✔ Validation passed

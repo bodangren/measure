@@ -31,7 +31,7 @@ import {
   offKey,
   parseCommitCommand,
   pathsOfStatus,
-  phaseStartDecision,
+  phaseStartNote,
   redFor,
   setupBandText,
   statusLinesOf,
@@ -218,7 +218,7 @@ const closeout = async (
   const before = await readOrEmpty($, path)
   const after = applyEdit(e, before)
   if (after === null) return none
-  if (!isRegistry) return { decision: phaseStartDecision(context, before, after), note: null }
+  if (!isRegistry) return { decision: null, note: phaseStartNote(context, before, after) }
 
   const closing: ClosingTrack[] = []
   for (const entry of closedTracks(before, after)) {

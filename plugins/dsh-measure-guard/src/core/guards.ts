@@ -159,10 +159,12 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
 }
 
 /**
- * The closeout guard for plan.md (guard and strict): denies a task change to
- * `[~]` in phase N+1 while the heading of phase N has no `[checkpoint: <sha>]`.
+ * The closeout note for plan.md (guard and strict): a task change to `[~]` in
+ * phase N+1 while the heading of phase N has no `[checkpoint: <sha>]` gets a
+ * reminder of the checkpoint protocol. It never denies: phases can run at the
+ * same time, and the plan does not say so. Null when no phase starts that way.
  */
-export const phaseStartDecision = (context: GuardContext, before: string, after: string): Decision => {
+export const phaseStartNote = (context: GuardContext, before: string, after: string): string | null => {
   if (!isGuarding(context)) return null
   const wasActive = new Set(tasksOf(parsePlan(before)).filter(task => task.marker === '~').map(task => task.text))
   const phases = parsePlan(after).phases
@@ -170,9 +172,7 @@ export const phaseStartDecision = (context: GuardContext, before: string, after:
     const previous = phases[i - 1]
     if (previous === undefined || previous.checkpoint !== null) continue
     if (phase.tasks.some(task => task.marker === '~' && !wasActive.has(task.text))) {
-      return {
-        deny: `measure-guard: "${phase.title}" cannot start, because the heading of "${previous.title}" has no [checkpoint: <sha>]. Run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for "${previous.title}" first. ${BYPASS}`,
-      }
+      return `measure-guard: "${phase.title}" starts while the heading of "${previous.title}" has no [checkpoint: <sha>]. This is correct when the two phases run at the same time. When "${previous.title}" is complete, run the Phase Completion Verification and Checkpointing Protocol in measure/workflow.md for it.`
     }
   }
   return null

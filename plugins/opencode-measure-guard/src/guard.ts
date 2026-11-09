@@ -13,7 +13,7 @@ import {
   isTestCommand,
   isTestFile,
   parseCommitCommand,
-  phaseStartDecision,
+  phaseStartNote,
   redFor,
   relative,
   taskKey,
@@ -251,7 +251,7 @@ export class Guard {
     return { deny: SETUP_DENY_OPENCODE }
   }
 
-  /** The closeout guard for an edit of tracks.md or a plan.md: the decision, and the [b] note for an allowed track close. */
+  /** The closeout guard for an edit of tracks.md or a plan.md: the decision, and the note of an allowed call (the [b] list, or the phase-start note). */
   private async closeout(context: GuardContext, tool: string, input: unknown, path: string): Promise<{ decision: Decision; note: string | null }> {
     const none = { decision: null, note: null }
     const { snapshot } = context
@@ -262,7 +262,7 @@ export class Guard {
     const edit = fileEditOf(tool, input)
     const after = edit !== null ? applyEdit(edit, before) : tool === 'multiedit' ? applyMultiEdit(input, before) : null
     if (after === null) return none
-    if (!isRegistry) return { decision: phaseStartDecision(context, before, after), note: null }
+    if (!isRegistry) return { decision: null, note: phaseStartNote(context, before, after) }
     const closing: ClosingTrack[] = []
     for (const entry of closedTracks(before, after)) {
       const planPath = await planPathOf(joinPath(dirname(path), entry.folder))
