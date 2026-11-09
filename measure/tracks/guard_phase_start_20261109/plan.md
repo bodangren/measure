@@ -15,16 +15,17 @@ Track: `guard_phase_start_20261109`. Spec: [spec.md](./spec.md).
 
 ## Phase 1: Spec review
 
-- [ ] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/guard_phase_start_20261109/`. Record the findings and the responses in `spec-review.md`.
+- [x] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/guard_phase_start_20261109/`. Record the findings and the responses in `spec-review.md`. `78d7ccf`
+  - Round 1 on `5cc8604` with `deepseek/deepseek-flash#high`: pass, 0 Blocker, 3 Major, 3 Nit (`78d7ccf`). The spec-review gate passed. F1 to F6: FIX in the Phase 1 checkpoint commit.
 
 ## Phase 2: Red tests
 
-- [ ] Task 2.1: Change the three old phase-start cases and add the AC-1 case (AC-1 to AC-4). Run the three test files against the unchanged guards. Record each failing case name as the Red evidence.
+- [ ] Task 2.1: Change the three old phase-start cases and add the AC-1 case (AC-1 to AC-4). Run the three test files against the unchanged guards. Record each failing case name as the Red evidence. The `[x]` and the checkpoint assertions guard the old behavior and pass before the change.
 
 ## Phase 3: Green change
 
-- [ ] Task 3.1: Remove `phaseStartDecision` from the mod source, copy `guards.ts` to the two plugins, and change the three closeout functions (FR-1 to FR-3). Run the suites of AC-5 and AC-6.
-- [ ] Task 3.2: Update the three READMEs, `skills/measure-orchestrator/references/dsh.md`, and `CHANGELOG.md` (FR-4).
+- [ ] Task 3.1: Replace `phaseStartDecision` with `phaseStartNote` in the mod source, copy `guards.ts` to the two plugins, and change the three closeout functions (FR-1 to FR-3). Run the suites of AC-5 and AC-6.
+- [ ] Task 3.2: Update the three READMEs, `mods/measure-guard/DESIGN.md`, `skills/measure-orchestrator/references/dsh.md`, and `CHANGELOG.md` (FR-4).
 
 ## Phase 4: Review and distribution
 
