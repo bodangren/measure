@@ -1,9 +1,10 @@
 // The Host half of dsh-idle-compaction: one watcher per preset revision, bound to
-// the sessions of every live agent of that preset, ticks a timer, and asks the
-// preset's own compaction backend for one standalone idle-session compaction
+// the sessions of every live root agent of that preset, ticks a timer, and asks
+// the preset's own compaction backend for one standalone idle-session compaction
 // when a session has been idle for the configured window and holds activity
 // after its last successful compaction. Every decision is the pure policy's;
-// this module owns the timer, the agent binding, and the backend call only.
+// this module owns the timer, the agent binding, the one-time history read, and
+// the backend call only.
 //
 // The plugin is loaded from a profile path, so it may import no
 // `@deepseek-ai/*` package: every capability comes from `ctx`.
@@ -13,9 +14,10 @@ export const name = 'idle-compaction'
 
 /**
  * The watcher needs the preset's compaction engine (the only place the Web app
- * mounts one), the live-agent registry, and the timer helpers.
+ * mounts one), the live-agent registry, the supported session-history reader,
+ * and the timer helpers.
  */
-export const inject = ['compaction', 'agents', 'timer']
+export const inject = ['compaction', 'agents', 'sessionQuery', 'timer']
 
 export function apply(ctx, config) {
   const settings = parseSettings(config)
@@ -29,6 +31,10 @@ export function apply(ctx, config) {
 
   /** One state per live session of this preset; a preset plugin is shared, not per session. */
   const states = new Map()
+  /** Agent ids whose one-time history read settled; a tick never compacts before it. */
+  const ready = new Set()
+  /** The one-time history reads in flight, so disposal can await them. */
+  const scans = new Set()
   /** The compaction operations in flight, so disposal can abort and await them. */
   const active = new Set()
   let disposed = false
@@ -41,14 +47,41 @@ export function apply(ctx, config) {
     }
   }
 
-  /** Scan one session's committed log once and start watching it (idempotent). */
+  /**
+   * Read the live session's committed log once through the supported query seam
+   * (the deprecated synchronous readers are not used) and fold it into the state.
+   * Live events that arrive while it runs fold into the same state; `ready` marks
+   * the point from which ticks may consider the session.
+   */
+  const scan = state => {
+    const operation = (async () => {
+      try {
+        const events = await ctx.sessionQuery.listEvents(state.agent.id)
+        if (disposed || states.get(state.agent.id) !== state) return
+        for (const event of events) observe(state, event)
+      } catch (error) {
+        if (!disposed) warn(`cannot read the history of session ${state.agent.id}: ${describeError(error)}`)
+      } finally {
+        if (!disposed && states.get(state.agent.id) === state) ready.add(state.agent.id)
+      }
+    })()
+    scans.add(operation)
+    operation.then(
+      () => scans.delete(operation),
+      () => scans.delete(operation),
+    )
+  }
+
+  /** Start watching one live root agent (idempotent). */
   const bind = agent => {
     if (disposed || agent === undefined || agent === null) return
     if (states.has(agent.id)) return
+    if (!isRoot(agent)) return
     try {
-      if (!settings.includeSubagents && !isRoot(agent)) return
-      states.set(agent.id, createState(agent, agent.session.snapshotEvents()))
-      warn(`armed for session ${agent.id} (idle ${settings.idleMinutes} min, check ${settings.checkSeconds} s)`)
+      const state = createState(agent, [])
+      states.set(agent.id, state)
+      scan(state)
+      warn(`watching session ${agent.id} (idle ${settings.idleMinutes} min, check ${settings.checkSeconds} s)`)
     } catch (error) {
       warn(`cannot watch session ${agent?.id}: ${describeError(error)}`)
     }
@@ -58,6 +91,7 @@ export function apply(ctx, config) {
     const state = agent === undefined || agent === null ? undefined : states.get(agent.id)
     if (state === undefined) return
     states.delete(agent.id)
+    ready.delete(agent.id)
     if (state.controller !== null && state.controller !== undefined) state.controller.abort()
   }
 
@@ -94,7 +128,7 @@ export function apply(ctx, config) {
       } catch (error) {
         if (controller.signal.aborted) return
         if (error?.code === 'busy') {
-          warn(`session ${state.agent.id} became active before compaction; retrying on a later tick`)
+          warn(`session ${state.agent.id} is not idle or another maintenance/compaction owns it; retrying on a later tick`)
           return
         }
         state.lastAttemptAt = Date.now()
@@ -110,10 +144,11 @@ export function apply(ctx, config) {
     )
   }
 
-  /** One watcher tick: every eligible session compacts at most once per window. */
+  /** One watcher tick: every scanned, eligible session compacts at most once per window. */
   const tick = () => {
     if (disposed) return
     for (const state of [...states.values()]) {
+      if (!ready.has(state.agent.id)) continue
       try {
         compact(state)
       } catch (error) {
@@ -122,14 +157,15 @@ export function apply(ctx, config) {
     }
   }
 
-  /** Stop everything: abort an in-flight compaction and await its settlement. */
+  /** Stop everything: abort in-flight work and await scans and compaction settlement. */
   const drain = async () => {
     disposed = true
     for (const state of states.values()) {
       if (state.controller !== null && state.controller !== undefined) state.controller.abort()
     }
     states.clear()
-    await Promise.allSettled([...active])
+    ready.clear()
+    await Promise.allSettled([...scans, ...active])
   }
 
   ctx.effect(() => {

@@ -11,8 +11,8 @@ summarize stays with the mounted `@deepseek-ai/dsh-compaction-basic` backend.
 
 ## Behavior
 
-While the plugin is mounted, one in-memory watcher covers every live session bound to its
-preset. On a timer it looks for a session where:
+While the plugin is mounted, one in-memory watcher covers every live root session bound to
+its preset. On a timer it looks for a session where:
 
 - the agent is `idle` (no turn, no maintenance, no other compaction of this plugin);
 - the newest activity event is newer than the last successful compaction's end; and
@@ -21,8 +21,11 @@ preset. On a timer it looks for a session where:
 For an eligible session it calls the preset's `ctx.compaction.compactNow(agent, signal)`.
 On success the compaction's end seq is newer than the activity it replaced, so the same
 idle window never compacts twice; any later activity re-arms the window. A no-op
-(`compactNow` returns `null`) or a failure records the attempt time, so the next retry
-needs a whole new idle window instead of firing on every tick.
+(`compactNow` returns `null`, e.g. a history with no safe useful range) or a failure
+records the attempt time, so the next retry needs a whole new idle window instead of
+firing on every tick.
+
+Child agents (subagents) are never watched: only `ctx.agents.roots()` are considered.
 
 ### What counts as activity
 
@@ -34,19 +37,42 @@ that does not change the conversation:
 | `compaction/start`, `compaction/summary`, `compaction/end`, `compaction/prune` | No | The compaction transaction itself. |
 | A surface replacement (the checkpoint `user/message` whose `surfaceOp` is `{ op: 'replace' }`) | No | It is the compaction's own summary checkpoint, not new work. |
 | `session/end-seed` | No | Restore/fork bookkeeping. |
-| An ignorable record (`event.ignorable === true`, e.g. a `plugin:` record) | No | Read-skippable plugin state, not conversation work. |
+| An ignorable record (`event.ignorable === true`) | No | The session format's read-skippable `plugin:` record namespace (written by `appendPluginRecord`), not conversation work. |
 | Everything else (`turn/start`, `turn/end`, messages, tool calls/results, attempts, request headers, selections, …) | Yes | The session did something. |
 
 The newest activity's event `time` is the idle clock. The newest `compaction/end` without an
 `error` is the last successful compaction; a failed attempt never closes the window.
 
-### The initial scan
+The backend keeps the newest surface node and needs at least one more node to replace, so a
+session with no safe useful range produces a no-op instead of a compaction — recorded as an
+attempt and retried only after another idle window.
 
-When an agent is bound, the watcher scans its session's committed events once
-(`session.snapshotEvents()`) to seed the activity seq/time and the last successful
-compaction seq, so an already-idle session is handled on the first tick after the plugin
-mounts (including after a profile reload or a resume). The scan is a one-time mount cost,
-not a per-tick read.
+### The one-time history read
+
+When an agent is bound, the watcher starts one asynchronous read of the live session's
+committed log through the supported query seam, `ctx.sessionQuery.listEvents(sessionId)`
+(the deprecated synchronous session readers are not used), and folds it into the session's
+state. A tick never considers a session before that read settles, and an already-idle
+session is handled on the first tick after the plugin mounts (including after a profile
+reload or a resume). Live `session/event` events that arrive during the read fold into the
+same state: activity keeps the highest seq and a successful compaction keeps the highest end
+seq, so neither side can move the clock backwards. A failed read is logged and the watcher
+continues with live events only.
+
+### The policy module
+
+`src/policy.js` is pure (no Harness import, no I/O) and is pinned by the node suite:
+
+| Export | Contract |
+|---|---|
+| `COMPACTION_EVENT_TYPES` | The four compaction machinery event types. |
+| `isActivityEvent(event)` | `false` for compaction types, surface replacements, `session/end-seed`, and ignorable records; `true` otherwise. |
+| `isSuccessfulCompactionEnd(event)` | `true` for `compaction/end` without an `error`. |
+| `createState(agent, events = [])` | `{ agent, lastActivitySeq: -1, lastActivityAt: null, lastCompactionEndSeq: -1, lastAttemptAt: 0, controller: null }` after folding `events`. |
+| `observe(state, event)` | Fold one event; activity keeps the highest seq/time, a successful end keeps the highest end seq. |
+| `compactGate(state, { idleMs, now, status })` | `true` only for `status === 'idle'`, no `controller`, activity after the last successful end, and `now − max(lastActivityAt, lastAttemptAt) >= idleMs`. |
+| `parseSettings(config)` | Validates and normalizes the settings; an unknown key or an invalid value throws. |
+| `describeError(error)` | One-line error text for the Host log. |
 
 ## Settings
 
@@ -58,7 +84,6 @@ load with a clear error; `enabled: false` registers nothing.
 | `enabled` | `true` | Mount the watcher at all. |
 | `idleMinutes` | `55` | Positive number of minutes without activity before compaction. Fractional values are accepted (used to prove the behavior quickly). |
 | `checkSeconds` | `60` | Positive number of seconds between watcher ticks. |
-| `includeSubagents` | `false` | Also watch child agents. By default only root sessions are watched. |
 
 Example row:
 
@@ -75,6 +100,9 @@ The Web app disables the host-plane compaction backend, so a host row cannot rea
 session's engine. The plugin must live **inside the standard preset's isolated `compaction`
 group**, which is the single engine instance the preset's turns use.
 
+This is a manual install: `bin/measure-dsh` writes only the Measure guard's own package
+copy and top-level row, and this track does not extend it.
+
 1. Copy this package (without `tests/`) into the resolved DSH profile:
 
    ```bash
@@ -83,7 +111,8 @@ group**, which is the single engine instance the preset's turns use.
    ```
 
 2. In that profile's `cordis.patch.yml`, add one row to the `compaction` group of the
-   `preset-standard` override, beside `compaction-basic` and `command-compact`:
+   `preset-standard` override, after `tool-result-pruner`, beside `compaction-basic` and
+   `command-compact`:
 
    ```yaml
    - id: idle-compaction
@@ -93,9 +122,10 @@ group**, which is the single engine instance the preset's turns use.
    ```
 
 3. Recompose the running profile. Any semantic change to the patch does it; the repository's
-   `bin/measure-dsh reload` also works when the Measure guard layer is installed. The plugin
-   is not mounted by editing files alone: the `preset-standard` override replaces that
-   row's whole `config`, so the row must be part of the override.
+   `bin/measure-dsh reload` also works (it bumps the Measure guard block's `reloadNonce`,
+   which is a semantic change). The plugin is not mounted by editing files alone: the
+   `preset-standard` override replaces that row's whole `config`, so the row must be part of
+   the override.
 
 4. New sessions (and sessions of new agents) use a preset revision that contains the row.
    Sessions already live in a running process keep the revision they were created with; a
@@ -114,18 +144,22 @@ otherwise keeps an old preset. This is the same hazard as any other pinned prese
 node --test plugins/dsh-idle-compaction/tests/*.test.js
 ```
 
-The suite proves the classification, scan, gate, backoff, and watcher wiring with pure
-functions and a fake Cordis context; no live Harness is needed. The track that shipped the
-plugin also records a live proof (a short idle budget on a real Web session) under
+The suite proves the classification, scan fold, gate, backoff, and watcher wiring with pure
+functions and a fake Cordis context; no live Harness is needed. The live proof needs a
+session with at least two non-system surface nodes (the backend retains the newest node and
+returns no range for a sparser session). The track that shipped the plugin records a live
+proof (a short idle budget on a real Web session) under
 `measure/runs/dsh_idle_compaction_20261110/`.
 
 ## Known limits
 
 - **Live sessions only.** The plugin watches agents that are alive in the process. A
-  session that is not loaded is not compacted until it is loaded (then the one-time scan
+  session that is not loaded is not compacted until it is loaded (then the one-time read
   sees the idle window immediately).
 - **One global setting.** Every session of the preset shares the same idle window; there is
   no per-session override.
+- **Root sessions only.** Child agents (subagents) are intentionally out of scope and are
+  never bound, even when the parent is idle.
 - **Host log only.** A failed idle compaction is reported through the Host logger and
   retried after another idle window; it is not written into the session, so it is not part
   of the transcript.
@@ -135,3 +169,5 @@ plugin also records a live proof (a short idle budget on a real Web session) und
   `@deepseek-ai/*` package; every capability comes from `ctx`.
 - **Preset-scoped watcher.** The watcher is shared by every session bound to the preset and
   keyed by session, so it never assumes a per-session plugin instance.
+- **A sparse history no-ops.** A session with nothing safely compactable waits another idle
+  window instead of forcing a summary; the backend keeps the newest surface node.

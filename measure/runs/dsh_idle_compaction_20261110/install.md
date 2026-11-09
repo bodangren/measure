@@ -34,11 +34,11 @@ and the preset group's `isolate` is the only place a session's `ctx.compaction` 
 ## 3. Recompose
 
 Any semantic patch change recomposes the running profile. This track used
-`bin/measure-dsh reload`, which also bumped the managed block's `reloadNonce` to 48:
+`bin/measure-dsh reload`, which bumped the managed block's `reloadNonce` (48 for the first install, 49 after the plugin code was revised):
 
 ```console
 $ bin/measure-dsh reload
-PASS reload: incremented the reloadNonce in /home/daniel-bo/.dsh/profiles/web/cordis.patch.yml (now 48) to trigger a live recompose
+PASS reload: incremented the reloadNonce in /home/daniel-bo/.dsh/profiles/web/cordis.patch.yml (now 49) to trigger a live recompose
 reload complete: the running profile recomposes on the patch-file change.
 ```
 

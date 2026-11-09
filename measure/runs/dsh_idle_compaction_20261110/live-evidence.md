@@ -32,7 +32,8 @@ $ dsh --profile web --dump-config | grep -A3 idle-compaction
               checkSeconds: 60
 ```
 
-`bin/measure-dsh reload` bumped the profile's `reloadNonce` to 48 so the running profile
+`bin/measure-dsh reload` bumped the profile's `reloadNonce` to 48 (49 after the revised
+plugin code was installed) so the running profile
 recomposed on the patch change. The plugin has no install stamp of its own; the README
 records the copy plus row contract, and the same copy is what the proofs below exercised.
 
@@ -89,10 +90,22 @@ the profile, including the plugin and the 3 s window) and a fresh session
 
    Total at that point: 64 events, 2 idle compactions, no third one.
 
+## Third proof: the revised code (supported history read)
+
+The spec review replaced the deprecated synchronous history read with the supported
+asynchronous `ctx.sessionQuery.listEvents` seam. After that change the installed package
+was refreshed in both homes and the main profile recomposed (`reloadNonce` 49). The same
+short-window proof was repeated on the isolated instance with the revised code and a fresh
+session (`session-ec48e979-148f-4ba2-962b-570bdda917ac`, one bash prompt): the preset
+mounted (the session ran to a turn end) and the idle window produced the same standalone
+transaction — `compaction/start` seq 31 (`turn: null`), `compaction/summary` seq 33,
+`compaction/end` seq 35 with no error. That proof exercises the async scan path inside the
+isolated preset group, including the `sessionQuery` injection the earlier build did not use.
+
 ## Restore
 
 The main profile's row is back to `idleMinutes: 55` / `checkSeconds: 60` (shown by the
-`--dump-config` output above), `reloadNonce` is 48, and the temporary proof home
+`--dump-config` output above), `reloadNonce` is 49, and the temporary proof home
 (`/tmp/dsh-idle-proof-home`) and proof project were left disposable. No session of the
 main profile was compacted after the restore.
 

@@ -155,19 +155,17 @@ test('parseSettings applies the defaults', () => {
     enabled: true,
     idleMinutes: 55,
     checkSeconds: 60,
-    includeSubagents: false,
     idleMs: 55 * 60_000,
     pollMs: 60_000,
   })
 })
 
 test('parseSettings accepts overrides, including a fractional idle window', () => {
-  const settings = parseSettings({ idleMinutes: 0.05, checkSeconds: 2, includeSubagents: true, enabled: true })
+  const settings = parseSettings({ idleMinutes: 0.05, checkSeconds: 2, enabled: true })
   assert.equal(settings.idleMinutes, 0.05)
   assert.equal(settings.idleMs, 3_000)
   assert.equal(settings.checkSeconds, 2)
   assert.equal(settings.pollMs, 2_000)
-  assert.equal(settings.includeSubagents, true)
   assert.equal(settings.enabled, true)
 })
 
@@ -184,6 +182,5 @@ test('parseSettings rejects unknown keys and invalid values', () => {
   assert.throws(() => parseSettings({ idleMinutes: Number.NaN }), /idleMinutes/)
   assert.throws(() => parseSettings({ checkSeconds: 0 }), /checkSeconds/)
   assert.throws(() => parseSettings({ checkSeconds: Infinity }), /checkSeconds/)
-  assert.throws(() => parseSettings({ includeSubagents: 1 }), /includeSubagents/)
   assert.throws(() => parseSettings('nope'), /config/)
 })

@@ -37,7 +37,6 @@ const DEFAULTS = {
   enabled: true,
   idleMinutes: 55,
   checkSeconds: 60,
-  includeSubagents: false,
 }
 
 const SETTING_NAMES = new Set(Object.keys(DEFAULTS))
@@ -128,8 +127,12 @@ export function createState(agent, events) {
 export function observe(state, event) {
   if (event === null || typeof event !== 'object') return
   if (isActivityEvent(event)) {
-    state.lastActivitySeq = event.seq
-    state.lastActivityAt = event.time
+    // The one-time history read and the live feed can interleave, so an older
+    // event must never overwrite a newer clock value.
+    if (event.seq > state.lastActivitySeq) {
+      state.lastActivitySeq = event.seq
+      state.lastActivityAt = event.time
+    }
     return
   }
   if (isSuccessfulCompactionEnd(event)) {
@@ -156,7 +159,7 @@ export function compactGate(state, gate) {
 /**
  * Validate and normalize the row config.
  * @param {object|undefined} config - the row's config object.
- * @returns {{ enabled: boolean, idleMinutes: number, checkSeconds: number, includeSubagents: boolean, idleMs: number, pollMs: number }}
+ * @returns {{ enabled: boolean, idleMinutes: number, checkSeconds: number, idleMs: number, pollMs: number }}
  * @throws {Error} for an unknown key or an invalid value.
  */
 export function parseSettings(config) {
@@ -171,10 +174,6 @@ export function parseSettings(config) {
     source.idleMinutes === undefined ? DEFAULTS.idleMinutes : positiveFinite('idleMinutes', source.idleMinutes)
   const checkSeconds =
     source.checkSeconds === undefined ? DEFAULTS.checkSeconds : positiveFinite('checkSeconds', source.checkSeconds)
-  const includeSubagents =
-    source.includeSubagents === undefined
-      ? DEFAULTS.includeSubagents
-      : booleanValue('includeSubagents', source.includeSubagents)
   if (idleMinutes * MINUTE_MS <= 0 || checkSeconds * 1_000 <= 0) {
     throw new Error('dsh-idle-compaction: idleMinutes and checkSeconds must be positive')
   }
@@ -182,7 +181,6 @@ export function parseSettings(config) {
     enabled,
     idleMinutes,
     checkSeconds,
-    includeSubagents,
     idleMs: idleMinutes * MINUTE_MS,
     pollMs: checkSeconds * 1_000,
   }
