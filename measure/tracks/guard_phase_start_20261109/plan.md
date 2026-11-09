@@ -13,14 +13,16 @@ Track: `guard_phase_start_20261109`. Spec: [spec.md](./spec.md).
 - The source change lands in one commit (Task 3.1), after the Red commit. The plan and the PM line record the install step (Task 4.2).
 - Push nothing without the PM's word.
 
-## Phase 1: Spec review
+## Phase 1: Spec review [checkpoint: 4a6d86e]
 
 - [x] Task 1.1: Run `measure-spec-review` with a fresh agent of a family other than Claude. Write the result to `measure/runs/guard_phase_start_20261109/`. Record the findings and the responses in `spec-review.md`. `78d7ccf`
   - Round 1 on `5cc8604` with `deepseek/deepseek-flash#high`: pass, 0 Blocker, 3 Major, 3 Nit (`78d7ccf`). The spec-review gate passed. F1 to F6: FIX in the Phase 1 checkpoint commit.
 
 ## Phase 2: Red tests
 
-- [ ] Task 2.1: Change the three old phase-start cases and add the AC-1 case (AC-1 to AC-4). Run the three test files against the unchanged guards. Record each failing case name as the Red evidence. The `[x]` and the checkpoint assertions guard the old behavior and pass before the change.
+- [x] Task 2.1: Change the three old phase-start cases and add the AC-1 case (AC-1 to AC-4). Run the three test files against the unchanged guards. Record each failing case name as the Red evidence. The `[x]` and the checkpoint assertions guard the old behavior and pass before the change. `fffba4c`
+  - Evidence: on the unchanged guards, `bun test tests/closeout.test.ts` (OpenCode) gives 4 pass, 3 fail; `claude plugin test mods/measure-guard` gives 91 pass, 1 fail; `node --test tests/closeout.test.js` (DSH) gives 17 pass, 1 fail. Log: `measure/runs/guard_phase_start_20261109/red-p2-unchanged-guards.log`.
+  - Failing: OpenCode `AC-2: a task of the next phase starts with a note while the previous phase has no checkpoint`, `AC-1: Task 6.1 starts while Phase 5 has no checkpoint (guard mode)` and `(strict mode)`; mod `a task in phase N+1 can start before phase N has a checkpoint, with a note`; DSH `starting a task in phase N+1 without a checkpoint passes with a note`. Each one fails because the guard denies the `[~]` edit.
 
 ## Phase 3: Green change
 
