@@ -15,7 +15,6 @@ Spec: [./spec.md](./spec.md)
 ## Phase 2: Install, live proof, and records [checkpoint: PENDING]
 
 - [x] Task 2.1: copy the package into the running Web profile, reload with `bin/measure-dsh reload`, and prove the band height (<= 32 px) and the problem-count chip on the session that reported the bug; record the box and a screenshot in `measure/runs/dsh_measure_band_strip_20261110/` `a2a853b`
-- [~] Task 2.2: update the guard README, `docs/dsh.md`, and `CHANGELOG.md`; record `install.md` and `live.md`
-
-- [ ] Task 2.3: finalize `metadata.json` (status done, actual tasks), archive the track, update the tracks registry and the README status line, run the closeout check, and record the manifest-only FAIL
+- [x] Task 2.2: update the guard README, `docs/dsh.md`, and `CHANGELOG.md`; record `install.md` and `live.md` `4796d9f`
+- [~] Task 2.3: finalize `metadata.json` (status done, actual tasks), archive the track, update the tracks registry and the README status line, run the closeout check, and record the manifest-only FAIL
 - [ ] Task: Measure - User Manual Verification 'Phase 2: Install, live proof, and records' (Protocol in workflow.md)
