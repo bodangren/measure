@@ -403,3 +403,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH idle-session compaction**
   *Link: [./archive/dsh_idle_compaction_20261110/](./archive/dsh_idle_compaction_20261110/)*
   *Compact a live session after 55 minutes without activity, but skip it when nothing new was recorded since the last compaction*
+
+- [x] **Track: DSH Measure band strip**
+  *Link: [./archive/dsh_measure_band_strip_20261110/](./archive/dsh_measure_band_strip_20261110/)*
+  *Keep the Measure band to one bounded row and turn its inline problem list into a count that opens the panel*

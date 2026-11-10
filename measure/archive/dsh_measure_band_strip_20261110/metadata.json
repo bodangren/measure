@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_band_strip_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T14:40:00Z",
+  "updated_at": "2026-11-10T14:35:00Z",
+  "description": "Keep the Measure band to one bounded row and turn its inline problem list into a count that opens the panel",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "The reporting session's host problems array was empty after the profile recompose, so the live proof covers the 1079x503 -> 1079x28 px row and the absent setup buttons on that session, and the Problems: <n> chip on an isolated live session that recorded a real problem (measure/runs/dsh_measure_band_strip_20261110/live.md); the chip is also pinned by the render suite. Phase 1's checkpoint commit was taken after the Phase 2 install/evidence commit, so the plan's phase order does not match the commit order.",
+  "completed": "2026-11-10"
+}
