@@ -294,6 +294,17 @@ const HOST_VIEW = {
   problems: ['src/x.js changed outside measure/ while no task is [~]'],
 }
 
+/** The host view of a git repository with no measure/ folder: the setup offer. */
+const SETUP_VIEW = {
+  band: null,
+  bandFull: null,
+  guardsOff: null,
+  mode: { value: 'guard', source: 'config' },
+  goal: null,
+  setup: { choice: null, text: 'No measure/ folder in this project. Create one to start a track.' },
+  problems: [],
+}
+
 const en = key =>
   ({
     panel: 'Measure',
@@ -345,7 +356,7 @@ test('the bundle loads through the module loader and registers its slots, locale
   assert.equal(harness.ctx.layout.selected, 'measure')
 })
 
-test('the band renders the host line, full text, guards, mode, goal, setup buttons, and problems', async () => {
+test('the band renders the host line, guards, mode, goal, and a problem count', async () => {
   const harness = makeBundle()
   const tree = await renderBand(harness, bandProps(), [HOST_VIEW])
   const band = byGuardTag(tree, 'band')
@@ -355,11 +366,36 @@ test('the band renders the host line, full text, guards, mode, goal, setup butto
   assert.match(text, /Guards: on/)
   assert.match(text, /Mode: guard \(config\)/)
   assert.match(text, /Goal: active · round 3\/256 · Evolve the harness/)
-  assert.match(text, /Problems: src\/x\.js changed outside measure\//)
+  assert.match(text, /Problems: 1/)
+  assert.doesNotMatch(text, /src\/x\.js changed outside measure\//, 'the problem text stays out of the band')
   const labels = buttonsOf(tree).map(button => textOf(button))
-  assert.deepEqual(labels, ['Set up Measure', 'Turn off for session'])
-  const title = find(tree, node => node.props !== undefined && node.props.title !== undefined)
-  assert.equal(title.props.title, HOST_VIEW.bandFull)
+  assert.deepEqual(labels, ['Problems: 1'])
+  const chip = buttonsOf(tree)[0]
+  assert.equal(chip.props.title, HOST_VIEW.problems[0])
+  chip.props.onClick()
+  assert.equal(harness.ctx.layout.selected, 'measure')
+  const title = find(tree, node => node.props !== undefined && node.props.title === HOST_VIEW.bandFull)
+  assert.ok(title !== null, 'the primary span carries bandFull as its title')
+})
+
+test('the band is one bounded row', async () => {
+  const harness = makeBundle()
+  const tree = await renderBand(harness, bandProps(), [HOST_VIEW])
+  const band = byGuardTag(tree, 'band')
+  const style = band.props.style
+  assert.equal(style.height, '28px')
+  assert.equal(style.maxHeight, '28px')
+  assert.equal(style.overflow, 'hidden')
+  assert.equal(style.whiteSpace, 'nowrap')
+  assert.equal(style.flexWrap, 'nowrap')
+})
+
+test('a project with measure/ shows no setup buttons', async () => {
+  const harness = makeBundle()
+  const tree = await renderBand(harness, bandProps(), [HOST_VIEW])
+  const labels = buttonsOf(tree).map(button => textOf(button))
+  assert.ok(!labels.includes('Set up Measure'), 'the setup offer must not render in a measure/ project')
+  assert.ok(!labels.includes('Turn off for session'))
 })
 
 test('the band chips never wrap or shrink, and the goal chip is bounded', async () => {
@@ -368,10 +404,10 @@ test('the band chips never wrap or shrink, and the goal chip is bounded', async 
   const band = byGuardTag(tree, 'band')
   const chips = []
   walk(band, node => {
-    const style = node.tag === 'span' && node.props !== undefined ? node.props.style : undefined
+    const style = (node.tag === 'span' || node.tag === 'button') && node.props !== undefined ? node.props.style : undefined
     if (style !== undefined && style.whiteSpace === 'nowrap' && style.flexShrink === 0) chips.push(style)
   })
-  assert.ok(chips.length >= 3, `chips ${chips.length}`)
+  assert.ok(chips.length >= 4, `chips ${chips.length}`)
   for (const style of chips) {
     assert.equal(style.overflow, 'hidden')
     assert.equal(style.textOverflow, 'ellipsis')
@@ -395,8 +431,11 @@ test('the band requests the state route for its session and polls every 2 s', as
 
 test('a setup button POSTs the answer and refetches the view', async () => {
   const harness = makeBundle()
-  const tree = await renderBand(harness, bandProps(), [HOST_VIEW])
+  const tree = await renderBand(harness, bandProps(), [SETUP_VIEW])
+  const text = textOf(byGuardTag(tree, 'band'))
+  assert.match(text, /No measure\/ folder in this project/)
   const buttons = buttonsOf(tree)
+  assert.deepEqual(buttons.map(button => textOf(button)), ['Set up Measure', 'Turn off for session'])
   buttons[0].props.onClick()
   await Promise.resolve()
   await Promise.resolve()
@@ -426,10 +465,10 @@ test('the zh dictionary renders its own labels while the host line stays as sent
   const text = textOf(byGuardTag(tree, 'band'))
   assert.match(text, /Measure · Demo · Phase 1\/2/)
   assert.match(text, /守卫: 已开启/)
-  assert.match(text, /问题:/)
+  assert.match(text, /问题: 1/)
   assert.deepEqual(
     buttonsOf(tree).map(button => textOf(button)),
-    ['设置 Measure', '本会话关闭'],
+    ['问题: 1'],
   )
 })
 
@@ -514,7 +553,7 @@ test('the panel renders a session select, the guards row, and the status block',
   stubs.queue = [
     {
       ok: true,
-      json: async () => ({ band: null, bandFull: null, guardsOff: null, mode: null, goal: null, setup: null, problems: [], status: 'Tracks: 1 in progress' }),
+      json: async () => ({ band: null, bandFull: null, guardsOff: null, mode: null, goal: null, setup: null, problems: ['src/a.js changed outside measure/', 'plan.md has no commit SHA'], status: 'Tracks: 1 in progress' }),
     },
   ]
   const panel = captured.registrations.find(item => item.name === 'main').value.component
@@ -523,6 +562,9 @@ test('the panel renders a session select, the guards row, and the status block',
   assert.match(text, /Session One/)
   assert.match(text, /Guards: on/)
   assert.match(text, /Tracks: 1 in progress/)
+  assert.match(text, /Problems/)
+  assert.match(text, /src\/a\.js changed outside measure\//)
+  assert.match(text, /plan\.md has no commit SHA/)
   const refresh = buttonsOf(tree)[0]
   assert.equal(refresh.props.disabled, false)
 })
