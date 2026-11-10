@@ -21,8 +21,8 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 2.3: record the install and the live evidence in `measure/runs/dsh_idle_compaction_20261110/` (`install.md`, `live-evidence.md`) and add the `CHANGELOG.md` entry (the tooling exception is Task 1.0) `909ab46`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Live installation and proof' (Protocol in workflow.md) `92ff50f`
 
-## Phase 3: Records and closeout [checkpoint: PENDING]
+## Phase 3: Records and closeout [checkpoint: 99cbc3b]
 
 - [x] Task 3.1: run the new node suite, `bash tests/dsh/run.sh`, `bash tests/spec_review_gate/run.sh`, and both parity gates; record the results `9ebd191`
-- [~] Task 3.2: finalize `metadata.json`, archive the track, update the tracks registry, run the closeout check, and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Records and closeout' (Protocol in workflow.md)
+- [x] Task 3.2: finalize `metadata.json`, archive the track, update the tracks registry, run the closeout check, and record the manifest-only FAIL `51431ff`
+- [x] Task: Measure - User Manual Verification 'Phase 3: Records and closeout' (Protocol in workflow.md) `99cbc3b`
