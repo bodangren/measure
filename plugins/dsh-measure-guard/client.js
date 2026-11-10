@@ -73,16 +73,20 @@ window.__ModuleLoader__.load({
       color: 'var(--dsw-alias-label-secondary)',
     }
 
-    /** The band container: a full-width strip above the composer. */
+    /** The band container: one bounded row above the composer, never taller. */
     const bandStyle = {
       ...textStyle,
       display: 'flex',
       flexWrap: 'nowrap',
-      alignItems: 'baseline',
+      alignItems: 'center',
       overflow: 'hidden',
+      boxSizing: 'border-box',
+      height: '28px',
+      maxHeight: '28px',
+      whiteSpace: 'nowrap',
       gap: '8px',
       margin: '0 0 6px',
-      padding: '4px 10px',
+      padding: '2px 10px',
       border: '1px solid var(--dsw-alias-border-l1)',
       borderRadius: 'var(--dsw-radius-sm)',
       background: 'var(--dsw-alias-bg-layer-2)',
@@ -240,20 +244,29 @@ window.__ModuleLoader__.load({
       }
     }
 
-    /** The compact problem rows of the band. */
-    function ProblemList(props) {
-      if (!Array.isArray(props.problems) || props.problems.length === 0) return null
+    /** The compact problem count: the full list lives in the title and in the panel. */
+    function ProblemChip(props) {
+      const t = props.t || fallbackOf(en)
+      const problems = Array.isArray(props.problems) ? props.problems.map(problem => (typeof problem === 'string' ? problem : String(problem))) : []
+      if (problems.length === 0) return null
       return h(
-        'span',
-        { style: { display: 'inline-flex', flexWrap: 'wrap', gap: '6px', alignItems: 'baseline' } },
-        h('span', { style: primaryStyle }, props.t('problems') + ':'),
-        h(
-          'span',
-          { style: { display: 'inline-flex', flexWrap: 'wrap', gap: '6px' } },
-          props.problems.map((problem, index) =>
-            h('span', { key: String(index), style: { color: 'var(--dsw-alias-label-secondary)' } }, problem),
-          ),
-        ),
+        'button',
+        {
+          type: 'button',
+          title: problems.join('\n'),
+          onClick: props.open,
+          style: {
+            ...chipStyle,
+            ...textStyle,
+            flexShrink: 0,
+            padding: '0 8px',
+            border: '1px solid var(--dsw-alias-border-l1)',
+            borderRadius: 'var(--dsw-radius-sm)',
+            background: 'transparent',
+            cursor: 'pointer',
+          },
+        },
+        t('problems') + ': ' + problems.length,
       )
     }
 
@@ -268,10 +281,12 @@ window.__ModuleLoader__.load({
         .catch(() => done())
     }
 
-    /** The setup answer buttons, shown while the offer has no answer. */
+    /** The setup answer buttons, shown only while the host offers the setup question. */
     function SetupActions(props) {
       const t = props.t || fallbackOf(en)
-      if (props.setup === null || props.setup === undefined || props.setup.choice !== null) return null
+      if (props.setup === null || props.setup === undefined) return null
+      if (props.setup.text === null || props.setup.text === undefined) return null
+      if (props.setup.choice !== null) return null
       return h(
         'span',
         { style: { display: 'inline-flex', gap: '6px' } },
@@ -308,14 +323,18 @@ window.__ModuleLoader__.load({
               t('goal') + ': ' + view.goal.phase + ' · round ' + view.goal.round + '/' + view.goal.maxRounds + ' · ' + view.goal.objective,
             ),
         h(SetupActions, { t, sessionId, setup: view.setup, answered }),
-        h(ProblemList, { problems: view.problems, t }),
+        h(ProblemChip, { t, problems: view.problems, open: props.open }),
       )
     }
 
     /** The registered band: the boundary keeps a render error inside this entry. */
-    function Band(props) {
-      return h(SlotBoundary, null, h(BandBody, props))
-    }
+    const makeBand = ctx =>
+      function Band(props) {
+        const open = () => {
+          if (ctx.layout !== null && ctx.layout !== undefined && typeof ctx.layout.selectPanel === 'function') ctx.layout.selectPanel('measure')
+        }
+        return h(SlotBoundary, null, h(BandBody, { ...props, open }))
+      }
 
     /** The panel component bound to the one Client Context (the session list). */
     const makePanel = ctx =>
@@ -384,6 +403,20 @@ window.__ModuleLoader__.load({
                         t('guards') + ': ' + guardsLabel(t, view.guardsOff),
                       ),
                       h('pre', { style: statusStyle }, view.status),
+                      Array.isArray(view.problems) && view.problems.length > 0
+                        ? h(
+                            'div',
+                            { style: { display: 'grid', gap: '4px' } },
+                            h('div', { style: { ...primaryStyle, fontSize: '13px' } }, t('problems')),
+                            ...view.problems.map((problem, index) =>
+                              h(
+                                'div',
+                                { key: String(index), style: { ...textStyle, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' } },
+                                typeof problem === 'string' ? problem : String(problem),
+                              ),
+                            ),
+                          )
+                        : null,
                     ),
               ),
         )
@@ -420,6 +453,7 @@ window.__ModuleLoader__.load({
 
         // The band: session-scoped, above the composer. The dock props carry
         // the SessionSnapshot; the component polls the Host route itself.
+        const Band = makeBand(ctx)
         ctx.slots.inject('conversation.input.dock', () =>
           ctx.slots.register({ name: 'conversation.input.dock', id: 'measure-guard', order: 20, locale: NS }, Band),
         )
