@@ -20,7 +20,8 @@ references.
 - **The guard.** `plugins/dsh-measure-guard` runs as a DSH profile bundle. In
   `guard` mode it denies edits outside `measure/` while no plan task is `[~]`,
   guards the track and phase closeout, and reports an end-of-turn reminder. A
-  composer band and a Measure panel show the plan position.
+  one-row composer band (28 px, with a problem count that opens the panel) and a
+  Measure panel show the plan position.
 - **The workflow commands.** `/measure-setup`, `/measure-new-track`,
   `/measure-new-track-set`, `/measure-implement`, `/measure-review`,
   `/measure-revert`, `/measure-doctor`, and `/measure-orchestrate` start the
