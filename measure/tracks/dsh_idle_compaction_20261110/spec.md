@@ -77,8 +77,8 @@ activity re-arms the same idle window.
   `busy` class (the agent is not idle, another maintenance task owns it, or another
   compaction holds the lock) leaves the gate open for a later tick and logs one line; any
   other error is reported once through the Host logger and backs off one idle window.
-  Disposal aborts an in-flight compaction, awaits the one-time scans, and awaits the
-  compaction settlement.
+  Disposal aborts an in-flight compaction, awaits the one-time history read (the read has
+  no cancellation signal), and awaits the compaction settlement.
 - **FR-11 (live proof).** The plugin is installed in the running Web profile and proved
   live with a short idle budget on a session that holds at least two non-system surface
   nodes (the backend retains the newest node and returns no range for a sparser session):

@@ -38,3 +38,26 @@ The standard preset's `compaction` group is the only compaction engine a Web ses
 - F7: FIX
 - F8: FIX
 - F9: FIX
+
+## Round 2
+
+Date: 2026-11-10
+Reviewer: fresh read-only subagent, deepseek-flash
+
+### What this track proposes
+
+This track adds one zero-dependency DeepSeek Harness Host plugin, `plugins/dsh-idle-compaction/`, mounted inside the standard preset's isolated `compaction` group beside `compaction-basic`, with a pure policy module and `node --test` suites. On apply the watcher binds every live root agent, reads each session's committed log once through the async `ctx.sessionQuery` seam, merges live `session/event`s, and on a timer asks the backend's own `compactNow` for a standalone `turn: null` compaction when a session has been idle 55 minutes (configurable) and holds activity after its last successful compaction. A successful end seq keeps the gate closed until new activity re-arms it; a no-op or failure records an attempt so the plugin waits another full window. Phase 2 installs the package into the running Web profile with one preset row under a short idle budget and records a live proof; Phase 3 runs the suites and archives the track.
+
+### How the current system works, per this spec
+
+The standard preset's `compaction` group is the only compaction engine a Web session's turns use, because the Web app disables the host-plane backend rows. That engine compacts automatically only for token pressure or a confirmed context overflow, and `/compact` compacts only when a person types it, so an idle session keeps its full history and its next turn pays the whole prefill. `compactNow` is the backend's standalone idle transaction, a `compaction/start`…`compaction/end` marker pair with `turn: null` whose successful end records the last compaction. A preset plugin mounts once per preset revision in a registry-owned scope shared by every session bound to that preset, so a watcher there keeps its own per-session state; the supported history reader is the async `ctx.sessionQuery` service.
+
+### Findings
+
+- F10 [Blocker] spec.md FR-3/FR-5 (history scan) and plan.md Task 1.3: The one-time scan names `ctx.sessionQuery.listEvents()`, which returns lightweight `SessionEventRecord`s (`sessionId`, `seq`, `type`, `time`, `surface`; dsh-session-query/lib/types/types.d.ts:45-56, built by `buildSessionEventRecords` at dsh-session-query/lib/index.js:598-611) with no `data`, `ignorable`, or `surfaceOp`, so the scan cannot apply FR-4's ignorable-record and checkpoint-replacement exclusions or FR-5's "compaction/end without an error" rule: `src/policy.js` reads `event.ignorable`, `event.surfaceOp`, and `event.data.error`, all absent on a scanned record, so a failed `compaction/end` (dsh-compaction-basic/lib/index.js:484-499 appends one with `data.error`) counts as a success and closes the gate for a session whose last compaction failed, while the checkpoint `user/message` and `plugin:` records count as activity; the node tests feed full events with `data` and `surfaceOp` (plugins/dsh-idle-compaction/tests/plugin.test.js:12-20), so no test catches it. Rationale: the spec mandates distinctions the named reader cannot provide, leaving the implementer to switch to `ctx.sessionQuery.readSession()` (its `SessionLogSnapshot.events` are full `SessionEvent[]`, dsh-session-query/lib/types/types.d.ts:36-43) or to change FR-4/FR-5, and a reload after a failed compaction otherwise never retries; the README's "The one-time history read" repeats `listEvents`.
+- F11 [Nit] spec.md FR-3 (history scan): "one-time, cancellable read" is not supported: `listEvents(sessionId)` takes no `AbortSignal` (dsh-session-query/lib/types/index.d.ts:111), and FR-10 says disposal "awaits the one-time scans", so the read is awaited rather than cancelled. Rationale: the wording invites a signal-based cancellation path the API does not offer; say "awaited" or name the actual mechanism.
+
+### Author Response
+
+- F10: FIX
+- F11: FIX

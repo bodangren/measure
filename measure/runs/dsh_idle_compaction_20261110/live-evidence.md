@@ -94,7 +94,8 @@ the profile, including the plugin and the 3 s window) and a fresh session
 
 The spec review replaced the deprecated synchronous history read with the supported
 asynchronous `ctx.sessionQuery.listEvents` seam. After that change the installed package
-was refreshed in both homes and the main profile recomposed (`reloadNonce` 49). The same
+was refreshed in both homes and the main profile recomposed (`reloadNonce` 49; 50 for the
+final full-log build). The same
 short-window proof was repeated on the isolated instance with the revised code and a fresh
 session (`session-ec48e979-148f-4ba2-962b-570bdda917ac`, one bash prompt): the preset
 mounted (the session ran to a turn end) and the idle window produced the same standalone
@@ -102,10 +103,23 @@ transaction — `compaction/start` seq 31 (`turn: null`), `compaction/summary` s
 `compaction/end` seq 35 with no error. That proof exercises the async scan path inside the
 isolated preset group, including the `sessionQuery` injection the earlier build did not use.
 
+## Fourth proof: the final build (full-log read)
+
+Round 2 of the spec review found that `sessionQuery.listEvents` returns lightweight
+records without `data`/`surfaceOp`/`ignorable`, so the scan could not classify a failed
+compaction end or a checkpoint replacement. The final build uses
+`ctx.sessionQuery.readSession(sessionId)`, whose `SessionLogSnapshot.events` are full
+`SessionEvent` records. After refreshing the isolated instance with that build, the short
+window was proven once more on a fresh session
+(`session-e74ca894-ae61-4df9-9ff1-bd3e2b52b932`, one bash prompt): the preset mounted, the
+turn ended, and the idle window produced the standalone transaction —
+`compaction/start` seq 44 (`turn: null`), `compaction/summary` seq 46, `compaction/end`
+seq 48 with no error; the log ended at that `compaction/end`.
+
 ## Restore
 
 The main profile's row is back to `idleMinutes: 55` / `checkSeconds: 60` (shown by the
-`--dump-config` output above), `reloadNonce` is 49, and the temporary proof home
+`--dump-config` output above), `reloadNonce` is 50, and the temporary proof home
 (`/tmp/dsh-idle-proof-home`) and proof project were left disposable. No session of the
 main profile was compacted after the restore.
 

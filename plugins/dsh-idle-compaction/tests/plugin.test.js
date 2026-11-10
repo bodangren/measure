@@ -44,7 +44,7 @@ function createFakeContext({ live = [], roots = live, events = {}, sessionQuery,
       roots: () => [...roots],
     },
     compaction: { compactNow: compactNow ?? (async () => result()) },
-    sessionQuery: { listEvents: sessionQuery ?? (async id => eventsById.get(id) ?? []) },
+    sessionQuery: { readSession: sessionQuery ?? (async id => ({ events: eventsById.get(id) ?? [] })) },
     logger: { warn: text => warnings.push(text) },
     on(eventName, handler) {
       const bucket = register(eventName)
@@ -140,7 +140,7 @@ test('a tick before the one-time scan settles never compacts', async () => {
     sessionQuery: () =>
       new Promise(resolve => {
         release = resolve
-      }),
+      }).then(events => ({ events })),
     compactNow: async () => {
       calls += 1
       return result()
@@ -262,7 +262,7 @@ test('a live event during the scan is not lost and an older scan event cannot mo
     sessionQuery: () =>
       new Promise(resolve => {
         release = resolve
-      }),
+      }).then(events => ({ events })),
     compactNow: async () => {
       calls += 1
       return result(5)

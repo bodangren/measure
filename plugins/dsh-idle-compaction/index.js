@@ -48,17 +48,18 @@ export function apply(ctx, config) {
   }
 
   /**
-   * Read the live session's committed log once through the supported query seam
-   * (the deprecated synchronous readers are not used) and fold it into the state.
-   * Live events that arrive while it runs fold into the same state; `ready` marks
-   * the point from which ticks may consider the session.
+   * Read the live session's complete committed log once through the supported
+   * query seam (the deprecated synchronous readers are not used; `listEvents`
+   * is only the lightweight projection, so this needs the full snapshot) and
+   * fold it into the state. Live events that arrive while it runs fold into the
+   * same state; `ready` marks the point from which ticks may consider the session.
    */
   const scan = state => {
     const operation = (async () => {
       try {
-        const events = await ctx.sessionQuery.listEvents(state.agent.id)
+        const snapshot = await ctx.sessionQuery.readSession(state.agent.id)
         if (disposed || states.get(state.agent.id) !== state) return
-        for (const event of events) observe(state, event)
+        for (const event of snapshot.events) observe(state, event)
       } catch (error) {
         if (!disposed) warn(`cannot read the history of session ${state.agent.id}: ${describeError(error)}`)
       } finally {

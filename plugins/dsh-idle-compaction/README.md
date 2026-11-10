@@ -49,15 +49,17 @@ attempt and retried only after another idle window.
 
 ### The one-time history read
 
-When an agent is bound, the watcher starts one asynchronous read of the live session's
-committed log through the supported query seam, `ctx.sessionQuery.listEvents(sessionId)`
-(the deprecated synchronous session readers are not used), and folds it into the session's
-state. A tick never considers a session before that read settles, and an already-idle
-session is handled on the first tick after the plugin mounts (including after a profile
-reload or a resume). Live `session/event` events that arrive during the read fold into the
-same state: activity keeps the highest seq and a successful compaction keeps the highest end
-seq, so neither side can move the clock backwards. A failed read is logged and the watcher
-continues with live events only.
+When an agent is bound, the watcher awaits one read of the live session's complete
+committed log through the supported query seam, `ctx.sessionQuery.readSession(sessionId)`
+(the deprecated synchronous session readers are not used, and the lightweight
+`listEvents` projection lacks the `data`/`surfaceOp`/`ignorable` fields this policy needs).
+It folds the full events into the session's state. A tick never considers a session before
+that read settles, and an already-idle session is handled on the first tick after the
+plugin mounts (including after a profile reload or a resume). Live `session/event` events
+that arrive during the read fold into the same state: activity keeps the highest seq and a
+successful compaction keeps the highest end seq, so neither side can move the clock
+backwards. The read has no cancellation signal; disposal awaits it. A failed read is logged
+and the watcher continues with live events only.
 
 ### The policy module
 
