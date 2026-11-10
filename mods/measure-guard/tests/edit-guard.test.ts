@@ -52,6 +52,21 @@ test('Write and NotebookEdit are guarded too', async ($, on) => {
   expect(denied(notebook)).toBeDefined()
 })
 
+const bash = ($: Engine, command: string) => $.tool.call({ tool: 'Bash', command })
+
+test('a shell write to a source file is guarded like a file edit', async ($, on) => {
+  world(on, noTaskFiles())
+  await $.session.start(START)
+  expect(denied(await bash($, `sed -i 's/a/b/' ${SOURCE}`))).toBeDefined()
+})
+
+test('a shell write inside measure/ and a clean Bash command are not denied', async ($, on) => {
+  world(on, noTaskFiles())
+  await $.session.start(START)
+  expect(denied(await bash($, 'echo hi > measure/runs/x.md'))).toBeUndefined()
+  expect(denied(await bash($, 'git status --short'))).toBeUndefined()
+})
+
 test('an edit with no track in progress is denied and asks for a track', async ($, on) => {
   world(on, noTrackFiles())
   await $.session.start(START)

@@ -35,6 +35,7 @@ import {
   redFor,
   setupBandText,
   statusLinesOf,
+  shellWritePaths,
   stopAction,
   taskKey,
   tddDecision,
@@ -357,6 +358,22 @@ export const register: Register = (on, options) => {
       if (closed.note !== null) notes.push(closed.note)
       const tdd = tddDecision(context, (await $.state.get(RED)).value ?? null, path)
       if (tdd !== null) return tdd
+    }
+    // Shell writes: every target the bounded grammar extracts is checked like a file edit
+    // (and, in strict mode, by the TDD guard), so `sed -i`, a redirect, or a copy cannot
+    // change a source file behind the guard's back.
+    const shellTargets = e.tool === 'Bash' && typeof e.command === 'string' ? shellWritePaths(e.command) : []
+    if (shellTargets.length > 0) {
+      const shellContext = await guardContext($, mode)
+      const shellRoot = shellContext.snapshot?.root ?? (await $.session.root())
+      const red = (await $.state.get(RED)).value ?? null
+      for (const target of shellTargets) {
+        const resolved = target.startsWith('/') ? joinPath(target) : joinPath(shellRoot, target)
+        const decision = editDecision(shellContext, resolved)
+        if (decision !== null) return decision
+        const tdd = tddDecision(shellContext, red, resolved)
+        if (tdd !== null) return tdd
+      }
     }
     const commit = e.tool === 'Bash' && mode === 'strict' ? parseCommitCommand(e.command) : null
     if (commit !== null) {

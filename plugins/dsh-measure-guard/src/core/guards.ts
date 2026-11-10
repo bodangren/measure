@@ -260,7 +260,7 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
 const TEST_FILES = [
   /\.(test|spec)\.[cm]?[jt]sx?$/,
   /(^|\/)test_[^/]+\.(py|sh)$/,
-  /_test\.(py|go|rs|exs?)$/,
+  /_test\.(py|go|rs|exs?|dart|rb)$/,
   /_spec\.rb$/,
   /(^|\/)test-[^/]+\.sh$/,
   /(^|\/)(tests?|__tests__|spec)\/.+\.(rs|[cm]?[jt]sx?|py|rb|go)$/,
@@ -274,8 +274,10 @@ const TEST_COMMANDS = [
   /\b(npm|pnpm|yarn|bun)\s+(run\s+)?test\b/,
   /\b(vitest|jest|mocha|ava|pytest|rspec|phpunit|ctest)\b/,
   /\bnode\s+(?:(?:--?[A-Za-z][\w-]*(?:=\S+)?|-[A-Za-z]+)\s+)*--test(?:-only)?\b/,
+  /\bnode\s+--run\s+test\b/,
+  /\bcargo\s+nextest\s+run\b/,
   /\bpython3?\s+-m\s+(pytest|unittest)\b/,
-  /\b(go|cargo|deno|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
+  /\b(go|cargo|deno|dart|flutter|mvn|gradle|gradlew|make|mix|dotnet|swift)\s+test\b/,
   /\bclaude\s+plugin\s+test\b/,
   /(^|[\s/])test[-_][\w.-]*\.sh\b/,
 ]
@@ -406,3 +408,183 @@ export const commitReminder = (sha: string | null): string => {
   return `measure-guard: the commit ${short ?? '(see git log -1)'} is done. Next steps of the Task Workflow: add the git note (git notes add -m "<task summary>" ${short ?? 'HEAD'}), and record ${short ?? 'the 7-character SHA'} on the task line in plan.md.`
 }
 
+
+// ---- The bounded shell-write grammar (shared) ------------------------------------
+// The write targets a shell call can name without a full parser, shared by the three
+// adapters so the mod and the OpenCode adapter can path-check shell writes too.
+
+const STREAM_DEVICES = new Set(['/dev/null', '/dev/stdout', '/dev/stderr'])
+const REDIRECT = /(?:^|[\s;|&()])(?:\d?(?:>>?|>\|))\s*([^\s;|&<>()]+)/g
+const TEE = /(?:^|[\s;|&()])tee\b([^;|&\n]*)/g
+const SED = /(?:^|[\s;|&()])sed\b([^;|&\n]*)/g
+const COPY = /(?:^|[\s;|&()])(?:cp|mv|install|ln)\b([^;|&\n]*)/g
+
+const clean = token => token.replace(/^['"]|['"]$/g, '')
+
+const isStreamDevice = path => STREAM_DEVICES.has(path) || path.startsWith('/dev/fd/')
+
+/**
+ * The delimiter of a heredoc marker that starts outside quotes, or null. Quotes
+ * are skipped so `printf "x << y"` is not a heredoc; the delimiter itself may be
+ * quoted (`<<'EOF'`, `<<"EOF"`).
+ */
+const heredocDelimiter = line => {
+  let quote = null
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i]
+    if (quote !== null) {
+      if (char === quote && !(quote === '"' && line[i - 1] === '\\')) quote = null
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      continue
+    }
+    if (char !== '<' || line[i + 1] !== '<' || line[i + 2] === '<') continue
+    const match = /^<<(-?)(?!<)\s*(['"]?)([A-Za-z0-9_]+)\2/.exec(line.slice(i))
+    if (match !== null) return { stripTabs: match[1] === '-', delimiter: match[3] }
+  }
+  return null
+}
+
+/**
+ * The command as the shell sees its structure: heredoc bodies, comments, and
+ * `>` characters inside quoted spans are blanked, so prose that quotes a
+ * redirect is not mistaken for a write. Quoted text that is not a `>` is kept,
+ * so a quoted redirection target still parses. Bounded: one heredoc marker per
+ * line is recognized, and the scan is line/quote based, not a shell parser.
+ */
+const redirectView = command => {
+  const lines = command.split('\n')
+  for (let i = 0; i < lines.length; i += 1) {
+    const marker = heredocDelimiter(lines[i])
+    if (marker === null) continue
+    const stripTabs = marker.stripTabs
+    const delimiter = marker.delimiter
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const candidate = stripTabs ? lines[j].replace(/^\t+/, '') : lines[j]
+      if (candidate === delimiter) {
+        i = j
+        break
+      }
+      lines[j] = ''
+    }
+  }
+  const text = lines.join('\n')
+  let view = ''
+  let quote = null
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i]
+    if (quote !== null) {
+      if (char === quote && !(quote === '"' && text[i - 1] === '\\')) {
+        quote = null
+        view += char
+      } else {
+        view += char === '>' ? ' ' : char
+      }
+      continue
+    }
+    if (char === '#' && (i === 0 || /[\s;|&(]/.test(text[i - 1]))) {
+      while (i < text.length && text[i] !== '\n') i += 1
+      view += '\n'
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      view += char
+      continue
+    }
+    view += char
+  }
+  return view
+}
+
+/** A quoted-string placeholder used while the sed arguments are tokenized. */
+const QUOTED = '\u0000'
+
+/** The redirection targets of a command. */
+const redirectTargets = command => {
+  const out = []
+  for (const match of redirectView(command).matchAll(REDIRECT)) {
+    const target = clean(match[1] ?? '')
+    if (target === '' || target === '-' || target.startsWith('&') || isStreamDevice(target)) continue
+    out.push(target)
+  }
+  return out
+}
+
+/** The file arguments of every `tee` in the command. */
+const teeTargets = command => {
+  const out = []
+  for (const match of command.matchAll(TEE)) {
+    for (const raw of (match[1] ?? '').trim().split(/\s+/)) {
+      const token = clean(raw)
+      if (token === '' || token === '-' || token.startsWith('-')) continue
+      out.push(token)
+    }
+  }
+  return out
+}
+
+/**
+ * The file arguments of every in-place `sed`. The arguments are tokenized with
+ * quoted strings mapped to a placeholder: `-e`/`--expression` consumes its
+ * script, the first remaining non-placeholder argument is the sed script, and
+ * every later non-option argument is a file. This positional rule keeps an
+ * absolute path from being mistaken for a `/pattern/` script.
+ */
+const sedTargets = command => {
+  const out = []
+  for (const match of command.matchAll(SED)) {
+    const segment = match[1] ?? ''
+    if (!/(?:^|\s)(?:-i|--in-place)(?:\s|$|[.-])/.test(` ${segment}`) && !/\s-i\S/.test(segment)) continue
+    const tokens = segment.replace(/'[^']*'|"[^"]*"/g, ` ${QUOTED} `).trim().split(/\s+/).filter(Boolean)
+    let scriptSeen = false
+    for (let i = 0; i < tokens.length; i += 1) {
+      const token = tokens[i]
+      if (token === QUOTED) {
+        scriptSeen = true
+        continue
+      }
+      if (token.startsWith('-')) {
+        if (token === '-e' || token === '--expression') {
+          i += 1
+          scriptSeen = true
+        }
+        continue
+      }
+      if (!scriptSeen) {
+        scriptSeen = true
+        continue
+      }
+      out.push(clean(token))
+    }
+  }
+  return out
+}
+
+/** The destination arguments of `cp`, `mv`, and `install` (the last non-option word). */
+const copyTargets = command => {
+  const out = []
+  for (const match of command.matchAll(COPY)) {
+    const segment = match[1] ?? ''
+    // `-t DIR` / `--target-directory` name the destination as an option argument;
+    // that form is left to the end-of-turn backstop instead of guessing the token.
+    if (/(?:^|\s)(?:-t|--target-directory)(?:\s|=|$)/.test(segment)) continue
+    const words = segment.trim().split(/\s+/).filter(word => word !== '' && !word.startsWith('-'))
+    const last = words[words.length - 1]
+    if (last !== undefined) out.push(clean(last))
+  }
+  return out
+}
+
+/** The write targets of a bash command, in command order, without duplicates. */
+export function shellWritePaths(command) {
+  if (typeof command !== 'string' || command === '') return []
+  const paths = [...redirectTargets(command), ...teeTargets(command), ...sedTargets(command), ...copyTargets(command)]
+  const seen = []
+  for (const path of paths) {
+    if (!seen.includes(path)) seen.push(path)
+  }
+  return seen
+}

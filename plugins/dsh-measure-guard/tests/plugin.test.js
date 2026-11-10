@@ -89,6 +89,12 @@ test('apply registers measure_status, measure_verify, measure_mode, the eleven c
     ctx.toolsList.map(tool => tool.name),
     ['measure_status', 'measure_verify', 'measure_mode'],
   )
+  // The agent tool surface is read-only: no tool takes a parameter, so an agent cannot
+  // set the guard mode (the accepted-risk row records why a mode setter is not given to
+  // the guarded party). Adding one turns this gate red and needs a design decision.
+  for (const tool of ctx.toolsList) {
+    assert.deepEqual(Object.keys(tool.parameters?.properties ?? {}), [], `${tool.name} takes no parameter`)
+  }
   const names = ctx.commandsList.map(command => command.name)
   assert.deepEqual(names, [
     'measure-off',

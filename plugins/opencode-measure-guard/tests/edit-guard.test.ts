@@ -55,6 +55,36 @@ describe('edit guard', () => {
     await expect(guard.onToolBefore(edit(join(root, 'src/a.ts')))).resolves.toBeUndefined()
   })
 
+  test('a shell write to a source file is guarded like an edit', async () => {
+    const root = await withMeasure(await tempProject())
+    noTask(root)
+    const guard = makeGuard(root)
+    const event: ToolBeforeEvent = {
+      tool: 'bash',
+      sessionID: 'ses_1',
+      agent: 'build',
+      messageID: 'msg_1',
+      id: 'call_1',
+      input: { command: `sed -i 's/a/b/' ${join(root, 'src/a.ts')}` },
+    }
+    await expect(guard.onToolBefore(event)).rejects.toThrow()
+  })
+
+  test('a shell write inside measure/ is allowed', async () => {
+    const root = await withMeasure(await tempProject())
+    noTask(root)
+    const guard = makeGuard(root)
+    const event: ToolBeforeEvent = {
+      tool: 'bash',
+      sessionID: 'ses_1',
+      agent: 'build',
+      messageID: 'msg_1',
+      id: 'call_1',
+      input: { command: `echo hi > ${join(root, 'measure/runs/x.md')}` },
+    }
+    await expect(guard.onToolBefore(event)).resolves.toBeUndefined()
+  })
+
   test('an edit outside measure/ with no [~] task is denied with the next action', async () => {
     const root = await withMeasure(await tempProject())
     noTask(root)

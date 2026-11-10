@@ -100,6 +100,16 @@ window.__ModuleLoader__.load({
       flex: '1 1 auto',
     }
 
+    /** A secondary band chip: never wraps or shrinks; it ellipsizes instead of clipping. */
+    const chipStyle = {
+      color: 'var(--dsw-alias-label-secondary)',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      flexShrink: 0,
+      maxWidth: '33%',
+    }
+
     const panelStyle = {
       ...textStyle,
       display: 'grid',
@@ -286,19 +296,15 @@ window.__ModuleLoader__.load({
         h('span', { style: bandPrimaryStyle, title: view.bandFull === null || view.bandFull === undefined ? undefined : view.bandFull }, band),
         view.guardsOff === null || view.guardsOff === undefined
           ? null
-          : h('span', { style: { color: 'var(--dsw-alias-label-secondary)' } }, t('guards') + ': ' + guardsLabel(t, view.guardsOff)),
+          : h('span', { style: chipStyle }, t('guards') + ': ' + guardsLabel(t, view.guardsOff)),
         view.mode === null || view.mode === undefined
           ? null
-          : h(
-              'span',
-              { style: { color: 'var(--dsw-alias-label-secondary)' } },
-              t('mode') + ': ' + view.mode.value + ' (' + view.mode.source + ')',
-            ),
+          : h('span', { style: chipStyle }, t('mode') + ': ' + view.mode.value + ' (' + view.mode.source + ')'),
         view.goal === null || view.goal === undefined
           ? null
           : h(
               'span',
-              { style: { color: 'var(--dsw-alias-label-secondary)' } },
+              { style: { ...chipStyle, maxWidth: '40%' } },
               t('goal') + ': ' + view.goal.phase + ' · round ' + view.goal.round + '/' + view.goal.maxRounds + ' · ' + view.goal.objective,
             ),
         h(SetupActions, { t, sessionId, setup: view.setup, answered }),

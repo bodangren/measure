@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_limits_docs_20261110",
+  "type": "docs",
+  "status": "done",
+  "created_at": "2026-11-10T20:20:00Z",
+  "updated_at": "2026-11-10T20:40:00Z",
+  "description": "Document the Host and OpenCode runtime constraints in the adapter READMEs, pin the sections, and close the constraint rows",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

@@ -8,23 +8,68 @@ import { needsSetup, resolveSetupChoice, setupBandText } from './setup.js'
 /** The route the Client fetches: `GET /measure-guard/state?sessionId=<id>`. */
 export const CLIENT_STATE_PATH = '/measure-guard/state'
 
-/** The most characters the band shows on one line (Story S1 of the band track). */
+/** The most columns the band shows on one line (Story S1 of the band track). */
 export const BAND_MAX = 160
 
 /**
- * The compact band of one line (pinned contract). An input of length at most
- * `max` is unchanged. A longer input is cut at the last space at or before
- * `max - 1` characters (a space at index 0 is a cut too); that space is not
- * kept, the kept prefix is trimmed of trailing whitespace, a trailing ` ·` is
- * stripped, and `…` is appended. When no space exists at or before `max - 1`,
- * the first `max - 1` characters are kept. The result is at most `max`
- * characters. A non-string or an empty input is null.
+ * The terminal columns of one code point (an approximation of a terminal, with no
+ * dependency): an East Asian wide or fullwidth code point, an emoji, or a CJK extension
+ * plane character counts two, a combining mark counts zero, and everything else counts
+ * one. Right-to-left and other zero-width controls are counted as one.
+ */
+const columnsOf = char => {
+  const code = char.codePointAt(0) ?? 0
+  if (
+    (code >= 0x0300 && code <= 0x036f) ||
+    (code >= 0x1ab0 && code <= 0x1aff) ||
+    (code >= 0x1dc0 && code <= 0x1dff) ||
+    (code >= 0x20d0 && code <= 0x20ff) ||
+    (code >= 0xfe20 && code <= 0xfe2f)
+  ) return 0
+  if (
+    (code >= 0x1100 && code <= 0x115f) ||
+    (code >= 0x2e80 && code <= 0xa4cf && code !== 0x303f) ||
+    (code >= 0xa960 && code <= 0xa97f) ||
+    (code >= 0xac00 && code <= 0xd7a3) ||
+    (code >= 0xf900 && code <= 0xfaff) ||
+    (code >= 0xfe10 && code <= 0xfe19) ||
+    (code >= 0xfe30 && code <= 0xfe6f) ||
+    (code >= 0xff00 && code <= 0xff60) ||
+    (code >= 0xffe0 && code <= 0xffe6) ||
+    (code >= 0x1f300 && code <= 0x1faff) ||
+    (code >= 0x20000 && code <= 0x3fffd)
+  ) return 2
+  return 1
+}
+
+/**
+ * The compact band of one line (pinned contract). `max` is a column budget: an East Asian
+ * wide or fullwidth character counts two columns and a combining mark zero, so a CJK title
+ * cannot overflow a narrow band and a zero-width character is not over-counted. A line of
+ * at most `max` columns is unchanged. A wider line is cut at the last space whose prefix
+ * fits in `max - 1` columns (a space at index 0 is a cut too); that space is not kept, the
+ * kept prefix is trimmed of trailing whitespace, a trailing ` ·` is stripped, and `…` is
+ * appended. When no such space exists, the longest prefix that fits in `max - 1` columns is
+ * kept. The result is at most `max` columns (and at most `max` characters). A non-string or
+ * an empty input is null.
  */
 export function compactBand(text, max = BAND_MAX) {
   if (typeof text !== 'string' || text === '') return null
-  if (text.length <= max) return text
-  const cut = text.lastIndexOf(' ', max - 1)
-  const head = (cut >= 0 ? text.slice(0, cut) : text.slice(0, max - 1)).replace(/\s+·$/, '').trimEnd()
+  const chars = [...text]
+  const total = chars.reduce((sum, char) => sum + columnsOf(char), 0)
+  if (total <= max) return text
+  let width = 0
+  let fits = 0
+  let space = -1
+  for (let index = 0; index < chars.length; index += 1) {
+    const columns = columnsOf(chars[index])
+    if (width + columns > max - 1) break
+    width += columns
+    if (chars[index] === ' ') space = index
+    fits = index + 1
+  }
+  const cut = space >= 0 ? space : fits
+  const head = chars.slice(0, cut).join('').replace(/\s+·$/, '').trimEnd()
   return `${head}…`
 }
 

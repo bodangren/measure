@@ -360,6 +360,30 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/dsh_measure_installer_atomic_20261110/](./archive/dsh_measure_installer_atomic_20261110/)*
   *Write each installed skill file and the stamp through a sibling temporary file and rename, and test the atomic path*
 
+- [x] **Track: DSH Measure shell visibility for every adapter**
+  *Link: [./archive/dsh_measure_shell_visibility_adapters_20261110/](./archive/dsh_measure_shell_visibility_adapters_20261110/)*
+  *Share the bounded shell-write grammar in the core and feed its targets to the mod and OpenCode edit and TDD guards*
+
+- [x] **Track: DSH Measure band width**
+  *Link: [./archive/dsh_measure_band_width_20261110/](./archive/dsh_measure_band_width_20261110/)*
+  *Cap the band line by terminal columns so wide East Asian text cannot overflow and zero-width text is not over-counted*
+
+- [x] **Track: DSH Measure TDD names and fixture paths**
+  *Link: [./archive/dsh_measure_tdd_names_fixture_20261110/](./archive/dsh_measure_tdd_names_fixture_20261110/)*
+  *Cover two more test-file conventions and test commands, and point the real-data fixture generator at the archived plans*
+
+- [x] **Track: DSH Measure accepted-risk closure**
+  *Link: [./archive/dsh_measure_accepted_closure_20261110/](./archive/dsh_measure_accepted_closure_20261110/)*
+  *Close the accepted design rows with recorded rationale and pin the read-only agent tool surface*
+
+- [x] **Track: DSH Measure limits documentation**
+  *Link: [./archive/dsh_measure_limits_docs_20261110/](./archive/dsh_measure_limits_docs_20261110/)*
+  *Document the Host and OpenCode runtime constraints in the adapter READMEs, pin the sections, and close the constraint rows*
+
+- [x] **Track: DSH Measure track-scoped gates**
+  *Link: [./archive/dsh_measure_red_scope_gates_20261110/](./archive/dsh_measure_red_scope_gates_20261110/)*
+  *Apply the Mid Red track scope to the spec-review scope rule, ux-paths, and the Jr Green HEAD-advance check*
+
 - [x] **Track: Red gate track scope**
   *Link: [./archive/red_gate_track_scope_20261108/](./archive/red_gate_track_scope_20261108/)*
   *Scope the mid-red role gate to the commits of the track under check, so commits of other tracks in the same range do not fail it (PM request, 2026-11-08).*

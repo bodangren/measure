@@ -13,7 +13,7 @@ str() { jq -Rs . < "$1"; }
   echo
   printf 'export const INDEX = %s\n\n' "$(str "$m/index.md")"
   printf 'export const TRACKS = %s\n\n' "$(str "$m/tracks.md")"
-  printf 'export const BENCHMARK_PLAN = %s\n\n' "$(str "$m/tracks/agent_performance_benchmarking_20260527/plan.md")"
-  printf 'export const GUARD_PLAN = %s\n' "$(str "$m/tracks/measure_guard_20261004/plan.md")"
+  printf 'export const BENCHMARK_PLAN = %s\n\n' "$(str "$m/archive/agent_performance_benchmarking_20260527/plan.md")"
+  printf 'export const GUARD_PLAN = %s\n' "$(str "$m/archive/measure_guard_20261004/plan.md")"
 } > "$here/real.ts"
 echo "wrote $here/real.ts"

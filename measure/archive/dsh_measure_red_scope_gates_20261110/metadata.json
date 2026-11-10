@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_measure_red_scope_gates_20261110",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-10T20:50:00Z",
+  "updated_at": "2026-11-10T21:10:00Z",
+  "description": "Apply the Mid Red track scope to the spec-review scope rule, ux-paths, and the Jr Green HEAD-advance check",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "",
+  "completed": "2026-11-10"
+}

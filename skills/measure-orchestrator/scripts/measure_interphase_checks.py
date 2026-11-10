@@ -311,6 +311,32 @@ def scoped_files(repo: Path, scope: TrackScope, name: str) -> tuple[set[str], li
     return paths, errors
 
 
+def scoped_changed_files(repo: Path, baseline: str, track: str) -> list[str] | None:
+    """Every path the track's own commits of `baseline..HEAD` changed, or None.
+
+    None means "no usable track scope" — no track, no commit of another track in
+    the range, or a commit whose paths cannot be read — and the caller keeps the
+    full-range behavior. A commit of another track is proven by `track_scope`
+    (its ids name track folders and none is this track), so narrowing is fail closed.
+    """
+    scope = track_scope(repo, baseline, track) if track else None
+    if scope is None:
+        return None
+    paths: set[str] = set()
+    for sha in scope.own:
+        commit = commit_paths(repo, sha)
+        if commit is None:
+            return None
+        paths.update(commit)
+    return sorted(paths)
+
+
+def own_commits_after(repo: Path, baseline: str, track: str) -> list[str] | None:
+    """The track's own commits in `baseline..HEAD`, or None when the track scope does not apply."""
+    scope = track_scope(repo, baseline, track) if track else None
+    return None if scope is None else scope.own
+
+
 def commit_paths(repo: Path, revision: str) -> set[str] | None:
     """Every path one commit changed; for a merge, only the paths the merge changed itself."""
     result = git(repo, "diff-tree", "-r", "--root", "--cc", "--no-renames", "-z", "--name-only", "--no-commit-id", revision)
@@ -391,8 +417,14 @@ def split_env_list(name: str, default: str) -> tuple[str, ...]:
     return tuple(item.strip() for item in raw.split(",") if item.strip())
 
 
-def ux_paths(repo: Path, baseline: str) -> list[str]:
-    return ux_relevant(changed_files(repo, baseline))
+def ux_paths(repo: Path, baseline: str, track: str = "") -> list[str]:
+    """The user-facing changed paths; with a track, only the track's own commits are read.
+
+    A working-tree change has no track id, so it counts in each mode. The failures of
+    `track_ux_paths` are not reported here; the command prints them.
+    """
+    paths, _scope, _errors = track_ux_paths(repo, baseline, track, "ux-paths")
+    return paths
 
 
 def track_ux_paths(repo: Path, baseline: str, track: str, name: str) -> tuple[list[str], TrackScope | None, list[str]]:
@@ -400,9 +432,9 @@ def track_ux_paths(repo: Path, baseline: str, track: str, name: str) -> tuple[li
 
     A working-tree change has no track id, so it counts in each mode.
     """
-    scope = track_scope(repo, baseline, track)
+    scope = track_scope(repo, baseline, track) if track else None
     if scope is None:
-        return ux_paths(repo, baseline), None, []
+        return ux_relevant(changed_files(repo, baseline)), None, []
     own, errors = scoped_files(repo, scope, name)
     return ux_relevant(sorted(own | worktree_files(repo))), scope, errors
 
@@ -959,13 +991,13 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                 if resolved.returncode != 0:
                     feedback.append(f"--baseline does not resolve to a commit: {args.baseline}")
                 else:
+                    # The tree diff runs in each mode, so a failure of git fails the gate first.
                     listed = git(repo, "diff", "--name-only", "--no-renames", "-z", f"{args.baseline}..HEAD")
                     if listed.returncode != 0:
                         lines = listed.stdout.splitlines()
                         line = lines[0] if lines else ""
                         feedback.append(f"spec-review could not list committed files: {line}")
                     else:
-                        # The tree diff runs in each mode, so a failure of git fails the gate first.
                         scope = track_scope(repo, args.baseline, args.track)
                         if scope is None:
                             paths = listed.stdout.split("\0")

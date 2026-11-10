@@ -171,10 +171,12 @@ test('the TDD name rules cover nested test directories and the node --test runne
     'src/__tests__/deep/x.ts',
     'plugins/a/tests/deep/y.js',
     'src/app.test.ts',
+    'src/a_test.dart',
+    'spec/b_test.rb',
   ]) {
     assert.equal(isTestFile(path), true, path)
   }
-  for (const path of ['tests/README.md', 'src/app.js', 'docs/spec/guide.md']) {
+  for (const path of ['tests/README.md', 'src/app.js', 'docs/spec/guide.md', 'src/a.dart', 'src/b.rb']) {
     assert.equal(isTestFile(path), false, path)
   }
   for (const command of [
@@ -183,10 +185,14 @@ test('the TDD name rules cover nested test directories and the node --test runne
     'node --test-only x.ts',
     'npm test',
     'pytest -q',
+    'node --run test',
+    'cargo nextest run',
+    'dart test',
+    'flutter test',
   ]) {
     assert.equal(isTestCommand(command), true, command)
   }
-  for (const command of ['node -e "run()"', 'node script.js', 'git status --short']) {
+  for (const command of ['node -e "run()"', 'node script.js', 'git status --short', 'node --run build', 'cargo nextest list']) {
     assert.equal(isTestCommand(command), false, command)
   }
 })
