@@ -4,8 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: DSH idle-session compaction**
-  *Link: [./tracks/dsh_idle_compaction_20261110/](./tracks/dsh_idle_compaction_20261110/)*
+- (none)
 
 ---
 
@@ -400,3 +399,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Guard phase start**
   *Link: [./archive/guard_phase_start_20261109/](./archive/guard_phase_start_20261109/)*
   *Make the phase-start rule of the measure-guard closeout guard a note in place of a deny, so a task can start or close while an earlier phase has no checkpoint (PM request, 2026-11-09).*
+
+- [x] **Track: DSH idle-session compaction**
+  *Link: [./archive/dsh_idle_compaction_20261110/](./archive/dsh_idle_compaction_20261110/)*
+  *Compact a live session after 55 minutes without activity, but skip it when nothing new was recorded since the last compaction*

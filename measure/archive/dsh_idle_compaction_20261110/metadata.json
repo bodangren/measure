@@ -1,0 +1,12 @@
+{
+  "track_id": "dsh_idle_compaction_20261110",
+  "type": "feature",
+  "status": "done",
+  "created_at": "2026-11-09T22:52:00Z",
+  "updated_at": "2026-11-10T14:35:00Z",
+  "description": "Compact a live session after 55 minutes without activity, but skip it when nothing new was recorded since the last compaction",
+  "estimated_tasks": 13,
+  "actual_tasks": 13,
+  "deviation_notes": "The tech-stack tooling exception landed in the records commit after the Phase 1 code because the first plan placed it in Phase 2; the plan now carries it as Task 1.0 and this note records the order. Spec review round 1 was applied: the one-time history read uses the supported sessionQuery seam instead of a deprecated synchronous reader, the speculative includeSubagents option was removed (root sessions only), and the install writer, busy meaning, sparse-history no-op, and task count were made explicit. Spec review round 2 applied F10: the one-time scan uses ctx.sessionQuery.readSession() full SessionEvents (the listEvents records lack data/ignorable/surfaceOp), so the failed-compaction-end, checkpoint-replacement, and ignorable-record rules hold on a reload; F11 changed the scan wording from cancellable to awaited.",
+  "completed": "2026-11-10"
+}
