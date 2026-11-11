@@ -139,9 +139,42 @@ check_registry() {
   return "$problems"
 }
 
+# remediation_escalation_missing TRACKS_ROOT: print the id of each active
+# _fix<round>_ track whose round is 3 or higher and whose metadata.json has no
+# non-empty escalation reason. The review's round limit allows a third round only
+# with a recorded escalation.
+remediation_escalation_missing() {
+  local root="$1" meta id reason
+  shopt -s nullglob
+  for meta in "$root"/*_fix[3-9]_*/metadata.json; do
+    id="$(basename "$(dirname "$meta")")"
+    reason="$(python3 - "$meta" <<'PY'
+import json, sys
+try:
+    value = json.load(open(sys.argv[1])).get('escalation', '')
+except Exception:
+    value = ''
+print(' '.join(str(value).split()) if value else '')
+PY
+)"
+    if [ -z "$reason" ]; then
+      printf '%s\n' "$id"
+    fi
+  done
+  shopt -u nullglob
+}
+
 OUT="$(check_registry "$REGISTRY" "$ARCHIVE" 2>&1)" || fail "the registry is not structurally sound:
 $OUT"
 echo "[PASS] the registry has one complete three-line entry per archive directory"
+
+echo "=== active remediation tracks beyond round 2 need an escalation reason ==="
+MISSING="$(remediation_escalation_missing "$REPO_ROOT/measure/tracks")"
+if [ -z "$MISSING" ]; then
+  echo "[PASS] no active _fix3+ track lacks an escalation reason"
+else
+  fail "active _fix3+ tracks without an escalation reason: $(printf '%s ' $MISSING)"
+fi
 
 TMP="$(mktemp -d "${TMPDIR:-/tmp}/registry-neg.XXXXXX")"
 trap 'rm -rf -- "$TMP"' EXIT
@@ -222,6 +255,19 @@ if OUT="$(check_registry "$TMP/tracks.md" "$TMP/archive" 2>&1)"; then
 fi
 [[ "$OUT" == *'active tracks'* ]] || fail "two-active message absent: $OUT"
 echo "[PASS] two active tracks are rejected"
+
+# Remediation round limit: a _fix3+ active track without an escalation reason is
+# rejected; a _fix2 track and a _fix3 track with the reason are accepted.
+mkdir -p "$TMP/tracks/x_fix3_20261111" "$TMP/tracks/y_fix3_20261111" "$TMP/tracks/z_fix2_20261111"
+printf '{"track_id": "x_fix3_20261111"}\n' >"$TMP/tracks/x_fix3_20261111/metadata.json"
+printf '{"track_id": "y_fix3_20261111", "escalation": "third round: the fix2 re-review found a defect in the changed lines"}\n' >"$TMP/tracks/y_fix3_20261111/metadata.json"
+printf '{"track_id": "z_fix2_20261111"}\n' >"$TMP/tracks/z_fix2_20261111/metadata.json"
+MISSING="$(remediation_escalation_missing "$TMP/tracks")"
+if [ "$MISSING" = "x_fix3_20261111" ]; then
+  echo "[PASS] a _fix3 track without an escalation reason is rejected"
+else
+  fail "remediation fixture: missing list is [$MISSING], expected [x_fix3_20261111]"
+fi
 
 # Empty-description fallback: when metadata.description is empty, the expected
 # description is the label-stripped bold title.
