@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Measure</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; font-family: var(--oc-font, system-ui, sans-serif); }
+      body { color: var(--primary-text); background: transparent; }
+      #root { padding: 12px; box-sizing: border-box; }
+      #root > * + * { margin-top: 12px; }
+      .header { display: flex; align-items: center; gap: 8px; }
+      .header .title { font-weight: 600; font-size: 14px; flex: 1; }
+      .band { font-family: var(--oc-mono, ui-monospace, monospace); font-size: 12px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+      .band .marker { font-weight: 700; }
+      .band .marker-primary { color: var(--primary-text); }
+      .band .marker-success { color: var(--success-text); }
+      .band .marker-warning { color: var(--warning-text); }
+      .band .marker-neutral { color: var(--primary-text); opacity: 0.7; }
+      .band-error { color: var(--warning-text); }
+      .current-task { padding: 8px 10px; border-radius: 6px; background: var(--oc-surface-hover, rgba(255, 255, 255, 0.05)); cursor: pointer; }
+      .current-task:hover { background: var(--oc-surface-active, rgba(255, 255, 255, 0.08)); }
+      .current-task .label { font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
+      .current-task .text { font-size: 13px; }
+      .spinner-row { display: flex; align-items: center; gap: 8px; font-size: 12px; opacity: 0.7; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="main.js"></script>
+  </body>
+</html>

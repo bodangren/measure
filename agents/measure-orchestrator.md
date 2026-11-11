@@ -334,6 +334,7 @@ track-authoring edits are required.
 
 - Give each subagent one role with explicit ownership boundaries.
 - Pass the role model from the table on every Measure spawn.
+- Put one line in every role brief: `Route: <provider/model#variant>`. Use the route you pass as `model` for that spawn.
 - Never ask an audit-only role to fix the implementation it audits.
 - Never let Red edit production behavior or Green fabricate human evidence.
 - Never reuse a stale result artifact after HEAD changes.

@@ -1,0 +1,20 @@
+{
+  "name": "measure-status",
+  "version": "0.1.0",
+  "private": true,
+  "openchamber": {
+    "apiVersion": 1,
+    "engines": { "openchamber": ">=1.24.0" },
+    "contributes": {
+      "panel": { "id": "measure-status", "name": "Measure", "icon": "list-check", "entry": "panel/index.html" },
+      "statusSection": { "entry": "panel/index.html", "title": "Measure", "height": 48 },
+      "page": true,
+      "capabilities": ["files"]
+    }
+  },
+  "devDependencies": {
+    "@openchamber/sdk": "^2.2.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
