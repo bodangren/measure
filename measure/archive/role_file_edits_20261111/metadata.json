@@ -3,10 +3,10 @@
   "type": "chore",
   "status": "done",
   "created_at": "2026-11-11T09:26:10Z",
-  "updated_at": "2026-11-11T10:06:49Z",
+  "updated_at": "2026-11-11T10:33:29Z",
   "description": "Copy the installed role-file edits (higher step limits, the Rating rubric v1 section, the Route line rule) into agents/, so the repository and the installed roles agree (PM decision, 2026-11-11)",
   "estimated_tasks": 3,
   "actual_tasks": 3,
-  "deviation_notes": "The track used the plain Measure workflow (new-track, then implement), not the orchestrated role chain, by the PM decision of 2026-11-11. The orchestrator picked the Nit F1 for FIX, and Round 2 passed. .gitignore excludes measure/runs/, so the spec-review logs in measure/runs/role_file_edits_20261111/ are not committed. The phase verification has no human confirmation in this session, because the PM decision sets the done-when and Daniel reviews PR #9 before the merge.",
+  "deviation_notes": "The track used the plain Measure workflow (new-track, then implement), not the orchestrated role chain, by the PM decision of 2026-11-11. The orchestrator picked the Nit F1 for FIX, and Round 2 passed. .gitignore excludes measure/runs/, so the spec-review logs in measure/runs/role_file_edits_20261111/ are not committed. The phase verification has no human confirmation in this session, because the PM decision sets the done-when and Daniel reviews PR #9 before the merge. The closeout check of 2026-11-11 exits 1 with one expected FAIL: the missing closeout manifest; this plain track creates no orchestrated artifacts. The archive commit (273fd6b) came before the phase checkpoint (9551783) and the registry entry (added in the commit after 5b0c8e1), because the guard lets the registry entry change to [x] only after every plan task is [x].",
   "completed": "2026-11-11"
 }

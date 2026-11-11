@@ -407,3 +407,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: DSH Measure band strip**
   *Link: [./archive/dsh_measure_band_strip_20261110/](./archive/dsh_measure_band_strip_20261110/)*
   *Keep the Measure band to one bounded row and turn its inline problem list into a count that opens the panel*
+
+- [x] **Track: Installed role-file edits**
+  *Link: [./archive/role_file_edits_20261111/](./archive/role_file_edits_20261111/)*
+  *Copy the installed role-file edits (higher step limits, the Rating rubric v1 section, the Route line rule) into agents/, so the repository and the installed roles agree (PM decision, 2026-11-11)*
