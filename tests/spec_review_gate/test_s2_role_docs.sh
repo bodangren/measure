@@ -235,6 +235,25 @@ if blank "$first_bullet"; then fail "Role Handoff Rules has no first bullet"
 elif [[ "$(flat "$first_bullet")" == "- Run roles in the skill's order: spec review once per track before the first strategy, then strategy,"* ]]; then pass "first bullet starts with the contract text"
 else fail "first bullet starts with [$(flat "$first_bullet" | cut -c1-120)]"; fi
 
+# --- the orchestrator process review (2026-11-10), improvement 1 ---
+ORCH_FM="$(awk 'NR == 1 && $0 != "---" { exit } NR > 1 && $0 == "---" { exit } NR > 1 { print }' "$ORCH_AGENT")"
+echo "=== agents/measure-orchestrator.md: default shell effect is deny ==="
+default_effect="$(printf '%s\n' "$ORCH_FM" | awk '
+  $0 == "  - action: shell" { shell = 1; next }
+  shell && $0 == "    resource: \"*\"" { want = 1; next }
+  want && $0 ~ /^    effect: / { print $2; exit }
+  { shell = 0; want = 0 }
+')"
+if [ "$default_effect" = "deny" ]; then pass "default shell effect is deny"
+else fail "default shell effect is [$default_effect], expected deny"; fi
+
+DISPATCH="$(section "$ORCH_AGENT" '## Canonical Instructions' '^## ')"
+in_flat 'dispatch paragraph names agent: "build"' "$DISPATCH" 'with `session.create`, `agent: "build"`, a full brief'
+in_flat 'dispatch paragraph forbids an agent-less session' "$DISPATCH" 'Never dispatch a session without an `agent` value'
+PROGRESS="$(section "$ORCH_AGENT" '## Progress And Recovery' '^## ')"
+in_flat 'progress rule reads session.status after a dispatch' "$PROGRESS" 'read `session.status` at the next orchestration step'
+in_flat 'progress rule stops a session waiting for a permission' "$PROGRESS" 'stop a session that waits for a permission'
+
 echo "=== agents/measure-orchestrator.md: the S2 change kept the other sections (Decision 22) ==="
 # Decision 22 applies to the S2 change only, so compare the phase base with the S2 checkpoint.
 # Later tracks may change other sections of the file.
