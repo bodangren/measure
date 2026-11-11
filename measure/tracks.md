@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Orchestrator shell default ask**
-  *Link: [./tracks/orchestrator_shell_ask_20261111/](./tracks/orchestrator_shell_ask_20261111/)*
-  *Change the default shell entry of agents/measure-orchestrator.md from deny back to ask and keep the rest of 72e20d3 (PM order, 2026-11-11)*
+- (none)
 
 ---
 
