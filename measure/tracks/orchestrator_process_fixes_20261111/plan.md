@@ -6,11 +6,11 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 
 **Each phase is a milestone: its commits are pushed to `origin/main` and its checkpoint is recorded before the next phase starts.**
 
-## Phase 1: Fail-fast dispatch and permissions [checkpoint: PENDING]
+## Phase 1: Fail-fast dispatch and permissions [checkpoint: 0aee627]
 
-- [~] Task 1.1: `agents/measure-orchestrator.md`: the dispatch paragraph writes `session.create` with `agent: "build"` and forbids an `agent`-less dispatch; the default shell effect becomes `deny` with every allow rule kept; "Progress And Recovery" gains the command-classes/`session.status`/stop-waiting rule (review improvement 1)
-- [ ] Task 1.2: `tests/spec_review_gate/test_s2_role_docs.sh`: pin the `agent: "build"` dispatch line and the non-`ask` default shell effect; both checks fail on `e2315b7`
-- [ ] Task: Measure - User Manual Verification 'Phase 1: Fail-fast dispatch and permissions' (Protocol in workflow.md)
+- [x] Task 1.1: `agents/measure-orchestrator.md`: the dispatch paragraph writes `session.create` with `agent: "build"` and forbids an `agent`-less dispatch; the default shell effect becomes `deny` with every allow rule kept; "Progress And Recovery" gains the command-classes/`session.status`/stop-waiting rule (review improvement 1) `72e20d3`
+- [x] Task 1.2: `tests/spec_review_gate/test_s2_role_docs.sh`: pin the `agent: "build"` dispatch line and the non-`ask` default shell effect; both checks fail on `e2315b7` `f280025`
+- [x] Task: Measure - User Manual Verification 'Phase 1: Fail-fast dispatch and permissions' (Protocol in workflow.md) `0aee627`
 
 ## Phase 2: Remediation limit and records hygiene [checkpoint: PENDING]
 
