@@ -4,7 +4,8 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Merge pull request 9**
+  *Link: [./tracks/pr_9_merge_20261111/](./tracks/pr_9_merge_20261111/)*
 
 ---
 
