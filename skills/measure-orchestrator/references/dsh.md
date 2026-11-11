@@ -90,15 +90,22 @@ Return the MEASURE_AGENT_RESULT block described below.
 <agents/measure-<role>.md body without YAML frontmatter>
 ```
 
-The result block, at the end of the child's final message:
+The result block, at the end of the child's final message (the shared
+`references/contracts.md` shape):
 
 ```text
 MEASURE_AGENT_RESULT
 role: <role>
-phase: <track setup | phase N>
-status: <pass | fail | blocked | inconclusive>
-findings: <one line per finding, or "none">
-evidence: <the commands run and their results>
+status: complete|blocked|partial
+track: <track id>
+phase: <phase heading or track setup/review>
+commits: <short shas or none>
+tests_run: <commands and pass/fail result>
+files_changed: <brief list>
+plan_updates: <brief summary>
+known_failures: <none or exact remaining failures>
+handoff: <what the next role or orchestrator should know>
+END_MEASURE_AGENT_RESULT
 ```
 
 Two roles keep their own formats when the role file defines one (the spec
