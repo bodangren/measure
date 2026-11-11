@@ -26,11 +26,11 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 - [x] Task 3.3: `skills/measure-orchestrator/references/dsh.md`: replace the result block with the `contracts.md` shape including `END_MEASURE_AGENT_RESULT` `9164e9d`
 - [x] Task: Measure - User Manual Verification 'Phase 3: Committed gates and final acceptance' (Protocol in workflow.md) `9d457e8`
 
-## Phase 4: Other findings, verification, and closeout [checkpoint: PENDING]
+## Phase 4: Other findings, verification, and closeout [checkpoint: 41ef68b]
 
 - [x] Task 4.1: fix the Mid Red / Jr Green HEAD-advance check to compare the resolved full baseline SHA with `HEAD`; add a checker test with a short baseline `3167cad`
 - [x] Task 4.2: the audit roles' shell permissions: keep the write-redirection deny and allow `2>&1`; pin an allow/deny test `c68ac68`
 - [x] Task 4.3: remove the stale TUTOR-001 paragraph from `skills/measure-orchestrator/SKILL.md`, return `measure/tech-debt.md` to 50 lines, and name the role table as the single default model source in `agents/measure-orchestrator.md` `f9ab73c`
 - [x] Task 4.4: run the full gates (`bash tests/dsh/run.sh`, `bash tests/spec_review_gate/run.sh`), both parity gates, and the plugin suites; record the results `38bc764`
-- [~] Task 4.5: finalize `metadata.json`, archive the track, update the registry and the README status line, run the closeout check, and record the manifest-only FAIL
-- [ ] Task: Measure - User Manual Verification 'Phase 4: Other findings, verification, and closeout' (Protocol in workflow.md)
+- [x] Task 4.5: finalize `metadata.json`, archive the track, update the registry and the README status line, run the closeout check, and record the manifest-only FAIL `f8091e3`
+- [x] Task: Measure - User Manual Verification 'Phase 4: Other findings, verification, and closeout' (Protocol in workflow.md) `41ef68b`
