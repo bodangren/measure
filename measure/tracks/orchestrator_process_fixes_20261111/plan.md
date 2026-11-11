@@ -21,8 +21,8 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 
 ## Phase 3: Committed gates and final acceptance [checkpoint: PENDING]
 
-- [~] Task 3.1: add `measure/gates.json` and the checker's `load_gates` (environment variable wins over the file; malformed/missing file falls back with a message); tests for the file and the override
-- [ ] Task 3.2: `closeout_feedback`: require a passing `measure/runs/<track>/final-acceptance-*.json` or a `"lane": "light"` metadata value with the INFO line; tests for failing, passing, and light-lane archives
+- [x] Task 3.1: add `measure/gates.json` and the checker's `load_gates` (environment variable wins over the file; malformed/missing file falls back with a message); tests for the file and the override `32302be`
+- [~] Task 3.2: `closeout_feedback`: require a passing `measure/runs/<track>/final-acceptance-*.json` or a `"lane": "light"` metadata value with the INFO line; tests for failing, passing, and light-lane archives
 - [ ] Task 3.3: `skills/measure-orchestrator/references/dsh.md`: replace the result block with the `contracts.md` shape including `END_MEASURE_AGENT_RESULT`
 - [ ] Task: Measure - User Manual Verification 'Phase 3: Committed gates and final acceptance' (Protocol in workflow.md)
 
