@@ -1,0 +1,11 @@
+{
+  "track_id": "orchestrator_shell_ask_20261111",
+  "type": "chore",
+  "status": "in-progress",
+  "created_at": "2026-11-11T15:20:45Z",
+  "updated_at": "2026-11-11T15:20:45Z",
+  "description": "Change the default shell entry of agents/measure-orchestrator.md from deny back to ask and keep the rest of 72e20d3 (PM order, 2026-11-11)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
