@@ -19,12 +19,12 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 - [x] Task 2.3: `tests/dsh/test-registry.sh`: reject an active `_fix[3-9]_` track without a non-empty `metadata.json` `escalation` key; fixture cases cover accepted and rejected `063470a`
 - [x] Task: Measure - User Manual Verification 'Phase 2: Remediation limit and records hygiene' (Protocol in workflow.md) `e62fd14`
 
-## Phase 3: Committed gates and final acceptance [checkpoint: PENDING]
+## Phase 3: Committed gates and final acceptance [checkpoint: 9d457e8]
 
 - [x] Task 3.1: add `measure/gates.json` and the checker's `load_gates` (environment variable wins over the file; malformed/missing file falls back with a message); tests for the file and the override `32302be`
-- [~] Task 3.2: `closeout_feedback`: require a passing `measure/runs/<track>/final-acceptance-*.json` or a `"lane": "light"` metadata value with the INFO line; tests for failing, passing, and light-lane archives
-- [ ] Task 3.3: `skills/measure-orchestrator/references/dsh.md`: replace the result block with the `contracts.md` shape including `END_MEASURE_AGENT_RESULT`
-- [ ] Task: Measure - User Manual Verification 'Phase 3: Committed gates and final acceptance' (Protocol in workflow.md)
+- [x] Task 3.2: `closeout_feedback`: require a passing `measure/runs/<track>/final-acceptance-*.json` or a `"lane": "light"` metadata value with the INFO line; tests for failing, passing, and light-lane archives `3402e81`
+- [x] Task 3.3: `skills/measure-orchestrator/references/dsh.md`: replace the result block with the `contracts.md` shape including `END_MEASURE_AGENT_RESULT` `9164e9d`
+- [x] Task: Measure - User Manual Verification 'Phase 3: Committed gates and final acceptance' (Protocol in workflow.md) `9d457e8`
 
 ## Phase 4: Other findings, verification, and closeout [checkpoint: PENDING]
 
