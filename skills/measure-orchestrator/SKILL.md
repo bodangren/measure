@@ -57,34 +57,6 @@ A task is blocked only by structure:
 A free-text occurrence of the word "deferred" does not drop a task from the
 incomplete count.
 
-## `tests/_lib/` Template (deferred — see `tech-debt.md`)
-
-A future template will provide shared bash libraries for every contract test to source:
-
-- `banned_re.sh` — extracts `BANNED_RE` from `measure/doctor.sh` and prints it
-- `track_dir.sh` — `track_dir_resolve <id>` prefers `measure/archive/<id>` if it exists
-- `marker_consistency.sh` — `marker_consistency_check <plan> <phase>` returns INCOMPLETE on
-  a phase with 0 `[x]` tasks (anti-pattern A4)
-- `consent_check.sh` — `consent_check <artifact>` returns OK if anonymized or consent
-  artifact present (anti-pattern A2)
-- `refutation_filter.sh` — `refutation_filter <input>` excludes only file-path contexts
-  and policy-disclaimer markers, not bare English words (anti-pattern A7)
-
-The full lib is deferred (large change). Until installed, each `tests/*.sh` re-implements
-the patterns inline; the `measure-orchestrator-audit` subagent flags divergence.
-
-## Aggregate `bash measure/test-all.sh` (lightweight, post-deferred-lib)
-
-Until the lib is installed, projects can add a `bash measure/test-all.sh` aggregate that:
-
-- runs every `tests/*.sh` (no glob skip; tests that opt out of aggregates use a
-  `## skip-aggregate:` header per test-strategy.md §7)
-- emits a single summary: total tests, total PASS, total FAIL, exit code
-- is the canonical "run every measure contract test" entry point
-
-This replaces the current `npm test` (which only runs `tests/s1.sh` on TUTOR-001
-projects). A future pre-commit hook can run this aggregate.
-
 ## Role Order
 
 Run roles in this order. Strategy, Mid, and Jr are sequential. Review A/B/C can run in

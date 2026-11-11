@@ -187,10 +187,10 @@ MiMo (`*/mimo-*`), Muse (`*/muse-*`).
 
 ### Substitution
 
-Use the table model by default. Substitute a model only when its plan quota is low or
-the model fails to start. Pick the replacement from the same tier first, then from the
-next tier, and keep the independence rules. Record each substitution as a deviation in
-the role handoff and in the final report.
+Use the table model by default. `ra-quota pick` is the single override: use the route
+it prints for a role only when the table model's plan quota is low or the model fails
+to start, and record that as a substitution (never as a second default). Record each
+substitution in the role handoff and in the final report.
 
 For each new role, run
 `/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick <role> --why`
