@@ -1,7 +1,7 @@
 ---
 description: Performs the only post-acceptance mutations by archiving a Measure track and maintaining registry and closeout evidence
 mode: subagent
-steps: 40
+steps: 56
 permissions:
   - action: edit
     resource: "*"

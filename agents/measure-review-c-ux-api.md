@@ -1,7 +1,7 @@
 ---
 description: Independently audits applicable Measure API, route, and user-flow contract wiring without duplicating visual or adversarial review
 mode: subagent
-steps: 40
+steps: 56
 permissions:
   - action: edit
     resource: "*"
@@ -119,3 +119,17 @@ held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 ESCALATE item to the user.
 
 This is an audit-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact, route blockers to Green, and end with the required `MEASURE_AGENT_RESULT` block.
+
+## Rating rubric v1 (optional result keys)
+
+In the audit result JSON, add two optional keys. Change no other key.
+
+- `"route"`: copy the text after `Route:` in your brief (provider/model#variant). If the brief has no `Route:` line, write `"unknown"`.
+- `"ratings"`: a list with one object per axis: `{"axis", "score", "evidence"}`. `score` is an integer from 1 to 5. `evidence` is one sentence with a file:line, a test name, or a command result.
+
+Axes and anchored levels (1 = broken or absent, 3 = acceptable with gaps, 5 = complete with proof):
+
+- `correctness`: the work under review does what the spec says. 1 = wrong behaviour; 3 = right in the main case, gaps at the edges; 5 = right, edges covered.
+- `test_meaning`: the tests prove the behaviour. 1 = no test, or a vacuous test; 3 = real tests, some claims untested; 5 = each claim has a failing-first test.
+- `scope_discipline`: only the planned change. 1 = unrelated changes; 3 = small extras; 5 = exactly the plan.
+- `evidence_quality`: claims have commands or files behind them. 1 = bare claims; 3 = some commands shown; 5 = every claim has a command result or file:line.
