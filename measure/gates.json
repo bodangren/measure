@@ -1,0 +1,8 @@
+{
+  "RED_TEST_COMMAND": "node --test plugins/dsh-measure-guard/tests/*.test.js",
+  "GREEN_TEST_COMMAND": "node --test plugins/dsh-measure-guard/tests/*.test.js",
+  "PROJECT_LINT": "bash plugins/dsh-measure-guard/scripts/check-parity.sh && bash plugins/opencode-measure-guard/scripts/check-parity.sh",
+  "PROJECT_CHECKS": "bash tests/dsh/run.sh",
+  "PROJECT_TESTS": "bash tests/spec_review_gate/run.sh && node --test plugins/dsh-measure-guard/tests/*.test.js",
+  "PROJECT_DEV_URL": ""
+}

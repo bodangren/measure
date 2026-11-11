@@ -693,6 +693,52 @@ def dispositions_feedback(log_path: str) -> list[str]:
     return feedback
 
 
+GATE_KEYS = (
+    "RED_TEST_COMMAND",
+    "GREEN_TEST_COMMAND",
+    "PROJECT_LINT",
+    "PROJECT_CHECKS",
+    "PROJECT_TESTS",
+    "PROJECT_DEV_URL",
+)
+
+
+def load_gates(repo: Path) -> dict[str, str]:
+    """Read the committed gate commands from measure/gates.json.
+
+    A missing file is not an error; the environment may supply the values. A
+    malformed file prints one INFO line and reads as empty, so a bad edit cannot
+    crash the checker; the caller then reports the missing command normally.
+    """
+    path = measure_dir(repo) / "gates.json"
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"INFO: measure/gates.json is unreadable: {exc}", file=sys.stderr)
+        return {}
+    if not isinstance(payload, dict):
+        print("INFO: measure/gates.json is not a JSON object", file=sys.stderr)
+        return {}
+    gates: dict[str, str] = {}
+    for key in GATE_KEYS:
+        value = payload.get(key)
+        if isinstance(value, str):
+            gates[key] = value
+        elif value is not None:
+            print(f"INFO: measure/gates.json {key} is not a string", file=sys.stderr)
+    return gates
+
+
+def gate_value(repo: Path, key: str) -> str:
+    """The gate command: an environment variable wins over measure/gates.json."""
+    value = os.environ.get(key, "")
+    if value:
+        return value
+    return load_gates(repo).get(key, "")
+
+
 def gate_command(repo: Path, label: str, command: str, *, expect_failure: bool = False, required: bool = True) -> list[str]:
     if not command:
         return [f"{label} is required but unset"] if required else []
@@ -923,7 +969,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)
-        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", os.environ.get("RED_TEST_COMMAND", ""), expect_failure=True))
+        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True))
     elif role == "jr-green":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
@@ -942,7 +988,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             feedback.append(f"current phase still has {incomplete} non-deferred incomplete tasks")
         if complete > with_sha:
             feedback.append("some completed [x] tasks lack commit SHA evidence")
-        feedback.extend(gate_command(repo, "GREEN_TEST_COMMAND", os.environ.get("GREEN_TEST_COMMAND", "")))
+        feedback.extend(gate_command(repo, "GREEN_TEST_COMMAND", gate_value(repo, "GREEN_TEST_COMMAND")))
     elif role in {
         "review-a",
         "review-b",
@@ -966,21 +1012,21 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             elif incomplete:
                 feedback.append(f"current phase still has {incomplete} non-deferred incomplete tasks")
         if role == "adversarial-testing":
-            feedback.extend(gate_command(repo, "PROJECT_TESTS", os.environ.get("PROJECT_TESTS", "")))
+            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS")))
         if role == "ux-browser-review":
             paths, scope, errors = track_ux_paths(repo, args.baseline, args.track, role)
             if scope is not None:
                 print_skipped(role, scope)
             feedback.extend(errors)
-            if paths and not os.environ.get("PROJECT_DEV_URL"):
+            if paths and not gate_value(repo, "PROJECT_DEV_URL"):
                 feedback.append("UX-relevant files changed but PROJECT_DEV_URL is unset")
         if role == "final-acceptance":
             remaining = track_incomplete(plan)
             if remaining:
                 feedback.append(f"track still has {remaining} non-deferred incomplete tasks")
-            feedback.extend(gate_command(repo, "PROJECT_LINT", os.environ.get("PROJECT_LINT", "")))
-            feedback.extend(gate_command(repo, "PROJECT_CHECKS", os.environ.get("PROJECT_CHECKS", "")))
-            feedback.extend(gate_command(repo, "PROJECT_TESTS", os.environ.get("PROJECT_TESTS", "")))
+            feedback.extend(gate_command(repo, "PROJECT_LINT", gate_value(repo, "PROJECT_LINT")))
+            feedback.extend(gate_command(repo, "PROJECT_CHECKS", gate_value(repo, "PROJECT_CHECKS")))
+            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS")))
         if role == "closeout":
             feedback.extend(closeout_feedback(repo, args.track))
         if role == "spec-review":

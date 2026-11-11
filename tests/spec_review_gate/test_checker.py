@@ -9,7 +9,9 @@ Each failure case asserts its exact message, not only the exit code (A4).
 
 from __future__ import annotations
 
+import contextlib
 import copy
+import io
 import json
 import os
 import shutil
@@ -17,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -668,6 +671,49 @@ class DispositionsLineTest(unittest.TestCase):
 
     def test_edge_line_after_end_marker_is_ignored(self) -> None:
         self.assert_passes([*self.block(), "dispositions: F1=bad"])
+
+
+class GatesFileTest(unittest.TestCase):
+    """measure/gates.json: the committed gate commands, overridden by the environment."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.mkdtemp(prefix="gates_file_")
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        self.repo = Path(self.tmp) / "repo"
+        (self.repo / "measure").mkdir(parents=True)
+
+    def write_gates(self, text: str) -> None:
+        (self.repo / "measure" / "gates.json").write_text(text, encoding="utf-8")
+
+    def test_missing_file_reads_empty(self) -> None:
+        self.assertEqual(mic.load_gates(self.repo), {})
+
+    def test_file_supplies_the_commands(self) -> None:
+        self.write_gates(json.dumps({"PROJECT_TESTS": "bash tests/run.sh", "PROJECT_CHECKS": "bash checks.sh"}))
+        self.assertEqual(mic.gate_value(self.repo, "PROJECT_TESTS"), "bash tests/run.sh")
+        self.assertEqual(mic.gate_value(self.repo, "PROJECT_CHECKS"), "bash checks.sh")
+
+    def test_environment_wins_over_the_file(self) -> None:
+        self.write_gates(json.dumps({"PROJECT_TESTS": "file-command"}))
+        with unittest.mock.patch.dict(os.environ, {"PROJECT_TESTS": "env-command"}):
+            self.assertEqual(mic.gate_value(self.repo, "PROJECT_TESTS"), "env-command")
+
+    def test_malformed_file_falls_back_with_an_info_line(self) -> None:
+        self.write_gates("{not json")
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            gates = mic.load_gates(self.repo)
+        self.assertEqual(gates, {})
+        self.assertIn("INFO: measure/gates.json is unreadable:", stderr.getvalue())
+        self.assertEqual(mic.gate_value(self.repo, "PROJECT_TESTS"), "")
+
+    def test_non_string_value_is_ignored_with_an_info_line(self) -> None:
+        self.write_gates(json.dumps({"PROJECT_TESTS": 3}))
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            gates = mic.load_gates(self.repo)
+        self.assertEqual(gates, {})
+        self.assertIn("INFO: measure/gates.json PROJECT_TESTS is not a string", stderr.getvalue())
 
 
 if __name__ == "__main__":
