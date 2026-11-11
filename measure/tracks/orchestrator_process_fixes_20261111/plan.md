@@ -12,12 +12,12 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 - [x] Task 1.2: `tests/spec_review_gate/test_s2_role_docs.sh`: pin the `agent: "build"` dispatch line and the non-`ask` default shell effect; both checks fail on `e2315b7` `f280025`
 - [x] Task: Measure - User Manual Verification 'Phase 1: Fail-fast dispatch and permissions' (Protocol in workflow.md) `0aee627`
 
-## Phase 2: Remediation limit and records hygiene [checkpoint: PENDING]
+## Phase 2: Remediation limit and records hygiene [checkpoint: e62fd14]
 
-- [ ] Task 2.1: `skills/measure-orchestrator/references/contracts.md`: Re-review scope and Round limit rules (two rounds, then escalate with the cause class; a third round needs a non-empty `metadata.json` `escalation` reason)
-- [ ] Task 2.2: `skills/measure-orchestrator/SKILL.md` Delegation: no pinned test/check counts in `spec.md`/`plan.md`/`CHANGELOG.md` (cite the log), and the input-class table requirement before Red
-- [ ] Task 2.3: `tests/dsh/test-registry.sh`: reject an active `_fix[3-9]_` track without a non-empty `metadata.json` `escalation` key; fixture cases cover accepted and rejected
-- [ ] Task: Measure - User Manual Verification 'Phase 2: Remediation limit and records hygiene' (Protocol in workflow.md)
+- [x] Task 2.1: `skills/measure-orchestrator/references/contracts.md`: Re-review scope and Round limit rules (two rounds, then escalate with the cause class; a third round needs a non-empty `metadata.json` `escalation` reason) `190805d`
+- [x] Task 2.2: `skills/measure-orchestrator/SKILL.md` Delegation: no pinned test/check counts in `spec.md`/`plan.md`/`CHANGELOG.md` (cite the log), and the input-class table requirement before Red `3ffcc37`
+- [x] Task 2.3: `tests/dsh/test-registry.sh`: reject an active `_fix[3-9]_` track without a non-empty `metadata.json` `escalation` key; fixture cases cover accepted and rejected `063470a`
+- [x] Task: Measure - User Manual Verification 'Phase 2: Remediation limit and records hygiene' (Protocol in workflow.md) `e62fd14`
 
 ## Phase 3: Committed gates and final acceptance [checkpoint: PENDING]
 
