@@ -149,6 +149,10 @@ A re-review runs on the new HEAD. The next run of the role that raised a finding
 
 **No FIX item.** A round with no FIX item makes no Green commit. The orchestrator does not run the `jr-green` role gate for that round. It checks that the result block has a disposition for each routed id. Then it sends the CONTEST items to the re-review on the same HEAD. It handles each CONTEST item the same way as in a round with a new commit.
 
+**Re-review scope.** A re-review reports two finding types as blocking: a kept routed finding, and a defect in the lines that the remediation changed. Each other new finding is nonblocking, so a re-review does not restart a chain for work outside the remediation.
+
+**Round limit.** After the second remediation round for one base track, the orchestrator sends the open findings to the user with the cause class and does not start a third round. The cause class is record drift (a pinned count or another volatile claim), an input class found one form at a time, or a review of the review's own record. A third round is allowed only when the track's `metadata.json` holds an `escalation` key with a non-empty reason, for example `"escalation": "third round: the fix2 re-review found a defect in the changed lines"`; `tests/dsh/test-registry.sh` rejects an active `_fix[3-9]_` track without that key.
+
 ## Marker Matching and Baseline
 
 - **Marker lines.** The `MEASURE_AGENT_RESULT` and `END_MEASURE_AGENT_RESULT` lines are recognized only as whole lines after stripping the surrounding whitespace. A marker word inside another word or sentence does not count: a log whose only marker-like text is inside another word has no result block, and the role gate reports the missing block.
