@@ -837,6 +837,33 @@ def metadata_closeout_feedback(metadata_path: Path) -> list[str]:
     return feedback
 
 
+def metadata_lane(metadata_path: Path) -> str | None:
+    """The optional metadata lane value; None when absent or unreadable."""
+    if not metadata_path.exists():
+        return None
+    try:
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    lane = payload.get("lane") if isinstance(payload, dict) else None
+    return lane if isinstance(lane, str) else None
+
+
+def final_acceptance_feedback(repo: Path, track: str) -> list[str]:
+    """Closeout needs a passing recorded final acceptance unless the light lane is declared."""
+    run_dir = measure_dir(repo) / "runs" / track
+    candidates = sorted(run_dir.glob("final-acceptance-*.json")) if run_dir.exists() else []
+    if not candidates:
+        return [f"missing final acceptance: {run_dir / 'final-acceptance-*.json'}"]
+    last_feedback: list[str] = []
+    for path in reversed(candidates):
+        feedback = passing_audit_feedback(path, "final-acceptance")
+        if not feedback:
+            return []
+        last_feedback = [f"final acceptance does not pass: {path}", *feedback]
+    return last_feedback
+
+
 def closeout_feedback(repo: Path, track: str) -> list[str]:
     archive = measure_dir(repo) / "archive" / track
     active = measure_dir(repo) / "tracks" / track
@@ -850,6 +877,10 @@ def closeout_feedback(repo: Path, track: str) -> list[str]:
     feedback.extend(plan_closeout_feedback(archive / "plan.md"))
     feedback.extend(metadata_closeout_feedback(archive / "metadata.json"))
     feedback.extend(registry_description_feedback(repo, track))
+    if metadata_lane(archive / "metadata.json") == "light":
+        print("INFO: light lane, no final acceptance")
+    else:
+        feedback.extend(final_acceptance_feedback(repo, track))
     if not (archive / CLOSEOUT_MANIFEST).exists():
         feedback.append(f"missing closeout manifest: {archive / CLOSEOUT_MANIFEST}")
     return feedback

@@ -716,5 +716,69 @@ class GatesFileTest(unittest.TestCase):
         self.assertIn("INFO: measure/gates.json PROJECT_TESTS is not a string", stderr.getvalue())
 
 
+class CloseoutFinalAcceptanceTest(unittest.TestCase):
+    """Closeout requires a passing recorded final acceptance, or the light lane."""
+
+    PASSING_AUDIT = {
+        "schema_version": 1,
+        "status": "pass",
+        "summary": "Final acceptance passed.",
+        "blocking_findings": [],
+        "nonblocking_findings": [],
+        "evidence": ["bash tests/dsh/run.sh"],
+        "commands": ["bash tests/dsh/run.sh"],
+        "changed_files": [],
+        "retry_recommendation": "none",
+        "confidence": "high",
+    }
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.mkdtemp(prefix="closeout_final_acceptance_")
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        self.repo = Path(self.tmp) / "repo"
+        self.track = "demo_track"
+        self.archive = self.repo / "measure" / "archive" / self.track
+        self.run_dir = self.repo / "measure" / "runs" / self.track
+        self.archive.mkdir(parents=True)
+        (self.archive / "plan.md").write_text(
+            "# Plan\n\n## Phase 1: Fixture [checkpoint: abc1234]\n\n- [x] Task 1.1: Fixture task abc1234\n",
+            encoding="utf-8",
+        )
+        self.write_metadata({"status": "done", "completed": "2026-11-11", "description": "Demo."})
+
+    def write_metadata(self, payload: dict) -> None:
+        (self.archive / "metadata.json").write_text(json.dumps(payload), encoding="utf-8")
+
+    def write_acceptance(self, payload: object) -> None:
+        self.run_dir.mkdir(parents=True, exist_ok=True)
+        (self.run_dir / "final-acceptance-abc1234.json").write_text(json.dumps(payload), encoding="utf-8")
+
+    def test_missing_final_acceptance_is_reported(self) -> None:
+        feedback = mic.closeout_feedback(self.repo, self.track)
+        self.assertTrue(any("missing final acceptance:" in item for item in feedback), feedback)
+
+    def test_passing_final_acceptance_is_accepted(self) -> None:
+        self.write_acceptance(self.PASSING_AUDIT)
+        feedback = mic.closeout_feedback(self.repo, self.track)
+        self.assertFalse(any("final acceptance" in item for item in feedback), feedback)
+        self.assertTrue(any("missing closeout manifest:" in item for item in feedback), feedback)
+
+    def test_failing_final_acceptance_is_reported(self) -> None:
+        payload = dict(self.PASSING_AUDIT, status="fail")
+        self.write_acceptance(payload)
+        feedback = mic.closeout_feedback(self.repo, self.track)
+        self.assertTrue(any("final acceptance does not pass:" in item for item in feedback), feedback)
+        self.assertTrue(any("audit status must be pass" in item for item in feedback), feedback)
+
+    def test_light_lane_is_accepted_with_an_info_line(self) -> None:
+        self.write_metadata({"status": "done", "completed": "2026-11-11", "description": "Demo.", "lane": "light"})
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            feedback = mic.closeout_feedback(self.repo, self.track)
+        self.assertFalse(any("final acceptance" in item for item in feedback), feedback)
+        self.assertIn("INFO: light lane, no final acceptance", stdout.getvalue())
+        self.assertTrue(any("missing closeout manifest:" in item for item in feedback), feedback)
+
+
 if __name__ == "__main__":
     unittest.main()

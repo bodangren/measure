@@ -209,7 +209,10 @@ Do not archive a track just because a markdown artifact says it passed. Closeout
 - no non-deferred plan tasks remain (no `[~]`, no `[ ]` — only `[x]` or `[b]` with
   `deferred:<owner>`)
 - completed tasks include commit SHA evidence
-- final acceptance audit passed
+- final acceptance audit passed — the closeout check requires a passing
+  `measure/runs/<track>/final-acceptance-*.json`; a `"lane": "light"` value in
+  `metadata.json` is the one exception and prints `INFO: light lane, no final
+  acceptance`
 - `measure/tracks/<track>` was moved to `measure/archive/<track>`
 - `measure/tracks.md` no longer lists the track in the active section
 - `metadata.json` has `status: "done"` and a completion date
