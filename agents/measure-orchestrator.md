@@ -14,7 +14,7 @@ permissions:
     effect: deny
   - action: shell
     resource: "*"
-    effect: deny
+    effect: ask
   - action: shell
     resource: "git status --short"
     effect: allow
