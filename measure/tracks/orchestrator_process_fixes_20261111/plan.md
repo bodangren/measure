@@ -28,7 +28,7 @@ Source: [the 2026-11-10 orchestrator process review](../../reviews/2026-11-10-or
 
 ## Phase 4: Other findings, verification, and closeout [checkpoint: PENDING]
 
-- [ ] Task 4.1: fix the Mid Red / Jr Green HEAD-advance check to compare the resolved full baseline SHA with `HEAD`; add a checker test with a short baseline
+- [~] Task 4.1: fix the Mid Red / Jr Green HEAD-advance check to compare the resolved full baseline SHA with `HEAD`; add a checker test with a short baseline
 - [ ] Task 4.2: the audit roles' shell permissions: keep the write-redirection deny and allow `2>&1`; pin an allow/deny test
 - [ ] Task 4.3: remove the stale TUTOR-001 paragraph from `skills/measure-orchestrator/SKILL.md`, return `measure/tech-debt.md` to 50 lines, and name the role table as the single default model source in `agents/measure-orchestrator.md`
 - [ ] Task 4.4: run the full gates (`bash tests/dsh/run.sh`, `bash tests/spec_review_gate/run.sh`), both parity gates, and the plugin suites; record the results
