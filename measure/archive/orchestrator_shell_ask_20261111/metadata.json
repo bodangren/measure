@@ -3,11 +3,11 @@
   "type": "chore",
   "status": "done",
   "created_at": "2026-11-11T15:20:45Z",
-  "updated_at": "2026-11-11T16:48:03Z",
+  "updated_at": "2026-11-11T16:54:28Z",
   "description": "Change the default shell entry of agents/measure-orchestrator.md from deny back to ask and keep the rest of 72e20d3 (PM order, 2026-11-11)",
   "estimated_tasks": 3,
   "actual_tasks": 3,
   "completed": "2026-11-11",
   "lane": "light",
-  "deviation_notes": "The track used the plain Measure workflow by the PM order of 2026-11-11. Kimi was on WAIT and ra-quota printed the metered deepseek/deepseek-flash, so the reviewer ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash (a substitution). Round 1 failed with 3 Major and 3 Nit findings; all 6 take FIX. Round 2 passed with the Nit F7; F7 takes FIX. The PM order named one line, and the fix commit also holds the S2 pin, because the pin expected deny. The installed copies still differ from main in the Substitution paragraph, for the PM to decide. .gitignore excludes measure/runs/, so the review and doc-test logs in measure/runs/ are not committed. Closeout check: pending."
+  "deviation_notes": "The track used the plain Measure workflow by the PM order of 2026-11-11. Kimi was on WAIT and ra-quota printed the metered deepseek/deepseek-flash, so the reviewer ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash (a substitution). Round 1 failed with 3 Major and 3 Nit findings; all 6 take FIX. Round 2 passed with the Nit F7; F7 takes FIX. The PM order named one line, and the fix commit also holds the S2 pin, because the pin expected deny. The installed copies still differ from main in the Substitution paragraph, for the PM to decide. .gitignore excludes measure/runs/, so the review and doc-test logs in measure/runs/ are not committed. Closeout check of 2026-11-11: INFO light lane, no final acceptance; one FAIL, the missing closeout manifest; exit 1, as FR-7 expects. bash tests/dsh/test-registry.sh passed with exit 0."
 }
