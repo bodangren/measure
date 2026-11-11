@@ -303,6 +303,32 @@ count_check 'product.md role count' "$PRODUCT" '[0-9]+ role definitions'
 count_check 'tech-stack.md role count' "$TECH" '[0-9]+ measure-\* role definitions'
 
 # ---------------------------------------------------------------------------
+# Audit role shell rules (review 2026-11-10, finding 4): the blanket `>*` deny
+# also blocked `2>&1`; each audit role keeps narrower write-redirect denies.
+echo "=== audit roles narrow the redirect deny so 2>&1 is not blocked ==="
+AUDIT_ROLES=(
+  agents/measure-review-a-correctness.md
+  agents/measure-review-b-security.md
+  agents/measure-review-c-ux-api.md
+  agents/measure-phase-acceptance.md
+  agents/measure-final-acceptance.md
+  agents/measure-orchestrator-audit.md
+  agents/measure-spec-review.md
+  agents/measure-ux-browser-review.md
+)
+AUDIT_BLANKET=""
+AUDIT_GAP=""
+for f in "${AUDIT_ROLES[@]}"; do
+  if [ ! -f "$ROOT/$f" ]; then AUDIT_GAP+=" $f"; continue; fi
+  grep -qxF '    resource: "*>*"' "$ROOT/$f" && AUDIT_BLANKET+=" $f"
+  grep -qxF '    resource: "* > *"' "$ROOT/$f" || AUDIT_GAP+=" $f"
+done
+if [ -n "$AUDIT_BLANKET" ]; then fail "audit roles still deny the bare > pattern:$AUDIT_BLANKET"
+else pass "no audit role denies the bare > pattern"; fi
+if [ -n "$AUDIT_GAP" ]; then fail "audit roles missing the narrowed write-redirect deny:$AUDIT_GAP"
+else pass "each audit role keeps a narrowed write-redirect deny"; fi
+
+# ---------------------------------------------------------------------------
 # Edge checks
 echo "=== edge: the fallback standard exists ==="
 if [ -s "$STANDARD" ] && [ "$(sed -n 1p "$STANDARD")" = '# Spec Review Standard' ]; then pass "skills/measure/references/spec-review.md exists"; else fail "skills/measure/references/spec-review.md is missing or has no title"; fi

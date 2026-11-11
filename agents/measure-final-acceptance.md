@@ -88,7 +88,13 @@ permissions:
     resource: "*truncate *"
     effect: deny
   - action: shell
-    resource: "*>*"
+    resource: "* > *"
+    effect: deny
+  - action: shell
+    resource: "* >*"
+    effect: deny
+  - action: shell
+    resource: "*>>*"
     effect: deny
   - action: skill
     resource: "*"
