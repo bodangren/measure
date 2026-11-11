@@ -1,0 +1,12 @@
+{
+  "track_id": "pr_9_merge_20261111",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-11-11T11:15:00Z",
+  "updated_at": "2026-11-11T12:05:00Z",
+  "description": "Review PR #9 (orchestrator process review, measure-status extension, and installed role-file edits) against its stated verification, then merge it into main",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": "The PR's cmp-against-the-installed-role-files claim was not reproducible on this host: the spec's /home/daniebo source path does not exist and the local installed copies are the pre-edit files. The repo diff matches the FR-4 numstat table and every doc test, the extension's 43 tests pass under vitest (bun is not installed here), and dsh 14/14 plus srg 13/13 passed on the PR head; the post-merge doc, registry, and reference tests pass on main.",
+  "completed": "2026-11-11"
+}

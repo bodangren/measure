@@ -4,8 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Merge pull request 9**
-  *Link: [./tracks/pr_9_merge_20261111/](./tracks/pr_9_merge_20261111/)*
+- (none)
 
 ---
 
@@ -412,3 +411,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Installed role-file edits**
   *Link: [./archive/role_file_edits_20261111/](./archive/role_file_edits_20261111/)*
   *Copy the installed role-file edits (higher step limits, the Rating rubric v1 section, the Route line rule) into agents/, so the repository and the installed roles agree (PM decision, 2026-11-11)*
+
+- [x] **Track: Merge pull request 9**
+  *Link: [./archive/pr_9_merge_20261111/](./archive/pr_9_merge_20261111/)*
+  *Review PR #9 (orchestrator process review, measure-status extension, and installed role-file edits) against its stated verification, then merge it into main*
