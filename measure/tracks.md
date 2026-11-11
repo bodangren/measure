@@ -4,8 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Implement the orchestrator process review**
-  *Link: [./tracks/orchestrator_process_fixes_20261111/](./tracks/orchestrator_process_fixes_20261111/)*
+- (none)
 
 ---
 
@@ -416,3 +415,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Merge pull request 9**
   *Link: [./archive/pr_9_merge_20261111/](./archive/pr_9_merge_20261111/)*
   *Review PR #9 (orchestrator process review, measure-status extension, and installed role-file edits) against its stated verification, then merge it into main*
+
+- [x] **Track: Implement the orchestrator process review**
+  *Link: [./archive/orchestrator_process_fixes_20261111/](./archive/orchestrator_process_fixes_20261111/)*
+  *Implement the 2026-11-10 orchestrator process review: fail-fast dispatch and permissions, a two-round remediation limit with count-free records, committed gate commands with a final-acceptance closeout, and the review's other findings*
