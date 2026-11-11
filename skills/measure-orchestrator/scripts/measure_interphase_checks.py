@@ -158,6 +158,14 @@ def git_head(repo: Path) -> str:
     return result.stdout.strip() if result.returncode == 0 else ""
 
 
+def resolved_baseline(repo: Path, baseline: str | None) -> str | None:
+    """The full SHA of a baseline argument, or None when it does not resolve."""
+    if not baseline:
+        return None
+    result = git(repo, "rev-parse", "--verify", "--quiet", f"{baseline}^{{commit}}")
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
 def git_status(repo: Path) -> str:
     result = git(repo, "status", "--porcelain")
     return result.stdout if result.returncode == 0 else ""
@@ -978,7 +986,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
     elif role == "mid-red":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
-            if args.baseline and git_head(repo) == args.baseline:
+            if args.baseline and git_head(repo) == (resolved_baseline(repo, args.baseline) or args.baseline):
                 feedback.append("expected committed Red-phase test change, but HEAD did not advance")
         else:
             print_skipped(role, scope)
@@ -1004,7 +1012,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
     elif role == "jr-green":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
-            if args.baseline and git_head(repo) == args.baseline:
+            if args.baseline and git_head(repo) == (resolved_baseline(repo, args.baseline) or args.baseline):
                 feedback.append("expected committed Green-phase implementation change, but HEAD did not advance")
         else:
             print_skipped(role, scope)

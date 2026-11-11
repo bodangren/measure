@@ -780,5 +780,73 @@ class CloseoutFinalAcceptanceTest(unittest.TestCase):
         self.assertTrue(any("missing closeout manifest:" in item for item in feedback), feedback)
 
 
+class ShortBaselineTest(unittest.TestCase):
+    """The HEAD-advance check resolves a short baseline before comparing it with HEAD."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.mkdtemp(prefix="short_baseline_")
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+        self.repo = Path(self.tmp) / "repo"
+        self.repo.mkdir()
+        (self.repo / "measure" / "tracks" / TRACK).mkdir(parents=True)
+        (self.repo / "measure" / "index.md").write_text("# Measure\n", encoding="utf-8")
+        (self.repo / "measure" / "tracks.md").write_text("# Tracks\n", encoding="utf-8")
+        (self.repo / "measure" / "tracks" / TRACK / "plan.md").write_text(
+            "# Plan\n\n## Phase 1: Fixture\n\n- [~] Task 1.1: Fixture task\n",
+            encoding="utf-8",
+        )
+        self.git("init", "-q")
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", "fixture")
+        self.baseline = self.git("rev-parse", "HEAD").stdout.strip()
+        self.short = self.baseline[:7]
+
+    def git(self, *args: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            ["git", "-c", "user.name=test", "-c", "user.email=test@example.com", "-c", "commit.gpgsign=false", *args],
+            cwd=str(self.repo),
+            env=clean_env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+
+    def run_gate(self, role: str) -> tuple[int, str]:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-I",
+                str(CHECKER),
+                "role-gate",
+                "--repo",
+                str(self.repo),
+                "--role",
+                role,
+                "--track",
+                TRACK,
+                "--phase",
+                "Phase 1",
+                "--baseline",
+                self.short,
+            ],
+            cwd=self.tmp,
+            env=clean_env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        return proc.returncode, proc.stdout
+
+    def test_mid_red_short_baseline_equals_head(self) -> None:
+        _code, out = self.run_gate("mid-red")
+        self.assertIn("expected committed Red-phase test change, but HEAD did not advance", out)
+
+    def test_jr_green_short_baseline_equals_head(self) -> None:
+        _code, out = self.run_gate("jr-green")
+        self.assertIn("expected committed Green-phase implementation change, but HEAD did not advance", out)
+
+
 if __name__ == "__main__":
     unittest.main()
