@@ -149,6 +149,14 @@ it, with its evidence. Send each ESCALATE item and each kept CONTEST item to the
 Apply the no FIX item rule: a round with no FIX item makes no Green commit, and the
 orchestrator does not run the `jr-green` role gate for that round.
 
+Write no test count or check count in `spec.md`, `plan.md`, or `CHANGELOG.md`; cite the
+log file that holds the count. A pinned count drifts with the next change and starts a
+record-fix round, the review's most common remediation cause.
+
+For a finding about an input class (shell forms, option forms, character classes), the
+brief carries a table of the class from its reference before Red starts; the fix covers
+the table, not only the one form the reviewer reported.
+
 ## Model Selection
 
 Pass a model on every role spawn. Role files do not pin a model. The host's orchestrator
