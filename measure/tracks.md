@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Installed role-file edits**
-  *Link: [./tracks/role_file_edits_20261111/](./tracks/role_file_edits_20261111/)*
-  *Copy the installed role-file edits (higher step limits, the Rating rubric v1 section, the Route line rule) into agents/, so the repository and the installed roles agree (PM decision, 2026-11-11)*
+- (none)
 
 ---
 
