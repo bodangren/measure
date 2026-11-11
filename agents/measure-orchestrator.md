@@ -14,7 +14,7 @@ permissions:
     effect: deny
   - action: shell
     resource: "*"
-    effect: ask
+    effect: deny
   - action: shell
     resource: "git status --short"
     effect: allow
@@ -258,8 +258,11 @@ creation, status, review, or another workflow outside orchestration of an existi
 track. This primary agent is intentionally read-only: if setup, track creation, or
 orchestration-infrastructure edits need direct authoring and no registered
 Measure subagent owns them, explain the boundary. When the user approves, dispatch
-a build-agent session with `session.create`, a full brief, and `returnResult`, and
-then check its result. Never use a coder to bypass this restriction.
+a build-agent session with `session.create`, `agent: "build"`, a full brief, and
+`returnResult`, and then check its result. Never dispatch a session without an
+`agent` value: a session with no `agent` value takes this agent and its
+permissions, and an unattended dispatch would sit on a permission that nobody
+answers. Never use a coder to bypass this restriction.
 
 Do not copy or invent a competing role order, result schema, marker vocabulary, or
 acceptance policy. If this prompt and the loaded skill disagree, stop and report the
@@ -409,6 +412,14 @@ If a role fails:
 - retry the owning role with the exact evidence and a bounded remediation brief
 - escalate to the user only for product judgment, credentials, unavailable runtime,
   unresolved conflicting work, or repeated gate failure
+
+A dispatched session must never wait for a permission:
+
+- list the command classes each brief needs (the gate commands and the test
+  commands) in the brief itself
+- after a dispatch, read `session.status` at the next orchestration step
+- stop a session that waits for a permission and report it to the PM with the
+  command it wanted and the brief that produced it; do not leave it running
 
 ## Final Response
 
