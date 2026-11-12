@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Final acceptance head scope**
-  *Link: [./tracks/final_acceptance_head_scope_20261113/](./tracks/final_acceptance_head_scope_20261113/)*
-  *Let final acceptance count a later commit as covered when it changes no path of the track or only its plan and evidence files, and record the path diff (PM request, 2026-11-13)*
+- (none)
 
 ---
 
