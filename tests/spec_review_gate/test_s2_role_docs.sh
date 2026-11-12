@@ -328,6 +328,25 @@ else pass "no audit role denies the bare > pattern"; fi
 if [ -n "$AUDIT_GAP" ]; then fail "audit roles missing the narrowed write-redirect deny:$AUDIT_GAP"
 else pass "each audit role keeps a narrowed write-redirect deny"; fi
 
+# --- final acceptance head scope: path-scoped HEAD coverage (PM ruling, 2026-11-13) ---
+FA_AGENT="$ROOT/agents/measure-final-acceptance.md"
+echo "=== agents/measure-final-acceptance.md: path-scoped HEAD coverage ==="
+if [ ! -f "$FA_AGENT" ]; then
+  fail "agents/measure-final-acceptance.md is missing"
+else
+  fa_old=""
+  fa_new=""
+  grep -qF -- 'so no later changes remain unaccepted' "$FA_AGENT" && fa_old=" [old current-HEAD rule text]"
+  grep -qF -- '`git diff --name-only <audited HEAD> HEAD`' "$FA_AGENT" || fa_new+=" [path-diff command]"
+  grep -qF -- 'plan and evidence files' "$FA_AGENT" || fa_new+=" [plan and evidence files]"
+  grep -qF -- 'in the `evidence` list of the result JSON' "$FA_AGENT" || fa_new+=" [evidence list rule]"
+  if [ -n "$fa_old" ] || [ -n "$fa_new" ]; then
+    fail "line 115 does not hold the path-scoped rule; old text present:$fa_old; missing:$fa_new"
+  else
+    pass "the old rule text is absent and the path-diff coverage text is present"
+  fi
+fi
+
 # ---------------------------------------------------------------------------
 # Edge checks
 echo "=== edge: the fallback standard exists ==="
