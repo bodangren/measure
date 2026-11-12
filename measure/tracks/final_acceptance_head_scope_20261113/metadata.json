@@ -1,0 +1,11 @@
+{
+  "track_id": "final_acceptance_head_scope_20261113",
+  "type": "chore",
+  "status": "in-progress",
+  "created_at": "2026-11-12T20:23:26Z",
+  "updated_at": "2026-11-12T20:23:26Z",
+  "description": "Let final acceptance count a later commit as covered when it changes no path of the track or only its plan and evidence files, and record the path diff (PM request, 2026-11-13)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
