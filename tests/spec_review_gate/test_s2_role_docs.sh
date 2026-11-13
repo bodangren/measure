@@ -237,15 +237,15 @@ else fail "first bullet starts with [$(flat "$first_bullet" | cut -c1-120)]"; fi
 
 # --- the orchestrator process review (2026-11-10), improvement 1 ---
 ORCH_FM="$(awk 'NR == 1 && $0 != "---" { exit } NR > 1 && $0 == "---" { exit } NR > 1 { print }' "$ORCH_AGENT")"
-echo "=== agents/measure-orchestrator.md: default shell effect is deny ==="
+echo "=== agents/measure-orchestrator.md: default shell effect is ask ==="
 default_effect="$(printf '%s\n' "$ORCH_FM" | awk '
   $0 == "  - action: shell" { shell = 1; next }
   shell && $0 == "    resource: \"*\"" { want = 1; next }
   want && $0 ~ /^    effect: / { print $2; exit }
   { shell = 0; want = 0 }
 ')"
-if [ "$default_effect" = "deny" ]; then pass "default shell effect is deny"
-else fail "default shell effect is [$default_effect], expected deny"; fi
+if [ "$default_effect" = "ask" ]; then pass "default shell effect is ask"
+else fail "default shell effect is [$default_effect], expected ask"; fi
 
 DISPATCH="$(section "$ORCH_AGENT" '## Canonical Instructions' '^## ')"
 in_flat 'dispatch paragraph names agent: "build"' "$DISPATCH" 'with `session.create`, `agent: "build"`, a full brief'

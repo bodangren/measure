@@ -419,3 +419,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Implement the orchestrator process review**
   *Link: [./archive/orchestrator_process_fixes_20261111/](./archive/orchestrator_process_fixes_20261111/)*
   *Implement the 2026-11-10 orchestrator process review: fail-fast dispatch and permissions, a two-round remediation limit with count-free records, committed gate commands with a final-acceptance closeout, and the review's other findings*
+
+- [x] **Track: Orchestrator shell default ask**
+  *Link: [./archive/orchestrator_shell_ask_20261111/](./archive/orchestrator_shell_ask_20261111/)*
+  *Change the default shell entry of agents/measure-orchestrator.md from deny back to ask and keep the rest of 72e20d3 (PM order, 2026-11-11)*
