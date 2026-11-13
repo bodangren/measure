@@ -1,0 +1,13 @@
+{
+  "track_id": "final_acceptance_head_scope_20261113",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-11-12T20:23:26Z",
+  "updated_at": "2026-11-12T21:21:57Z",
+  "description": "Let final acceptance count a later commit as covered when it changes no path of the track or only its plan and evidence files, and record the path diff (PM request, 2026-11-13)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-13",
+  "lane": "light",
+  "deviation_notes": "The track used the plain Measure workflow by the PM request of 2026-11-13. The branch fix/final-acceptance-head-scope stacks on PR #11 (origin/fix/orchestrator-shell-ask), because both edit README.md line 33 and the top of CHANGELOG.md. The first reviewer (opencode/minimax-m3.1-flash-free#high) reached its step limit with no artifact. Round 1 ran on volcengine-agent-plan/kimi-k3.1-pro#high as a substitution (the Kimi plan was on WAIT, the MiniMax plan was at 83% of its week, OpenCode Go was at 84% of its month) and passed with no findings. After Round 1, the author changed the FR-1 reference to references/contracts.md of the measure-orchestrator skill. Round 2 passed with no findings. .gitignore excludes measure/runs/, so the review and doc-test logs in measure/runs/ are not committed. Closeout check of 2026-11-13: INFO light lane, no final acceptance; one FAIL, the missing closeout manifest; exit 1, as FR-5 expects. bash tests/dsh/test-registry.sh passed with exit 0. The checkpoint commit of the workflow needed the track marked `[~]` again in Active Tracks; the registry commit restored `- (none)`."
+}

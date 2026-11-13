@@ -423,3 +423,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Orchestrator shell default ask**
   *Link: [./archive/orchestrator_shell_ask_20261111/](./archive/orchestrator_shell_ask_20261111/)*
   *Change the default shell entry of agents/measure-orchestrator.md from deny back to ask and keep the rest of 72e20d3 (PM order, 2026-11-11)*
+
+- [x] **Track: Final acceptance head scope**
+  *Link: [./archive/final_acceptance_head_scope_20261113/](./archive/final_acceptance_head_scope_20261113/)*
+  *Let final acceptance count a later commit as covered when it changes no path of the track or only its plan and evidence files, and record the path diff (PM request, 2026-11-13)*
