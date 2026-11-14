@@ -38,3 +38,34 @@ HEAD..X` on 2026-11-14.
 ### Author Response
 - F1: FIX
 - F2: DECLINE
+
+## Round 2
+
+Date: 2026-11-14
+Reviewer: measure-spec-review, kimi-code-plan-cn/kimi-for-coding#high
+
+### What this track proposes
+
+The track adds one shell allow rule `git merge-base *` directly after the unchanged
+`*git merge*` deny rule in the frontmatter of the eight audit role files, so acceptance
+roles can run read-only `git merge-base --is-ancestor` while git merge, git merge-file,
+and write redirects stay denied. It also adds one section to
+tests/spec_review_gate/test_s2_role_docs.sh that re-evaluates the shell rules of each
+role with OpenCode V2 matching semantics and asserts allow for merge-base, deny for
+merge, and deny for merge-file. The light lane then needs metadata, CHANGELOG, and
+README updates plus archive and registry closeout.
+
+### How the current system works, per this spec
+
+Each of the eight audit role files in agents/ holds the same frontmatter deny rule
+`*git merge*` at lines 42 to 44, which also blocks the read-only
+`git merge-base --is-ancestor A B`. OpenCode V2 combines permission rules in order and
+uses the last match; a shell pattern ending in ` *` also matches the command without
+arguments; a compound command may produce several scanner resources and any deny denies
+the operation. The Graph project final acceptance (round 2) worked around the block
+with `git rev-list --count HEAD..X` on 2026-11-14.
+
+### Findings
+
+- None
+
