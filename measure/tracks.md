@@ -439,3 +439,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Status link window and guards typing**
   *Link: [./archive/status_link_window_20261115/](./archive/status_link_window_20261115/)*
   *Read the status band track link past the next three lines and add the missing guards.ts type annotations (PM request, 2026-11-15)*
+
+- [x] **Track: Heavy-run prompt line**
+  *Link: [./archive/heavy_run_prompt_20261115/](./archive/heavy_run_prompt_20261115/)*
+  *Add the no-redirection prompt line to the five audit role files, and pin it with an S2 role-doc check (PM request, 2026-11-15)*
