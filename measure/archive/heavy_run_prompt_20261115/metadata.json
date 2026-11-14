@@ -1,0 +1,13 @@
+{
+  "track_id": "heavy_run_prompt_20261115",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-11-14T20:56:10Z",
+  "updated_at": "2026-11-14T23:08:49Z",
+  "description": "Add the no-redirection prompt line to the five audit role files, and pin it with an S2 role-doc check (PM request, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-15",
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow was deferred by PM order; the orchestrator ran the review (measure-spec-review, kimi-code-plan-cn/kimi-for-coding#high) at 3a2e5c5 and it passed with no findings (gate exit 0); the record is in spec-review.md Round 1. Stopped gate: bash tests/spec_review_gate/run.sh exits 1 with 12 of 13 suites passing; the only failing check (G21 sensitivity: the old quadratic any(...) loop mutant) is pre-existing at the base commit 3c231a0 (a pristine 3c231a0 worktree run gives the same FAIL line, exit 1) and out of this track's scope, because the mutant touches only the checker's dispositions parser; the gate is not replaced."
+}
