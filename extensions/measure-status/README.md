@@ -41,7 +41,10 @@ The parser follows the rules of `mods/measure-guard`:
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked.
 - A `[b]` task closes when its line has a `deferred:<owner>` field.
 - `measure/tracks.md` accepts two entry formats: a bold title with a
-  `*Link:` line, or a markdown link to `archive/<id>/index.md`.
+  `*Link:` line after it, or a markdown link to `archive/<id>/index.md`.
+  The scan reads from the line after the title until the next entry line, the
+  next markdown heading, or the end of the file, and takes the first
+  `*Link:` line in that range.
 - The active track is the first `[~]` track whose plan has a `[~]` task;
   else the first `[~]` track.
 - In `plan.md`, a task is an unindented checkbox line under a `## Phase ...`

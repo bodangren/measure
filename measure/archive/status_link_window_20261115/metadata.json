@@ -1,0 +1,13 @@
+{
+  "track_id": "status_link_window_20261115",
+  "type": "fix",
+  "status": "done",
+  "created_at": "2026-11-14T18:31:28Z",
+  "updated_at": "2026-11-15T02:45:00Z",
+  "description": "Read the status band track link past the next three lines and add the missing guards.ts type annotations (PM request, 2026-11-15)",
+  "estimated_tasks": 4,
+  "actual_tasks": 4,
+  "completed": "2026-11-15",
+  "lane": "light",
+  "deviation_notes": "Spec review: Round 1 ran in the author session with an unknown reviewer model and was not the gate; Round 2 on Kimi (measure-spec-review, kimi-code-plan-cn/kimi-for-coding#high) at 798c8c0 is the gate, passed with two Nits (F1 exit-code pin in the spec Overview, F2 missing shell-hook note in the plan tasks), both declined. Stopped gates in plugins/opencode-measure-guard: the dependency setup (bun install) hung at Resolving dependencies (two tool timeouts, then the PM-ordered `timeout 900 bun install` exited 124; the guard did not block it), so node_modules is missing and `bun x tsc --noEmit -p .` exits 1 at TS2688 (the bun type library is missing) both before and after the annotations; the gate is not replaced. D2 Red evidence comes from a bun-cached diagnostic tsc with the project flags (strict, noUncheckedIndexedAccess): implicit-any errors (TS7006, TS7034, TS7005) in src/core/guards.ts lines 422 to 587, src/core/parse.ts clean; after the annotations the same diagnostic exits 0. Every other gate ran: bun test exit 1 with only the known V18 failure (the measure/tech-debt.md row), claude plugin test exit 0, claude plugin validate exit 0, node --test in plugins/dsh-measure-guard exit 0, and both check-parity.sh scripts print parity: ok. The dependency setup in extensions/measure-status ran fine (bun install, plain, 48 packages). The annotation diff shows type annotations and non-null assertions only (d2-annotation-diff.log). Closeout checks of 2026-11-15, run after the registry move in this order: bash tests/spec_review_gate/run.sh exit 0 (13 suites), bash tests/dsh/test-registry.sh exit 0, the closeout check exit 1 with INFO light lane, no final acceptance, and one FAIL, the missing closeout manifest, as the acceptance criteria expect. .gitignore excludes measure/runs/, so the logs are not committed."
+}
