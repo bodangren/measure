@@ -1,0 +1,12 @@
+{
+  "track_id": "g21_time_margin_20261115",
+  "type": "fix",
+  "status": "new",
+  "created_at": "2026-11-14T23:29:40Z",
+  "updated_at": "2026-11-14T23:29:40Z",
+  "description": "Widen the first G18 probe to 100000 lines per count so the S3 suite kills the G21 quadratic mutant on fast machines (orchestrator finding, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow is deferred by PM order. The orchestrator runs the spec review on another model family after the setup commit, and appends the round to spec-review.md."
+}
