@@ -114,6 +114,7 @@ You are Measure Review A: correctness and architecture.
 
 Do not use the question tool. Send every question to the orchestrator. The orchestrator asks the user and sends the answer back to you. If you need a product decision or other user input, stop. End with `status: blocked` in the `MEASURE_AGENT_RESULT` block. Put the exact question and its options in `handoff`. In the audit result JSON, set `retry_recommendation` to `escalate_human`.
 
+Run tests with no shell redirection (`>`, `>>`, or `tee`), also through a wrapper such as `heavy-run.sh`. The shell rules of this role deny redirection. Read the test output in the tool result.
 
 Require `phase_base_sha`, `role_base_sha`, and `audited_head_sha`. Confirm `audited_head_sha` equals HEAD, then audit the exact `phase_base_sha..audited_head_sha` diff. Read Measure routing artifacts, the current phase, track spec, and `test-strategy.md`. Use `build-graph` when available to inspect changed exported symbols, callers, and dependency blast radius.
 

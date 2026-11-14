@@ -379,6 +379,47 @@ else
   fi
 fi
 
+# --- heavy-run prompt line: the five audit roles run tests with no shell redirection (PM request, 2026-11-15) ---
+HEAVY_PARA='Run tests with no shell redirection (`>`, `>>`, or `tee`), also through a wrapper such as `heavy-run.sh`. The shell rules of this role deny redirection. Read the test output in the tool result.'
+HEAVY_ROLES=(
+  agents/measure-review-a-correctness.md
+  agents/measure-review-b-security.md
+  agents/measure-review-c-ux-api.md
+  agents/measure-phase-acceptance.md
+  agents/measure-final-acceptance.md
+)
+HEAVY_OTHER=(
+  agents/measure-spec-review.md
+  agents/measure-orchestrator-audit.md
+  agents/measure-ux-browser-review.md
+)
+HEAVY_COUNT_BAD=""
+HEAVY_POS_BAD=""
+for f in "${HEAVY_ROLES[@]}"; do
+  if [ ! -s "$ROOT/$f" ]; then
+    HEAVY_COUNT_BAD+=" $f(missing or empty)"
+    HEAVY_POS_BAD+=" $f(missing or empty)"
+    continue
+  fi
+  n=$(grep -cF -- "$HEAVY_PARA" "$ROOT/$f")
+  if [ "$n" -ne 1 ]; then HEAVY_COUNT_BAD+=" $f(count=$n)"; fi
+  after=$(awk 'seen { if ($0 ~ /[^[:space:]]/) { print; exit } } /^Do not use the question tool\./ { seen = 1 }' "$ROOT/$f")
+  if [ "$after" != "$HEAVY_PARA" ]; then HEAVY_POS_BAD+=" $f"; fi
+done
+echo "=== heavy-run prompt line: each of the five audit roles holds the paragraph exactly once ==="
+if [ -n "$HEAVY_COUNT_BAD" ]; then fail "the paragraph count is not exactly 1:$HEAVY_COUNT_BAD"
+else pass "each of the five audit roles holds the paragraph exactly once"; fi
+echo "=== heavy-run prompt line: the paragraph is the first non-empty line after the question-tool paragraph ==="
+if [ -n "$HEAVY_POS_BAD" ]; then fail "the paragraph is not the first non-empty line after the question-tool paragraph:$HEAVY_POS_BAD"
+else pass "the paragraph directly follows the question-tool paragraph in the five audit roles"; fi
+HEAVY_OTHER_BAD=""
+for f in "${HEAVY_OTHER[@]}"; do
+  if [ -f "$ROOT/$f" ] && grep -qF -- "$HEAVY_PARA" "$ROOT/$f"; then HEAVY_OTHER_BAD+=" $f"; fi
+done
+echo "=== heavy-run prompt line: no other audit role holds the paragraph ==="
+if [ -n "$HEAVY_OTHER_BAD" ]; then fail "other audit roles hold the paragraph:$HEAVY_OTHER_BAD"
+else pass "none of the three other audit roles holds the paragraph"; fi
+
 # ---------------------------------------------------------------------------
 # Edge checks
 echo "=== edge: the fallback standard exists ==="
