@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [ ] **Track: Heavy-run prompt line**
+  *Link: [./tracks/heavy_run_prompt_20261115/](./tracks/heavy_run_prompt_20261115/)*
+  *Add the no-redirection prompt line to the five audit role files, and pin it with an S2 role-doc check (PM request, 2026-11-15)*
 
 ---
 

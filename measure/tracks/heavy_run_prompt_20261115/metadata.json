@@ -1,0 +1,12 @@
+{
+  "track_id": "heavy_run_prompt_20261115",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-11-14T20:56:10Z",
+  "updated_at": "2026-11-14T20:56:10Z",
+  "description": "Add the no-redirection prompt line to the five audit role files, and pin it with an S2 role-doc check (PM request, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow is deferred by PM order. The orchestrator runs the spec review on another model family after the setup commit, and appends the round to spec-review.md."
+}
