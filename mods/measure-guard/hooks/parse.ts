@@ -4,8 +4,9 @@ import type { AllowIgnored, AllowList, GuardsOff, Marker, Mode, Plan, Position, 
 
 // A track line may carry an ordered-list prefix (`1. - [~] **Track: ...**`,
 // the Mediarr execution-order registry), and its `*Link:*` may sit on the same
-// line (the Mediarr shape) or on one of the next three lines (this repository's
-// shape). Both live shapes are accepted.
+// line (the Mediarr shape) or on a later line, before the next entry line or
+// the next markdown heading (this repository's shape). Both live shapes are
+// accepted.
 const TRACK_BOLD = /^(?:\d+\.\s+)?- \[([ ~xb])\] \*\*Track: (.+?)\*\*/
 const TRACK_LINKED = /^(?:\d+\.\s+)?- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/
 const LINK_LINE = /Link: \[[^\]]*\]\(([^)\s]+)\)\*/
@@ -107,8 +108,13 @@ export const parseTracks = (md: string): TrackEntry[] => {
         tracks.push(entryOf(i, bold[1] ?? ' ', bold[2] ?? '', same[1] ?? ''))
         return
       }
-      for (const next of lines.slice(i + 1, i + 4)) {
+      // Scan the lines after the track line, in order, until the first line
+      // that matches ENTRY (the next track line) or the first markdown heading
+      // line, or the end of the text. Take the first Link line in that range.
+      for (let j = i + 1; j < lines.length; j++) {
+        const next = lines[j] ?? ''
         if (ENTRY.test(next)) break
+        if (/^#{1,6} /.test(next)) break
         const link = LINK_LINE.exec(next)
         if (link) {
           tracks.push(entryOf(i, bold[1] ?? ' ', bold[2] ?? '', link[1] ?? ''))

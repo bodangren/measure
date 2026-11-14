@@ -51,6 +51,28 @@ in_block() {
   if grep -qF -- "$3" <<< "$2"; then pass "$1"; else fail "$1: missing [$3]"; fi
 }
 
+# blank TEXT: true when TEXT holds no visible character
+blank() { [ -z "${1//[[:space:]]/}" ]; }
+
+# flat TEXT: collapse newlines and runs of spaces to single spaces
+flat() { printf '%s\n' "$1" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g'; }
+
+# in_text LABEL TEXT STRING: pass when TEXT holds STRING (TEXT must be non-empty)
+in_text() {
+  echo "=== $1 ==="
+  if blank "$2"; then fail "$1: the searched text is missing or empty"
+  elif grep -qF -- "$3" <<< "$2"; then pass "$1"
+  else fail "$1: missing [$3]"; fi
+}
+
+# in_flat LABEL TEXT STRING: like in_text, after whitespace collapse (for wrapped sentences)
+in_flat() {
+  echo "=== $1 ==="
+  if blank "$2"; then fail "$1: the searched text is missing or empty"
+  elif [[ "$(flat "$2")" == *"$3"* ]]; then pass "$1"
+  else fail "$1: missing [$3]"; fi
+}
+
 # ---------------------------------------------------------------------------
 # new-track.md section 2.5
 S25="$(section "$NT" '### 2.5 Create Artifacts' '^###? ')"
