@@ -427,3 +427,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Final acceptance head scope**
   *Link: [./archive/final_acceptance_head_scope_20261113/](./archive/final_acceptance_head_scope_20261113/)*
   *Let final acceptance count a later commit as covered when it changes no path of the track or only its plan and evidence files, and record the path diff (PM request, 2026-11-13)*
+
+- [x] **Track: Merge base allow**
+  *Link: [./archive/merge_base_allow_20261114/](./archive/merge_base_allow_20261114/)*
+  *Allow the read-only git merge-base command in the eight audit roles while the git merge deny stays (PM request, 2026-11-14)*

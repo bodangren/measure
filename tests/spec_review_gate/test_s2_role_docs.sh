@@ -328,6 +328,38 @@ else pass "no audit role denies the bare > pattern"; fi
 if [ -n "$AUDIT_GAP" ]; then fail "audit roles missing the narrowed write-redirect deny:$AUDIT_GAP"
 else pass "each audit role keeps a narrowed write-redirect deny"; fi
 
+# --- merge base allow: the audit roles accept the read-only git merge-base (PM request, 2026-11-14) ---
+echo "=== audit roles allow git merge-base while git merge and git merge-file stay denied ==="
+# v2_shell_effect FILE CMD: evaluate the shell rules of FILE for CMD with the
+# OpenCode V2 rules: whole-value wildcard match (`*` is zero or more characters,
+# `?` is one character, other characters are literal; the quotes of the resource
+# are stripped), a pattern that ends in " *" also matches the value without that
+# suffix, the last matching rule gives the effect, and no match gives ask.
+v2_shell_effect() {
+  local cmd="$2" act res pat eff result="ask"
+  while IFS='|' read -r act res eff; do
+    [ "$act" = "shell" ] || continue
+    pat="${res%\"}"
+    pat="${pat#\"}"
+    if [[ "$cmd" == $pat ]] || { [[ "$pat" == *' *' ]] && [[ "$cmd" == ${pat%' *'} ]]; }; then
+      result="$eff"
+    fi
+  done < <(rules "$1" | grep '^shell|')
+  printf '%s' "$result"
+}
+for f in "${AUDIT_ROLES[@]}"; do
+  if [ ! -f "$ROOT/$f" ]; then
+    fail "$f: the role file is missing"
+    continue
+  fi
+  mb="$(v2_shell_effect "$ROOT/$f" 'git merge-base --is-ancestor A B')"
+  mg="$(v2_shell_effect "$ROOT/$f" 'git merge X')"
+  mf="$(v2_shell_effect "$ROOT/$f" 'git merge-file a b c')"
+  if [ "$mb" = "allow" ]; then pass "$f: git merge-base --is-ancestor A B is allowed"; else fail "$f: git merge-base --is-ancestor A B gives $mb, expected allow"; fi
+  if [ "$mg" = "deny" ]; then pass "$f: git merge X is denied"; else fail "$f: git merge X gives $mg, expected deny"; fi
+  if [ "$mf" = "deny" ]; then pass "$f: git merge-file a b c is denied"; else fail "$f: git merge-file a b c gives $mf, expected deny"; fi
+done
+
 # --- final acceptance head scope: path-scoped HEAD coverage (PM ruling, 2026-11-13) ---
 FA_AGENT="$ROOT/agents/measure-final-acceptance.md"
 echo "=== agents/measure-final-acceptance.md: path-scoped HEAD coverage ==="

@@ -43,6 +43,9 @@ permissions:
     resource: "*git merge*"
     effect: deny
   - action: shell
+    resource: "git merge-base *"
+    effect: allow
+  - action: shell
     resource: "*git push*"
     effect: deny
   - action: shell
