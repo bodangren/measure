@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Guard link window and S1 helpers**
+  *Link: [./tracks/guard_link_window_20261115/](./tracks/guard_link_window_20261115/)*
+  *Parse the guard track link past the next three lines and define the missing S1 helpers (PM request, 2026-11-15)*
 
 ---
 
