@@ -3,11 +3,11 @@
   "type": "chore",
   "status": "done",
   "created_at": "2026-11-14T15:45:51Z",
-  "updated_at": "2026-11-14T16:22:10Z",
+  "updated_at": "2026-11-14T16:37:45Z",
   "description": "Allow the read-only git merge-base command in the eight audit roles while the git merge deny stays (PM request, 2026-11-14)",
   "estimated_tasks": 3,
   "actual_tasks": 3,
   "completed": "2026-11-14",
   "lane": "light",
-  "deviation_notes": ""
+  "deviation_notes": "The track used the plain Measure workflow by the PM request of 2026-11-14, in the worktree /home/daniebo/Desktop/measure-worktrees/merge-base-allow on fix/merge-base-allow. Spec review Round 1 (measure-spec-review, kimi-code-plan-cn/kimi-for-coding#high) found one Blocker (the Task 1.2 step order; the checks now run after the archive and registry steps) and one Nit (the compound-command S2 assertion, declined because the scanner behavior behind it is not a role-file rule); Round 2 passed with no findings. Closeout check of 2026-11-14: INFO light lane, no final acceptance; one FAIL, the missing closeout manifest; exit 1, as FR-4 expects. bash tests/dsh/test-registry.sh passed with exit 0; the run takes minutes on this machine because the registry checker spawns one basename process per line in its nested loop. The empty checkpoint commit ran without a guard block in this session, so no track re-marking was needed. .gitignore excludes measure/runs/, so the red-s2.log, green-s2.log, run-suites.log, registry-check.log, and closeout-check.log files in measure/runs/ are not committed."
 }
