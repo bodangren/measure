@@ -68,6 +68,43 @@ describe('parseTracks', () => {
     expect(guard).toMatchObject({ marker: '~', folder: 'tracks/measure_guard_20261004' })
     expect(guard?.name).toStartWith('measure-guard')
   })
+
+  test('reads a Link line that sits more than three lines below the track line', () => {
+    const md = [
+      '- [~] **Track: Long description**',
+      '  *One description line.*',
+      '  *A second description line.*',
+      '  *A third description line.*',
+      '  *Link: [./tracks/long_description_20261115/](./tracks/long_description_20261115/)*',
+    ].join('\n')
+    const tracks = parseTracks(md)
+    expect(tracks.map(t => t.id)).toEqual(['long_description_20261115'])
+    expect(tracks[0]).toMatchObject({
+      marker: '~',
+      folder: 'tracks/long_description_20261115',
+    })
+  })
+
+  test('gives no entry for a track whose Link line belongs to the next track', () => {
+    const md = [
+      '- [~] **Track: First**',
+      '- [x] **Track: Second**',
+      '  *Link: [./archive/second_20261115/](./archive/second_20261115/)*',
+    ].join('\n')
+    const tracks = parseTracks(md)
+    expect(tracks.map(t => t.id)).toEqual(['second_20261115'])
+    expect(tracks[0]).toMatchObject({ marker: 'x' })
+  })
+
+  test('stops the scan at a heading line', () => {
+    const md = [
+      '- [~] **Track: First**',
+      '## Archived Tracks',
+      '  *Link: [./archive/first_20261115/](./archive/first_20261115/)*',
+    ].join('\n')
+    const tracks = parseTracks(md)
+    expect(tracks).toEqual([])
+  })
 })
 
 describe('parsePlan', () => {

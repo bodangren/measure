@@ -165,7 +165,7 @@ The file `measure/guard-allow` of the guarded repository is the allow list. A wr
 
 - Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked or human-gated. A `[b]` task is closed only when its line has a `deferred:<owner>` field.
 - `measure/tracks.md` entries can have two formats:
-  - `- [~] **Track: <name>**` with a next line `*Link: [./tracks/<id>/](./tracks/<id>/)*`
+  - `- [~] **Track: <name>**` with its `*Link:*` line after the title line, before the next entry line or the next markdown heading, for example `*Link: [./tracks/<id>/](./tracks/<id>/)*`
   - `- [x] [<name>](archive/<id>/index.md)`
 - The active track is the first `[~]` track whose plan has a `[~]` task. If no plan has a `[~]` task, the active track is the first `[~]` track.
 - In `plan.md`, a task is a checkbox line with no indent under a `## Phase ...` heading. Indented lines are sub-tasks. Checkbox lines in other `##` sections are not tasks.
