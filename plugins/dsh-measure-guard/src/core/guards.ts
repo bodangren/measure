@@ -419,16 +419,16 @@ const TEE = /(?:^|[\s;|&()])tee\b([^;|&\n]*)/g
 const SED = /(?:^|[\s;|&()])sed\b([^;|&\n]*)/g
 const COPY = /(?:^|[\s;|&()])(?:cp|mv|install|ln)\b([^;|&\n]*)/g
 
-const clean = token => token.replace(/^['"]|['"]$/g, '')
+const clean = (token: string): string => token.replace(/^['"]|['"]$/g, '')
 
-const isStreamDevice = path => STREAM_DEVICES.has(path) || path.startsWith('/dev/fd/')
+const isStreamDevice = (path: string): boolean => STREAM_DEVICES.has(path) || path.startsWith('/dev/fd/')
 
 /**
  * The delimiter of a heredoc marker that starts outside quotes, or null. Quotes
  * are skipped so `printf "x << y"` is not a heredoc; the delimiter itself may be
  * quoted (`<<'EOF'`, `<<"EOF"`).
  */
-const heredocDelimiter = line => {
+const heredocDelimiter = (line: string) => {
   let quote = null
   for (let i = 0; i < line.length; i += 1) {
     const char = line[i]
@@ -454,15 +454,15 @@ const heredocDelimiter = line => {
  * so a quoted redirection target still parses. Bounded: one heredoc marker per
  * line is recognized, and the scan is line/quote based, not a shell parser.
  */
-const redirectView = command => {
+const redirectView = (command: string): string => {
   const lines = command.split('\n')
   for (let i = 0; i < lines.length; i += 1) {
-    const marker = heredocDelimiter(lines[i])
+    const marker = heredocDelimiter(lines[i]!)
     if (marker === null) continue
     const stripTabs = marker.stripTabs
     const delimiter = marker.delimiter
     for (let j = i + 1; j < lines.length; j += 1) {
-      const candidate = stripTabs ? lines[j].replace(/^\t+/, '') : lines[j]
+      const candidate = stripTabs ? lines[j]!.replace(/^\t+/, '') : lines[j]
       if (candidate === delimiter) {
         i = j
         break
@@ -474,7 +474,7 @@ const redirectView = command => {
   let view = ''
   let quote = null
   for (let i = 0; i < text.length; i += 1) {
-    const char = text[i]
+    const char = text[i]!
     if (quote !== null) {
       if (char === quote && !(quote === '"' && text[i - 1] === '\\')) {
         quote = null
@@ -484,7 +484,7 @@ const redirectView = command => {
       }
       continue
     }
-    if (char === '#' && (i === 0 || /[\s;|&(]/.test(text[i - 1]))) {
+    if (char === '#' && (i === 0 || /[\s;|&(]/.test(text[i - 1]!))) {
       while (i < text.length && text[i] !== '\n') i += 1
       view += '\n'
       continue
@@ -503,7 +503,7 @@ const redirectView = command => {
 const QUOTED = '\u0000'
 
 /** The redirection targets of a command. */
-const redirectTargets = command => {
+const redirectTargets = (command: string): string[] => {
   const out = []
   for (const match of redirectView(command).matchAll(REDIRECT)) {
     const target = clean(match[1] ?? '')
@@ -514,7 +514,7 @@ const redirectTargets = command => {
 }
 
 /** The file arguments of every `tee` in the command. */
-const teeTargets = command => {
+const teeTargets = (command: string): string[] => {
   const out = []
   for (const match of command.matchAll(TEE)) {
     for (const raw of (match[1] ?? '').trim().split(/\s+/)) {
@@ -533,7 +533,7 @@ const teeTargets = command => {
  * every later non-option argument is a file. This positional rule keeps an
  * absolute path from being mistaken for a `/pattern/` script.
  */
-const sedTargets = command => {
+const sedTargets = (command: string): string[] => {
   const out = []
   for (const match of command.matchAll(SED)) {
     const segment = match[1] ?? ''
@@ -541,7 +541,7 @@ const sedTargets = command => {
     const tokens = segment.replace(/'[^']*'|"[^"]*"/g, ` ${QUOTED} `).trim().split(/\s+/).filter(Boolean)
     let scriptSeen = false
     for (let i = 0; i < tokens.length; i += 1) {
-      const token = tokens[i]
+      const token = tokens[i]!
       if (token === QUOTED) {
         scriptSeen = true
         continue
@@ -564,14 +564,14 @@ const sedTargets = command => {
 }
 
 /** The destination arguments of `cp`, `mv`, and `install` (the last non-option word). */
-const copyTargets = command => {
+const copyTargets = (command: string): string[] => {
   const out = []
   for (const match of command.matchAll(COPY)) {
     const segment = match[1] ?? ''
     // `-t DIR` / `--target-directory` name the destination as an option argument;
     // that form is left to the end-of-turn backstop instead of guessing the token.
     if (/(?:^|\s)(?:-t|--target-directory)(?:\s|=|$)/.test(segment)) continue
-    const words = segment.trim().split(/\s+/).filter(word => word !== '' && !word.startsWith('-'))
+    const words = segment.trim().split(/\s+/).filter((word: string) => word !== '' && !word.startsWith('-'))
     const last = words[words.length - 1]
     if (last !== undefined) out.push(clean(last))
   }
@@ -579,10 +579,10 @@ const copyTargets = command => {
 }
 
 /** The write targets of a bash command, in command order, without duplicates. */
-export function shellWritePaths(command) {
+export function shellWritePaths(command: string): string[] {
   if (typeof command !== 'string' || command === '') return []
   const paths = [...redirectTargets(command), ...teeTargets(command), ...sedTargets(command), ...copyTargets(command)]
-  const seen = []
+  const seen: string[] = []
   for (const path of paths) {
     if (!seen.includes(path)) seen.push(path)
   }
