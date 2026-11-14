@@ -431,3 +431,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Merge base allow**
   *Link: [./archive/merge_base_allow_20261114/](./archive/merge_base_allow_20261114/)*
   *Allow the read-only git merge-base command in the eight audit roles while the git merge deny stays (PM request, 2026-11-14)*
+
+- [x] **Track: Guard link window and S1 helpers**
+  *Link: [./archive/guard_link_window_20261115/](./archive/guard_link_window_20261115/)*
+  *Parse the guard track link past the next three lines and define the missing S1 helpers (PM request, 2026-11-15)*
