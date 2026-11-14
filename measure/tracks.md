@@ -4,7 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [ ] **Track: Status link window and guards typing**
+- [~] **Track: Status link window and guards typing**
   *Link: [./tracks/status_link_window_20261115/](./tracks/status_link_window_20261115/)*
   *Read the status band track link past the next three lines and add the missing guards.ts type annotations (PM request, 2026-11-15)*
 
