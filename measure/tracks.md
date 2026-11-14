@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Merge base allow**
-  *Link: [./tracks/merge_base_allow_20261114/](./tracks/merge_base_allow_20261114/)*
-  *Allow the read-only git merge-base command in the eight audit roles while the git merge deny stays (PM request, 2026-11-14)*
+- (none)
 
 ---
 
