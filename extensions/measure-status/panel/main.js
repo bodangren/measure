@@ -2040,8 +2040,10 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     lines.forEach((line, i) => {
       const bold = TRACK_BOLD.exec(line);
       if (bold) {
-        for (const next of lines.slice(i + 1, i + 4)) {
+        for (let j = i + 1; j < lines.length; j++) {
+          const next = lines[j] ?? "";
           if (ENTRY.test(next)) break;
+          if (/^#{1,6} /.test(next)) break;
           const link = LINK_LINE.exec(next);
           if (link) {
             tracks.push(entryOf(i, bold[1] ?? " ", bold[2] ?? "", link[1] ?? ""));

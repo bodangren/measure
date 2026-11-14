@@ -54,8 +54,13 @@ export const parseTracks = (md: string): TrackEntry[] => {
   lines.forEach((line, i) => {
     const bold = TRACK_BOLD.exec(line)
     if (bold) {
-      for (const next of lines.slice(i + 1, i + 4)) {
+      // Scan the lines after the track line, in order, until the first line
+      // that matches ENTRY (the next track line) or the first markdown heading
+      // line, or the end of the text. Take the first Link line in that range.
+      for (let j = i + 1; j < lines.length; j++) {
+        const next = lines[j] ?? ''
         if (ENTRY.test(next)) break
+        if (/^#{1,6} /.test(next)) break
         const link = LINK_LINE.exec(next)
         if (link) {
           tracks.push(entryOf(i, bold[1] ?? ' ', bold[2] ?? '', link[1] ?? ''))
