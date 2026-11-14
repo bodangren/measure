@@ -1,12 +1,13 @@
 {
   "track_id": "merge_base_allow_20261114",
   "type": "chore",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-14T15:45:51Z",
-  "updated_at": "2026-11-14T15:45:51Z",
+  "updated_at": "2026-11-14T16:22:10Z",
   "description": "Allow the read-only git merge-base command in the eight audit roles while the git merge deny stays (PM request, 2026-11-14)",
   "estimated_tasks": 3,
-  "actual_tasks": null,
+  "actual_tasks": 3,
+  "completed": "2026-11-14",
   "lane": "light",
   "deviation_notes": ""
 }
