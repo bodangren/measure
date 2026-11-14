@@ -4,8 +4,9 @@
 
 Eight audit role files hold the shell deny rule `*git merge*`. The pattern also
 matches the read-only command `git merge-base`. Acceptance roles therefore
-cannot run `git merge-base --is-ancestor A B`. The graph role used
-`git rev-list --count HEAD..X` as a work-around on 2026-11-14.
+cannot run `git merge-base --is-ancestor A B`. The final acceptance of the
+Graph project (round 2) used `git rev-list --count HEAD..X` as a work-around
+on 2026-11-14.
 
 The eight files, each with the rule at lines 42 to 44:
 
@@ -75,7 +76,10 @@ Source: PM request, 2026-11-14.
   only on the missing closeout manifest, as in the last light-lane track.
 
 - **FR-5 (the records).** `CHANGELOG.md` gets one entry at the top of
-  "## Unreleased" / "### Bug Fixes", with no test count.
+  "## Unreleased" / "### Bug Fixes", with no test count. `README.md` line 33
+  gets a new first sentence that names "Merge base allow" as the latest
+  archived track, with the date 2026-11-14 and a short reason in brackets. The
+  rest of line 33 stays unchanged.
 
 ## Acceptance Criteria
 
@@ -87,6 +91,8 @@ Source: PM request, 2026-11-14.
 - The closeout check fails only on the missing closeout manifest.
 - `CHANGELOG.md` gets one entry at the top of "## Unreleased" / "### Bug
   Fixes".
+- `README.md` line 33 names "Merge base allow" as the latest archived track,
+  with the date 2026-11-14 and a short reason in brackets.
 
 ## Out of scope
 
