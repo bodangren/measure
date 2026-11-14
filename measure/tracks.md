@@ -435,3 +435,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Guard link window and S1 helpers**
   *Link: [./archive/guard_link_window_20261115/](./archive/guard_link_window_20261115/)*
   *Parse the guard track link past the next three lines and define the missing S1 helpers (PM request, 2026-11-15)*
+
+- [x] **Track: Status link window and guards typing**
+  *Link: [./archive/status_link_window_20261115/](./archive/status_link_window_20261115/)*
+  *Read the status band track link past the next three lines and add the missing guards.ts type annotations (PM request, 2026-11-15)*
