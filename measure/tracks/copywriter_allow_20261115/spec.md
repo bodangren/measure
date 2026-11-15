@@ -60,13 +60,18 @@ rule, in this order: `copywriter`, `fact-gate-checker`, `thai-writer`,
 
 One new section in `tests/spec_review_gate/test_s2_role_docs.sh`, directly
 before the `# Edge checks` separator block. The section reads the frontmatter
-rules of `agents/measure-orchestrator.md` with the existing `rules()` helper
-and checks that the subagent rules, in order, are `"*"|deny`,
+rules of `agents/measure-orchestrator.md` with the existing `rules()` helper,
+takes the subagent rules of the helper output (the lines that start with
+`subagent|`), keeps the fields `resource|effect` (`cut -d'|' -f2,3`), and
+compares them with this ordered list of eight pairs: `"*"|deny`,
 `"measure-*"|allow`, `"coder"|allow`, `"copywriter"|allow`,
 `"fact-gate-checker"|allow`, `"thai-writer"|allow`,
-`"print-proof-auditor"|allow`, `"change-quality-reviewer"|allow`. Red: the
-section fails before the change. Task 1.1 runs the S2 test before the edit and
-keeps the failing output in
+`"print-proof-auditor"|allow`, `"change-quality-reviewer"|allow`. The section
+follows the A4 defense of the file header: it prints a fail line when
+`agents/measure-orchestrator.md` is missing or empty, and a fail line when
+the subagent extract is empty. The section compares the whole ordered list,
+not a substring. Red: the section fails before the change. Task 1.1 runs the
+S2 test before the edit and keeps the failing output in
 `measure/runs/copywriter_allow_20261115/red-s2.log`.
 
 ## Functional Requirements
