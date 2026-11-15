@@ -4,30 +4,45 @@
 
 The PR orchestrator session could not spawn the global `copywriter` agent
 (Daniel's order of 2026-11-15), because `agents/measure-orchestrator.md`
-denied it. The PM added one allow rule to the installed file
+denied it. The PM added allow rules to the installed file
 `~/.config/opencode/agents/measure-orchestrator.md`, directly after the
 `coder` rule. The installer now keeps that file as local-edit:
 `bin/install-measure-skill --check` prints
 "local-edit ~/.config/opencode/agents/measure-orchestrator.md". The source
-must carry the same rule, so the installer installs from main again and the
-orchestrator can spawn the copywriter.
+must carry the same rules, so the installer installs from main again and the
+orchestrator can spawn the four agents.
 
 Source: PM order, 2026-11-15, light lane. Date needed: today.
 
 ## The order (PM, 2026-11-15)
 
-Put the same three lines into the source `agents/measure-orchestrator.md`, at
-the same place, in one PR.
+Put the same allow rules into the source `agents/measure-orchestrator.md`, at
+the same place, in one PR. PM update of 2026-11-15, before the spec review:
+the scope grew from one rule (`copywriter`) to four rules. The four rules,
+directly after the `coder` rule and before the `change-quality-reviewer`
+rule, in this order: `copywriter`, `fact-gate-checker`, `thai-writer`,
+`print-proof-auditor`. The installed copy has the four rules now
+(`diff` reports "117a118,129").
 
 ## Decided change (recorded here; do not choose another design)
 
 - Placement: in `agents/measure-orchestrator.md`, directly after the three
   lines of the `coder` subagent rule (lines 114 to 116 on 2026-11-15) and
-  before the `change-quality-reviewer` rule, insert exactly:
+  before the `change-quality-reviewer` rule, insert exactly these twelve
+  lines, in this order:
 
   ```
     - action: subagent
       resource: "copywriter"
+      effect: allow
+    - action: subagent
+      resource: "fact-gate-checker"
+      effect: allow
+    - action: subagent
+      resource: "thai-writer"
+      effect: allow
+    - action: subagent
+      resource: "print-proof-auditor"
       effect: allow
   ```
 
@@ -48,17 +63,19 @@ before the `# Edge checks` separator block. The section reads the frontmatter
 rules of `agents/measure-orchestrator.md` with the existing `rules()` helper
 and checks that the subagent rules, in order, are `"*"|deny`,
 `"measure-*"|allow`, `"coder"|allow`, `"copywriter"|allow`,
-`"change-quality-reviewer"|allow`. Red: the section fails before the change.
-Task 1.1 runs the S2 test before the edit and keeps the failing output in
+`"fact-gate-checker"|allow`, `"thai-writer"|allow`,
+`"print-proof-auditor"|allow`, `"change-quality-reviewer"|allow`. Red: the
+section fails before the change. Task 1.1 runs the S2 test before the edit and
+keeps the failing output in
 `measure/runs/copywriter_allow_20261115/red-s2.log`.
 
 ## Functional Requirements
 
-- **FR-1 (the S2 section and the three lines).** Add the S2 section of the
-  Test paragraph above (Red) and add the three lines of the Decided change to
+- **FR-1 (the S2 section and the twelve lines).** Add the S2 section of the
+  Test paragraph above (Red) and add the twelve lines of the Decided change to
   `agents/measure-orchestrator.md` (Green), in one commit on
   `chore/copywriter-allow` with the message
-  `chore(agents): Allow the copywriter subagent in the orchestrator`. Keep the
+  `chore(agents): Allow four global subagents in the orchestrator`. Keep the
   failing S2 output of the Red step in
   `measure/runs/copywriter_allow_20261115/red-s2.log`, the passing S2 output
   in `measure/runs/copywriter_allow_20261115/green-s2.log`, the placement diff
@@ -71,13 +88,14 @@ Task 1.1 runs the S2 test before the edit and keeps the failing output in
   other text change.
 - **FR-2 (the records).** `CHANGELOG.md` gets one entry at the top of
   "## Unreleased" under the existing "### Chores" heading:
-  `* **copywriter allow:** agents/measure-orchestrator.md now allows the global copywriter subagent: a subagent "copywriter" allow rule sits directly after the "coder" rule and before the "change-quality-reviewer" rule, and a new S2 role-doc section pins the subagent rule order. Cause: the PR orchestrator session could not spawn the global copywriter agent (Daniel's order of 2026-11-15), the PM added the rule to the installed copy only, and the installer then held the installed file as local-edit, so it missed earlier PRs. Track `copywriter_allow_20261115`.`
+  `* **copywriter allow:** agents/measure-orchestrator.md now allows four global subagents, in this order directly after the "coder" rule and before the "change-quality-reviewer" rule: copywriter, fact-gate-checker, thai-writer, print-proof-auditor; a new S2 role-doc section pins the subagent rule order. Cause: the PR orchestrator session could not spawn the global copywriter agent (Daniel's order of 2026-11-15), the PM added the copywriter rule to the installed copy only and then updated the scope to add fact-gate-checker, thai-writer, and print-proof-auditor to the installed copy, and the installer held the installed file as local-edit, so it missed earlier PRs. Track `copywriter_allow_20261115`.`
   `README.md` line 33: replace its first sentence, up to and including its
   closing bracket and full stop, with "As of 2026-11-15, the latest archived
-  track is Copywriter allow (the orchestrator may spawn the global copywriter
-  agent, so the installed copy matches the source again)." The rest of line 33
-  stays unchanged. Both record changes ride in the Task 1.2 archive commit, as
-  in the Result line track.
+  track is Copywriter allow (the orchestrator may spawn the global copywriter,
+  fact-gate-checker, thai-writer, and print-proof-auditor agents, so the
+  installed copy matches the source again)." The rest of line 33 stays
+  unchanged. Both record changes ride in the Task 1.2 archive commit, as in
+  the Result line track.
 - **FR-3 (the closeout).** Archive the track to
   `measure/archive/copywriter_allow_20261115/`, move the registry entry to
   Archived Tracks with `[x]`, and record the results.
@@ -86,7 +104,9 @@ Task 1.1 runs the S2 test before the edit and keeps the failing output in
 
 - The subagent rules of `agents/measure-orchestrator.md`, in order, are
   `"*"|deny`, `"measure-*"|allow`, `"coder"|allow`, `"copywriter"|allow`,
-  `"change-quality-reviewer"|allow` (pinned by the new S2 section).
+  `"fact-gate-checker"|allow`, `"thai-writer"|allow`,
+  `"print-proof-auditor"|allow`, `"change-quality-reviewer"|allow` (pinned by
+  the new S2 section).
 - `diff agents/measure-orchestrator.md ~/.config/opencode/agents/measure-orchestrator.md`
   exits 0.
 - `bash tests/spec_review_gate/test_s2_role_docs.sh` exits 0 (run directly).
@@ -107,6 +127,7 @@ Task 1.1 runs the S2 test before the edit and keeps the failing output in
 - The installed copy in `~/.config/opencode/agents/measure-orchestrator.md`:
   the PM restores it after the merge, and the installer then writes the new
   version.
-- The copywriter agent itself.
+- The four agents themselves (`copywriter`, `fact-gate-checker`,
+  `thai-writer`, `print-proof-auditor`).
 - Every other file and every other frontmatter rule of the orchestrator role.
 - A merge into `main`. Only Daniel merges.

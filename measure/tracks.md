@@ -6,7 +6,7 @@ This file tracks all major tracks for the Measure project.
 
 - [~] **Track: Copywriter allow**
   *Link: [./tracks/copywriter_allow_20261115/](./tracks/copywriter_allow_20261115/)*
-  *Allow the global copywriter subagent in agents/measure-orchestrator.md (a subagent "copywriter" allow rule directly after the "coder" rule), pin the subagent rule order with an S2 role-doc check, and restore the installed-copy match (PM order, 2026-11-15)*
+  *Allow four global subagents in agents/measure-orchestrator.md (subagent allow rules for copywriter, fact-gate-checker, thai-writer, and print-proof-auditor directly after the "coder" rule), pin the subagent rule order with an S2 role-doc check, and restore the installed-copy match (PM order, 2026-11-15)*
 
 ---
 
