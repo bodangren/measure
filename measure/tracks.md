@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Prompt audit**
+  *Link: [./tracks/prompt_audit_20261115/](./tracks/prompt_audit_20261115/)*
+  *Trim old-model wording (shouting, **PROTOCOL:** labels, DO NOT JUMP YET) from the Measure prompts with a per-line audit table; keep every Daniel quote, owner rule, human gate, and test-pinned string (PM request, 2026-11-15)*
 
 ---
 

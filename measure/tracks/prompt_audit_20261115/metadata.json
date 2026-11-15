@@ -1,0 +1,13 @@
+{
+  "track_id": "prompt_audit_20261115",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-11-15T06:15:00Z",
+  "updated_at": "2026-11-15T06:15:00Z",
+  "description": "Trim old-model wording (shouting, **PROTOCOL:** labels, DO NOT JUMP YET) from the Measure prompts with a per-line audit table; keep every Daniel quote, owner rule, human gate, and test-pinned string (PM request, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "completed": null,
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow was skipped by PM order; the orchestrator runs the review on another model family after the setup commit."
+}
