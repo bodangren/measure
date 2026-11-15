@@ -99,7 +99,7 @@ case.
 | 5 | references/doctor.md | 20 | `... exist." and HALT.` | `... exist." and halt.` | Shouting: `HALT` |
 | 6 | references/status.md | 21 | `**PROTOCOL: Verify that the Measure environment is properly set up.**` | `Verify that the Measure environment is properly set up.` | `**PROTOCOL:**` label |
 | 7 | references/status.md | 29 | `If ANY of these are missing ... and HALT.` | `If any of these are missing ... and halt.` | Shouting: `ANY`, `HALT` |
-| 8 | references/status.md | 46 | `If metadata.json is missing or malformed, skip silently and continue — do NOT HALT.` | `If metadata.json is missing or malformed, skip it silently and continue.` | Shouting: `NOT`; keeps `silently` |
+| 8 | references/status.md | 46 | `If metadata.json is missing or malformed, skip silently and continue — do NOT HALT.` | `If metadata.json is missing or malformed, skip it silently and continue.` | Shouting: `NOT`, `HALT`; keeps `silently` |
 | 9 | references/status.md | 150 | `**PROTOCOL: Compute velocity and estimation accuracy from completed feature tracks.**` | `Compute velocity and estimation accuracy from completed feature tracks.` | `**PROTOCOL:**` label |
 | 10 | references/review.md | 39 | `**PROTOCOL: Verify that the Measure environment is properly set up.**` | `Verify that the Measure environment is properly set up.` | `**PROTOCOL:**` label |
 | 11 | references/review.md | 48 | `If ANY of these files are missing, list them, announce: ... and HALT.` | `If any of these files are missing, list them, announce: ... and halt.` | Shouting: `ANY`, `HALT` |
@@ -117,7 +117,7 @@ case.
 | 23 | references/new-track.md | 59 | `**Availability + freshness gate** (must pass BOTH):` | `**Availability + freshness gate** (both must pass):` | Shouting: `BOTH` |
 | 24 | references/new-track.md | 61 | `- **Freshness:** graph.db exists at the project root AND its mtime ...` | `- **Freshness:** graph.db exists at the project root and its mtime ...` | Shouting: `AND` |
 | 25 | references/new-track.md | 63 | `**If both pass AND the Tech Stack includes TypeScript:**` | `**If both pass and the Tech Stack includes TypeScript:**` | Shouting: `AND` |
-| 26 | references/new-track.md | 73 | `- Do NOT HALT.` | `- Do not halt.` | Shouting: `NOT` |
+| 26 | references/new-track.md | 73 | `- Do NOT HALT.` | `- Do not halt.` | Shouting: `NOT`, `HALT` |
 | 27 | references/new-track.md | 85 | `**CRITICAL:** Wait for the user's response after each prompt.` | `Wait for the user's response after each prompt.` | Shouting: `CRITICAL` |
 | 28 | references/new-track.md | 93 | `At least one batch in this Questioning Phase MUST cite a specific finding from build-graph results ...` | `Cite a specific finding from build-graph results in at least one batch of this Questioning Phase (e.g., "I see validateToken is called from 4 files including auth/middleware.ts — should the new behavior live there or in a sibling module?").` | Shouting: `MUST`; keeps the rule as an instruction |
 | 29 | references/new-track.md | 105 | `Do NOT ask generic questions if the answer is already in the files.` | `Do not ask generic questions when the answer is already in the files.` | Shouting: `NOT` |
@@ -168,7 +168,7 @@ case.
 | 74 | references/implement.md | 100 | `**Availability + freshness gate** (must pass BOTH):` | `**Availability + freshness gate** (both must pass):` | Shouting: `BOTH` |
 | 75 | references/implement.md | 102 | `- **Freshness:** graph.db exists at the project root AND its mtime ...` | `- **Freshness:** graph.db exists at the project root and its mtime ...` | Shouting: `AND` |
 | 76 | references/implement.md | 104 | `**If both pass AND the Tech Stack includes TypeScript:**` | `**If both pass and the Tech Stack includes TypeScript:**` | Shouting: `AND` |
-| 77 | references/implement.md | 117 | `- Do NOT HALT.` | `- Do not halt.` | Shouting: `NOT` |
+| 77 | references/implement.md | 117 | `- Do NOT HALT.` | `- Do not halt.` | Shouting: `NOT`, `HALT` |
 | 78 | references/implement.md | 124 | `You MUST now loop through each task ...` | `Loop through each task ...` | Shouting: `MUST` |
 | 79 | references/implement.md | 125 | `**For Each Task, You MUST:**` | `**For each task:**` | Shouting: `MUST` |
 | 80 | references/implement.md | 126 | `You MUST now read and execute the procedures ...` | `Read and execute the procedures ...` | Shouting: `MUST` |
@@ -204,6 +204,25 @@ case.
 | 100 | agents/measure-orchestrator-audit.md | 315 | `- Do NOT modify plan task markers ...` | `- Do not modify plan task markers ...` | Shouting: `NOT` |
 | 101 | agents/measure-orchestrator-audit.md | 317 | `- Do NOT archive tracks. Report archive readiness ...` | `- Do not archive tracks. Report archive readiness ...` | Shouting: `NOT` |
 
+### F9 additions (Round 2, 2026-11-15)
+
+Rows 102-111 came from spec review Round 2 (finding F9, orchestrator
+decision: the author adds them, with no third round). Each is a same-line
+rewrite.
+
+| # | File | Line | Old text (short) | New text | Reason |
+|---|------|------|------------------|----------|--------|
+| 102 | references/setup.md | 99 | `- **IMMEDIATELY JUMP** to the Target Section. Do not execute the rest of Section 2.0.` | `- **Jump immediately** to the Target Section. Do not execute the rest of Section 2.0.` | Shouting: `IMMEDIATELY JUMP` |
+| 103 | references/new-track.md | 205 | `- Include [ ] status markers for EVERY task and sub-task:` | `- Include [ ] status markers for every task and sub-task:` | Shouting: `EVERY` |
+| 104 | references/setup.md | 454 | `- **Status markers** for EVERY task and sub-task:` | `- **Status markers** for every task and sub-task:` | Shouting: `EVERY` |
+| 105 | references/revert.md | 127 | `- Happened AFTER the implementation commit` | `- Happened after the implementation commit` | Shouting: `AFTER` |
+| 106 | references/review.md | 132 | `**CONDITIONAL:** Only execute this section if the diff touches frontend files ...` | `**Conditional:** Only execute this section if the diff touches frontend files ...` | Shouting: `CONDITIONAL` label |
+| 107 | references/review.md | 134 | `**PURPOSE:** Complement unit/integration tests ...` | `**Purpose:** Complement unit/integration tests ...` | Shouting: `PURPOSE` label |
+| 108 | assets/workflow.md | 195 | `**AI AGENT INSTRUCTION: This section should be adapted to the project's specific language, framework, and build tools.**` | `This section should be adapted to the project's specific language, framework, and build tools.` | Shouting: `AI AGENT INSTRUCTION` label |
+| 109 | references/review.md | 223 | `2. **If NO changes detected:** Proceed to 3.3 Track Cleanup.` | `2. **When no changes are detected:** Proceed to 3.3 Track Cleanup.` | Shouting: `NO` |
+| 110 | skills/measure-orchestrator/references/anti-pattern-catalog.md | 45 | `require EITHER (a) explicit anonymization marker on the artifact, OR (b) a non-empty` | `require either (a) explicit anonymization marker on the artifact, or (b) a non-empty` | Shouting: `EITHER`, `OR` |
+| 111 | skills/measure-orchestrator/references/anti-pattern-catalog.md | 91 | `(all-[~]) AND when a phase has zero in-progress tasks (all-[x]).` | `(all-[~]) and when a phase has zero in-progress tasks (all-[x]).` | Shouting: `AND` |
+
 ## Capital-letter hits kept
 
 These in-scope hits stay, with the reason:
@@ -222,6 +241,9 @@ These in-scope hits stay, with the reason:
   stay equal to `ruleSection()` per
   `plugins/opencode-measure-guard/tests/context.test.ts`.
 - `references/grill-me.md:37` — `Never` is sentence case, not capitals.
+- Output and test tokens kept as code names: `PASS`, `FAIL`, `INCOMPLETE`,
+  `WARN`, `DRIFT`, `PROPOSAL`, `INFO`, and `BANNED` (test-output and
+  audit-output tokens).
 - Report-format and schema tokens kept as code names: the status-report
   banner words (`MEASURE STATUS REPORT`, `CURRENT WORK`, `PROGRESS`,
   `TRACK BREAKDOWN`, `PROJECT HEALTH`), the severity and disposition tokens
@@ -239,8 +261,10 @@ These in-scope hits stay, with the reason:
 ## Per-file line counts
 
 Every cut is a same-line rewrite, except row 1 (one line removed in
-`AGENTS.md`). `claude-skills/measure/` mirrors `skills/measure/` and gets the
-same edits, so its counts match the `skills/measure/` counts below.
+`AGENTS.md`). Rows 102-111 (Round 2) are same-line rewrites too, so the
+counts below already hold for the full 111-row table. `claude-skills/measure/`
+mirrors `skills/measure/` and gets the same edits, so its counts match the
+`skills/measure/` counts below.
 
 | File | Lines now | Lines expected |
 |------|-----------|----------------|
@@ -293,7 +317,6 @@ These in-scope files hold no shouting, no `**PROTOCOL:**` label, no
   answers" is sentence case, not capitals; it stays)
 - `skills/measure/references/spec-review.md`
 - `skills/measure-orchestrator/SKILL.md`
-- `skills/measure-orchestrator/references/anti-pattern-catalog.md`
 - `skills/measure-orchestrator/references/contracts.md`
 - `skills/measure-orchestrator/references/dsh.md`
 - `agents/measure-adversarial-testing.md`
@@ -358,10 +381,14 @@ Notes on repetition, reviewed and kept:
   `claude-skills/measure/`, so `diff -r skills/measure claude-skills/measure`
   exits 0.
 - **FR-3 (the records).** `CHANGELOG.md` gets one entry at the top of
-  "## Unreleased" (a new "### Chores" heading when none exists).
-  `README.md` line 33 names this track as the latest archived track. Both
-  record changes ride in the Task 1.2 archive commit
-  `chore(measure): Archive track 'Prompt audit'`, as in the G21 track.
+  "## Unreleased" (a new "### Chores" heading when none exists):
+  `* **prompt trim:** the Measure prompts (AGENTS.md, skills/measure and its claude-skills/measure copy, skills/measure-orchestrator, the agents/measure-*.md roles, and the opencode-measure-guard commands) lose old-model capital-letter wording (shouting labels, MUST, DO NOT, and DO NOT JUMP YET); every Daniel quote, owner rule, human gate, and test-pinned string stays. Track `prompt_audit_20261115`.`
+  `README.md` line 33 becomes: "As of 2026-11-15, the latest archived track
+  is Prompt audit (old-model capital-letter wording is trimmed from the
+  Measure prompts; every owner rule and human gate stays)." followed by the
+  rest of the current line 33 unchanged. Both record changes ride in the
+  Task 1.2 archive commit `chore(measure): Archive track 'Prompt audit'`,
+  as in the G21 track (archive commit 19a4f29 is the format precedent).
 - **FR-4 (the closeout).** Archive the track, move the registry entry to
   Archived Tracks with `[x]`, and record the results.
 
@@ -390,6 +417,7 @@ Notes on repetition, reviewed and kept:
 
 ## Out of Scope
 
-- Any file outside the scope list above.
+- Any file outside the scope list above, except the `CHANGELOG.md` and
+  `README.md` record changes of the Task 1.2 archive commit (FR-3).
 - Frontmatter permission rules of the agent files.
 - A merge into `main`. Only Daniel merges.

@@ -32,3 +32,35 @@ The Measure prompts (AGENTS.md, the measure and measure-orchestrator skills, the
 - F6: FIX
 - F7: FIX
 - F8: FIX
+
+## Round 2
+
+Date: 2026-11-15
+Reviewer: measure-spec-review, claude-code/claude-sonnet-5-5#high
+
+### What this track proposes
+This track trims old-model wording from the Measure prompts by hand, because the bundled prompt-audit command cannot run in an agent session. A 101-row table lists each same-line rewrite: shouting words in capitals, bold PROTOCOL labels, and DO NOT JUMP YET. The track keeps every Daniel quote, owner rule, human gate, quoted user-facing message, and test-pinned string, and it names each capital-letter word that stays. It applies each edit to skills/measure and to the byte-equal claude-skills/measure copy in one commit. Then it records the change in CHANGELOG.md and README.md and archives the track.
+
+### How the current system works, per this spec
+The Measure prompts (AGENTS.md, the measure and measure-orchestrator skills, the agents/measure-*.md role files, and the plugin command files) hold shouting, PROTOCOL labels, and repeated warnings. Tests pin some strings: S1 pins steps 1 to 8 of the new-track section 2.5 and the bundle equality, S2 pins the role-file sentences, and S4 pins the orchestrator document strings. The spec says that no proposed cut text is pinned, and the gates run the S1, S2, S4, DSH, and plugin tests after the edit.
+
+### Findings
+- F9 [Major] Audit table and Capital-letter hits kept: Ten in-scope capital-letter hits have no row and no keep reason: IMMEDIATELY JUMP (references/setup.md:99), EVERY (references/new-track.md:205 and references/setup.md:454), AFTER (references/revert.md:127), the CONDITIONAL and PURPOSE labels (references/review.md:132 and :134), the AI AGENT INSTRUCTION label (assets/workflow.md:195), NO (references/review.md:223), and EITHER with AND (skills/measure-orchestrator/references/anti-pattern-catalog.md:45 and :91, a file that the clean list names as clean). Rationale: PM rule 2 removes shouting, and the Audit method says each instruction-prose hit gets a row or a keep reason; setup.md:99 sits in the same section as row 48 (DO NOT JUMP YET), so add a row for each hit or a keep reason.
+- F10 [Nit] Out of Scope: The first bullet says any file outside the scope list is out of scope, but FR-3 changes CHANGELOG.md and README.md, which the scope list does not name. Rationale: the Scope section already carves out the two files, so the text agrees in meaning; add an exception for the Task 1.2 archive commit to remove the apparent conflict.
+- F11 [Nit] Capital-letter hits kept and Audit table rows 8, 26, and 77: The keep list does not name the output and test tokens PASS, FAIL, INCOMPLETE, WARN, DRIFT, PROPOSAL, INFO, and BANNED, and the Reason column of rows 8, 26, and 77 names NOT but not HALT. Rationale: the new text of the three rows already removes HALT and the tokens are code names, so only the record is incomplete; name them to keep the Audit method claim true.
+- F12 [Nit] Functional Requirements FR-3 and plan Task 1.2: No text is given for the CHANGELOG.md entry or for README.md line 33, so the worker writes both. Rationale: the G21 archive commit 19a4f29 shows the format (one bullet with a bold lead, one replaced sentence), and the wording does not change what the worker builds; name that precedent in the task line.
+
+Round 1 findings F1 to F8: all fixed in 271adc4 (see the evidence list of the result JSON). No CONTEST item existed, so no withdraw or keep decision was needed.
+
+Checks run:
+- HEAD equals audited_head_sha 271adc41c8a92f27ac44d29b959ff44cf2b02b7d.
+- 101 rows: file and line exist and match the old text; the line counts of the spec equal wc -l; diff -r skills/measure claude-skills/measure exits 0.
+- Pin check (grep -rlF of each full old line in tests/, plugins/dsh-measure-guard/tests, plugins/opencode-measure-guard): no hit for any row. No hit for the F9 words either.
+- Capital-letter search: ten instruction-prose hits without a row or a keep reason (F9).
+- Zero-decision check: only the CHANGELOG.md and README.md wording is open (F12).
+
+### Author Response
+- F9: FIX
+- F10: FIX
+- F11: FIX
+- F12: FIX
