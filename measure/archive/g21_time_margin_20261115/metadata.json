@@ -1,0 +1,13 @@
+{
+  "track_id": "g21_time_margin_20261115",
+  "type": "fix",
+  "status": "done",
+  "created_at": "2026-11-14T23:29:40Z",
+  "updated_at": "2026-11-15T00:05:22Z",
+  "description": "Widen the first G18 probe to 100000 lines per count so the S3 suite kills the G21 quadratic mutant on fast machines (orchestrator finding, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-15",
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow was deferred by PM order; the orchestrator ran the review (measure-spec-review, kimi-code-plan-cn/kimi-for-coding#high) at 0cbdc83 and it passed with no findings (gate exit 0); the record is in spec-review.md Round 1. Red of 2026-11-15: bash tests/spec_review_gate/test_s3_adversarial.sh exits 1 with the only FAIL line \"G21 sensitivity: mutant 'the old quadratic any(...) loop' fails at least one probe -- 4 checks, 0 fail\" (task1-red-s3.log). Green after the G18_LINES change: the same suite exits 0, the mutant is killed by the widened first G18 probe, and the real checker passes the probe in 0.114 s (task1-green-s3.log). Gate: heavy-run.sh bash tests/spec_review_gate/run.sh exit 0, all 13 suites pass (task1-green-run-sh.log)."
+}
