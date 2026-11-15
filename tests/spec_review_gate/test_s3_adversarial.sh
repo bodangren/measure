@@ -61,6 +61,11 @@ BLOCK_LINES = [
 # per-item subprocess), not scheduler policing: a loaded machine took 5.62 s in a sibling
 # suite with no regression, so the budget is 30 s — still far below any quadratic run.
 TIME_LIMIT = 30.0
+# The first G18 probe uses G18_LINES end lines and G18_LINES start lines, so the
+# quadratic mutant needs about G18_LINES squared (1e10) steps, which no machine
+# ends in the 15 s mutant timeout, while the linear checker reads the 200000
+# lines in far less than TIME_LIMIT.
+G18_LINES = 100000
 
 
 def base_env(extra=None):
@@ -364,8 +369,8 @@ class Probes:
 
     def g18_time(self):
         g = "G18 time limits (contract)"
-        self.expect_pass(g, "20000 end lines, then 20000 start lines and one complete block",
-                         enc([END] * 20000 + [START] * 20000 + blk("dispositions: F1=FIX")),
+        self.expect_pass(g, f"{G18_LINES} end lines, then {G18_LINES} start lines and one complete block",
+                         enc([END] * G18_LINES + [START] * G18_LINES + blk("dispositions: F1=FIX")),
                          max_seconds=TIME_LIMIT)
         items = "; ".join(f"F{n}=FIX" for n in range(1, 50001))
         self.expect_pass(g, "50,000 items F<n>=FIX", enc(blk(f"dispositions: {items}")), max_seconds=TIME_LIMIT)

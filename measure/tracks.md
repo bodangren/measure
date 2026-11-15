@@ -443,3 +443,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Heavy-run prompt line**
   *Link: [./archive/heavy_run_prompt_20261115/](./archive/heavy_run_prompt_20261115/)*
   *Add the no-redirection prompt line to the five audit role files, and pin it with an S2 role-doc check (PM request, 2026-11-15)*
+
+- [x] **Track: G21 time margin**
+  *Link: [./archive/g21_time_margin_20261115/](./archive/g21_time_margin_20261115/)*
+  *Widen the first G18 probe to 100000 lines per count so the S3 suite kills the G21 quadratic mutant on fast machines (orchestrator finding, 2026-11-15)*
