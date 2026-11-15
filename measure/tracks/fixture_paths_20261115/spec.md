@@ -102,10 +102,17 @@ in `tests/spec_review_gate/test_red_track_scope.py` (register the module in
   Keep `red-fixture.log`, `green-fixture.log`, `run-suites.log`, and
   `test-registry-task1.1.log` in
   `measure/runs/fixture_paths_20261115/`.
-- **FR-2 (the records).** `CHANGELOG.md` gets one entry at the top of
-  "## Unreleased" under "### Bug Fixes", in the form of the entries there:
-  the rule, the Lending cause, and that every other rule stays. `README.md`
-  line 33: replace its first sentence, up to and including its closing
+- **FR-2 (the records).** `CHANGELOG.md` gets one entry as the first of the
+  list under the existing `### Bug Fixes` heading of `## Unreleased`,
+  directly above the "G21 time margin" entry. The entry has this exact text
+  (one physical line, followed by one empty line, the same as the entries
+  there):
+
+  ```
+  * **fixture paths:** the mid-red check of `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now counts more files as test files. A file is a test file when a `fixtures` folder sits at any depth under a folder whose name ends in `-tests`, for example `harness/model-guide-tests/fixtures/x.json`. The new helper `is_tests_fixture()` compares whole folder names, is case-sensitive, and never compares the file name. Every other rule of `non_test_paths()` stays. Cause: the Lending project keeps synthetic fixtures under `harness/model-guide-tests/fixtures/`, so the gate listed them as non-test files, and each Red gate there needed a recorded deviation. Track `fixture_paths_20261115`.
+  ```
+
+  `README.md` line 33: replace its first sentence, up to and including its closing
   bracket and full stop, with "As of 2026-11-15, the latest archived track is
   Fixture paths (the mid-red gate counts a file under a fixtures folder
   inside a folder whose name ends in -tests as a test file)." The rest of
@@ -117,8 +124,7 @@ in `tests/spec_review_gate/test_red_track_scope.py` (register the module in
 
 ## Acceptance Criteria
 
-- `python3 -m unittest discover -s tests/spec_review_gate -p test_fixture_paths.py`
-  passes (run directly, Red and Green).
+- Before the checker change, `python3 -m unittest discover -s tests/spec_review_gate -p test_fixture_paths.py` fails only in the test-owned unit group and in Case A (Red). After the change, the same command passes (Green).
 - Through the heavy-job wrapper with no shell redirection (`>`, `>>`, `tee`):
   `HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/spec_review_gate/run.sh`
   (evidence `run-suites.log`) and
