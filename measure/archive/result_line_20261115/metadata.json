@@ -1,12 +1,13 @@
 {
   "track_id": "result_line_20261115",
   "type": "chore",
-  "status": "new",
+  "status": "done",
   "created_at": "2026-11-15T07:25:37Z",
-  "updated_at": "2026-11-15T07:25:37Z",
+  "updated_at": "2026-11-15T08:09:51Z",
   "description": "Add the RESULT verdict line to the thirteen Measure role files (all except measure-orchestrator.md) in the installed-copies placement, and pin it with an S2 role-doc check (PM order, 2026-11-15)",
   "estimated_tasks": 3,
-  "actual_tasks": null,
+  "actual_tasks": 3,
+  "completed": "2026-11-15",
   "lane": "light",
-  "deviation_notes": "Spec review: step 9 of the new-track workflow was skipped by PM order; the orchestrator runs the review on another model family after the setup commit."
+  "deviation_notes": "The spec review ran on claude-code/claude-sonnet-5-5#high because the author is the Kimi family. Round 1 (2026-11-15, at f4d2e15) gave 3 Major and 4 Nit findings (F1-F7), all fixed in 2a53b40. Round 2 (2026-11-15, at 2a53b40) confirmed F1-F7 fixed and added two Nits: F8 was fixed after Round 2 by orchestrator decision, with no third round (Round 2 is the last allowed round); F9 was declined. Task 1.1 of 2026-11-15 at 2881684: Red exit 1, the only FAIL was the RESULT-line count (13 files count=0; red-s2.log); Green exit 0, no FAIL (green-s2.log); placement diffs match the expected list of the spec (placement-diffs.log); heavy-run spec_review_gate exit 0, all suites PASS (run-suites.log). Task 1.2 closeout runs of 2026-11-15, after the archive commit 3b2de54, the plan-close commits e061272, 8784c89, and a92a99b, and the registry commit 3a3b835, in this order: heavy-run.sh bash tests/dsh/test-registry.sh exit 0 (test-registry.log), then the closeout check exit 1 with INFO light lane, no final acceptance, and one FAIL, the missing closeout manifest, as the acceptance criteria expect (closeout-check.log). All Red, Green, and gate outputs are kept in measure/runs/result_line_20261115/ (gitignored)."
 }
