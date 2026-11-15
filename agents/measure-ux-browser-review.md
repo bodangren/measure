@@ -132,3 +132,5 @@ held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 ESCALATE item to the user.
 
 Write the required UX audit result JSON and end with `MEASURE_AGENT_RESULT`.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

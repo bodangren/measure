@@ -4,6 +4,8 @@
 
 ### Chores
 
+* **result line:** the thirteen Measure role files in agents/ (all except measure-orchestrator.md) now carry the verdict line "The last line of your final message is RESULT: PASS or RESULT: FAIL (FAIL when the work or the gate did not pass).", placed as in the installed copies, and a new S2 role-doc section pins it. Cause: PM tooling C116 added the line to the installed copies only, so the installer held them as local-edit and they missed PR #16 and PR #18; scripts/jobs/outcomes_close.py in advantage-pr reads the line to record PASS or FAIL for each role run (PM report: 0 of 135 role runs had a verdict line). Track `result_line_20261115`.
+
 * **prompt trim:** the Measure prompts (AGENTS.md, skills/measure and its claude-skills/measure copy, skills/measure-orchestrator, the agents/measure-*.md roles, and the opencode-measure-guard commands) lose old-model capital-letter wording (shouting labels, MUST, DO NOT, and DO NOT JUMP YET); every Daniel quote, owner rule, human gate, and test-pinned string stays. Track `prompt_audit_20261115`.
 
 ### Bug Fixes

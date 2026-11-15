@@ -420,6 +420,72 @@ echo "=== heavy-run prompt line: no other audit role holds the paragraph ==="
 if [ -n "$HEAVY_OTHER_BAD" ]; then fail "other audit roles hold the paragraph:$HEAVY_OTHER_BAD"
 else pass "none of the three other audit roles holds the paragraph"; fi
 
+# --- result line: the 13 role files end the final message with RESULT: PASS or RESULT: FAIL (PM order, 2026-11-15) ---
+RESULT_LINE='The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).'
+# result_anchor FILE: the line that must sit two lines above the RESULT line (the anchor line of spec.md, whole line)
+result_anchor() {
+  case "$1" in
+    agents/measure-adversarial-testing.md) printf '%s' 'Own durable Playwright coverage when browser automation is needed. Add valuable tests, but do not fix production behavior exposed by those tests. Commit useful tests, return `status: "fail"`, and route implementation defects to Green. Any subsequent implementation commit invalidates this result and requires the relevant adversarial gate to rerun. Write provenance-bound audit JSON and end with `MEASURE_AGENT_RESULT`.' ;;
+    agents/measure-closeout.md) printf '%s' 'Commit closeout. Write the required audit result JSON and end with `MEASURE_AGENT_RESULT`.' ;;
+    agents/measure-final-acceptance.md) printf '%s' 'This is a gate-only role. Do not edit implementation, tests, plans, registry, metadata, or archive state and do not commit. Write only the supplied result artifact. Do not archive the track or update closeout metadata. End with `MEASURE_AGENT_RESULT`.' ;;
+    agents/measure-jr-green.md) printf '%s' '- the immutable `phase_base_sha` and final Green HEAD' ;;
+    agents/measure-mid-red.md) printf '%s' 'End with the required `MEASURE_AGENT_RESULT` block. Set its `baseline_sha` field to the supplied `phase_base_sha`, and identify this role, track, phase, resulting HEAD, commits, tests, files, and exact remaining failures.' ;;
+    agents/measure-orchestrator-audit.md) printf '%s' 'End with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-phase-acceptance.md) printf '%s' 'This is a gate-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact. Any blocker fails acceptance and routes to the owning role; acceptance must be rerun against the resulting new HEAD. End with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-review-a-correctness.md) printf '%s' 'Write provenance-bound audit JSON at the supplied result path and end with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-review-b-security.md) printf '%s' 'Write the required audit result JSON at the orchestrator-supplied result path. End with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-review-c-ux-api.md) printf '%s' 'This is an audit-only role. Do not edit implementation, tests, plans, or registry files and do not commit. Write only the supplied result artifact, route blockers to Green, and end with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-spec-review.md) printf '%s' 'This is a report-only role. Edit no file outside your two artifacts. Make no commit. End with the `MEASURE_AGENT_RESULT` block, with `role: spec-review` and `phase: track setup`.' ;;
+    agents/measure-strategy.md) printf '%s' 'Refresh and commit the strategy for the current revision. A pre-existing file without a committed change does not satisfy this role. End with the required `MEASURE_AGENT_RESULT` block.' ;;
+    agents/measure-ux-browser-review.md) printf '%s' 'Write the required UX audit result JSON and end with `MEASURE_AGENT_RESULT`.' ;;
+    *) printf '%s' '' ;;
+  esac
+}
+RESULT_ROLES=(
+  agents/measure-adversarial-testing.md
+  agents/measure-closeout.md
+  agents/measure-final-acceptance.md
+  agents/measure-jr-green.md
+  agents/measure-mid-red.md
+  agents/measure-orchestrator-audit.md
+  agents/measure-phase-acceptance.md
+  agents/measure-review-a-correctness.md
+  agents/measure-review-b-security.md
+  agents/measure-review-c-ux-api.md
+  agents/measure-spec-review.md
+  agents/measure-strategy.md
+  agents/measure-ux-browser-review.md
+)
+RESULT_COUNT_BAD=""
+RESULT_POS_BAD=""
+for f in "${RESULT_ROLES[@]}"; do
+  if [ ! -s "$ROOT/$f" ]; then
+    RESULT_COUNT_BAD+=" $f(missing or empty)"
+    RESULT_POS_BAD+=" $f(missing or empty)"
+    continue
+  fi
+  n=$(grep -cxF -- "$RESULT_LINE" "$ROOT/$f")
+  if [ "$n" -ne 1 ]; then RESULT_COUNT_BAD+=" $f(count=$n)"; fi
+  if [ "$n" -eq 1 ]; then
+    ln=$(grep -nxF -- "$RESULT_LINE" "$ROOT/$f" | cut -d: -f1)
+    if [ -n "$(sed -n "$((ln-1))p" "$ROOT/$f")" ]; then RESULT_POS_BAD+=" $f(line-before-not-empty)"; fi
+    if [ "$(sed -n "$((ln-2))p" "$ROOT/$f")" != "$(result_anchor "$f")" ]; then RESULT_POS_BAD+=" $f(anchor-mismatch)"; fi
+    if [ -n "$(sed -n "$((ln+1))p" "$ROOT/$f")" ]; then RESULT_POS_BAD+=" $f(line-after-not-empty)"; fi
+  fi
+done
+echo "=== result line: each of the 13 role files holds the RESULT line exactly once ==="
+if [ -n "$RESULT_COUNT_BAD" ]; then fail "the RESULT line count is not exactly 1:$RESULT_COUNT_BAD"
+else pass "each of the 13 role files holds the RESULT line exactly once"; fi
+echo "=== result line: the line sits after the anchor paragraph, empty line on each side ==="
+if [ -n "$RESULT_POS_BAD" ]; then fail "the RESULT line placement is wrong:$RESULT_POS_BAD"
+else pass "the RESULT line follows the anchor paragraph in the 13 role files"; fi
+echo "=== result line: the orchestrator role file does not hold the line ==="
+if [ -s "$ROOT/agents/measure-orchestrator.md" ] && grep -qF -- "$RESULT_LINE" "$ROOT/agents/measure-orchestrator.md"; then
+  fail "agents/measure-orchestrator.md holds the RESULT line"
+else
+  pass "agents/measure-orchestrator.md does not hold the RESULT line"
+fi
+
 # ---------------------------------------------------------------------------
 # Edge checks
 echo "=== edge: the fallback standard exists ==="

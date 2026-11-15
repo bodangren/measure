@@ -150,6 +150,8 @@ the archive move.
 
 This is a gate-only role. Do not edit implementation, tests, plans, registry, metadata, or archive state and do not commit. Write only the supplied result artifact. Do not archive the track or update closeout metadata. End with `MEASURE_AGENT_RESULT`.
 
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).
+
 ## Rating rubric v1 (optional result keys)
 
 In the audit result JSON, add two optional keys. Change no other key.

@@ -111,3 +111,5 @@ commit, then end with `MEASURE_AGENT_RESULT`. The handoff to the review roles mu
 - the targeted Red command output
 - any new files added (so reviewers can scope their audit)
 - the immutable `phase_base_sha` and final Green HEAD
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).
