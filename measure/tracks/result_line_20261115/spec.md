@@ -48,9 +48,26 @@ The 13 files (all in `agents/`):
   same anchor paragraph.
 - Proof of placement: after the change, for each of the 13 files,
   `diff agents/<file> ~/.config/opencode/agents/<file>` shows only the lines
-  that PR #16 and PR #18 changed (the heavy-run paragraph and the prompt-audit
-  trims), and no difference for the RESULT line. Keep these diffs as evidence.
+  that PR #16 and PR #18 changed, and no difference for the RESULT line.
+  Expected result per file:
+  - 5 files show no diff: adversarial-testing, closeout, spec-review,
+    strategy, ux-browser-review.
+  - 5 files show one line that only the source has, the heavy-run paragraph
+    of PR #16: final-acceptance, phase-acceptance, review-a-correctness,
+    review-b-security, review-c-ux-api.
+  - 3 files show only the PR #18 case changes from `Do NOT` to `Do not`:
+    jr-green 1 line, mid-red 1 line, orchestrator-audit 3 lines.
+
+  Keep these diffs as text evidence in
+  `measure/runs/result_line_20261115/placement-diffs.log`. The installed
+  copies sit outside the repository and change when the PM restores them.
 - No frontmatter change. No other text change.
+- Order: the RESULT line is the last line of the final message, so it comes
+  after the `MEASURE_AGENT_RESULT` block. The checker
+  (`measure_interphase_checks.py`) reads only the block marker lines of a log
+  (`has_agent_result`, `dispositions_feedback`), so a RESULT line after the
+  block does not break a gate. The role text that says to end with the block
+  stays: the PM order gives no change to it.
 
 ### Anchor lines (read from the installed copies)
 
@@ -72,12 +89,21 @@ The 13 files (all in `agents/`):
 
 ## Test
 
-One new section in `tests/spec_review_gate/test_s2_role_docs.sh`, before the
-`# Edge checks` block. The section checks, for each of the 13 files, that the
-exact RESULT line occurs exactly once, and that the next line after it is
-empty or the end of the file. The section also checks that
-`agents/measure-orchestrator.md` does not hold the line. Red: the section
-fails before the change.
+One new section in `tests/spec_review_gate/test_s2_role_docs.sh`, directly
+before the `# Edge checks` separator block (after the heavy-run section). The
+section checks, for each of the 13 files, with whole-line matches
+(`grep -cxF`):
+
+- the RESULT line occurs exactly once;
+- the line before it is empty;
+- the line before that empty line is the anchor line of this spec for that
+  file;
+- the line after it is empty or the end of the file.
+
+A missing or empty role file is a FAIL. `agents/measure-orchestrator.md` does
+not hold the line. Red: the section fails before the change. Task 1.1 runs
+the S2 test before the 13 edits and keeps the failing output in
+`measure/runs/result_line_20261115/red-s2.log`.
 
 ## Functional Requirements
 
@@ -85,16 +111,17 @@ fails before the change.
   paragraph above (Red) and add the RESULT line to the 13 files after the
   anchor paragraph of each (Green), in one commit on `chore/result-line` with
   the message `chore(agents): Add the RESULT verdict line to the thirteen
-  role files`. Keep the placement diffs of the Decided design as evidence.
+  role files`. Keep the placement diffs as text evidence in
+  `measure/runs/result_line_20261115/placement-diffs.log`, the failing S2
+  output of the Red step in `measure/runs/result_line_20261115/red-s2.log`,
+  and the passing S2 output in
+  `measure/runs/result_line_20261115/green-s2.log`. The runs folder is
+  gitignored, as in the Prompt audit track.
   No frontmatter change, no other text change.
 - **FR-2 (the records).** `CHANGELOG.md` gets one entry at the top of
   "## Unreleased" under the existing "### Chores" heading:
-  `* **result line:** the thirteen Measure role files in agents/ (all except measure-orchestrator.md) now carry the verdict line "The last line of your final message is RESULT: PASS or RESULT: FAIL (FAIL when the work or the gate did not pass).", placed as in the installed copies, and a new S2 role-doc section pins it. Cause: PM tooling C116 added the line to the installed copies only, so the installer held them as local-edit and they missed PR #16 and PR #18; scripts/jobs/outcomes_close.py in advantage-pr reads the line to record PASS or FAIL for each role run, and 0 of 135 runs had a verdict line. Track `result_line_20261115`.`
-  `README.md` line 33 starts with "As of 2026-11-15, the latest archived track
-  is Result line (the thirteen Measure role files gain the RESULT verdict
-  line, and an S2 role-doc section pins it)." followed by the rest of the
-  current line 33 unchanged. Both record changes ride in the Task 1.2 archive
-  commit, as in the Prompt audit track.
+  `* **result line:** the thirteen Measure role files in agents/ (all except measure-orchestrator.md) now carry the verdict line "The last line of your final message is RESULT: PASS or RESULT: FAIL (FAIL when the work or the gate did not pass).", placed as in the installed copies, and a new S2 role-doc section pins it. Cause: PM tooling C116 added the line to the installed copies only, so the installer held them as local-edit and they missed PR #16 and PR #18; scripts/jobs/outcomes_close.py in advantage-pr reads the line to record PASS or FAIL for each role run (PM report: 0 of 135 role runs had a verdict line). Track `result_line_20261115`.`
+  `README.md` line 33: replace its first sentence, up to and including "every owner rule and human gate stays).", with "As of 2026-11-15, the latest archived track is Result line (13 role files end with a RESULT: PASS or RESULT: FAIL line, so the installed copies match the source again)." The rest of line 33 stays unchanged. Both record changes ride in the Task 1.2 archive commit, as in the Prompt audit track.
 - **FR-3 (the closeout).** Archive the track to
   `measure/archive/result_line_20261115/`, move the registry entry to
   Archived Tracks with `[x]`, and record the results.
