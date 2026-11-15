@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Result line**
-  *Link: [./tracks/result_line_20261115/](./tracks/result_line_20261115/)*
-  *Add the RESULT verdict line to the thirteen Measure role files (all except measure-orchestrator.md) in the installed-copies placement, and pin it with an S2 role-doc check (PM order, 2026-11-15)*
+- (none)
 
 ---
 
