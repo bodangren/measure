@@ -22,7 +22,7 @@ Spec: [./spec.md](./spec.md)
   `HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/spec_review_gate/run.sh`
   with no shell redirection; Storytime has first claim on the heavy lock, so
   a wait is normal; it exits 0. Commit the test file. `d322d79`
-- [ ] Task 1.2: records and closeout. Finalize `metadata.json` (status done,
+- [x] Task 1.2: records and closeout. Finalize `metadata.json` (status done,
   `actual_tasks`, the `completed` key). Update `CHANGELOG.md` with one entry
   at the top of "## Unreleased" / "### Bug Fixes", and `README.md` line 33 to
   name this track as the latest archived track (2026-11-15). Archive the
@@ -32,7 +32,7 @@ Spec: [./spec.md](./spec.md)
   `HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/dsh/test-registry.sh`
   with no shell redirection (long timeout), then run the closeout check of
   the acceptance criteria, in this order; the closeout check fails only on
-  the missing closeout manifest. Record the results.
+  the missing closeout manifest. Record the results. `19a4f29`
 - [ ] Task: Measure - User Manual Verification 'Phase 1: G21 time margin' (Protocol in workflow.md)
 
 After the last commit of this phase, push fix/g21-time-margin to origin and open the pull request that stacks on PR #16. Never merge the pull request.
