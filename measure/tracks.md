@@ -455,3 +455,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Result line**
   *Link: [./archive/result_line_20261115/](./archive/result_line_20261115/)*
   *Add the RESULT verdict line to the thirteen Measure role files (all except measure-orchestrator.md) in the installed-copies placement, and pin it with an S2 role-doc check (PM order, 2026-11-15)*
+
+- [x] **Track: Copywriter allow**
+  *Link: [./archive/copywriter_allow_20261115/](./archive/copywriter_allow_20261115/)*
+  *Allow four global subagents in agents/measure-orchestrator.md (subagent allow rules for copywriter, fact-gate-checker, thai-writer, and print-proof-auditor directly after the "coder" rule), pin the subagent rule order with an S2 role-doc check, and restore the installed-copy match (PM order, 2026-11-15)*
