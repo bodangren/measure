@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Chores
+
+* **prompt trim:** the Measure prompts (AGENTS.md, skills/measure and its claude-skills/measure copy, skills/measure-orchestrator, the agents/measure-*.md roles, and the opencode-measure-guard commands) lose old-model capital-letter wording (shouting labels, MUST, DO NOT, and DO NOT JUMP YET); every Daniel quote, owner rule, human gate, and test-pinned string stays. Track `prompt_audit_20261115`.
+
 ### Bug Fixes
 
 * **G21 time margin:** the first G18 probe of `tests/spec_review_gate/test_s3_adversarial.sh` now uses the named constant `G18_LINES = 100000` for both counts (end lines and start lines), and its label is built from the constant, so the G21 sensitivity mutant "the old quadratic any(...) loop" cannot finish inside the 15 s mutant timeout on a fast computer. Cause: on the faster tower computer the 20000-line probe gave the quadratic loop about 4e8 steps, the mutant run ended inside the timeout, no probe failed, and the suite failed with no regression. `TIME_LIMIT` stays 30 s, the 15 s mutant timeout stays, the other probes stay, and no other check changed. Track `g21_time_margin_20261115`.

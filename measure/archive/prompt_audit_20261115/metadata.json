@@ -1,0 +1,13 @@
+{
+  "track_id": "prompt_audit_20261115",
+  "type": "chore",
+  "status": "done",
+  "created_at": "2026-11-15T06:15:00Z",
+  "updated_at": "2026-11-15T09:30:00Z",
+  "description": "Trim old-model wording (shouting, **PROTOCOL:** labels, DO NOT JUMP YET) from the Measure prompts with a per-line audit table; keep every Daniel quote, owner rule, human gate, and test-pinned string (PM request, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-15",
+  "lane": "light",
+  "deviation_notes": "/doctor prompt-audit cannot run in an agent session, so the audit ran by hand with the PM rules. The spec review ran on claude-code/claude-sonnet-5-5#high because the author is the Kimi family. The F9 rows (ten capital-letter hits, spec review Round 2 finding) came after Round 2 by orchestrator decision, with no third round; the author added them and all twelve Round 2 findings are FIX. Task 1.1 of 2026-11-15: pin sweep of all 111 rows found 0 pinned old lines (pin-sweep.log); per-file line counts before/after in line-counts.log match the spec table (AGENTS.md 42 to 41, every other file unchanged); claude-skills/measure equals skills/measure (diff -r exit 0); gates exit 0 (S1 43 checks, S2 86 checks, S4 34 checks, dsh test-skill-docs, plugins/dsh-measure-guard node tests, heavy-run spec_review_gate 13 suites, heavy-run dsh 14 passed 0 failed; task1-*.log). All Red, Green, and gate outputs are kept in measure/runs/prompt_audit_20261115/ (gitignored). Task 1.2 closeout runs of 2026-11-15, after the archive commit 9622461, the plan-close commits fb2b899 and 38edcac, and the registry commit a2ed397, in this order: heavy-run.sh bash tests/dsh/test-registry.sh exit 0 (task2-closeout.log), then the closeout check exit 1 with INFO light lane, no final acceptance, and one FAIL, the missing closeout manifest, as the acceptance criteria expect (task2-closeout.log)."
+}

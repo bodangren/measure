@@ -50,7 +50,7 @@ Present the following overview:
 
 ### 1.2 Project Audit
 
-**PROTOCOL: Before starting setup, determine the project's state by auditing existing artifacts.**
+Before starting setup, determine the project's state by auditing existing artifacts.
 
 1. **Announce Audit:** Inform the user that you are auditing the project for any existing Measure configuration.
 
@@ -64,11 +64,11 @@ Present the following overview:
    - `index.md`
    - `tracks/*/` (specifically `plan.md` and `index.md`)
 
-3. **Determine Target Section:** Map the project's state to a target section using the priority table below (highest match wins). **DO NOT JUMP YET.** Keep this target in mind.
+3. **Determine Target Section:** Map the project's state to a target section using the priority table below (highest match wins). Keep this target in mind.
 
 | Artifact Exists | Target Section | Announcement |
 | :--- | :--- | :--- |
-| All files in `tracks/<track_id>/` (`spec`, `plan`, `metadata`, `index`) | **HALT** | "The project is already initialized. Use `new track` or `implement`." |
+| All files in `tracks/<track_id>/` (`spec`, `plan`, `metadata`, `index`) | **Halt** | "The project is already initialized. Use `new track` or `implement`." |
 | `index.md` (top-level) | **Section 3.0** | "Resuming setup: Scaffolding is complete. Next: generate the first track." |
 | `workflow.md` | **Section 2.7** | "Resuming setup: Workflow is defined. Next: select Agent Skills." |
 | `code_styleguides/` | **Section 2.6** | "Resuming setup: Guides/Tech Stack configured. Next: define project workflow." |
@@ -78,25 +78,25 @@ Present the following overview:
 | `product.md` | **Section 2.2** | "Resuming setup: Product Guide is complete. Next: create Product Guidelines." |
 | (None) | **Section 2.0** | (None) |
 
-4. **Proceed to Section 2.0:** You MUST proceed to Section 2.0 to establish the Greenfield/Brownfield context before jumping to your target.
+4. **Proceed to Section 2.0:** Proceed to Section 2.0 to establish the Greenfield/Brownfield context before jumping to your target.
 
 ## 2.0 Project Discovery
 
 ### Detect Project Maturity
 
-**Brownfield (Existing)** if ANY of:
+**Brownfield (Existing)** if any of:
 - `.git`, `.svn`, or `.hg` directory exists
 - `git status --porcelain` shows uncommitted changes (ignoring changes within the `measure/` directory)
 - Dependency manifests exist: `package.json`, `pom.xml`, `requirements.txt`, `go.mod`, `Cargo.toml`
 - Source directories exist: `src/`, `app/`, `lib/`, `bin/` with code files
 
-**Greenfield (New)** if NONE of the above AND directory is empty or contains only README.md
+**Greenfield (New)** if none of the above and the directory is empty or contains only README.md
 
 ### Resume Fast-Forward Check
 
 - If the **Target Section** (from 1.2) is anything other than "Section 2.0":
   - Announce the project maturity classification and **briefly state the reason** (e.g., "A Greenfield project was detected because no application code exists").
-  - **IMMEDIATELY JUMP** to the Target Section. Do not execute the rest of Section 2.0.
+  - **Jump immediately** to the Target Section. Do not execute the rest of Section 2.0.
 - If the Target Section is "Section 2.0", proceed to the appropriate workflow below.
 
 ### Brownfield Workflow
@@ -113,7 +113,7 @@ Present the following overview:
    - **Prioritize manifest files:** `package.json`, `pom.xml`, `requirements.txt`, `go.mod`, etc.
    - **Large file handling:** For files >1MB, read only first and last 20 lines to infer purpose
 6. **Extract and Infer:**
-   - **CRITICAL:** Do NOT ask for more files. Base analysis SOLELY on discovered file snippets and directory structure.
+   - Do not ask for more files. Base the analysis only on the discovered file snippets and the directory structure.
    - Programming Language
    - Frameworks (frontend and backend)
    - Database Drivers
@@ -128,7 +128,7 @@ Present the following overview:
 1. Announce new project initialization
 2. Initialize git if `.git` doesn't exist: `git init`
 3. Ask: "What do you want to build?"
-   - **CRITICAL:** Do NOT execute any tool calls until the user has provided a response.
+   - Do not execute any tool calls until the user provides a response.
 4. Execute `mkdir -p measure`
 5. Write the user's response to `measure/product.md` under a `# Initial Concept` heading
 6. Proceed to Section 2.1
@@ -142,10 +142,10 @@ Present the following overview:
 3. **If Interactive:** Ask 3-5 questions, batching up to 4 related questions in a single prompt:
    - **Question classification:** Classify each as "Additive" (multi-select, e.g., features, goals) or "Exclusive Choice" (single answer, e.g., primary platform)
    - **Format:** Header (short label), provide 3 options with label and description
-   - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do NOT ask generic questions if the answer is already in the files.
+   - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do not ask generic questions when the answer is already in the files.
    - Wait for response, confirm understanding before next batch
 4. **If Autogenerate:** Skip directly to drafting
-5. Draft `product.md` based ONLY on the user's selected answers
+5. Draft `product.md` based only on the user's selected answers
 6. Present for review with embedded content:
    > "Please review the drafted Product Guide below. What would you like to do next?"
    > ```markdown
@@ -191,7 +191,7 @@ Present the following overview:
    h. After a design is selected, ask for differentiation:
       - "You chose **[Design Name]**. How do you want to adapt this design definition to differentiate it from [Design Name]? What should feel different, unique, or better aligned with your brand?"
 4. **Before drafting:** Execute `npx -y @google/design.md spec` to read the latest format specification and follow it exactly.
-5. Draft `DESIGN.md` in the project root. Incorporate BOTH the chosen aesthetic AND the user's differentiation notes. **CRITICAL:** The design must be highly opinionated and avoid generic "AI slop" terms like "clean" or "modern" without specific implementation details.
+5. Draft `DESIGN.md` in the project root. Incorporate both the chosen aesthetic and the user's differentiation notes. Make the design highly opinionated. Avoid generic "AI slop" terms like "clean" or "modern" without specific implementation details.
 6. Present for review with embedded content (Approve / Suggest changes)
 7. Write to `DESIGN.md` in the project root.
 8. Update `measure/index.md` with link to **Design Definition**.
@@ -208,7 +208,7 @@ Present the following overview:
    If Interactive, batch 4 questions separating concerns (Languages, Backend Frameworks, Frontend Frameworks, Database). Use multi-select to allow hybrid stacks. Options should explain *why/where* a tech fits (e.g., "TypeScript — Ideal for Angular UI").
 
 3. **For Brownfield:**
-   - **CRITICAL WARNING:** Your goal is to document the project's *existing* tech stack, not to propose changes.
+   - Your goal is to document the project's *existing* tech stack, not to propose changes.
    - State the inferred stack from the code analysis
    - Ask for confirmation: "Is the inferred tech stack correct?"
    - If the user disputes the suggestion, ask them to provide the correct tech stack manually
@@ -292,13 +292,13 @@ Present the following overview:
 
 ### 2.8.1 Skill Reload Confirmation
 
-1. **Execution Trigger:** This step MUST only be executed if you installed new skills in the previous section.
-2. **Notify and Pause:** "New skills installed. Please reload your skills to enable them. Let me know when you have done this." Do NOT ask a question here — make a statement and wait.
+1. **Execution Trigger:** Run this step only when you installed new skills in the previous section.
+2. **Notify and Pause:** "New skills installed. Please reload your skills to enable them. Let me know when you have done this." Do not ask a question here — make a statement and wait.
 3. **Wait for Confirmation:** Pause and wait for the user to confirm they have reloaded the skills.
 
 ## 2.9 Scaffold Architecture Tools
 
-**CRITICAL:** Placeholder scripts are useless. You MUST configure actual architectural enforcement based on the project's **Tech Stack**.
+Placeholder scripts are useless. Configure actual architectural enforcement based on the project's **Tech Stack**.
 
 1. **Create Machine-Generated Directory:** Execute `mkdir -p measure/generated`.
 2. **Install Enforcers:**
@@ -319,7 +319,7 @@ Present the following overview:
      2. Run `build-graph scan . ./graph.db` and verify `graph.db` exists afterward.
      3. Append `/graph.db` to the project's `.gitignore` (create if missing) — the graph is regenerated, not version-controlled.
      4. Add a `Knowledge Graph` link to `measure/index.md` under the "Architecture & Facts" group: `- [Knowledge Graph](../graph.db) (regenerate with \`build-graph update ./graph.db <files>\` or full re-scan with \`build-graph scan . ./graph.db\`)`.
-   - **If "Install build-graph rules in AGENTS.md only" OR "Install build-graph + scan now":**
+   - **If "Install build-graph rules in AGENTS.md only" or "Install build-graph + scan now":**
      - Append (or create) `AGENTS.md` at the project root with the standard build-graph rules block — copy from `repo-graph/AGENTS.md` "Workflow Rules" section verbatim (rules 1-5 + Schema Reference + Common Queries). If `AGENTS.md` already exists and contains a `build-graph` heading, skip to avoid duplication.
    - **If "Skip":** Proceed silently.
 7. Update state: `{"last_successful_step": "2.9_architecture_tools"}`
@@ -438,7 +438,7 @@ Present the following overview:
    ```
 
    **Sprint object rules** (see `references/new-track.md` §2.5 for the full specification):
-   - **Include** the `sprint` key ONLY when `type = "feature"` AND the spec uses story-shaped mode (has a `## Stories` section).
+   - **Include** the `sprint` key only when `type = "feature"` and the spec uses story-shaped mode (has a `## Stories` section).
    - **Omit** the `sprint` key entirely for `bug`, `chore`, or classic-FR-list feature tracks.
    - Downstream readers must treat absence of `sprint` as classic mode and proceed without warnings.
 6. **Create Track Index:** Create `measure/tracks/<track_id>/index.md` with:
@@ -450,14 +450,14 @@ Present the following overview:
    - [Metadata](./metadata.json)
    ```
 7. Generate and write **Specification** (`spec.md`) and **Implementation Plan** (`plan.md`).
-   - **CRITICAL:** The structure of tasks MUST adhere to the principles in `measure/workflow.md`. For example, if the workflow specifies TDD, each feature task must be broken down into a "Write Tests" sub-task followed by an "Implement Feature" sub-task.
-   - **Status markers** for EVERY task and sub-task:
+   - The structure of tasks must adhere to the principles in `measure/workflow.md`. For example, if the workflow specifies TDD, each feature task must be broken down into a "Write Tests" sub-task followed by an "Implement Feature" sub-task.
+   - **Status markers** for every task and sub-task:
      ```markdown
      - [ ] Task: Create user model
          - [ ] Write unit tests for user model
          - [ ] Implement user model
      ```
-   - **CRITICAL: Inject Phase Completion Tasks.** Read `measure/workflow.md` to determine if a "Phase Completion Verification and Checkpointing Protocol" is defined. If it exists, append to each phase:
+   - Inject Phase Completion tasks. Read `measure/workflow.md` to determine if a "Phase Completion Verification and Checkpointing Protocol" is defined. If it exists, append to each phase:
      ```markdown
      - [ ] Task: Measure - User Manual Verification '<Phase Name>' (Protocol in workflow.md)
      ```

@@ -53,7 +53,7 @@ When a project's Tech Stack includes TypeScript and `build-graph` (from `repo-gr
 - **`review`** loads `build-graph callers` for every changed exported symbol in §2.2 and flags **High**-severity findings in §2.3 when a non-additive signature change is not accompanied by caller updates. `Graph Caller Check: [Pass/Fail/Skipped]` appears in the §2.5 report block.
 - **`setup`** §2.9 offers (TS-detected only) to install build-graph, scan the project, and add the standard rules to `AGENTS.md`.
 
-Graph-Aware Mode is fully opt-in: every step emits a one-line `Note: …` and continues if `build-graph` is missing, `graph.db` is stale/absent, or the project isn't TypeScript. No HALT, no breakage.
+Graph-Aware Mode is fully opt-in: every step emits a one-line `Note: …` and continues if `build-graph` is missing, `graph.db` is stale/absent, or the project isn't TypeScript. No halt, no breakage.
 
 ### Track Sets (optional)
 

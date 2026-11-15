@@ -36,7 +36,7 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment is properly set up.**
+Verify that the Measure environment is properly set up.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Tracks Registry**
@@ -45,18 +45,18 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
    - **Workflow**
    - **Product Guidelines**
 
-2. **Handle Failure:** If ANY of these files are missing, list them, announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If any of these files are missing, list them, announce: "Measure is not set up. Please run setup first." and halt.
 
 3. **Check Kimi WebBridge Availability (non-blocking):** Run `~/.kimi-webbridge/bin/kimi-webbridge status`. If the result reports both `running: true` and `extension_connected: true`, note that the Browser Runtime Check (section 2.4) is available. Otherwise, follow the installed `kimi-webbridge` skill's operations guide. If it remains unavailable, note that browser verification will be skipped; this does not block the rest of the review.
 
-4. **Check build-graph Availability (non-blocking):** Run `command -v build-graph >/dev/null 2>&1` AND check that `graph.db` exists at the project root with mtime <24h. If both pass AND the Tech Stack includes TypeScript, note that the Graph Caller Check (section 2.2 step 4 and 2.3 step 6) is available. If not, note it as unavailable — this does NOT block the review, but graph-aware checks will emit a one-line skip note. Possible skip notes (whichever applies first):
+4. **Check build-graph Availability (non-blocking):** Run `command -v build-graph >/dev/null 2>&1` and check that `graph.db` exists at the project root with mtime <24h. If both pass and the Tech Stack includes TypeScript, note that the Graph Caller Check (section 2.2 step 4 and 2.3 step 6) is available. If not, note it as unavailable — this does not block the review, but graph-aware checks will emit a one-line skip note. Possible skip notes (whichever applies first):
    - `Note: build-graph not on PATH — skipping Graph Caller Check.`
    - `Note: graph.db is missing — skipping Graph Caller Check.`
    - `` Note: graph.db is stale (>24h) — skipping Graph Caller Check. Run `build-graph scan . ./graph.db` to refresh. ``
 
 ## 2.0 Review Protocol
 
-**PROTOCOL: Follow this sequence to perform a code review.**
+Follow this sequence to perform a code review.
 
 ### 2.1 Identify Scope
 
@@ -72,7 +72,7 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 1. **Load Project Context:**
    - Read **Product Guidelines** and **Tech Stack**.
-   - **CRITICAL:** Check for `measure/code_styleguides/`. Read ALL `.md` files within it. Violations here are **High** severity.
+   - Check for `measure/code_styleguides/`. Read every `.md` file within it. Violations here are **High** severity.
    - **Check for Installed Skills:**
      - Check for the existence of `.claude/skills/` (workspace-level).
      - If skills exist, list the subdirectories to identify installed skills.
@@ -120,7 +120,7 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
    - If specific skills are installed, verify compliance with their best practices.
 6. **Graph Caller Compatibility (TypeScript projects only):** Using the `{symbol → [caller_files]}` map loaded in §2.2 step 4, verify that signature/schema changes don't silently break callers.
    - For each touched exported symbol whose signature changed in the diff (parameters added/removed/renamed, return type changed, interface fields added/removed):
-     - For each caller file in the map, check whether the diff also updates that caller. If the caller is **not** updated AND the signature change is non-additive (would break existing call sites), flag a **High** severity finding:
+     - For each caller file in the map, check whether the diff also updates that caller. If the caller is **not** updated and the signature change is non-additive (would break existing call sites), flag a **High** severity finding:
        - **File**: caller path
        - **Context**: "Caller of `<Symbol>` not updated for signature change. Symbol was changed in commit `<sha>` from `<old>` to `<new>`."
        - **Suggestion**: Update the caller or revert the breaking change to additive-only.
@@ -129,9 +129,9 @@ You are a **Principal Software Engineer** and **Code Review Architect**.
 
 ### 2.4 Browser Runtime Check (Kimi WebBridge)
 
-**CONDITIONAL:** Only execute this section if the diff touches frontend files (extensions: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`, `.svg`, or any file in directories named `pages/`, `components/`, `views/`, `app/`, `src/app/`, `routes/`). If no frontend files are present in the diff, skip to 2.5.
+**Conditional:** Only execute this section if the diff touches frontend files (extensions: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`, `.svg`, or any file in directories named `pages/`, `components/`, `views/`, `app/`, `src/app/`, `routes/`). If no frontend files are present in the diff, skip to 2.5.
 
-**PURPOSE:** Complement unit/integration tests with real browser diagnostics — console errors, network failures, visual spot-checks, and DOM verification — using the user's real browser through Kimi WebBridge.
+**Purpose:** Complement unit/integration tests with real browser diagnostics — console errors, network failures, visual spot-checks, and DOM verification — using the user's real browser through Kimi WebBridge.
 
 #### 2.4.1 Prerequisites
 
@@ -217,12 +217,12 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
 
 ### 3.2 Commit Review Changes
 
-**PROTOCOL: Ensure all review-related changes are committed and tracked in the plan.**
+Ensure all review-related changes are committed and tracked in the plan.
 
 1. **Check for Changes:** Use `git status --porcelain` to check for uncommitted changes.
-2. **If NO changes detected:** Proceed to 3.3 Track Cleanup.
+2. **When no changes are detected:** Proceed to 3.3 Track Cleanup.
 3. **If changes detected:**
-   - **If NOT reviewing a specific track** (no `plan.md` in context): Ask "I've detected uncommitted changes. Should I commit them?" If yes, commit with `fix(measure): Apply review suggestions`.
+   - **When you are not reviewing a specific track** (no `plan.md` in context): Ask "I've detected uncommitted changes. Should I commit them?" If yes, commit with `fix(measure): Apply review suggestions`.
    - **If reviewing a specific track:**
      1. Ask: "I've detected uncommitted changes from the review process. Should I commit these and update the track's plan?"
      2. If yes:
@@ -240,9 +240,9 @@ Each issue becomes a finding in section 2.5 with appropriate severity.
 
 ### 3.3 Track Cleanup
 
-**PROTOCOL: Offer to archive or delete the reviewed track.**
+Offer to archive or delete the reviewed track.
 
-1. **Context Check:** If NOT reviewing a specific track, SKIP this entire section.
+1. **Context Check:** When you are not reviewing a specific track, skip this entire section.
 
 2. Ask: "Review complete. What would you like to do with track '<track_name>'?"
    - **Archive:** Ensure `measure/archive/` exists, move track folder, remove from **Tracks Registry**, commit: `chore(measure): Archive track '<track_name>'`. If the track's `metadata.json` has a `set` key, also change its link in the set overview from `../tracks/<track_id>/` to `../archive/<track_id>/`, and stage the overview with the commit.

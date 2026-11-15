@@ -18,7 +18,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment is properly set up.**
+Verify that the Measure environment is properly set up.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Tracks Registry**
@@ -26,7 +26,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Tech Stack**
    - **Workflow**
 
-2. **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If any of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and halt.
 
 ## 2.0 Read Project Data
 
@@ -43,7 +43,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 4. **Read Track Metadata:** For each track, also resolve and read its `metadata.json` and extract: `type`, `status`, `estimated_tasks`, `actual_tasks`, `created_at`, `updated_at`, and the optional `sprint` object.
    - **Read-side rules (backward compatibility):**
-     - If `metadata.json` is missing or malformed, skip silently and continue — do NOT HALT.
+     - If `metadata.json` is missing or malformed, skip it silently and continue.
      - Treat absence of the `sprint` key as classic mode (no sprint data); never warn the user about this.
      - Accept both `"completed"` and `"complete"` as valid completed-status values.
 
@@ -147,7 +147,7 @@ Estimation accuracy:
 
 ## Velocity Calculation
 
-**PROTOCOL: Compute velocity and estimation accuracy from completed feature tracks.**
+Compute velocity and estimation accuracy from completed feature tracks.
 
 1. **Filter qualifying tracks** from the metadata collected in §2.0 step 4:
    - Track is marked `[x]` in the **Tracks Registry**.

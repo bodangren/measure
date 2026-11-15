@@ -4,7 +4,6 @@ If a user mentions a "plan" or asks about the plan, and they have used the Measu
 
 ## Universal File Resolution Protocol
 
-**PROTOCOL: How to locate files.**
 To find a file (e.g., "**Product Definition**") within a specific context (Project Root or a specific Track):
 
 1.  **Identify Index:** Determine the relevant index file:
@@ -24,7 +23,7 @@ To find a file (e.g., "**Product Definition**") within a specific context (Proje
 
 4.  **Fallback:** If the index file is missing or the link is absent, use the **Default Path** keys below.
 
-5.  **Verify:** You MUST verify the resolved file actually exists on the disk.
+5.  **Verify:** Verify that the resolved file exists on the disk.
 
 **Standard Default Paths (Project):**
 - **Product Definition**: `measure/product.md`

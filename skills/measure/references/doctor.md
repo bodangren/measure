@@ -8,7 +8,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment and Doctor script exist.**
+Verify that the Measure environment and Doctor script exist.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Product Definition**
@@ -17,7 +17,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Doctor Script** (`measure/doctor.sh` or equivalent project script)
    - **Generate Script** (`measure/generate.sh` or equivalent project script)
 
-2. **Handle Failure:** If the Doctor Script or Generate Script are missing, announce: "Measure architecture tools are not set up. Please ensure `measure/doctor.sh` and `measure/generate.sh` exist." and HALT.
+2. **Handle Failure:** If the Doctor Script or Generate Script are missing, announce: "Measure architecture tools are not set up. Please ensure `measure/doctor.sh` and `measure/generate.sh` exist." and halt.
 
 ## 2.0 Doctor Execution
 

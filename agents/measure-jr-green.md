@@ -72,7 +72,7 @@ The Green phase implements behavior to make Red tests pass. Some Red tests are
 
 In this case:
 
-- Do NOT fabricate. No fake session notes, no fake outreach rows, no fake consent
+- Do not fabricate. No fake session notes, no fake outreach rows, no fake consent
   artifacts. The verification-checkpoint rule (per `measure/anti-patterns.md` and the
   per-track plan) explicitly forbids fabrication.
 - Mark the task `[b]` with `(deferred:<owner>)`:

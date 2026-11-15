@@ -42,7 +42,7 @@ artifacts or anonymization. A named case study can be published without consent
 verification.
 
 **Fix:** For any "publish" gate in `tests/*p4.sh` or `tests/*_closeout.sh`, the gate must
-require EITHER (a) explicit anonymization marker on the artifact, OR (b) a non-empty
+require either (a) explicit anonymization marker on the artifact, or (b) a non-empty
 `consent-<subject>.{md,pdf}` artifact with signatory + date.
 
 **Guard:** `tests/cs_p4.sh` P4.1.
@@ -88,7 +88,7 @@ done
 ```
 
 **Symptoms:** A "markers consistent" check passes when a phase has zero completed tasks
-(all-`[~]`) AND when a phase has zero in-progress tasks (all-`[x]`). A phase reporting
+(all-`[~]`) and when a phase has zero in-progress tasks (all-`[x]`). A phase reporting
 "Green" with no `[x]` is inflated to a passing check.
 
 **Fix:** Reclassify the all-`[~]` state as `INCOMPLETE` (and `FAIL` the test), reserve

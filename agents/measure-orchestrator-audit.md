@@ -150,7 +150,7 @@ Run each detection recipe from `measure/anti-patterns.md`. For each finding:
 2. Cross-check whether the test/guard in `tests/` already detects the issue. If yes,
    note the guard is in place; the finding is a *maintenance* item (the test exists, the
    regression hasn't happened yet).
-3. If the test/guard does NOT exist, report the proposed guard test path and its
+3. If the test or guard does not exist, report the proposed guard test path and its
    assertion as a candidate (see Outputs); this role does not write it. Do not fix the
    implementation being audited. A proposed guard that would fail is a nonblocking
    candidate and does not change the audit result: `status` stays `"pass"`, because the
@@ -312,9 +312,9 @@ The orchestrator or a track applies it; this role only reads and reports.
 
 ## Boundaries
 
-- Do NOT modify plan task markers (the `[b]`-flip, the `[x]`-flip). Report the marker
+- Do not modify plan task markers (the `[b]`-flip, the `[x]`-flip). Report the marker
   state in the audit; let the orchestrator's plan-update role handle marker changes.
-- Do NOT archive tracks. Report archive readiness; let `measure-closeout` execute the
+- Do not archive tracks. Report archive readiness; let `measure-closeout` execute the
   archive move.
 
 ## When to run
