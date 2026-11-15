@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: G21 time margin
 
-- [ ] Task 1.1: the G18 probe width (Red, Green) and the full-suite run. Run
+- [x] Task 1.1: the G18 probe width (Red, Green) and the full-suite run. Run
   `bash tests/spec_review_gate/test_s3_adversarial.sh` before the change,
   show the G21 quadratic FAIL line, and keep the output in
   `measure/runs/g21_time_margin_20261115/` (Red). In
@@ -21,7 +21,7 @@ Spec: [./spec.md](./spec.md)
   `measure/runs/g21_time_margin_20261115/` (Green). Run
   `HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/spec_review_gate/run.sh`
   with no shell redirection; Storytime has first claim on the heavy lock, so
-  a wait is normal; it exits 0. Commit the test file.
+  a wait is normal; it exits 0. Commit the test file. `d322d79`
 - [ ] Task 1.2: records and closeout. Finalize `metadata.json` (status done,
   `actual_tasks`, the `completed` key). Update `CHANGELOG.md` with one entry
   at the top of "## Unreleased" / "### Bug Fixes", and `README.md` line 33 to

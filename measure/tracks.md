@@ -4,7 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [ ] **Track: G21 time margin**
+- [~] **Track: G21 time margin**
   *Link: [./tracks/g21_time_margin_20261115/](./tracks/g21_time_margin_20261115/)*
   *Widen the first G18 probe to 100000 lines per count so the S3 suite kills the G21 quadratic mutant on fast machines (orchestrator finding, 2026-11-15)*
 
