@@ -5,7 +5,7 @@ Spec: [./spec.md](./spec.md)
 
 **All commits go on fix/g21-time-margin. Push only to origin/fix/g21-time-margin, never to main. Only Daniel merges the pull request. The pull request stacks on PR #16.**
 
-## Phase 1: G21 time margin
+## Phase 1: G21 time margin [checkpoint: 4726b00]
 
 - [x] Task 1.1: the G18 probe width (Red, Green) and the full-suite run. Run
   `bash tests/spec_review_gate/test_s3_adversarial.sh` before the change,
@@ -33,6 +33,6 @@ Spec: [./spec.md](./spec.md)
   with no shell redirection (long timeout), then run the closeout check of
   the acceptance criteria, in this order; the closeout check fails only on
   the missing closeout manifest. Record the results. `19a4f29`
-- [ ] Task: Measure - User Manual Verification 'Phase 1: G21 time margin' (Protocol in workflow.md)
+- [x] Task: Measure - User Manual Verification 'Phase 1: G21 time margin' (Protocol in workflow.md) `4726b00`
 
 After the last commit of this phase, push fix/g21-time-margin to origin and open the pull request that stacks on PR #16. Never merge the pull request.
