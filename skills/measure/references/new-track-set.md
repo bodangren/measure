@@ -28,14 +28,14 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment is properly set up.**
+Verify that the Measure environment is properly set up.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Product Definition**
    - **Tech Stack**
    - **Workflow**
 
-2. **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If any of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and halt.
 
 ## 2.0 Set Initialization
 
@@ -49,11 +49,11 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 1. Announce: "I'll ask the questions that apply to every track in the set once. Each track then follows from these answers."
 
-2. **Read before you ask (brownfield):** Read the files that the description names, the **Tracks Registry**, the **Product Definition**, and any existing design document for the program. Do NOT ask a question that these files answer. Use their facts to write the options.
+2. **Read before you ask (brownfield):** Read the files that the description names, the **Tracks Registry**, the **Product Definition**, and any existing design document for the program. Do not ask a question that these files answer. Use their facts to write the options.
 
 3. **Graph Context Probe (optional):** Apply `new-track` §2.2 step 2 once for the set, with keywords from the set goal.
 
-4. **Questioning Phase:** Ask questions in batches of 4 or fewer, with the format and the Additive or Exclusive Choice classification of `new-track` §2.2 step 4. **CRITICAL:** Wait for the user's response after each batch. Cover these 4 topics:
+4. **Questioning Phase:** Ask questions in batches of 4 or fewer, with the format and the Additive or Exclusive Choice classification of `new-track` §2.2 step 4. Wait for the user's response after each batch. Cover these 4 topics:
    1. **Scope and order:** Which work the set covers, and which work comes first.
    2. **Split rule:** How the work divides into members (for example foundation tracks plus one track per module, service, family, or phase).
    3. **Shared decisions:** The choices that every member must follow (for example formats, quality bars, technology, naming).
@@ -156,7 +156,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 5. On **Revise**, apply the changes and present the changed samples again. Repeat until the user approves.
 
 6. **Draft the Other Members:** After the approval, draft the content of each other member of a template group from its approved sample. Change only the marked values, and keep only the variant blocks that the table gives the member. §2.9 step 4 creates the files.
-   - **CRITICAL:** If a member needs a structural change (a phase, a requirement, or a section that its sample does not have), do not draft it silently. Present that member alone with the format of step 4, and wait for **Approve** before you continue.
+   - If a member needs a structural change (a phase, a requirement, or a section that its sample does not have), do not draft it silently. Present that member alone with the format of step 4, and wait for **Approve** before you continue.
 
 ### 2.8 Skill Recommendation
 
@@ -164,7 +164,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ### 2.9 Create Artifacts
 
-1. **Check Names Again:** Repeat the name check of §2.3 step 4, because another session may have created a track since then. If a name now matches, HALT and tell the user which name matches. Create no file.
+1. **Check Names Again:** Repeat the name check of §2.3 step 4, because another session may have created a track since then. If a name now matches, halt and tell the user which name matches. Create no file.
 
 2. **Resolve the Track Sets Directory:** Resolve **Track Sets Directory** with the **Universal File Resolution Protocol**. If the index has no such link:
    1. Use `measure/sets/` and create it.
@@ -235,12 +235,12 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    ```
    Keep the members together. Add them where `new-track` adds a new track: after the last track entry. If the registry groups tracks under headings, add them at the end of the group that fits the set best. If no group fits, add them at the end of the file.
 
-6. **Verify:** Run each check. If a check fails, correct the artifact and run the check again. Do NOT commit until each check in this list passes, except as the last check allows.
+6. **Verify:** Run each check. If a check fails, correct the artifact and run the check again. Do not commit until each check in this list passes, except as the last check allows.
    - Each member folder has `index.md`, `spec.md`, `plan.md`, and `metadata.json`.
    - Each `metadata.json` parses as JSON (for example `python3 -m json.tool <file>` or `jq . <file>`).
    - Each `depends_on` ID is a folder in the **Tracks Directory** or in `measure/archive/` (when it exists), and is a member with a lower order or a track outside the set.
    - The overview's member table lists each member once, in the order of the registry.
-   - **Project scripts:** If the project has a generate script (for example `measure/generate.sh`), run it first, and stage the files that it changes. If a generated file had changes before this step, tell the user that the set commit will include them. Then, if the project has a doctor script (for example `measure/doctor.sh`), run it, as `implement` §4.0 step 3 does. Correct each failure that names a file that this workflow wrote (a member file, the overview, the **Tracks Registry**, or `measure/index.md`), and run both scripts again. If a failure remains that names no such file, show it to the user and ask: "The doctor reports a failure that this set did not cause. Commit the set anyway?" On **Commit anyway**, continue with step 7 and name the failure in the commit message body. On **Stop**, HALT without a commit.
+   - **Project scripts:** If the project has a generate script (for example `measure/generate.sh`), run it first, and stage the files that it changes. If a generated file had changes before this step, tell the user that the set commit will include them. Then, if the project has a doctor script (for example `measure/doctor.sh`), run it, as `implement` §4.0 step 3 does. Correct each failure that names a file that this workflow wrote (a member file, the overview, the **Tracks Registry**, or `measure/index.md`), and run both scripts again. If a failure remains that names no such file, show it to the user and ask: "The doctor reports a failure that this set did not cause. Commit the set anyway?" On **Commit anyway**, continue with step 7 and name the failure in the commit message body. On **Stop**, halt without a commit.
 
 7. **Commit Changes:** Stage only these paths, by name: the overview, `measure/index.md` (if changed), the **Tracks Registry**, each member folder, and the files that the generate script changed. Commit with message `chore(measure): Add track set '<set title>' (<n> tracks)`.
 
@@ -249,7 +249,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 3.0 Read-Side Rules for Track Sets
 
-**PROTOCOL: How other workflows treat set data.**
+How other workflows treat set data.
 
 1. **Optional key:** A track without a `set` key in `metadata.json` is a standalone track. No workflow warns about the absence.
 
@@ -263,7 +263,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 3. **Complete dependency:** A dependency is complete when its registry entry is `[x]`, or when its folder is in `measure/archive/`.
 
-4. **Missing overview data:** If the overview file is missing, or its member table does not list the track, warn once: "The set overview `<path>` does not list track `<track_id>`. I will continue without it." Then continue. Never HALT because of set data.
+4. **Missing overview data:** If the overview file is missing, or its member table does not list the track, warn once: "The set overview `<path>` does not list track `<track_id>`. I will continue without it." Then continue. Never halt because of set data.
 
 5. **Change a set later:**
    - **Add a member:** Run `new-track` for it, with the description `<set title>: <title>` (§2.3 step 1). Then add the `set` key, the `## Track Set` section, the index link, the `*Set:*` registry line, and a row in the overview. Apply §2.9 step 4 item 5 to it: the project metadata keys, and the project dependency key with the IDs of `set.depends_on`. The order rule of §2.3 applies. Commit these edits: `chore(measure): Add track '<track description>' to set '<set_id>'`.

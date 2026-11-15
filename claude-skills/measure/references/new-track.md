@@ -20,14 +20,14 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment is properly set up.**
+Verify that the Measure environment is properly set up.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Product Definition**
    - **Tech Stack**
    - **Workflow**
 
-2. **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If any of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and halt.
 
 ## 2.0 Track Initialization
 
@@ -35,7 +35,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 1. Check if user provided a description
 2. If not, ask: "Please provide a brief description of the track (feature, bug fix, chore, etc.)"
-3. Infer track type from description (Feature vs Bug/Chore/Refactor) - do NOT ask user to classify
+3. Infer track type from description (Feature vs Bug/Chore/Refactor) - do not ask the user to classify
 4. **Detect a Track Set:** Offer a track set when one of these is true:
    - The user asks for more than one track (for example "a set of tracks", "tracks for each", "one track per").
    - The scope splits into 3 or more units of work that each close on their own acceptance criteria (for example one per module, service, family, or game).
@@ -56,11 +56,11 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 2. **Graph Context Probe (optional, TypeScript projects only):** Before any questions, check whether the codebase graph is available so questioning can be informed by real structural data.
 
-   **Availability + freshness gate** (must pass BOTH):
+   **Availability + freshness gate** (both must pass):
    - **Availability:** `command -v build-graph >/dev/null 2>&1`
-   - **Freshness:** `graph.db` exists at the project root AND its mtime is within the last 24 hours.
+   - **Freshness:** `graph.db` exists at the project root and its mtime is within the last 24 hours.
 
-   **If both pass AND the Tech Stack includes TypeScript:**
+   **If both pass and the Tech Stack includes TypeScript:**
    - Run `build-graph stats ./graph.db` once to capture the codebase shape.
    - From the user's track description, extract 1–3 keywords for the feature area and run `build-graph search ./graph.db <keyword>` for each.
    - Use the results to inform at least one questioning batch (e.g., reference existing modules by name, surface adjacent files, ask whether a found symbol is the right integration point).
@@ -70,7 +70,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - `Note: build-graph not on PATH — skipping graph-aware context probe.`
      - `Note: graph.db is missing — skipping graph-aware context probe.`
      - `` Note: graph.db is stale (>24h) — skipping graph-aware context probe. Run `build-graph scan . ./graph.db` to refresh. ``
-   - Do NOT HALT.
+   - Do not halt.
 
 3. **Choose Spec Format (Mode Selection):** Before any other questions, ask the user how the spec should be structured.
    - Header: `Spec format`
@@ -82,7 +82,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - Record the selection as `spec_mode = story | classic` and use it to branch the remaining steps in this section.
 
 4. **Questioning Phase:** Ask questions to gather details for the `spec.md`. You must batch up to 4 related questions in a single prompt to streamline the process. Tailor questions based on `spec_mode` and the track type.
-   - **CRITICAL:** Wait for the user's response after each prompt.
+   - Wait for the user's response after each prompt.
    - **Question Classification:** Before formulating any question, classify its purpose as either "Additive" or "Exclusive Choice":
      - **Additive** (multi-select): For brainstorming and defining scope (e.g., features, goals). Use "(Select all that apply)".
      - **Exclusive Choice** (single answer): For foundational, singular commitments (e.g., selecting a primary technology).
@@ -90,7 +90,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - Header: Short label (max 16 chars)
      - Provide 2-3 plausible options based on context, each with a label and description
      - Last option: "Type your own answer"
-   - **If the Graph Context Probe (step 2) ran successfully:** At least one batch in this Questioning Phase MUST cite a specific finding from `build-graph` results (e.g., "I see `validateToken` is called from 4 files including `auth/middleware.ts` — should the new behavior live there or in a sibling module?"). Generic, codebase-blind questions are forbidden when the graph was available.
+   - **If the Graph Context Probe (step 2) ran successfully:** Cite a specific finding from `build-graph` results in at least one batch of this Questioning Phase (e.g., "I see `validateToken` is called from 4 files including `auth/middleware.ts` — should the new behavior live there or in a sibling module?"). Generic, codebase-blind questions are forbidden when the graph was available.
    - **If `spec_mode = story` (Story-shaped path):**
      - First, ask for the **Sprint Goal**: a single sentence describing the outcome of completing this track. This becomes the spec's Overview anchor and the `sprint.goal` in metadata.
      - Then ask the user to enumerate the **user stories** for this track. For each story, gather (batched per story, ≤4 prompts):
@@ -102,7 +102,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **If `spec_mode = classic` (Classic path):**
      - **For Features:** Ask 3-4 questions about functionality, implementation approach, interactions, inputs/outputs.
      - **For Bugs/Chores:** Ask 2-3 questions about reproduction steps, scope, success criteria.
-   - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do NOT ask generic questions if the answer is already in the files.
+   - **Brownfield:** Formulate questions specifically aware of the analyzed codebase. Do not ask generic questions when the answer is already in the files.
    - Confirm your understanding by summarizing before moving to drafting.
 
 5. **Surface Relevant Tech Debt:** Resolve **Tech Debt Registry** (if it exists).
@@ -134,7 +134,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    **Priority:** Must | Should | Could
    ```
 
-   **Backward-compat rule:** Any downstream workflow that reads `spec.md` MUST treat the absence of a `## Stories` section as classic mode and proceed silently — no HALT, no warning, no migration prompt.
+   **Backward-compat rule:** Any downstream workflow that reads `spec.md` must treat the absence of a `## Stories` section as classic mode and proceed silently — no halt, no warning, no migration prompt.
 
 7. Present draft for review with embedded content:
    > "Please review the drafted Specification below. Does this accurately capture the requirements?"
@@ -158,13 +158,13 @@ Validate every tool call. If any fails, halt immediately and inform the user.
      - Note relevant patterns in the generated plan.
    - If **Lessons Learned** does not exist, log a warning and continue.
 
-3. **Blast-Radius Probe (optional, TypeScript projects only):** If the Graph Context Probe in §2.2 step 2 succeeded (build-graph available AND graph.db fresh AND project is TS), enrich the upcoming plan with blast-radius data.
+3. **Blast-Radius Probe (optional, TypeScript projects only):** If the Graph Context Probe in §2.2 step 2 succeeded (build-graph available and graph.db fresh and project is TS), enrich the upcoming plan with blast-radius data.
 
    For each exported symbol named in the confirmed **Specification** (function, class, interface, schema), run:
    ```bash
    build-graph callers ./graph.db <SymbolName>
    ```
-   Capture the caller count and the top-N caller file paths (N ≤ 5) per symbol. In the next step, every story-phase that touches one of these symbols MUST include a `_Blast radius:_` line under its heading listing the caller count and top callers.
+   Capture the caller count and the top-N caller file paths (N ≤ 5) per symbol. In the next step, every story-phase that touches one of these symbols must include a `_Blast radius:_` line under its heading listing the caller count and top callers.
 
    **If the §2.2 probe was skipped (any gate failed):** Skip this Blast-Radius Probe silently — no additional note (the §2.2 skip note already informed the user). Generate the plan without `_Blast radius:_` lines.
 
@@ -192,7 +192,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
        - [ ] Task: Measure - User Manual Verification 'Phase S<n>: <story title>' (Protocol in workflow.md)
        ```
    - **If `spec_mode = classic` (classic plan):**
-     - Use the existing phase structure. The plan MUST include the following phases in order:
+     - Use the existing phase structure. The plan must include the following phases in order:
        1. **Contract & Schema Definition:** Update or create strict schemas (e.g., Zod, OpenAPI) and contracts.
        2. **Test:** Write contract/unit tests for the new features.
        3. **Implement:** Implement the service/repo/backend/UI based on the contracts.
@@ -202,7 +202,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
        ```markdown
        - [ ] Task: Measure - User Manual Verification '<Phase Name>' (Protocol in workflow.md)
        ```
-   - Include `[ ]` status markers for EVERY task and sub-task:
+   - Include `[ ]` status markers for every task and sub-task:
      ```markdown
      - [ ] Task: Define User Model Contract
          - [ ] Update Zod schema for User
@@ -223,7 +223,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 1. **Analyze Needs:**
    - Use Vercel's Skills registry (`https://skills.sh/`).
    - Execute `npx -y skills search <query>` using keywords from the **Tech Stack** and confirmed **Specification**.
-   - Review the results and identify relevant skills that are NOT yet installed (check `.claude/skills/`).
+   - Review the results and identify relevant skills that are not yet installed (check `.claude/skills/`).
 
 2. **Recommendation Loop:**
    - **If relevant missing skills are found:**
@@ -236,8 +236,8 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ### 2.4.1 Skill Reload Confirmation
 
-1. **Execution Trigger:** This step MUST only be executed if you installed new skills in the previous section.
-2. **Notify and Pause:** "New skills installed. Please reload your skills to enable them. Let me know when you have done this." Do NOT ask a question here — make a statement and wait.
+1. **Execution Trigger:** Run this step only when you installed new skills in the previous section.
+2. **Notify and Pause:** "New skills installed. Please reload your skills to enable them. Let me know when you have done this." Do not ask a question here — make a statement and wait.
 3. **Wait for Confirmation:** Pause and wait for the user to confirm they have reloaded the skills.
 
 ### 2.5 Create Artifacts

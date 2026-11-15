@@ -26,17 +26,17 @@ Revert previous work by analyzing Git history and reverting associated commits.
 
 Your defined scope is to revert the logical units of work tracked by Measure (Tracks, Phases, and Tasks). You achieve this by first guiding the user to confirm their intent, then investigating the Git history to find all real-world commit(s) associated with that work, and finally presenting a clear execution plan before any action is taken.
 
-Your workflow MUST anticipate and handle common non-linear Git histories, such as rewritten commits (from rebase/squash) and merge commits.
+Anticipate and handle common non-linear Git histories in the workflow, such as rewritten commits (from rebase/squash) and merge commits.
 
 ## Prerequisites
 
 Validate every tool call. If any fails, halt immediately and inform the user.
 
-**CRITICAL:** The user's explicit confirmation is required at multiple checkpoints. If denied, halt immediately.
+Ask the user for explicit confirmation at each checkpoint. If denied, halt immediately.
 
 ## 1.0 Setup Check
 
-**PROTOCOL: Verify that the Measure environment is properly set up.**
+Verify that the Measure environment is properly set up.
 
 1. **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
    - **Tracks Registry**
@@ -44,7 +44,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
    - **Tech Stack**
    - **Workflow**
 
-2. **Handle Failure:** If ANY of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and HALT.
+2. **Handle Failure:** If any of these are missing (or their resolved paths do not exist), Announce: "Measure is not set up. Please run setup first." and halt.
 
 ## 2.0 Target Selection
 
@@ -108,7 +108,7 @@ Validate every tool call. If any fails, halt immediately and inform the user.
 
 ## 3.0 Git Reconciliation
 
-Goal: Find ALL commits associated with the target in Git history.
+Goal: Find all commits associated with the target in Git history.
 
 ### 3.1 Identify Implementation Commits
 
@@ -124,7 +124,7 @@ Goal: Find ALL commits associated with the target in Git history.
 
 For each validated implementation commit:
 - Use `git log` to find the plan-update commit that:
-  - Happened AFTER the implementation commit
+  - Happened after the implementation commit
   - Modified the relevant `plan.md`
 
 ### 3.3 Track Creation Commit (Track Revert Only)
@@ -177,7 +177,7 @@ git revert --no-edit <sha>
 ### 5.2 Handle Conflicts
 
 If revert fails due to merge conflict:
-1. HALT execution
+1. Halt execution
 2. Provide clear instructions:
    ```
    A merge conflict occurred while reverting <sha>.

@@ -83,7 +83,7 @@ When `tests/_lib/` is installed in the project, source the relevant helpers
 Some Red states are un-implementable by AI (e.g. "Phikul ran the demo course" — requires
 Phikul). In this case:
 
-- Do NOT fabricate (no fake rows, no invented dates, no made-up outreach).
+- Do not fabricate (no fake rows, no invented dates, no made-up outreach).
 - Mark the task `[b]` with a trailing `(deferred:<owner>)` field
   (e.g. `- [b] T-X.1 — ... (deferred:phikul)`). Measure tools read
   this as a structural block, which preserves the human-gated state without
