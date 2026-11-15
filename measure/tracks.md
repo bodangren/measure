@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Fixture paths**
+  *Link: [./tracks/fixture_paths_20261115/](./tracks/fixture_paths_20261115/)*
+  *Fixture paths: the mid-red check of skills/measure-orchestrator/scripts/measure_interphase_checks.py now counts a file under a fixtures folder inside a folder whose name ends in -tests as a test file, so a Red gate in the Lending project no longer needs a recorded deviation for synthetic fixtures (PM order, 2026-11-15)*
 
 ---
 
