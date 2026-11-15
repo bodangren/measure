@@ -30,3 +30,25 @@ The installer keeps 13 installed role files as local-edit because PM tooling C11
 - F5: FIX
 - F6: FIX
 - F7: FIX
+
+## Round 2
+
+Date: 2026-11-15
+Reviewer: measure-spec-review, claude-code/claude-sonnet-5-5#high
+
+### What this track proposes
+This track adds one verdict line, word for word, to 13 source role files in agents/ (all except measure-orchestrator.md). The line goes after the anchor paragraph of each file, in the same place as in the installed copies. A new S2 section pins the line, its single occurrence, and its placement. The track records the change in CHANGELOG.md and README.md and archives itself.
+
+### How the current system works, per this spec
+The installer keeps 13 installed role files as local-edit because PM tooling C116 added the verdict line to the installed copies only. The source files do not have the line, so the installed copies miss PR #16 and PR #18. The advantage-pr script outcomes_close.py reads the line to record PASS or FAIL for each role run. The PM reports that 0 of 135 role runs had a verdict line.
+
+### Findings
+- F8 [Nit] spec.md FR-2 (README sentence): The new README sentence says '13 role files end with a RESULT: PASS or RESULT: FAIL line'. The role files do not end with that line, because 6 of the 13 installed copies keep text after it (the rating rubric), and the line tells the role what its final message ends with. Rationale: the record text is not exact, but it does not change what the implementer builds. Write for example '13 role files tell the role to end its final message with a RESULT: PASS or RESULT: FAIL line, so the installed copies match the source again'.
+- F9 [Nit] spec.md Anchor lines and Acceptance Criteria: The table cells of closeout and jr-green are not a bare verbatim line. The closeout cell adds text after the code span, and the jr-green cell is prose that names the last list line. The first Acceptance Criteria bullet lists only the once-only check and the next-line check, and omits the two placement checks (empty line before, anchor line before) that the Test section pins. Rationale: the installed copies and the source give the exact lines, so the implementer makes no real choice, but the S2 section embeds each anchor line as a fixed string and the criteria should list all four checks. Name the anchor line of closeout and jr-green as a bare line, and add the two placement checks to the first criteria bullet.
+
+Round 2 is the last allowed round. Orchestrator decision: F8 FIX now, F9 DECLINE, no third round; recorded as a deviation in metadata.json deviation_notes.
+
+### Author Response
+- F8: FIX
+- F9: DECLINE
+
