@@ -140,6 +140,8 @@ This is an audit-only role. Do not edit production code, tests, plans, or regist
 
 Write provenance-bound audit JSON at the supplied result path and end with the required `MEASURE_AGENT_RESULT` block.
 
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).
+
 ## Rating rubric v1 (optional result keys)
 
 In the audit result JSON, add two optional keys. Change no other key.

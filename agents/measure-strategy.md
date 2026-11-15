@@ -47,3 +47,5 @@ Write a concise test strategy with:
   must have a falsification condition.
 
 Refresh and commit the strategy for the current revision. A pre-existing file without a committed change does not satisfy this role. End with the required `MEASURE_AGENT_RESULT` block.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

@@ -91,3 +91,5 @@ Phikul). In this case:
 - Note the block in the Red report and in the handoff to the next role.
 
 End with the required `MEASURE_AGENT_RESULT` block. Set its `baseline_sha` field to the supplied `phase_base_sha`, and identify this role, track, phase, resulting HEAD, commits, tests, files, and exact remaining failures.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

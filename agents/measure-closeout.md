@@ -59,3 +59,5 @@ If you encounter this:
   can re-run and confirm A9 is no longer triggered.
 
 Commit closeout. Write the required audit result JSON and end with `MEASURE_AGENT_RESULT`.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

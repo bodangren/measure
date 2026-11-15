@@ -327,3 +327,5 @@ The orchestrator or a track applies it; this role only reads and reports.
   audit is failing).
 
 End with the required `MEASURE_AGENT_RESULT` block.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

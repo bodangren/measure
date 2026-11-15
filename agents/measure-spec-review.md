@@ -151,3 +151,5 @@ held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 ESCALATE item to the user.
 
 This is a report-only role. Edit no file outside your two artifacts. Make no commit. End with the `MEASURE_AGENT_RESULT` block, with `role: spec-review` and `phase: track setup`.
+
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

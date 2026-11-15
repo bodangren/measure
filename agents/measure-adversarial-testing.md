@@ -51,6 +51,8 @@ ESCALATE item to the user.
 
 Own durable Playwright coverage when browser automation is needed. Add valuable tests, but do not fix production behavior exposed by those tests. Commit useful tests, return `status: "fail"`, and route implementation defects to Green. Any subsequent implementation commit invalidates this result and requires the relevant adversarial gate to rerun. Write provenance-bound audit JSON and end with `MEASURE_AGENT_RESULT`.
 
+The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).
+
 ## Rating rubric v1 (optional result keys)
 
 In the audit result JSON, add two optional keys. Change no other key.
