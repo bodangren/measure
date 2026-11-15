@@ -115,6 +115,18 @@ permissions:
     resource: "coder"
     effect: allow
   - action: subagent
+    resource: "copywriter"
+    effect: allow
+  - action: subagent
+    resource: "fact-gate-checker"
+    effect: allow
+  - action: subagent
+    resource: "thai-writer"
+    effect: allow
+  - action: subagent
+    resource: "print-proof-auditor"
+    effect: allow
+  - action: subagent
     resource: "change-quality-reviewer"
     effect: allow
 ---
