@@ -229,6 +229,12 @@ def committed_files(repo: Path, baseline: str) -> list[str]:
     return sorted(files)
 
 
+def is_tests_fixture(path: str) -> bool:
+    """True when a `fixtures` folder sits at any depth under a folder whose name ends in `-tests`."""
+    folders = path.split("/")[:-1]
+    return any(name.endswith("-tests") and "fixtures" in folders[index + 1 :] for index, name in enumerate(folders))
+
+
 def non_test_paths(paths: list[str] | set[str]) -> list[str]:
     result: list[str] = []
     for path in sorted(paths):
@@ -237,6 +243,8 @@ def non_test_paths(paths: list[str] | set[str]) -> list[str]:
         if path.endswith(TEST_SUFFIXES):
             continue
         if "/__tests__/" in path or "/tests/" in path or path.startswith("tests/"):
+            continue
+        if is_tests_fixture(path):
             continue
         result.append(path)
     return result

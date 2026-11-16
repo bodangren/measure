@@ -1,0 +1,13 @@
+{
+  "track_id": "fixture_paths_20261115",
+  "type": "bug",
+  "status": "done",
+  "created_at": "2026-11-15T12:16:25Z",
+  "updated_at": "2026-11-15T13:05:00Z",
+  "description": "Fixture paths: the mid-red check of skills/measure-orchestrator/scripts/measure_interphase_checks.py now counts a file under a fixtures folder inside a folder whose name ends in -tests as a test file, so a Red gate in the Lending project no longer needs a recorded deviation for synthetic fixtures (PM order, 2026-11-15)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-15",
+  "lane": "light",
+  "deviation_notes": "Spec review: step 9 of the new-track workflow was skipped by PM order; the orchestrator ran the review on another model family after the setup commit. The spec review ran on opencode-go/deepseek-v4.1-flash because the author is the Kimi family. Round 1 (2026-11-15, at 823f6d2) passed with no Blocker and no Major: F1, F2, F3 Nit, all fixed by orchestrator decision in dfb7130, with no Round 2. Task 1.1 of 2026-11-15 at 5b9b940: Red exit 1, the failures were only the test-owned unit group and Case A (red-fixture.log); Green exit 0 (green-fixture.log); heavy-run spec_review_gate exit 0 (run-suites.log); heavy-run test-registry exit 0 (test-registry-task1.1.log). Task 1.2 closeout runs of 2026-11-15, after the archive commit df8811f, the plan-close commits 79ae5bb, 1c16fcc, and 746eb07, and the registry commit 1fd1e38, in this order: heavy-run.sh bash tests/dsh/test-registry.sh exit 0 (test-registry.log), then the closeout check exit 1 with INFO light lane, no final acceptance, and one FAIL, the missing closeout manifest, as the acceptance criteria expect (closeout-check.log). All Red, Green, and gate outputs are kept in measure/runs/fixture_paths_20261115/ (gitignored)."
+}
