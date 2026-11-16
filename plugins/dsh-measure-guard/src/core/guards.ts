@@ -158,6 +158,95 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
   return { decision: null, note }
 }
 
+/** The ra-quota role of each Measure agent that the spawn-route guard checks. */
+export const ROLE_OF_AGENT: Record<string, string> = {
+  'measure-mid-red': 'red',
+  'measure-jr-green': 'green',
+  'measure-review-a-correctness': 'review-a',
+  'measure-review-b-security': 'review-b',
+  'measure-review-c-ux-api': 'review-c',
+  'measure-adversarial-testing': 'adversarial',
+  'measure-strategy': 'strategy',
+  'measure-spec-review': 'strategy',
+  'measure-phase-acceptance': 'acceptance',
+  'measure-final-acceptance': 'final-acceptance',
+}
+
+/** The ra-quota routes file, relative to the home folder. */
+export const ROUTES_FILE = '.config/ra-quota/routes.json'
+
+/** The command that prints one approved route of a role. */
+export const ROUTE_PICK = '/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick'
+
+/** The agent and the model a spawn call names; model is null when the call names none. */
+export type RoleSpawn = { agent: string; model: string | null }
+
+/** The first non-empty string among `values`, trimmed; null when there is none. */
+const firstText = (values: readonly unknown[]): string | null => {
+  const found = values.find(value => typeof value === 'string' && value.trim() !== '')
+  return typeof found === 'string' ? found.trim() : null
+}
+
+/** The agent and model of a tool call that spawns a subagent: the OpenCode `subagent` tool (`agent`) or a `task` tool (`subagent_type`). Null for every other call. */
+export const roleSpawnOf = (tool: string, input: unknown): RoleSpawn | null => {
+  const name = tool.toLowerCase()
+  if (name !== 'subagent' && name !== 'task') return null
+  if (input === null || typeof input !== 'object') return null
+  const fields = input as Record<string, unknown>
+  const agent = firstText([fields.agent, fields.subagent_type, fields.subagentType])
+  if (agent === null) return null
+  return { agent, model: firstText([fields.model]) }
+}
+
+/** The approved route strings of one role in the routes file text; null when the file is unreadable or the role has no route. */
+export const approvedRoutes = (text: string | null, role: string): string[] | null => {
+  if (text === null) return null
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(text)
+  } catch {
+    return null
+  }
+  if (parsed === null || typeof parsed !== 'object') return null
+  const roles = (parsed as { roles?: unknown }).roles
+  if (roles === null || typeof roles !== 'object') return null
+  const list = (roles as Record<string, unknown>)[role]
+  if (!Array.isArray(list)) return null
+  const routes = list
+    .map(item => (item !== null && typeof item === 'object' ? firstText([(item as { route?: unknown }).route]) : null))
+    .filter((route): route is string => route !== null)
+  return routes.length === 0 ? null : routes
+}
+
+/** The spawn-route guard (guard and strict): a `measure-*` spawn must name a route in the approved list of its role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning note. */
+export const roleSpawnDecision = (context: GuardContext, routesText: string | null, spawn: RoleSpawn): { decision: Decision; note: string | null } => {
+  if (!isGuarding(context)) return { decision: null, note: null }
+  if (!spawn.agent.startsWith('measure-')) return { decision: null, note: null }
+  const role = ROLE_OF_AGENT[spawn.agent]
+  if (role === undefined) {
+    return { decision: null, note: `measure-guard: "${spawn.agent}" is not in the route map, so the guard did not check its model.` }
+  }
+  const routes = approvedRoutes(routesText, role)
+  if (routes === null) {
+    return { decision: null, note: `measure-guard: cannot read the approved routes of role "${role}" in ~/${ROUTES_FILE}, so the guard did not check the model of "${spawn.agent}".` }
+  }
+  if (spawn.model === null) {
+    return { decision: null, note: `measure-guard: "${spawn.agent}" names no model, so the guard did not check its route. Pass the route that ${ROUTE_PICK} ${role} prints.` }
+  }
+  if (routes.includes(spawn.model)) return { decision: null, note: null }
+  return {
+    decision: {
+      deny: [
+        `measure-guard: "${spawn.agent}" names the model "${spawn.model}", which is not an approved route of role "${role}".`,
+        'The approved routes are:',
+        ...routes.map(route => `  - ${route}`),
+        `Run ${ROUTE_PICK} ${role} and use the route it prints. ${BYPASS}`,
+      ].join('\n'),
+    },
+    note: null,
+  }
+}
+
 /**
  * The closeout note for plan.md (guard and strict): a task change to `[~]` in
  * phase N+1 while the heading of phase N has no `[checkpoint: <sha>]` gets a
