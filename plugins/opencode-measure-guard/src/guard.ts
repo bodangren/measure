@@ -3,6 +3,7 @@
 // wires the handlers to the OpenCode hooks; the tests call them directly.
 import { dirname, joinPath, parsePlan, ruleSection } from './core/parse'
 import {
+  ROUTES_FILE,
   SETUP_DENY,
   applyEdit,
   closedTracks,
@@ -16,6 +17,8 @@ import {
   phaseStartNote,
   redFor,
   relative,
+  roleSpawnDecision,
+  roleSpawnOf,
   taskKey,
   tddDecision,
   trackCloseDecision,
@@ -186,6 +189,14 @@ export class Guard {
     const command = isShellTool(event.tool) ? commandOf(event.input) : null
     const shellTargets = command === null ? [] : shellWritePaths(command)
     const commit = command !== null && this.mode === 'strict' ? parseCommitCommand(command) : null
+    const spawn = roleSpawnOf(event.tool, event.input)
+    if (spawn !== null) {
+      const context = await this.guardContext(event.sessionID)
+      const check = roleSpawnDecision(context, await this.routesText(), spawn)
+      this.deny(check.decision)
+      if (check.note !== null) this.callNotes.set(event.id, [check.note])
+      return
+    }
     if (paths.length === 0 && commit === null && shellTargets.length === 0) return
     const context = await this.guardContext(event.sessionID)
     const notes: string[] = []
@@ -278,6 +289,17 @@ export class Guard {
       closing.push({ entry, plan: planPath === null ? null : parsePlan(await readFile(planPath, 'utf8')) })
     }
     return trackCloseDecision(context, closing)
+  }
+
+  /** The ra-quota routes file text; null when HOME is unset or the file cannot be read. */
+  private async routesText(): Promise<string | null> {
+    const home = process.env.HOME
+    if (home === undefined || home === '') return null
+    try {
+      return await readFile(joinPath(home, ROUTES_FILE), 'utf8')
+    } catch {
+      return null
+    }
   }
 
   /** Sets the track of the session when the clue names one `[~]` track; true when the track changed. */

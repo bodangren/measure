@@ -463,3 +463,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Fixture paths**
   *Link: [./archive/fixture_paths_20261115/](./archive/fixture_paths_20261115/)*
   *Fixture paths: the mid-red check of skills/measure-orchestrator/scripts/measure_interphase_checks.py now counts a file under a fixtures folder inside a folder whose name ends in -tests as a test file, so a Red gate in the Lending project no longer needs a recorded deviation for synthetic fixtures (PM order, 2026-11-15)*
+
+- [x] **Track: Role spawn routes**
+  *Link: [./archive/role_spawn_route_20261117/](./archive/role_spawn_route_20261117/)*
+  *Role spawn routes: the OpenCode measure-guard plugin blocks a Measure role spawn whose model is not an approved route of that role in ~/.config/ra-quota/routes.json. The guard maps each agent to a ra-quota role, and an unknown role, no model, or an unreadable routes file gives a warning (PM order, 2026-11-17)*
