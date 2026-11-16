@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Role spawn routes**
-  *Link: [./tracks/role_spawn_route_20261117/](./tracks/role_spawn_route_20261117/)*
-  *Role spawn routes: the OpenCode measure-guard plugin blocks a Measure role spawn whose model is not an approved route of that role in ~/.config/ra-quota/routes.json. The guard maps each agent to a ra-quota role, and an unknown role, no model, or an unreadable routes file gives a warning (PM order, 2026-11-17)*
+- (none)
 
 ---
 
