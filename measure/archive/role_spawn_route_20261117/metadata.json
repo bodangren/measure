@@ -3,11 +3,11 @@
   "type": "feature",
   "status": "done",
   "created_at": "2026-11-17T10:45:00Z",
-  "updated_at": "2026-11-17T11:20:00Z",
+  "updated_at": "2026-11-17T11:40:00Z",
   "description": "Role spawn routes: the OpenCode measure-guard plugin blocks a Measure role spawn whose model is not an approved route of that role in ~/.config/ra-quota/routes.json. The guard maps each agent to a ra-quota role, and an unknown role, no model, or an unreadable routes file gives a warning (PM order, 2026-11-17)",
   "estimated_tasks": 3,
   "actual_tasks": 3,
   "completed": "2026-11-17",
   "lane": "light",
-  "deviation_notes": "The spec review was skipped by PM order under the quota hold (2026-11-16 wake: one role, opencode-go/deepseek-v4.1-flash, then the PR). The author model is opencode-go/deepseek-v4.1-flash. Task 1.1 of 2026-11-17 at 78f98be: Red exit 1, the suite failed on the missing roleSpawnOf export (red-role-spawn.log); Green exit 0, every case passes (green-role-spawn.log); bun test has one failure, V18 of allow-adversarial, which also fails on origin/main a2bb10e (package-test.log); both parity checks exit 0; tsc exit 1 because the package has no node_modules and @types/bun is absent (tsc.log); heavy-run spec_review_gate exit 0 (run-suites.log); heavy-run test-registry exit 0 (test-registry-task1.1.log). The closeout runs follow after the registry commit."
+  "deviation_notes": "The spec review was skipped by PM order under the quota hold (2026-11-16 wake: one role, opencode-go/deepseek-v4.1-flash, then the PR). The author model is opencode-go/deepseek-v4.1-flash. Task 1.1 of 2026-11-17 at 78f98be: Red exit 1, the suite failed on the missing roleSpawnOf export (red-role-spawn.log); Green exit 0, every case passes (green-role-spawn.log); bun test has one failure, V18 of allow-adversarial, which also fails on origin/main a2bb10e (package-test.log); both parity checks exit 0; tsc exit 1 because the package has no node_modules and @types/bun is absent (tsc.log); heavy-run spec_review_gate exit 0 (run-suites.log); heavy-run test-registry exit 0 (test-registry-task1.1.log). Task 1.2 closeout runs of 2026-11-17, after the archive commit fb0d29f, the plan-close commits 5356bf7, a639088, and 480747b, and the registry commit b07fbea, in this order: heavy-run.sh bash tests/dsh/test-registry.sh exit 0 (test-registry.log), then the closeout check exit 1 with INFO light lane, no final acceptance, and one FAIL, the missing closeout manifest, as the acceptance criteria expect (closeout-check.log). All Red, Green, and gate outputs are kept in measure/runs/role_spawn_route_20261117/ (gitignored)."
 }
