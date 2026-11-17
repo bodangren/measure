@@ -135,6 +135,9 @@ button { font: inherit; color: inherit; }
 
 .card-warn { margin-top: 6px; font-size: 0.8rem; font-weight: 600; color: var(--oc-warning-text); }
 .comment { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--oc-border); }
+.comment-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.comment-open { min-height: 40px; padding: 4px 12px; font-size: 0.8rem; }
+.comment-panel { margin-top: 8px; }
 .comment-label { display: block; margin-bottom: 4px; font-size: 0.8rem; font-weight: 600; color: var(--oc-muted); }
 .comment-input { display: block; width: 100%; max-width: 100%; min-height: 40px; padding: 6px 8px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-bg); color: var(--oc-fg); font: inherit; font-size: 0.85rem; resize: vertical; }
 .comment-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
@@ -176,7 +179,6 @@ button { font: inherit; color: inherit; }
   var DONE_SHOWN = 5;
   var DONE_WINDOW_MS = 14 * 86400000;
   var STALE_MS = 30 * 86400000;
-  var SAMPLE_TEXT = 'The closeout of this repo needs a check.';
   var SAMPLE_ERROR = 'TOO_MANY_PROMPTS: The service reached its limit of 60 prompts an hour.';
   var AGE_TIP = 'Time of the last change to plan.md or metadata.json (file time, not a commit time).';
   var data = JSON.parse(document.getElementById('fixture').textContent);
@@ -228,16 +230,9 @@ button { font: inherit; color: inherit; }
     return rows.map(function (r) { return r.card; });
   }
 
-  var state = { open: {}, doneOpen: {}, doneGroupOpen: {}, expanded: {}, staleOpen: {} };
+  var state = { open: {}, doneOpen: {}, doneGroupOpen: {}, expanded: {}, staleOpen: {}, commentOpen: null };
   var narrow = window.matchMedia('(max-width: 639.98px)').matches;
-  // The static mockup shows one sample send result and one sample error. Both are inert.
-  var samples = { sent: null, error: null };
-  data.repos.forEach(function (repo) {
-    repo.cards.forEach(function (card) {
-      if (card.column === 'blocked' && samples.sent === null) samples.sent = card;
-      if (card.column === 'waiting' && samples.error === null) samples.error = card;
-    });
-  });
+  function keyOf(repo, card) { return repo.repo + '/' + repo.cards.indexOf(card); }
   var firstQualifying = null;
   data.repos.forEach(function (repo) {
     var n = tally(repo);
@@ -245,6 +240,21 @@ button { font: inherit; color: inherit; }
     if (qualifies && firstQualifying === null) firstQualifying = repo.repo;
     state.open[repo.repo] = (narrow ? repo.repo === firstQualifying : qualifies) || query.get('open') === repo.repo;
     state.doneOpen[repo.repo] = query.get('done') === 'open';
+  });
+  // The mockup shows one box open: the first Blocked card of the first open section.
+  data.repos.forEach(function (repo) {
+    if (state.commentOpen !== null || state.open[repo.repo] !== true) return;
+    var first = repo.cards.filter(function (c) { return c.column === 'blocked'; })[0];
+    if (first) state.commentOpen = keyOf(repo, first);
+  });
+  // The mockup shows one sample sent state and one sample error state. Both are inert.
+  var samples = { sent: null, error: null };
+  data.repos.forEach(function (repo) {
+    repo.cards.forEach(function (card) {
+      if (keyOf(repo, card) === state.commentOpen) return;
+      if (card.column === 'blocked' && samples.sent === null) samples.sent = card;
+      if (card.column === 'waiting' && samples.error === null) samples.error = card;
+    });
   });
 
   function lineLabel(card) {
@@ -269,20 +279,46 @@ button { font: inherit; color: inherit; }
     if (!a) return false;
     return a.notArchivedCards.indexOf(repo.cards.indexOf(card)) >= 0;
   }
-  function commentBox(card) {
-    var id = 'comment-' + (++uid);
+  function stateLine(text, tone) {
+    return el('span', { class: 'comment-state', 'data-tone': tone }, [text]);
+  }
+  function commentControl(card, repo) {
+    var key = keyOf(repo, card);
     var sample = samples.sent === card ? 'sent' : samples.error === card ? 'error' : 'none';
-    var value = sample === 'error' ? SAMPLE_TEXT : '';
-    var input = el('textarea', { class: 'comment-input', id: id, rows: '2', placeholder: 'Write a comment for the PM' }, [value]);
-    var send = el('button', { type: 'button', class: 'btn comment-send', disabled: sample === 'none' ? 'disabled' : null, title: 'Static mockup: this button sends nothing' }, ['Send']);
-    var foot = [send];
-    if (sample === 'sent') foot.push(el('span', { class: 'comment-state', 'data-tone': 'sent' }, ['sent 05:50']));
-    if (sample === 'error') foot.push(el('span', { class: 'comment-state', 'data-tone': 'error' }, [SAMPLE_ERROR]));
-    return el('div', { class: 'comment' }, [
-      el('label', { class: 'comment-label', for: id }, ['Comment to PM']),
-      input,
-      el('div', { class: 'comment-foot' }, foot)
-    ]);
+    var isOpen = state.commentOpen === key;
+    var bar = [el('button', {
+      type: 'button',
+      class: 'btn comment-open',
+      'data-action': 'open-comment',
+      'data-key': key,
+      'aria-expanded': isOpen ? 'true' : 'false',
+      title: 'Write one comment for the PM about this card'
+    }, ['Comment'])];
+    if (sample === 'sent') bar.push(stateLine('sent 05:50', 'sent'));
+    if (sample === 'error') bar.push(stateLine(SAMPLE_ERROR, 'error'));
+    var kids = [el('div', { class: 'comment-bar' }, bar)];
+    if (isOpen) {
+      var id = 'comment-' + (++uid);
+      var input = el('textarea', { class: 'comment-input', id: id, rows: '2', 'data-key': key, placeholder: 'Write a comment for the PM' }, ['']);
+      var send = el('button', {
+        type: 'button',
+        class: 'btn comment-send',
+        disabled: 'disabled',
+        'data-action': 'send-comment',
+        'data-key': key,
+        title: 'Static mockup: this button sends nothing and closes the box'
+      }, ['Send']);
+      input.addEventListener('input', function () {
+        if (input.value.trim() === '') send.setAttribute('disabled', 'disabled');
+        else send.removeAttribute('disabled');
+      });
+      kids.push(el('div', { class: 'comment-panel' }, [
+        el('label', { class: 'comment-label', for: id }, ['Comment to PM']),
+        input,
+        el('div', { class: 'comment-foot' }, [send])
+      ]));
+    }
+    return el('div', { class: 'comment' }, kids);
   }
   function renderCard(card, repo) {
     var tone = card.column === 'blocked' || card.column === 'waiting' ? card.column : 'none';
@@ -297,7 +333,7 @@ button { font: inherit; color: inherit; }
       if (card.line) {
         kids.push(el('div', { class: 'card-line' }, [el('span', { class: 'line-label' }, [lineLabel(card)]), card.line]));
       }
-      if (card.column === 'blocked' || card.column === 'waiting') kids.push(commentBox(card));
+      if (card.column === 'blocked' || card.column === 'waiting') kids.push(commentControl(card, repo));
     }
     if (!card.registered) kids.push(el('div', { class: 'card-flag' }, ['Not in the registry']));
     if (card.column === 'done' && repo && isNotArchived(repo, card)) kids.push(el('div', { class: 'card-warn' }, ['Not archived']));
@@ -417,6 +453,21 @@ button { font: inherit; color: inherit; }
     var action = button.getAttribute('data-action');
     var repo = button.getAttribute('data-repo');
     var column = button.getAttribute('data-column');
+    if (action === 'open-comment') {
+      var pressKey = button.getAttribute('data-key');
+      var next = state.commentOpen === pressKey ? null : pressKey;
+      state.commentOpen = next;
+      render(next === null
+        ? 'button[data-action="open-comment"][data-key="' + pressKey.replace(/["\\]/g, '') + '"]'
+        : 'textarea[data-key="' + pressKey.replace(/["\\]/g, '') + '"]');
+      return;
+    }
+    if (action === 'send-comment') {
+      var sendKey = button.getAttribute('data-key');
+      state.commentOpen = null;
+      render('button[data-action="open-comment"][data-key="' + sendKey.replace(/["\\]/g, '') + '"]');
+      return;
+    }
     if (action === 'toggle-section') state.open[repo] = !state.open[repo];
     else if (action === 'toggle-done') state.doneOpen[repo] = !state.doneOpen[repo];
     else if (action === 'toggle-done-group') state.doneGroupOpen[repo] = state.doneGroupOpen[repo] !== true;
@@ -425,6 +476,12 @@ button { font: inherit; color: inherit; }
     render(action === 'show-more' || action === 'refresh' ? null : selectorOf(button));
   }
   document.querySelector('button[data-action="refresh"]').addEventListener('click', onAction);
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape' || state.commentOpen === null) return;
+    var escapeKey = state.commentOpen;
+    state.commentOpen = null;
+    render('button[data-action="open-comment"][data-key="' + escapeKey.replace(/["\\]/g, '') + '"]');
+  });
 
   render(null);
   if (query.get('debug') === '1') {
