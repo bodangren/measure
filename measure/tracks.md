@@ -467,3 +467,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Role spawn routes**
   *Link: [./archive/role_spawn_route_20261117/](./archive/role_spawn_route_20261117/)*
   *Role spawn routes: the OpenCode measure-guard plugin blocks a Measure role spawn whose model is not an approved route of that role in ~/.config/ra-quota/routes.json. The guard maps each agent to a ra-quota role, and an unknown role, no model, or an unreadable routes file gives a warning (PM order, 2026-11-17)*
+
+- [x] **Track: Report-only follow-up**
+  *Link: [./archive/report_only_follow_up_20261117/](./archive/report_only_follow_up_20261117/)*
+  *Report-only follow-up: the measure-guard end-of-turn follow-up and reminder report the open problems instead of ordering a fix. The shared core holds the report-only text, and the OpenCode plugin, the Claude Code mod, and the DSH adapter use it. The text never asks the agent to edit, commit, or push (PM order, 2026-11-17)*
