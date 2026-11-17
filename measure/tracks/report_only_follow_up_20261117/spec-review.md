@@ -38,9 +38,14 @@ Per the spec, the guard sends a text at the end of a turn: a strict-mode follow-
 - F7: FIX
 - F8: FIX
 
+### Seam Decision
+
+Date: 2026-11-17
+A source pin is too weak. The F1 case drives the exported `watchIdle` with a fake context. The named export changes no runtime behavior.
+
 ### Applied Changes
 
-- F1: section 3 drops the synthetic call from the turn-end watch. The reminder stays in the session state. The Tests section adds the case that no prompt and no synthetic message go out. The README bullet at line 111 and the live-check paragraph at line 116 change.
+- F1: section 3 drops the synthetic call from the turn-end watch. The reminder stays in the session state. The Tests section drives the exported `watchIdle` with a fake context and checks that no synthetic message and no prompt go out. The README bullet at line 111 and the live-check paragraph at line 116 change.
 - F2: every regex has the `i` flag. The test inputs are the real `turnProblems()` output for both problem kinds. A test constant holds the literal REPORT_ONLY sentence and asserts equality with the export.
 - F3: `FOLLOW_UP_HEAD` and the core stop block head both read `measure-guard (strict): report these problems before you end the turn.` Section 6 records that strict mode can ask for the report up to `MAX_BLOCKS` times.
 - F4: FR-6 and Task 1.2 use the date of the archive commit. The spec holds no fixed date.

@@ -182,6 +182,8 @@ In `plugins/opencode-measure-guard/src/index.ts`:
 - The `remind` branch of the turn-end watch is removed. The plugin sends no synthetic message at the turn end.
 - The line that clears `guard.session(sessionID).reminder` is removed. The reminder stays in the session state.
 - The watch keeps the follow-up branch. It sends `ctx.session.prompt` with the report-only text.
+- `watchIdle` becomes a named export. The host still loads the default export only. The named export changes no runtime behavior.
+- The comment at line 12 becomes `// The host accepts the default export only. The named export of watchIdle serves the tests.`
 
 The turn-end watch becomes:
 
@@ -261,12 +263,21 @@ Each package asserts that its follow-up prompt, stop block, or reminder text:
 - contains `REPORT_ONLY`;
 - contains none of these words as an order: `/\bfix (these|them)\b/i`, `/\bcommit the\b/i`, `/\bpush\b(?! because)/i`, `/\brevert the\b/i`, `/\bmark the task\b/i`.
 
-The OpenCode package adds one case for the turn end of a guard-mode turn with problems:
+The OpenCode package adds one case for the turn end of a guard-mode turn with problems. The file is `plugins/opencode-measure-guard/tests/end-of-turn.test.ts`.
 
-- the turn end sends no prompt and no synthetic message;
-- the next user prompt carries the report-only reminder.
+The case drives the exported `watchIdle` with a fake context:
 
-The case reads `src/index.ts` and asserts that the file holds no `measure-guard reminder` string. That string names the turn-end synthetic call only.
+- `ctx.event.subscribe()` yields one event of type `session.execution.succeeded` with the session id of the test.
+- `ctx.session.synthetic` and `ctx.session.prompt` are spies that count their calls.
+- The guard is the real `makeGuard(root, 'guard')` of the temp project. A prompt starts the turn and a stray file gives real problems.
+
+The case asserts:
+
+- both spies have zero calls;
+- `guard.session('ses_1').reminder` holds the report-only text;
+- the next `onPrompt` carries that reminder in the prompt text.
+
+The case reads `watchIdle` with a dynamic import in the case body: `const { watchIdle } = await import('../src/index')`. A failed load fails that case only. The fake context uses the type `Parameters<typeof watchIdle>[0]` and one cast.
 
 The OpenCode package adds one case that the core stop block starts with `FOLLOW_UP_HEAD`. The two heads stay equal.
 
