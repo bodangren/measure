@@ -341,7 +341,7 @@ The card data has these fields: `repo`, `title`, `trackId`, `column`, `position`
 
 A card in Blocked or Waiting on Daniel shows the label `BLOCKER` for a blocker line, and `GATE` or `MANUAL CHECK` for a gate line (FR-15, C1).
 
-Daniel look amendment (FR-16, D1): a card in Blocked or in Waiting on Daniel shows a "Comment to PM" box. It shows a Send button below the card line. No other card shows them.
+Daniel look amendment (FR-16, D1): a card in Blocked or in Waiting on Daniel shows one small "Comment" button. A click opens the "Comment to PM" box and the Send button on that card. No other card shows them.
 
 A Blocked card has a 3 px left border in the colour of `--oc-error`. A Waiting on Daniel card has a 3 px left border in the colour of `--oc-warning`. A card has no click action in v1. The text can be selected.
 
@@ -568,7 +568,7 @@ export const renderPage: (view: PageView) => string                       // sho
 export const BOARD_CSS: string
 ```
 
-The page marks each button with `data-action`: `refresh`, `toggle-section`, `toggle-done`, `toggle-stale`, `toggle-done-group`, `show-more`, or `send-comment`. It adds `data-repo` and `data-column` where the action needs them. The files `panel/main.ts` and `preview/preview.ts` export nothing.
+The page marks each button with `data-action`: `refresh`, `toggle-section`, `toggle-done`, `toggle-stale`, `toggle-done-group`, `show-more`, `open-comment`, or `send-comment`. It adds `data-repo` and `data-column` where the action needs them. The files `panel/main.ts` and `preview/preview.ts` export nothing.
 
 ### FR-14. Records
 
@@ -599,7 +599,8 @@ Daniel looked at the mockup of Phase 1 and ordered two changes. His words are in
 
 #### D1. Comment to PM
 
-- D1, scope. Each Blocked card and each Waiting on Daniel card shows a "Comment to PM" box and a Send button. No other card shows the box.
+- D1, scope. Only a Blocked card and a Waiting on Daniel card show the comment control. No other card shows it.
+- D1, box. A closed card shows one small "Comment" button. A click opens the box on that card only, and any other open box closes. The Escape key or a finished Send closes the box. After a send the card shows one line `sent HH:MM` or the error text. The line stays visible while the box is closed.
 - D1, target. The Send button sends one message to the PM session. The session id is the constant `PM_SESSION_ID` of `src/pm-target.ts`. No other module holds it. The code sends only to that session id. The SDK grant names no session, so the constant is the only limit (R6).
 - D1, message. The text of the message comes from the pure function `formatComment`. Its input is `{ repo, trackId, taskLine, blockerLine, text }`. Its output has this layout:
 
@@ -666,7 +667,7 @@ The tests run with `cd extensions/measure-status && bunx tsc -p . --noEmit && bu
   - the `stat` result of kind `missing`, the code `NOT_GRANTED`, and `shouldReload`.
 - `render.test.ts`: counts, badges, and escaping (also of a folder name). The file also covers the closed Done column, `aria-expanded`, the `Show N more` button, the line "Not in the registry", and the notes. It checks that `src/styles.ts` and `src/render.ts` hold no colour literal and no remote URL. It also covers the closed Done group, the count line, and the not archived badge of FR-16, D2.
 - `comment.test.ts`: the layout of the message of FR-16, D1. A line with no value stays out. A text of only white space gives no send. A text of 2000 characters is accepted. A text of 2001 characters is refused. A card value stays plain text.
-- `send.test.ts`: one send per click, the disabled Send button while a send runs, the state "sent HH:MM", and the error text of a failure. The test uses a fake host. It never calls OpenChamber.
+- `send.test.ts`: one send per click, the disabled Send button while a send runs, the state "sent HH:MM", and the error text of a failure. It covers a closed card with one `Comment` button, one open box at a time, the Escape key and the finished Send that close the box, and the state line that stays visible while the box is closed. The test uses a fake host. It never calls OpenChamber.
 - `band.test.ts`: the tests of `bandLine` and `loadSnapshot` stay and pass. The tests of the removed view-model code leave with it.
 - `source.test.ts`: NFR-3. It also reads `service/main.ts`.
 
