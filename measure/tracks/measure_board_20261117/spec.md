@@ -258,6 +258,7 @@ Notes on the rules:
 - A card with no current task has a note in the position slot (FR-5). The note is `No plan.` or `Plan unreadable` for R2. It is `All tasks closed.` when no task is open. It is `Open tasks before the last closed task: N.` when `N` tasks are open.
 - A gate task is the only text signal of a human gate. The words "Daniel", "owner", and "approved" in a task line are not signals. In the sample of R4, 13 of 191 current tasks hold one of these words. Several of those tasks are not gates, for example an implementation task that says "owner-approved".
 - A User Manual Verification task that is skipped shows no gate. The track went on past that task.
+- PM look amendment (FR-15, C1): rule R3a applies only when the Updated age of the card is 14 days or less. With an older or unknown age, rule R3a does not apply.
 - An owner token that is not a Daniel token, for example `track-owner`, `pm`, or the name of a later track, gives Blocked. A gate that waits on another person therefore shows as Blocked. This is intended: the column Waiting on Daniel holds the gates of Daniel only.
 - The text of a `[b]` task includes its `deferred:<token>` field. The reader sees who owns the gate.
 
@@ -307,6 +308,8 @@ A card shows these items in this order. All text comes from the files and is esc
 
 The card data has these fields: `repo`, `title`, `column`, `position`, `marker`, `taskText`, `note`, `line`, `registered`, `lastChange`, `doneDate`, and `doneSource`. The field `position` is an object with `phase`, `phases`, `task`, and `tasks`, or null. The fields `marker` and `taskText` are null when the card has no current task. The field `note` holds the note of FR-4 when `position` is null, and it is null for a Done card. The field `registered` is false when no registry entry names the card. The field `lastChange` is a time in milliseconds, or null. The model, the mockup fixtures, and the preview fixtures all use these fields. A fixture file has the form `{ "capturedAt": <ms>, "repos": [{ "repo": "<id>", "cards": [<card>] }] }`.
 
+A card in Blocked or Waiting on Daniel shows the label `BLOCKER` for a blocker line, and `GATE` or `MANUAL CHECK` for a gate line (FR-15, C1).
+
 A Blocked card has a 3 px left border in the colour of `--oc-error`. A Waiting on Daniel card has a 3 px left border in the colour of `--oc-warning`. A card has no click action in v1. The text can be selected.
 
 The track title wraps up to 3 lines. A longer title ends in `…`, and the full title goes to the `title` attribute.
@@ -324,6 +327,7 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
 - The header is one `button` with `aria-expanded`. It shows the repo id and one count for each of the five columns, with the column names. The counts stay visible when the section is closed.
 - A red badge shows the Blocked count when it is 1 or more. A badge in the warning tone shows the Waiting on Daniel count when it is 1 or more.
 - A section is closed until its first load ends. Then it opens when its Blocked count or its Waiting on Daniel count is 1 or more. Other sections stay closed.
+- PM look amendment (FR-15, C3): below 640 px, only the first section that qualifies starts open.
 - The page keeps the open or closed state that the user sets, and the user's choice always wins. A reload does not reset it. The state lives in memory only.
 - A section that is still loading shows `Loading` in its header. A section that failed shows the error line of FR-10.
 - The header is at least 40 px high.
@@ -333,6 +337,7 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
 - The columns follow this order at every width: Planned, In progress, Blocked, Waiting on Daniel, Done.
 - A column header shows the column name and the count of all cards of the column.
 - A column with no card shows `None`.
+- PM look amendment (FR-15, C2): a Planned or In progress card with an Updated age of more than 30 days goes to a closed `Stale (N)` group at the end of its column.
 - A column other than Done shows at most 8 cards, then a button `Show N more`, where `N` is the number of hidden cards. The button opens the full list. The state is kept in memory like FR-7.
 - Cards sort by last change, newest first. Cards with an unknown last change come last, in card order. Equal times keep card order.
 - The Done column is closed at the first paint. It shows its count only. An open Done column shows the 5 most recent Done cards. Done cards sort by done date, newest first. Cards with no date come last, in card order. The count of the header is the count of all Done tracks.
@@ -519,6 +524,19 @@ The page marks each button with `data-action`: `refresh`, `toggle-section`, `tog
 - The Add a repo section says that a new repo needs one roster line, one manifest glob, and a new approval.
 - The CHANGELOG entry goes first in the list under the first `### Features` heading of `## Unreleased`. Its text is: `* **measure board:** the measure-status extension shows one accordion section for each of eight Reading Advantage repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The columns are Planned, In progress, Blocked, Waiting on Daniel, and Done. A card shows the track name, the current phase and task, the age of the last file change, and a blocker or gate line. The extension reads files only, through eight contributes.filesystem globs, and runs no service. The status band does not change.`
 - The first sentence of `README.md` line 33 becomes: `As of <closeout date>, the latest archived track is Measure board (the measure-status extension shows a read-only Kanban board of the Measure tracks of eight Reading Advantage repos).` The rest of the line stays.
+
+### FR-15. PM look amendment 2026-11-17 (C1-C4)
+
+The PM looked at the mockup of Phase 1 and ordered four changes. The PM words are in `measure/runs/measure_board_20261117/look-gate.md`. This amendment changes FR-4, FR-5, FR-7, and FR-8 as follows.
+
+- Age source. The age in C1 and C2 is the Updated age of the card (FR-6). It comes from the file time of `plan.md` and `metadata.json`. It is not a commit time. The PM words "commit" in C1 and C2 mean this age, as the spec already says for the age on the card. The age is `now` minus `lastChange`. The mockup uses the capture time as `now`. The page uses the time of the full load. An unknown age never satisfies a rule that needs a known age.
+- C1, gate rule. A gate task gives Waiting on Daniel only when it is the current task and the Updated age is 14 days or less. Otherwise rule R3a does not apply. The track then takes the column that the other rules give. The rule R4a for a closed `[b]` task with a Daniel token does not change.
+- C1, labels. A Waiting on Daniel card shows the label `MANUAL CHECK` when the text of its line holds `User Manual Verification`. It shows the label `GATE` in all other cases. A Blocked card shows the label `BLOCKER`. A card shows its label before the card line.
+- C2, stale group. A card in Planned or In progress with an Updated age of more than 30 days is stale. Each column holds at most one `Stale (N)` group, at its end, where `N` is the number of stale cards of that column. The group is closed by default and opens on click. A column with no stale card shows no group. The cards of an open group sort as the other cards of the column. Blocked, Waiting on Daniel, and Done cards are never stale.
+- C2, counts and cap. The header count of the column and the count of the section header include the stale cards. The cap of 8 cards and the button `Show N more` apply to the cards that are not stale. The group holds its own button `data-action="toggle-stale"` with `aria-expanded`.
+- C3, first open at a narrow width. When the page width is under 640 px, only the first section in roster order that has a Blocked or Waiting on Daniel card starts open. Every other section starts closed. At 640 px and wider, the rule of FR-7 stays. The open or closed choice of the user and the query key `open` of the mockup still win.
+- Code contract. `TrackInput` gets a field `now` (milliseconds). `classifyTrack` and `columnView` use it for the C1 and C2 rules. `ColumnView` gets the fields `stale` (the stale cards) and `staleOpen`. `UiState` gets `staleOpen` with the key `<repo id>/<column>`. Task 2.1 sets the exact signatures.
+- C4. The default answers to the design choices 1, 2, and 4 of `look-notes.md` stand. The answer to choice 3 is changed by C3 for widths under 640 px only.
 
 ## Non-Functional Requirements
 
