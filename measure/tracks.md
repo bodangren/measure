@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Superseded closeout**
+  *Link: [./tracks/superseded_close_20261117/](./tracks/superseded_close_20261117/)*
+  *Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a "Superseded by <target>" line and metadata.json status "superseded". The shared core gains supersededTarget, the three adapters fill the metadata text of each closing track, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)*
 
 ---
 
