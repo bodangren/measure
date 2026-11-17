@@ -61,6 +61,7 @@ const metadataProblem = async (deps, tracksPath, closing) => {
       deny: `measure-guard: ${path} is not valid JSON, so the track "${entry.name}" cannot be closed. Fix metadata.json first. If this block is wrong, the user can run /measure-off.`,
     }
   }
+  if (typeof closing.supersededBy === 'string' && closing.supersededBy !== '') return null
   const actual = metadata !== null && typeof metadata === 'object' ? metadata.actual_tasks : undefined
   if (actual !== completed) {
     return {
