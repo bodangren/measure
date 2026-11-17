@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Measure board**
+  *Link: [./tracks/measure_board_20261117/](./tracks/measure_board_20261117/)*
+  *Measure board: the measure-status extension shows one accordion section for each Reading Advantage repo, and each section holds a read-only Kanban board of its Measure tracks, with the columns Planned, In progress, Blocked, Waiting on Daniel, and Done (PM assignment A-67, Daniel 2026-11-17)*
 
 ---
 
