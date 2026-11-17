@@ -198,11 +198,11 @@ The SDK of 2.7.1 has no extension call that sends a message to a session by id. 
 | 7 | The grant of `sessionControl` records only the content flag. It names no session and no directory. | `server/lib/guests/grant-scope.js:102,188-189` |
 | 8 | The service runs as a local process. It needs a built `service/main.js`. It starts on the first `serviceRequest`. | `API.md:668`, `GUEST_SERVICES.md:157,170` |
 | 9 | The panel holds no service token. Only the service calls OpenChamber. | `GUEST_SERVICES.md:126,190` |
-| 10 | The approval dialog shows the row "Run a local service". It shows the row "Start sessions and send messages". | `dist/assets/katex.min-2cmqKX7p.js` (the keys `settings.extensions.capability.service` and `settings.extensions.capability.sessionControl`) |
+| 10 | The approval dialog shows the row "Run a local service". It shows the row "Start sessions and send messages". | the `@openchamber/web` 2.7.1 settings bundle, keys `settings.extensions.capability.service` and `settings.extensions.capability.sessionControl` |
 | 11 | A refused call gives the code `NOT_GRANTED` and the status 403. The rate limit gives `TOO_MANY_PROMPTS` and the status 429. A service sends at most 60 prompts an hour. | `server/lib/guests/service-host-api.js:78-80,112`, `GUEST_SERVICES.md:208` |
 | 12 | The service host throws `ServiceHostError` with a code, a message, and a status. | `dist/service-host.js:99-106,134` |
 | 13 | The panel call `serviceRequest` fails with `NO_SERVICE`, `SERVICE_FAILED`, or `REQUEST_FAILED`. | `GUEST_SERVICES.md:110-117` |
-| 14 | The `prompt` capability sends on the current session. Its dialog row reads "Send messages in your sessions". | `DOCUMENTATION.md:85`, `dist/assets/katex.min-2cmqKX7p.js` (the key `settings.extensions.capability.prompt`) |
+| 14 | The `prompt` capability sends on the current session. Its dialog row reads "Send messages in your sessions". | `DOCUMENTATION.md:85`, the `@openchamber/web` 2.7.1 settings bundle, key `settings.extensions.capability.prompt` |
 
 Choice: the extension sends through the service. The panel calls `serviceRequest`. The service calls `sessions.send` with the constant session id of `src/pm-target.ts`. The SDK grant names no session, so the constant is the only limit on the target session.
 
@@ -455,7 +455,6 @@ export const measureFile: (repo: RosterRepo, relative: string) => string   // `<
 
 // src/pm-target.ts
 export const PM_SESSION_ID: string                                         // the session id of the PM session
-export const PM_DIRECTORY: string                                         // the directory of the PM session
 
 // src/registry.ts
 export type DoneSource = 'registry' | 'folder'
@@ -601,7 +600,7 @@ Daniel looked at the mockup of Phase 1 and ordered two changes. His words are in
 #### D1. Comment to PM
 
 - D1, scope. Each Blocked card and each Waiting on Daniel card shows a "Comment to PM" box and a Send button. No other card shows the box.
-- D1, target. The Send button sends one message to the PM session. The session id and the directory are the constants `PM_SESSION_ID` and `PM_DIRECTORY` of `src/pm-target.ts`. No other module holds them. The code sends only to that session id. The SDK grant names no session, so the constant is the only limit (R6).
+- D1, target. The Send button sends one message to the PM session. The session id is the constant `PM_SESSION_ID` of `src/pm-target.ts`. No other module holds it. The code sends only to that session id. The SDK grant names no session, so the constant is the only limit (R6).
 - D1, message. The text of the message comes from the pure function `formatComment`. Its input is `{ repo, trackId, taskLine, blockerLine, text }`. Its output has this layout:
 
   ```
