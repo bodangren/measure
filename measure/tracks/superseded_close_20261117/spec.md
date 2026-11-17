@@ -181,7 +181,7 @@ Task 1.2 writes these texts word for word.
 CHANGELOG entry, first of the list under the first `### Features` heading of `## Unreleased`:
 
 ```
-* **superseded closeout:** measure-guard now accepts a registry `[x]` for a track with open task boxes. The plan must carry a `Superseded by <target>` line, and `metadata.json` must have status `superseded`. The shared core gains `supersededTarget`. `ClosingTrack` gains `supersededBy`, and the OpenCode plugin, the Claude Code mod, and the DSH adapter fill it. A second closing track with open tasks is still denied. The DSH metadata check also skips its `actual_tasks` count for a superseded track. Cause: seven archived tracks in ra-math-advantage closed as superseded with open tasks. Track `superseded_close_20261117`.
+* **superseded closeout:** measure-guard now accepts a registry `[x]` for a track with open task boxes. The plan must carry a `Superseded by <target>` line, and `metadata.json` must have status `superseded`. The shared core gains `supersededTarget`. `ClosingTrack` gains `supersededBy`, and the OpenCode plugin, the Claude Code mod, and the DSH adapter fill it. A second closing track with open tasks is still denied. The DSH metadata check also skips its `actual_tasks` count for a superseded track. Cause: six archived tracks in ra-math-advantage closed as superseded with open tasks. Track `superseded_close_20261117`.
 ```
 
 Sentence for the Closeout guard bullet of `plugins/opencode-measure-guard/README.md` line 71:

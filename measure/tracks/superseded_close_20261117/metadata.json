@@ -4,7 +4,7 @@
   "status": "new",
   "created_at": "2026-11-17T00:00:00Z",
   "updated_at": "2026-11-17T00:00:00Z",
-  "description": "Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a \"Superseded by <target>\" line and metadata.json status \"superseded\". The shared core gains supersededTarget, the three adapters fill the metadata text of each closing track, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)",
+  "description": "Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a \"Superseded by <target>\" line and metadata.json status \"superseded\". The shared core gains supersededTarget, the three adapters set supersededBy from the plan text and metadata.json, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)",
   "estimated_tasks": 3,
   "actual_tasks": null,
   "lane": "light",
