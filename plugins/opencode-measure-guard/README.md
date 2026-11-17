@@ -108,12 +108,12 @@ The `prompt` hook records the turn start: the `git status --porcelain` lines and
 What happens then depends on the mode:
 
 - **advise**: nothing more.
-- **guard**: a synthetic message with the problems goes into the session (`ctx.session.synthetic` with `resume: false`, so the agent does not start a new loop on it); OpenCode delivers it with the next user prompt. When the synthetic call fails, the same reminder rides on the next prompt text instead.
-- **strict**: a follow-up prompt with the problems (`ctx.session.prompt`) keeps the agent working, at most `MAX_BLOCKS` (2) times per user turn; then the reminder as in guard mode.
+- **guard**: no message goes into the session at the turn end. The reminder stays in the session state and rides on the next user prompt. A synthetic message would start a new turn in a finished session.
+- **strict**: a follow-up prompt with the problems (`ctx.session.prompt`) asks the agent to report them, at most `MAX_BLOCKS` (2) times per user turn; then the reminder as in guard mode.
 
 The difference to the Claude Code mod: the mod blocks the Stop hook and holds the turn open; OpenCode has no hook that keeps a turn open, so strict mode sends a new prompt instead. Each follow-up ends in a new turn-end event, which counts on the same turn until a user prompt starts the next one. The bypass skips the check. Every plugin instance (one per project directory) sees every event; the check does nothing for a session whose prompt hook did not run in that instance.
 
-Live check (Task 6.3, and strict after the track close): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself. In strict mode the same change gave two follow-up prompts, each answered by the agent, then the reminder; the plugin's own follow-up prompt does not restart the turn.
+Live check (Task 6.3, and strict after the track close): a file created during a turn in guard mode gave the synthetic message `measure-guard: at the end of the last turn, these problems were open: - Files changed outside measure/ while no task is in progress: stray.txt. ...` and the state file listed the same problem. Without `resume: false` the agent resumed on the message and removed the file by itself. In strict mode the same change gave two follow-up prompts, each answered by the agent, then the reminder; the plugin's own follow-up prompt does not restart the turn. After 2026-11-17 the guard mode sends no synthetic message, because the synthetic message started a turn in a finished session after a compaction.
 
 ## Commands
 

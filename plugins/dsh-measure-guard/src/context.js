@@ -3,7 +3,7 @@
 // compaction re-note. Every function takes its dependencies, so the module runs
 // without the DSH runtime. The end-of-turn computation itself is a Phase 3 seam.
 import { noteKey, ruleSection, taskNote } from './core/parse.ts'
-import { MAX_BLOCKS, unshaTasks } from './core/guards.ts'
+import { MAX_BLOCKS, reportText, unshaTasks } from './core/guards.ts'
 import { newUserMessage } from './state.js'
 import { secondWriterText } from './roots.js'
 
@@ -29,11 +29,7 @@ const noticeMessage = (text, summary) =>
 
 /** The reminder text for the problems of the last end-of-turn check. */
 export const reminderText = problems =>
-  [
-    'measure-guard: at the end of the last turn, these problems were open:',
-    ...problems.map(problem => `- ${problem}`),
-    'Fix them before you continue.',
-  ].join('\n')
+  reportText('measure-guard: at the end of the last turn, these problems were open:', problems)
 
 /** Captures the turn baseline once: the status lines and the `[x]` tasks without SHA. */
 const ensureTurn = async (agentId, turn, root, snapshot, deps) => {

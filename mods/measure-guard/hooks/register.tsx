@@ -33,6 +33,7 @@ import {
   pathsOfStatus,
   phaseStartNote,
   redFor,
+  reportText,
   setupBandText,
   statusLinesOf,
   shellWritePaths,
@@ -350,7 +351,7 @@ export const register: Register = (on, options) => {
       $.ui.toast(`measure-guard: ${problems[0] ?? ''}`, { timeoutMs: 8000 })
       await $.state.set(
         REMINDER,
-        ['measure-guard: at the end of the last turn, these problems were open:', ...problems.map(one => `- ${one}`), 'Fix them before you continue.'].join('\n'),
+        reportText('measure-guard: at the end of the last turn, these problems were open:', problems),
       )
     }
     return result

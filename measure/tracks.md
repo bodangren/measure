@@ -471,3 +471,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Superseded closeout**
   *Link: [./archive/superseded_close_20261117/](./archive/superseded_close_20261117/)*
   *Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a "Superseded by <target>" line and metadata.json status "superseded". The shared core gains supersededTarget, the three adapters set supersededBy from the plan text and metadata.json, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)*
+
+- [x] **Track: Report-only follow-up**
+  *Link: [./archive/report_only_follow_up_20261117/](./archive/report_only_follow_up_20261117/)*
+  *Report-only follow-up: the measure-guard end-of-turn follow-up and reminder report the open problems instead of ordering a fix. The shared core holds the report-only text, and the OpenCode plugin, the Claude Code mod, and the DSH adapter use it. The text never asks the agent to edit, commit, or push (PM order, 2026-11-17)*
