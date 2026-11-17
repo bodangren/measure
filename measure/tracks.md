@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Report-only follow-up**
-  *Link: [./tracks/report_only_follow_up_20261117/](./tracks/report_only_follow_up_20261117/)*
-  *Report-only follow-up: the measure-guard end-of-turn follow-up and reminder report the open problems instead of ordering a fix. The shared core holds the report-only text, and the OpenCode plugin, the Claude Code mod, and the DSH adapter use it. The text never asks the agent to edit, commit, or push (PM order, 2026-11-17)*
+- (none)
 
 ---
 
