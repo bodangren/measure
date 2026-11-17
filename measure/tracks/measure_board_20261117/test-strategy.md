@@ -1,7 +1,7 @@
 # Test Strategy: Measure board
 
 Track: `measure_board_20261117`. Spec: [spec.md](./spec.md). Plan: [plan.md](./plan.md).
-Written at `role_base_sha` `8c2b555` (branch `chore/measure-board`). This revision covers Phase 1 only. Task 2.1 of the plan adds Phases 2 and 3.
+Written at `role_base_sha` `8c2b555` (branch `chore/measure-board`). This revision covers Phase 1 (sections 1 to 11 and Appendix A) and Phases 2 and 3 (sections 12 to 14, added by Task 2.1 at `role_base_sha` `4219a4f`). Section 14 names the only valid `phase_base_sha` capture point. No section embeds it.
 
 The rules at the top of `plan.md` stay binding. The spec passed review, so this strategy does not reopen a design decision. It adds gates, controls, risk, review applicability, and anti-pattern defenses.
 
@@ -273,7 +273,7 @@ for f in $(ls $PRIV/shots-mockup/*.png $RUN/shots-mockup/*.png); do rg -qF "$(ba
 test -s $RUN/theme-tokens.json && jq -e '(.light|type=="object") and (.dark|type=="object")' $RUN/theme-tokens.json
 awk '/^- \[.\] Task 1\.5: GATE/ { print "task15_marker=[" substr($0,4,1) "]" }' measure/tracks/measure_board_20261117/plan.md
 rg -n '^- \[[~xb]\] Task 2\.' measure/tracks/measure_board_20261117/plan.md ; test $? -eq 1
-test ! -e $RUN/look-gate.md
+awk '/^PM [0-9-]+: /{n++} END { print "look_gate_lines=" n+0 }' $RUN/look-gate.md
 ```
 
 Expected results:
@@ -283,7 +283,7 @@ Expected results:
 - No line says `not listed`.
 - `theme-tokens.json` is valid when the line says `Theme values: measured`.
 - The output shows `task15_marker=[ ]` or `task15_marker=[~]`.
-- No Phase 2 task started, and the build role wrote no `look-gate.md`.
+- No Phase 2 task started. `look-gate.md` holds the PM lines (C1-C4, then D2 ACCEPT with the D1 comment-button CHANGE) and the Daniel line (layout ACCEPT with D1-D2). The pre-verdict rule `test ! -e $RUN/look-gate.md` applied only before the first verdict. It no longer applies.
 
 After the verdicts, the orchestrator reads `look-gate.md` itself:
 
@@ -381,6 +381,161 @@ The strategy role ran the commands of section 4 on synthetic pages and fixtures 
 - **Task 1.5 text:** the word `deferred` in the plan line hides the open gate from the interphase script. Before Phase 2 Red starts, the orchestrator checks `look_gate=accepted` and the marker of Task 1.5 itself.
 - **History leak:** Task 4.5 reads `HEAD` and the merge base only. A private text that enters a commit stays in the pushed history. G4 guards every commit of Phase 1. Task 2.1 must keep the same rule for the fixtures of the Red tests (plan Tasks 2.2 and 2.6).
 - **Addition to Task 1.4:** the plan names no `open` key in the commands of Task 1.4. G8 adds `&open=advantage-forge` to the `-done` set. This adds no file and no task. The orchestrator may refuse it.
+
+## 12. Phase 2: Data model (P2)
+
+Risk class: **medium**. The phase adds the file-reading model and the comment text. It adds no UI and no send. A wrong column rule misleads Daniel. A leaked real title in a committed fixture stays in history.
+
+### 12.1 Red scope
+
+Targeted Red command of Phase 2: `cd extensions/measure-status && bunx vitest run`. Every Red task runs it. Every Red log keeps the failing output.
+
+- Task 2.2 pins FR-1 to FR-4, FR-6, FR-8, and FR-10. It pins each row of the R1 to R4 table. It pins the C1 age rule: R3a applies only when the Updated age is 14 days or less. It pins the labels `MANUAL CHECK`, `GATE`, and `BLOCKER`. It pins the C2 stale group: Planned and In progress cards older than 30 days sit in a closed `Stale (N)` group. It pins the skipped-task shape, the gate-token set, and the two real-plan shapes of the Test section. It pins `formatAge` bounds, `latestChange` with missing and failed `stat`, and the loader call budget.
+- Task 2.3a pins FR-16, D2 and `formatComment`. It pins the closed date (last change, not a commit). It pins the 14-day window and the 5-card group. It pins the count line `N more done, M archived`. It pins the label `Not archived` and the header count. It pins the two `stat` calls of a Done track with no read call. It pins the message layout, the dropped empty line, white-space-only refusal, 2000 accepted, 2001 refused, and plain-text card values.
+
+### 12.2 Green gate
+
+- `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run` exits 0.
+- The real-run script prints `ok` for all eight repos. Counts add up. The log prints no title and no task text.
+- Every Red log names the missing module. No Red log is skipped.
+
+### 12.3 Closeout gate
+
+- Phase acceptance (Task 2.7) runs at an immutable HEAD. It reruns the test command and the real-run script. It checks FR-1 to FR-4, FR-6, FR-8, FR-10, and FR-16, D2. It records the audited HEAD in the plan.
+- Task 1.6 (the D1 look) blocks Phase 3. It never blocks Phase 2.
+
+### 12.4 Fixtures, mocks, live proof
+
+- Red tests use invented fixtures only. They copy the shapes of the Test section. They never paste a real title.
+- The loader tests use a fake `BoardHost` with a call counter. The fake returns fixed texts and fixed `stat` values. It returns each error code of FR-10.
+- The live proof is `real-run.ts` on the real repos. It prints counts and call budgets only. It prints no title.
+
+### 12.5 Guardrails and changed contracts
+
+- NFR-2 holds: `roster`, `registry`, `parse`, `board`, `age`, and `load` have no SDK import and no DOM access. Tests run in Node.
+- NFR-3 holds: `source.test.ts` fails on `writeFile` in `src/` or `panel/main.ts`. It fails on `listDir` outside `src/load.ts` and `src/measure.ts`.
+- Task 2.3 changes no band file and no panel file. `MeasureHost` keeps `listDir`.
+- Exact C1 and C2 signatures (spec FR-15 sets this task as the source):
+  - `TrackInput` gains `now: number`. `classifyTrack` keeps its shape.
+  - `ColumnView` gains `stale: readonly Card[]` and `staleOpen: boolean`.
+  - `columnView` gains `staleOpen: boolean` after `expanded`. Done ignores it.
+  - `UiState` gains `staleOpen: Readonly<Record<string, boolean>>` with key `<repo>/<column>`.
+- `DONE_WINDOW_DAYS` equals 14. `doneSummary` returns the group, `more`, `archived`, and `notArchived`.
+
+### 12.6 Intentionally red suites
+
+Phase 2 leaves no red suite at Green. Each Red commit fails by design. Each Green commit turns it green. No test is skipped or deleted. The aggregate `vitest run` must exit 0 at Green and at acceptance.
+
+### 12.7 Artifact tests and live behavior tests
+
+- Artifact tests: `roster.test.ts` (globs), `source.test.ts` (no `writeFile`). They prove text in files.
+- Live behavior tests in Node: `registry`, `board`, `age`, `load`, and `comment` tests. They run the pure rules. They use no host.
+- Live proof on real files: `real-run.ts`. Only it touches the eight repos.
+
+### 12.8 Reviews
+
+| Role | Phase 2 | Reason |
+| --- | --- | --- |
+| Review A, correctness | Applies (Task 2.5) | It checks the column rules against FR-4 with C1 and D2. |
+| Review B, security | Applies (Task 2.5) | It checks the link path escape, the eight `filesystem` globs, the `listDir` scope, and the escape of file text. |
+| Review C, UX and API | Applies (Task 2.5) | It checks the card and view shapes for the renderer. |
+| Adversarial testing | Applies (Task 2.6) | Hostile registry text, hostile plans, error codes, 2,000-entry lists, HTML folder names. |
+| UX browser review | Not applicable | No page exists in Phase 2. Task 3.5 runs it. |
+
+### 12.9 Anti-pattern coverage
+
+| Id | Defense in Phase 2 |
+| --- | --- |
+| A2 | No Red test publishes. `real-run.log` holds counts only. A title in a log fails the review. |
+| A3 | Every count is a labeled integer: `repos=8 sum_mismatch=0`, column counts, `Stale (N)`, `Show N more`. No test uses a bare digit match. |
+| A4 | Each rule row has a positive and a negative case. The `All tasks closed` case must print its note, not pass on nothing. Controls: a fixture with the wrong column fails; a stale card at 30 days stays visible. |
+| A5 | No plan line says checks pass unless `vitest run` exits 0 on the logged HEAD. |
+| A6 | No registry note says a rule is done before acceptance. |
+| A7 | The escape test uses exact hostile strings (`<img>`, `"><script>`), not bare English words. |
+| A9 | Tests read invented folders only. No test names an archived path. |
+| A10 | Not applicable. No `measure/doctor.sh` exists. |
+| A11 | Phase 2 acceptance checks `engines.openchamber` equals `>=2.7.1`. This closes the interim drift of section 11. |
+| A1, A8 | Retired. None. |
+
+Every test in Phase 2 has a falsification condition: change the pinned value and the test fails.
+
+## 13. Phase 3: Board UI and band (P3)
+
+Risk class: **high**. The phase ships the send path. It is the only write. A wrong session id sends to the wrong session. An unescaped title runs a script. The phase also owns the approval-facing README sentence.
+
+### 13.1 Red scope
+
+Targeted Red command of Phase 3: `cd extensions/measure-status && bunx vitest run`. Every Red task runs it.
+
+- Task 3.1 pins FR-5, FR-7, FR-8, FR-11, FR-12, and FR-16, D2. It pins header counts, the Blocked badge, the not-archived header count, and hostile-title escape. It pins the closed Done group, the count line, `aria-expanded`, and `Show N more`. It pins no colour literal and no remote URL in `src/styles.ts` and `src/render.ts`. It pins the extended `source.test.ts`: no `writeFile`, `listDir` only in `src/load.ts` and `src/measure.ts`, and no `fetch(` in `panel/main.ts`.
+- Task 3.2a pins FR-16, D1. It uses a fake host and never calls OpenChamber. It pins one closed card with one `Comment` button. It pins one open box at a time. It pins Escape and finished Send closing the box. It pins the state line `sent HH:MM` that stays visible while the box is closed. It pins the error text of a failure. It pins plain-text messages, empty-text refusal, 2001 refusal, one send per click, and the disabled Send button while a send runs.
+
+### 13.2 Green gate
+
+- `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run` exits 0.
+- The esbuild panel command exits 0. The esbuild preview command exits 0. `git diff --exit-code extensions/measure-status/panel/main.js` exits 0, so the committed bundle equals the build.
+- The preview page renders the real board code from invented fixtures with `now` set to the capture time.
+- The band keeps one line. The rail badge equals the Blocked tracks of all repos. Waiting on Daniel never counts.
+
+### 13.3 Closeout gate
+
+- Phase acceptance (Task 3.6) runs at an immutable HEAD. It reruns the test command and the bundle-equality check. It checks FR-5 to FR-12 and FR-16. It records the audited HEAD in the plan.
+- Phase 3 starts only after Task 1.6 is `[x]`: the PM and Daniel accept the D1 look.
+
+### 13.4 Fixtures, mocks, live proof
+
+- Render and send tests use invented fixtures only. Hostile titles include `<img src=x onerror=alert(1)>`, `"><script>`, `javascript:` text, long words, right-to-left text, and 5,000 cards.
+- The send test uses a fake host. It asserts one call per click. It asserts the disabled state during the send. It never reaches the network.
+- The live proof is the UX browser review (Task 3.5): invented-data and real-data previews at 390, 980, and 1280 px in both themes. Real-data images stay in the private folder. The `debug` line must show `scrollWidth` at most `innerWidth`. The review checks 40 px targets, the focus ring, cut text, and column widths against the accepted mockup.
+
+### 13.5 Guardrails and changed contracts
+
+- FR-12 holds: colours come from `--oc-*` only. The CSS is one string in `src/styles.ts`. No remote resource, no `fetch(`, no `XMLHttpRequest`, no `WebSocket`, no `@import`.
+- Every file text passes through `escapeHtml` before it reaches HTML. Review B checks each `innerHTML` use.
+- The service holds the only send. `PM_SESSION_ID` lives in `src/pm-target.ts` only. No other module holds it. The panel calls `serviceRequest`. The service calls `sessions.send` with the constant id. One click sends one message. No retry loop.
+- `service/main.js` is built with `bunx openchamber-guest-bundle --node service/main.ts service/main.js`. It is committed.
+- Changed-contract risks: the new `data-action` values (`toggle-stale`, `toggle-done-group`, `open-comment`, `send-comment`), the `CommentUi` state, and the preview `preview.js` ignored file. Task 3.1 tests assert the same DOM hooks as section 6.
+
+### 13.6 Intentionally red suites
+
+Phase 3 leaves no red suite at Green. Each Red commit fails by design. Each Green commit turns it green. No test is skipped or deleted. The aggregate `vitest run` must exit 0 at Green, at acceptance, and at the browser review.
+
+### 13.7 Artifact tests and live behavior tests
+
+- Artifact tests: the colour-literal scan, the remote-URL scan, and the committed-bundle equality. They prove text and files.
+- Live behavior tests in Node: `render.test.ts` and `send.test.ts` with the fake host. They run the render and send logic.
+- Live behavior in Chromium: Task 3.5 screenshots and the `debug` line. Only they prove layout and width rules.
+
+### 13.8 Reviews
+
+| Role | Phase 3 | Reason |
+| --- | --- | --- |
+| Review A, correctness | Applies (Task 3.3) | It checks the render against FR-5, FR-7, FR-8, and D2. |
+| Review B, security | Applies (Task 3.3) | It checks the escape of file text, each `innerHTML` use, the session id constant, plain-text messages, one send per click, and error text. It reads `service/main.ts`. |
+| Review C, UX and API | Applies (Task 3.3) | It checks the card contract, the `UiState` shape, and the preview API. |
+| Adversarial testing | Applies (Task 3.4) | Hostile renderer text, 5,000 cards, Refresh and timer races. |
+| UX browser review | Applies (Task 3.5) | It opens both previews at 390, 980, and 1280 px in both themes. It compares them with the accepted mockup. |
+
+### 13.9 Anti-pattern coverage
+
+| Id | Defense in Phase 3 |
+| --- | --- |
+| A2 | The send path needs a user click with non-empty text. No test or preview sends a real message. |
+| A3 | Badge and header counts are labeled integers. The `sent HH:MM` state carries a time label. |
+| A4 | The escape test fails on an `innerHTML` copy (the G7 control). The send test fails when the fake host records two calls for one click. |
+| A5 | No plan line says the UI passes unless `vitest run` and the bundle check exit 0 on the logged HEAD. |
+| A6 | No registry note says the send works before Task 3.5 and acceptance. |
+| A7 | The colour and remote scans match exact tokens (`#`, `rgb(`, `http`), not bare words. |
+| A9 | Tests read invented fixtures only. No test names an archived path. |
+| A10 | Not applicable. No `measure/doctor.sh` exists. |
+| A11 | Phase 3 acceptance checks the README sections against the code (FR-14). |
+| A1, A8 | Retired. None. |
+
+Every test in Phase 3 has a falsification condition: change the pinned value and the test fails.
+
+## 14. `phase_base_sha` capture point
+
+The orchestrator captures the immutable `phase_base_sha` after the commit of this strategy file lands. The command is `git rev-parse HEAD`. It runs after the commit and before any Red work of Task 2.2. It never reuses `8c2b555` or `4219a4f`. Those values predate the committed strategy. The Red, Green, and acceptance roles read the captured value from the plan or the run log, never from this file.
 
 ## Appendix A: `check-mockup.cjs`
 
