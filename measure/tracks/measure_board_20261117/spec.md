@@ -2,7 +2,7 @@
 
 ## Overview
 
-The measure-status extension becomes one board for the Reading Advantage repos. The rail panel and the full page show an accordion with one section for each of eight repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The board has five columns: Planned, In progress, Blocked, Waiting on Daniel, and Done. The extension reads files only. It runs no service and it writes no file. The one-line status band does not change.
+The measure-status extension becomes one board for the Reading Advantage repos. The rail panel and the full page show an accordion with one section for each of eight repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The board has five columns: Planned, In progress, Blocked, Waiting on Daniel, and Done. The extension reads files only. It writes no file. The look D1-D2 adds one local service that sends a comment to the PM session. The one-line status band does not change.
 
 Source: PM assignment A-67, Daniel, 2026-11-17. Type feature, full lane. Dates: mockup by 2026-11-19, done by 2026-11-24.
 
@@ -19,7 +19,7 @@ The track has two parts. Part 1 is this spec and the plan. Part 2 starts at Phas
 
 | Topic | Decision | Where |
 |---|---|---|
-| Files outside the open project | Eight declared `contributes.filesystem` globs, one for each repo. No `service`. No `sessions`. | R3, FR-1 |
+| Files outside the open project | Eight declared `contributes.filesystem` globs, one for each repo. The D1 send path adds `contributes.service` and `contributes.sessionControl`. | R3, R6, FR-1, FR-16 |
 | Columns | Five columns. Rules R1 to R4 read the registry marker and the plan markers. | FR-4 |
 | Current task | The first `[~]` task. Else the first open task after the last `[x]` task. An open task before the last `[x]` task never names the current task. | FR-4 |
 | Waiting on Daniel | The current task is a gate task. With no current task, a closed `[b]` task that has a Daniel owner token also gives it. A gate task holds `User Manual Verification` or starts with the word `GATE`. | FR-4 |
@@ -27,7 +27,8 @@ The track has two parts. Part 1 is this spec and the plan. Part 2 starts at Phas
 | Folders with no registry entry | A folder under `tracks/` with a `plan.md` shows by its plan, with the line "Not in the registry". A folder under `archive/` shows in Done. | FR-2, FR-4 |
 | Red, Green, Review stage | Dropped from v1. Files do not give it reliably. | R5 |
 | Age on a card | File time of `plan.md` and `metadata.json`, shown as "Updated". It is not a commit time. | R5, FR-6 |
-| Done column | The five most recent Done tracks. Collapsed by default. | FR-8 |
+| Done column | One closed group with the 5 newest tracks closed in the last 14 days. A count line below the group. | FR-8, FR-16 |
+| Comment on a blocker | One message to the PM session. The session id is a constant of `src/pm-target.ts`. | FR-16 |
 | Reload | A full reload on open, on Refresh, and every 60 seconds while the page is visible. No partial update. | FR-10 |
 | Rail badge | The number of Blocked tracks of all repos. | FR-9 |
 | Layout | The columns stack below 640 px. They sit side by side from 640 px. | FR-11 |
@@ -82,6 +83,8 @@ Sources: https://github.com/mannu150/openchamber-kanban, https://raw.githubuserc
 | 10 | A phone shows a panel or a page only when the manifest sets `panel.mobile: true`. | `API.md:7,260,552` |
 
 Chosen mechanism: the manifest declares one glob for each roster repo, in the form `~/Desktop/<repo>/measure/**`. The page reads with `readFile`, `stat`, and `listDir`. The manifest keeps the `files` capability for the band and adds no `service`, no `sessions`, and no `network`.
+
+The look D1-D2 of 2026-11-18 changes this choice. The manifest now declares the grant of FR-16: one service and the session control of the PM session. The manifest adds no `network` and no other capability.
 
 Reasons: the host needs no new process. The approval dialog shows the eight exact paths. The grant is the smallest one that reads the eight repos. The globs end at the `measure/` folder, so the code and the secrets of the repos stay out of reach.
 
@@ -180,6 +183,33 @@ Stage. The assignment asks for Red, Green, and Review on In progress cards. The 
 
 Decision: v1 shows no stage. The card shows the current phase and task, whose text often names the stage. A later track can add a stage chip that reads the role file names.
 
+### R6. Sending a message to the PM session
+
+The SDK of 2.7.1 has no extension call that sends a message to an existing session by id. The research used the installed `@openchamber/sdk` 2.7.1 and the installed `@openchamber/web` 2.7.1. No call sent a message.
+
+| # | Fact | Evidence |
+|---|---|---|
+| 1 | The extension call `prompt({ text, send: true })` sends on the current session. Its request holds no session id. | `API.md:160`, `dist/contract.d.ts:119-125` |
+| 2 | The extension call `startSession` creates a session. It never reuses one. | `API.md:159`, `dist/host.d.ts:114` |
+| 3 | The extension call `openSession(sessionId)` opens the chat of a session. It sends no message. | `API.md:222` |
+| 4 | The service call `sessions.send(sessionId, prompt)` sends a message to a session by id. It answers `{ sent: true }`. | `GUEST_SERVICES.md:195`, `dist/service-host.d.ts:280` |
+| 5 | The call `sessions.send` needs the `sessionControl` capability. The grant comes from `contributes.sessionControl`. | `GUEST_SERVICES.md:195`, `server/lib/guests/service-host-api.js:123-129` |
+| 6 | The contribution `contributes.sessionControl` needs `contributes.service`. Its shape is `{ content?: true, answers?: true }`. | `DOCUMENTATION.md:47`, `dist/parse.js:657`, `dist/manifest.d.ts:976-977` |
+| 7 | The grant of `sessionControl` records only the content flag. It names no session and no directory. | `server/lib/guests/grant-scope.js:102,188-189` |
+| 8 | The service runs as a local process. It needs a built `service/main.js`. It starts on the first `serviceRequest`. | `API.md:668`, `GUEST_SERVICES.md:157,170` |
+| 9 | The panel holds no service token. Only the service calls OpenChamber. | `GUEST_SERVICES.md:126,190` |
+| 10 | The approval dialog shows the row "Run a local service" and the row "Start sessions and send messages". | `dist/assets/katex.min-2cmqKX7p.js` (the keys `settings.extensions.capability.service` and `settings.extensions.capability.sessionControl`) |
+| 11 | A refused call gives the code `NOT_GRANTED` and the status 403. The rate limit gives `TOO_MANY_PROMPTS` and the status 429. A service sends at most 60 prompts an hour. | `server/lib/guests/service-host-api.js:78-80,112`, `GUEST_SERVICES.md:208` |
+| 12 | The service host throws `ServiceHostError` with a code, a message, and a status. | `dist/service-host.js:99-106,134` |
+| 13 | The panel call `serviceRequest` fails with `NO_SERVICE`, `SERVICE_FAILED`, or `REQUEST_FAILED`. | `GUEST_SERVICES.md:110-117` |
+| 14 | The `prompt` capability sends on the current session. Its dialog row reads "Send messages in your sessions". | `DOCUMENTATION.md:85`, `dist/assets/katex.min-2cmqKX7p.js` (the key `settings.extensions.capability.prompt`) |
+
+Choice: the extension sends through the service. The panel calls `serviceRequest`. The service calls `sessions.send` with the constant session id of `src/pm-target.ts`. The SDK grant names no session, so the constant is the only limit on the target session.
+
+Rejected option: the extension call `prompt({ text, send: true })` with the `prompt` capability. It sends on the current session, so the message can reach the wrong session. It fails with `NO_SESSION` when no session is open.
+
+Rejected option: the extension calls `openSession(sessionId)` and then `prompt`. It opens the chat on the screen of the user, and the current session can differ.
+
 ## Functional Requirements
 
 ### FR-1. Roster and file access
@@ -187,8 +217,8 @@ Decision: v1 shows no stage. The card shows the current phase and task, whose te
 - FR-1.1 `src/roster.ts` holds the roster (`ROSTER`). It lists the eight repos in the order of the assignment: reading-advantage-monorepo, Workbooks, advantage-pr, advantage-forge, mastery-advantage, ra-math-advantage, lending-desk-bench, measure. Each repo has an id equal to its folder name and the path `~/Desktop/<id>`.
 - FR-1.2 `package.json` declares `contributes.filesystem` with one glob for each roster repo: `~/Desktop/<id>/measure/**`. A unit test fails when the globs and `rosterGlobs()` differ.
 - FR-1.3 The board reads only `<path>/measure/tracks.md`, `<path>/measure/<folder>/plan.md`, and `<path>/measure/<folder>/metadata.json`. It lists only `<path>/measure/tracks` and `<path>/measure/archive`. The band keeps its own reads of the open project (relative paths, `files` capability).
-- FR-1.4 The code calls `readFile`, `stat`, and `listDir`. Only `src/load.ts` calls `listDir`, and only on the two folders of FR-1.3. The code never calls `writeFile`.
-- FR-1.5 The manifest keeps `capabilities: ["files"]` for the band. It adds `panel.mobile: true`. It sets `engines.openchamber` to `>=2.7.1`, the host version that the live load in Task 4.2 uses. The docs of `@openchamber/sdk` 2.2.0 do not name `panel.mobile`.
+- FR-1.4 The code calls `readFile`, `stat`, and `listDir`. Only `src/load.ts` calls `listDir`, and only on the two folders of FR-1.3. The code never calls `writeFile`. The D2 rule adds two `stat` calls for each Done track (FR-16).
+- FR-1.5 The manifest keeps `capabilities: ["files"]` for the band. It adds `panel.mobile: true`. It sets `engines.openchamber` to `>=2.7.1`, the host version that the live load in Task 4.2 uses. The docs of `@openchamber/sdk` 2.2.0 do not name `panel.mobile`. The manifest also declares the grant of FR-16: `contributes.service` with the built entry `service/main.js`, and `contributes.sessionControl` with `{}`. The grant list holds no other new capability.
 - FR-1.6 The board shows the main checkout of each repo under `~/Desktop`. A track that exists only in an unmerged worktree does not show.
 - FR-1.7 `MeasureHost` in `src/measure.ts` keeps its three members: `readFile`, `stat`, and `listDir`. The band never calls `listDir`. The type `BoardHost` of `src/load.ts` has the same three members, so one host object serves both loaders.
 
@@ -259,6 +289,7 @@ Notes on the rules:
 - A gate task is the only text signal of a human gate. The words "Daniel", "owner", and "approved" in a task line are not signals. In the sample of R4, 13 of 191 current tasks hold one of these words. Several of those tasks are not gates, for example an implementation task that says "owner-approved".
 - A User Manual Verification task that is skipped shows no gate. The track went on past that task.
 - PM look amendment (FR-15, C1): rule R3a applies only when the Updated age of the card is 14 days or less. With an older or unknown age, rule R3a does not apply.
+- Daniel look amendment (FR-16, D2): a Done track under `tracks/` and not under `archive/` stays in Done. It gets the label "Not archived".
 - An owner token that is not a Daniel token, for example `track-owner`, `pm`, or the name of a later track, gives Blocked. A gate that waits on another person therefore shows as Blocked. This is intended: the column Waiting on Daniel holds the gates of Daniel only.
 - The text of a `[b]` task includes its `deferred:<token>` field. The reader sees who owns the gate.
 
@@ -306,9 +337,11 @@ A card shows these items in this order. All text comes from the files and is esc
 4. The line `Not in the registry`, when no registry entry names the card.
 5. The foot line. For a card that is not Done, it reads `Updated <age>` (FR-6), or `Updated unknown` when the age is unknown. For a Done card, it reads `Done <date>` with a registry date, `From <date>` with a folder date, or `No date`.
 
-The card data has these fields: `repo`, `title`, `column`, `position`, `marker`, `taskText`, `note`, `line`, `registered`, `lastChange`, `doneDate`, and `doneSource`. The field `position` is an object with `phase`, `phases`, `task`, and `tasks`, or null. The fields `marker` and `taskText` are null when the card has no current task. The field `note` holds the note of FR-4 when `position` is null, and it is null for a Done card. The field `registered` is false when no registry entry names the card. The field `lastChange` is a time in milliseconds, or null. The model, the mockup fixtures, and the preview fixtures all use these fields. A fixture file has the form `{ "capturedAt": <ms>, "repos": [{ "repo": "<id>", "cards": [<card>] }] }`.
+The card data has these fields: `repo`, `title`, `trackId`, `column`, `position`, `marker`, `taskText`, `note`, `line`, `registered`, `lastChange`, `doneDate`, and `doneSource`. The field `trackId` is the folder name of the track. It is empty when the folder is unknown. The field `position` is an object with `phase`, `phases`, `task`, and `tasks`, or null. The fields `marker` and `taskText` are null when the card has no current task. The field `note` holds the note of FR-4 when `position` is null, and it is null for a Done card. The field `registered` is false when no registry entry names the card. The field `lastChange` is a time in milliseconds, or null. The model, the mockup fixtures, and the preview fixtures all use these fields. A fixture file has the form `{ "capturedAt": <ms>, "repos": [{ "repo": "<id>", "cards": [<card>] }] }`.
 
 A card in Blocked or Waiting on Daniel shows the label `BLOCKER` for a blocker line, and `GATE` or `MANUAL CHECK` for a gate line (FR-15, C1).
+
+Daniel look amendment (FR-16, D1): a card in Blocked or in Waiting on Daniel shows a "Comment to PM" box and a Send button below the card line. No other card shows them.
 
 A Blocked card has a 3 px left border in the colour of `--oc-error`. A Waiting on Daniel card has a 3 px left border in the colour of `--oc-warning`. A card has no click action in v1. The text can be selected.
 
@@ -326,6 +359,7 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
 - The page shows one section for each roster repo, in roster order.
 - The header is one `button` with `aria-expanded`. It shows the repo id and one count for each of the five columns, with the column names. The counts stay visible when the section is closed.
 - A red badge shows the Blocked count when it is 1 or more. A badge in the warning tone shows the Waiting on Daniel count when it is 1 or more.
+- Daniel look amendment (FR-16, D2): the header shows the count of not archived Done tracks next to the blocked badge. The count shows only when it is above 0.
 - A section is closed until its first load ends. Then it opens when its Blocked count or its Waiting on Daniel count is 1 or more. Other sections stay closed.
 - PM look amendment (FR-15, C3): below 640 px, only the first section that qualifies starts open.
 - The page keeps the open or closed state that the user sets, and the user's choice always wins. A reload does not reset it. The state lives in memory only.
@@ -340,8 +374,9 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
 - PM look amendment (FR-15, C2): a Planned or In progress card with an Updated age of more than 30 days goes to a closed `Stale (N)` group at the end of its column.
 - A column other than Done shows at most 8 cards, then a button `Show N more`, where `N` is the number of hidden cards. The button opens the full list. The state is kept in memory like FR-7.
 - Cards sort by last change, newest first. Cards with an unknown last change come last, in card order. Equal times keep card order.
-- The Done column is closed at the first paint. It shows its count only. An open Done column shows the 5 most recent Done cards. Done cards sort by done date, newest first. Cards with no date come last, in card order. The count of the header is the count of all Done tracks.
-- The Done cards need no file call. They come from the registry and from the folder list of `archive/`.
+- The Done column follows the rule of FR-16, D2. It replaces the rule of the 5 most recent Done cards.
+- The count of the header is the count of all Done tracks.
+- A Done card needs two `stat` calls for its closed date. It needs no read call. It comes from the registry and from the folder list of `archive/`.
 
 ### FR-9. Status band and rail badge
 
@@ -351,7 +386,7 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
 
 ### FR-10. Loading, reload, and errors
 
-- A full load reads, for each repo, `measure/tracks.md`. It lists `measure/tracks` and `measure/archive`. For each track that is not Done, it reads `plan.md` and calls `stat` on `plan.md` and on `metadata.json`. Done tracks make no call.
+- A full load reads, for each repo, `measure/tracks.md`. It lists `measure/tracks` and `measure/archive`. For each track that is not Done, it reads `plan.md` and calls `stat` on `plan.md` and on `metadata.json`. A Done track makes no read call. It calls `stat` on `plan.md` and on `metadata.json` for its closed date (FR-16, D2).
 - For each folder of `tracks/` that no entry names, the loader reads `plan.md` first. A missing `plan.md` ends the work for that folder. Otherwise the loader calls `stat` on `plan.md` and on `metadata.json`.
 - The page makes at most 8 file calls at one time. The page loads each repo on its own. A failure in one repo does not stop the others.
 - The page runs a full load when it opens, when the user presses Refresh, and every 60 seconds while `document.visibilityState` is `visible`. A timer tick or a press while a load runs starts no second load. A reload keeps the old cards on the page until the new data of that repo arrives.
@@ -364,7 +399,8 @@ The track title wraps up to 3 lines. A longer title ends in `…`, and the full 
   - A failed read of a plan gives an R2 card (NFR-7). `NOT_FOUND` gives the note "No plan." Any other code (`FILE_TOO_LARGE`, `DENIED`, `BAD_PATH`, `NOT_GRANTED`) gives the note "Plan unreadable".
   - `stat` of a missing path does not fail. It returns kind `missing` with `mtime` 0 (`@openchamber/web` `server/lib/guests/files.js:229-230`). The loader treats kind `missing` as not found and never uses its `mtime`.
   - A thrown value with no `code` gives the code `UNKNOWN`.
-- A full load of the real roster finishes in less than 10 seconds on the development machine. Phase 4 records the time.
+- The added stat calls of FR-16, D2 read no text. A full load of the real roster finishes in less than 10 seconds on the development machine. Phase 4 records the time.
+- The comment send of FR-16 runs outside the load. A failed send never changes the cards.
 
 ### FR-11. Layout
 
@@ -382,7 +418,7 @@ The mockup shows each rule at 390, 980, and 1280 px. The final page keeps the ru
 - All colours come from the host theme variables (`--oc-*`, set by `applyHostTheme`). The CSS has no hex colour, no `rgb()` or `hsl()`, and no named colour except `transparent` and `currentColor`. A `color-mix()` of variables is allowed.
 - The CSS is one string in `src/styles.ts`. The page injects it at start. The preview page uses the same string. The mockup holds the same rules as plain CSS, and Task 3.2 moves them into the string.
 - The page loads no remote script, style, font, or image. The sources `panel/index.html`, `panel/main.ts`, and `src/` hold no `http://` string, no `https://` string, no `fetch(`, no `XMLHttpRequest`, no `WebSocket`, and no `@import`.
-- The page has no drag and drop and no write call.
+- The page has no drag and drop and no file write call. The comment path of FR-16 sends one message to the PM session.
 - Every text from a file passes through one escape function before it reaches HTML. This includes a folder name. A test uses titles such as `<img src=x onerror=alert(1)>`.
 - A blocked or waiting state never relies on colour alone: the card line and the badge carry text.
 - The section header and the Show more button are `button` elements with a visible focus ring from `--oc-focus`.
@@ -392,6 +428,8 @@ The mockup shows each rule at 390, 980, and 1280 px. The final page keeps the ru
 | File | Duty |
 |---|---|
 | `src/roster.ts` | The roster and the glob list. |
+| `src/pm-target.ts` | The session id and the directory of the PM session (FR-16, D1). |
+| `src/comment.ts` | `formatComment` and the rules of the comment box (FR-16, D1). |
 | `src/registry.ts` | `parseRegistry` and the folder rules (FR-2). |
 | `src/parse.ts` | The plan parser, with the owner token, the card text, and the gate test (FR-3, FR-4). |
 | `src/board.ts` | The column rules, the card, the sort, the cap, and the counts (FR-4, FR-5, FR-8). |
@@ -404,6 +442,7 @@ The mockup shows each rule at 390, 980, and 1280 px. The final page keeps the ru
 | `panel/index.html` | The entry. A minimal shell. |
 | `mockup/board.html` | The static mockup of Phase 1, with invented fixture data. |
 | `preview/preview.html`, `preview/preview.ts` | A page without a host that renders the real board code from invented data. The review uses it. |
+| `service/main.ts`, `service/main.js` | The local service that sends the comment to the PM session (FR-16, D1). The host builds it with `openchamber-guest-bundle --node`. |
 
 Exports of the new code. The Red role writes the tests against these names. A module can hold more functions that it does not export. The types `Marker`, `Plan`, and `Task` come from `src/types.ts`.
 
@@ -413,6 +452,10 @@ export type RosterRepo = { id: string; path: string }                      // pa
 export const ROSTER: readonly RosterRepo[]                                 // eight repos, assignment order
 export const rosterGlobs: () => string[]                                   // `<path>/measure/**` for each repo
 export const measureFile: (repo: RosterRepo, relative: string) => string   // `<path>/measure/<relative>`
+
+// src/pm-target.ts
+export const PM_SESSION_ID: string                                         // the session id of the PM session
+export const PM_DIRECTORY: string                                         // the directory of the PM session
 
 // src/registry.ts
 export type DoneSource = 'registry' | 'folder'
@@ -433,6 +476,12 @@ export const taskLabel: (text: string) => string                          // FR-
 export const taskBody: (text: string) => string                           // FR-3
 export const isGateText: (text: string) => boolean                        // FR-4, one task text
 
+// src/comment.ts
+export type CommentInput = { repo: string; trackId: string; taskLine: string; blockerLine: string; text: string }
+export const COMMENT_TEXT_MAX = 2000                                     // FR-16, D1
+export const formatComment: (input: CommentInput) => string              // FR-16, D1
+export const canSendComment: (text: string) => boolean                   // FR-16, D1
+
 // src/age.ts
 export const latestChange: (times: ReadonlyArray<number | null>) => number | null
 export const formatAge: (now: number, then: number) => string
@@ -443,10 +492,12 @@ export const COLUMNS: readonly Column[]                                    // or
 export const COLUMN_LABELS: Readonly<Record<Column, string>>               // 'Planned', 'In progress', 'Blocked', 'Waiting on Daniel', 'Done'
 export const COLUMN_CAP = 8
 export const DONE_SHOWN = 5
+export const DONE_WINDOW_DAYS = 14
 export type CardPosition = { phase: number; phases: number; task: number; tasks: number }
 export type Card = {
   repo: string
   title: string
+  trackId: string                     // the folder name of the track; empty when unknown
   column: Column
   position: CardPosition | null
   marker: Marker | null
@@ -475,6 +526,8 @@ export type RepoBoard = { repo: string; cards: readonly Card[] }          // car
 export const buildBoard: (repo: string, inputs: readonly TrackInput[]) => RepoBoard
 export type ColumnView = { column: Column; label: string; total: number; shown: readonly Card[]; hidden: number }
 export const columnView: (board: RepoBoard, column: Column, expanded: boolean) => ColumnView   // FR-8; Done ignores `expanded`
+export type DoneSummary = { shown: readonly Card[]; more: number; archived: number; notArchived: number }
+export const doneSummary: (board: RepoBoard, now: number) => DoneSummary   // FR-16, D2
 export const blockedTracks: (boards: readonly RepoBoard[]) => number     // rail badge (FR-9)
 
 // src/load.ts
@@ -507,7 +560,8 @@ export type PageView = { states: readonly RepoState[]; ui: UiState; now: number;
 export const GRANT_BANNER: string                                         // text of the NOT_GRANTED banner
 export const escapeHtml: (text: string) => string
 export const sectionOpen: (state: RepoState, ui: UiState) => boolean      // FR-7
-export const renderCard: (card: Card, now: number) => string
+export type CommentUi = { status: 'idle' | 'sending' | 'sent' | 'error'; sentAt: number | null; error: string | null }
+export const renderCard: (card: Card, now: number, comment?: CommentUi) => string
 export const renderSection: (state: RepoState, ui: UiState, now: number) => string
 export const renderPage: (view: PageView) => string                       // shows GRANT_BANNER for a NOT_GRANTED state
 
@@ -515,14 +569,16 @@ export const renderPage: (view: PageView) => string                       // sho
 export const BOARD_CSS: string
 ```
 
-The page marks each button with `data-action`: `refresh`, `toggle-section`, `toggle-done`, or `show-more`. It adds `data-repo` and `data-column` where the action needs them. The files `panel/main.ts` and `preview/preview.ts` export nothing.
+The page marks each button with `data-action`: `refresh`, `toggle-section`, `toggle-done`, `toggle-stale`, `toggle-done-group`, `show-more`, or `send-comment`. It adds `data-repo` and `data-column` where the action needs them. The files `panel/main.ts` and `preview/preview.ts` export nothing.
 
 ### FR-14. Records
 
 - The extension README has these sections: What it shows, Install, Surfaces, The board, Reading the files, Refresh, Layout, The age and its limits, Add a repo, Build, Test, and Files.
 - The Install section names the `files` capability and the eight globs. It says that the grant covers read and write, and that the code only reads.
+- The Install section names the grant of FR-16. It gives the plain sentence of FR-16, D1. It says that the grant names no session, so the code constant is the only limit.
+- The board section describes the Done group of FR-16, D2, and the comment box of FR-16, D1.
 - The Add a repo section says that a new repo needs one roster line, one manifest glob, and a new approval.
-- The CHANGELOG entry goes first in the list under the first `### Features` heading of `## Unreleased`. Its text is: `* **measure board:** the measure-status extension shows one accordion section for each of eight Reading Advantage repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The columns are Planned, In progress, Blocked, Waiting on Daniel, and Done. A card shows the track name, the current phase and task, the age of the last file change, and a blocker or gate line. The extension reads files only, through eight contributes.filesystem globs, and runs no service. The status band does not change.`
+- The CHANGELOG entry goes first in the list under the first `### Features` heading of `## Unreleased`. Its text is: `* **measure board:** the measure-status extension shows one accordion section for each of eight Reading Advantage repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The columns are Planned, In progress, Blocked, Waiting on Daniel, and Done. A card shows the track name, the current phase and task, the age of the last file change, and a blocker or gate line. The extension reads files only, through eight contributes.filesystem globs. It runs one local service that sends a comment to the Measure PM session. The status band does not change.`
 - The first sentence of `README.md` line 33 becomes: `As of <closeout date>, the latest archived track is Measure board (the measure-status extension shows a read-only Kanban board of the Measure tracks of eight Reading Advantage repos).` The rest of the line stays.
 
 ### FR-15. PM look amendment 2026-11-17 (C1-C4)
@@ -538,11 +594,48 @@ The PM looked at the mockup of Phase 1 and ordered four changes. The PM words ar
 - Code contract. `TrackInput` gets a field `now` (milliseconds). `classifyTrack` and `columnView` use it for the C1 and C2 rules. `ColumnView` gets the fields `stale` (the stale cards) and `staleOpen`. `UiState` gets `staleOpen` with the key `<repo id>/<column>`. Task 2.1 sets the exact signatures.
 - C4. The default answers to the design choices 1, 2, and 4 of `look-notes.md` stand. The answer to choice 3 is changed by C3 for widths under 640 px only.
 
+### FR-16. Daniel look amendment 2026-11-18 (D1-D2)
+
+Daniel looked at the mockup of Phase 1 and ordered two changes. His words are in `measure/runs/measure_board_20261117/look-gate.md`. This amendment changes FR-1, FR-4, FR-5, FR-7, FR-8, FR-10, FR-12, FR-13, and FR-14. It adds the send path of D1 and the data rules of D2.
+
+#### D1. Comment to PM
+
+- D1, scope. Each Blocked card and each Waiting on Daniel card shows a "Comment to PM" box and a Send button. No other card shows the box.
+- D1, target. The Send button sends one message to the PM session. The session id and the directory are the constants `PM_SESSION_ID` and `PM_DIRECTORY` of `src/pm-target.ts`. No other module holds them. The code sends only to that session id. The SDK grant names no session, so the constant is the only limit (R6).
+- D1, message. The text of the message comes from the pure function `formatComment`. Its input is `{ repo, trackId, taskLine, blockerLine, text }`. Its output has this layout:
+
+  ```
+  Measure board comment
+  Repo: <repo>
+  Track: <track id>
+  Task: <task line>
+  Blocker: <blocker or gate line>
+  Daniel: <text>
+  ```
+
+  A line with no value stays out. Every value is plain text. No value becomes markup.
+- D1, input. An empty text or a text of only white space disables the Send button. A text longer than 2000 characters is refused with an error text. The text of the card comes from the plan files. It is plain text.
+- D1, send. One click sends one message. The button is disabled while the send runs. There is no retry loop. A failed send shows the error text and leaves the button usable.
+- D1, result. After a successful send the card shows "sent HH:MM". The time is the time of the send. The state lives in the page only. The extension stores nothing.
+- D1, grant. The manifest declares the grant of FR-1.5. The panel calls `serviceRequest`. The service calls `sessions.send` with the constant session id (R6).
+- D1, errors. The failure gives the code of the host. The codes are `NOT_GRANTED`, `TOO_MANY_PROMPTS`, `HANDLE_UNKNOWN`, `HOST_UNAVAILABLE`, `NO_SERVICE`, `SERVICE_FAILED`, and `REQUEST_FAILED`. The card shows the code and the message.
+- D1, dialog. The host owns the text of the approval dialog. Its rows are the rows of R6. The extension gives the user a plain sentence in its README: "This extension reads the Measure files of eight repos. It sends one message to the Measure PM session when you write a comment on a blocker."
+- D1, review. Review B (security) checks this path. It checks the target session id, the plain text of the comment, one send per click, and the error text.
+
+#### D2. Done stays short
+
+- D2, closed date. The closed date of a Done track is the last change of the track (FR-6). It is the time of the last file change, not the time of a commit. The limit of FR-6 applies to it.
+- D2, group. The Done column is closed at the first paint. It shows its count only. An open Done column shows one closed group. The group holds the 5 Done tracks with the newest closed date that closed within 14 days of the load time. The group is closed by default and opens on click. Its cards sort by closed date, newest first. A Done track with no closed date stays out of the group.
+- D2, count line. The Done column shows the line "N more done, M archived" below the group. N is the number of Done tracks that the group does not show. M is the number of Done tracks under `archive/`.
+- D2, not archived. A Done track under `tracks/` and not under `archive/` gets the label "Not archived". It counts as a finding for the closeout of its repo. The board never moves the file.
+- D2, header. The section header shows the count of not archived Done tracks next to the blocked badge. The count shows only when it is above 0. The count is the count of the Done tracks of that repo.
+- D2, calls. A Done track makes two `stat` calls for its closed date. It makes no read call.
+
 ## Non-Functional Requirements
 
 - NFR-1. The code is TypeScript, strict. `bunx tsc -p . --noEmit` passes.
-- NFR-2. The model code (`roster`, `registry`, `parse`, `board`, `age`, `load`, `render`) has no SDK import and no DOM access. Unit tests run in Node. The module `load` reads the `code` property of an error and does not import `HostRequestError`.
-- NFR-3. A unit test reads the source files of `src/` and `panel/main.ts`. It fails when it finds `writeFile` in any of them. It also fails when it finds `listDir` in a file other than `src/load.ts` and `src/measure.ts`.
+- NFR-2. The model code (`roster`, `registry`, `parse`, `board`, `age`, `load`, `render`) has no SDK import and no DOM access. The modules `comment` and `pm-target` are pure too. Unit tests run in Node. The module `load` reads the `code` property of an error and does not import `HostRequestError`.
+- NFR-3. A unit test reads the source files of `src/`, `panel/main.ts`, and `service/main.ts`. It fails when it finds `writeFile` in any of them. It also fails when it finds `listDir` in a file other than `src/load.ts` and `src/measure.ts`.
 - NFR-4. The shipped bundle `panel/main.js` comes from `panel/main.ts` with the esbuild command of R1. It is committed.
 - NFR-5. Real fixtures and the real-data mockup stay outside the repo, in `/home/daniebo/.local/share/measure-board-private/`. That folder lies under no git work tree. The measure repo is public and `advantage-pr` is private (R4). The committed fixtures and the committed mockup use invented titles and task texts with the same lengths and the same markers. The leak check of Task 4.5 searches the committed tree. It looks for the track ids of the private repo. It also looks for paths below its track, archive, and source folders.
 - NFR-6. New prose in the README, the plan, and the spec follows ASD-STE100. These documents do not state how many tests, checks, or suites exist.
@@ -558,7 +651,7 @@ The tests run with `cd extensions/measure-status && bunx tsc -p . --noEmit && bu
   - The owner token cases: `(deferred:owner)`, `**deferred:x**`, and `deferred:owner-manual-verification)`.
   - The task body cases: `Task 1.5: GATE. PM look`, `1.5 GATE it`, `**Task 2.1: GATE ok**`, and a text with no id.
   - The gate text cases: `GATE` at the start, `GATEWAY`, `gate` in lower case, `GATE` in the middle of a text, and `User Manual Verification` in any place.
-- `board.test.ts`: each row of the rule table and each example row of FR-4. The file also covers the current task, the notes, the card line, the sort, the cap, the counts, and `blockedTracks`. The cases below use invented text. The first two copy the shapes of real plans.
+- `board.test.ts`: each row of the rule table and each example row of FR-4. The file also covers the current task, the notes, the card line, the sort, the cap, the counts, and `blockedTracks`. The cases below use invented text. The first two copy the shapes of real plans. The file also covers the D2 rules of FR-16: the closed date of a Done track, the 14 day window, the 5 cards of the group, the count of the tracks that the group does not show, the count of the tracks under `archive/`, and the label "Not archived".
   - A `daily_model_schedule`-like case has eight phases. Phases 1 to 5 hold `[x]` tasks only. Phase 6 ends with one open `[b]` task that has no `deferred:` field. Phase 7 ends with one `[ ]` task. Phase 8 has one `[ ]` task between `[x]` tasks, and its last task is `[x]`. Expected: Blocked, the card line is the text of the `[b]` task, `position`, `marker`, and `taskText` are null, and the note reads `Open tasks before the last closed task: 3.`
   - A `primary_mastery_evidence`-like case has six phases. Phases 1 to 5 each end with one open `[ ]` User Manual Verification task. Phase 6 holds one `[x]` task. Every other task is `[x]`. Expected with registry marker `~`: In progress, no gate, and the note reads `Open tasks before the last closed task: 5.` The same plan with registry marker `x` gives Done.
   - A folder with a plan and no entry: the column follows the plan, `registered` is false, and the line reads "Not in the registry". A folder with a plan with no task gives Planned. A folder under `archive/` gives Done with the folder date.
@@ -566,20 +659,22 @@ The tests run with `cd extensions/measure-status && bunx tsc -p . --noEmit && bu
 - `age.test.ts`: `formatAge` at each boundary. The file also covers the last change with a missing file, a failed `stat`, and a `stat` result of kind `missing`.
 - `load.test.ts`: a fake host with a call counter. It checks:
   - the call limit, the error isolation, and the call budget of a full load;
-  - that Done tracks make no call;
+  - that a Done track makes no read call and two `stat` calls;
   - that `listDir` runs only on the `tracks` and `archive` folders;
   - a folder list with a symlink (kind `other`), and a missing folder;
   - a folder with no entry that has a plan, and a folder with no entry that has none;
   - a plan read that fails with each code;
   - the `stat` result of kind `missing`, the code `NOT_GRANTED`, and `shouldReload`.
-- `render.test.ts`: counts, badges, and escaping (also of a folder name). The file also covers the closed Done column, `aria-expanded`, the `Show N more` button, the line "Not in the registry", and the notes. It checks that `src/styles.ts` and `src/render.ts` hold no colour literal and no remote URL.
+- `render.test.ts`: counts, badges, and escaping (also of a folder name). The file also covers the closed Done column, `aria-expanded`, the `Show N more` button, the line "Not in the registry", and the notes. It checks that `src/styles.ts` and `src/render.ts` hold no colour literal and no remote URL. It also covers the closed Done group, the count line, and the not archived badge of FR-16, D2.
+- `comment.test.ts`: the layout of the message of FR-16, D1. A line with no value stays out. A text of only white space gives no send. A text of 2000 characters is accepted. A text of 2001 characters is refused. A card value stays plain text.
+- `send.test.ts`: one send per click, the disabled Send button while a send runs, the state "sent HH:MM", and the error text of a failure. The test uses a fake host. It never calls OpenChamber.
 - `band.test.ts`: the tests of `bandLine` and `loadSnapshot` stay and pass. The tests of the removed view-model code leave with it.
-- `source.test.ts`: NFR-3.
+- `source.test.ts`: NFR-3. It also reads `service/main.ts`.
 
 ## Acceptance Criteria
 
 1. Daniel accepts the look. `measure/runs/measure_board_20261117/look-gate.md` holds the verdicts of the PM and of Daniel for the mockup, and the verdict of Daniel for the live board.
-2. The extension loads in OpenChamber 2.7.1. The approval dialog lists the eight globs. The rail panel and the page show the board. The band still shows one line.
+2. The extension loads in OpenChamber 2.7.1. The approval dialog lists the eight globs and the two rows of FR-16, D1. The rail panel and the page show the board. The band still shows one line.
 3. The board shows the real tracks of all eight repos. For each repo, the five column counts add up to the column-0 entry lines of its `tracks.md` plus the folders that FR-2 adds.
 4. `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run` exits 0.
 5. `extensions/measure-status/README.md` describes the board: the install approval, the column rules, the refresh, the layout, and the limits of the age.
@@ -590,9 +685,9 @@ The tests run with `cd extensions/measure-status && bunx tsc -p . --noEmit && bu
 ## Out of Scope
 
 - Moving cards, drag and drop, and any write to a Measure file.
-- Starting an agent, opening a session, or any session action.
+- Starting an agent, opening a session, or any session action, except the one message of FR-16, D1.
 - Editing a track, a plan, or a task from the board.
-- A click action on a card, a detail dialog, search, and filters.
+- A click action on a card, except the comment box of FR-16, D1. A detail dialog, search, and filters.
 - Repos outside the roster, including `advantage-mmorpg`, unless the PM adds them (one roster line and one manifest glob).
 - Tracks in worktrees that are not merged.
 - The Red, Green, and Review stage chip (R5).
@@ -621,3 +716,7 @@ Each question has a default. The plan follows the default.
 14. Does a gate task that is the current task beat an older open `[b]` task? Default: yes. The track goes to Waiting on Daniel (R3a before R3b).
 15. What does a card show when every open task sits before the last closed task? Default: no position, and the note "Open tasks before the last closed task: N." (FR-4).
 16. What does the leak check of Task 4.5 search for? Default: every track id of `advantage-pr`, and paths below its track, archive, PM log, and source folders. Hits that exist at the merge base with `origin/main` do not count. The check does not search for the roster path `~/Desktop/advantage-pr`, because FR-1 requires it.
+17. Which grant does the D1 send path use? Default: the service route of R6. It declares `contributes.service` and `contributes.sessionControl`. The `sessions` capability cannot send to a session by id.
+18. Where does the plain sentence of the approval dialog go? Default: the host owns the text of the dialog. The sentence goes in the README Install section.
+19. Does the Done card show the date of FR-5 or the closed date? Default: the card keeps the date of FR-5. The closed date sets the group and the 14 day window.
+20. Does the Done group open with the Done column? Default: no. The Done column opens to show the closed group. The group opens on click.
