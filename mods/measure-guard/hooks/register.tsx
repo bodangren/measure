@@ -41,6 +41,7 @@ import {
   taskKey,
   tddDecision,
   trackCloseDecision,
+  supersededTarget,
   turnProblems,
   unshaTasks,
 } from './guards'
@@ -200,6 +201,10 @@ const commitShaOf = (result: unknown): string | null => {
 const readOrEmpty = async ($: EngineInterface, path: string): Promise<string> =>
   (await $.fs.exists(path)) ? $.fs.read(path) : ''
 
+/** The text of a file; null when it does not exist. */
+const readOrNone = async ($: EngineInterface, path: string): Promise<string | null> =>
+  (await $.fs.exists(path)) ? $.fs.read(path) : null
+
 /**
  * The closeout guard for an Edit or Write of tracks.md or a plan.md: the
  * decision, and the note of an allowed call (the [b] list of a track close,
@@ -226,7 +231,13 @@ const closeout = async (
   const closing: ClosingTrack[] = []
   for (const entry of closedTracks(before, after)) {
     const planPath = await planPathOf($, joinPath(dirname(path), entry.folder))
-    closing.push({ entry, plan: planPath === null ? null : parsePlan(await $.fs.read(planPath)) })
+    const planText = planPath === null ? null : await readOrNone($, planPath)
+    const metadataText = await readOrNone($, joinPath(dirname(path), entry.folder, 'metadata.json'))
+    closing.push({
+      entry,
+      plan: planText === null ? null : parsePlan(planText),
+      supersededBy: planText === null ? null : supersededTarget(planText, metadataText),
+    })
   }
   return trackCloseDecision(context, closing)
 }

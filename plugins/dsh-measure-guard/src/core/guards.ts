@@ -125,11 +125,13 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
   if (!isGuarding(context)) return { decision: null, note: null }
   const problems: string[] = []
   const blocked: string[] = []
-  for (const { entry, plan } of closing) {
+  const superseded: string[] = []
+  for (const { entry, plan, supersededBy } of closing) {
     if (plan === null) continue
     const tasks = tasksOf(plan)
     const open = tasks.filter(isOpen)
-    if (open.length > 0) {
+    const skip = typeof supersededBy === 'string' && supersededBy !== ''
+    if (open.length > 0 && !skip) {
       const listed = open.slice(0, 10).map(task => {
         const why = task.marker === 'b' ? ' (needs a deferred:<owner> field)' : ''
         return `  - [${task.marker}] ${task.text}${why}`
@@ -138,6 +140,7 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
       problems.push(`"${entry.name}" has ${open.length} open task(s):`, ...listed, ...more)
     }
     blocked.push(...tasks.filter(task => task.marker === 'b').map(task => `  - [b] ${task.text}`))
+    if (skip) superseded.push(`  - "${entry.name}" closes as superseded by ${supersededBy}; its open tasks stay open.`)
   }
   if (problems.length > 0) {
     return {
@@ -151,11 +154,30 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
       note: null,
     }
   }
-  const note =
-    blocked.length === 0
-      ? null
-      : ['measure-guard: the closed track has these [b] tasks. List them for the user in your report:', ...blocked].join('\n')
-  return { decision: null, note }
+  const notes: string[] = []
+  if (blocked.length > 0) {
+    notes.push(['measure-guard: the closed track has these [b] tasks. List them for the user in your report:', ...blocked].join('\n'))
+  }
+  if (superseded.length > 0) {
+    notes.push(['Superseded tracks:', ...superseded].join('\n'))
+  }
+  return { decision: null, note: notes.length === 0 ? null : notes.join('\n') }
+}
+
+/** The target of a superseded plan; null unless the plan says `Superseded by` and the metadata status is `superseded`. */
+export const supersededTarget = (planText: string, metadataText: string | null): string | null => {
+  const match = planText.match(/^Superseded by (\S+?)[,.]?(\s|$)/m)
+  if (match === null) return null
+  if (metadataText === null) return null
+  let metadata: unknown
+  try {
+    metadata = JSON.parse(metadataText)
+  } catch {
+    return null
+  }
+  if (metadata === null || typeof metadata !== 'object') return null
+  if ((metadata as { status?: unknown }).status !== 'superseded') return null
+  return match[1]
 }
 
 /** The ra-quota role of each Measure agent that the spawn-route guard checks. */

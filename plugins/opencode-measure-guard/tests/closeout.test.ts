@@ -1,8 +1,9 @@
 // S4: the closeout guard (tracks.md and plan.md edits) and the notes on the tool output.
 import { describe, expect, test } from 'bun:test'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { ToolAfterEvent, ToolBeforeEvent } from '../src/hooks/types'
+import { supersededTarget } from '../src/core/guards'
 
 /** A completed call, so the tests can read `result`. */
 type CompletedEvent = ToolAfterEvent & { status: 'completed' }
@@ -140,5 +141,140 @@ describe('notes after a call', () => {
     const event = before(join(root, 'measure/tracks.md'), 'x', 'y')
     const failed: ToolAfterEvent = { ...after(event), status: 'error', error: { message: 'no' } } as ToolAfterEvent
     await expect(guard.onToolAfter(failed)).resolves.toBeUndefined()
+  })
+})
+
+const SUPERSEDED_LINE = 'Superseded by target_work_20261116, PM 2026-11-16.'
+
+const SUPERSEDED_TRACKS = `# Project Tracks
+
+- [~] **Track: Superseded work**
+  *Link: [./tracks/superseded_1/](./tracks/superseded_1/)*
+
+- [~] **Track: Open work**
+  *Link: [./tracks/open_2/](./tracks/open_2/)*
+
+- [~] **Track: Mixed work**
+  *Link: [./tracks/mixed_3/](./tracks/mixed_3/)*
+`
+
+const supersededPlan = (line = SUPERSEDED_LINE, task = '- [~] Task: Left open'): string =>
+  `# Implementation Plan: Superseded work\n\n${line}\n\n## Phase 1: Work\n\n${task}\n- [ ] Task: Also open\n`
+
+const openWorkPlan = `# Implementation Plan: Open work
+
+## Phase 1: Work
+
+- [ ] Task: Still open
+`
+
+const supersededProject = async (options: { line?: string; task?: string; metadata?: string | null } = {}): Promise<string> => {
+  const root = await withMeasure(await tempProject(), { tracks: SUPERSEDED_TRACKS })
+  mkdirSync(join(root, 'measure/tracks/superseded_1'), { recursive: true })
+  mkdirSync(join(root, 'measure/tracks/open_2'), { recursive: true })
+  mkdirSync(join(root, 'measure/tracks/mixed_3'), { recursive: true })
+  writeFileSync(join(root, 'measure/tracks/superseded_1/plan.md'), supersededPlan(options.line, options.task))
+  writeFileSync(join(root, 'measure/tracks/open_2/plan.md'), openWorkPlan)
+  writeFileSync(join(root, 'measure/tracks/mixed_3/plan.md'), supersededPlan(options.line, options.task))
+  if (options.metadata !== null) {
+    writeFileSync(join(root, 'measure/tracks/superseded_1/metadata.json'), options.metadata ?? '{"status":"superseded","actual_tasks":0}')
+    writeFileSync(join(root, 'measure/tracks/mixed_3/metadata.json'), '{"status":"done","actual_tasks":0}')
+  }
+  return root
+}
+
+const closeTrack = (guard: ReturnType<typeof makeGuard>, root: string, name: string): Promise<void> =>
+  guard.onToolBefore(before(join(root, 'measure/tracks.md'), `- [~] **Track: ${name}**`, `- [x] **Track: ${name}**`))
+
+const writeRegistry = (guard: ReturnType<typeof makeGuard>, root: string, content: string): Promise<void> =>
+  guard.onToolBefore({
+    tool: 'write',
+    sessionID: 'ses_1',
+    agent: 'build',
+    messageID: 'msg_1',
+    id: 'call_write',
+    input: { filePath: join(root, 'measure/tracks.md'), content },
+  })
+
+describe('superseded closeout', () => {
+  test('supersededTarget reads the target and gates on the metadata status', () => {
+    const plan = '# Plan\n\nSuperseded by foo_20261116, PM 2026-11-16.\n'
+    expect(supersededTarget(plan, '{"status":"superseded"}')).toBe('foo_20261116')
+    expect(supersededTarget(plan, '{bad json')).toBeNull()
+    expect(supersededTarget(plan, null)).toBeNull()
+    expect(supersededTarget(plan, '{"status":"done"}')).toBeNull()
+    expect(supersededTarget(plan, '{"status":"Superseded"}')).toBeNull()
+    expect(supersededTarget(plan, '{"status":"superseded "}')).toBeNull()
+    expect(supersededTarget('# Plan\n\nNo line.\n', '{"status":"superseded"}')).toBeNull()
+  })
+
+  test('a superseded track with open tasks closes, and the note names the target', async () => {
+    const root = await supersededProject()
+    const guard = makeGuard(root)
+    const event = before(join(root, 'measure/tracks.md'), '- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+    await expect(guard.onToolBefore(event)).resolves.toBeUndefined()
+    const done = after(event)
+    await guard.onToolAfter(done)
+    const text = String(done.status === 'completed' ? done.result.output : '')
+    expect(text).toContain('Superseded tracks:')
+    expect(text).toContain('"Superseded work" closes as superseded by target_work_20261116; its open tasks stay open.')
+  })
+
+  test('a superseded track with no open task still gets the note item', async () => {
+    const root = await supersededProject({ task: '- [x] Task: Done' })
+    const guard = makeGuard(root)
+    const event = before(join(root, 'measure/tracks.md'), '- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+    await expect(guard.onToolBefore(event)).resolves.toBeUndefined()
+    const done = after(event)
+    await guard.onToolAfter(done)
+    expect(String(done.status === 'completed' ? done.result.output : '')).toContain('closes as superseded by target_work_20261116')
+  })
+
+  test('open tasks without the line are denied as today', async () => {
+    const root = await supersededProject({ line: 'No superseded line here.' })
+    await expect(closeTrack(makeGuard(root), root, 'Superseded work')).rejects.toThrow(/open task/)
+  })
+
+  test('a plan line with metadata status done is denied', async () => {
+    const root = await supersededProject({ metadata: '{"status":"done"}' })
+    await expect(closeTrack(makeGuard(root), root, 'Superseded work')).rejects.toThrow(/open task/)
+  })
+
+  test('near-miss plan lines are denied', async () => {
+    const bad = [
+      'superseded by target_work_20261116, PM 2026-11-16.',
+      ' Superseded by target_work_20261116, PM 2026-11-16.',
+      '> Superseded by target_work_20261116, PM 2026-11-16.',
+      '## Superseded by target_work_20261116',
+      '- [ ] Superseded by target_work_20261116',
+      'Superseded by',
+    ]
+    for (const line of bad) {
+      const root = await supersededProject({ line })
+      await expect(closeTrack(makeGuard(root), root, 'Superseded work')).rejects.toThrow(/open task/)
+    }
+  })
+
+  test('a mixed close is denied, and the deny names only the open track', async () => {
+    const root = await supersededProject()
+    const guard = makeGuard(root)
+    const both = SUPERSEDED_TRACKS
+      .replace('- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+      .replace('- [~] **Track: Open work**', '- [x] **Track: Open work**')
+    const deny = await writeRegistry(guard, root, both).then(() => '', (error: Error) => error.message)
+    expect(deny).toContain('Open work')
+    expect(deny).toContain('Still open')
+    expect(deny).not.toContain('Superseded work')
+  })
+
+  test('a superseded line with its own metadata done is denied beside a good superseded track', async () => {
+    const root = await supersededProject()
+    const guard = makeGuard(root)
+    const both = SUPERSEDED_TRACKS
+      .replace('- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+      .replace('- [~] **Track: Mixed work**', '- [x] **Track: Mixed work**')
+    const deny = await writeRegistry(guard, root, both).then(() => '', (error: Error) => error.message)
+    expect(deny).toContain('Mixed work')
+    expect(deny).not.toContain('"Superseded work" has')
   })
 })

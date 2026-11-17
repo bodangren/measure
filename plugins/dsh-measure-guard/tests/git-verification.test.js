@@ -73,13 +73,13 @@ test('a plan with no verified SHA has no problems', async () => {
 
 // ---- the closeout metadata check ------------------------------------------
 
-const closingOf = (tasks, metadataText) => {
+const closingOf = (tasks, metadataText, supersededBy = null) => {
   const plan = planOf(tasks)
   return {
     plan,
     tracksPath: `${ROOT}/measure/tracks.md`,
     metadataPath: `${ROOT}/measure/tracks/${TRACK_ID_OK}/metadata.json`,
-    closing: [{ entry: { name: 'Track', folder: `tracks/${TRACK_ID_OK}` }, plan }],
+    closing: [{ entry: { name: 'Track', folder: `tracks/${TRACK_ID_OK}` }, plan, supersededBy }],
     files: metadataText === undefined ? {} : { [`${ROOT}/measure/tracks/${TRACK_ID_OK}/metadata.json`]: metadataText },
   }
 }
@@ -101,6 +101,21 @@ test('missing or malformed metadata denies the close', async () => {
   const malformed = closingOf([{ marker: 'x', text: 'Done', sha: 'abcdef0' }], '{not json')
   const bad = await closeoutMetadataCheck(depsOf({ files: malformed.files }), malformed.tracksPath, malformed.closing)
   assert.match(bad.decision.deny, /is not valid JSON/)
+})
+
+test('a superseded track skips the actual_tasks equality check', async () => {
+  const mismatch = closingOf(
+    [{ marker: 'x', text: 'Done', sha: 'abcdef0' }],
+    JSON.stringify({ status: 'superseded', actual_tasks: 4 }),
+    'target_work_20261116',
+  )
+  assert.equal(await closeoutMetadataCheck(depsOf({ files: mismatch.files }), mismatch.tracksPath, mismatch.closing), null)
+})
+
+test('a track without supersededBy still denies the actual_tasks mismatch', async () => {
+  const mismatch = closingOf([{ marker: 'x', text: 'Done', sha: 'abcdef0' }], JSON.stringify({ status: 'superseded', actual_tasks: 4 }))
+  const decision = await closeoutMetadataCheck(depsOf({ files: mismatch.files }), mismatch.tracksPath, mismatch.closing)
+  assert.match(decision.decision.deny, /actual_tasks 4 but its plan has 1 completed tasks/)
 })
 
 test('a close with no plan is left to the shared core', async () => {
