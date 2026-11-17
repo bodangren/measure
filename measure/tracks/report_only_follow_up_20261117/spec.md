@@ -170,10 +170,13 @@ In `plugins/opencode-measure-guard/src/hooks/turn.ts`:
 - `FOLLOW_UP_HEAD` becomes `'measure-guard (strict): report these problems before you end the turn.'`. `isFollowUp` keeps using the constant.
 - `followUpText` becomes `reportText(FOLLOW_UP_HEAD, problems)`.
 - `reminderText` becomes `reportText('measure-guard: at the end of the last turn, these problems were open:', problems)`.
-- The comment at line 13 becomes `/** Guard mode, or strict mode after MAX_BLOCKS follow-ups: a reminder that rides on the next prompt. */`.
-- The comment at line 15 becomes `/** Strict mode: a follow-up prompt that asks the agent to report the problems. */`.
+- The comment at line 12 becomes `/** Guard mode, or strict mode after MAX_BLOCKS follow-ups: a reminder that rides on the next prompt. */`.
+- The comment at line 14 becomes `/** Strict mode: a follow-up prompt that asks the agent to report the problems. */`.
 - The comment at line 44 becomes `/** The follow-up prompt text (strict mode): the problems and the report-only line. */`.
+- The comment at line 48 becomes `/** The reminder text for the next prompt (guard mode, or strict after the follow-ups). */`.
 - The header comment at line 4 becomes `// (the follow-up prompt) through ctx.session.`.
+
+Lines 13 and 15 hold the union members of `IdleAction`. They stay unchanged.
 
 The plugin adds `reportText` to the import from `../core/guards` at line 5.
 
@@ -184,6 +187,17 @@ In `plugins/opencode-measure-guard/src/index.ts`:
 - The watch keeps the follow-up branch. It sends `ctx.session.prompt` with the report-only text.
 - `watchIdle` becomes a named export. The host still loads the default export only. The named export changes no runtime behavior.
 - The comment at line 12 becomes `// The host accepts the default export only. The named export of watchIdle serves the tests.`
+
+The doc comment of `watchIdle` at lines 84-88 becomes:
+
+```ts
+/**
+ * Runs the end-of-turn check when a session's execution ends: a follow-up
+ * prompt (strict), or a reminder that rides on the next prompt (guard mode,
+ * or strict after the follow-ups). The loop ends when the instance disposes
+ * the subscription.
+ */
+```
 
 The turn-end watch becomes:
 
@@ -210,6 +224,12 @@ The turn-end watch becomes:
   ```
 
 - The live-check paragraph at line 116 keeps its record and gains this last sentence: `After 2026-11-17 the guard mode sends no synthetic message, because the synthetic message started a turn in a finished session after a compaction.`
+
+The root `README.md:159` holds one text change in the plugin list:
+
+```
+- **End-of-turn check:** after each turn, a follow-up prompt (strict mode, at most 2 per turn) or a reminder that rides on the next prompt (guard mode) lists done tasks with no SHA and changed files that no task covers.
+```
 
 ### 4. Claude Code mod
 
@@ -279,6 +299,8 @@ The case asserts:
 
 The case reads `watchIdle` with a dynamic import in the case body: `const { watchIdle } = await import('../src/index')`. A failed load fails that case only. The fake context uses the type `Parameters<typeof watchIdle>[0]` and one cast.
 
+The case loads `src/index.ts`, which imports `@opencode/plugin`. The package has no `node_modules` folder. Bun resolves that package from its install cache, at `/home/daniebo/.bun/install/cache/@opencode/plugin@2.3.0` on this host. A cold cache needs the network. If the load fails, the worker records the failure as an infrastructure failure in `package-test.log`. The worker never records the case as a pass.
+
 The OpenCode package adds one case that the core stop block starts with `FOLLOW_UP_HEAD`. The two heads stay equal.
 
 The tests that pin the old head change:
@@ -321,7 +343,7 @@ Run the two heavy-run gates with no shell redirection. The failure V18 of allow-
 - **FR-6 (the records).** `CHANGELOG.md` gets one entry as the first of the list under the `### Bug Fixes` heading of `## Unreleased`. The entry has this exact text (one physical line):
 
   ```
-  * **report-only follow-up:** the measure-guard end-of-turn text now reports the open problems instead of ordering a fix. The shared core holds the line "Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to." The two problem texts state the fact and the usual fix as information. The OpenCode plugin sends no synthetic message at the turn end, so no turn starts in a finished session. The Claude Code mod and the DSH adapter use the same text. Cause: a guard prompt started a new turn in a finished build session on 2026-11-17, and the session committed and pushed with no orchestrator check. Track `report_only_follow_up_20261117`.
+  * **report-only follow-up:** the measure-guard end-of-turn text now reports the open problems instead of ordering a fix. The shared core holds the line "Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to." The two problem texts state the fact and the usual fix as information. The OpenCode plugin sends no synthetic message at the turn end, so a reminder no longer starts a turn in a finished session. The strict follow-up prompt still starts a turn, up to `MAX_BLOCKS` times per user turn. The Claude Code mod and the DSH adapter use the same text. Cause: a guard prompt started a new turn in a finished build session on 2026-11-17, and the session committed and pushed with no orchestrator check. Track `report_only_follow_up_20261117`.
   ```
 
   `README.md` line 33: replace its first sentence, up to and including its closing bracket and full stop, with:
