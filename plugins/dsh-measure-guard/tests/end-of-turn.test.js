@@ -9,8 +9,20 @@ import { ALLOW, PLAN, TRACK_ID, TRACKS } from './fixtures.js'
 import { parseAllowList, parsePlan, parseTracks } from '../src/core/parse.ts'
 import { Agents, Turns } from '../src/state.js'
 import { onTurnStopping } from '../src/guard.js'
-import { endTurnHandler } from '../src/context.js'
-import { MAX_BLOCKS } from '../src/core/guards.ts'
+import { endTurnHandler, reminderText } from '../src/context.js'
+import { MAX_BLOCKS, REPORT_ONLY, turnProblems } from '../src/core/guards.ts'
+
+/** The report-only line, as a literal. */
+const REPORT_ONLY_TEXT = 'Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to.'
+
+/** The words that no report-only text may use as an order. */
+const ORDER_WORDS = [/\bfix (these|them)\b/i, /\bcommit the\b/i, /\bpush\b(?! because)/i, /\brevert the\b/i, /\bmark the task\b/i]
+
+/** A report text holds the report line and no order word. */
+const assertReportOnly = text => {
+  assert.ok(text.includes(REPORT_ONLY_TEXT), 'the text holds the report line')
+  for (const word of ORDER_WORDS) assert.doesNotMatch(text, word)
+}
 
 const tracks = parseTracks(TRACKS)
 const ROOT = '/repo'
@@ -152,6 +164,35 @@ test('guard records the problems and arms the reminder through endTurnHandler', 
   assert.match(reminder, /src\/app\.js/)
 })
 
+test('the report line is the export', () => {
+  assert.equal(REPORT_ONLY, REPORT_ONLY_TEXT)
+})
+
+test('the texts of the real problems are report-only', () => {
+  const unsha = turnProblems(snapshotOf(UNSHA_PLAN), [], [])
+  const outside = turnProblems(snapshotOf(NO_TASK_PLAN), ['src/app.js'], [])
+  assert.equal(unsha.length, 1)
+  assert.equal(outside.length, 1)
+  assertReportOnly(reminderText(unsha))
+  assertReportOnly(reminderText(outside))
+  assertReportOnly(reminderText([...unsha, ...outside]))
+})
+
+test('the strict steer is report-only', async () => {
+  const agent = agentOf()
+  const deps = depsOf({ mode: 'strict', plan: NO_TASK_PLAN, status: [' M src/app.js'] })
+  await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
+  assertReportOnly(agent.steered[0].content[0].text)
+})
+
+test('the guard reminder is report-only', async () => {
+  const agent = agentOf()
+  const deps = depsOf({ plan: NO_TASK_PLAN, status: [' M src/app.js'] })
+  await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
+  endTurnHandler(agent.id, ROOT, { type: 'turn/end', data: { turn: 1 } }, deps)
+  assertReportOnly(deps.state.agents.sessionOf(agent.id).reminder ?? '')
+})
+
 test('strict steers once and twice, and the third turn-stopping does not steer', async () => {
   const agent = agentOf()
   const deps = depsOf({ mode: 'strict', plan: NO_TASK_PLAN, status: [' M src/app.js'] })
@@ -159,7 +200,7 @@ test('strict steers once and twice, and the third turn-stopping does not steer',
   await onTurnStopping(deps, { agent, root: ROOT, payload: payloadOf() })
   assert.equal(agent.steered.length, 1)
   assert.equal(deps.state.turns.turnOf(agent.id, 1).blocks, 1)
-  assert.match(agent.steered[0].content[0].text, /do not end the turn yet/)
+  assert.match(agent.steered[0].content[0].text, /report these problems before you end the turn/)
   assert.match(agent.steered[0].content[0].text, /src\/app\.js/)
   assert.equal(agent.steered[0].role, 'user')
 

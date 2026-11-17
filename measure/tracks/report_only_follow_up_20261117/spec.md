@@ -299,7 +299,7 @@ The case asserts:
 
 The case reads `watchIdle` with a dynamic import in the case body: `const { watchIdle } = await import('../src/index')`. A failed load fails that case only. The fake context uses the type `Parameters<typeof watchIdle>[0]` and one cast.
 
-The case loads `src/index.ts`, which imports `@opencode/plugin`. The package has no `node_modules` folder. Bun resolves that package from its install cache, at `/home/daniebo/.bun/install/cache/@opencode/plugin@2.3.0` on this host. A cold cache needs the network. If the load fails, the worker records the failure as an infrastructure failure in `package-test.log`. The worker never records the case as a pass.
+The case loads `src/index.ts`, which imports `@opencode/plugin`. The package has no `node_modules` folder, and Bun does not auto-install a bare import for a project file. The test therefore registers a virtual module for `@opencode/plugin` with `Bun.plugin` before the import. The stub holds `export const Plugin = { define: (x) => x };`. The case needs no install and no network. The install cache holds `@opencode/plugin` at `/home/daniebo/.bun/install/cache/@opencode/plugin@2.3.0`. If the load still fails, the worker records the failure as an infrastructure failure in `package-test.log`. The worker never records the case as a pass.
 
 The OpenCode package adds one case that the core stop block starts with `FOLLOW_UP_HEAD`. The two heads stay equal.
 

@@ -306,6 +306,14 @@ export const unshaTasks = (plan: Plan): string[] =>
     .map(task => task.text)
 
 
+/** The report-only line: the problems are information, never an order. */
+export const REPORT_ONLY = 'Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to.'
+
+
+/** The report text: a head, the problems as list items, and the report-only line. */
+export const reportText = (head: string, problems: readonly string[]): string => [head, ...problems.map(one => `- ${one}`), REPORT_ONLY].join('\n')
+
+
 /**
  * The end-of-turn problems: a `[x]` task with no SHA that was not one at the
  * turn start, and files changed during the turn while no task has `[~]`.
@@ -317,13 +325,13 @@ export const turnProblems = (snapshot: Snapshot, changed: readonly string[], kno
   if (active !== null) {
     const known = new Set(knownUnsha)
     for (const text of unshaTasks(active.plan).filter(one => !known.has(one))) {
-      problems.push(`"${text}" is [x] but has no commit SHA. Commit the task, and add the 7-character SHA to its line in plan.md.`)
+      problems.push(`"${text}" is [x] but has no commit SHA. The usual fix is a commit of the task and its 7-character SHA on its line in plan.md.`)
     }
   }
   const outside = changed.filter(path => !isAllowed(snapshot, path))
   if (outside.length > 0 && (active === null || currentTask(active.plan) === null)) {
     const listed = outside.slice(0, 5).join(', ') + (outside.length > 5 ? `, and ${outside.length - 5} more` : '')
-    problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. Mark the task [~] in plan.md (or create a track), or revert the changes.`)
+    problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. The usual fix is a [~] task in plan.md (or a new track), or a revert of the changes.`)
   }
   return problems
 }
@@ -338,7 +346,7 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
   if (problems.length === 0) return { block: null, report: false }
   if (mode === 'strict' && blocks < MAX_BLOCKS) {
     return {
-      block: ['measure-guard (strict): do not end the turn yet. Fix these problems first:', ...problems.map(one => `- ${one}`)].join('\n'),
+      block: reportText('measure-guard (strict): report these problems before you end the turn.', problems),
       report: false,
     }
   }
