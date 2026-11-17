@@ -22,6 +22,7 @@ import {
   taskKey,
   tddDecision,
   trackCloseDecision,
+  supersededTarget,
   shellWritePaths,} from './core/guards'
 import { gitStatus, loadSnapshot, planPathOf, readOrEmpty } from './snapshot'
 import { endTurn, isFollowUp, startTurn } from './hooks/turn'
@@ -66,6 +67,15 @@ const within = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> =>
     }
     promise.then(done, () => done(fallback))
   })
+
+/** The text of a file; null when the file cannot be read. */
+const readOrNone = async (path: string): Promise<string | null> => {
+  try {
+    return await readFile(path, 'utf8')
+  } catch {
+    return null
+  }
+}
 
 export class Guard {
   private snapshot: SessionSnapshot | null = null
@@ -286,7 +296,13 @@ export class Guard {
     const closing: ClosingTrack[] = []
     for (const entry of closedTracks(before, after)) {
       const planPath = await planPathOf(joinPath(dirname(path), entry.folder))
-      closing.push({ entry, plan: planPath === null ? null : parsePlan(await readFile(planPath, 'utf8')) })
+      const planText = planPath === null ? null : await readOrNone(planPath)
+      const metadataText = await readOrNone(joinPath(dirname(path), entry.folder, 'metadata.json'))
+      closing.push({
+        entry,
+        plan: planText === null ? null : parsePlan(planText),
+        supersededBy: planText === null ? null : supersededTarget(planText, metadataText),
+      })
     }
     return trackCloseDecision(context, closing)
   }

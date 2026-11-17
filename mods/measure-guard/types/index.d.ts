@@ -122,7 +122,7 @@ export type GuardContext = {
 export type Decision = { deny: string } | null
 
 /** A track that an edit of tracks.md changes to `[x]`, with its plan (null: not found). */
-export type ClosingTrack = { entry: TrackEntry; plan: Plan | null }
+export type ClosingTrack = { entry: TrackEntry; plan: Plan | null; supersededBy?: string | null }
 
 /** The closeout guard's answer for tracks.md: the decision, and the `[b]` list on an allow. */
 export type TrackClose = { decision: Decision; note: string | null }

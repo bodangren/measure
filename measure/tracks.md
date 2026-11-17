@@ -467,3 +467,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Role spawn routes**
   *Link: [./archive/role_spawn_route_20261117/](./archive/role_spawn_route_20261117/)*
   *Role spawn routes: the OpenCode measure-guard plugin blocks a Measure role spawn whose model is not an approved route of that role in ~/.config/ra-quota/routes.json. The guard maps each agent to a ra-quota role, and an unknown role, no model, or an unreadable routes file gives a warning (PM order, 2026-11-17)*
+
+- [x] **Track: Superseded closeout**
+  *Link: [./archive/superseded_close_20261117/](./archive/superseded_close_20261117/)*
+  *Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a "Superseded by <target>" line and metadata.json status "superseded". The shared core gains supersededTarget, the three adapters set supersededBy from the plan text and metadata.json, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)*

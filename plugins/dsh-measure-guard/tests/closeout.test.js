@@ -345,3 +345,110 @@ test('the same tools on other files keep the fail-open closeout behavior', async
     assert.equal(decision.denial, undefined, String(tool))
   }
 })
+
+// ---- the superseded closeout (superseded_close_20261117) -------------------
+
+const SUPERSEDED_LINE = 'Superseded by target_work_20261116, PM 2026-11-16.'
+
+const SUPERSEDED_TRACKS = `# Project Tracks
+
+- [~] **Track: Superseded work**
+  *Link: [./tracks/superseded_1/](./tracks/superseded_1/)*
+
+- [~] **Track: Open work**
+  *Link: [./tracks/open_2/](./tracks/open_2/)*
+
+- [~] **Track: Mixed work**
+  *Link: [./tracks/mixed_3/](./tracks/mixed_3/)*
+`
+
+const pathOf = (name, file) => `${ROOT}/measure/tracks/${name}/${file}`
+
+const supersededPlan = (line = SUPERSEDED_LINE, task = '- [~] Task: Left open') =>
+  `# Plan\n\n${line}\n\n## Phase 1: Work\n\n${task}\n- [ ] Task: Also open\n`
+
+const openWorkPlan = `# Plan
+
+## Phase 1: Work
+
+- [ ] Task: Still open
+`
+
+const supersededFiles = ({ line, task, metadata } = {}) => {
+  const files = {
+    [REGISTRY]: SUPERSEDED_TRACKS,
+    [pathOf('superseded_1', 'plan.md')]: supersededPlan(line, task),
+    [pathOf('open_2', 'plan.md')]: openWorkPlan,
+    [pathOf('mixed_3', 'plan.md')]: supersededPlan(line, task),
+    [pathOf('mixed_3', 'metadata.json')]: JSON.stringify({ status: 'done' }),
+  }
+  if (metadata !== null) {
+    files[pathOf('superseded_1', 'metadata.json')] = metadata ?? JSON.stringify({ status: 'superseded', actual_tasks: 0 })
+  }
+  return files
+}
+
+const closedRegistry = (...names) =>
+  names.reduce((text, name) => text.replace(`- [~] **Track: ${name}**`, `- [x] **Track: ${name}**`), SUPERSEDED_TRACKS)
+
+test('a superseded track with open tasks closes, and the note names the target', async () => {
+  const deps = depsOf({ files: supersededFiles() })
+  const { decision, note } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work')))
+  assert.equal(decision, null)
+  assert.match(note, /Superseded tracks:/)
+  assert.match(note, /"Superseded work" closes as superseded by target_work_20261116; its open tasks stay open\./)
+})
+
+test('a superseded track with no open task still gets the note item', async () => {
+  const deps = depsOf({ files: supersededFiles({ task: '- [x] Task: Done' }) })
+  const { decision, note } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work')))
+  assert.equal(decision, null)
+  assert.match(note, /closes as superseded by target_work_20261116/)
+})
+
+test('open tasks without the line are denied as today', async () => {
+  const deps = depsOf({ files: supersededFiles({ line: 'No superseded line here.' }) })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work')))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /open task/)
+})
+
+test('a plan line with metadata status done is denied', async () => {
+  const deps = depsOf({ files: supersededFiles({ metadata: JSON.stringify({ status: 'done' }) }) })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work')))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /open task/)
+})
+
+test('near-miss plan lines are denied', async () => {
+  const bad = [
+    'superseded by target_work_20261116, PM 2026-11-16.',
+    ' Superseded by target_work_20261116, PM 2026-11-16.',
+    '> Superseded by target_work_20261116, PM 2026-11-16.',
+    '## Superseded by target_work_20261116',
+    '- [ ] Superseded by target_work_20261116',
+    'Superseded by',
+  ]
+  for (const line of bad) {
+    const deps = depsOf({ files: supersededFiles({ line }) })
+    const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work')))
+    assert.notEqual(decision, null, line)
+  }
+})
+
+test('a mixed close is denied, and the deny names only the open track', async () => {
+  const deps = depsOf({ files: supersededFiles() })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work', 'Open work')))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /Open work/)
+  assert.match(decision.deny, /Still open/)
+  assert.doesNotMatch(decision.deny, /Superseded work/)
+})
+
+test('a superseded line with its own metadata done is denied beside a good superseded track', async () => {
+  const deps = depsOf({ files: supersededFiles() })
+  const { decision } = await closeoutGuardFor(deps, agent, ROOT, mutationOf(REGISTRY, closedRegistry('Superseded work', 'Mixed work')))
+  assert.notEqual(decision, null)
+  assert.match(decision.deny, /Mixed work/)
+  assert.doesNotMatch(decision.deny, /"Superseded work" has/)
+})
