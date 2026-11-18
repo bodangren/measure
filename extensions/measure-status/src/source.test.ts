@@ -45,6 +45,15 @@ describe('the source files', () => {
   })
 })
 
+describe('the panel entry', () => {
+  test('holds no writeFile, listDir, or fetch( call', () => {
+    const text = sources['../panel/main.ts'] ?? ''
+    expect(text, 'panel writeFile').not.toContain('writeFile')
+    expect(text, 'panel listDir').not.toContain('listDir')
+    expect(text, 'panel fetch(').not.toContain('fetch(')
+  })
+})
+
 describe('the model modules', () => {
   test('import no SDK and touch no DOM', () => {
     const offending: string[] = []

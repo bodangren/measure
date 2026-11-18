@@ -1,7 +1,7 @@
 // Task 2.6: adversarial tests of the board data model. Every fixture text is
 // invented; no real repo data appears here. The file covers hostile registry
 // text, hostile plans, a host that fails with seeded error codes, and hostile
-// folder lists. One open defect is marked `test.fails` and routed to Green.
+// folder lists. No open defect remains; Green closed the note pin.
 import { describe, expect, test } from 'vitest'
 import { buildBoard, classifyTrack, type PlanState, type TrackInput } from './board'
 import { MAX_IN_FLIGHT, limiter, loadRepo, type BoardHost, type RepoState } from './load'
@@ -342,7 +342,7 @@ describe('hostile plans', () => {
     const card = classifyTrack(input('tracks/wait_1', ' ', { kind: 'plan', plan }))
     expect(card.column).toBe('blocked')
     expect(card.line).toBe('Task: wait deferred:')
-    expect(card.note).toBe('Open tasks before the last closed task: 1.')
+    expect(card.note).toBe('1 open task, no current task.')
   })
 
   test('ignores a capital X task marker in a plan', () => {

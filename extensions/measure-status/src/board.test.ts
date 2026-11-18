@@ -211,7 +211,7 @@ describe('R3b: an open [b] task', () => {
       position: null,
       marker: null,
       taskText: null,
-      note: 'Open tasks before the last closed task: 1.',
+      note: '1 open task, no current task.',
     })
   })
 
@@ -365,7 +365,7 @@ describe('the two real plan shapes', () => {
       position: null,
       marker: null,
       taskText: null,
-      note: 'Open tasks before the last closed task: 3.',
+      note: '3 open tasks, no current task.',
     })
   })
 
@@ -375,7 +375,7 @@ describe('the two real plan shapes', () => {
       column: 'in-progress',
       position: null,
       line: null,
-      note: 'Open tasks before the last closed task: 5.',
+      note: '5 open tasks, no current task.',
     })
   })
 
