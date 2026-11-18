@@ -423,7 +423,7 @@ def closeout_candidates(repo: Path, track_regex: str) -> list[str]:
         if pattern and not pattern.search(track_dir.name):
             continue
         plan = track_dir / "plan.md"
-        if plan.exists() and track_incomplete(plan) == 0:
+        if plan.exists() and not plan_closeout_feedback(plan):
             result.append(track_dir.name)
     return result
 
@@ -828,13 +828,32 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
         return [f"missing closeout plan: {plan_path}"]
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
     feedback: list[str] = []
+    sha_pattern = re.compile(r"\b[0-9a-f]{7,40}\b")
+    # Each processed line is (indent, status, covered). A parent covers a
+    # sub-box when it is an [x] line that is itself covered.
+    processed: list[tuple[int, str, bool]] = []
     for full_line, status, task in re.findall(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+        # The regex may capture a newline before a top-level checkbox. Measure
+        # only the horizontal white space before the checkbox on its own line.
+        prefix = full_line[: full_line.index("- [")]
+        indent = len(prefix[prefix.rfind("\n") + 1 :].expandtabs(4))
+        has_sha = sha_pattern.search(task) is not None
         if "deferred" in task.lower():
+            # A deferred line gives no feedback. It stays a parent and is covered.
+            processed.append((indent, status, True))
             continue
         if status != "x":
             feedback.append(f"plan task is not complete: {full_line.strip()}")
-        elif not re.search(r"\b[0-9a-f]{7,40}\b", task):
+            processed.append((indent, status, False))
+            continue
+        if indent == 0:
+            covered = has_sha
+        else:
+            parent = next((item for item in reversed(processed) if item[0] < indent), None)
+            covered = has_sha or (parent is not None and parent[1] == "x" and parent[2])
+        if not covered:
             feedback.append(f"completed plan task lacks commit SHA: {full_line.strip()}")
+        processed.append((indent, status, covered))
     return feedback
 
 

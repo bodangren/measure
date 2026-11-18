@@ -88,7 +88,7 @@ Run the two heavy-run gates with no shell redirection. Record the `closeout_cand
 
 - The new test file fails before the change and passes after it.
 - The two heavy-run gates exit 0 with no shell redirection.
-- The smoke count before the change is 16; the count after the change is greater.
+- The smoke log records the `closeout_candidates` count of both runs. The count after the change equals the number of tracks whose `plan_closeout_feedback` is `[]`.
 - The closeout check fails only on the missing closeout manifest.
 
 ## Out of Scope
