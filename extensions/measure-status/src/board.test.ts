@@ -537,6 +537,11 @@ describe('FR-16, D2: the Done group', () => {
     expect(moved).toMatchObject({ column: 'done', archived: true })
   })
 
+  test('marks a Done card with no folder as not archived', () => {
+    const none = classifyTrack(input({ registryMarker: 'x', folder: null }))
+    expect(none).toMatchObject({ column: 'done', archived: false })
+  })
+
   test('shows the 5 newest closed tracks, newest first', () => {
     const board = buildBoard(
       'invented-repo',

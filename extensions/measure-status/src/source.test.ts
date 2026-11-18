@@ -31,6 +31,8 @@ const MODEL = [
   './render.ts',
   './page-state.ts',
   './comment-box.ts',
+  './comment.ts',
+  './pm-target.ts',
 ]
 
 const entries = () => Object.entries(sources)

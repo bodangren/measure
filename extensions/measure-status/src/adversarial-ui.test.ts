@@ -463,19 +463,17 @@ describe('hostile comment text on the send path', () => {
     expect(host.calls.length).toBe(0)
   })
 
-  // Boundary, pinned: `String.trim` strips white space, not C0 controls, bidi
-  // marks, or zero-width characters. A text of only these characters passes
-  // the empty rule and sends an invisible message. The finding of the run
-  // records this gap. Change this test with a Green fix.
-  test('sends a text of only control characters', async () => {
+  // Boundary, pinned: a text of only C0 controls, bidi marks, or
+  // zero-width characters must refuse the send. Green owns the visible
+  // character rule in canSendComment and isSendDisabled.
+  test('refuses a text of only control characters', async () => {
     const controls = '\u0000\u0007\u0001\u202E\u200B'
-    expect(canSendComment(controls)).toBe(true)
-    expect(isSendDisabled(controls, false)).toBe(false)
+    expect(canSendComment(controls)).toBe(false)
+    expect(isSendDisabled(controls, false)).toBe(true)
     const host = okHost()
     const result = await createCommentSender(host).send(comment({ text: controls }))
-    expect(result.ok).toBe(true)
-    expect(host.calls.length).toBe(1)
-    expect(host.calls[0]?.params.text).toContain('Daniel: \u0000')
+    expect(result.ok).toBe(false)
+    expect(host.calls.length).toBe(0)
   })
 })
 
