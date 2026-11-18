@@ -645,6 +645,16 @@ class DispositionsLineTest(unittest.TestCase):
     def test_normal_full_dispositions_line_passes(self) -> None:
         self.assert_passes(self.block(f"dispositions: {LONG_VALID_LINE}"))
 
+    def test_normal_letter_finding_id_passes(self) -> None:
+        """A non-F letter ID (M1) is a valid finding ID."""
+        self.assert_passes(self.block("dispositions: M1=FIX"))
+
+    def test_normal_mixed_letter_ids_pass(self) -> None:
+        """Mixed letter IDs share one valid dispositions line."""
+        self.assert_passes(
+            self.block("dispositions: M1=FIX; A1=DECLINE; B2=CONTEST(evidence text); F3=ESCALATE(reason text)")
+        )
+
     # -------------------------------------------------------------------- edge
     def test_edge_invalid_values_exit_1(self) -> None:
         for value in (
@@ -657,7 +667,7 @@ class DispositionsLineTest(unittest.TestCase):
             "F1=FIX(done)",
             "",
             "F0=FIX",
-            "X1=FIX",
+            "f1=FIX",
             "F1=FIX;",
         ):
             with self.subTest(value=value):
