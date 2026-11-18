@@ -1,19 +1,25 @@
 // The spawn-route guard maps measure-phase-acceptance to the phase-acceptance
 // role and measure-closeout to the record role of ~/.config/ra-quota/routes.json;
 // vision-review is a known role with no agent yet (PM request, 2026-11-18).
+// measure-ux-browser-review maps to review-c, and a picture brief also accepts
+// vision-review (PM add-on, 2026-11-18).
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { KNOWN_ROLES, ROLE_OF_AGENT, approvedRoutes, roleSpawnDecision } from '../src/core/guards.ts'
+import { KNOWN_ROLES, ROLE_OF_AGENT, approvedRoutes, roleSpawnDecision, roleSpawnOf } from '../src/core/guards.ts'
 
 const ROUTES = JSON.stringify({
   roles: {
     acceptance: [{ route: 'opencode-go/deepseek-v4-pro#high' }],
     'phase-acceptance': [{ route: 'opencode-go/glm-5.3#high' }],
     record: [{ route: 'opencode-go/deepseek-v4.1-flash' }],
+    'review-c': [{ route: 'opencode-go/glm-4.5#high' }],
     'vision-review': [{ route: 'claude-code/claude-opus-5-5[1m]#high' }],
   },
 })
+
+const REVIEW_C = 'opencode-go/glm-4.5#high'
+const VISION = 'claude-code/claude-opus-5-5[1m]#high'
 
 const context = { snapshot: null, mode: 'guard', setupChoice: null, guardsOff: null }
 
@@ -69,4 +75,47 @@ test('a model outside phase-acceptance is denied and names that pick role', () =
   assert.match(decision.deny, /not an approved route/)
   assert.match(decision.deny, /opencode-go\/glm-5\.3#high/)
   assert.match(decision.deny, /ra-quota pick phase-acceptance/)
+})
+
+test('measure-ux-browser-review maps to the review-c role', () => {
+  assert.equal(ROLE_OF_AGENT['measure-ux-browser-review'], 'review-c')
+})
+
+test('the spawn prompt is read from the subagent input', () => {
+  assert.deepEqual(roleSpawnOf('subagent', { agent: 'measure-ux-browser-review', model: REVIEW_C, prompt: 'Review the screenshot' }), {
+    agent: 'measure-ux-browser-review',
+    model: REVIEW_C,
+    prompt: 'Review the screenshot',
+  })
+})
+
+test('a text brief accepts a review-c route with no warning', () => {
+  const { decision, note } = roleSpawnDecision(context, ROUTES, {
+    agent: 'measure-ux-browser-review',
+    model: REVIEW_C,
+    prompt: 'Check the API response shape',
+  })
+  assert.equal(decision, null)
+  assert.equal(note, null)
+})
+
+test('a text brief refuses a vision-review-only route', () => {
+  const { decision } = roleSpawnDecision(context, ROUTES, {
+    agent: 'measure-ux-browser-review',
+    model: VISION,
+    prompt: 'Check the API response shape',
+  })
+  assert.ok(decision !== null, 'the spawn must be denied')
+  assert.match(decision.deny, /not an approved route/)
+  assert.match(decision.deny, /opencode-go\/glm-4\.5#high/)
+})
+
+test('a picture brief accepts a vision-review route', () => {
+  const { decision, note } = roleSpawnDecision(context, ROUTES, {
+    agent: 'measure-ux-browser-review',
+    model: VISION,
+    prompt: 'Review the screenshot for layout bugs',
+  })
+  assert.equal(decision, null)
+  assert.equal(note, null)
 })

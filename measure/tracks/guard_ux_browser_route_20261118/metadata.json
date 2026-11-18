@@ -1,0 +1,13 @@
+{
+  "track_id": "guard_ux_browser_route_20261118",
+  "type": "fix",
+  "status": "in_progress",
+  "created_at": "2026-11-18T00:00:00Z",
+  "updated_at": "2026-11-18T00:00:00Z",
+  "description": "Guard UX browser route: map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "completed": null,
+  "lane": "light",
+  "deviation_notes": null
+}

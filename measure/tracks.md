@@ -16,6 +16,10 @@ This file tracks all major tracks for the Measure project.
   *Link: [./tracks/guard_phase_acceptance_20261118/](./tracks/guard_phase_acceptance_20261118/)*
   *Map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)*
 
+- [~] **Track: Guard UX browser route**
+  *Link: [./tracks/guard_ux_browser_route_20261118/](./tracks/guard_ux_browser_route_20261118/)*
+  *Map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)*
+
 ---
 
 ## Cancelled Tracks
