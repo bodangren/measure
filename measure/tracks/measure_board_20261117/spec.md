@@ -435,6 +435,9 @@ The mockup shows each rule at 390, 980, and 1280 px. The final page keeps the ru
 | `src/board.ts` | The column rules, the card, the sort, the cap, and the counts (FR-4, FR-5, FR-8). |
 | `src/age.ts` | The last change and `formatAge` (FR-6). |
 | `src/load.ts` | The loader over `readFile`, `stat`, and `listDir`, with the call limit and the error isolation (FR-10). |
+| `src/send.ts` | The send path of D1: the service name, the method name, one send per click, and the sent and error lines. |
+| `src/page-state.ts` | The repo states of a reload. The old cards stay until the new data of the repo arrives (FR-10). |
+| `src/comment-box.ts` | The comment box rules of D1. One box opens at a time. The text and the sent or error line stay. |
 | `src/styles.ts` | The CSS string (FR-12). |
 | `src/render.ts` | Pure functions that return escaped HTML for the board (FR-5, FR-7, FR-8). |
 | `src/measure.ts`, `src/band.ts` | The band for the open project. Dead view-model code leaves. |
@@ -442,7 +445,7 @@ The mockup shows each rule at 390, 980, and 1280 px. The final page keeps the ru
 | `panel/index.html` | The entry. A minimal shell. |
 | `mockup/board.html` | The static mockup of Phase 1, with invented fixture data. |
 | `preview/preview.html`, `preview/preview.ts` | A page without a host that renders the real board code from invented data. The review uses it. |
-| `service/main.ts`, `service/main.js` | The local service that sends the comment to the PM session (FR-16, D1). The host builds it with `openchamber-guest-bundle --node`. |
+| `service/main.ts`, `service/main.js` | The local service that sends the comment to the PM session (FR-16, D1). It exports `createHandler`. It checks the bearer token on every route. The host builds it with `openchamber-guest-bundle --node`. |
 
 Exports of the new code. The Red role writes the tests against these names. A module can hold more functions that it does not export. The types `Marker`, `Plan`, and `Task` come from `src/types.ts`.
 
@@ -507,6 +510,7 @@ export type Card = {
   lastChange: number | null        // milliseconds
   doneDate: string | null
   doneSource: DoneSource | null
+  archived: boolean                // D2: true only for a Done track under `archive/`
 }
 export type PlanState = { kind: 'plan'; plan: Plan } | { kind: 'missing' } | { kind: 'unreadable' }
 export type TrackInput = {
@@ -518,13 +522,14 @@ export type TrackInput = {
   lastChange: number | null
   doneDate: string | null
   doneSource: DoneSource | null
+  now: number                      // the time of the load in milliseconds; required
 }
 export const currentIndex: (tasks: readonly Task[]) => number | null     // FR-4 current task
 export const classifyTrack: (input: TrackInput) => Card                   // FR-4, FR-5
 export type RepoBoard = { repo: string; cards: readonly Card[] }          // card order of FR-2
 export const buildBoard: (repo: string, inputs: readonly TrackInput[]) => RepoBoard
-export type ColumnView = { column: Column; label: string; total: number; shown: readonly Card[]; hidden: number }
-export const columnView: (board: RepoBoard, column: Column, expanded: boolean) => ColumnView   // FR-8; Done ignores `expanded`
+export type ColumnView = { column: Column; label: string; total: number; shown: readonly Card[]; hidden: number; stale: readonly Card[]; staleOpen: boolean }
+export const columnView: (board: RepoBoard, column: Column, expanded: boolean, staleOpen: boolean, now: number) => ColumnView   // FR-8; Done ignores `expanded`
 export type DoneSummary = { shown: readonly Card[]; more: number; archived: number; notArchived: number }
 export const doneSummary: (board: RepoBoard, now: number) => DoneSummary   // FR-16, D2
 export const blockedTracks: (boards: readonly RepoBoard[]) => number     // rail badge (FR-9)
@@ -554,15 +559,52 @@ export type UiState = {
   open: Readonly<Record<string, boolean>>        // repo id: section opened or closed by the user
   doneOpen: Readonly<Record<string, boolean>>    // repo id: Done column open
   expanded: Readonly<Record<string, boolean>>    // `<repo id>/<column>`: all cards shown
+  staleOpen?: Readonly<Record<string, boolean>>  // `<repo id>/<column>`: stale group open
+  doneGroupOpen?: Readonly<Record<string, boolean>>   // repo id: closed Done group open
 }
-export type PageView = { states: readonly RepoState[]; ui: UiState; now: number; busy: boolean }
+export type PageView = { states: readonly RepoState[]; ui: UiState; now: number; busy: boolean; comments?: CommentMap }
 export const GRANT_BANNER: string                                         // text of the NOT_GRANTED banner
 export const escapeHtml: (text: string) => string
 export const sectionOpen: (state: RepoState, ui: UiState) => boolean      // FR-7
-export type CommentUi = { status: 'idle' | 'sending' | 'sent' | 'error'; sentAt: number | null; error: string | null }
-export const renderCard: (card: Card, now: number, comment?: CommentUi) => string
-export const renderSection: (state: RepoState, ui: UiState, now: number) => string
+export type CommentUi = { status: 'idle' | 'sending' | 'sent' | 'error'; sentAt: number | null; error: string | null; open: boolean; disabled: boolean }
+export type CommentMap = Readonly<Record<string, CommentUi>>              // D1: card key to comment state
+export const renderCard: (card: Card, now: number, comment?: CommentUi, key?: string) => string
+export const renderSection: (state: RepoState, ui: UiState, now: number, comments?: CommentMap) => string
 export const renderPage: (view: PageView) => string                       // shows GRANT_BANNER for a NOT_GRANTED state
+
+// src/send.ts (FR-16, D1)
+export const SEND_SERVICE = 'measure-status'
+export const SEND_METHOD = 'sendComment'
+export type SendHost = {
+  serviceRequest(service: string, method: string, params: { sessionId: string; text: string }): Promise<unknown>
+}
+export type SendResult =
+  | { ok: true; sentAt: number; line: string }
+  | { ok: false; reason: 'send-failed' | 'empty-text' | 'too-long' | 'busy'; code: string; line: string }
+export type CommentSender = { readonly sending: boolean; send: (input: CommentInput) => Promise<SendResult> }
+export const formatSentLine: (sentAt: number) => string                  // local time of the page: `sent HH:MM`
+export const formatSendError: (code: string, message: string) => string
+export const isSendDisabled: (text: string, sending: boolean) => boolean
+export const createCommentSender: (host: SendHost) => CommentSender      // one click sends one message
+
+// src/page-state.ts (FR-10)
+export const startLoad: (states: readonly RepoState[]) => RepoState[]     // ready boards stay; other repos load
+export const applyRepoResult: (states: readonly RepoState[], repoId: string, result: RepoState) => RepoState[]
+
+// src/comment-box.ts (FR-16, D1)
+export type CommentStatus = { status: 'idle' | 'sending' | 'sent' | 'error'; sentAt: number | null; error: string | null }
+export type CommentBoxState = { openKey: string | null; texts: Readonly<Record<string, string>>; status: Readonly<Record<string, CommentStatus>> }
+export type CommentOutcome = { ok: true; sentAt: number } | { ok: false; error: string }
+export const emptyCommentBox: () => CommentBoxState
+export const openCommentBox: (state: CommentBoxState, key: string) => CommentBoxState   // one box opens at a time
+export const escapeCommentBox: (state: CommentBoxState) => CommentBoxState              // Escape closes; text stays
+export const setCommentText: (state: CommentBoxState, key: string, text: string) => CommentBoxState
+export const startCommentSend: (state: CommentBoxState, key: string) => CommentBoxState
+export const finishCommentSend: (state: CommentBoxState, key: string, outcome: CommentOutcome) => CommentBoxState   // Send closes; sent or error line stays
+
+// service/main.ts (FR-16, D1)
+export type ServiceHost = { sessions: { send: (sessionId: string, text: string) => Promise<unknown> } }
+export const createHandler: (host: ServiceHost, token: string) => (request: IncomingMessage, response: ServerResponse) => Promise<void>   // checks the bearer token on every route
 
 // src/styles.ts
 export const BOARD_CSS: string
@@ -616,8 +658,8 @@ Daniel looked at the mockup of Phase 1 and ordered two changes. His words are in
   A line with no value stays out. Every value is plain text. No value becomes markup.
 - D1, input. An empty text or a text of only white space disables the Send button. A text longer than 2000 characters is refused with an error text. The text of the card comes from the plan files. It is plain text.
 - D1, send. One click sends one message. The button is disabled while the send runs. There is no retry loop. A failed send shows the error text and leaves the button usable.
-- D1, result. After a successful send the card shows "sent HH:MM". The time is the time of the send. The state lives in the page only. The extension stores nothing.
-- D1, grant. The manifest declares the grant of FR-1.5. The panel calls `serviceRequest`. The service calls `sessions.send` with the constant session id (R6).
+- D1, result. After a successful send the card shows "sent HH:MM". The time is the local time of the page (orchestrator decision 2026-11-18). The state lives in the page only. The extension stores nothing.
+- D1, grant. The manifest declares the grant of FR-1.5. The panel calls `serviceRequest`. The service exports `createHandler(host, token)`. It checks the bearer token on every route. It calls `sessions.send` with the constant session id (R6). It starts only as the entry of the process.
 - D1, errors. The failure gives the code of the host. The codes are `NOT_GRANTED`, `TOO_MANY_PROMPTS`, `HANDLE_UNKNOWN`, `HOST_UNAVAILABLE`, `NO_SERVICE`, `SERVICE_FAILED`, and `REQUEST_FAILED`. The card shows the code and the message.
 - D1, dialog. The host owns the text of the approval dialog. Its rows are the rows of R6. The extension gives the user a plain sentence in its README: "This extension reads the Measure files of eight repos. It sends one message to the Measure PM session when you write a comment on a blocker."
 - D1, review. Review B (security) checks this path. It checks the session id, the plain text, one send per click, and the error text.
