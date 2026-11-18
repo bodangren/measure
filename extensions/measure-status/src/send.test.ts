@@ -1,6 +1,8 @@
 // FR-16, D1: the send path of the comment. Every fixture text is
 // invented; no real repo data appears here. The host is a fake. The
-// test never calls OpenChamber and never reaches the network.
+// test never calls OpenChamber and never reaches the network. The box
+// rules (one Comment button, one open box, Escape, finished-Send close,
+// the visible state line) live in ./comment-box.test.ts.
 import { describe, expect, test } from 'vitest'
 import pkg from '../package.json'
 import { formatComment, type CommentInput } from './comment'
@@ -183,7 +185,11 @@ describe('the sent and error states', () => {
     expect(result.ok).toBe(true)
     if (result.ok !== true) throw new Error('the send must pass')
     expect(formatSentLine(result.sentAt)).toMatch(/^sent \d\d:\d\d$/)
-    expect(formatSentLine(Date.UTC(2026, 10, 18, 5, 50))).toBe('sent 05:50')
+    // The line shows the local time of the page, not UTC.
+    const stamp = Date.UTC(2026, 10, 18, 5, 50)
+    const local = new Date(stamp)
+    const pad = (n: number): string => String(n).padStart(2, '0')
+    expect(formatSentLine(stamp)).toBe(`sent ${pad(local.getHours())}:${pad(local.getMinutes())}`)
     expect(result.line).toBe(formatSentLine(result.sentAt))
   })
 
