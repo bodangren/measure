@@ -1,7 +1,7 @@
 ---
 description: Reviews spec.md and plan.md before Red starts, with a paraphrase, a zoom-out check, and a zero-decision check
 mode: subagent
-steps: 40
+steps: 64
 permissions:
   - action: edit
     resource: "*"

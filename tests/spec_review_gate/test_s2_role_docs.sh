@@ -104,7 +104,7 @@ fm_line() {
   else fail "frontmatter lacks the line [$1]"; fi
 }
 fm_line 'mode: subagent'
-fm_line 'steps: 40'
+fm_line 'steps: 64'
 fm_line 'permissions:'
 
 echo "=== frontmatter: OpenCode 2 fields only, no pinned model ==="

@@ -1,7 +1,7 @@
 ---
 description: Implements Measure Green-phase behavior after Red tests are committed
 mode: subagent
-steps: 64
+steps: 96
 permissions:
   - action: edit
     resource: "*"
