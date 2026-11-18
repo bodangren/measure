@@ -201,12 +201,13 @@ const sendComment = async (key: string): Promise<void> => {
   commentState = startCommentSend(commentState, key)
   paint()
   const result = await pending
+  const ownBoxOpen = commentState.openKey === key
   commentState = finishCommentSend(
     commentState,
     key,
     result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line },
   )
-  focusNext = { action: 'send-done', key }
+  if (ownBoxOpen) focusNext = { action: 'send-done', key }
   paint()
 }
 

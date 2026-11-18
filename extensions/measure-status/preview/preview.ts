@@ -3,6 +3,7 @@
 // bundles this file into `preview/preview.js`.
 import fixtureJson from '../mockup/fixtures.json'
 import type { Card, RepoBoard } from '../src/board'
+import { COMMENT_TEXT_MAX } from '../src/comment'
 import {
   emptyCommentBox,
   escapeCommentBox,
@@ -92,9 +93,14 @@ let focusToggleNext: { action: ToggleAction; repo: string; column?: string } | n
 /**
  * D1: the local fake sender of the preview. The preview has no host and no
  * service. The send resolves with the send time. The card then shows the
- * local sent HH:MM line of the shared renderer.
+ * local sent HH:MM line of the shared renderer. The fake sender follows the
+ * send rule of `src/send.ts`: the text needs one visible character and at
+ * most `COMMENT_TEXT_MAX` characters.
  */
 const fakeSend = async (text: string): Promise<CommentOutcome> => {
+  if (text.length > COMMENT_TEXT_MAX) {
+    return { ok: false, error: `Use ${COMMENT_TEXT_MAX} characters or fewer.` }
+  }
   if (isSendDisabled(text, false)) return { ok: false, error: 'Write a comment first.' }
   await new Promise<void>(resolve => {
     window.setTimeout(resolve, 0)
@@ -158,7 +164,10 @@ const sendComment = async (key: string): Promise<void> => {
   if (isSendDisabled(text, sending)) {
     commentState = finishCommentSend(commentState, key, {
       ok: false,
-      error: 'Write a comment first.',
+      error:
+        text.length > COMMENT_TEXT_MAX
+          ? `Use ${COMMENT_TEXT_MAX} characters or fewer.`
+          : 'Write a comment first.',
     })
     paint()
     return
@@ -169,8 +178,9 @@ const sendComment = async (key: string): Promise<void> => {
   paint()
   const outcome = await pending
   sending = false
+  const ownBoxOpen = commentState.openKey === key
   commentState = finishCommentSend(commentState, key, outcome)
-  focusNext = { action: 'send-done', key }
+  if (ownBoxOpen) focusNext = { action: 'send-done', key }
   paint()
 }
 

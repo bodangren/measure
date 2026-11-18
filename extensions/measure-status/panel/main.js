@@ -2914,7 +2914,7 @@ ${GUEST_UI_LOOK_CSS}`;
     const text = message.trim();
     return text === "" ? code : `${code}: ${text}`;
   };
-  var isSendDisabled = (text, sending) => sending || !hasVisibleCharacter(text);
+  var isSendDisabled = (text, sending) => sending || !hasVisibleCharacter(text) || text.length > COMMENT_TEXT_MAX;
   var errorCode2 = (error) => {
     const code = error?.code;
     return typeof code === "string" && code !== "" ? code : "REQUEST_FAILED";
@@ -3396,12 +3396,13 @@ ${GUEST_UI_LOOK_CSS}`;
     commentState = startCommentSend(commentState, key);
     paint();
     const result = await pending;
+    const ownBoxOpen = commentState.openKey === key;
     commentState = finishCommentSend(
       commentState,
       key,
       result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line }
     );
-    focusNext = { action: "send-done", key };
+    if (ownBoxOpen) focusNext = { action: "send-done", key };
     paint();
   };
   var busy = false;

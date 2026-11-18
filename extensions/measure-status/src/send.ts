@@ -56,11 +56,11 @@ export const formatSendError = (code: string, message: string): string => {
 }
 
 /**
- * D1: the Send button is off while a send runs or while the text holds no
- * visible character.
+ * D1: the Send button is off while a send runs, while the text holds no
+ * visible character, or while the text is longer than the limit.
  */
 export const isSendDisabled = (text: string, sending: boolean): boolean =>
-  sending || !hasVisibleCharacter(text)
+  sending || !hasVisibleCharacter(text) || text.length > COMMENT_TEXT_MAX
 
 /** The code of a failed host call. The host gives the code. */
 const errorCode = (error: unknown): string => {

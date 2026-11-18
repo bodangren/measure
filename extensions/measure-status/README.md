@@ -100,7 +100,9 @@ and not under `archive/` shows the label `Not archived`.
 A Blocked card and a Waiting on Daniel card show one small `Comment`
 button. A click opens the box `Comment to PM` and the Send button on
 that card only. One box is open at a time. The Escape key or a finished
-send closes the box. The Send button is off while the text is empty or
+send closes the box. A comment needs at least one visible character and
+at most 2000 characters. The Send button is off while the text holds no
+visible character, while the text is longer than 2000 characters, or
 while a send runs.
 
 The Send button sends one message to the Measure PM session. One click
@@ -111,7 +113,8 @@ lives in the page only, and the extension stores nothing.
 
 The message holds one field per line: `Repo`, `Track`, `Task`,
 `Blocker`, and `Daniel`. Every value stays plain text. A line with no
-value stays out. A text longer than 2000 characters is refused.
+value stays out. A text with no visible character gives no send. A text
+longer than 2000 characters gives no send.
 
 ## Reading the files
 
