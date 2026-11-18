@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Orchestrator agent sync**
+  *Link: [./tracks/orchestrator_agent_sync_20261118/](./tracks/orchestrator_agent_sync_20261118/)*
+  *Fold the accepted orchestrator route rules into the repo source (PM decision, 2026-11-18)*
+
 - [~] **Track: Guard phase acceptance**
   *Link: [./tracks/guard_phase_acceptance_20261118/](./tracks/guard_phase_acceptance_20261118/)*
   *Map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)*
