@@ -38,13 +38,15 @@ export type CommentSender = {
 }
 
 /**
- * D1: the state line of a sent message. The time is the time of the send in
- * UTC, the same time in every page.
+ * D1: the state line of a sent message. The time is the local time of the
+ * page that shows the line.
  */
 export const formatSentLine = (sentAt: number): string => {
   const date = new Date(sentAt)
   if (Number.isNaN(date.getTime())) return 'sent --:--'
-  return `sent ${date.toISOString().slice(11, 16)}`
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `sent ${hours}:${minutes}`
 }
 
 /** D1: the state line of a failed send. It names the code and the message. */

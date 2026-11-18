@@ -21,7 +21,17 @@ const REQUIRED = [
   '../panel/main.ts',
 ]
 
-const MODEL = ['./roster.ts', './registry.ts', './parse.ts', './board.ts', './age.ts', './load.ts']
+const MODEL = [
+  './roster.ts',
+  './registry.ts',
+  './parse.ts',
+  './board.ts',
+  './age.ts',
+  './load.ts',
+  './render.ts',
+  './page-state.ts',
+  './comment-box.ts',
+]
 
 const entries = () => Object.entries(sources)
 

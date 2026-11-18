@@ -5,8 +5,18 @@ import { connectHost, type GuestRequest, type GuestRequestResult, type HostReady
 import { applyHostReady } from '@openchamber/sdk/ui'
 import { bandLine, markerClassName } from '../src/band'
 import { blockedTracks, type Card } from '../src/board'
+import {
+  emptyCommentBox,
+  escapeCommentBox,
+  finishCommentSend,
+  openCommentBox,
+  setCommentText,
+  startCommentSend,
+  type CommentBoxState,
+} from '../src/comment-box'
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
+import { applyRepoResult, startLoad } from '../src/page-state'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
 import { ROSTER } from '../src/roster'
 import {
@@ -48,21 +58,8 @@ const userStaleOpen: Record<string, boolean> = {}
 
 // ----- FR-16, D1: the comment of a card. The state lives in the page only.
 
-/** The state of the last send of one card. */
-type SendStatus = {
-  status: 'idle' | 'sending' | 'sent' | 'error'
-  sentAt: number | null
-  error: string | null
-}
-
-/** The key of the card whose comment box is open. One box opens at a time. */
-let commentOpen: string | null = null
-
-/** The text of the comment of each card. */
-const commentText: Record<string, string> = {}
-
-/** The state of the last send of each card. */
-const commentStatus: Record<string, SendStatus> = {}
+/** The state of the comment boxes of the page. */
+let commentState: CommentBoxState = emptyCommentBox()
 
 /** The answer of the service. The service names the code of a failure. */
 type ServiceAnswer = { ok: boolean; code?: string; message?: string }
@@ -118,13 +115,13 @@ const commentsOf = (): Record<string, CommentUi> => {
     state.board.cards.forEach((card, index) => {
       if (card.column !== 'blocked' && card.column !== 'waiting') return
       const key = cardKey(card, index)
-      const status = commentStatus[key] ?? { status: 'idle', sentAt: null, error: null }
-      const text = commentText[key] ?? ''
+      const status = commentState.status[key]
+      const text = commentState.texts[key] ?? ''
       out[key] = {
-        status: status.status,
-        sentAt: status.sentAt,
-        error: status.error,
-        open: commentOpen === key,
+        status: status?.status ?? 'idle',
+        sentAt: status?.sentAt ?? null,
+        error: status?.error ?? null,
+        open: commentState.openKey === key,
         disabled: isSendDisabled(text, sender.sending),
       }
     })
@@ -159,7 +156,7 @@ const restoreComment = (): void => {
   const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
   if (area === null) return
   const key = area.getAttribute('data-key')
-  const text = key === null ? '' : (commentText[key] ?? '')
+  const text = key === null ? '' : (commentState.texts[key] ?? '')
   area.value = text
   setSendState(area, text)
 }
@@ -170,7 +167,7 @@ const onCommentInput = (event: Event): void => {
   if (!(area instanceof HTMLTextAreaElement)) return
   const key = area.getAttribute('data-key')
   if (key === null) return
-  commentText[key] = area.value
+  commentState = setCommentText(commentState, key, area.value)
   setSendState(area, area.value)
 }
 
@@ -183,15 +180,16 @@ const sendComment = async (key: string): Promise<void> => {
     trackId: card.trackId,
     taskLine: card.taskText ?? card.note ?? '',
     blockerLine: card.line ?? '',
-    text: commentText[key] ?? '',
+    text: commentState.texts[key] ?? '',
   })
-  commentStatus[key] = { status: 'sending', sentAt: null, error: null }
+  commentState = startCommentSend(commentState, key)
   paint()
   const result = await pending
-  commentStatus[key] = result.ok
-    ? { status: 'sent', sentAt: result.sentAt, error: null }
-    : { status: 'error', sentAt: null, error: result.line }
-  commentOpen = null
+  commentState = finishCommentSend(
+    commentState,
+    key,
+    result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line },
+  )
   paint()
 }
 
@@ -316,10 +314,10 @@ const plainLine = (text: string): HTMLElement => {
 const loadBoard = async (): Promise<void> => {
   if (busy) return
   busy = true
-  states = ROSTER.map((repo): RepoState => ({ status: 'loading', repo }))
+  states = startLoad(states)
   paint()
   await loadRoster(host, ROSTER, (state) => {
-    states = states.map(one => (one.repo.id === state.repo.id ? state : one))
+    states = applyRepoResult(states, state.repo.id, state)
     paint()
     void refreshBadge()
   })
@@ -372,7 +370,7 @@ const onAction = (event: Event): void => {
   if (action === 'open-comment') {
     const key = button.getAttribute('data-key')
     if (key === null) return
-    commentOpen = commentOpen === key ? null : key
+    commentState = openCommentBox(commentState, key)
     paint()
     return
   }
@@ -436,7 +434,7 @@ host.onReady((ctx) => {
 
 // D1: the Escape key closes the open comment box.
 document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape' || commentOpen === null) return
-  commentOpen = null
+  if (event.key !== 'Escape' || commentState.openKey === null) return
+  commentState = escapeCommentBox(commentState)
   paint()
 })

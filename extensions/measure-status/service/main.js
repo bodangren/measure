@@ -1,5 +1,7 @@
 // service/main.ts
+import { realpathSync } from "node:fs";
 import { createServer } from "node:http";
+import { pathToFileURL } from "node:url";
 // node_modules/@openchamber/sdk/dist/scrollbar-style.js
 var GUEST_SCROLLING_ATTRIBUTE = "data-oc-scrolling";
 var GUEST_SCROLLBAR_CSS = `
@@ -217,9 +219,6 @@ var PM_SESSION_ID = "ses_e8f5ca9c0ffeZdhl9xLl1ytCGV";
 var SEND_METHOD = "sendComment";
 
 // service/main.ts
-var host = createServiceHost({ env: process.env });
-var port = Number(process.env.OPENCHAMBER_SERVICE_PORT ?? "");
-var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 var BODY_MAX = 64000;
 var answer = (response, status, body) => {
   const text = JSON.stringify(body);
@@ -229,7 +228,7 @@ var answer = (response, status, body) => {
   });
   response.end(text);
 };
-var authorized = (request) => {
+var authorized = (request, token) => {
   if (token === "")
     return false;
   return request.headers.authorization === `Bearer ${token}`;
@@ -254,7 +253,7 @@ var errorMessage = (error) => {
   const message = error?.message;
   return typeof message === "string" && message !== "" ? message : "OpenChamber gave no message.";
 };
-var sendComment = async (request, response) => {
+var sendComment = async (host, request, response) => {
   let body;
   try {
     const text2 = await readBody(request);
@@ -296,41 +295,63 @@ var sendComment = async (request, response) => {
     });
   }
 };
-var handle = async (request, response) => {
-  const path = (request.url ?? "").split("?")[0] ?? "";
-  if (request.method === "GET" && path === "/health") {
-    answer(response, 200, { ok: true });
-    return;
-  }
-  if (request.method !== "POST" || path !== `/${SEND_METHOD}`) {
-    answer(response, 404, {
-      ok: false,
-      code: "NOT_FOUND",
-      message: "The service knows no other route."
-    });
-    return;
-  }
-  if (!authorized(request)) {
-    answer(response, 401, {
-      ok: false,
-      code: "NOT_GRANTED",
-      message: "The request carries no token of this service."
-    });
-    return;
-  }
-  await sendComment(request, response);
+var createHandler = (host, token) => {
+  const handle = async (request, response) => {
+    if (!authorized(request, token)) {
+      answer(response, 401, {
+        ok: false,
+        code: "NOT_GRANTED",
+        message: "The request carries no token of this service."
+      });
+      return;
+    }
+    const path = (request.url ?? "").split("?")[0] ?? "";
+    if (request.method === "GET" && path === "/health") {
+      answer(response, 200, { ok: true });
+      return;
+    }
+    if (request.method !== "POST" || path !== `/${SEND_METHOD}`) {
+      answer(response, 404, {
+        ok: false,
+        code: "NOT_FOUND",
+        message: "The service knows no other route."
+      });
+      return;
+    }
+    await sendComment(host, request, response);
+  };
+  return handle;
 };
-if (!Number.isInteger(port) || port <= 0) {
-  process.stderr.write(`The service needs the port of the host.
+var isEntry = () => {
+  const arg = process.argv[1];
+  if (arg === undefined || arg === "")
+    return false;
+  try {
+    return pathToFileURL(realpathSync(arg)).href === import.meta.url;
+  } catch {
+    return false;
+  }
+};
+if (isEntry()) {
+  const host = createServiceHost({ env: process.env });
+  const port = Number(process.env.OPENCHAMBER_SERVICE_PORT ?? "");
+  const token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
+  if (!Number.isInteger(port) || port <= 0) {
+    process.stderr.write(`The service needs the port of the host.
 `);
-  process.exit(1);
-}
-createServer((request, response) => {
-  handle(request, response).catch(() => {
-    answer(response, 500, {
-      ok: false,
-      code: "HOST_UNAVAILABLE",
-      message: "The service could not answer."
+    process.exit(1);
+  }
+  const handle = createHandler(host, token);
+  createServer((request, response) => {
+    handle(request, response).catch(() => {
+      answer(response, 500, {
+        ok: false,
+        code: "HOST_UNAVAILABLE",
+        message: "The service could not answer."
+      });
     });
-  });
-}).listen(port, "127.0.0.1");
+  }).listen(port, "127.0.0.1");
+}
+export {
+  createHandler
+};

@@ -2407,6 +2407,40 @@ ${GUEST_UI_LOOK_CSS}`;
     0
   );
 
+  // src/comment-box.ts
+  var emptyCommentBox = () => ({
+    openKey: null,
+    texts: {},
+    status: {}
+  });
+  var openCommentBox = (state, key) => ({
+    ...state,
+    openKey: state.openKey === key ? null : key
+  });
+  var escapeCommentBox = (state) => ({
+    ...state,
+    openKey: null
+  });
+  var setCommentText = (state, key, text) => ({
+    ...state,
+    texts: { ...state.texts, [key]: text }
+  });
+  var startCommentSend = (state, key) => ({
+    ...state,
+    status: {
+      ...state.status,
+      [key]: { status: "sending", sentAt: null, error: null }
+    }
+  });
+  var finishCommentSend = (state, key, outcome) => ({
+    ...state,
+    openKey: null,
+    status: {
+      ...state.status,
+      [key]: outcome.ok ? { status: "sent", sentAt: outcome.sentAt, error: null } : { status: "error", sentAt: null, error: outcome.error }
+    }
+  });
+
   // src/measure.ts
   var planPathOf = async (host2, folder) => {
     const index = joinPath(folder, "index.md");
@@ -2807,6 +2841,27 @@ ${GUEST_UI_LOOK_CSS}`;
   };
   var shouldReload = (visible, loading) => visible && !loading;
 
+  // src/page-state.ts
+  var startLoad = (states2) => {
+    const ready = new Map(
+      states2.filter((one) => one.status === "ready").map((one) => [one.repo.id, one])
+    );
+    const next = ROSTER.map((repo) => ready.get(repo.id) ?? { status: "loading", repo });
+    for (const one of states2) {
+      if (one.status !== "ready") continue;
+      if (ROSTER.some((repo) => repo.id === one.repo.id)) continue;
+      next.push(one);
+    }
+    return next;
+  };
+  var applyRepoResult = (states2, repoId, result) => {
+    const index = states2.findIndex((one) => one.repo.id === repoId);
+    if (index < 0) return [...states2, result];
+    const next = [...states2];
+    next[index] = result;
+    return next;
+  };
+
   // src/comment.ts
   var COMMENT_TEXT_MAX = 2e3;
   var field2 = (label, value) => value === "" ? [] : [`${label}: ${value}`];
@@ -2828,7 +2883,9 @@ ${GUEST_UI_LOOK_CSS}`;
   var formatSentLine = (sentAt) => {
     const date = new Date(sentAt);
     if (Number.isNaN(date.getTime())) return "sent --:--";
-    return `sent ${date.toISOString().slice(11, 16)}`;
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `sent ${hours}:${minutes}`;
   };
   var formatSendError = (code, message) => {
     const text = message.trim();
@@ -3212,9 +3269,7 @@ ${GUEST_UI_LOOK_CSS}`;
   var userDoneGroupOpen = {};
   var userExpanded = {};
   var userStaleOpen = {};
-  var commentOpen = null;
-  var commentText = {};
-  var commentStatus = {};
+  var commentState = emptyCommentBox();
   var parseAnswer = (text) => {
     try {
       const value = JSON.parse(text);
@@ -3256,13 +3311,13 @@ ${GUEST_UI_LOOK_CSS}`;
       state.board.cards.forEach((card, index) => {
         if (card.column !== "blocked" && card.column !== "waiting") return;
         const key = cardKey(card, index);
-        const status = commentStatus[key] ?? { status: "idle", sentAt: null, error: null };
-        const text = commentText[key] ?? "";
+        const status = commentState.status[key];
+        const text = commentState.texts[key] ?? "";
         out[key] = {
-          status: status.status,
-          sentAt: status.sentAt,
-          error: status.error,
-          open: commentOpen === key,
+          status: status?.status ?? "idle",
+          sentAt: status?.sentAt ?? null,
+          error: status?.error ?? null,
+          open: commentState.openKey === key,
           disabled: isSendDisabled(text, sender.sending)
         };
       });
@@ -3291,7 +3346,7 @@ ${GUEST_UI_LOOK_CSS}`;
     const area = root.querySelector("textarea.comment-input");
     if (area === null) return;
     const key = area.getAttribute("data-key");
-    const text = key === null ? "" : commentText[key] ?? "";
+    const text = key === null ? "" : commentState.texts[key] ?? "";
     area.value = text;
     setSendState(area, text);
   };
@@ -3300,7 +3355,7 @@ ${GUEST_UI_LOOK_CSS}`;
     if (!(area instanceof HTMLTextAreaElement)) return;
     const key = area.getAttribute("data-key");
     if (key === null) return;
-    commentText[key] = area.value;
+    commentState = setCommentText(commentState, key, area.value);
     setSendState(area, area.value);
   };
   var sendComment = async (key) => {
@@ -3311,13 +3366,16 @@ ${GUEST_UI_LOOK_CSS}`;
       trackId: card.trackId,
       taskLine: card.taskText ?? card.note ?? "",
       blockerLine: card.line ?? "",
-      text: commentText[key] ?? ""
+      text: commentState.texts[key] ?? ""
     });
-    commentStatus[key] = { status: "sending", sentAt: null, error: null };
+    commentState = startCommentSend(commentState, key);
     paint();
     const result = await pending;
-    commentStatus[key] = result.ok ? { status: "sent", sentAt: result.sentAt, error: null } : { status: "error", sentAt: null, error: result.line };
-    commentOpen = null;
+    commentState = finishCommentSend(
+      commentState,
+      key,
+      result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line }
+    );
     paint();
   };
   var busy = false;
@@ -3412,10 +3470,10 @@ ${GUEST_UI_LOOK_CSS}`;
   var loadBoard = async () => {
     if (busy) return;
     busy = true;
-    states = ROSTER.map((repo) => ({ status: "loading", repo }));
+    states = startLoad(states);
     paint();
     await loadRoster(host, ROSTER, (state) => {
-      states = states.map((one) => one.repo.id === state.repo.id ? state : one);
+      states = applyRepoResult(states, state.repo.id, state);
       paint();
       void refreshBadge();
     });
@@ -3455,7 +3513,7 @@ ${GUEST_UI_LOOK_CSS}`;
     if (action === "open-comment") {
       const key2 = button2.getAttribute("data-key");
       if (key2 === null) return;
-      commentOpen = commentOpen === key2 ? null : key2;
+      commentState = openCommentBox(commentState, key2);
       paint();
       return;
     }
@@ -3513,8 +3571,8 @@ ${GUEST_UI_LOOK_CSS}`;
     paint();
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape" || commentOpen === null) return;
-    commentOpen = null;
+    if (event.key !== "Escape" || commentState.openKey === null) return;
+    commentState = escapeCommentBox(commentState);
     paint();
   });
 })();
