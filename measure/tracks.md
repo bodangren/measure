@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Sub-box SHA rule**
+  *Link: [./tracks/subbox_sha_20261118/](./tracks/subbox_sha_20261118/)*
+  *Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)*
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "track_id": "subbox_sha_20261118",
+  "type": "fix",
+  "status": "in_progress",
+  "created_at": "2026-11-18T00:00:00Z",
+  "updated_at": "2026-11-18T00:00:00Z",
+  "description": "Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "lane": "light",
+  "deviation_notes": "The spec review was skipped by PM order. The author model is opencode/hy4-flash-free#high."
+}
