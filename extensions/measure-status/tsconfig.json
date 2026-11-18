@@ -15,5 +15,5 @@
     "noEmit": true,
     "types": []
   },
-  "include": ["src/**/*.ts", "panel/**/*.ts"]
+  "include": ["src/**/*.ts", "panel/**/*.ts", "preview/**/*.ts"]
 }

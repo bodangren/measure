@@ -659,11 +659,11 @@
         return Promise.reject(new HostRequestError("HOST_UNAVAILABLE", "No host frame. This page is not in an iframe."));
       }
       return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => {
+        const timer2 = setTimeout(() => {
           pending.delete(message.id);
           reject(new HostRequestError("HOST_TIMEOUT", "Host did not answer in time."));
         }, timeoutMs);
-        pending.set(message.id, { resolve, reject, timer });
+        pending.set(message.id, { resolve, reject, timer: timer2 });
         post(message);
       });
     };
@@ -1432,53 +1432,6 @@
     }
   };
 
-  // node_modules/@openchamber/sdk/dist/ui/dom.js
-  var STYLE_ID = "oc-sdk-ui-style";
-  var clearNode = (node) => {
-    while (node.firstChild) {
-      node.removeChild(node.firstChild);
-    }
-  };
-  var ensureStyle = (css) => {
-    const existing = document.getElementById(STYLE_ID);
-    if (existing instanceof HTMLStyleElement) {
-      if (existing.textContent !== css) {
-        existing.textContent = css;
-      }
-      return;
-    }
-    installGuestScrollbarActivity(document);
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = css;
-    document.head.appendChild(style);
-  };
-  var el = (tag, className) => {
-    const node = document.createElement(tag);
-    if (className) {
-      node.className = className;
-    }
-    return node;
-  };
-  var button = (className) => {
-    const node = el("button", className);
-    node.type = "button";
-    return node;
-  };
-  var setText = (node, text) => {
-    const next = text ?? "";
-    if (node.textContent !== next) {
-      node.textContent = next;
-    }
-  };
-  var setAttr = (node, name, value) => {
-    if (value === void 0 || value === null || value === "") {
-      node.removeAttribute(name);
-    } else if (node.getAttribute(name) !== value) {
-      node.setAttribute(name, value);
-    }
-  };
-
   // node_modules/@openchamber/sdk/dist/ui/style.js
   var OC_ALIAS = {
     "surface-background": "bg",
@@ -1681,324 +1634,6 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
 .oc-sdk-text img { display: block; max-width: 100%; margin: 8px 0; border-radius: 8px; border: 1px solid ${mix(border, 60)}; }
 `;
 
-  // node_modules/@openchamber/sdk/dist/ui/button.js
-  var ring = () => {
-    const spinner = document.createElement("span");
-    spinner.className = "oc-sdk-spinner-ring";
-    spinner.setAttribute("aria-hidden", "true");
-    return spinner;
-  };
-  var mountButton = (root2, initial) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const node = button("oc-sdk oc-sdk-btn");
-    const spinner = ring();
-    const label = document.createElement("span");
-    node.append(label);
-    root2.append(node);
-    const paint2 = () => {
-      node.dataset.variant = props.variant ?? "default";
-      node.dataset.size = props.size ?? "default";
-      node.disabled = Boolean(props.disabled) || Boolean(props.loading);
-      node.dataset.loading = props.loading ? "true" : "false";
-      node.setAttribute("aria-busy", props.loading ? "true" : "false");
-      if (props.loading && spinner.parentNode !== node) {
-        node.prepend(spinner);
-      } else if (!props.loading && spinner.parentNode === node) {
-        spinner.remove();
-      }
-      setText(label, props.label);
-    };
-    const onClick = () => {
-      if (props.disabled || props.loading) {
-        return;
-      }
-      props.onClick();
-    };
-    node.addEventListener("click", onClick);
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        node.removeEventListener("click", onClick);
-        node.remove();
-      }
-    };
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/navigation.js
-  var navigationKey = (event, axis = "vertical") => {
-    const [next, previous] = axis === "vertical" ? ["ArrowDown", "ArrowUp"] : ["ArrowRight", "ArrowLeft"];
-    if (event.key === next || event.ctrlKey && event.key.toLowerCase() === "n")
-      return "next";
-    if (event.key === previous || event.ctrlKey && event.key.toLowerCase() === "p")
-      return "previous";
-    if (event.key === "Home")
-      return "first";
-    if (event.key === "End")
-      return "last";
-    return null;
-  };
-  var moveListSelection = (items, currentId, key) => {
-    const enabled = items.filter((item) => !item.disabled);
-    if (enabled.length === 0) {
-      return null;
-    }
-    const first = enabled[0];
-    const last = enabled[enabled.length - 1];
-    if (key === "first" || !first || !last) {
-      return first?.id ?? null;
-    }
-    if (key === "last") {
-      return last.id;
-    }
-    const index = enabled.findIndex((item) => item.id === currentId);
-    if (index === -1) {
-      return key === "next" ? first.id : last.id;
-    }
-    const target = enabled[Math.min(enabled.length - 1, Math.max(0, index + (key === "next" ? 1 : -1)))];
-    return target?.id ?? null;
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/badge.js
-  var applyTone = (node, tone2) => {
-    setAttr(node, "data-tone", tone2 && tone2 !== "neutral" ? tone2 : null);
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/list.js
-  var listCount = 0;
-  var mountList = (root2, initial) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const uid = `oc-sdk-list-${listCount += 1}`;
-    const list = el("div", "oc-sdk oc-sdk-list");
-    list.setAttribute("role", "listbox");
-    list.tabIndex = 0;
-    root2.append(list);
-    let activeId2 = null;
-    const rowId = (id) => `${uid}-${id}`;
-    const setActive = (id) => {
-      activeId2 = id;
-      for (const row of Array.from(list.children)) {
-        if (row instanceof HTMLElement) {
-          row.dataset.active = row.id === rowId(id ?? "") ? "true" : "false";
-        }
-      }
-      setAttr(list, "aria-activedescendant", id ? rowId(id) : null);
-      list.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
-    };
-    const span = (className, text) => {
-      const node = el("span", className);
-      node.textContent = text;
-      return node;
-    };
-    const paint2 = () => {
-      clearNode(list);
-      setAttr(list, "aria-label", props.ariaLabel);
-      if (props.items.length === 0) {
-        list.append(span("oc-sdk-list-empty", props.emptyText ?? "Nothing here"));
-        setActive(null);
-        return;
-      }
-      for (const item of props.items) {
-        const row = button("oc-sdk-row");
-        row.id = rowId(item.id);
-        row.setAttribute("role", "option");
-        row.setAttribute("aria-selected", item.id === props.selectedId ? "true" : "false");
-        row.disabled = Boolean(item.disabled);
-        row.tabIndex = -1;
-        if (item.leading)
-          row.append(span("oc-sdk-row-lead", item.leading));
-        const main = el("span", "oc-sdk-row-main");
-        main.append(span("oc-sdk-row-title", item.title));
-        if (item.subtitle)
-          main.append(span("oc-sdk-row-sub", item.subtitle));
-        row.append(main);
-        if (item.badge) {
-          const badge = span("oc-sdk-badge", item.badge.label);
-          applyTone(badge, item.badge.tone);
-          row.append(badge);
-        }
-        if (item.meta)
-          row.append(span("oc-sdk-row-meta", item.meta));
-        row.addEventListener("click", () => props.onSelect(item.id));
-        list.append(row);
-      }
-      const stillThere = props.items.some((item) => item.id === activeId2 && !item.disabled);
-      setActive(stillThere ? activeId2 : props.selectedId ?? null);
-    };
-    const onKeyDown = (event) => {
-      const step = navigationKey(event);
-      if (step) {
-        event.preventDefault();
-        setActive(moveListSelection(props.items, activeId2, step));
-        return;
-      }
-      if ((event.key === "Enter" || event.key === " ") && activeId2) {
-        event.preventDefault();
-        props.onSelect(activeId2);
-      }
-    };
-    list.addEventListener("keydown", onKeyDown);
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        list.removeEventListener("keydown", onKeyDown);
-        list.remove();
-      }
-    };
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/empty.js
-  var mountEmpty = (root2, initial) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const shell = el("div", "oc-sdk oc-sdk-empty");
-    const title = el("h2", "oc-sdk-empty-title");
-    const body = el("p", "oc-sdk-empty-body");
-    const slot = el("div", "oc-sdk-empty-action");
-    shell.append(title, body, slot);
-    root2.append(shell);
-    let action = null;
-    const paint2 = () => {
-      setText(title, props.title);
-      setText(body, props.body);
-      body.hidden = !props.body;
-      slot.hidden = !props.action;
-      if (!props.action) {
-        action?.dispose();
-        action = null;
-        return;
-      }
-      const next = { label: props.action.label, onClick: props.action.onClick };
-      if (action) {
-        action.update(next);
-      } else {
-        action = mountButton(slot, { ...next, variant: "outline", size: "sm" });
-      }
-    };
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        action?.dispose();
-        action = null;
-        shell.remove();
-      }
-    };
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/spinner.js
-  var mountSpinner = (root2, initial = {}) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const node = el("span", "oc-sdk oc-sdk-spinner");
-    node.setAttribute("role", "status");
-    const ring2 = el("span", "oc-sdk-spinner-ring");
-    ring2.setAttribute("aria-hidden", "true");
-    const label = el("span");
-    node.append(ring2, label);
-    root2.append(node);
-    const paint2 = () => {
-      node.dataset.size = props.size ?? "default";
-      setText(label, props.label);
-      label.hidden = !props.label;
-      node.setAttribute("aria-label", props.label ?? "Loading");
-    };
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        node.remove();
-      }
-    };
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/banner.js
-  var mountBanner = (root2, initial) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const node = el("div", "oc-sdk oc-sdk-banner");
-    const text = el("div", "oc-sdk-banner-text");
-    const title = el("div", "oc-sdk-banner-title");
-    const body = el("div", "oc-sdk-banner-body");
-    const slot = el("div", "oc-sdk-banner-action");
-    text.append(title, body);
-    node.append(text, slot);
-    root2.append(node);
-    let action = null;
-    const paint2 = () => {
-      node.dataset.tone = props.tone;
-      node.setAttribute("role", props.tone === "error" || props.tone === "warning" ? "alert" : "status");
-      setText(title, props.title);
-      setText(body, props.body);
-      body.hidden = !props.body;
-      slot.hidden = !props.action;
-      if (!props.action) {
-        action?.dispose();
-        action = null;
-        return;
-      }
-      const next = { label: props.action.label, onClick: props.action.onClick };
-      if (action) {
-        action.update(next);
-      } else {
-        action = mountButton(slot, { ...next, variant: "outline", size: "xs" });
-      }
-    };
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        action?.dispose();
-        action = null;
-        node.remove();
-      }
-    };
-  };
-
-  // node_modules/@openchamber/sdk/dist/ui/separator.js
-  var mountSeparator = (root2, initial = {}) => {
-    ensureStyle(UI_CSS);
-    let props = initial;
-    const node = el("div", "oc-sdk oc-sdk-separator");
-    node.setAttribute("role", "separator");
-    const label = el("span");
-    node.append(label);
-    root2.append(node);
-    const paint2 = () => {
-      setText(label, props.label);
-      label.hidden = !props.label;
-      node.dataset.labeled = props.label ? "true" : "false";
-    };
-    paint2();
-    return {
-      update: (next) => {
-        props = { ...props, ...next };
-        paint2();
-      },
-      dispose: () => {
-        node.remove();
-      }
-    };
-  };
-
   // src/parse.ts
   var TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/;
   var TRACK_LINKED = /^- \[([ ~xb])\] \[([^\]]+)\]\(([^)\s]+)\)/;
@@ -2010,7 +1645,27 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   var TASK = /^- \[([ ~xb])\] (.*)$/;
   var SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/;
   var CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/;
-  var DEFERRED = /\bdeferred:([^\s`]+)/;
+  var OWNER = /\bdeferred:([A-Za-z0-9._-]*)/;
+  var LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/;
+  var BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/;
+  var ownerToken = (text) => {
+    const match = OWNER.exec(text);
+    if (match === null) return null;
+    const token = (match[1] ?? "").replace(/[._-]+$/, "");
+    return token === "" ? null : token;
+  };
+  var taskLabel = (text) => {
+    const withoutCheckpoint = text.replace(CHECKPOINT, " ");
+    const withoutSha = withoutCheckpoint.replace(LABEL_SHA, "");
+    const collapsed = withoutSha.replace(/\s+/g, " ").trim();
+    return collapsed.length > 140 ? `${collapsed.slice(0, 140)}\u2026` : collapsed;
+  };
+  var taskBody = (text) => {
+    const match = BODY_PREFIX.exec(text);
+    if (match === null) return text;
+    return text.slice(match[0].length).replace(/\s*\*\*$/, "").trim();
+  };
+  var isGateText = (text) => /^GATE\b/.test(taskBody(text)) || text.includes("User Manual Verification");
   var joinPath = (...parts) => {
     const out = [];
     for (const segment of parts.join("/").split("/")) {
@@ -2082,7 +1737,7 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
         marker: task[1] ?? " ",
         text,
         sha: SHA.exec(text)?.[1] ?? null,
-        deferredOwner: DEFERRED.exec(text)?.[1] ?? null
+        deferredOwner: ownerToken(text)
       });
     });
     return plan;
@@ -2090,7 +1745,6 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   var isOpen = (task) => task.marker === " " || task.marker === "~" || task.marker === "b" && task.deferredOwner === null;
   var tasksOf = (plan) => plan.phases.flatMap((phase) => phase.tasks);
   var currentTask = (plan) => tasksOf(plan).find((task) => task.marker === "~") ?? null;
-  var nextTask = (plan) => tasksOf(plan).find((task) => task.marker === " ") ?? null;
   var selectActive = (tracks, plans) => {
     const inProgress = tracks.filter((track) => track.marker === "~");
     const working = inProgress.find((track) => {
@@ -2140,85 +1794,274 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     return "neutral";
   };
   var markerClassName = (marker) => `marker-${markerTone(marker)}`;
-  var markerText = (marker) => `[${marker === " " ? " " : marker}]`;
-  var activeId = (snapshot) => snapshot.active?.entry.id ?? null;
-  var blockedCountOfActivePlan = (snapshot) => {
-    if (snapshot.active === null) return 0;
-    return blockedCount(snapshot.active.plan);
+
+  // src/board.ts
+  var COLUMNS = ["planned", "in-progress", "blocked", "waiting", "done"];
+  var COLUMN_LABELS = {
+    planned: "Planned",
+    "in-progress": "In progress",
+    blocked: "Blocked",
+    waiting: "Waiting on Daniel",
+    done: "Done"
   };
-  var closed = (task) => !isOpen(task);
-  var statusView = (snapshot) => {
-    const tracks = snapshot.tracks.map((track) => ({
-      id: track.id,
-      marker: track.marker,
-      name: track.name,
-      folder: track.folder,
-      active: track.id === activeId(snapshot)
-    }));
-    if (snapshot.active === null) {
-      return { tracks, activePlanPath: null, phases: [], blockedTasks: [] };
+  var COLUMN_CAP = 8;
+  var DONE_SHOWN = 5;
+  var DONE_WINDOW_DAYS = 14;
+  var DAY_MS = 864e5;
+  var STALE_DAYS = 30;
+  var DANIEL_TOKENS = /* @__PURE__ */ new Set([
+    "daniel",
+    "user",
+    "owner",
+    "po",
+    "product-owner",
+    "human",
+    "human-gated",
+    "both-owners"
+  ]);
+  var isDanielToken = (token) => {
+    if (token === null) return false;
+    const lower = token.toLowerCase();
+    return DANIEL_TOKENS.has(lower) || lower.startsWith("owner-") || lower.startsWith("daniel-");
+  };
+  var lastDoneIndex = (tasks) => {
+    let out = -1;
+    tasks.forEach((task, index) => {
+      if (task.marker === "x") out = index;
+    });
+    return out;
+  };
+  var currentIndex = (tasks) => {
+    const tilde = tasks.findIndex((task) => task.marker === "~");
+    if (tilde >= 0) return tilde;
+    const lastDone = lastDoneIndex(tasks);
+    for (let index = lastDone + 1; index < tasks.length; index += 1) {
+      if ((tasks[index]?.marker ?? "x") === " ") return index;
     }
-    const { active: active2 } = snapshot;
-    const phases = active2.plan.phases.map((phase, index) => phaseRow(phase, index, active2.plan));
-    const blockedTasks = tasksOf(active2.plan).filter((task) => task.marker === "b").map((task) => ({ text: task.text, deferredOwner: task.deferredOwner }));
-    return { tracks, activePlanPath: active2.planPath, phases, blockedTasks };
+    return null;
   };
-  var phaseRow = (phase, index, plan) => {
-    const total = phase.tasks.length;
-    const finished = phase.tasks.filter(closed).length;
-    const currentTaskEntry = currentTask(plan);
-    const here = currentTaskEntry !== null && phase.tasks.some((task) => task.line === currentTaskEntry.line);
+  var positionOf = (plan, index) => {
+    let seen = 0;
+    for (let phase = 0; phase < plan.phases.length; phase += 1) {
+      const count = plan.phases[phase]?.tasks.length ?? 0;
+      if (index < seen + count) {
+        return { phase: phase + 1, phases: plan.phases.length, task: index - seen + 1, tasks: count };
+      }
+      seen += count;
+    }
+    return { phase: 1, phases: plan.phases.length, task: 1, tasks: 1 };
+  };
+  var noteOf = (tasks) => {
+    const open = tasks.filter(isOpen).length;
+    if (open === 0) return "All tasks closed.";
+    return open === 1 ? "1 open task, no current task." : `${open} open tasks, no current task.`;
+  };
+  var gateAgeOk = (lastChange, now) => lastChange !== null && now - lastChange <= DONE_WINDOW_DAYS * DAY_MS;
+  var trackIdOf = (folder) => folder === null ? "" : folder.split("/").pop() ?? "";
+  var r2Card = (base, marker, plan) => {
+    const note = plan.kind === "unreadable" ? "Plan unreadable" : "No plan.";
+    const column = marker === "b" ? "blocked" : marker === "~" ? "in-progress" : "planned";
     return {
-      index,
-      title: phase.title,
-      checkpoint: phase.checkpoint,
-      closed: finished,
-      total,
-      current: here && currentTaskEntry !== null ? { line: currentTaskEntry.line, text: currentTaskEntry.text, marker: currentTaskEntry.marker } : null
+      ...base,
+      column,
+      position: null,
+      marker: null,
+      taskText: null,
+      note,
+      line: column === "blocked" ? "Registry marker [b]." : null,
+      doneDate: null,
+      doneSource: null,
+      archived: false
     };
   };
-  var copyText = (snapshot) => {
-    const lines = [];
-    const band = bandLine(snapshot);
-    if (band !== null) lines.push(band);
-    if (snapshot.parseError !== null) lines.push(snapshot.parseError);
-    const view = statusView(snapshot);
-    if (view.tracks.length > 0) {
-      lines.push("");
-      lines.push("Tracks:");
-      for (const track of view.tracks) {
-        const tag = track.active ? " (active)" : "";
-        lines.push(`  [${track.marker}] ${track.name} (${track.folder})${tag}`);
-      }
+  var classifyTrack = (input) => {
+    const folder = input.folder;
+    const base = {
+      repo: input.repo,
+      title: input.title,
+      trackId: trackIdOf(folder),
+      registered: input.registryMarker !== null,
+      lastChange: input.lastChange
+    };
+    const done = input.registryMarker === "x" || folder !== null && folder.startsWith("archive/");
+    if (done) {
+      return {
+        ...base,
+        column: "done",
+        position: null,
+        marker: null,
+        taskText: null,
+        note: null,
+        line: null,
+        doneDate: input.doneDate,
+        doneSource: input.doneSource,
+        archived: folder !== null && folder.startsWith("archive/")
+      };
     }
-    if (snapshot.active !== null) {
-      lines.push("");
-      lines.push(`Active plan: ${snapshot.active.planPath}`);
-      for (const phase of view.phases) {
-        const checkpoint = phase.checkpoint === null ? "" : ` \xB7 checkpoint ${phase.checkpoint}`;
-        lines.push(`  ${phase.title} \xB7 ${phase.closed}/${phase.total} closed${checkpoint}`);
-      }
-      const blocked = tasksOf(snapshot.active.plan).filter((task) => task.marker === "b");
-      if (blocked.length > 0) {
-        lines.push("");
-        lines.push("Blocked tasks ([b]):");
-        for (const task of blocked) {
-          const owner = task.deferredOwner === null ? " (open: no deferred:<owner>)" : "";
-          lines.push(`  [b] ${task.text}${owner}`);
-        }
-      }
+    if (input.plan.kind !== "plan") return r2Card(base, input.registryMarker, input.plan);
+    const plan = input.plan.plan;
+    const tasks = tasksOf(plan);
+    if (tasks.length === 0) return r2Card(base, input.registryMarker, input.plan);
+    const index = currentIndex(tasks);
+    const current2 = index === null ? null : tasks[index] ?? null;
+    const position2 = index === null ? null : positionOf(plan, index);
+    const marker = current2?.marker ?? null;
+    const taskText = current2 === null ? null : taskLabel(current2.text);
+    const note = position2 === null ? noteOf(tasks) : null;
+    const empty2 = { doneDate: null, doneSource: null, archived: false };
+    if (current2 !== null && isGateText(current2.text) && gateAgeOk(input.lastChange, input.now)) {
+      return {
+        ...base,
+        ...empty2,
+        column: "waiting",
+        position: position2,
+        marker,
+        taskText,
+        note: null,
+        line: current2.text
+      };
     }
-    return lines.join("\n");
+    const openBlocker = tasks.find((task) => task.marker === "b" && isOpen(task));
+    if (openBlocker !== void 0) {
+      return {
+        ...base,
+        ...empty2,
+        column: "blocked",
+        position: position2,
+        marker,
+        taskText,
+        note,
+        line: openBlocker.text
+      };
+    }
+    if (current2 !== null && current2.marker === "~") {
+      return {
+        ...base,
+        ...empty2,
+        column: "in-progress",
+        position: position2,
+        marker,
+        taskText,
+        note: null,
+        line: null
+      };
+    }
+    if (current2 !== null) {
+      const blocked = input.registryMarker === "b";
+      const progressed = input.registryMarker === "~" || tasks.some((task) => task.marker === "x");
+      const column = blocked ? "blocked" : progressed ? "in-progress" : "planned";
+      return {
+        ...base,
+        ...empty2,
+        column,
+        position: position2,
+        marker,
+        taskText,
+        note: null,
+        line: blocked ? "Registry marker [b]." : null
+      };
+    }
+    const danielBlocker = tasks.find(
+      (task) => task.marker === "b" && isDanielToken(ownerToken(task.text))
+    );
+    if (danielBlocker !== void 0) {
+      return {
+        ...base,
+        ...empty2,
+        column: "waiting",
+        position: null,
+        marker: null,
+        taskText: null,
+        note,
+        line: danielBlocker.text
+      };
+    }
+    const otherBlocker = tasks.find((task) => task.marker === "b");
+    if (otherBlocker !== void 0) {
+      return {
+        ...base,
+        ...empty2,
+        column: "blocked",
+        position: null,
+        marker: null,
+        taskText: null,
+        note,
+        line: otherBlocker.text
+      };
+    }
+    return {
+      ...base,
+      ...empty2,
+      column: "in-progress",
+      position: null,
+      marker: null,
+      taskText: null,
+      note,
+      line: null
+    };
   };
-  var needsCurrentTaskBanner = (snapshot) => {
-    if (snapshot.active === null) return false;
-    return currentTask(snapshot.active.plan) === null;
+  var buildBoard = (repo, inputs) => ({
+    repo,
+    cards: inputs.map(classifyTrack)
+  });
+  var cardLabel = (card) => {
+    if (card.column === "blocked") return "BLOCKER";
+    if (card.column !== "waiting") return null;
+    return card.line !== null && card.line.includes("User Manual Verification") ? "MANUAL CHECK" : "GATE";
   };
-  var nextPendingText = (snapshot) => {
-    if (snapshot.active === null) return null;
-    const task = nextTask(snapshot.active.plan);
-    return task?.text ?? null;
+  var sortCards = (cards) => [...cards].sort((one, two) => {
+    if (one.lastChange === null && two.lastChange === null) return 0;
+    if (one.lastChange === null) return 1;
+    if (two.lastChange === null) return -1;
+    return two.lastChange - one.lastChange;
+  });
+  var columnView = (board, column, expanded, staleOpen, now) => {
+    const cards = board.cards.filter((card) => card.column === column);
+    const label = COLUMN_LABELS[column];
+    const total = cards.length;
+    const sorted = sortCards(cards);
+    if (column === "done") {
+      return { column, label, total, shown: sorted, hidden: 0, stale: [], staleOpen: false };
+    }
+    const staleCards = column === "planned" || column === "in-progress" ? sorted.filter(
+      (card) => card.lastChange !== null && now - card.lastChange > STALE_DAYS * DAY_MS
+    ) : [];
+    const fresh = sorted.filter((card) => !staleCards.includes(card));
+    const shown = expanded ? fresh : fresh.slice(0, COLUMN_CAP);
+    return {
+      column,
+      label,
+      total,
+      shown,
+      hidden: fresh.length - shown.length,
+      stale: staleCards,
+      staleOpen: staleCards.length > 0 ? staleOpen : false
+    };
   };
+  var closedTime = (card) => {
+    if (card.lastChange !== null) return card.lastChange;
+    if (card.doneDate === null) return null;
+    const time = Date.parse(`${card.doneDate}T00:00:00Z`);
+    return Number.isNaN(time) ? null : time;
+  };
+  var doneSummary = (board, now) => {
+    const done = board.cards.filter((card) => card.column === "done");
+    const closed = done.map((card) => ({ card, time: closedTime(card) })).filter(
+      (one) => one.time !== null && now - one.time <= DONE_WINDOW_DAYS * DAY_MS
+    );
+    closed.sort((one, two) => two.time - one.time);
+    const shown = closed.slice(0, DONE_SHOWN).map((one) => one.card);
+    return {
+      shown,
+      more: done.length - shown.length,
+      archived: done.filter((card) => card.archived).length,
+      notArchived: done.filter((card) => !card.archived).length
+    };
+  };
+  var blockedTracks = (boards) => boards.reduce(
+    (sum, board) => sum + board.cards.filter((card) => card.column === "blocked").length,
+    0
+  );
 
   // src/measure.ts
   var planPathOf = async (host2, folder) => {
@@ -2322,427 +2165,771 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   };
   var errorMessage = (error) => error instanceof Error ? error.message : String(error);
 
+  // src/age.ts
+  var MINUTE = 6e4;
+  var HOUR = 60 * MINUTE;
+  var DAY = 24 * HOUR;
+  var MONTH_DAYS = 30;
+  var latestChange = (times) => {
+    let out = null;
+    for (const time of times) {
+      if (time === null) continue;
+      if (out === null || time > out) out = time;
+    }
+    return out;
+  };
+  var formatAge = (now, then) => {
+    const age = now - then;
+    if (age < MINUTE) return "<1m";
+    if (age < HOUR) return `${Math.floor(age / MINUTE)}m`;
+    if (age < DAY) return `${Math.floor(age / HOUR)}h`;
+    const days = Math.floor(age / DAY);
+    if (days < 60) return `${days}d`;
+    return `${Math.floor(days / MONTH_DAYS)}mo`;
+  };
+
+  // src/registry.ts
+  var ENTRY2 = /^- \[([ ~xb])\] (.*)$/;
+  var HEADING = /^#{1,6} /;
+  var BOLD = /\*\*(.+?)\*\*/;
+  var TITLE_LINK = /^\[([^\]]+)\]\(([^)\s]+)\)/;
+  var LINK_STAR = /\*Link: \[[^\]]*\]\(([^)\s]+)\)\*/;
+  var LINK_PLAIN = /Link: \[[^\]]*\]\(([^)\s]+)\)/;
+  var TITLE_PREFIX = /^(?:Track|Program):\s+/;
+  var TITLE_TRACK = /^Track [A-Za-z0-9.]+:\s+/;
+  var DONE_WORD = /(?:completed|complete|archived|done)\b[^0-9]{0,24}(\d{4}-\d{2}-\d{2})/i;
+  var SCHEME = /^[A-Za-z][A-Za-z0-9+.-]*:/;
+  var stripPrefix = (title) => title.replace(TITLE_PREFIX, "").replace(TITLE_TRACK, "").trim();
+  var titleOf = (rest) => {
+    const bold = BOLD.exec(rest);
+    if (bold !== null) return stripPrefix(bold[1] ?? rest.trim());
+    const link = TITLE_LINK.exec(rest.trim());
+    if (link !== null) return stripPrefix(link[1] ?? "");
+    return stripPrefix(rest.trim());
+  };
+  var folderOfTarget = (target) => {
+    if (SCHEME.test(target)) return null;
+    if (target.startsWith("/") || target.startsWith("~")) return null;
+    const trimmed = target.replace(/\/index\.md$/, "").replace(/\/plan\.md$/, "").replace(/\/+$/, "");
+    const parts = [];
+    for (const segment of trimmed.split("/")) {
+      if (segment === "" || segment === ".") continue;
+      if (segment === "..") {
+        if (parts.length === 0) return null;
+        parts.pop();
+        continue;
+      }
+      parts.push(segment);
+    }
+    if (parts[0] === "measure") parts.shift();
+    if (parts.length !== 2) return null;
+    const [top, id] = parts;
+    if (top !== "tracks" && top !== "archive" || id === void 0 || id === "") return null;
+    return `${top}/${id}`;
+  };
+  var folderDate = (folder) => {
+    const name = folder.split("/").pop() ?? folder;
+    let out = null;
+    for (const match of name.matchAll(/_(\d{4})(\d{2})(\d{2})(?=$|[_-])/g)) {
+      const [, year, month, day] = match;
+      if (year !== void 0 && month !== void 0 && day !== void 0) out = `${year}-${month}-${day}`;
+    }
+    return out;
+  };
+  var targetOf = (lines, start, end, rest) => {
+    const range = lines.slice(start, end);
+    for (const line of range) {
+      const match = LINK_STAR.exec(line);
+      if (match !== null) return match[1] ?? null;
+    }
+    for (const line of range) {
+      const match = LINK_PLAIN.exec(line);
+      if (match !== null) return match[1] ?? null;
+    }
+    const link = TITLE_LINK.exec(rest.trim());
+    return link === null ? null : link[2] ?? null;
+  };
+  var parseRegistry = (md) => {
+    const lines = md.split("\n");
+    const entries = [];
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index] ?? "";
+      const entry = ENTRY2.exec(line);
+      if (entry === null) continue;
+      let end = lines.length;
+      for (let next = index + 1; next < lines.length; next += 1) {
+        const text = lines[next] ?? "";
+        if (ENTRY2.test(text) || HEADING.test(text)) {
+          end = next;
+          break;
+        }
+      }
+      const rest = entry[2] ?? "";
+      const marker = entry[1] ?? " ";
+      const target = targetOf(lines, index, end, rest);
+      const folder = target === null ? null : folderOfTarget(target);
+      let doneDate = null;
+      let doneSource = null;
+      if (marker === "x") {
+        const registry = DONE_WORD.exec(line);
+        if (registry !== null) {
+          doneDate = registry[1] ?? null;
+          doneSource = doneDate === null ? null : "registry";
+        }
+        if (doneDate === null && folder !== null) {
+          const date = folderDate(folder);
+          if (date !== null) {
+            doneDate = date;
+            doneSource = "folder";
+          }
+        }
+      }
+      entries.push({ marker, title: titleOf(rest), folder, doneDate, doneSource });
+    }
+    return entries;
+  };
+
+  // src/roster.ts
+  var rosterRepo = (id) => ({ id, path: `~/Desktop/${id}` });
+  var ROSTER = [
+    rosterRepo("reading-advantage-monorepo"),
+    rosterRepo("Workbooks"),
+    rosterRepo("advantage-pr"),
+    rosterRepo("advantage-forge"),
+    rosterRepo("mastery-advantage"),
+    rosterRepo("ra-math-advantage"),
+    rosterRepo("lending-desk-bench"),
+    rosterRepo("measure")
+  ];
+  var measureFile = (repo, relative) => `${repo.path}/measure/${relative}`;
+
+  // src/load.ts
+  var MAX_IN_FLIGHT = 8;
+  var RELOAD_MS = 6e4;
+  var limiter = (max) => {
+    let active2 = 0;
+    const waiting = [];
+    const release = () => {
+      const next = waiting.shift();
+      if (next !== void 0) next();
+    };
+    return async (job) => {
+      if (active2 >= max) await new Promise((resolve) => waiting.push(resolve));
+      active2 += 1;
+      try {
+        return await job();
+      } finally {
+        active2 -= 1;
+        release();
+      }
+    };
+  };
+  var errorCode = (error) => {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const code = error.code;
+      if (typeof code === "string") return code;
+    }
+    return "UNKNOWN";
+  };
+  var errorLine = (repo, code) => code === "NOT_FOUND" ? `No Measure tracks file at ${measureFile(repo, "tracks.md")}.` : `Cannot read ${repo.id}: ${code}.`;
+  var statTime = async (host2, path, run) => {
+    try {
+      const result = await run(() => host2.stat(path));
+      return result.kind === "missing" ? null : result.mtime;
+    } catch {
+      return null;
+    }
+  };
+  var lastChangeOf = async (host2, repo, folder, run) => {
+    const [plan, metadata] = await Promise.all([
+      statTime(host2, measureFile(repo, `${folder}/plan.md`), run),
+      statTime(host2, measureFile(repo, `${folder}/metadata.json`), run)
+    ]);
+    return latestChange([plan, metadata]);
+  };
+  var directoryNames = (entries) => entries.filter((entry) => entry.kind === "directory").map((entry) => entry.name).sort((one, two) => one < two ? -1 : one > two ? 1 : 0);
+  var doneByEntry = (marker, folder) => marker === "x" || folder !== null && folder.startsWith("archive/");
+  var loadRepo = async (host2, repo, run) => {
+    const now = Date.now();
+    const readText = async (path) => (await run(() => host2.readFile(path))).content;
+    const list = async (path) => {
+      try {
+        return (await run(() => host2.listDir(path))).entries;
+      } catch (error) {
+        if (errorCode(error) === "NOT_FOUND") return [];
+        throw error;
+      }
+    };
+    let registryText;
+    try {
+      registryText = await readText(measureFile(repo, "tracks.md"));
+    } catch (error) {
+      const code = errorCode(error);
+      return { status: "error", repo, code, line: errorLine(repo, code) };
+    }
+    let tracks;
+    let archive;
+    try {
+      ;
+      [tracks, archive] = await Promise.all([
+        list(measureFile(repo, "tracks")),
+        list(measureFile(repo, "archive"))
+      ]);
+    } catch (error) {
+      const code = errorCode(error);
+      return { status: "error", repo, code, line: errorLine(repo, code) };
+    }
+    const inputs = [];
+    const namedTracks = /* @__PURE__ */ new Set();
+    const namedArchive = /* @__PURE__ */ new Set();
+    for (const entry of parseRegistry(registryText)) {
+      const folder = entry.folder;
+      if (folder !== null) {
+        if (folder.startsWith("tracks/")) namedTracks.add(folder.slice("tracks/".length));
+        if (folder.startsWith("archive/")) namedArchive.add(folder.slice("archive/".length));
+      }
+      let plan = { kind: "missing" };
+      let lastChange = null;
+      if (folder !== null) {
+        if (!doneByEntry(entry.marker, folder)) {
+          try {
+            const text = await readText(measureFile(repo, `${folder}/plan.md`));
+            plan = { kind: "plan", plan: parsePlan(text) };
+          } catch (error) {
+            plan = { kind: errorCode(error) === "NOT_FOUND" ? "missing" : "unreadable" };
+          }
+        }
+        lastChange = await lastChangeOf(host2, repo, folder, run);
+      }
+      inputs.push({
+        repo: repo.id,
+        title: entry.title,
+        registryMarker: entry.marker,
+        folder,
+        plan,
+        lastChange,
+        doneDate: entry.doneDate,
+        doneSource: entry.doneSource,
+        now
+      });
+    }
+    for (const name of directoryNames(tracks)) {
+      if (namedTracks.has(name)) continue;
+      const folder = `tracks/${name}`;
+      let plan;
+      try {
+        const text = await readText(measureFile(repo, `${folder}/plan.md`));
+        plan = { kind: "plan", plan: parsePlan(text) };
+      } catch (error) {
+        if (errorCode(error) === "NOT_FOUND") continue;
+        plan = { kind: "unreadable" };
+      }
+      inputs.push({
+        repo: repo.id,
+        title: name,
+        registryMarker: null,
+        folder,
+        plan,
+        lastChange: await lastChangeOf(host2, repo, folder, run),
+        doneDate: null,
+        doneSource: null,
+        now
+      });
+    }
+    for (const name of directoryNames(archive)) {
+      if (namedArchive.has(name)) continue;
+      const folder = `archive/${name}`;
+      const date = folderDate(folder);
+      const doneSource = date === null ? null : "folder";
+      inputs.push({
+        repo: repo.id,
+        title: name,
+        registryMarker: null,
+        folder,
+        plan: { kind: "missing" },
+        lastChange: await lastChangeOf(host2, repo, folder, run),
+        doneDate: date,
+        doneSource,
+        now
+      });
+    }
+    return { status: "ready", repo, board: buildBoard(repo.id, inputs) };
+  };
+  var loadRoster = async (host2, roster, onState) => {
+    const run = limiter(MAX_IN_FLIGHT);
+    for (const repo of roster) {
+      onState(await loadRepo(host2, repo, run));
+    }
+  };
+  var shouldReload = (visible, loading) => visible && !loading;
+
+  // src/render.ts
+  var GRANT_BANNER = "Allow file access outside the project in Settings \u2192 Extensions.";
+  var ESCAPES = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
+  var escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => ESCAPES[char] ?? char);
+  var AGE_TIP = "Time of the last change to plan.md or metadata.json (file time, not a commit time).";
+  var clockOf = (time) => {
+    const date = new Date(time);
+    if (Number.isNaN(date.getTime())) return "--:--";
+    return date.toISOString().slice(11, 16);
+  };
+  var CHEV = '<span class="chev" aria-hidden="true">\u25B8</span>';
+  var sectionOpen = (state, ui) => {
+    const choice = ui.open[state.repo.id];
+    if (choice !== void 0) return choice;
+    if (state.status !== "ready") return false;
+    return state.board.cards.some(
+      (card) => card.column === "blocked" || card.column === "waiting"
+    );
+  };
+  var renderCard = (card, now, comment) => {
+    const parts = [];
+    const title = escapeHtml(card.title);
+    parts.push(`<div class="card-title" title="${title}">${title}</div>`);
+    if (card.column !== "done") {
+      if (card.position !== null) {
+        const position2 = card.position;
+        parts.push(
+          `<div class="card-pos">Phase ${position2.phase}/${position2.phases} \xB7 Task ${position2.task}/${position2.tasks}</div>`
+        );
+        const task = escapeHtml(card.taskText ?? "");
+        parts.push(
+          `<div class="card-task" title="${task}"><span class="marker">[${card.marker ?? " "}]</span> ${task}</div>`
+        );
+      } else if (card.note !== null) {
+        parts.push(`<div class="card-note">${escapeHtml(card.note)}</div>`);
+      }
+      if (card.line !== null) {
+        const label = cardLabel(card) ?? "";
+        parts.push(
+          `<div class="card-line"><span class="line-label">${label}</span>${escapeHtml(card.line)}</div>`
+        );
+      }
+    }
+    if (!card.registered) parts.push('<div class="card-flag">Not in the registry</div>');
+    if (card.column === "done" && card.archived === false) {
+      parts.push('<div class="card-warn">Not archived</div>');
+    }
+    if (card.column === "done") {
+      const foot = card.doneDate === null ? "No date" : `${card.doneSource === "folder" ? "From" : "Done"} ${card.doneDate}`;
+      parts.push(`<div class="card-foot">${foot}</div>`);
+    } else {
+      const age = card.lastChange === null ? "Updated unknown" : `Updated ${formatAge(now, card.lastChange)}`;
+      parts.push(`<div class="card-foot" title="${AGE_TIP}">${age}</div>`);
+    }
+    if (comment !== void 0) {
+      if (comment.status === "sent" && comment.sentAt !== null) {
+        parts.push(
+          `<div class="comment-state" data-tone="sent">sent ${clockOf(comment.sentAt)}</div>`
+        );
+      } else if (comment.status === "error" && comment.error !== null) {
+        parts.push(
+          `<div class="comment-state" data-tone="error">${escapeHtml(comment.error)}</div>`
+        );
+      }
+    }
+    const tone2 = card.column === "blocked" || card.column === "waiting" ? card.column : "none";
+    return `<li class="card" data-card data-tone="${tone2}">${parts.join("")}</li>`;
+  };
+  var chipsOf = (board) => {
+    const counts = {};
+    for (const column of COLUMNS) counts[column] = 0;
+    for (const card of board.cards) {
+      counts[card.column] = (counts[card.column] ?? 0) + 1;
+    }
+    const notArchived = board.cards.filter(
+      (card) => card.column === "done" && card.archived === false
+    ).length;
+    const parts = [];
+    for (const column of COLUMNS) {
+      const count = counts[column] ?? 0;
+      const label = COLUMN_LABELS[column];
+      if ((column === "blocked" || column === "waiting") && count > 0) {
+        parts.push(`<span class="badge" data-tone="${column}">${count} ${label}</span>`);
+      } else {
+        parts.push(
+          `<span class="count" data-zero="${count === 0}"><b>${count}</b> ${label}</span>`
+        );
+      }
+      if (column === "blocked" && notArchived > 0) {
+        parts.push(
+          `<span class="badge" data-tone="not-archived">${notArchived} Not archived</span>`
+        );
+      }
+    }
+    return parts.join("");
+  };
+  var headerOf = (repoId, open, chips) => `<h2 class="repo-head"><button type="button" class="repo-toggle" data-action="toggle-section" data-repo="${escapeHtml(repoId)}" aria-expanded="${open}"><span class="repo-id">${CHEV}<span class="repo-name">${escapeHtml(repoId)}</span></span><span class="counts">${chips}</span></button></h2>`;
+  var columnOf = (board, repoId, column, ui, now) => {
+    const key = `${repoId}/${column}`;
+    const expanded = ui.expanded[key] === true;
+    const staleOpen = (ui.staleOpen ?? {})[key] === true;
+    const view = columnView(board, column, expanded, staleOpen, now);
+    const parts = [];
+    if (column === "done") {
+      const summary = doneSummary(board, now);
+      const open = ui.doneOpen[repoId] === true;
+      parts.push(
+        `<button type="button" class="col-toggle" data-action="toggle-done" data-repo="${escapeHtml(repoId)}" aria-expanded="${open}"><span class="col-name">${CHEV}${view.label}</span><span class="col-count">${view.total}</span></button>`
+      );
+      if (open) {
+        if (view.total === 0) {
+          parts.push('<p class="empty">None</p>');
+        } else if (summary.shown.length === 0) {
+          parts.push('<p class="empty">No track closed in the last 14 days</p>');
+        } else {
+          const groupOpen = (ui.doneGroupOpen ?? {})[repoId] === true;
+          parts.push(
+            `<button type="button" class="col-toggle" data-action="toggle-done-group" data-repo="${escapeHtml(repoId)}" aria-expanded="${groupOpen}"><span class="col-name">${CHEV}Closed in the last 14 days</span><span class="col-count">${summary.shown.length}</span></button>`
+          );
+          if (groupOpen) {
+            const cards = summary.shown.map((card) => renderCard(card, now)).join("");
+            parts.push(`<ul class="cards">${cards}</ul>`);
+          }
+        }
+        parts.push(
+          `<p class="col-note">${summary.more} more done, ${summary.archived} archived</p>`
+        );
+      }
+      return `<div class="column" data-column="${column}">${parts.join("")}</div>`;
+    }
+    parts.push(
+      `<div class="col-head"><span class="col-name">${view.label}</span><span class="col-count">${view.total}</span></div>`
+    );
+    if (view.total === 0) {
+      parts.push('<p class="empty">None</p>');
+    } else if (view.shown.length > 0) {
+      const cards = view.shown.map((card) => renderCard(card, now)).join("");
+      parts.push(`<ul class="cards">${cards}</ul>`);
+    }
+    if (view.hidden > 0) {
+      parts.push(
+        `<button type="button" class="more" data-action="show-more" data-repo="${escapeHtml(repoId)}" data-column="${column}">Show ${view.hidden} more</button>`
+      );
+    }
+    if (view.stale.length > 0) {
+      parts.push(
+        `<button type="button" class="more stale-toggle" data-action="toggle-stale" data-repo="${escapeHtml(repoId)}" data-column="${column}" aria-expanded="${staleOpen}" title="No change to plan.md or metadata.json in 30 days">${CHEV} Stale (${view.stale.length})</button>`
+      );
+      if (staleOpen) {
+        const cards = view.stale.map((card) => renderCard(card, now)).join("");
+        parts.push(`<ul class="cards stale-cards">${cards}</ul>`);
+      }
+    }
+    return `<div class="column" data-column="${column}">${parts.join("")}</div>`;
+  };
+  var renderSection = (state, ui, now) => {
+    const repoId = state.repo.id;
+    if (state.status === "loading") {
+      const chips = '<span class="count" data-zero="true"><b>0</b> Loading</span>';
+      return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, false, chips)}</section>`;
+    }
+    if (state.status === "error") {
+      const line = `<p class="empty">${escapeHtml(state.line)}</p>`;
+      return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, false, "")}${line}</section>`;
+    }
+    const open = sectionOpen(state, ui);
+    const columns = COLUMNS.map((column) => columnOf(state.board, repoId, column, ui, now)).join("");
+    const board = `<div class="board"${open ? "" : " hidden"}>${columns}</div>`;
+    return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, open, chipsOf(state.board))}${board}</section>`;
+  };
+  var blockedOf = (view) => blockedTracks(view.states.flatMap((state) => state.status === "ready" ? [state.board] : []));
+  var waitingOf = (view) => view.states.flatMap((state) => state.status === "ready" ? [state.board] : []).reduce(
+    (sum, board) => sum + board.cards.filter((card) => card.column === "waiting").length,
+    0
+  );
+  var renderPage = (view) => {
+    const blocked = blockedOf(view);
+    const waiting = waitingOf(view);
+    const summary = [];
+    if (blocked > 0) {
+      summary.push(`<span class="badge" data-tone="blocked">${blocked} Blocked</span>`);
+    }
+    if (waiting > 0) {
+      summary.push(
+        `<span class="badge" data-tone="waiting">${waiting} Waiting on Daniel</span>`
+      );
+    }
+    const needsGrant = view.states.some(
+      (state) => state.status === "error" && state.code === "NOT_GRANTED"
+    );
+    const banner = needsGrant ? `<div class="grant-banner" role="status">${escapeHtml(GRANT_BANNER)}</div>` : "";
+    const label = view.busy ? "Refreshing" : "Refresh";
+    const busy2 = view.busy ? ' disabled="disabled"' : "";
+    const head = `<header class="page-head"><h1 class="page-title">Measure board</h1><div class="page-summary">${summary.join("")}</div><button type="button" class="btn" data-action="refresh"${busy2}>${label}</button></header>`;
+    const sections = view.states.map((state) => renderSection(state, view.ui, view.now)).join("");
+    return `<div class="mb"><div class="page">${banner}${head}<main>${sections}</main></div></div>`;
+  };
+
+  // src/styles.ts
+  var BOARD_CSS = `
+.mb { font-size: 14px; line-height: 1.45; -webkit-text-size-adjust: 100%; margin: 0; font-family: var(--oc-font); background: var(--oc-bg); color: var(--oc-fg); }
+.mb, .mb *, .mb *::before, .mb *::after { box-sizing: border-box; }
+.mb [hidden] { display: none !important; }
+.mb button { font: inherit; color: inherit; }
+.mb :focus-visible { outline: 2px solid var(--oc-focus); outline-offset: 2px; }
+.mb .page { max-width: 1400px; margin: 0 auto; padding: 16px; }
+.mb .page-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 16px; }
+.mb .page-title { margin: 0; font-size: 1.35rem; font-weight: 650; flex: 1 1 auto; min-width: 0; }
+.mb .page-meta { flex: 1 1 100%; margin: 0; color: var(--oc-muted); font-size: 0.9rem; order: 3; }
+.mb .page-summary { display: flex; flex-wrap: wrap; gap: 6px; }
+.mb .grant-banner { margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--oc-warning); border-radius: var(--oc-radius); background: color-mix(in srgb, var(--oc-warning) 16%, transparent); color: var(--oc-warning-text); }
+.mb .btn { min-height: 40px; padding: 8px 14px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-elevated); color: var(--oc-elevated-fg); cursor: pointer; }
+.mb .btn:hover { background: var(--oc-hover); }
+.mb .btn:active { background: var(--oc-active); }
+.mb .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--oc-border); font-size: 0.85rem; font-weight: 600; }
+.mb .badge[data-tone="blocked"] { color: var(--oc-error-text); border-color: var(--oc-error); background: color-mix(in srgb, var(--oc-error) 14%, transparent); }
+.mb .badge[data-tone="waiting"] { color: var(--oc-warning-text); border-color: var(--oc-warning); background: color-mix(in srgb, var(--oc-warning) 16%, transparent); }
+.mb .repo { margin: 0 0 12px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-elevated); color: var(--oc-elevated-fg); }
+.mb .repo-head { margin: 0; font-size: 1rem; font-weight: 400; }
+.mb .repo-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; border-radius: var(--oc-radius); background: transparent; text-align: left; cursor: pointer; }
+.mb .repo-toggle:hover { background: var(--oc-hover); }
+.mb .repo-id { display: flex; align-items: center; gap: 8px; flex: 1 1 14rem; min-width: 0; }
+.mb .repo-name { font-weight: 650; overflow-wrap: anywhere; }
+.mb .chev { display: inline-block; width: 1em; color: var(--oc-muted); transition: transform 120ms; }
+.mb .repo-toggle[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.mb .counts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; flex: 0 1 auto; min-width: 0; font-size: 0.9rem; color: var(--oc-muted); }
+.mb .count b { font-family: var(--oc-mono); font-weight: 600; color: var(--oc-fg); }
+.mb .count[data-zero="true"] b { color: var(--oc-subtle); }
+.mb .board { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; padding: 4px 12px 12px; }
+.mb .column { flex: 1 1 220px; min-width: 220px; max-width: 320px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-muted-surface); padding: 8px; }
+.mb .col-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; padding: 0 2px 6px; }
+.mb .col-name { font-size: 0.8rem; font-weight: 650; letter-spacing: 0.04em; text-transform: uppercase; color: var(--oc-muted); }
+.mb .col-count { font-family: var(--oc-mono); font-size: 0.85rem; color: var(--oc-muted); }
+.mb .col-toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 40px; padding: 4px 8px; border: 1px dashed var(--oc-border); border-radius: var(--oc-radius); background: transparent; cursor: pointer; text-align: left; }
+.mb .col-toggle:hover { background: var(--oc-hover); }
+.mb .col-toggle .col-name { display: inline-flex; align-items: center; gap: 6px; }
+.mb .col-toggle[aria-expanded="true"] { margin-bottom: 8px; }
+.mb .col-toggle[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.mb .cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mb .empty { margin: 4px 2px 6px; color: var(--oc-subtle); font-size: 0.9rem; }
+.mb .col-note { margin: 8px 2px 0; color: var(--oc-muted); font-size: 0.8rem; }
+.mb .more { display: block; width: 100%; min-height: 40px; margin-top: 8px; padding: 6px 10px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-elevated); cursor: pointer; }
+.mb .more:hover { background: var(--oc-hover); }
+.mb .stale-toggle { border-style: dashed; background: transparent; color: var(--oc-muted); text-align: left; }
+.mb .stale-toggle[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.mb .stale-cards { margin-top: 8px; }
+.mb .card { padding: 10px; border: 1px solid var(--oc-border); border-left-width: 3px; border-radius: var(--oc-radius); background: var(--oc-elevated); color: var(--oc-elevated-fg); overflow-wrap: anywhere; min-width: 0; }
+.mb .card[data-tone="blocked"] { border-left-color: var(--oc-error); }
+.mb .card[data-tone="waiting"] { border-left-color: var(--oc-warning); }
+.mb .card-title { font-weight: 600; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.mb .card-pos { margin-top: 4px; font-size: 0.85rem; color: var(--oc-muted); }
+.mb .card-task { margin-top: 2px; color: var(--oc-fg); overflow-wrap: anywhere; }
+.mb .marker { font-family: var(--oc-mono); color: var(--oc-muted); }
+.mb .card-note { margin-top: 4px; font-size: 0.85rem; color: var(--oc-muted); font-style: italic; }
+.mb .card-line { margin-top: 6px; font-size: 0.85rem; overflow-wrap: anywhere; }
+.mb .line-label { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--oc-border); font-size: 0.75rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.03em; }
+.mb .card[data-tone="blocked"] .line-label { color: var(--oc-error-text); border-color: var(--oc-error); }
+.mb .card[data-tone="waiting"] .line-label { color: var(--oc-warning-text); border-color: var(--oc-warning); }
+.mb .card-flag { margin-top: 6px; font-size: 0.8rem; color: var(--oc-info-text); }
+.mb .card-foot { margin-top: 6px; font-size: 0.8rem; color: var(--oc-subtle); }
+.mb .card-warn { margin-top: 6px; font-size: 0.8rem; font-weight: 600; color: var(--oc-warning-text); }
+.mb .comment { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--oc-border); }
+.mb .comment-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.mb .comment-open { min-height: 40px; padding: 4px 12px; font-size: 0.8rem; }
+.mb .comment-panel { margin-top: 8px; }
+.mb .comment-label { display: block; margin-bottom: 4px; font-size: 0.8rem; font-weight: 600; color: var(--oc-muted); }
+.mb .comment-input { display: block; width: 100%; max-width: 100%; min-height: 40px; padding: 6px 8px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-bg); color: var(--oc-fg); font: inherit; font-size: 0.85rem; resize: vertical; }
+.mb .comment-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
+.mb .comment-send { min-height: 40px; padding: 6px 12px; font-size: 0.9rem; }
+.mb .comment-send[disabled] { opacity: 0.55; cursor: not-allowed; }
+.mb .comment-state { font-size: 0.8rem; color: var(--oc-muted); overflow-wrap: anywhere; }
+.mb .comment-state[data-tone="sent"] { color: var(--oc-success-text); }
+.mb .comment-state[data-tone="error"] { color: var(--oc-error-text); }
+.mb .badge[data-tone="not-archived"] { color: var(--oc-warning-text); border-color: var(--oc-warning); background: color-mix(in srgb, var(--oc-warning) 16%, transparent); }
+.mb #debug { margin-top: 12px; font-family: var(--oc-mono); font-size: 12px; color: var(--oc-muted); overflow-wrap: anywhere; }
+@media (max-width: 639.98px) {
+.mb .page { padding: 12px; }
+.mb .board { flex-direction: column; flex-wrap: nowrap; align-items: stretch; padding: 4px 8px 8px; }
+.mb .column { flex: 0 0 auto; width: 100%; min-width: 0; max-width: none; }
+.mb .repo-id, .mb .counts { flex-basis: 100%; }
+}`;
+
   // panel/main.ts
   var host = connectHost();
   var root = document.querySelector("#root");
-  var loadingSpinner = null;
-  var mounted = [];
-  var dispose = () => {
-    if (loadingSpinner !== null) {
-      loadingSpinner.dispose();
-      loadingSpinner = null;
-    }
-    for (const one of mounted) one.dispose();
-    mounted = [];
-    refreshButton = null;
-  };
+  var style = document.createElement("style");
+  style.textContent = BOARD_CSS;
+  document.head.appendChild(style);
+  var states = [];
+  var userOpen = {};
+  var userDoneOpen = {};
+  var userDoneGroupOpen = {};
+  var userExpanded = {};
+  var userStaleOpen = {};
+  var busy = false;
   var current = null;
-  var currentDirectory = null;
-  var generation = 0;
-  var firstLoadDone = false;
-  var pollTimer = null;
-  var seen = /* @__PURE__ */ new Map();
-  var seenInProgress = /* @__PURE__ */ new Set();
-  var seenActivePlan = null;
-  var refreshButton = null;
-  var loadInFlight = 0;
-  var load = async (directory) => {
-    if (directory !== currentDirectory) {
-      seen.clear();
-      seenInProgress = /* @__PURE__ */ new Set();
-      seenActivePlan = null;
-      currentDirectory = directory;
+  var surface = "panel";
+  var timer = null;
+  var openDefaults = () => {
+    const out = {};
+    if (window.innerWidth >= 640) return out;
+    let first = true;
+    for (const state of states) {
+      if (state.status !== "ready") continue;
+      const attention = state.board.cards.some(
+        (card) => card.column === "blocked" || card.column === "waiting"
+      );
+      out[state.repo.id] = attention && first;
+      if (attention && first) first = false;
     }
-    loadInFlight++;
-    refreshButton?.update({ loading: true });
-    const id = ++generation;
-    try {
-      const snapshot = await loadSnapshot(host, directory);
-      if (id !== generation) return;
-      current = snapshot;
-      firstLoadDone = true;
-      await refreshBadge();
-      paint();
-    } finally {
-      loadInFlight--;
-      if (loadInFlight === 0) refreshButton?.update({ loading: false });
-    }
+    return out;
+  };
+  var uiOf = () => ({
+    open: { ...openDefaults(), ...userOpen },
+    doneOpen: { ...userDoneOpen },
+    expanded: { ...userExpanded },
+    staleOpen: { ...userStaleOpen },
+    doneGroupOpen: { ...userDoneGroupOpen }
+  });
+  var openOf = (repo) => {
+    const state = states.find((one) => one.repo.id === repo);
+    if (state === void 0) return false;
+    return sectionOpen(state, uiOf());
   };
   var refreshBadge = async () => {
-    const count = current === null ? 0 : blockedCountOfActivePlan(current);
+    const boards = states.flatMap(
+      (state) => state.status === "ready" ? [state.board] : []
+    );
+    const count = blockedTracks(boards);
     await host.setBadge(count > 0 ? count : null);
   };
-  var adjustHeight = async () => {
-    if (current === null) {
-      await host.setHeight(48);
+  var paint = () => {
+    if (surface === "status") {
+      paintStatus();
       return;
     }
-    const line = bandLine(current);
-    if (line === null) {
-      await host.setHeight(48);
-      return;
-    }
-    const lines = line.split(" \xB7 ").length;
-    const height = current.parseError !== null ? 24 * (lines + 2) : 24 * lines + 16;
-    const clamped = Math.max(24, Math.min(320, height));
-    await host.setHeight(clamped);
+    root.innerHTML = renderPage({ states, ui: uiOf(), now: Date.now(), busy });
+    bind();
   };
-  var activeTrackId = () => current?.active?.entry.id ?? null;
-  var renderStatus = () => {
-    dispose();
+  var paintStatus = () => {
+    root.textContent = "";
     if (current === null) {
       root.appendChild(plainLine("Measure: no project open"));
-      void adjustHeight();
-      return;
+    } else {
+      const line = bandLine(current);
+      if (line === null) {
+        root.appendChild(plainLine("Measure: project has no measure/ folder"));
+      } else {
+        root.appendChild(bandElement(line, current.parseError !== null));
+      }
     }
-    const line = bandLine(current);
-    if (line === null) {
-      root.appendChild(plainLine("Measure: project has no measure/ folder"));
-      void adjustHeight();
-      return;
-    }
-    root.appendChild(bandElement(line, current.parseError !== null));
-    if (current.parseError !== null) {
-      const detail = document.createElement("div");
-      detail.className = "band band-error";
-      detail.textContent = current.parseError;
-      root.appendChild(detail);
-    }
-    void adjustHeight();
+    void host.setHeight(48);
   };
   var bandElement = (line, error) => {
-    const el2 = document.createElement("div");
-    el2.className = error ? "band band-error" : "band";
+    const element = document.createElement("div");
+    element.className = error ? "band band-error" : "band";
     const marker = /\[([ ~xb])\]/.exec(line);
     if (marker === null) {
-      el2.textContent = line;
-      return el2;
+      element.textContent = line;
+      return element;
     }
-    const m = marker[1] ?? " ";
-    const idx = marker.index;
-    const before = line.slice(0, idx);
-    const after = line.slice(idx + 3);
+    const value = marker[1] ?? " ";
+    const before = line.slice(0, marker.index);
+    const after = line.slice(marker.index + 3);
     const span = document.createElement("span");
-    span.className = `marker ${markerClassName(m)}`;
-    span.textContent = `[${m}]`;
-    el2.append(before, span, after);
-    return el2;
+    span.className = markerClassName(value);
+    span.textContent = `[${value}]`;
+    element.append(before, span, after);
+    return element;
   };
   var plainLine = (text) => {
-    const el2 = document.createElement("div");
-    el2.className = "band";
-    el2.textContent = text;
-    return el2;
+    const element = document.createElement("div");
+    element.className = "band";
+    element.textContent = text;
+    return element;
   };
-  var renderPanel = () => {
-    dispose();
-    if (current === null || current.directory === null) {
-      paintOpenProject();
-      return;
-    }
-    if (!current.hasMeasure) {
-      paintNoMeasure();
-      return;
-    }
-    if (current.parseError !== null) {
-      paintParseError();
-      return;
-    }
-    paintBody();
-  };
-  var paintHeader = (parent, bodyClass) => {
-    const header = document.createElement("div");
-    header.className = "header";
-    parent.appendChild(header);
-    const title = document.createElement("div");
-    title.className = "title";
-    title.textContent = "Measure";
-    header.appendChild(title);
-    refreshButton = mountButton(header, {
-      label: "Refresh",
-      variant: "ghost",
-      size: "xs",
-      loading: loadInFlight > 0,
-      onClick: () => {
-        void load(currentDirectory);
-      }
+  var loadBoard = async () => {
+    if (busy) return;
+    busy = true;
+    states = ROSTER.map((repo) => ({ status: "loading", repo }));
+    paint();
+    await loadRoster(host, ROSTER, (state) => {
+      states = states.map((one) => one.repo.id === state.repo.id ? state : one);
+      paint();
+      void refreshBadge();
     });
-    mounted.push(refreshButton);
-    const copy = mountButton(header, {
-      label: "Copy status",
-      variant: "outline",
-      size: "xs",
-      onClick: () => {
-        void onCopy();
-      }
-    });
-    mounted.push(copy);
-    const body = document.createElement("div");
-    if (bodyClass !== void 0) body.className = bodyClass;
-    parent.appendChild(body);
-    return body;
+    busy = false;
+    paint();
+    await refreshBadge();
   };
-  var paintOpenProject = () => {
-    const body = paintHeader(root);
-    mounted.push(mountEmpty(body, {
-      title: "Open a project",
-      body: "The Measure status appears when a project is open."
-    }));
+  var loadBand = async (directory) => {
+    current = await loadSnapshot(host, directory);
+    paint();
   };
-  var paintNoMeasure = () => {
-    const body = paintHeader(root);
-    mounted.push(mountEmpty(body, {
-      title: "No Measure in this project",
-      body: "This project has no measure/ folder.",
-      action: {
-        label: "Set up Measure",
-        onClick: () => {
-          void onSetUp();
-        }
-      }
-    }));
+  var startTimer = () => {
+    if (timer !== null) return;
+    timer = window.setInterval(() => {
+      if (!shouldReload(document.visibilityState === "visible", busy)) return;
+      void loadBoard();
+    }, RELOAD_MS);
   };
-  var paintParseError = () => {
-    const body = paintHeader(root);
-    const parseError = current?.parseError;
-    if (parseError !== null && parseError !== void 0) {
-      mounted.push(mountBanner(body, {
-        tone: "error",
-        title: "Cannot read the Measure files",
-        body: parseError
-      }));
+  var bind = () => {
+    for (const button2 of root.querySelectorAll("[data-action]")) {
+      button2.addEventListener("click", onAction);
     }
   };
-  var paintBody = () => {
-    if (current === null) return;
-    const view = statusView(current);
-    const body = paintHeader(root);
-    if (view.tracks.length > 0) {
-      const tracksRoot = document.createElement("div");
-      body.appendChild(tracksRoot);
-      const tracksList = mountList(tracksRoot, {
-        items: trackItems(view.tracks),
-        onSelect: (id) => {
-          void onTrackSelect(id);
-        }
-      });
-      mounted.push(tracksList);
-    }
-    if (view.activePlanPath !== null) {
-      const sepRoot = document.createElement("div");
-      body.appendChild(sepRoot);
-      const sep = mountSeparator(sepRoot, { label: view.activePlanPath });
-      mounted.push(sep);
-    }
-    if (current.active !== null) {
-      const task = currentTask(current.active.plan);
-      if (task !== null) {
-        const taskRoot = document.createElement("div");
-        body.appendChild(taskRoot);
-        const wrap = document.createElement("div");
-        wrap.className = "current-task";
-        const label = document.createElement("div");
-        label.className = "label";
-        label.textContent = "Current task";
-        const text = document.createElement("div");
-        text.className = "text";
-        text.textContent = `[${task.marker === " " ? " " : task.marker}] ${task.text}`;
-        wrap.append(label, text);
-        wrap.addEventListener("click", () => {
-          void onTaskContinue();
-        });
-        taskRoot.appendChild(wrap);
-        mounted.push({ dispose: () => {
-          wrap.remove();
-        } });
-      }
-    }
-    if (needsCurrentTaskBanner(current)) {
-      const bannerRoot = document.createElement("div");
-      body.appendChild(bannerRoot);
-      const next = nextPendingText(current);
-      const body1 = next === null ? "The plan has no pending task." : `Next task: ${next}. Mark it [~] in plan.md before you change files outside measure/.`;
-      const banner = mountBanner(bannerRoot, { tone: "info", title: "No task is in progress", body: body1 });
-      mounted.push(banner);
-    }
-    if (view.phases.length > 0) {
-      const phasesRoot = document.createElement("div");
-      body.appendChild(phasesRoot);
-      const phasesList = mountList(phasesRoot, {
-        items: phaseItems(view.phases),
-        onSelect: (id) => {
-          void onPhaseSelect(view, id);
-        }
-      });
-      mounted.push(phasesList);
-    }
-    if (view.blockedTasks.length > 0) {
-      const blockedRoot = document.createElement("div");
-      body.appendChild(blockedRoot);
-      const blockedSep = mountSeparator(blockedRoot, { label: `Blocked tasks ([b])` });
-      mounted.push(blockedSep);
-      const blockedList = mountList(blockedRoot, {
-        items: view.blockedTasks.map((task, index) => ({
-          id: `blocked-${index}`,
-          title: task.text,
-          badge: task.deferredOwner === null ? { label: "no owner", tone: "warning" } : { label: `deferred:${task.deferredOwner}`, tone: "info" }
-        })),
-        onSelect: () => {
-        }
-      });
-      mounted.push(blockedList);
-    }
-  };
-  var trackItems = (tracks) => tracks.map((track) => ({
-    id: track.id,
-    title: track.name,
-    subtitle: track.folder,
-    meta: track.active ? "active" : "",
-    badge: { label: markerText(track.marker), tone: markerTone(track.marker) }
-  }));
-  var phaseItems = (phases) => phases.map((phase, index) => ({
-    id: `phase-${index}`,
-    leading: `${phase.closed}/${phase.total}`,
-    title: phase.title,
-    meta: phase.checkpoint === null ? "" : `checkpoint ${phase.checkpoint}`
-  }));
-  var onCopy = async () => {
-    if (current === null) return;
-    const text = copyText(current);
-    try {
-      await host.writeClipboard(text);
-      await host.toast({ kind: "success", message: "Measure status copied" });
-    } catch (error) {
-      await host.toast({ kind: "error", message: `Copy failed: ${errorMessage2(error)}` });
-    }
-  };
-  var onSetUp = async () => {
-    const text = "This project has no measure/ folder. Please run the Measure `setup` workflow for this project (see the `measure` skill, `setup` command). The setup writes measure/index.md, measure/tracks.md, and the starter product/tech-stack/workflow files.";
-    await host.compose({ text });
-  };
-  var onTrackSelect = async (id) => {
-    if (current === null) return;
-    const track = current.tracks.find((t) => t.id === id);
-    if (track === void 0) return;
-    if (track.id !== activeTrackId()) {
-      await host.toast({ kind: "info", message: `Track "${track.name}" is not active. Mark it [~] in tracks.md to make it active.` });
+  var onAction = (event) => {
+    const button2 = event.currentTarget;
+    if (!(button2 instanceof HTMLElement)) return;
+    const action = button2.getAttribute("data-action");
+    const repo = button2.getAttribute("data-repo");
+    const column = button2.getAttribute("data-column");
+    if (action === "refresh") {
+      void loadBoard();
       return;
     }
-    await onTaskContinue();
-  };
-  var onPhaseSelect = async (view, id) => {
-    const match = /^phase-(\d+)$/.exec(id);
-    if (match === null) return;
-    const index = Number(match[1]);
-    const phase = view.phases[index];
-    if (phase === void 0) return;
-    if (phase.checkpoint !== null) {
-      try {
-        await host.openCommit(phase.checkpoint);
-      } catch (error) {
-        await host.toast({ kind: "error", message: `Open commit failed: ${errorMessage2(error)}` });
-      }
+    if (repo === null) return;
+    if (action === "toggle-section") {
+      userOpen[repo] = !openOf(repo);
+      paint();
+      return;
     }
-  };
-  var onTaskContinue = async () => {
-    if (current?.active === null || current?.active === void 0) return;
-    const { entry, planPath, plan } = current.active;
-    const task = currentTask(plan);
-    if (task === null) return;
-    const text = `Continue the task on the active track.
-
-Track: ${entry.name} (measure/${entry.folder}/).
-Plan: measure/${planPath}.
-Current task: [~] ${task.text}
-
-Follow the Task Workflow in measure/workflow.md. Mark the task [x] with the commit SHA when you finish it.`;
-    await host.compose({ text });
-  };
-  var errorMessage2 = (error) => {
-    if (error instanceof HostRequestError) return `${error.code}: ${error.message}`;
-    return error instanceof Error ? error.message : String(error);
-  };
-  var pathsToStat = () => {
-    const paths = ["measure/index.md"];
-    if (current !== null) {
-      if (current.tracksPath !== null) paths.push(current.tracksPath);
-      if (current.active !== null) paths.push(current.active.planPath);
+    if (action === "toggle-done") {
+      userDoneOpen[repo] = !(userDoneOpen[repo] ?? false);
+      paint();
+      return;
     }
-    return paths;
-  };
-  var inProgressFolders = () => {
-    if (current === null) return /* @__PURE__ */ new Set();
-    return new Set(current.tracks.filter((t) => t.marker === "~").map((t) => t.folder));
-  };
-  var activePlanPathNow = () => current?.active?.planPath ?? null;
-  var poll = async () => {
-    if (currentDirectory === null) return;
-    let changed = false;
-    const stats = await Promise.all(pathsToStat().map(async (path) => [path, await host.stat(path)]));
-    for (const [path, stat] of stats) {
-      if (stat.kind !== "file") {
-        if (seen.has(path)) {
-          seen.delete(path);
-          changed = true;
-        }
-        continue;
-      }
-      const prev = seen.get(path);
-      if (prev !== stat.mtime) {
-        if (prev !== void 0) changed = true;
-        seen.set(path, stat.mtime);
-      }
+    if (action === "toggle-done-group") {
+      userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false);
+      paint();
+      return;
     }
-    const nowInProgress = inProgressFolders();
-    if (!sameSet(nowInProgress, seenInProgress)) {
-      seenInProgress = nowInProgress;
-      changed = true;
+    if (column === null) return;
+    const key = `${repo}/${column}`;
+    if (action === "show-more") {
+      userExpanded[key] = true;
+      paint();
+      return;
     }
-    const nowActivePlan = activePlanPathNow();
-    if (nowActivePlan !== seenActivePlan) {
-      seenActivePlan = nowActivePlan;
-      changed = true;
+    if (action === "toggle-stale") {
+      const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false;
+      userStaleOpen[key] = !staleOpen;
+      paint();
     }
-    if (changed) await load(currentDirectory);
-  };
-  var sameSet = (a, b) => {
-    if (a.size !== b.size) return false;
-    for (const v2 of a) if (!b.has(v2)) return false;
-    return true;
-  };
-  var startPolling = () => {
-    if (pollTimer !== null) return;
-    pollTimer = window.setInterval(() => {
-      void poll();
-    }, 5e3);
   };
   var mountedOnce = false;
-  var paint = () => {
-    const surface = lastSurface ?? "panel";
-    dispose();
-    if (!firstLoadDone) {
-      paintLoading();
-      return;
-    }
-    if (surface === "status") renderStatus();
-    else renderPanel();
-  };
-  var lastSurface = "panel";
   host.onReady((ctx) => {
     applyHostReady(ctx, document.documentElement);
-    lastSurface = ctx.surface;
+    surface = ctx.surface;
     if (!mountedOnce) {
       mountedOnce = true;
       host.onDirectory((directory) => {
-        void load(directory);
+        void loadBand(directory);
       });
-      startPolling();
-      void load(ctx.directory);
+      if (surface === "status") {
+        void loadBand(ctx.directory);
+      } else {
+        startTimer();
+        void loadBoard();
+      }
     }
     paint();
   });
-  var paintLoading = () => {
-    if (loadingSpinner !== null) return;
-    loadingSpinner = mountSpinner(root, { label: "Loading Measure status" });
-  };
 })();
