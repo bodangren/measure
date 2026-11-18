@@ -239,7 +239,7 @@ describe('loadRepo', () => {
     delete dirs[file(alpha, 'archive')]
     const host = new FakeHost(files, dirs, mtimes)
     const board = readyBoard(await loadRepo(host, alpha, limiter(MAX_IN_FLIGHT)))
-    expect(board.cards.map(one => one.title)).toEqual(['Alpha', 'gamma_3'])
+    expect(board.cards.map(one => one.title)).toEqual(['Alpha', 'Beta', 'gamma_3'])
   })
 
   test('gives an R2 card when the plan read fails', async () => {
@@ -304,7 +304,10 @@ describe('FR-16, D2: the calls of a Done track', () => {
       '  *Link: [./tracks/epsilon_5/](./tracks/epsilon_5/)*',
       '',
     ].join('\n')
-    const files: Record<string, string> = { [file(one, 'tracks.md')]: registry }
+    const files: Record<string, string> = {
+      [file(one, 'tracks.md')]: registry,
+      [file(one, 'archive/beta_2/plan.md')]: '## Phase 1: Done\n',
+    }
     const dirs: Record<string, Array<{ name: string; kind: string }>> = {
       [file(one, 'tracks')]: [{ name: 'epsilon_5', kind: 'directory' }],
       [file(one, 'archive')]: [{ name: 'beta_2', kind: 'directory' }],
