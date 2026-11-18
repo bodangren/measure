@@ -190,7 +190,7 @@ export const ROLE_OF_AGENT: Record<string, string> = {
   'measure-adversarial-testing': 'adversarial',
   'measure-strategy': 'strategy',
   'measure-spec-review': 'strategy',
-  'measure-phase-acceptance': 'acceptance',
+  'measure-phase-acceptance': 'phase-acceptance',
   'measure-final-acceptance': 'final-acceptance',
 }
 

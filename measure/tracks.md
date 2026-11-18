@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Guard phase acceptance**
+  *Link: [./tracks/guard_phase_acceptance_20261118/](./tracks/guard_phase_acceptance_20261118/)*
+  *Map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)*
 
 ---
 

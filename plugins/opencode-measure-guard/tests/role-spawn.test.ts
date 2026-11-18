@@ -31,8 +31,9 @@ const after = (event: ToolBeforeEvent, output = 'done'): CompletedEvent => ({
   result: { output },
 })
 
-const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}]}}'
+const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}],"acceptance":[{"route":"opencode-go/deepseek-v4-pro#high","family":"deepseek"}],"phase-acceptance":[{"route":"opencode-go/glm-5.3#high","family":"glm"}]}}'
 const DENY_MODEL = 'claude-code/claude-opus-5-5[1m]#high'
+const PHASE_MODEL = 'opencode-go/glm-5.3#high'
 
 /** The output text of a completed call. */
 const outputOf = (event: CompletedEvent): string => String(event.result.output)
@@ -76,6 +77,26 @@ describe('role spawn routes', () => {
     expect(message).toContain('not an approved route')
     expect(message).toContain('  - opencode-go/deepseek-v4.1-flash')
     expect(message).toContain('ra-quota pick red')
+  })
+
+  test('phase acceptance: the pick route of phase-acceptance passes', async () => {
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-phase-acceptance', model: PHASE_MODEL })
+    await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
+  })
+
+  test('phase acceptance: a model outside phase-acceptance names that pick role', async () => {
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-phase-acceptance', model: DENY_MODEL })
+    let message = ''
+    try {
+      await guard.onToolBefore(call)
+    } catch (error) {
+      message = String(error)
+    }
+    expect(message).toContain('not an approved route')
+    expect(message).toContain('  - opencode-go/glm-5.3#high')
+    expect(message).toContain('ra-quota pick phase-acceptance')
   })
 
   test('missing file: the spawn passes with a warning note', async () => {
