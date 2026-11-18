@@ -47,6 +47,26 @@ export const escapeCommentBox = (state: CommentBoxState): CommentBoxState => ({
   openKey: null,
 })
 
+/** D1: the action after which the focus moves. */
+export type FocusAction = 'open' | 'escape' | 'send-done'
+
+/** D1: the element that takes the focus after a repaint. */
+export type FocusTarget = { selector: string }
+
+/**
+ * D1: the focus rule of the comment box. A repaint removes the old element,
+ * so the page asks for the selector of the new one. Open gives the text area
+ * of the card. Escape and a finished Send give the Comment button of the card.
+ * The key sits in a quoted attribute value. Only the quote and the backslash
+ * need an escape there.
+ */
+export const focusAfter = (action: FocusAction, key: string): FocusTarget => {
+  const escaped = key.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  const card = `[data-key="${escaped}"]`
+  if (action === 'open') return { selector: `textarea.comment-input${card}` }
+  return { selector: `button[data-action="open-comment"]${card}` }
+}
+
 /** D1: keeps the text of one card. */
 export const setCommentText = (
   state: CommentBoxState,

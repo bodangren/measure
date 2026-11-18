@@ -7,11 +7,13 @@ import {
   emptyCommentBox,
   escapeCommentBox,
   finishCommentSend,
+  focusAfter,
   openCommentBox,
   setCommentText,
   startCommentSend,
   type CommentBoxState,
   type CommentOutcome,
+  type FocusAction,
 } from '../src/comment-box'
 import type { RosterRepo } from '../src/roster'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
@@ -72,6 +74,12 @@ let commentState: CommentBoxState = emptyCommentBox()
 
 /** True while a send runs. */
 let sending = false
+
+/**
+ * D1: the focus that the next repaint sets. A repaint removes the old
+ * element, so the focus moves only after the new element exists.
+ */
+let focusNext: { action: FocusAction; key: string } | null = null
 
 /**
  * D1: the local fake sender of the preview. The preview has no host and no
@@ -145,6 +153,7 @@ const sendComment = async (key: string): Promise<void> => {
   const outcome = await pending
   sending = false
   commentState = finishCommentSend(commentState, key, outcome)
+  focusNext = { action: 'send-done', key }
   paint()
 }
 
@@ -182,6 +191,13 @@ const openOf = (repo: string): boolean => {
   return sectionOpen(state, uiOf())
 }
 
+/** D1: moves the focus to the element that `focusAfter` names. */
+const focusOn = (action: FocusAction, key: string): void => {
+  const element = root.querySelector<HTMLElement>(focusAfter(action, key).selector)
+  if (element === null) return
+  element.focus()
+}
+
 /** Draws the board. */
 const paint = (): void => {
   // Every text from a file passes through `escapeHtml` before it reaches this
@@ -189,6 +205,9 @@ const paint = (): void => {
   root.innerHTML = renderPage({ states, ui: uiOf(), now, busy: false, comments: commentsOf() })
   bind()
   restoreComment()
+  const next = focusNext
+  focusNext = null
+  if (next !== null) focusOn(next.action, next.key)
 }
 
 // ----- The events of the board. Every button carries a `data-action`.
@@ -221,6 +240,9 @@ const onAction = (event: Event): void => {
     const key = button.getAttribute('data-key')
     if (key === null) return
     commentState = openCommentBox(commentState, key)
+    focusNext = commentState.openKey === key
+      ? { action: 'open', key }
+      : { action: 'escape', key }
     paint()
     return
   }
@@ -263,7 +285,9 @@ const onAction = (event: Event): void => {
 // D1: the Escape key closes the open comment box.
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || commentState.openKey === null) return
+  const key = commentState.openKey
   commentState = escapeCommentBox(commentState)
+  focusNext = { action: 'escape', key }
   paint()
 })
 

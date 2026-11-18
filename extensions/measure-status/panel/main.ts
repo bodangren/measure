@@ -9,10 +9,12 @@ import {
   emptyCommentBox,
   escapeCommentBox,
   finishCommentSend,
+  focusAfter,
   openCommentBox,
   setCommentText,
   startCommentSend,
   type CommentBoxState,
+  type FocusAction,
 } from '../src/comment-box'
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
@@ -60,6 +62,12 @@ const userStaleOpen: Record<string, boolean> = {}
 
 /** The state of the comment boxes of the page. */
 let commentState: CommentBoxState = emptyCommentBox()
+
+/**
+ * D1: the focus that the next repaint sets. A repaint removes the old
+ * element, so the focus moves only after the new element exists.
+ */
+let focusNext: { action: FocusAction; key: string } | null = null
 
 /** The answer of the service. The service names the code of a failure. */
 type ServiceAnswer = { ok: boolean; code?: string; message?: string }
@@ -190,6 +198,7 @@ const sendComment = async (key: string): Promise<void> => {
     key,
     result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line },
   )
+  focusNext = { action: 'send-done', key }
   paint()
 }
 
@@ -249,6 +258,13 @@ const refreshBadge = async (): Promise<void> => {
   await host.setBadge(count > 0 ? count : null)
 }
 
+/** D1: moves the focus to the element that `focusAfter` names. */
+const focusOn = (action: FocusAction, key: string): void => {
+  const element = root.querySelector<HTMLElement>(focusAfter(action, key).selector)
+  if (element === null) return
+  element.focus()
+}
+
 /** Draws the board of the panel and the page. */
 const paint = (): void => {
   if (surface === 'status') {
@@ -266,6 +282,9 @@ const paint = (): void => {
   })
   bind()
   restoreComment()
+  const next = focusNext
+  focusNext = null
+  if (next !== null) focusOn(next.action, next.key)
 }
 
 /** Draws the band of the Work Status section. */
@@ -371,6 +390,9 @@ const onAction = (event: Event): void => {
     const key = button.getAttribute('data-key')
     if (key === null) return
     commentState = openCommentBox(commentState, key)
+    focusNext = commentState.openKey === key
+      ? { action: 'open', key }
+      : { action: 'escape', key }
     paint()
     return
   }
@@ -435,6 +457,8 @@ host.onReady((ctx) => {
 // D1: the Escape key closes the open comment box.
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || commentState.openKey === null) return
+  const key = commentState.openKey
   commentState = escapeCommentBox(commentState)
+  focusNext = { action: 'escape', key }
   paint()
 })

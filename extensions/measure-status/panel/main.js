@@ -2421,6 +2421,12 @@ ${GUEST_UI_LOOK_CSS}`;
     ...state,
     openKey: null
   });
+  var focusAfter = (action, key) => {
+    const escaped = key.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    const card = `[data-key="${escaped}"]`;
+    if (action === "open") return { selector: `textarea.comment-input${card}` };
+    return { selector: `button[data-action="open-comment"]${card}` };
+  };
   var setCommentText = (state, key, text) => ({
     ...state,
     texts: { ...state.texts, [key]: text }
@@ -3270,6 +3276,7 @@ ${GUEST_UI_LOOK_CSS}`;
   var userExpanded = {};
   var userStaleOpen = {};
   var commentState = emptyCommentBox();
+  var focusNext = null;
   var parseAnswer = (text) => {
     try {
       const value = JSON.parse(text);
@@ -3376,6 +3383,7 @@ ${GUEST_UI_LOOK_CSS}`;
       key,
       result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line }
     );
+    focusNext = { action: "send-done", key };
     paint();
   };
   var busy = false;
@@ -3415,6 +3423,11 @@ ${GUEST_UI_LOOK_CSS}`;
     const count = blockedTracks(boards);
     await host.setBadge(count > 0 ? count : null);
   };
+  var focusOn = (action, key) => {
+    const element = root.querySelector(focusAfter(action, key).selector);
+    if (element === null) return;
+    element.focus();
+  };
   var paint = () => {
     if (surface === "status") {
       paintStatus();
@@ -3429,6 +3442,9 @@ ${GUEST_UI_LOOK_CSS}`;
     });
     bind();
     restoreComment();
+    const next = focusNext;
+    focusNext = null;
+    if (next !== null) focusOn(next.action, next.key);
   };
   var paintStatus = () => {
     root.textContent = "";
@@ -3514,6 +3530,7 @@ ${GUEST_UI_LOOK_CSS}`;
       const key2 = button2.getAttribute("data-key");
       if (key2 === null) return;
       commentState = openCommentBox(commentState, key2);
+      focusNext = commentState.openKey === key2 ? { action: "open", key: key2 } : { action: "escape", key: key2 };
       paint();
       return;
     }
@@ -3572,7 +3589,9 @@ ${GUEST_UI_LOOK_CSS}`;
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || commentState.openKey === null) return;
+    const key = commentState.openKey;
     commentState = escapeCommentBox(commentState);
+    focusNext = { action: "escape", key };
     paint();
   });
 })();
