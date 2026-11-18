@@ -6,12 +6,14 @@ import {
   COLUMN_LABELS,
   COLUMNS,
   DONE_SHOWN,
+  DONE_WINDOW_DAYS,
   blockedTracks,
   buildBoard,
   cardLabel,
   classifyTrack,
   columnView,
   currentIndex,
+  doneSummary,
   type TrackInput,
 } from './board'
 import { parsePlan, tasksOf } from './parse'
@@ -509,5 +511,84 @@ describe('cardLabel', () => {
     expect(cardLabel(gate)).toBe('GATE')
     expect(cardLabel(card({ registryMarker: 'x' }))).toBeNull()
     expect(cardLabel(card())).toBeNull()
+  })
+})
+
+describe('FR-16, D2: the Done group', () => {
+  const utcDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
+
+  const done = (title: string, days: number | null, over: Partial<TrackInput> = {}) =>
+    input({
+      title,
+      registryMarker: 'x',
+      folder: 'archive/done_1',
+      lastChange: days === null ? null : NOW - days * DAY,
+      ...over,
+    })
+
+  test('holds the window of 14 days', () => {
+    expect(DONE_WINDOW_DAYS).toBe(14)
+  })
+
+  test('marks a Done track under tracks/ as not archived', () => {
+    const kept = classifyTrack(input({ registryMarker: 'x', folder: 'tracks/kept_1' }))
+    const moved = classifyTrack(input({ registryMarker: 'x', folder: 'archive/moved_2' }))
+    expect(kept).toMatchObject({ column: 'done', archived: false })
+    expect(moved).toMatchObject({ column: 'done', archived: true })
+  })
+
+  test('shows the 5 newest closed tracks, newest first', () => {
+    const board = buildBoard(
+      'invented-repo',
+      [7, 1, 3, 5, 2, 4, 6].map(days => done(`Done ${days}`, days)),
+    )
+    const summary = doneSummary(board, NOW)
+    expect(summary.shown.map(one => one.title)).toEqual(['Done 1', 'Done 2', 'Done 3', 'Done 4', 'Done 5'])
+    expect(summary.more).toBe(2)
+  })
+
+  test('keeps a track closed exactly 14 days ago and drops one at 15 days', () => {
+    const board = buildBoard('invented-repo', [done('Inside', 14), done('Outside', 15)])
+    expect(doneSummary(board, NOW).shown.map(one => one.title)).toEqual(['Inside'])
+  })
+
+  test('keeps out a Done track with no closed date', () => {
+    const board = buildBoard('invented-repo', [done('No date', null)])
+    const summary = doneSummary(board, NOW)
+    expect(summary.shown).toEqual([])
+    expect(summary.more).toBe(1)
+  })
+
+  test('takes the closed date of the card from doneDate when no file time is known', () => {
+    const board = buildBoard('invented-repo', [
+      done('Recent', null, { doneDate: utcDate(NOW - 3 * DAY), doneSource: 'folder' }),
+      done('Old', null, { doneDate: utcDate(NOW - 40 * DAY), doneSource: 'folder' }),
+    ])
+    expect(doneSummary(board, NOW).shown.map(one => one.title)).toEqual(['Recent'])
+  })
+
+  test('keeps card order for an equal closed time', () => {
+    const board = buildBoard('invented-repo', [done('First', 2), done('Second', 2)])
+    expect(doneSummary(board, NOW).shown.map(one => one.title)).toEqual(['First', 'Second'])
+  })
+
+  test('counts the archived and the not archived Done tracks', () => {
+    const board = buildBoard('invented-repo', [
+      done('Archive one', 1),
+      done('Archive two', 2, { folder: 'archive/other_2' }),
+      done('Kept', 3, { folder: 'tracks/kept_3' }),
+    ])
+    const summary = doneSummary(board, NOW)
+    expect(summary.archived).toBe(2)
+    expect(summary.notArchived).toBe(1)
+    expect(summary.more).toBe(0)
+  })
+
+  test('counts only the Done cards', () => {
+    const board = buildBoard('invented-repo', [done('Done', 1), input({ title: 'Planned' })])
+    const summary = doneSummary(board, NOW)
+    expect(summary.archived).toBe(1)
+    expect(summary.notArchived).toBe(0)
+    expect(summary.more).toBe(0)
   })
 })

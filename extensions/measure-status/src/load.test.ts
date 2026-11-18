@@ -14,6 +14,7 @@ import {
   type RepoState,
 } from './load'
 import type { RosterRepo } from './roster'
+import { doneSummary } from './board'
 
 type Call = { method: 'readFile' | 'stat' | 'listDir'; path: string }
 type Errors = Record<string, string>
@@ -290,5 +291,39 @@ describe('loadRoster', () => {
     await loadRoster(host, [alpha, broken], state => states.push(state))
     expect(states.map(one => one.repo.id)).toEqual(['invented-alpha', 'invented-broken'])
     expect(states.map(one => one.status)).toEqual(['ready', 'error'])
+  })
+})
+
+describe('FR-16, D2: the calls of a Done track', () => {
+  test('keeps the closed time of the two stats and marks the folder', async () => {
+    const one = repo('invented-d2')
+    const registry = [
+      '- [x] **Track: Beta**',
+      '  *Link: [./archive/beta_2/](./archive/beta_2/)*',
+      '- [x] **Track: Epsilon**',
+      '  *Link: [./tracks/epsilon_5/](./tracks/epsilon_5/)*',
+      '',
+    ].join('\n')
+    const files: Record<string, string> = { [file(one, 'tracks.md')]: registry }
+    const dirs: Record<string, Array<{ name: string; kind: string }>> = {
+      [file(one, 'tracks')]: [{ name: 'epsilon_5', kind: 'directory' }],
+      [file(one, 'archive')]: [{ name: 'beta_2', kind: 'directory' }],
+    }
+    const mtimes: Record<string, number> = {
+      [file(one, 'archive/beta_2/plan.md')]: 5_000,
+      [file(one, 'archive/beta_2/metadata.json')]: 2_000,
+    }
+    const host = new FakeHost(files, dirs, mtimes)
+    const board = readyBoard(await loadRepo(host, one, limiter(MAX_IN_FLIGHT)))
+    const byTitle = new Map(board.cards.map(oneCard => [oneCard.title, oneCard]))
+    expect(byTitle.get('Beta')).toMatchObject({ column: 'done', archived: true, lastChange: 5_000 })
+    expect(byTitle.get('Epsilon')).toMatchObject({ column: 'done', archived: false, lastChange: null })
+    expect(host.count('readFile')).toBe(1)
+    expect(host.count('stat')).toBe(4)
+
+    const summary = doneSummary(board, 1_800_000_000_000)
+    expect(summary.archived).toBe(1)
+    expect(summary.notArchived).toBe(1)
+    expect(summary.shown).toEqual([])
   })
 })
