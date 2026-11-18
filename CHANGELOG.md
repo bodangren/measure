@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+* **role-gate heavy run:** the `role-gate` command in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now runs each gate command through a heavy-run wrapper when one is set. The wrapper resolves as `--runner`, then `MEASURE_HEAVY_RUN`, then `heavy-run.sh` on PATH; with none found the gate runs the command directly and prints one note line. A repeatable `--exclude <file>` leaves test files out where the command lists or selects them, and fails closed when the command names no matching file. Track `role_gate_heavy_run_20261118`.
+
 ### Chores
 
 * **copywriter allow:** agents/measure-orchestrator.md now allows four global subagents, in this order directly after the "coder" rule and before the "change-quality-reviewer" rule: copywriter, fact-gate-checker, thai-writer, print-proof-auditor; a new S2 role-doc section pins the subagent rule order. Cause: the PR orchestrator session could not spawn the global copywriter agent (Daniel's order of 2026-11-15), the PM added the copywriter rule to the installed copy only and then updated the scope to add fact-gate-checker, thai-writer, and print-proof-auditor to the installed copy, and the installer held the installed file as local-edit, so it missed earlier PRs. Track `copywriter_allow_20261115`.
