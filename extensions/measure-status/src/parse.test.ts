@@ -3,12 +3,16 @@ import { describe, expect, test } from 'vitest'
 import {
   currentTask,
   findLink,
+  isGateText,
   isOpen,
   joinPath,
+  ownerToken,
   parsePlan,
   parseTracks,
   position,
   selectActive,
+  taskBody,
+  taskLabel,
 } from './parse'
 import type { Plan } from './types'
 import {
@@ -201,5 +205,80 @@ describe('position', () => {
     const plan = parsePlan('## Phase 1: A\n\n- [x] Task: Done `1234567`\n')
     const pos = position(plan)
     expect(pos.current).toBeNull()
+  })
+})
+
+describe('ownerToken', () => {
+  test('takes the text after deferred: and stops at a closing character', () => {
+    expect(ownerToken('Task: Do the work (deferred:owner)')).toBe('owner')
+    expect(ownerToken('Task: Do the work **deferred:x**')).toBe('x')
+    expect(ownerToken('Task: Gate deferred:owner-manual-verification)')).toBe('owner-manual-verification')
+  })
+
+  test('removes a trailing dot, underscore, or hyphen', () => {
+    expect(ownerToken('Task: Gate deferred:daniel.')).toBe('daniel')
+    expect(ownerToken('Task: Gate deferred:daniel-deploy-word.')).toBe('daniel-deploy-word')
+    expect(ownerToken('Task: Gate deferred:owner-_')).toBe('owner')
+  })
+
+  test('is null when the task has no owner field', () => {
+    expect(ownerToken('Task: Do the work')).toBeNull()
+    expect(ownerToken('Task: Do the work deferred:')).toBeNull()
+  })
+})
+
+describe('taskLabel', () => {
+  test('removes the trailing SHA and the checkpoint', () => {
+    expect(taskLabel('Task: Do the work aa591f4')).toBe('Task: Do the work')
+    expect(taskLabel('Task: Do the work `aa591f4`')).toBe('Task: Do the work')
+    expect(taskLabel('Task: Do the work [checkpoint: aa591f4]')).toBe('Task: Do the work')
+  })
+
+  test('collapses runs of white space', () => {
+    expect(taskLabel('Task:  Do   the work')).toBe('Task: Do the work')
+  })
+
+  test('stops at 140 characters and adds an ellipsis', () => {
+    const label = taskLabel(`Task: ${'x'.repeat(200)}`)
+    expect(label.length).toBe(141)
+    expect(label.endsWith('…')).toBe(true)
+  })
+})
+
+describe('taskBody', () => {
+  test('removes the id prefix', () => {
+    expect(taskBody('Task 1.5: GATE. PM look, then Daniel accepts the look.')).toBe(
+      'GATE. PM look, then Daniel accepts the look.',
+    )
+    expect(taskBody('1.5 GATE it')).toBe('GATE it')
+    expect(taskBody('Task 2: GATE ok')).toBe('GATE ok')
+  })
+
+  test('removes the bold markers around the prefix', () => {
+    expect(taskBody('**Task 2.1: GATE ok**')).toBe('GATE ok')
+  })
+
+  test('keeps a text with no id', () => {
+    expect(taskBody('Write the loader')).toBe('Write the loader')
+    expect(taskBody('Task X: Something')).toBe('Task X: Something')
+  })
+})
+
+describe('isGateText', () => {
+  test('is true for a body that starts with GATE', () => {
+    expect(isGateText('GATE')).toBe(true)
+    expect(isGateText('Task 1.5: GATE. PM look')).toBe(true)
+    expect(isGateText('**Task 2.1: GATE ok**')).toBe(true)
+  })
+
+  test('is false for GATEWAY, a lower-case gate, or GATE in the middle', () => {
+    expect(isGateText('Task 1.5: GATEWAY work')).toBe(false)
+    expect(isGateText('Task 1.5: Open the gate')).toBe(false)
+    expect(isGateText('Task 1.5: check the GATE first')).toBe(false)
+  })
+
+  test('is true for User Manual Verification in any place', () => {
+    expect(isGateText('Task 2: End User Manual Verification')).toBe(true)
+    expect(isGateText('User Manual Verification')).toBe(true)
   })
 })
