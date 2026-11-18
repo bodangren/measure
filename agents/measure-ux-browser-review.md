@@ -1,7 +1,7 @@
 ---
 description: Performs evidence-backed browser UX review before phase acceptance without modifying the implementation
 mode: subagent
-steps: 72
+steps: 96
 permissions:
   - action: edit
     resource: "*"

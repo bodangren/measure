@@ -1,7 +1,7 @@
 ---
 description: Adds risk-based adversarial tests before phase acceptance and routes exposed implementation defects back to Green
 mode: subagent
-steps: 64
+steps: 96
 permissions:
   - action: edit
     resource: "*"

@@ -1,7 +1,7 @@
 ---
 description: Performs immutable-HEAD Measure phase acceptance after reviews, adversarial tests, UX review, and remediation
 mode: subagent
-steps: 48
+steps: 80
 permissions:
   - action: edit
     resource: "*"
