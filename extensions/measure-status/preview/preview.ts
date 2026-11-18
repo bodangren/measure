@@ -3,8 +3,19 @@
 // bundles this file into `preview/preview.js`.
 import fixtureJson from '../mockup/fixtures.json'
 import type { Card, RepoBoard } from '../src/board'
+import {
+  emptyCommentBox,
+  escapeCommentBox,
+  finishCommentSend,
+  openCommentBox,
+  setCommentText,
+  startCommentSend,
+  type CommentBoxState,
+  type CommentOutcome,
+} from '../src/comment-box'
 import type { RosterRepo } from '../src/roster'
-import { renderPage, sectionOpen, type UiState } from '../src/render'
+import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
+import { isSendDisabled } from '../src/send'
 import { BOARD_CSS } from '../src/styles'
 
 type FixtureFile = {
@@ -54,6 +65,89 @@ if (query.get('done') === 'open') {
   for (const repo of fixture.repos) userDoneOpen[repo.repo] = true
 }
 
+// ----- FR-16, D1: the comment of a card. The preview has no host.
+
+/** The state of the comment boxes of the page. */
+let commentState: CommentBoxState = emptyCommentBox()
+
+/** True while a send runs. */
+let sending = false
+
+/**
+ * D1: the local fake sender of the preview. The preview has no host and no
+ * service. The send resolves with the send time. The card then shows the
+ * local sent HH:MM line of the shared renderer.
+ */
+const fakeSend = async (text: string): Promise<CommentOutcome> => {
+  if (text.trim() === '') return { ok: false, error: 'Write a comment first.' }
+  await new Promise<void>(resolve => {
+    window.setTimeout(resolve, 0)
+  })
+  return { ok: true, sentAt: Date.now() }
+}
+
+/** D1: the comment state of every card of the board. */
+const commentsOf = (): Record<string, CommentUi> => {
+  const out: Record<string, CommentUi> = {}
+  for (const state of states) {
+    if (state.status !== 'ready') continue
+    state.board.cards.forEach((card, index) => {
+      if (card.column !== 'blocked' && card.column !== 'waiting') return
+      const key = cardKey(card, index)
+      const status = commentState.status[key]
+      const text = commentState.texts[key] ?? ''
+      out[key] = {
+        status: status?.status ?? 'idle',
+        sentAt: status?.sentAt ?? null,
+        error: status?.error ?? null,
+        open: commentState.openKey === key,
+        disabled: isSendDisabled(text, sending),
+      }
+    })
+  }
+  return out
+}
+
+/** D1: the Send button is off while the text is empty or a send runs. */
+const setSendState = (area: HTMLTextAreaElement, text: string): void => {
+  const button = area.parentElement?.querySelector<HTMLButtonElement>('button.comment-send')
+  if (button === null || button === undefined) return
+  if (isSendDisabled(text, sending)) button.setAttribute('disabled', 'disabled')
+  else button.removeAttribute('disabled')
+}
+
+/** D1: the open box keeps its text after a repaint. */
+const restoreComment = (): void => {
+  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
+  if (area === null) return
+  const key = area.getAttribute('data-key')
+  const text = key === null ? '' : (commentState.texts[key] ?? '')
+  area.value = text
+  setSendState(area, text)
+}
+
+/** D1: the text of the box follows the user. */
+const onCommentInput = (event: Event): void => {
+  const area = event.currentTarget
+  if (!(area instanceof HTMLTextAreaElement)) return
+  const key = area.getAttribute('data-key')
+  if (key === null) return
+  commentState = setCommentText(commentState, key, area.value)
+  setSendState(area, area.value)
+}
+
+/** D1: one click sends one comment. The box closes when the send ends. */
+const sendComment = async (key: string): Promise<void> => {
+  const pending = fakeSend(commentState.texts[key] ?? '')
+  commentState = startCommentSend(commentState, key)
+  sending = true
+  paint()
+  const outcome = await pending
+  sending = false
+  commentState = finishCommentSend(commentState, key, outcome)
+  paint()
+}
+
 /**
  * FR-15 C3: under 640 px only the first section with a Blocked or a Waiting
  * card starts open. Every other section starts closed.
@@ -92,8 +186,9 @@ const openOf = (repo: string): boolean => {
 const paint = (): void => {
   // Every text from a file passes through `escapeHtml` before it reaches this
   // string, so the assignment cannot add an element of the file text.
-  root.innerHTML = renderPage({ states, ui: uiOf(), now, busy: false })
+  root.innerHTML = renderPage({ states, ui: uiOf(), now, busy: false, comments: commentsOf() })
   bind()
+  restoreComment()
 }
 
 // ----- The events of the board. Every button carries a `data-action`.
@@ -106,6 +201,9 @@ const bind = (): void => {
   for (const button of root.querySelectorAll<HTMLElement>('[data-action]')) {
     button.addEventListener('click', onAction)
   }
+  for (const area of root.querySelectorAll<HTMLTextAreaElement>('textarea.comment-input')) {
+    area.addEventListener('input', onCommentInput)
+  }
 }
 
 const onAction = (event: Event): void => {
@@ -117,6 +215,19 @@ const onAction = (event: Event): void => {
 
   if (action === 'refresh') {
     paint()
+    return
+  }
+  if (action === 'open-comment') {
+    const key = button.getAttribute('data-key')
+    if (key === null) return
+    commentState = openCommentBox(commentState, key)
+    paint()
+    return
+  }
+  if (action === 'send-comment') {
+    const key = button.getAttribute('data-key')
+    if (key === null) return
+    void sendComment(key)
     return
   }
   if (repo === null) return
@@ -148,6 +259,13 @@ const onAction = (event: Event): void => {
     paint()
   }
 }
+
+// D1: the Escape key closes the open comment box.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || commentState.openKey === null) return
+  commentState = escapeCommentBox(commentState)
+  paint()
+})
 
 paint()
 
