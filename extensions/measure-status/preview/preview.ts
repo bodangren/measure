@@ -8,12 +8,14 @@ import {
   escapeCommentBox,
   finishCommentSend,
   focusAfter,
+  focusAfterToggle,
   openCommentBox,
   setCommentText,
   startCommentSend,
   type CommentBoxState,
   type CommentOutcome,
   type FocusAction,
+  type ToggleAction,
 } from '../src/comment-box'
 import type { RosterRepo } from '../src/roster'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
@@ -82,12 +84,18 @@ let sending = false
 let focusNext: { action: FocusAction; key: string } | null = null
 
 /**
+ * D1: the focus that the next repaint sets for a toggle button. A repaint
+ * removes the old button, so the focus moves only after the new one exists.
+ */
+let focusToggleNext: { action: ToggleAction; repo: string; column?: string } | null = null
+
+/**
  * D1: the local fake sender of the preview. The preview has no host and no
  * service. The send resolves with the send time. The card then shows the
  * local sent HH:MM line of the shared renderer.
  */
 const fakeSend = async (text: string): Promise<CommentOutcome> => {
-  if (text.trim() === '') return { ok: false, error: 'Write a comment first.' }
+  if (isSendDisabled(text, false)) return { ok: false, error: 'Write a comment first.' }
   await new Promise<void>(resolve => {
     window.setTimeout(resolve, 0)
   })
@@ -146,7 +154,16 @@ const onCommentInput = (event: Event): void => {
 
 /** D1: one click sends one comment. The box closes when the send ends. */
 const sendComment = async (key: string): Promise<void> => {
-  const pending = fakeSend(commentState.texts[key] ?? '')
+  const text = commentState.texts[key] ?? ''
+  if (isSendDisabled(text, sending)) {
+    commentState = finishCommentSend(commentState, key, {
+      ok: false,
+      error: 'Write a comment first.',
+    })
+    paint()
+    return
+  }
+  const pending = fakeSend(text)
   commentState = startCommentSend(commentState, key)
   sending = true
   paint()
@@ -198,6 +215,19 @@ const focusOn = (action: FocusAction, key: string): void => {
   element.focus()
 }
 
+/** D1: moves the focus to the toggle button that `focusAfterToggle` names. */
+const focusToggleOn = (
+  action: ToggleAction,
+  repo: string,
+  column?: string,
+): void => {
+  const element = root.querySelector<HTMLElement>(
+    focusAfterToggle(action, repo, column).selector,
+  )
+  if (element === null) return
+  element.focus()
+}
+
 /** Draws the board. */
 const paint = (): void => {
   // Every text from a file passes through `escapeHtml` before it reaches this
@@ -208,6 +238,9 @@ const paint = (): void => {
   const next = focusNext
   focusNext = null
   if (next !== null) focusOn(next.action, next.key)
+  const nextToggle = focusToggleNext
+  focusToggleNext = null
+  if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column)
 }
 
 // ----- The events of the board. Every button carries a `data-action`.
@@ -255,16 +288,19 @@ const onAction = (event: Event): void => {
   if (repo === null) return
   if (action === 'toggle-section') {
     userOpen[repo] = !openOf(repo)
+    focusToggleNext = { action: 'toggle-section', repo }
     paint()
     return
   }
   if (action === 'toggle-done') {
     userDoneOpen[repo] = !(userDoneOpen[repo] ?? false)
+    focusToggleNext = { action: 'toggle-done', repo }
     paint()
     return
   }
   if (action === 'toggle-done-group') {
     userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false)
+    focusToggleNext = { action: 'toggle-done-group', repo }
     paint()
     return
   }
@@ -278,6 +314,7 @@ const onAction = (event: Event): void => {
   if (action === 'toggle-stale') {
     const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false
     userStaleOpen[key] = !staleOpen
+    focusToggleNext = { action: 'toggle-stale', repo, column }
     paint()
   }
 }

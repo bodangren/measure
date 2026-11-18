@@ -2421,11 +2421,21 @@ ${GUEST_UI_LOOK_CSS}`;
     ...state,
     openKey: null
   });
+  var escapeCssString = (key) => key.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\a ").replace(/\r/g, "\\d ").replace(/\f/g, "\\c ");
   var focusAfter = (action, key) => {
-    const escaped = key.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const card = `[data-key="${escaped}"]`;
+    const card = `[data-key="${escapeCssString(key)}"]`;
     if (action === "open") return { selector: `textarea.comment-input${card}` };
     return { selector: `button[data-action="open-comment"]${card}` };
+  };
+  var focusAfterToggle = (action, repo, column) => {
+    const owner = `[data-repo="${escapeCssString(repo)}"]`;
+    if (action === "toggle-stale") {
+      const columnAttribute = `[data-column="${escapeCssString(column ?? "")}"]`;
+      return {
+        selector: `button[data-action="toggle-stale"]${owner}${columnAttribute}`
+      };
+    }
+    return { selector: `button[data-action="${action}"]${owner}` };
   };
   var setCommentText = (state, key, text) => ({
     ...state,
@@ -2440,7 +2450,7 @@ ${GUEST_UI_LOOK_CSS}`;
   });
   var finishCommentSend = (state, key, outcome) => ({
     ...state,
-    openKey: null,
+    openKey: state.openKey === key ? null : state.openKey,
     status: {
       ...state.status,
       [key]: outcome.ok ? { status: "sent", sentAt: outcome.sentAt, error: null } : { status: "error", sentAt: null, error: outcome.error }
@@ -2879,6 +2889,13 @@ ${GUEST_UI_LOOK_CSS}`;
     ...field2("Blocker", input.blockerLine),
     ...field2("Daniel", input.text)
   ].join("\n");
+  var INVISIBLE = /[\p{Cc}\p{Cf}\s]/u;
+  var hasVisibleCharacter = (text) => {
+    for (const char of text) {
+      if (!INVISIBLE.test(char)) return true;
+    }
+    return false;
+  };
 
   // src/pm-target.ts
   var PM_SESSION_ID = "ses_e8f5ca9c0ffeZdhl9xLl1ytCGV";
@@ -2897,7 +2914,7 @@ ${GUEST_UI_LOOK_CSS}`;
     const text = message.trim();
     return text === "" ? code : `${code}: ${text}`;
   };
-  var isSendDisabled = (text, sending) => sending || text.trim() === "";
+  var isSendDisabled = (text, sending) => sending || !hasVisibleCharacter(text);
   var errorCode2 = (error) => {
     const code = error?.code;
     return typeof code === "string" && code !== "" ? code : "REQUEST_FAILED";
@@ -2913,7 +2930,7 @@ ${GUEST_UI_LOOK_CSS}`;
       if (sending) {
         return refusal("busy", "BUSY", "A comment is already on its way.");
       }
-      if (input.text.trim() === "") {
+      if (!hasVisibleCharacter(input.text)) {
         return refusal("empty-text", "EMPTY_TEXT", "Write a comment first.");
       }
       if (input.text.length > COMMENT_TEXT_MAX) {
@@ -3277,6 +3294,7 @@ ${GUEST_UI_LOOK_CSS}`;
   var userStaleOpen = {};
   var commentState = emptyCommentBox();
   var focusNext = null;
+  var focusToggleNext = null;
   var parseAnswer = (text) => {
     try {
       const value = JSON.parse(text);
@@ -3428,6 +3446,13 @@ ${GUEST_UI_LOOK_CSS}`;
     if (element === null) return;
     element.focus();
   };
+  var focusToggleOn = (action, repo, column) => {
+    const element = root.querySelector(
+      focusAfterToggle(action, repo, column).selector
+    );
+    if (element === null) return;
+    element.focus();
+  };
   var paint = () => {
     if (surface === "status") {
       paintStatus();
@@ -3445,6 +3470,9 @@ ${GUEST_UI_LOOK_CSS}`;
     const next = focusNext;
     focusNext = null;
     if (next !== null) focusOn(next.action, next.key);
+    const nextToggle = focusToggleNext;
+    focusToggleNext = null;
+    if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column);
   };
   var paintStatus = () => {
     root.textContent = "";
@@ -3543,16 +3571,19 @@ ${GUEST_UI_LOOK_CSS}`;
     if (repo === null) return;
     if (action === "toggle-section") {
       userOpen[repo] = !openOf(repo);
+      focusToggleNext = { action: "toggle-section", repo };
       paint();
       return;
     }
     if (action === "toggle-done") {
       userDoneOpen[repo] = !(userDoneOpen[repo] ?? false);
+      focusToggleNext = { action: "toggle-done", repo };
       paint();
       return;
     }
     if (action === "toggle-done-group") {
       userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false);
+      focusToggleNext = { action: "toggle-done-group", repo };
       paint();
       return;
     }
@@ -3566,23 +3597,30 @@ ${GUEST_UI_LOOK_CSS}`;
     if (action === "toggle-stale") {
       const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false;
       userStaleOpen[key] = !staleOpen;
+      focusToggleNext = { action: "toggle-stale", repo, column };
       paint();
     }
   };
   var mountedOnce = false;
+  var directoryBound = false;
   host.onReady((ctx) => {
     applyHostReady(ctx, document.documentElement);
     surface = ctx.surface;
     if (!mountedOnce) {
       mountedOnce = true;
-      host.onDirectory((directory) => {
-        void loadBand(directory);
-      });
       if (surface === "status") {
         void loadBand(ctx.directory);
       } else {
         startTimer();
         void loadBoard();
+      }
+    }
+    if (surface === "status") {
+      if (!directoryBound) {
+        directoryBound = true;
+        host.onDirectory((directory) => {
+          void loadBand(directory);
+        });
       }
     }
     paint();

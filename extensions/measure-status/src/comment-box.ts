@@ -54,17 +54,55 @@ export type FocusAction = 'open' | 'escape' | 'send-done'
 export type FocusTarget = { selector: string }
 
 /**
+ * D1: the CSS-string escape of a card key. The key sits in a quoted
+ * attribute value. A backslash escapes first, then the quote. A newline is
+ * `\a `, a carriage return is `\d `, and a form feed is `\c `.
+ */
+export const escapeCssString = (key: string): string =>
+  key
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\a ')
+    .replace(/\r/g, '\\d ')
+    .replace(/\f/g, '\\c ')
+
+/**
  * D1: the focus rule of the comment box. A repaint removes the old element,
  * so the page asks for the selector of the new one. Open gives the text area
  * of the card. Escape and a finished Send give the Comment button of the card.
- * The key sits in a quoted attribute value. Only the quote and the backslash
- * need an escape there.
+ * The key sits in a quoted attribute value, so it takes the CSS-string escape.
  */
 export const focusAfter = (action: FocusAction, key: string): FocusTarget => {
-  const escaped = key.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  const card = `[data-key="${escaped}"]`
+  const card = `[data-key="${escapeCssString(key)}"]`
   if (action === 'open') return { selector: `textarea.comment-input${card}` }
   return { selector: `button[data-action="open-comment"]${card}` }
+}
+
+/** D1: the action of a toggle button of the board. */
+export type ToggleAction =
+  | 'toggle-section'
+  | 'toggle-done'
+  | 'toggle-done-group'
+  | 'toggle-stale'
+
+/**
+ * D1: the focus rule of a toggle button. A repaint removes the old element,
+ * so the page asks for the selector of the new one. The rule names the
+ * clicked button of the repo. The stale button also names its column.
+ */
+export const focusAfterToggle = (
+  action: ToggleAction,
+  repo: string,
+  column?: string,
+): FocusTarget => {
+  const owner = `[data-repo="${escapeCssString(repo)}"]`
+  if (action === 'toggle-stale') {
+    const columnAttribute = `[data-column="${escapeCssString(column ?? '')}"]`
+    return {
+      selector: `button[data-action="toggle-stale"]${owner}${columnAttribute}`,
+    }
+  }
+  return { selector: `button[data-action="${action}"]${owner}` }
 }
 
 /** D1: keeps the text of one card. */
@@ -89,14 +127,17 @@ export const startCommentSend = (
   },
 })
 
-/** D1: a finished Send closes the box and keeps the sent line or the error line. */
+/**
+ * D1: a finished Send closes the box of its own card and keeps the sent line
+ * or the error line. The box of another card stays open.
+ */
 export const finishCommentSend = (
   state: CommentBoxState,
   key: string,
   outcome: CommentOutcome,
 ): CommentBoxState => ({
   ...state,
-  openKey: null,
+  openKey: state.openKey === key ? null : state.openKey,
   status: {
     ...state.status,
     [key]: outcome.ok

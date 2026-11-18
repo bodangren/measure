@@ -1,7 +1,7 @@
 // FR-16, D1: the send path of the comment. The module holds the name of the
 // service, the name of the method, and the rules of one send. It has no SDK
 // import and no DOM access. Every value stays plain text.
-import { COMMENT_TEXT_MAX, formatComment, type CommentInput } from './comment'
+import { COMMENT_TEXT_MAX, formatComment, hasVisibleCharacter, type CommentInput } from './comment'
 import { PM_SESSION_ID } from './pm-target'
 
 /** The name of the guest service that carries the send request. */
@@ -55,9 +55,12 @@ export const formatSendError = (code: string, message: string): string => {
   return text === '' ? code : `${code}: ${text}`
 }
 
-/** D1: the Send button is off while a send runs or while the text is empty. */
+/**
+ * D1: the Send button is off while a send runs or while the text holds no
+ * visible character.
+ */
 export const isSendDisabled = (text: string, sending: boolean): boolean =>
-  sending || text.trim() === ''
+  sending || !hasVisibleCharacter(text)
 
 /** The code of a failed host call. The host gives the code. */
 const errorCode = (error: unknown): string => {
@@ -88,7 +91,7 @@ export const createCommentSender = (host: SendHost): CommentSender => {
     if (sending) {
       return refusal('busy', 'BUSY', 'A comment is already on its way.')
     }
-    if (input.text.trim() === '') {
+    if (!hasVisibleCharacter(input.text)) {
       return refusal('empty-text', 'EMPTY_TEXT', 'Write a comment first.')
     }
     if (input.text.length > COMMENT_TEXT_MAX) {

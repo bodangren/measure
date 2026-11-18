@@ -10,11 +10,13 @@ import {
   escapeCommentBox,
   finishCommentSend,
   focusAfter,
+  focusAfterToggle,
   openCommentBox,
   setCommentText,
   startCommentSend,
   type CommentBoxState,
   type FocusAction,
+  type ToggleAction,
 } from '../src/comment-box'
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
@@ -68,6 +70,12 @@ let commentState: CommentBoxState = emptyCommentBox()
  * element, so the focus moves only after the new element exists.
  */
 let focusNext: { action: FocusAction; key: string } | null = null
+
+/**
+ * D1: the focus that the next repaint sets for a toggle button. A repaint
+ * removes the old button, so the focus moves only after the new one exists.
+ */
+let focusToggleNext: { action: ToggleAction; repo: string; column?: string } | null = null
 
 /** The answer of the service. The service names the code of a failure. */
 type ServiceAnswer = { ok: boolean; code?: string; message?: string }
@@ -265,6 +273,19 @@ const focusOn = (action: FocusAction, key: string): void => {
   element.focus()
 }
 
+/** D1: moves the focus to the toggle button that `focusAfterToggle` names. */
+const focusToggleOn = (
+  action: ToggleAction,
+  repo: string,
+  column?: string,
+): void => {
+  const element = root.querySelector<HTMLElement>(
+    focusAfterToggle(action, repo, column).selector,
+  )
+  if (element === null) return
+  element.focus()
+}
+
 /** Draws the board of the panel and the page. */
 const paint = (): void => {
   if (surface === 'status') {
@@ -285,6 +306,9 @@ const paint = (): void => {
   const next = focusNext
   focusNext = null
   if (next !== null) focusOn(next.action, next.key)
+  const nextToggle = focusToggleNext
+  focusToggleNext = null
+  if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column)
 }
 
 /** Draws the band of the Work Status section. */
@@ -405,16 +429,19 @@ const onAction = (event: Event): void => {
   if (repo === null) return
   if (action === 'toggle-section') {
     userOpen[repo] = !openOf(repo)
+    focusToggleNext = { action: 'toggle-section', repo }
     paint()
     return
   }
   if (action === 'toggle-done') {
     userDoneOpen[repo] = !(userDoneOpen[repo] ?? false)
+    focusToggleNext = { action: 'toggle-done', repo }
     paint()
     return
   }
   if (action === 'toggle-done-group') {
     userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false)
+    focusToggleNext = { action: 'toggle-done-group', repo }
     paint()
     return
   }
@@ -428,6 +455,7 @@ const onAction = (event: Event): void => {
   if (action === 'toggle-stale') {
     const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false
     userStaleOpen[key] = !staleOpen
+    focusToggleNext = { action: 'toggle-stale', repo, column }
     paint()
   }
 }
@@ -436,19 +464,28 @@ const onAction = (event: Event): void => {
 
 let mountedOnce = false
 
+/** True when the directory listener of the band is registered. */
+let directoryBound = false
+
 host.onReady((ctx) => {
   applyHostReady(ctx, document.documentElement)
   surface = ctx.surface
   if (!mountedOnce) {
     mountedOnce = true
-    host.onDirectory((directory) => {
-      void loadBand(directory)
-    })
     if (surface === 'status') {
       void loadBand(ctx.directory)
     } else {
       startTimer()
       void loadBoard()
+    }
+  }
+  // The band follows the open project. Only the status surface reads it.
+  if (surface === 'status') {
+    if (!directoryBound) {
+      directoryBound = true
+      host.onDirectory((directory) => {
+        void loadBand(directory)
+      })
     }
   }
   paint()

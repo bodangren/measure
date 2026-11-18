@@ -28,6 +28,24 @@ export const formatComment = (input: CommentInput): string =>
     ...field('Daniel', input.text),
   ].join('\n')
 
-/** D1: an empty text or a text of only white space gives no send. */
+/**
+ * D1: the characters that no user can see. A control character gives no
+ * visible character. A zero-width mark, a bidi mark, and white space give no
+ * visible character.
+ */
+const INVISIBLE = /[\p{Cc}\p{Cf}\s]/u
+
+/** D1: true when the text holds at least one character that the user sees. */
+export const hasVisibleCharacter = (text: string): boolean => {
+  for (const char of text) {
+    if (!INVISIBLE.test(char)) return true
+  }
+  return false
+}
+
+/**
+ * D1: a text with no visible character gives no send. A long text gives no
+ * send.
+ */
 export const canSendComment = (text: string): boolean =>
-  text.trim() !== '' && text.length <= COMMENT_TEXT_MAX
+  hasVisibleCharacter(text) && text.length <= COMMENT_TEXT_MAX
