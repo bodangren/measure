@@ -333,20 +333,16 @@ describe('hostile plans', () => {
     })
   })
 
-  // DEFECT, routed to Green. FR-4: the note `All tasks closed.` is for a
-  // plan with no open task. The plan below holds one open task: a `[b]` line
-  // with `deferred:` and no owner text. That task is open for the guard and
-  // for the board, so the note must not claim that all tasks are closed.
-  // board.ts `noteOf` counts open tasks only before the last done task, so a
-  // plan with no done task yields `All tasks closed.` on a Blocked card.
-  // While the defect is open this test stays marked `fails`. On the Green
-  // fix, turn it into a normal test and pin the exact note of FR-4.
-  test.fails('gives no All tasks closed. note while a [b] task stays open', () => {
+  // FR-4: the note `All tasks closed.` is for a plan with no open task. The
+  // plan below holds one open task: a `[b]` line with `deferred:` and no
+  // owner text. That task is open for the guard and for the board, so the
+  // note states the open count. `noteOf` counts all open tasks.
+  test('gives no All tasks closed. note while a [b] task stays open', () => {
     const plan = parsePlan('## Phase 1: Work\n\n- [b] Task: wait deferred:\n')
     const card = classifyTrack(input('tracks/wait_1', ' ', { kind: 'plan', plan }))
     expect(card.column).toBe('blocked')
     expect(card.line).toBe('Task: wait deferred:')
-    expect(card.note === 'All tasks closed.').toBe(false)
+    expect(card.note).toBe('Open tasks before the last closed task: 1.')
   })
 
   test('ignores a capital X task marker in a plan', () => {

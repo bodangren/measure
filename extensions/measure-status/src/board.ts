@@ -141,13 +141,10 @@ const positionOf = (plan: Plan, index: number): CardPosition => {
   return { phase: 1, phases: plan.phases.length, task: 1, tasks: 1 }
 }
 
-/** FR-4: `All tasks closed.` or the count of open tasks before the last done task. */
+/** FR-4: `All tasks closed.` when no task is open, else the open count. */
 const noteOf = (tasks: readonly Task[]): string => {
-  const lastDone = lastDoneIndex(tasks)
-  const openBefore = tasks.slice(0, lastDone + 1).filter(isOpen).length
-  return openBefore > 0
-    ? `Open tasks before the last closed task: ${openBefore}.`
-    : 'All tasks closed.'
+  const open = tasks.filter(isOpen).length
+  return open > 0 ? `Open tasks before the last closed task: ${open}.` : 'All tasks closed.'
 }
 
 /** FR-15 C1: rule R3a applies only when the Updated age is 14 days or less. */
