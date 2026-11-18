@@ -130,7 +130,7 @@ const commentsOf = (): Record<string, CommentUi> => {
   return out
 }
 
-/** D1: the Send button is off while the text is empty or a send runs. */
+/** D1: the Send button is off with no visible character, over 2000 characters, or while a send runs. */
 const setSendState = (area: HTMLTextAreaElement, text: string): void => {
   const button = area.parentElement?.querySelector<HTMLButtonElement>('button.comment-send')
   if (button === null || button === undefined) return
