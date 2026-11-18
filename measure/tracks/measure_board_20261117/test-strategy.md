@@ -128,7 +128,7 @@ Expected: no `missing`, no `INSIDE_WORKTREE`, `repos=8 sum_mismatch=0`, and no `
 SHAPE='(.capturedAt|type=="number")
  and ([.repos[].repo]==["reading-advantage-monorepo","Workbooks","advantage-pr","advantage-forge","mastery-advantage","ra-math-advantage","lending-desk-bench","measure"])
  and ([.repos[] as $r | $r.cards[] | select(
-   (keys!=["column","doneDate","doneSource","lastChange","line","marker","note","position","registered","repo","taskText","title"])
+   (keys!=["archived","column","doneDate","doneSource","lastChange","line","marker","note","position","registered","repo","taskText","title","trackId"])
    or (.repo!=$r.repo)
    or ((.column|IN("planned","in-progress","blocked","waiting","done"))|not)
    or ((.title|type)!="string") or (.title=="")

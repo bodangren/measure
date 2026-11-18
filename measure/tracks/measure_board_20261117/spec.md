@@ -285,7 +285,7 @@ Notes on the rules:
 - The plan decides over the registry when the plan has a readable task. The registry marker decides only in R2 and in R3d. The registry markers are often stale in real files.
 - R3b applies to every open `[b]` task. It applies to a skipped task and to a task that is not the current task. R4a and R4b therefore see closed `[b]` tasks only.
 - A gate task that is the current task wins over an open `[b]` task, because R3a comes first.
-- A card with no current task has a note in the position slot (FR-5). The note is `No plan.` or `Plan unreadable` for R2. It is `All tasks closed.` when no task is open. It is `Open tasks before the last closed task: N.` when `N` tasks are open.
+- A card with no current task has a note in the position slot (FR-5). The note is `No plan.` or `Plan unreadable` for R2. It is `All tasks closed.` when no task is open. It is `N open tasks, no current task.` when more than one task is open. It is `1 open task, no current task.` when one task is open.
 - A gate task is the only text signal of a human gate. The words "Daniel", "owner", and "approved" in a task line are not signals. In the sample of R4, 13 of 191 current tasks hold one of these words. Several of those tasks are not gates, for example an implementation task that says "owner-approved".
 - A User Manual Verification task that is skipped shows no gate. The track went on past that task.
 - PM look amendment (FR-15, C1): rule R3a applies only when the Updated age of the card is 14 days or less. With an older or unknown age, rule R3a does not apply.
@@ -322,7 +322,7 @@ Examples. Each row is a case for the unit tests:
 | any | an open `[b]` task, then an `[x]` task, then a User Manual Verification task | Waiting on Daniel (R3a before R3b) |
 | any | a User Manual Verification task before the last `[x]` task, then an ordinary `[ ]` task after it | In progress (the skipped task is no gate) |
 | any | the `daily_model_schedule`-like plan of the Test section | Blocked, the text of its `[b]` task |
-| any | the `primary_mastery_evidence`-like plan of the Test section | In progress, note "Open tasks before the last closed task: 5." |
+| any | the `primary_mastery_evidence`-like plan of the Test section | In progress, note "5 open tasks, no current task." |
 | none | a folder under `tracks/` with a plan: one `[x]` task, then a `[ ]` task | In progress, line "Not in the registry" |
 | none | a folder under `tracks/` with a plan that has no task | Planned |
 | none | a folder under `archive/` | Done |
@@ -652,8 +652,8 @@ The tests run with `cd extensions/measure-status && bunx tsc -p . --noEmit && bu
   - The task body cases: `Task 1.5: GATE. PM look`, `1.5 GATE it`, `**Task 2.1: GATE ok**`, and a text with no id.
   - The gate text cases: `GATE` at the start, `GATEWAY`, `gate` in lower case, `GATE` in the middle of a text, and `User Manual Verification` in any place.
 - `board.test.ts`: each row of the rule table and each example row of FR-4. The file also covers the current task, the notes, the card line, the sort, the cap, the counts, and `blockedTracks`. The cases below use invented text. The first two copy the shapes of real plans. The file also covers the D2 rules of FR-16. It covers the closed date, the 14 day window, the 5 cards of the group, and the counts. It covers the label "Not archived".
-  - A `daily_model_schedule`-like case has eight phases. Phases 1 to 5 hold `[x]` tasks only. Phase 6 ends with one open `[b]` task that has no `deferred:` field. Phase 7 ends with one `[ ]` task. Phase 8 has one `[ ]` task between `[x]` tasks, and its last task is `[x]`. Expected: Blocked, the card line is the text of the `[b]` task, `position`, `marker`, and `taskText` are null, and the note reads `Open tasks before the last closed task: 3.`
-  - A `primary_mastery_evidence`-like case has six phases. Phases 1 to 5 each end with one open `[ ]` User Manual Verification task. Phase 6 holds one `[x]` task. Every other task is `[x]`. Expected with registry marker `~`: In progress, no gate, and the note reads `Open tasks before the last closed task: 5.` The same plan with registry marker `x` gives Done.
+  - A `daily_model_schedule`-like case has eight phases. Phases 1 to 5 hold `[x]` tasks only. Phase 6 ends with one open `[b]` task that has no `deferred:` field. Phase 7 ends with one `[ ]` task. Phase 8 has one `[ ]` task between `[x]` tasks, and its last task is `[x]`. Expected: Blocked, the card line is the text of the `[b]` task, `position`, `marker`, and `taskText` are null, and the note reads `3 open tasks, no current task.`
+  - A `primary_mastery_evidence`-like case has six phases. Phases 1 to 5 each end with one open `[ ]` User Manual Verification task. Phase 6 holds one `[x]` task. Every other task is `[x]`. Expected with registry marker `~`: In progress, no gate, and the note reads `5 open tasks, no current task.` The same plan with registry marker `x` gives Done.
   - A folder with a plan and no entry: the column follows the plan, `registered` is false, and the line reads "Not in the registry". A folder with a plan with no task gives Planned. A folder under `archive/` gives Done with the folder date.
   - A `Task 1.5: GATE. PM look, then Daniel accepts the look.` task that is the first open task gives Waiting on Daniel.
 - `age.test.ts`: `formatAge` at each boundary. The file also covers the last change with a missing file, a failed `stat`, and a `stat` result of kind `missing`.
@@ -714,7 +714,7 @@ Each question has a default. The plan follows the default.
 12. Show a track folder that has no registry entry? Default: yes (FR-2). A folder under `tracks/` with a `plan.md` shows by its plan, with the line "Not in the registry". A folder under `archive/` shows in Done. A folder under `tracks/` with no `plan.md` does not show.
 13. Add a stage chip later from the role file names? Default: not in v1.
 14. Does a gate task that is the current task beat an older open `[b]` task? Default: yes. The track goes to Waiting on Daniel (R3a before R3b).
-15. What does a card show when every open task sits before the last closed task? Default: no position, and the note "Open tasks before the last closed task: N." (FR-4).
+15. What does a card show when every open task sits before the last closed task? Default: no position, and the note "N open tasks, no current task." (FR-4). It uses "1 open task, no current task." for one task.
 16. What does the leak check of Task 4.5 search for? Default: every track id of `advantage-pr`, and paths below its track, archive, PM log, and source folders. Hits that exist at the merge base with `origin/main` do not count. The check does not search for the roster path `~/Desktop/advantage-pr`, because FR-1 requires it.
 17. Which grant does the D1 send path use? Default: the service route of R6. It declares `contributes.service` and `contributes.sessionControl`. The `sessions` capability cannot send to a session by id.
 18. Where does the plain sentence of the approval dialog go? Default: the host owns the text of the dialog. The sentence goes in the README Install section.
