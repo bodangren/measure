@@ -475,3 +475,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Report-only follow-up**
   *Link: [./archive/report_only_follow_up_20261117/](./archive/report_only_follow_up_20261117/)*
   *Report-only follow-up: the measure-guard end-of-turn follow-up and reminder report the open problems instead of ordering a fix. The shared core holds the report-only text, and the OpenCode plugin, the Claude Code mod, and the DSH adapter use it. The text never asks the agent to edit, commit, or push (PM order, 2026-11-17)*
+
+- [x] **Track: Sub-box SHA rule**
+  *Link: [./archive/subbox_sha_20261118/](./archive/subbox_sha_20261118/)*
+  *Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)*
