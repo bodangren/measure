@@ -192,7 +192,11 @@ export const ROLE_OF_AGENT: Record<string, string> = {
   'measure-spec-review': 'strategy',
   'measure-phase-acceptance': 'phase-acceptance',
   'measure-final-acceptance': 'final-acceptance',
+  'measure-closeout': 'record',
 }
+
+/** ra-quota roles the guard knows that no Measure agent maps to yet. */
+export const KNOWN_ROLES: readonly string[] = ['vision-review']
 
 /** The ra-quota routes file, relative to the home folder. */
 export const ROUTES_FILE = '.config/ra-quota/routes.json'

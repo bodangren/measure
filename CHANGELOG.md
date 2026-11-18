@@ -12,7 +12,7 @@
 
 ### Bug Fixes
 
-* **phase acceptance route:** the spawn-route guard maps `measure-phase-acceptance` to the ra-quota role `phase-acceptance` instead of `acceptance`, so the `ra-quota pick phase-acceptance` route passes the guard. The map changes in the shared core and its two plugin copies. Track `guard_phase_acceptance_20261118`.
+* **phase acceptance route:** the spawn-route guard maps `measure-phase-acceptance` to `phase-acceptance` and `measure-closeout` to `record`, so each `ra-quota pick` route passes the guard. The guard also names `vision-review` as a known role with no agent yet. The map changes in the shared core and its two plugin copies. Track `guard_phase_acceptance_20261118`.
 
 * **sub-box SHA rule:** the closeout check of `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now requires a commit SHA on top-level task lines only. An indented `[x]` sub-box counts as covered when its nearest parent `[x]` line has a SHA. Unticked boxes still fail at every depth, except "deferred" lines. The status command's archive-candidate list uses the same function, so status and the closeout gate agree. Cause: Math has 16 finished tracks that status lists as candidates, but the closeout gate failed 15 of them on sub-step lines under SHA'd Task lines. Track `subbox_sha_20261118`.
 

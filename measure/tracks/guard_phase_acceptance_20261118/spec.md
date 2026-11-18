@@ -14,6 +14,10 @@ In `ROLE_OF_AGENT`, map `measure-phase-acceptance` to `phase-acceptance`. Change
 - `plugins/dsh-measure-guard/src/core/guards.ts`
 - `plugins/opencode-measure-guard/src/core/guards.ts`
 
+## Add-on (PM, 2026-11-18)
+
+Map `measure-closeout` to the ra-quota role `record` in the same three copies. It has no entry today, so the guard allows it with a warning. Name `vision-review` as a known ra-quota role with no agent mapped to it yet. The guard keeps no role list today, so add `KNOWN_ROLES` directly after `ROLE_OF_AGENT` in each copy. Extend the role-spawn tests of all three packages first.
+
 ## Tests
 
 Add a guard test that fails today. The agent `measure-phase-acceptance` must resolve to the `phase-acceptance` route list of `~/.config/ra-quota/routes.json` (or the fixture the existing guard tests use). Find the existing guard tests (grep `ROLE_OF_AGENT` and `final-acceptance` in the test files of the three packages) and follow their style. Then make the change. Run each package test command (`bun test` or `bunx vitest`, as the package uses) until it passes. Keep the three copies equal where they were equal before. Run any copy-equality test.

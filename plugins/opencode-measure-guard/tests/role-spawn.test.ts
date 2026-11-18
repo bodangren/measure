@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { roleSpawnOf } from '../src/core/guards'
+import { KNOWN_ROLES, ROLE_OF_AGENT, roleSpawnOf } from '../src/core/guards'
 import type { ToolAfterEvent, ToolBeforeEvent } from '../src/hooks/types'
 
 /** A completed call, so the tests can read `result`. */
@@ -31,9 +31,10 @@ const after = (event: ToolBeforeEvent, output = 'done'): CompletedEvent => ({
   result: { output },
 })
 
-const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}],"acceptance":[{"route":"opencode-go/deepseek-v4-pro#high","family":"deepseek"}],"phase-acceptance":[{"route":"opencode-go/glm-5.3#high","family":"glm"}]}}'
+const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}],"acceptance":[{"route":"opencode-go/deepseek-v4-pro#high","family":"deepseek"}],"phase-acceptance":[{"route":"opencode-go/glm-5.3#high","family":"glm"}],"record":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"vision-review":[{"route":"claude-code/claude-opus-5-5[1m]#high","family":"claude"}]}}'
 const DENY_MODEL = 'claude-code/claude-opus-5-5[1m]#high'
 const PHASE_MODEL = 'opencode-go/glm-5.3#high'
+const RECORD_MODEL = 'opencode-go/deepseek-v4.1-flash'
 
 /** The output text of a completed call. */
 const outputOf = (event: CompletedEvent): string => String(event.result.output)
@@ -97,6 +98,32 @@ describe('role spawn routes', () => {
     expect(message).toContain('not an approved route')
     expect(message).toContain('  - opencode-go/glm-5.3#high')
     expect(message).toContain('ra-quota pick phase-acceptance')
+  })
+
+  test('closeout: the record pick route passes', async () => {
+    expect(ROLE_OF_AGENT['measure-closeout']).toBe('record')
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-closeout', model: RECORD_MODEL })
+    await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
+  })
+
+  test('closeout: a model outside record names that pick role', async () => {
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-closeout', model: DENY_MODEL })
+    let message = ''
+    try {
+      await guard.onToolBefore(call)
+    } catch (error) {
+      message = String(error)
+    }
+    expect(message).toContain('not an approved route')
+    expect(message).toContain(`  - ${RECORD_MODEL}`)
+    expect(message).toContain('ra-quota pick record')
+  })
+
+  test('vision-review is a known role with no agent mapped to it', async () => {
+    expect(KNOWN_ROLES).toContain('vision-review')
+    expect(Object.values(ROLE_OF_AGENT)).not.toContain('vision-review')
   })
 
   test('missing file: the spawn passes with a warning note', async () => {
