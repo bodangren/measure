@@ -8,4 +8,4 @@ Spec: [./spec.md](./spec.md)
 ## Phase 1: Orchestrator agent sync
 
 - [x] Task 1.1: fold the live route rules into agents/measure-orchestrator.md and run the pin tests `ce9fdc9`
-- [~] Task 1.2: commit, push, open the PR, and run the installer check
+- [x] Task 1.2: commit, push, open the PR, and run the installer check `f4d1600`
