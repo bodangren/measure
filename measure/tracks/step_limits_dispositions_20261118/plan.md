@@ -7,5 +7,5 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Step limits and dispositions
 
-- [~] Task 1.1: fold the raised live step limits into agents/measure-*.md and run the pin tests
-- [ ] Task 1.2: accept any letter finding ID in dispositions, with Red tests first
+- [x] Task 1.1: fold the raised live step limits into agents/measure-*.md and run the pin tests `cf003db`
+- [~] Task 1.2: accept any letter finding ID in dispositions, with Red tests first
