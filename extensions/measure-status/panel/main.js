@@ -8,8 +8,9 @@
   var GUEST_SCROLLING_ATTRIBUTE = "data-oc-scrolling";
   var GUEST_SCROLLBAR_CSS = `
 :root {
-  --oc-scrollbar-thumb: color-mix(in srgb, var(--oc-muted, currentColor) 40%, transparent);
-  --oc-scrollbar-thumb-hover: color-mix(in srgb, var(--oc-muted, currentColor) 65%, transparent);
+  /* Quiet at rest like the app's own thumbs; hover gives a clear grab target. */
+  --oc-scrollbar-thumb: color-mix(in srgb, var(--oc-muted, currentColor) 18%, transparent);
+  --oc-scrollbar-thumb-hover: color-mix(in srgb, var(--oc-muted, currentColor) 36%, transparent);
   scrollbar-gutter: stable;
 }
 * {
@@ -71,6 +72,52 @@
   var GUEST_SHELL_ID_MAX = 128;
   var GUEST_SHELL_OUTPUT_TAIL_MAX = 65536;
 
+  // node_modules/@openchamber/sdk/dist/microphone.js
+  var GUEST_MICROPHONE_SAMPLE_RATE_MIN = 8e3;
+  var GUEST_MICROPHONE_SAMPLE_RATE_MAX = 192e3;
+  var GUEST_MICROPHONE_OPEN_TIMEOUT_MS = 12e4;
+  var createSampleQueue = (capacity) => {
+    const chunks = [];
+    let offset = 0;
+    let queued = 0;
+    return {
+      push: (samples) => {
+        chunks.push(samples);
+        queued += samples.length;
+        while (queued - offset > capacity && chunks.length > 1) {
+          const dropped = chunks.shift();
+          queued -= dropped?.length ?? 0;
+          offset = 0;
+        }
+      },
+      /** Fills `out` from the queue and pads the rest with silence. */
+      pull: (out) => {
+        let written = 0;
+        while (written < out.length && chunks.length > 0) {
+          const head = chunks[0];
+          const count = Math.min(out.length - written, head.length - offset);
+          out.set(head.subarray(offset, offset + count), written);
+          written += count;
+          offset += count;
+          if (offset >= head.length) {
+            chunks.shift();
+            queued -= head.length;
+            offset = 0;
+          }
+        }
+        out.fill(0, written);
+      },
+      clear: () => {
+        chunks.length = 0;
+        offset = 0;
+        queued = 0;
+      },
+      get size() {
+        return queued - offset;
+      }
+    };
+  };
+
   // node_modules/@openchamber/sdk/dist/status-controls.js
   var GUEST_STATUS_CONTROLS_MAX = 4;
   var GUEST_STATUS_CONTROL_ID = /^[a-z][a-z0-9-]{0,39}$/;
@@ -113,6 +160,29 @@
     }
     return true;
   };
+
+  // node_modules/@openchamber/sdk/dist/manifest.js
+  var GUEST_PROVIDER_LOGO_BYTES_MAX = 1024 * 1024;
+  var TRACKER_URL_TOKENS = ["{id}", "{segment}", "{segments+}"];
+  var TRACKER_URL_TOKEN_SET = new Set(TRACKER_URL_TOKENS);
+
+  // node_modules/@openchamber/sdk/dist/session-events.js
+  var GUEST_SESSION_EVENT_TYPES = [
+    "turn-finished",
+    "turn-failed",
+    "permission-asked",
+    "question-asked",
+    "turn-started",
+    "session-created",
+    "session-archived",
+    "session-deleted"
+  ];
+  var SESSION_EVENTS_IDLE_MS = 10 * 6e4;
+  var EVENT_TYPES = new Set(GUEST_SESSION_EVENT_TYPES);
+
+  // node_modules/@openchamber/sdk/dist/service-host.js
+  var SERVICE_SCHEDULE_IDLE_MS = 10 * 6e4;
+  var MENTIONS_IDLE_MS = 10 * 6e4;
 
   // node_modules/@openchamber/sdk/dist/file-editor.js
   var GUEST_FILE_EDITOR_CONTENT_MAX = 2e7;
@@ -177,6 +247,7 @@
   };
 
   // node_modules/@openchamber/sdk/dist/contract.js
+  var GUEST_BLOCK_ANSWER_MAX = 2e3;
   var GUEST_FILE_STAT_KINDS = ["file", "directory", "other", "missing"];
   var isStartSessionResult = (value) => Boolean(value && "sessionId" in value);
   var isPromptResult = (value) => Boolean(value && "sent" in value && !("sessionId" in value));
@@ -199,7 +270,8 @@
   var GUEST_GENERATE_PROMPT_MAX = 64e3;
   var GUEST_GENERATE_SYSTEM_MAX = 8e3;
   var GUEST_GENERATE_OUTPUT_TOKENS_MAX = 4e3;
-  var GUEST_GENERATE_TIMEOUT_MS = 9e4;
+  var GUEST_GENERATE_TIMEOUT_MS = 96e4;
+  var GUEST_GENERATE_LATE_KEEP_MS = 60 * 6e4;
   var GUEST_BADGE_MAX = 999;
   var GUEST_FRAME_HEIGHT_MAX = 1e4;
   var GUEST_RESOLVE_ERROR_MAX = 500;
@@ -213,6 +285,8 @@
     "NO_INTEGRATION",
     "NO_SERVICE",
     "SERVICE_FAILED",
+    "REQUEST_FAILED",
+    "RESPONSE_TOO_LARGE",
     "NO_SESSION",
     "SESSION_BUSY",
     "NOT_GRANTED",
@@ -339,11 +413,15 @@
     "item",
     "resolve",
     "action",
+    "service-event",
     "status-control-event",
     "popover-closed",
     "file-open",
     "file-snapshot",
-    "file-saved"
+    "file-saved",
+    "generate-late",
+    "microphone-audio",
+    "microphone-ended"
   ]);
   var asWireRecord = (data) => Object(data) === data ? data : null;
   var isNonEmptyString = (value) => String(value) === value && value.length > 0;
@@ -426,8 +504,12 @@
     const connectionListeners = /* @__PURE__ */ new Set();
     const settingsListeners = /* @__PURE__ */ new Set();
     const itemListeners = /* @__PURE__ */ new Set();
+    const blockListeners = /* @__PURE__ */ new Set();
+    const serviceEventListeners = /* @__PURE__ */ new Set();
     const statusControlListeners = /* @__PURE__ */ new Set();
     const popoverClosedListeners = /* @__PURE__ */ new Set();
+    const lateGenerateListeners = /* @__PURE__ */ new Set();
+    const unclaimedLateGenerate = [];
     let resolveHandler = null;
     let actionHandler = null;
     const fileOpenListeners = /* @__PURE__ */ new Set();
@@ -445,6 +527,7 @@
     let popoverPointerActive = false;
     let popoverFocusActive = false;
     let popoverActivityReported = null;
+    let microphone = null;
     const lifecycleFromSession = (session) => {
       if (!session)
         return null;
@@ -455,6 +538,11 @@
     };
     const post = (message) => {
       target.parent.postMessage(message, "*");
+    };
+    const listenForLateGenerate = () => {
+      if (disposed || target.parent === target || lateGenerateListeners.size === 0 || lastReady?.features?.lateGenerateResults !== true)
+        return;
+      post({ channel: OPENCHAMBER_SDK_CHANNEL, v: OPENCHAMBER_SDK_API_VERSION, type: "generate-late-listen" });
     };
     const emit = (listeners, value) => {
       for (const listener of listeners) {
@@ -485,6 +573,19 @@
           emit([listener], message.payload.snapshot);
         return;
       }
+      if (message.type === "microphone-audio") {
+        microphone?.queue.push(message.payload.samples);
+        return;
+      }
+      if (message.type === "microphone-ended") {
+        const open = microphone;
+        if (!open)
+          return;
+        microphone = null;
+        open.release();
+        emit(open.endedListeners, message.payload.reason);
+        return;
+      }
       if (message.type === "ready") {
         lastReady = message.payload;
         lastLifecycle = lifecycleFromSession(message.payload.session);
@@ -497,6 +598,20 @@
         emit(connectionListeners, message.payload.connection);
         emit(settingsListeners, message.payload.settings);
         emit(itemListeners, message.payload.item);
+        if (message.payload.block)
+          emit(blockListeners, message.payload.block);
+        listenForLateGenerate();
+        return;
+      }
+      if (message.type === "service-event") {
+        emit(serviceEventListeners, message.payload);
+        return;
+      }
+      if (message.type === "generate-late") {
+        if (lateGenerateListeners.size === 0)
+          unclaimedLateGenerate.push(message.payload);
+        else
+          emit(lateGenerateListeners, message.payload);
         return;
       }
       if (message.type === "directory") {
@@ -674,6 +789,80 @@
         post(message);
     };
     const requestFileSave = () => notify({ ...envelope, type: "file-save" });
+    const postMicrophoneClose = () => {
+      if (!disposed && target.parent !== target)
+        post({ ...envelope, type: "microphone-close", id: nextId(ids) });
+    };
+    const openMicrophone = async () => {
+      if (microphone)
+        throw new HostRequestError("HOST_REJECTED", "The microphone is already open in this frame.");
+      if (lastReady?.features?.microphone !== true) {
+        throw new HostRequestError("UNSUPPORTED", "This OpenChamber cannot share the microphone with extensions.");
+      }
+      const AudioContextCtor = globalThis.AudioContext;
+      if (typeof AudioContextCtor !== "function")
+        throw new HostRequestError("UNSUPPORTED", "This frame has no Web Audio.");
+      const context = new AudioContextCtor();
+      if (context.sampleRate < GUEST_MICROPHONE_SAMPLE_RATE_MIN || context.sampleRate > GUEST_MICROPHONE_SAMPLE_RATE_MAX) {
+        void context.close().catch(() => void 0);
+        throw new HostRequestError("UNSUPPORTED", `Audio at ${context.sampleRate} Hz is not supported.`);
+      }
+      const resumed = context.state === "suspended" ? context.resume().catch(() => void 0) : void 0;
+      const queue = createSampleQueue(Math.round(context.sampleRate / 4));
+      const processor = context.createScriptProcessor(1024, 1, 1);
+      processor.onaudioprocess = (event) => queue.pull(event.outputBuffer.getChannelData(0));
+      const destination = context.createMediaStreamDestination();
+      processor.connect(destination);
+      const endedListeners = /* @__PURE__ */ new Set();
+      const open = {
+        queue,
+        endedListeners,
+        release: () => {
+          processor.onaudioprocess = null;
+          processor.disconnect();
+          queue.clear();
+          for (const track of destination.stream.getTracks())
+            track.stop();
+          void context.close().catch(() => void 0);
+        }
+      };
+      microphone = open;
+      try {
+        const result = await send(
+          { ...envelope, type: "microphone-open", id: nextId(ids), payload: { sampleRate: context.sampleRate } },
+          // The host may be waiting on the system's permission prompt.
+          GUEST_MICROPHONE_OPEN_TIMEOUT_MS
+        );
+        if (!result || !("opened" in result) || result.opened !== true) {
+          throw new HostRequestError("HOST_REJECTED", "Host did not open the microphone.");
+        }
+        await resumed;
+        if (microphone !== open)
+          throw new HostRequestError("DISCONNECTED", "The microphone closed while it was opening.");
+      } catch (error) {
+        if (microphone === open)
+          microphone = null;
+        open.release();
+        postMicrophoneClose();
+        throw error;
+      }
+      return {
+        stream: destination.stream,
+        close: () => {
+          if (microphone !== open)
+            return;
+          microphone = null;
+          open.release();
+          postMicrophoneClose();
+        },
+        onEnded: (listener) => {
+          endedListeners.add(listener);
+          return () => {
+            endedListeners.delete(listener);
+          };
+        }
+      };
+    };
     const onSaveShortcut = (event) => {
       if (!isKeyEvent(event) || !isSaveShortcut(event))
         return;
@@ -956,6 +1145,20 @@
           itemListeners.delete(listener);
         };
       },
+      onBlock: (listener) => {
+        blockListeners.add(listener);
+        if (lastReady?.block)
+          listener(lastReady.block);
+        return () => {
+          blockListeners.delete(listener);
+        };
+      },
+      onServiceEvent: (listener) => {
+        serviceEventListeners.add(listener);
+        return () => {
+          serviceEventListeners.delete(listener);
+        };
+      },
       onStatusControl: (listener) => {
         statusControlListeners.add(listener);
         return () => {
@@ -1025,6 +1228,13 @@
         id: nextId(ids),
         payload: { sha }
       }) : Promise.reject(new HostRequestError("HOST_REJECTED", "Commit id must be 7 to 64 hex characters.")),
+      answerBlock: (text) => request({
+        channel: OPENCHAMBER_SDK_CHANNEL,
+        v: OPENCHAMBER_SDK_API_VERSION,
+        type: "block-answer",
+        id: nextId(ids),
+        payload: { text: text.trim().slice(0, GUEST_BLOCK_ANSWER_MAX) }
+      }),
       openSurface: (surfaceId) => request({
         channel: OPENCHAMBER_SDK_CHANNEL,
         v: OPENCHAMBER_SDK_API_VERSION,
@@ -1238,6 +1448,16 @@
           return result;
         });
       },
+      onLateGenerateResult: (listener) => {
+        lateGenerateListeners.add(listener);
+        for (const result of unclaimedLateGenerate.splice(0))
+          emit([listener], result);
+        listenForLateGenerate();
+        return () => {
+          lateGenerateListeners.delete(listener);
+        };
+      },
+      openMicrophone,
       setBadge: (count) => request({
         channel: OPENCHAMBER_SDK_CHANNEL,
         v: OPENCHAMBER_SDK_API_VERSION,
@@ -1289,6 +1509,11 @@
           post({ ...envelope, type: "shells-unsubscribe", id: nextId(ids), payload: { subscriptionId } });
         }
         shellsListeners.clear();
+        if (microphone) {
+          postMicrophoneClose();
+          microphone.release();
+          microphone = null;
+        }
         disposed = true;
         resolveHandler = null;
         actionHandler = null;
@@ -1316,8 +1541,12 @@
         connectionListeners.clear();
         settingsListeners.clear();
         itemListeners.clear();
+        blockListeners.clear();
+        serviceEventListeners.clear();
         statusControlListeners.clear();
         popoverClosedListeners.clear();
+        lateGenerateListeners.clear();
+        unclaimedLateGenerate.length = 0;
       }
     };
   };
@@ -1328,15 +1557,21 @@
     "browser.snapshot",
     "browser.click",
     "browser.type",
+    "browser.select",
     "browser.scroll",
     "browser.back",
     "browser.forward",
     "browser.inspect",
     "browser.capture",
-    "browser.resize"
+    "browser.resize",
+    "browser.close"
   ];
   var BROWSER_PROVIDER_IDLE_MS = 10 * 6e4;
   var CONTROL_ACTIONS = new Set(BROWSER_CONTROL_ACTIONS);
+  var SOURCE_CONTROL_PROVIDER_IDLE_MS = 10 * 6e4;
+  var NOTIFICATIONS_PROVIDER_IDLE_MS = 10 * 6e4;
+  var TRACKER_PROVIDER_IDLE_MS = 10 * 6e4;
+  var QUOTA_PROVIDER_IDLE_MS = 10 * 6e4;
 
   // node_modules/@openchamber/sdk/dist/service-surface.js
   var SURFACE_CONTROLLERS = ["none", "agent", "user"];
@@ -1420,7 +1655,7 @@
       root2.style.setProperty(hostName, value);
     }
     root2.style.setProperty("font-family", theme.tokens.font);
-    root2.style.setProperty("font-size", "0.875rem");
+    root2.style.setProperty("font-size", theme.tokens.fontSize ?? "0.875rem");
     root2.style.setProperty("line-height", "1.45");
     root2.style.setProperty("color", theme.tokens.foreground);
   };
@@ -1474,165 +1709,274 @@
   var active = v("interactive-active", "transparent");
   var selection = v("interactive-selection", "transparent");
   var selectionFg = v("interactive-selection-foreground", "inherit");
-  var focus = v("interactive-focus-ring", "currentColor");
   var primary = v("primary", "currentColor");
   var primaryText = v("primary-text", "inherit");
   var errorText = v("error-text", "inherit");
   var font = v("font-sans", "inherit");
   var mono = v("font-mono", "monospace");
   var radius = v("radius", "9px");
+  var controlRadius = `calc(${radius} - 2px)`;
+  var smallRadius = `calc(${radius} - 4px)`;
   var mix = (color, pct, base = "transparent") => `color-mix(in srgb, ${color} ${pct}%, ${base})`;
-  var focusRing = `box-shadow: 0 0 0 2px ${focus};`;
+  var focusFill = `background-image: linear-gradient(${hover}, ${hover});`;
+  var field = (edge, width = "0.5px") => `box-shadow: inset 0 0 0 ${width} ${edge}, var(--oc-sdk-field-lift);`;
+  var raised = "border-color: var(--oc-sdk-edge); box-shadow: var(--oc-sdk-raised-lift);";
+  var litButton = "box-shadow: var(--oc-sdk-lit);";
+  var darkLift = `inset 0 0.5px 0 0 ${mix(fg, 8)}, 0 1px 2px 0 rgb(0 0 0 / 0.4)`;
+  var THEME_VARS = `
+:root {
+  --oc-sdk-edge: ${mix(fg, 16)};
+  --oc-sdk-field-bg: ${elevated};
+  --oc-sdk-raised-bg: ${bg};
+  --oc-sdk-field-lift: inset 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --oc-sdk-raised-lift: 0 1px 1.5px 0 rgb(0 0 0 / 0.08);
+  --oc-sdk-lit: inset 0 1px 0 0 rgb(255 255 255 / 0.2), 0 1px 1.5px 0 rgb(0 0 0 / 0.1);
+  --oc-sdk-float-edge: rgb(0 0 0 / 0.14);
+  --oc-sdk-float: inset 0 1px 0 0 rgb(255 255 255 / 0.7), 0 1px 2px -0.5px rgb(0 0 0 / 0.06), 0 4px 8px -2px rgb(0 0 0 / 0.08), 0 12px 20px -4px rgb(0 0 0 / 0.06);
+}
+:root[data-oc-theme="dark"] {
+  --oc-sdk-edge: ${mix(fg, 14)};
+  --oc-sdk-field-bg: ${mix(bg, 50, elevated)};
+  --oc-sdk-raised-bg: ${elevated};
+  --oc-sdk-field-lift: ${darkLift};
+  --oc-sdk-raised-lift: ${darkLift};
+  --oc-sdk-lit: ${darkLift};
+  --oc-sdk-float-edge: rgb(0 0 0 / 0.55);
+  --oc-sdk-float: inset 0 1px 0 0 rgb(255 255 255 / 0.04), inset 0 0 0 0.5px rgb(255 255 255 / 0.08), 0 8px 16px 0 rgb(0 0 0 / 0.25), 0 4px 8px 0 rgb(0 0 0 / 0.25);
+}`;
   var tone = (name) => {
     const color = v(`status-${name}`, "currentColor");
     return `
 .oc-sdk[data-tone="${name}"], .oc-sdk [data-tone="${name}"] { --oc-sdk-tone: ${color}; --oc-sdk-tone-text: ${v(`${name}-text`, "inherit")}; }`;
   };
-  var UI_CSS = `
-${GUEST_SCROLLBAR_CSS}
-.oc-sdk { box-sizing: border-box; color: ${fg}; font-family: ${font}; font-size: 0.875rem; line-height: 1.45; }
+  var len = (px) => `calc(${px}rem / 14)`;
+  var UI_SIZE_CSS = `
+.oc-sdk { box-sizing: border-box; font-size: 0.875rem; line-height: 1.45; }
 .oc-sdk *, .oc-sdk *::before, .oc-sdk *::after { box-sizing: border-box; }
 /* :where() keeps the reset at zero specificity so every primitive class below overrides it. */
 :where(.oc-sdk) :where(button, input, textarea), :where(button.oc-sdk, input.oc-sdk, textarea.oc-sdk) { font: inherit; color: inherit; margin: 0; }
 :where(.oc-sdk) :where(button), :where(button.oc-sdk) { cursor: pointer; background: none; border: 0; padding: 0; }
 .oc-sdk button:disabled, button.oc-sdk:disabled, .oc-sdk[aria-disabled="true"], .oc-sdk [aria-disabled="true"] { opacity: .5; pointer-events: none; }
-.oc-sdk :focus-visible { outline: none; ${focusRing} }
+
+.oc-sdk-btn { display: inline-flex; align-items: center; justify-content: center; gap: ${len(8)}; height: ${len(32)}; padding: 0 ${len(12)}; border: 1px solid transparent; font-size: 0.875rem; font-weight: 500; line-height: 1; white-space: nowrap; }
+.oc-sdk-btn[data-size="sm"] { gap: ${len(6)}; height: ${len(28)}; padding: 0 ${len(10)}; font-size: 0.8125rem; }
+.oc-sdk-btn[data-size="xs"] { gap: ${len(4)}; height: ${len(24)}; padding: 0 ${len(8)}; font-size: 0.75rem; }
+.oc-sdk-btn[data-loading="true"] { opacity: .5; pointer-events: none; }
+.oc-sdk-btn > .oc-sdk-spinner-ring { width: ${len(14)}; height: ${len(14)}; }
+
+.oc-sdk-field { display: flex; flex-direction: column; gap: ${len(4)}; min-width: 0; }
+.oc-sdk-field-label { font-size: 0.8125rem; font-weight: 500; }
+.oc-sdk-field-note { font-size: 0.75rem; }
+.oc-sdk-input { display: block; width: 100%; min-width: 0; height: ${len(32)}; padding: 0 ${len(10)}; border: 0; font-size: 0.875rem; line-height: 1.45; appearance: none; }
+textarea.oc-sdk-input { height: auto; padding: ${len(8)} ${len(10)}; resize: vertical; }
+
+.oc-sdk-search { position: relative; min-width: 0; }
+.oc-sdk-search .oc-sdk-input { padding-left: ${len(34)}; padding-right: ${len(34)}; }
+.oc-sdk-search-icon { position: absolute; left: ${len(11)}; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.oc-sdk-search-clear { position: absolute; right: ${len(6)}; top: 50%; transform: translateY(-50%); display: none; align-items: center; justify-content: center; width: ${len(24)}; height: ${len(24)}; }
+.oc-sdk-search[data-active="true"] .oc-sdk-search-clear { display: inline-flex; }
+
+.oc-sdk-select { position: relative; display: flex; flex-direction: column; gap: ${len(4)}; min-width: 0; }
+.oc-sdk-trigger { display: inline-flex; align-items: center; gap: ${len(6)}; align-self: flex-start; width: auto; max-width: 100%; min-width: 0; height: ${len(28)}; padding: 0 ${len(10)}; border: 1px solid transparent; font-size: 0.8125rem; text-align: left; }
+.oc-sdk-trigger-value { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-sdk-trigger-chevron { flex: 0 0 auto; }
+.oc-sdk-popup { position: fixed; z-index: 50; display: flex; flex-direction: column; gap: ${len(2)}; min-width: ${len(160)}; max-width: calc(100vw - ${len(16)}); max-height: min(${len(320)}, calc(100vh - ${len(16)})); overflow: auto; padding: ${len(4)}; border: 1px solid transparent; }
+.oc-sdk-popup-search { flex: 0 0 auto; padding: ${len(2)} ${len(2)} ${len(4)}; }
+.oc-sdk-popup-search .oc-sdk-input { height: ${len(28)}; font-size: 0.8125rem; }
+.oc-sdk-option { display: flex; align-items: center; gap: ${len(8)}; width: 100%; padding: ${len(6)} ${len(8)}; font-size: 0.8125rem; text-align: left; }
+.oc-sdk-option-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-sdk-option-hint { flex: 0 0 auto; font-size: 0.75rem; }
+.oc-sdk-option-check { flex: 0 0 auto; display: inline-flex; width: ${len(14)}; visibility: hidden; }
+.oc-sdk-option[aria-selected="true"] > .oc-sdk-option-check { visibility: visible; }
+.oc-sdk-popup-empty { padding: ${len(8)}; font-size: 0.8125rem; }
+
+.oc-sdk-check { display: inline-flex; align-items: flex-start; gap: ${len(8)}; width: 100%; text-align: left; }
+.oc-sdk-check-box { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: ${len(14)}; height: ${len(14)}; margin-top: ${len(3)}; border: 1px solid transparent; }
+.oc-sdk-check-box > svg { display: none; }
+.oc-sdk-check[aria-checked="true"] .oc-sdk-check-box > svg { display: block; }
+.oc-sdk-check-thumb { flex: 0 0 auto; position: relative; width: ${len(36)}; height: ${len(20)}; --oc-sdk-thumb-travel: ${len(16)}; }
+.oc-sdk-check-thumb::after { content: ""; position: absolute; top: ${len(2)}; left: ${len(2)}; width: ${len(16)}; height: ${len(16)}; }
+.oc-sdk-check-text { display: flex; flex-direction: column; min-width: 0; }
+.oc-sdk-check-label { font-size: 0.875rem; }
+.oc-sdk-check-desc { font-size: 0.75rem; }
+
+.oc-sdk-tabs { display: inline-flex; gap: ${len(2)}; padding: ${len(2)}; max-width: 100%; overflow: auto; }
+.oc-sdk-tab { display: inline-flex; align-items: center; gap: ${len(6)}; height: ${len(28)}; padding: 0 ${len(10)}; border: 1px solid transparent; font-size: 0.8125rem; font-weight: 500; white-space: nowrap; }
+.oc-sdk-tab-count { font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+
+.oc-sdk-badge { display: inline-flex; align-items: center; padding: ${len(1)} ${len(6)}; font-size: ${len(11)}; font-weight: 500; line-height: ${len(16)}; white-space: nowrap; }
+
+.oc-sdk-list { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.oc-sdk-row { display: flex; align-items: center; gap: ${len(8)}; width: 100%; padding: ${len(6)} ${len(8)}; text-align: left; }
+.oc-sdk-row-lead { flex: 0 0 auto; width: ${len(64)}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; }
+.oc-sdk-row-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.oc-sdk-row-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-sdk-row-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; }
+.oc-sdk-row-meta { flex: 0 0 auto; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.oc-sdk-list-empty { padding: ${len(16)} ${len(8)}; text-align: center; font-size: 0.8125rem; }
+
+.oc-sdk-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: ${len(4)}; padding: ${len(40)} ${len(16)}; text-align: center; }
+.oc-sdk-empty-title { margin: 0; font-size: 0.8125rem; font-weight: 600; }
+.oc-sdk-empty-body { margin: 0; max-width: 32rem; font-size: 0.8125rem; }
+.oc-sdk-empty-action { margin-top: ${len(12)}; }
+
+@keyframes oc-sdk-spin { to { transform: rotate(360deg); } }
+.oc-sdk-spinner { display: inline-flex; align-items: center; gap: ${len(8)}; font-size: 0.8125rem; }
+.oc-sdk-spinner-ring { width: ${len(16)}; height: ${len(16)}; border: 2px solid transparent; animation: oc-sdk-spin .8s linear infinite; }
+.oc-sdk-spinner[data-size="sm"] .oc-sdk-spinner-ring { width: ${len(12)}; height: ${len(12)}; }
+
+.oc-sdk-banner { display: flex; align-items: flex-start; gap: ${len(12)}; padding: ${len(8)} ${len(12)}; border: 1px solid transparent; }
+.oc-sdk-banner-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: ${len(2)}; }
+.oc-sdk-banner-title { font-size: 0.8125rem; font-weight: 500; }
+.oc-sdk-banner-body { font-size: 0.8125rem; }
+.oc-sdk-banner-action { flex: 0 0 auto; }
+
+.oc-sdk-separator { display: flex; align-items: center; gap: ${len(8)}; width: 100%; margin: ${len(8)} 0; font-size: 0.75rem; }
+.oc-sdk-separator::before, .oc-sdk-separator::after { content: ""; flex: 1 1 auto; height: 1px; }
+.oc-sdk-separator[data-labeled="false"]::after { display: none; }
+.oc-sdk-popup > .oc-sdk-separator { margin: ${len(4)} 0; }
+
+.oc-sdk-progress { display: flex; flex-direction: column; gap: ${len(4)}; min-width: 0; }
+.oc-sdk-progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.oc-sdk-progress-track { height: ${len(6)}; overflow: hidden; }
+.oc-sdk-progress-fill { height: 100%; transform-origin: left; transition: transform 200ms ease-out; }
+.oc-sdk-progress-value { display: inline-flex; align-items: center; gap: ${len(2)}; }
+.oc-sdk-progress[data-done="true"] .oc-sdk-progress-value { font-weight: 600; }
+
+.oc-sdk-menu { position: relative; display: inline-flex; }
+
+.oc-sdk-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.oc-sdk-text img { display: block; max-width: 100%; margin: ${len(8)} 0; }
+
+/* Under a finger the controls reach the app's touch sizes: rows and options 44px like its sheets, every other
+   control at least 36px. Inputs keep 16px text, below which iOS zooms the page on focus. */
+@media (pointer: coarse) {
+  .oc-sdk-btn, .oc-sdk-input { height: ${len(40)}; }
+  .oc-sdk-btn[data-size="sm"], .oc-sdk-btn[data-size="xs"], .oc-sdk-trigger, .oc-sdk-tab, .oc-sdk-popup-search .oc-sdk-input { height: ${len(36)}; }
+  .oc-sdk-input, .oc-sdk-popup-search .oc-sdk-input { font-size: max(16px, 0.875rem); }
+  .oc-sdk-search-clear { width: ${len(36)}; height: ${len(36)}; right: 0; }
+  .oc-sdk-row, .oc-sdk-option { min-height: ${len(44)}; }
+  .oc-sdk-check { min-height: ${len(36)}; padding: ${len(8)} 0; }
+}
+`;
+  var GUEST_UI_LOOK_CSS = `${THEME_VARS}
+.oc-sdk { color: ${fg}; font-family: ${font}; }
+.oc-sdk :focus-visible, .oc-sdk:focus-visible { outline: none; }
+.oc-sdk :where(button, a[href], [role="button"], [role="tab"], [role="option"]):focus-visible, button.oc-sdk:focus-visible { ${focusFill} }
 .oc-sdk-mono { font-family: ${mono}; }
 .oc-sdk-muted { color: ${muted}; }
 ${tone("success")}${tone("warning")}${tone("error")}${tone("info")}
 .oc-sdk[data-tone="primary"], .oc-sdk [data-tone="primary"] { --oc-sdk-tone: ${primary}; --oc-sdk-tone-text: ${primaryText}; }
 
-.oc-sdk-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border: 1px solid transparent; border-radius: ${radius}; font-size: 0.875rem; font-weight: 500; line-height: 1; white-space: nowrap; transition: background 150ms ease-out, color 150ms ease-out; }
-.oc-sdk-btn[data-size="sm"] { height: 32px; padding: 0 10px; font-size: 0.8125rem; }
-.oc-sdk-btn[data-size="xs"] { height: 24px; padding: 0 8px; font-size: 0.75rem; border-radius: 6px; }
-.oc-sdk-btn[data-variant="default"] { color: ${primaryText}; background: ${mix(primary, 10, bg)}; border-color: ${mix(primary, 12)}; }
+.oc-sdk-btn { border-radius: ${controlRadius}; transition: background 150ms ease-out, color 150ms ease-out; }
+.oc-sdk-btn[data-size="xs"] { border-radius: ${smallRadius}; }
+.oc-sdk-btn[data-variant="default"] { color: ${primaryText}; background: ${mix(primary, 10, bg)}; border-color: ${mix(primary, 12)}; ${litButton} }
 .oc-sdk-btn[data-variant="default"]:hover { background: ${mix(primary, 16, bg)}; }
-.oc-sdk-btn[data-variant="default"]:active { background: ${mix(primary, 22, bg)}; }
+.oc-sdk-btn[data-variant="default"]:active { background: ${mix(primary, 22, bg)}; box-shadow: none; }
 .oc-sdk-btn[data-variant="secondary"] { background: ${secondary}; color: var(--oc-fg); }
 .oc-sdk-btn[data-variant="secondary"]:hover { background-image: linear-gradient(${hover}, ${hover}); }
 .oc-sdk-btn[data-variant="secondary"]:active { background-image: linear-gradient(${active}, ${active}); }
-.oc-sdk-btn[data-variant="outline"] { background: ${elevated}; color: ${elevatedFg}; border-color: ${border}; }
+.oc-sdk-btn[data-variant="outline"] { background: var(--oc-sdk-raised-bg); color: ${elevatedFg}; ${raised} }
 .oc-sdk-btn[data-variant="outline"]:hover { background-image: linear-gradient(${hover}, ${hover}); }
-.oc-sdk-btn[data-variant="outline"]:active { background-image: linear-gradient(${active}, ${active}); }
+.oc-sdk-btn[data-variant="outline"]:active { background-image: linear-gradient(${active}, ${active}); box-shadow: none; }
 .oc-sdk-btn[data-variant="ghost"] { background: transparent; }
 .oc-sdk-btn[data-variant="ghost"]:hover { background: ${hover}; }
 .oc-sdk-btn[data-variant="ghost"]:active { background: ${active}; }
-.oc-sdk-btn[data-variant="destructive"] { --oc-sdk-tone: ${v("status-error", "red")}; color: ${errorText}; background: ${mix("var(--oc-sdk-tone)", 7, bg)}; border-color: ${mix("var(--oc-sdk-tone)", 12)}; }
+.oc-sdk-btn[data-variant="destructive"] { --oc-sdk-tone: ${v("status-error", "red")}; color: ${errorText}; background: ${mix("var(--oc-sdk-tone)", 7, bg)}; border-color: ${mix("var(--oc-sdk-tone)", 12)}; ${litButton} }
 .oc-sdk-btn[data-variant="destructive"]:hover { background: ${mix("var(--oc-sdk-tone)", 9, bg)}; }
-.oc-sdk-btn[data-variant="destructive"]:active { background: ${mix("var(--oc-sdk-tone)", 11, bg)}; }
-.oc-sdk-btn[data-loading="true"] { opacity: .5; pointer-events: none; }
-.oc-sdk-btn > .oc-sdk-spinner-ring { width: 14px; height: 14px; }
+.oc-sdk-btn[data-variant="destructive"]:active { background: ${mix("var(--oc-sdk-tone)", 11, bg)}; box-shadow: none; }
 
-.oc-sdk-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.oc-sdk-field-label { font-size: 0.8125rem; font-weight: 500; }
-.oc-sdk-field-note { font-size: 0.75rem; color: ${muted}; }
+.oc-sdk-field-note { color: ${muted}; }
 .oc-sdk-field[data-invalid="true"] .oc-sdk-field-note { color: ${errorText}; }
-.oc-sdk-input { display: block; width: 100%; min-width: 0; height: 36px; padding: 0 12px; border: 0; border-radius: ${radius}; background: ${elevated}; color: ${elevatedFg}; font-size: 0.875rem; line-height: 1.45; appearance: none; box-shadow: inset 0 0 0 1px ${mix(border, 60)}; transition: background 150ms ease-out, box-shadow 150ms ease-out; }
-textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
+.oc-sdk-input { border-radius: ${controlRadius}; background: var(--oc-sdk-field-bg); color: ${elevatedFg}; ${field("var(--oc-sdk-edge)")} transition: background 150ms ease-out; }
 .oc-sdk-input::placeholder { color: ${muted}; }
 .oc-sdk-input:hover:not(:focus) { background-image: linear-gradient(${hover}, ${hover}); }
-.oc-sdk-input:focus, .oc-sdk-input:focus-visible { box-shadow: inset 0 0 0 2px ${focus}; }
-.oc-sdk-field[data-invalid="true"] .oc-sdk-input { box-shadow: inset 0 0 0 1px ${v("status-error", "red")}; }
-.oc-sdk-field[data-invalid="true"] .oc-sdk-input:focus { box-shadow: inset 0 0 0 2px ${v("status-error", "red")}; }
+.oc-sdk-input:focus, .oc-sdk-input:focus-visible { ${field(mix(fg, 26), "1px")} }
+.oc-sdk-field[data-invalid="true"] .oc-sdk-input, .oc-sdk-field[data-invalid="true"] .oc-sdk-input:focus { ${field(v("status-error", "red"), "1px")} }
 .oc-sdk-input[data-mono="true"] { font-family: ${mono}; }
 
-.oc-sdk-search { position: relative; min-width: 0; }
-.oc-sdk-search .oc-sdk-input { padding-left: 34px; padding-right: 34px; }
-.oc-sdk-search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: ${muted}; pointer-events: none; }
+.oc-sdk-search-icon { color: ${muted}; }
 .oc-sdk-search[data-active="true"] .oc-sdk-search-icon { color: ${primary}; }
-.oc-sdk-search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: none; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: ${muted}; }
-.oc-sdk-search[data-active="true"] .oc-sdk-search-clear { display: inline-flex; }
+.oc-sdk-search-clear { border-radius: ${smallRadius}; color: ${muted}; }
 .oc-sdk-search-clear:hover { background: ${hover}; color: ${fg}; }
 
-.oc-sdk-select { position: relative; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.oc-sdk-trigger { display: inline-flex; align-items: center; gap: 6px; width: 100%; min-width: 0; height: 32px; padding: 0 8px 0 10px; border: 1px solid ${border}; border-radius: 6px; background: ${elevated}; color: ${elevatedFg}; font-size: 0.8125rem; text-align: left; transition: background 150ms ease-out; }
+.oc-sdk-trigger { border-radius: ${controlRadius}; background: var(--oc-sdk-raised-bg); color: ${elevatedFg}; ${raised} transition: background 150ms ease-out; }
 .oc-sdk-trigger:hover { background-image: linear-gradient(${hover}, ${hover}); }
 .oc-sdk-trigger[aria-expanded="true"] { background-image: linear-gradient(${active}, ${active}); }
-.oc-sdk-trigger-value { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-sdk-trigger-value[data-empty="true"] { color: ${muted}; }
-.oc-sdk-trigger-chevron { flex: 0 0 auto; color: ${muted}; }
-.oc-sdk-popup { --surface-foreground: ${elevatedFg}; position: fixed; z-index: 50; display: flex; flex-direction: column; gap: 2px; min-width: 160px; max-width: calc(100vw - 16px); max-height: min(320px, calc(100vh - 16px)); overflow: auto; padding: 4px; border: 1px solid ${mix(border, 60)}; border-radius: 12px; background: ${elevated}; color: ${elevatedFg}; box-shadow: 0 8px 24px ${mix(fg, 12)}; }
-.oc-sdk-popup-search { flex: 0 0 auto; padding: 2px 2px 4px; }
-.oc-sdk-popup-search .oc-sdk-input { height: 32px; font-size: 0.8125rem; }
-.oc-sdk-option { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 8px; font-size: 0.8125rem; text-align: left; }
+.oc-sdk-trigger-chevron { color: ${muted}; }
+/* The app's floating level: the glass edge (a hairline ring and a lit top line, dark outside and light inside in dark themes) over soft shadows. The outer ring is the border, over the page like the app's. */
+.oc-sdk-popup { --surface-foreground: ${elevatedFg}; border-color: var(--oc-sdk-float-edge); border-radius: 12px; background: ${elevated}; background-clip: padding-box; color: ${elevatedFg}; box-shadow: var(--oc-sdk-float); }
+.oc-sdk-option { border-radius: 8px; }
 .oc-sdk-option[data-active="true"] { background: ${hover}; }
-.oc-sdk-option[aria-selected="true"] { background: ${selection}; color: ${selectionFg}; }
+/* A selected option shows a check mark in the text colour, like the app's own pickers. Options without the mark come
+   from bundles built before it existed and keep the selection fill as their only sign of the choice. */
+.oc-sdk-option[aria-selected="true"]:not([data-mark]) { background: ${selection}; color: ${selectionFg}; }
+.oc-sdk-option-check { color: ${fg}; }
 .oc-sdk-option[data-destructive="true"] { color: ${errorText}; }
 .oc-sdk-option[data-destructive="true"][data-active="true"] { background: ${mix(v("status-error", "red"), 10)}; }
-.oc-sdk-option-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.oc-sdk-option-hint { flex: 0 0 auto; font-size: 0.75rem; color: ${muted}; }
-.oc-sdk-option-check { flex: 0 0 auto; width: 12px; }
-.oc-sdk-popup-empty { padding: 8px; font-size: 0.8125rem; color: ${muted}; }
+.oc-sdk-option-hint { color: ${muted}; }
+.oc-sdk-popup-empty { color: ${muted}; }
 
-.oc-sdk-check { display: inline-flex; align-items: flex-start; gap: 8px; width: 100%; text-align: left; }
-.oc-sdk-check-box { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; margin-top: 3px; border: 1px solid ${border}; border-radius: 4px; color: ${primary}; transition: border-color 150ms ease-out; }
-.oc-sdk-check[aria-checked="true"] .oc-sdk-check-box { border-color: ${mix(primary, 65, border)}; }
-.oc-sdk-check-box > svg { display: none; }
-.oc-sdk-check[aria-checked="true"] .oc-sdk-check-box > svg { display: block; }
-.oc-sdk-check-thumb { flex: 0 0 auto; position: relative; width: 36px; height: 20px; border-radius: 9999px; background: ${border}; transition: background 150ms ease-out; }
-.oc-sdk-check-thumb::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 9999px; background: ${bg}; transition: transform 150ms ease-out; }
+/* Checked stays neutral: the mark carries the state, and the primary colour stays with primary actions. */
+.oc-sdk-check-box { border-color: ${border}; border-radius: 4px; color: ${fg}; transition: border-color 150ms ease-out; }
+.oc-sdk-check[aria-checked="true"] .oc-sdk-check-box { border-color: ${mix(fg, 60, border)}; }
+.oc-sdk-check-thumb { border-radius: 9999px; background: ${border}; transition: background 150ms ease-out; }
+.oc-sdk-check-thumb::after { border-radius: 9999px; background: ${bg}; transition: transform 150ms ease-out; }
 .oc-sdk-check[aria-checked="true"] .oc-sdk-check-thumb { background: ${primary}; }
-.oc-sdk-check[aria-checked="true"] .oc-sdk-check-thumb::after { transform: translateX(16px); }
+.oc-sdk-check[aria-checked="true"] .oc-sdk-check-thumb::after { transform: translateX(var(--oc-sdk-thumb-travel, 16px)); }
 .oc-sdk-check:focus-visible { box-shadow: none; }
-.oc-sdk-check:focus-visible .oc-sdk-check-box, .oc-sdk-check:focus-visible .oc-sdk-check-thumb { ${focusRing} }
-.oc-sdk-check-text { display: flex; flex-direction: column; min-width: 0; }
-.oc-sdk-check-label { font-size: 0.875rem; }
-.oc-sdk-check-desc { font-size: 0.75rem; color: ${muted}; }
+.oc-sdk-check:focus-visible .oc-sdk-check-box, .oc-sdk-check:focus-visible .oc-sdk-check-thumb { ${focusFill} }
+.oc-sdk-check-desc { color: ${muted}; }
 
-.oc-sdk-tabs { display: inline-flex; gap: 2px; padding: 2px; border-radius: 10px; max-width: 100%; overflow: auto; }
-.oc-sdk-tabs[data-track="true"] { background: ${mix(fg, 4)}; }
-.oc-sdk-tab { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px; font-size: 0.8125rem; font-weight: 500; color: ${muted}; white-space: nowrap; transition: color 150ms ease-out, background 150ms ease-out; }
+.oc-sdk-tabs { border-radius: 10px; }
+.oc-sdk-tabs[data-track="true"] { background: ${mix(fg, 4)}; box-shadow: inset 0 1px 2px 0 rgb(0 0 0 / 0.16); }
+.oc-sdk-tab { border-radius: 8px; color: ${muted}; transition: color 150ms ease-out, background 150ms ease-out; }
 .oc-sdk-tab:hover { color: ${fg}; }
 .oc-sdk-tab[aria-selected="true"] { color: ${selectionFg}; background: ${selection}; border-color: ${border}; }
-.oc-sdk-tab-count { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: ${muted}; }
+.oc-sdk-tabs[data-track="true"] .oc-sdk-tab[aria-selected="true"] { color: ${elevatedFg}; background: var(--oc-sdk-raised-bg); ${raised} }
+.oc-sdk-tab-count { color: ${muted}; }
 
-.oc-sdk-badge { display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 9999px; font-size: 11px; font-weight: 500; line-height: 16px; white-space: nowrap; background: ${hover}; color: ${muted}; }
+/* The app's neutral badge: a step of the text colour, the same in every theme. */
+.oc-sdk-badge { border-radius: 9999px; background: ${mix(fg, 6)}; color: ${muted}; }
 .oc-sdk-badge[data-tone] { color: var(--oc-sdk-tone-text, var(--oc-sdk-tone)); background: ${mix("var(--oc-sdk-tone)", 15)}; }
 
-.oc-sdk-list { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.oc-sdk-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 6px; text-align: left; transition: background 120ms ease-out; }
+.oc-sdk-row { border-radius: 6px; transition: background 120ms ease-out; }
 .oc-sdk-row:hover, .oc-sdk-row[data-active="true"] { background: ${hover}; }
 .oc-sdk-row[aria-selected="true"] { background: ${selection}; color: ${selectionFg}; }
-.oc-sdk-row-lead { flex: 0 0 auto; width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ${mono}; font-size: 0.75rem; color: ${muted}; }
-.oc-sdk-row-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
-.oc-sdk-row-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.oc-sdk-row-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; color: ${muted}; }
-.oc-sdk-row-meta { flex: 0 0 auto; font-size: 0.75rem; font-variant-numeric: tabular-nums; color: ${muted}; }
+.oc-sdk-row-lead { font-family: ${mono}; color: ${muted}; }
+.oc-sdk-row-sub { color: ${muted}; }
+.oc-sdk-row-meta { color: ${muted}; }
 .oc-sdk-row[aria-selected="true"] .oc-sdk-row-lead, .oc-sdk-row[aria-selected="true"] .oc-sdk-row-sub, .oc-sdk-row[aria-selected="true"] .oc-sdk-row-meta { color: inherit; opacity: .75; }
-.oc-sdk-list-empty { padding: 16px 8px; text-align: center; font-size: 0.8125rem; color: ${muted}; }
+.oc-sdk-list-empty { color: ${muted}; }
 
-.oc-sdk-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 40px 16px; text-align: center; }
-.oc-sdk-empty-title { margin: 0; font-size: 0.8125rem; font-weight: 600; }
-.oc-sdk-empty-body { margin: 0; max-width: 32rem; font-size: 0.8125rem; color: ${muted}; }
-.oc-sdk-empty-action { margin-top: 12px; }
+.oc-sdk-empty-body { color: ${muted}; }
 
-@keyframes oc-sdk-spin { to { transform: rotate(360deg); } }
-.oc-sdk-spinner { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8125rem; color: ${muted}; }
-.oc-sdk-spinner-ring { width: 16px; height: 16px; border: 2px solid ${border}; border-top-color: ${primary}; border-radius: 9999px; animation: oc-sdk-spin .8s linear infinite; }
-.oc-sdk-spinner[data-size="sm"] .oc-sdk-spinner-ring { width: 12px; height: 12px; }
+.oc-sdk-spinner { color: ${muted}; }
+.oc-sdk-spinner-ring { border-color: ${border}; border-top-color: ${primary}; border-radius: 9999px; }
 
-.oc-sdk-banner { display: flex; align-items: flex-start; gap: 12px; padding: 8px 12px; border: 1px solid ${mix("var(--oc-sdk-tone)", 40)}; border-radius: 8px; background: ${mix("var(--oc-sdk-tone)", 10)}; }
-.oc-sdk-banner-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.oc-sdk-banner-title { font-size: 0.8125rem; font-weight: 500; color: var(--oc-sdk-tone-text, var(--oc-sdk-tone)); }
-.oc-sdk-banner-body { font-size: 0.8125rem; color: ${muted}; }
-.oc-sdk-banner-action { flex: 0 0 auto; }
+/* Set apart by its tint alone, like the app's banners. */
+.oc-sdk-banner { border-color: transparent; border-radius: 8px; background: ${mix("var(--oc-sdk-tone)", 10)}; }
+.oc-sdk-banner-title { color: var(--oc-sdk-tone-text, var(--oc-sdk-tone)); }
+.oc-sdk-banner-body { color: ${muted}; }
 
-.oc-sdk-separator { display: flex; align-items: center; gap: 8px; width: 100%; margin: 8px 0; font-size: 0.75rem; color: ${muted}; }
-.oc-sdk-separator::before, .oc-sdk-separator::after { content: ""; flex: 1 1 auto; height: 1px; background: ${mix(border, 40)}; }
-.oc-sdk-separator[data-labeled="false"]::after { display: none; }
-.oc-sdk-popup > .oc-sdk-separator { margin: 4px 0; }
+.oc-sdk-separator { color: ${muted}; }
+.oc-sdk-separator::before, .oc-sdk-separator::after { background: ${mix(border, 40)}; }
 
-.oc-sdk-progress { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.oc-sdk-progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: ${muted}; font-variant-numeric: tabular-nums; }
-.oc-sdk-progress-track { height: 6px; border-radius: 9999px; background: ${border}; overflow: hidden; }
-.oc-sdk-progress-fill { height: 100%; border-radius: 9999px; background: var(--oc-sdk-tone, ${primary}); transform-origin: left; transition: transform 200ms ease-out; }
+.oc-sdk-progress-label { color: ${muted}; }
+/* The app's progress: a groove a step of the text colour, green once done. Older bundles mark done only through aria-valuenow. */
+.oc-sdk-progress-track { border-radius: 9999px; background: ${mix(fg, 6)}; }
+.oc-sdk-progress-fill { border-radius: 9999px; background: var(--oc-sdk-tone, ${primary}); }
+.oc-sdk-progress-track[aria-valuenow="100"] > .oc-sdk-progress-fill:not([data-tone]) { background: ${v("status-success", "currentColor")}; }
+.oc-sdk-progress[data-done="true"] .oc-sdk-progress-value { color: ${v("success-text", "inherit")}; }
 
-.oc-sdk-menu { position: relative; display: inline-flex; }
-
-.oc-sdk-text { white-space: pre-wrap; overflow-wrap: anywhere; }
 .oc-sdk-text a { color: ${primaryText}; text-decoration: underline; text-underline-offset: 2px; }
-.oc-sdk-text img { display: block; max-width: 100%; margin: 8px 0; border-radius: 8px; border: 1px solid ${mix(border, 60)}; }
+.oc-sdk-text img { border-radius: 8px; border: 1px solid ${mix(border, 60)}; }
 `;
+  var UI_CSS = `
+${GUEST_SCROLLBAR_CSS}
+${UI_SIZE_CSS}
+${GUEST_UI_LOOK_CSS}`;
 
   // src/parse.ts
   var TRACK_BOLD = /^- \[([ ~xb])\] \*\*Track: (.+?)\*\*/;
@@ -2463,7 +2807,96 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   };
   var shouldReload = (visible, loading) => visible && !loading;
 
+  // src/comment.ts
+  var COMMENT_TEXT_MAX = 2e3;
+  var field2 = (label, value) => value === "" ? [] : [`${label}: ${value}`];
+  var formatComment = (input) => [
+    "Measure board comment",
+    ...field2("Repo", input.repo),
+    ...field2("Track", input.trackId),
+    ...field2("Task", input.taskLine),
+    ...field2("Blocker", input.blockerLine),
+    ...field2("Daniel", input.text)
+  ].join("\n");
+
+  // src/pm-target.ts
+  var PM_SESSION_ID = "ses_e8f5ca9c0ffeZdhl9xLl1ytCGV";
+
+  // src/send.ts
+  var SEND_SERVICE = "measure-status";
+  var SEND_METHOD = "sendComment";
+  var formatSentLine = (sentAt) => {
+    const date = new Date(sentAt);
+    if (Number.isNaN(date.getTime())) return "sent --:--";
+    return `sent ${date.toISOString().slice(11, 16)}`;
+  };
+  var formatSendError = (code, message) => {
+    const text = message.trim();
+    return text === "" ? code : `${code}: ${text}`;
+  };
+  var isSendDisabled = (text, sending) => sending || text.trim() === "";
+  var errorCode2 = (error) => {
+    const code = error?.code;
+    return typeof code === "string" && code !== "" ? code : "REQUEST_FAILED";
+  };
+  var errorMessage2 = (error) => {
+    const message = error?.message;
+    return typeof message === "string" && message !== "" ? message : "The host gave no message.";
+  };
+  var refusal = (reason, code, line) => ({ ok: false, reason, code, line });
+  var createCommentSender = (host2) => {
+    let sending = false;
+    const send = async (input) => {
+      if (sending) {
+        return refusal("busy", "BUSY", "A comment is already on its way.");
+      }
+      if (input.text.trim() === "") {
+        return refusal("empty-text", "EMPTY_TEXT", "Write a comment first.");
+      }
+      if (input.text.length > COMMENT_TEXT_MAX) {
+        return refusal(
+          "too-long",
+          "TEXT_TOO_LONG",
+          `Use ${COMMENT_TEXT_MAX} characters or fewer.`
+        );
+      }
+      sending = true;
+      try {
+        await host2.serviceRequest(SEND_SERVICE, SEND_METHOD, {
+          sessionId: PM_SESSION_ID,
+          text: formatComment(input)
+        });
+        const sentAt = Date.now();
+        return { ok: true, sentAt, line: formatSentLine(sentAt) };
+      } catch (error) {
+        const code = errorCode2(error);
+        return {
+          ok: false,
+          reason: "send-failed",
+          code,
+          line: formatSendError(code, errorMessage2(error))
+        };
+      } finally {
+        sending = false;
+      }
+    };
+    return {
+      get sending() {
+        return sending;
+      },
+      send
+    };
+  };
+
   // src/render.ts
+  var idleComment = () => ({
+    status: "idle",
+    sentAt: null,
+    error: null,
+    open: false,
+    disabled: true
+  });
+  var cardKey = (card, index) => card.trackId === "" ? `${card.repo}/entry-${index}` : `${card.repo}/${card.trackId}`;
   var GRANT_BANNER = "Allow file access outside the project in Settings \u2192 Extensions.";
   var ESCAPES = {
     "&": "&amp;",
@@ -2474,11 +2907,6 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   };
   var escapeHtml = (text) => text.replace(/[&<>"']/g, (char) => ESCAPES[char] ?? char);
   var AGE_TIP = "Time of the last change to plan.md or metadata.json (file time, not a commit time).";
-  var clockOf = (time) => {
-    const date = new Date(time);
-    if (Number.isNaN(date.getTime())) return "--:--";
-    return date.toISOString().slice(11, 16);
-  };
   var CHEV = '<span class="chev" aria-hidden="true">\u25B8</span>';
   var sectionOpen = (state, ui) => {
     const choice = ui.open[state.repo.id];
@@ -2488,7 +2916,32 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
       (card) => card.column === "blocked" || card.column === "waiting"
     );
   };
-  var renderCard = (card, now, comment) => {
+  var commentControl = (key, comment) => {
+    const state = comment ?? idleComment();
+    const safeKey = escapeHtml(key);
+    const bar = [
+      `<button type="button" class="btn comment-open" data-action="open-comment" data-key="${safeKey}" aria-expanded="${state.open}" title="Write one comment for the PM about this card">Comment</button>`
+    ];
+    if (state.status === "sent" && state.sentAt !== null) {
+      bar.push(
+        `<span class="comment-state" data-tone="sent">${escapeHtml(formatSentLine(state.sentAt))}</span>`
+      );
+    } else if (state.status === "error" && state.error !== null) {
+      bar.push(
+        `<span class="comment-state" data-tone="error">${escapeHtml(state.error)}</span>`
+      );
+    }
+    const parts = [`<div class="comment-bar">${bar.join("")}</div>`];
+    if (state.open) {
+      const id = `comment-${key.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+      const off = state.disabled ? ' disabled="disabled"' : "";
+      parts.push(
+        `<div class="comment-panel"><label class="comment-label" for="${id}">Comment to PM</label><textarea class="comment-input" id="${id}" rows="2" data-key="${safeKey}" placeholder="Write a comment for the PM"></textarea><div class="comment-foot"><button type="button" class="btn comment-send" data-action="send-comment" data-key="${safeKey}"${off}>Send</button></div></div>`
+      );
+    }
+    return `<div class="comment">${parts.join("")}</div>`;
+  };
+  var renderCard = (card, now, comment, key) => {
     const parts = [];
     const title = escapeHtml(card.title);
     parts.push(`<div class="card-title" title="${title}">${title}</div>`);
@@ -2523,16 +2976,8 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
       const age = card.lastChange === null ? "Updated unknown" : `Updated ${formatAge(now, card.lastChange)}`;
       parts.push(`<div class="card-foot" title="${AGE_TIP}">${age}</div>`);
     }
-    if (comment !== void 0) {
-      if (comment.status === "sent" && comment.sentAt !== null) {
-        parts.push(
-          `<div class="comment-state" data-tone="sent">sent ${clockOf(comment.sentAt)}</div>`
-        );
-      } else if (comment.status === "error" && comment.error !== null) {
-        parts.push(
-          `<div class="comment-state" data-tone="error">${escapeHtml(comment.error)}</div>`
-        );
-      }
+    if (card.column === "blocked" || card.column === "waiting") {
+      parts.push(commentControl(key ?? "", comment));
     }
     const tone2 = card.column === "blocked" || card.column === "waiting" ? card.column : "none";
     return `<li class="card" data-card data-tone="${tone2}">${parts.join("")}</li>`;
@@ -2566,12 +3011,14 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     return parts.join("");
   };
   var headerOf = (repoId, open, chips) => `<h2 class="repo-head"><button type="button" class="repo-toggle" data-action="toggle-section" data-repo="${escapeHtml(repoId)}" aria-expanded="${open}"><span class="repo-id">${CHEV}<span class="repo-name">${escapeHtml(repoId)}</span></span><span class="counts">${chips}</span></button></h2>`;
-  var columnOf = (board, repoId, column, ui, now) => {
+  var columnOf = (board, repoId, column, ui, now, comments) => {
     const key = `${repoId}/${column}`;
     const expanded = ui.expanded[key] === true;
     const staleOpen = (ui.staleOpen ?? {})[key] === true;
     const view = columnView(board, column, expanded, staleOpen, now);
     const parts = [];
+    const keyOf = (card) => cardKey(card, board.cards.indexOf(card));
+    const commentOf = (card) => comments?.[keyOf(card)];
     if (column === "done") {
       const summary = doneSummary(board, now);
       const open = ui.doneOpen[repoId] === true;
@@ -2589,7 +3036,7 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
             `<button type="button" class="col-toggle" data-action="toggle-done-group" data-repo="${escapeHtml(repoId)}" aria-expanded="${groupOpen}"><span class="col-name">${CHEV}Closed in the last 14 days</span><span class="col-count">${summary.shown.length}</span></button>`
           );
           if (groupOpen) {
-            const cards = summary.shown.map((card) => renderCard(card, now)).join("");
+            const cards = summary.shown.map((card) => renderCard(card, now, commentOf(card), keyOf(card))).join("");
             parts.push(`<ul class="cards">${cards}</ul>`);
           }
         }
@@ -2605,7 +3052,7 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     if (view.total === 0) {
       parts.push('<p class="empty">None</p>');
     } else if (view.shown.length > 0) {
-      const cards = view.shown.map((card) => renderCard(card, now)).join("");
+      const cards = view.shown.map((card) => renderCard(card, now, commentOf(card), keyOf(card))).join("");
       parts.push(`<ul class="cards">${cards}</ul>`);
     }
     if (view.hidden > 0) {
@@ -2624,7 +3071,7 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     }
     return `<div class="column" data-column="${column}">${parts.join("")}</div>`;
   };
-  var renderSection = (state, ui, now) => {
+  var renderSection = (state, ui, now, comments) => {
     const repoId = state.repo.id;
     if (state.status === "loading") {
       const chips = '<span class="count" data-zero="true"><b>0</b> Loading</span>';
@@ -2635,7 +3082,9 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
       return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, false, "")}${line}</section>`;
     }
     const open = sectionOpen(state, ui);
-    const columns = COLUMNS.map((column) => columnOf(state.board, repoId, column, ui, now)).join("");
+    const columns = COLUMNS.map(
+      (column) => columnOf(state.board, repoId, column, ui, now, comments)
+    ).join("");
     const board = `<div class="board"${open ? "" : " hidden"}>${columns}</div>`;
     return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, open, chipsOf(state.board))}${board}</section>`;
   };
@@ -2663,7 +3112,7 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     const label = view.busy ? "Refreshing" : "Refresh";
     const busy2 = view.busy ? ' disabled="disabled"' : "";
     const head = `<header class="page-head"><h1 class="page-title">Measure board</h1><div class="page-summary">${summary.join("")}</div><button type="button" class="btn" data-action="refresh"${busy2}>${label}</button></header>`;
-    const sections = view.states.map((state) => renderSection(state, view.ui, view.now)).join("");
+    const sections = view.states.map((state) => renderSection(state, view.ui, view.now, view.comments)).join("");
     return `<div class="mb"><div class="page">${banner}${head}<main>${sections}</main></div></div>`;
   };
 
@@ -2763,6 +3212,114 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
   var userDoneGroupOpen = {};
   var userExpanded = {};
   var userStaleOpen = {};
+  var commentOpen = null;
+  var commentText = {};
+  var commentStatus = {};
+  var parseAnswer = (text) => {
+    try {
+      const value = JSON.parse(text);
+      const answer = { ok: value.ok === true };
+      if (typeof value.code === "string") answer.code = value.code;
+      if (typeof value.message === "string") answer.message = value.message;
+      return answer;
+    } catch {
+      return { ok: false };
+    }
+  };
+  var sendHost = {
+    serviceRequest: async (service, method, params) => {
+      if (service !== SEND_SERVICE) {
+        throw Object.assign(new Error(`The service ${service} is not known.`), {
+          code: "NO_SERVICE"
+        });
+      }
+      const result = await host.serviceRequest({
+        method: "POST",
+        path: `/${method}`,
+        body: JSON.stringify(params)
+      });
+      const answer = parseAnswer(result.body);
+      if (result.status >= 400 || answer.ok !== true) {
+        throw Object.assign(
+          new Error(answer.message ?? `The service answered HTTP ${result.status}.`),
+          { code: answer.code ?? "SERVICE_FAILED" }
+        );
+      }
+      return answer;
+    }
+  };
+  var sender = createCommentSender(sendHost);
+  var commentsOf = () => {
+    const out = {};
+    for (const state of states) {
+      if (state.status !== "ready") continue;
+      state.board.cards.forEach((card, index) => {
+        if (card.column !== "blocked" && card.column !== "waiting") return;
+        const key = cardKey(card, index);
+        const status = commentStatus[key] ?? { status: "idle", sentAt: null, error: null };
+        const text = commentText[key] ?? "";
+        out[key] = {
+          status: status.status,
+          sentAt: status.sentAt,
+          error: status.error,
+          open: commentOpen === key,
+          disabled: isSendDisabled(text, sender.sending)
+        };
+      });
+    }
+    return out;
+  };
+  var cardOf = (key) => {
+    for (const state of states) {
+      if (state.status !== "ready") continue;
+      const cards = state.board.cards;
+      for (let index = 0; index < cards.length; index += 1) {
+        const card = cards[index];
+        if (card === void 0) continue;
+        if (cardKey(card, index) === key) return card;
+      }
+    }
+    return null;
+  };
+  var setSendState = (area, text) => {
+    const button2 = area.parentElement?.querySelector("button.comment-send");
+    if (button2 === null || button2 === void 0) return;
+    if (isSendDisabled(text, sender.sending)) button2.setAttribute("disabled", "disabled");
+    else button2.removeAttribute("disabled");
+  };
+  var restoreComment = () => {
+    const area = root.querySelector("textarea.comment-input");
+    if (area === null) return;
+    const key = area.getAttribute("data-key");
+    const text = key === null ? "" : commentText[key] ?? "";
+    area.value = text;
+    setSendState(area, text);
+  };
+  var onCommentInput = (event) => {
+    const area = event.currentTarget;
+    if (!(area instanceof HTMLTextAreaElement)) return;
+    const key = area.getAttribute("data-key");
+    if (key === null) return;
+    commentText[key] = area.value;
+    setSendState(area, area.value);
+  };
+  var sendComment = async (key) => {
+    const card = cardOf(key);
+    if (card === null) return;
+    const pending = sender.send({
+      repo: card.repo,
+      trackId: card.trackId,
+      taskLine: card.taskText ?? card.note ?? "",
+      blockerLine: card.line ?? "",
+      text: commentText[key] ?? ""
+    });
+    commentStatus[key] = { status: "sending", sentAt: null, error: null };
+    paint();
+    const result = await pending;
+    commentStatus[key] = result.ok ? { status: "sent", sentAt: result.sentAt, error: null } : { status: "error", sentAt: null, error: result.line };
+    commentOpen = null;
+    paint();
+  };
   var busy = false;
   var current = null;
   var surface = "panel";
@@ -2805,8 +3362,15 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
       paintStatus();
       return;
     }
-    root.innerHTML = renderPage({ states, ui: uiOf(), now: Date.now(), busy });
+    root.innerHTML = renderPage({
+      states,
+      ui: uiOf(),
+      now: Date.now(),
+      busy,
+      comments: commentsOf()
+    });
     bind();
+    restoreComment();
   };
   var paintStatus = () => {
     root.textContent = "";
@@ -2874,6 +3438,9 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     for (const button2 of root.querySelectorAll("[data-action]")) {
       button2.addEventListener("click", onAction);
     }
+    for (const area of root.querySelectorAll("textarea.comment-input")) {
+      area.addEventListener("input", onCommentInput);
+    }
   };
   var onAction = (event) => {
     const button2 = event.currentTarget;
@@ -2883,6 +3450,19 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
     const column = button2.getAttribute("data-column");
     if (action === "refresh") {
       void loadBoard();
+      return;
+    }
+    if (action === "open-comment") {
+      const key2 = button2.getAttribute("data-key");
+      if (key2 === null) return;
+      commentOpen = commentOpen === key2 ? null : key2;
+      paint();
+      return;
+    }
+    if (action === "send-comment") {
+      const key2 = button2.getAttribute("data-key");
+      if (key2 === null) return;
+      void sendComment(key2);
       return;
     }
     if (repo === null) return;
@@ -2930,6 +3510,11 @@ textarea.oc-sdk-input { height: auto; padding: 8px 12px; resize: vertical; }
         void loadBoard();
       }
     }
+    paint();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || commentOpen === null) return;
+    commentOpen = null;
     paint();
   });
 })();

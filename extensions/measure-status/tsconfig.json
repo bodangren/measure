@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": []
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts", "panel/**/*.ts", "preview/**/*.ts"]
+  "include": ["src/**/*.ts", "panel/**/*.ts", "preview/**/*.ts", "service/**/*.ts"]
 }

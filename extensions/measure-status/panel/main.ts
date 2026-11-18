@@ -1,24 +1,32 @@
 // The Measure board panel and page, and the Work Status section. The panel
 // and the page read the Measure files of the roster through the host file API
 // and draw the board of FR-5 to FR-8. The status surface keeps the band.
-import { connectHost, type HostReadyContext } from '@openchamber/sdk'
+import { connectHost, type GuestRequest, type GuestRequestResult, type HostReadyContext } from '@openchamber/sdk'
 import { applyHostReady } from '@openchamber/sdk/ui'
 import { bandLine, markerClassName } from '../src/band'
-import { blockedTracks } from '../src/board'
+import { blockedTracks, type Card } from '../src/board'
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
-import { renderPage, sectionOpen, type UiState } from '../src/render'
+import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
 import { ROSTER } from '../src/roster'
+import {
+  createCommentSender,
+  isSendDisabled,
+  SEND_METHOD,
+  SEND_SERVICE,
+  type SendHost,
+} from '../src/send'
 import { BOARD_CSS } from '../src/styles'
 import type { Snapshot } from '../src/types'
 
-type Surface = 'panel' | 'page' | 'status' | 'dialog' | 'background' | 'file' | 'popover'
+type Surface = 'panel' | 'page' | 'status' | 'dialog' | 'background' | 'file' | 'popover' | 'block'
 
 const host = connectHost() as MeasureHost & {
   onReady: (listener: (ctx: HostReadyContext) => void) => () => void
   onDirectory: (listener: (directory: string | null) => void) => () => void
   setBadge: (count: number | null) => Promise<void>
   setHeight: (px: number) => Promise<void>
+  serviceRequest: (request: GuestRequest) => Promise<GuestRequestResult>
 }
 
 const root = document.querySelector('#root') as HTMLElement
@@ -37,6 +45,155 @@ const userDoneOpen: Record<string, boolean> = {}
 const userDoneGroupOpen: Record<string, boolean> = {}
 const userExpanded: Record<string, boolean> = {}
 const userStaleOpen: Record<string, boolean> = {}
+
+// ----- FR-16, D1: the comment of a card. The state lives in the page only.
+
+/** The state of the last send of one card. */
+type SendStatus = {
+  status: 'idle' | 'sending' | 'sent' | 'error'
+  sentAt: number | null
+  error: string | null
+}
+
+/** The key of the card whose comment box is open. One box opens at a time. */
+let commentOpen: string | null = null
+
+/** The text of the comment of each card. */
+const commentText: Record<string, string> = {}
+
+/** The state of the last send of each card. */
+const commentStatus: Record<string, SendStatus> = {}
+
+/** The answer of the service. The service names the code of a failure. */
+type ServiceAnswer = { ok: boolean; code?: string; message?: string }
+
+/** Reads the answer of the service. A body that is no JSON gives no answer. */
+const parseAnswer = (text: string): ServiceAnswer => {
+  try {
+    const value = JSON.parse(text) as { ok?: unknown; code?: unknown; message?: unknown }
+    const answer: ServiceAnswer = { ok: value.ok === true }
+    if (typeof value.code === 'string') answer.code = value.code
+    if (typeof value.message === 'string') answer.message = value.message
+    return answer
+  } catch {
+    return { ok: false }
+  }
+}
+
+/**
+ * D1: the panel asks the local service to send the message. The service
+ * calls `sessions.send` with the constant session id.
+ */
+const sendHost: SendHost = {
+  serviceRequest: async (service, method, params) => {
+    if (service !== SEND_SERVICE) {
+      throw Object.assign(new Error(`The service ${service} is not known.`), {
+        code: 'NO_SERVICE',
+      })
+    }
+    const result = await host.serviceRequest({
+      method: 'POST',
+      path: `/${method}`,
+      body: JSON.stringify(params),
+    })
+    const answer = parseAnswer(result.body)
+    if (result.status >= 400 || answer.ok !== true) {
+      throw Object.assign(
+        new Error(answer.message ?? `The service answered HTTP ${result.status}.`),
+        { code: answer.code ?? 'SERVICE_FAILED' },
+      )
+    }
+    return answer
+  },
+}
+
+/** D1: the sender of the comment. One send runs at a time. */
+const sender = createCommentSender(sendHost)
+
+/** D1: the comment state of every card of the board. */
+const commentsOf = (): Record<string, CommentUi> => {
+  const out: Record<string, CommentUi> = {}
+  for (const state of states) {
+    if (state.status !== 'ready') continue
+    state.board.cards.forEach((card, index) => {
+      if (card.column !== 'blocked' && card.column !== 'waiting') return
+      const key = cardKey(card, index)
+      const status = commentStatus[key] ?? { status: 'idle', sentAt: null, error: null }
+      const text = commentText[key] ?? ''
+      out[key] = {
+        status: status.status,
+        sentAt: status.sentAt,
+        error: status.error,
+        open: commentOpen === key,
+        disabled: isSendDisabled(text, sender.sending),
+      }
+    })
+  }
+  return out
+}
+
+/** D1: the card of a comment key. */
+const cardOf = (key: string): Card | null => {
+  for (const state of states) {
+    if (state.status !== 'ready') continue
+    const cards = state.board.cards
+    for (let index = 0; index < cards.length; index += 1) {
+      const card = cards[index]
+      if (card === undefined) continue
+      if (cardKey(card, index) === key) return card
+    }
+  }
+  return null
+}
+
+/** D1: the Send button is off while the text is empty or a send runs. */
+const setSendState = (area: HTMLTextAreaElement, text: string): void => {
+  const button = area.parentElement?.querySelector<HTMLButtonElement>('button.comment-send')
+  if (button === null || button === undefined) return
+  if (isSendDisabled(text, sender.sending)) button.setAttribute('disabled', 'disabled')
+  else button.removeAttribute('disabled')
+}
+
+/** D1: the open box keeps its text after a repaint. */
+const restoreComment = (): void => {
+  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
+  if (area === null) return
+  const key = area.getAttribute('data-key')
+  const text = key === null ? '' : (commentText[key] ?? '')
+  area.value = text
+  setSendState(area, text)
+}
+
+/** D1: the text of the box follows the user. */
+const onCommentInput = (event: Event): void => {
+  const area = event.currentTarget
+  if (!(area instanceof HTMLTextAreaElement)) return
+  const key = area.getAttribute('data-key')
+  if (key === null) return
+  commentText[key] = area.value
+  setSendState(area, area.value)
+}
+
+/** D1: one click sends one message. The box closes when the send ends. */
+const sendComment = async (key: string): Promise<void> => {
+  const card = cardOf(key)
+  if (card === null) return
+  const pending = sender.send({
+    repo: card.repo,
+    trackId: card.trackId,
+    taskLine: card.taskText ?? card.note ?? '',
+    blockerLine: card.line ?? '',
+    text: commentText[key] ?? '',
+  })
+  commentStatus[key] = { status: 'sending', sentAt: null, error: null }
+  paint()
+  const result = await pending
+  commentStatus[key] = result.ok
+    ? { status: 'sent', sentAt: result.sentAt, error: null }
+    : { status: 'error', sentAt: null, error: result.line }
+  commentOpen = null
+  paint()
+}
 
 /** True while a load runs. A second load starts no work. */
 let busy = false
@@ -102,8 +259,15 @@ const paint = (): void => {
   }
   // Every text from a file passes through `escapeHtml` before it reaches this
   // string, so the assignment cannot add an element of the file text.
-  root.innerHTML = renderPage({ states, ui: uiOf(), now: Date.now(), busy })
+  root.innerHTML = renderPage({
+    states,
+    ui: uiOf(),
+    now: Date.now(),
+    busy,
+    comments: commentsOf(),
+  })
   bind()
+  restoreComment()
 }
 
 /** Draws the band of the Work Status section. */
@@ -189,6 +353,9 @@ const bind = (): void => {
   for (const button of root.querySelectorAll<HTMLElement>('[data-action]')) {
     button.addEventListener('click', onAction)
   }
+  for (const area of root.querySelectorAll<HTMLTextAreaElement>('textarea.comment-input')) {
+    area.addEventListener('input', onCommentInput)
+  }
 }
 
 const onAction = (event: Event): void => {
@@ -200,6 +367,19 @@ const onAction = (event: Event): void => {
 
   if (action === 'refresh') {
     void loadBoard()
+    return
+  }
+  if (action === 'open-comment') {
+    const key = button.getAttribute('data-key')
+    if (key === null) return
+    commentOpen = commentOpen === key ? null : key
+    paint()
+    return
+  }
+  if (action === 'send-comment') {
+    const key = button.getAttribute('data-key')
+    if (key === null) return
+    void sendComment(key)
     return
   }
   if (repo === null) return
@@ -251,5 +431,12 @@ host.onReady((ctx) => {
       void loadBoard()
     }
   }
+  paint()
+})
+
+// D1: the Escape key closes the open comment box.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || commentOpen === null) return
+  commentOpen = null
   paint()
 })

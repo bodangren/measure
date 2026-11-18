@@ -13,6 +13,7 @@ import {
   type RepoBoard,
 } from './board'
 import type { RepoState } from './load'
+import { formatSentLine } from './send'
 
 /**
  * The open state of the page. The user's choice wins over the default of
@@ -32,12 +33,38 @@ export type UiState = {
   doneGroupOpen?: Readonly<Record<string, boolean>>
 }
 
-/** The comment state of one card. The send path of FR-16 sets it. */
+/**
+ * The comment state of one card. The send path of FR-16 sets it. The state
+ * lives in the page only; the extension stores nothing.
+ */
 export type CommentUi = {
   status: 'idle' | 'sending' | 'sent' | 'error'
   sentAt: number | null
   error: string | null
+  /** D1: the box is open on this card. */
+  open: boolean
+  /** D1: the Send button is off. */
+  disabled: boolean
 }
+
+/** D1: the comment state of a card with no comment yet. */
+export const idleComment = (): CommentUi => ({
+  status: 'idle',
+  sentAt: null,
+  error: null,
+  open: false,
+  disabled: true,
+})
+
+/** D1: the comment state of the cards. The key names the card. */
+export type CommentMap = Readonly<Record<string, CommentUi>>
+
+/**
+ * D1: the key of a card. The track id names the card. The place in the board
+ * names a card whose folder is unknown.
+ */
+export const cardKey = (card: Card, index: number): string =>
+  card.trackId === '' ? `${card.repo}/entry-${index}` : `${card.repo}/${card.trackId}`
 
 /** The whole page: the states of the repos, the open state, and the time. */
 export type PageView = {
@@ -45,6 +72,8 @@ export type PageView = {
   ui: UiState
   now: number
   busy: boolean
+  /** D1: the comment state of the cards. */
+  comments?: CommentMap
 }
 
 /** FR-10: the banner that a repo needs the file grant of the host. */
@@ -67,13 +96,6 @@ export const escapeHtml = (text: string): string =>
 const AGE_TIP =
   'Time of the last change to plan.md or metadata.json (file time, not a commit time).'
 
-/** The `HH:MM` time of a comment, in UTC. */
-const clockOf = (time: number): string => {
-  const date = new Date(time)
-  if (Number.isNaN(date.getTime())) return '--:--'
-  return date.toISOString().slice(11, 16)
-}
-
 /** The chevron of a toggle button. */
 const CHEV = '<span class="chev" aria-hidden="true">▸</span>'
 
@@ -87,8 +109,47 @@ export const sectionOpen = (state: RepoState, ui: UiState): boolean => {
   )
 }
 
+/**
+ * D1: the comment control of one card. A closed card shows one small
+ * Comment button and, after a send, one state line. The open card shows the
+ * box with the text field and the Send button. The line stays visible while
+ * the box is closed.
+ */
+const commentControl = (key: string, comment: CommentUi | undefined): string => {
+  const state = comment ?? idleComment()
+  const safeKey = escapeHtml(key)
+  const bar: string[] = [
+    `<button type="button" class="btn comment-open" data-action="open-comment" data-key="${safeKey}" aria-expanded="${state.open}" title="Write one comment for the PM about this card">Comment</button>`,
+  ]
+  if (state.status === 'sent' && state.sentAt !== null) {
+    bar.push(
+      `<span class="comment-state" data-tone="sent">${escapeHtml(formatSentLine(state.sentAt))}</span>`,
+    )
+  } else if (state.status === 'error' && state.error !== null) {
+    bar.push(
+      `<span class="comment-state" data-tone="error">${escapeHtml(state.error)}</span>`,
+    )
+  }
+  const parts: string[] = [`<div class="comment-bar">${bar.join('')}</div>`]
+  if (state.open) {
+    const id = `comment-${key.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+    const off = state.disabled ? ' disabled="disabled"' : ''
+    parts.push(
+      `<div class="comment-panel"><label class="comment-label" for="${id}">Comment to PM</label>` +
+        `<textarea class="comment-input" id="${id}" rows="2" data-key="${safeKey}" placeholder="Write a comment for the PM"></textarea>` +
+        `<div class="comment-foot"><button type="button" class="btn comment-send" data-action="send-comment" data-key="${safeKey}"${off}>Send</button></div></div>`,
+    )
+  }
+  return `<div class="comment">${parts.join('')}</div>`
+}
+
 /** FR-5: one card of a column. */
-export const renderCard = (card: Card, now: number, comment?: CommentUi): string => {
+export const renderCard = (
+  card: Card,
+  now: number,
+  comment?: CommentUi,
+  key?: string,
+): string => {
   const parts: string[] = []
   const title = escapeHtml(card.title)
   parts.push(`<div class="card-title" title="${title}">${title}</div>`)
@@ -131,16 +192,8 @@ export const renderCard = (card: Card, now: number, comment?: CommentUi): string
     parts.push(`<div class="card-foot" title="${AGE_TIP}">${age}</div>`)
   }
 
-  if (comment !== undefined) {
-    if (comment.status === 'sent' && comment.sentAt !== null) {
-      parts.push(
-        `<div class="comment-state" data-tone="sent">sent ${clockOf(comment.sentAt)}</div>`,
-      )
-    } else if (comment.status === 'error' && comment.error !== null) {
-      parts.push(
-        `<div class="comment-state" data-tone="error">${escapeHtml(comment.error)}</div>`,
-      )
-    }
+  if (card.column === 'blocked' || card.column === 'waiting') {
+    parts.push(commentControl(key ?? '', comment))
   }
 
   const tone = card.column === 'blocked' || card.column === 'waiting' ? card.column : 'none'
@@ -188,12 +241,17 @@ const columnOf = (
   column: Column,
   ui: UiState,
   now: number,
+  comments?: CommentMap,
 ): string => {
   const key = `${repoId}/${column}`
   const expanded = ui.expanded[key] === true
   const staleOpen = (ui.staleOpen ?? {})[key] === true
   const view = columnView(board, column, expanded, staleOpen, now)
   const parts: string[] = []
+  /** D1: the key of a card of this board. */
+  const keyOf = (card: Card): string => cardKey(card, board.cards.indexOf(card))
+  /** D1: the comment state of a card of this board. */
+  const commentOf = (card: Card): CommentUi | undefined => comments?.[keyOf(card)]
 
   if (column === 'done') {
     const summary = doneSummary(board, now)
@@ -212,7 +270,9 @@ const columnOf = (
           `<button type="button" class="col-toggle" data-action="toggle-done-group" data-repo="${escapeHtml(repoId)}" aria-expanded="${groupOpen}"><span class="col-name">${CHEV}Closed in the last 14 days</span><span class="col-count">${summary.shown.length}</span></button>`,
         )
         if (groupOpen) {
-          const cards = summary.shown.map(card => renderCard(card, now)).join('')
+          const cards = summary.shown
+            .map(card => renderCard(card, now, commentOf(card), keyOf(card)))
+            .join('')
           parts.push(`<ul class="cards">${cards}</ul>`)
         }
       }
@@ -229,7 +289,9 @@ const columnOf = (
   if (view.total === 0) {
     parts.push('<p class="empty">None</p>')
   } else if (view.shown.length > 0) {
-    const cards = view.shown.map(card => renderCard(card, now)).join('')
+    const cards = view.shown
+      .map(card => renderCard(card, now, commentOf(card), keyOf(card)))
+      .join('')
     parts.push(`<ul class="cards">${cards}</ul>`)
   }
   if (view.hidden > 0) {
@@ -250,7 +312,12 @@ const columnOf = (
 }
 
 /** FR-7: one section of the accordion, with its header and its board. */
-export const renderSection = (state: RepoState, ui: UiState, now: number): string => {
+export const renderSection = (
+  state: RepoState,
+  ui: UiState,
+  now: number,
+  comments?: CommentMap,
+): string => {
   const repoId = state.repo.id
 
   if (state.status === 'loading') {
@@ -264,7 +331,9 @@ export const renderSection = (state: RepoState, ui: UiState, now: number): strin
   }
 
   const open = sectionOpen(state, ui)
-  const columns = COLUMNS.map(column => columnOf(state.board, repoId, column, ui, now)).join('')
+  const columns = COLUMNS.map(column =>
+    columnOf(state.board, repoId, column, ui, now, comments),
+  ).join('')
   const board = `<div class="board"${open ? '' : ' hidden'}>${columns}</div>`
   return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, open, chipsOf(state.board))}${board}</section>`
 }
@@ -308,7 +377,9 @@ export const renderPage = (view: PageView): string => {
     `<div class="page-summary">${summary.join('')}</div>` +
     `<button type="button" class="btn" data-action="refresh"${busy}>${label}</button></header>`
 
-  const sections = view.states.map(state => renderSection(state, view.ui, view.now)).join('')
+  const sections = view.states
+    .map(state => renderSection(state, view.ui, view.now, view.comments))
+    .join('')
 
   return `<div class="mb"><div class="page">${banner}${head}<main>${sections}</main></div></div>`
 }
