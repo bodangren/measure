@@ -31,10 +31,12 @@ const after = (event: ToolBeforeEvent, output = 'done'): CompletedEvent => ({
   result: { output },
 })
 
-const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}],"acceptance":[{"route":"opencode-go/deepseek-v4-pro#high","family":"deepseek"}],"phase-acceptance":[{"route":"opencode-go/glm-5.3#high","family":"glm"}],"record":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"vision-review":[{"route":"claude-code/claude-opus-5-5[1m]#high","family":"claude"}]}}'
+const ROUTES = '{"roles":{"red":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"green":[{"route":"opencode/deepseek-v4.1-flash-free#high","family":"deepseek"}],"acceptance":[{"route":"opencode-go/deepseek-v4-pro#high","family":"deepseek"}],"phase-acceptance":[{"route":"opencode-go/glm-5.3#high","family":"glm"}],"record":[{"route":"opencode-go/deepseek-v4.1-flash","family":"deepseek"}],"review-c":[{"route":"opencode-go/glm-4.5#high","family":"glm"}],"vision-review":[{"route":"claude-code/claude-opus-5-5[1m]#high","family":"claude"}]}}'
 const DENY_MODEL = 'claude-code/claude-opus-5-5[1m]#high'
 const PHASE_MODEL = 'opencode-go/glm-5.3#high'
 const RECORD_MODEL = 'opencode-go/deepseek-v4.1-flash'
+const REVIEW_C_MODEL = 'opencode-go/glm-4.5#high'
+const VISION_MODEL = 'claude-code/claude-opus-5-5[1m]#high'
 
 /** The output text of a completed call. */
 const outputOf = (event: CompletedEvent): string => String(event.result.output)
@@ -138,7 +140,7 @@ describe('role spawn routes', () => {
 
   test('unknown role: the spawn passes with a warning note', async () => {
     const guard = makeGuard(root)
-    const call = before('subagent', { agent: 'measure-ux-browser-review', model: DENY_MODEL })
+    const call = before('subagent', { agent: 'measure-nosuch-review', model: DENY_MODEL })
     await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
     const done = after(call)
     await guard.onToolAfter(done)
@@ -156,8 +158,8 @@ describe('role spawn routes', () => {
 
   test('task tool shape: an unapproved model is denied', async () => {
     const guard = makeGuard(root)
-    const input = { subagent_type: 'measure-jr-green', model: DENY_MODEL }
-    expect(roleSpawnOf('task', input)).toEqual({ agent: 'measure-jr-green', model: DENY_MODEL })
+    const input = { subagent_type: 'measure-jr-green', model: DENY_MODEL, prompt: 'Write the green implementation' }
+    expect(roleSpawnOf('task', input)).toEqual({ agent: 'measure-jr-green', model: DENY_MODEL, prompt: 'Write the green implementation' })
     await expect(guard.onToolBefore(before('task', input))).rejects.toThrow(/not an approved route/)
   })
 
@@ -168,6 +170,39 @@ describe('role spawn routes', () => {
     const done = after(call)
     await guard.onToolAfter(done)
     expect(outputOf(done)).not.toContain('measure-guard')
+  })
+
+  test('ux browser: the review-c route passes for a text brief', async () => {
+    expect(ROLE_OF_AGENT['measure-ux-browser-review']).toBe('review-c')
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-ux-browser-review', model: REVIEW_C_MODEL, prompt: 'Check the API response shape' })
+    await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
+    const done = after(call)
+    await guard.onToolAfter(done)
+    expect(outputOf(done)).not.toContain('is not in the route map')
+  })
+
+  test('ux browser: a vision-only route is denied for a text brief', async () => {
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-ux-browser-review', model: VISION_MODEL, prompt: 'Check the API response shape' })
+    let message = ''
+    try {
+      await guard.onToolBefore(call)
+    } catch (error) {
+      message = String(error)
+    }
+    expect(message).toContain('not an approved route')
+    expect(message).toContain(`  - ${REVIEW_C_MODEL}`)
+    expect(message).toContain('ra-quota pick review-c')
+  })
+
+  test('ux browser: the vision-review route passes for a picture brief', async () => {
+    const guard = makeGuard(root)
+    const call = before('subagent', { agent: 'measure-ux-browser-review', model: VISION_MODEL, prompt: 'Review the screenshot for layout bugs' })
+    await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
+    const done = after(call)
+    await guard.onToolAfter(done)
+    expect(outputOf(done)).not.toContain('is not in the route map')
   })
 
   test('advise mode: the deny case passes', async () => {

@@ -193,10 +193,18 @@ export const ROLE_OF_AGENT: Record<string, string> = {
   'measure-phase-acceptance': 'phase-acceptance',
   'measure-final-acceptance': 'final-acceptance',
   'measure-closeout': 'record',
+  'measure-ux-browser-review': 'review-c',
 }
 
 /** ra-quota roles the guard knows that no Measure agent maps to yet. */
 export const KNOWN_ROLES: readonly string[] = ['vision-review']
+
+/** The brief asks the role to read pictures when it names one of these, case-insensitive. */
+const UX_PICTURE_RE = /screenshot|image|picture|\.png|vision/i
+
+/** True when the spawn brief asks the role to read pictures. */
+export const readsPictures = (prompt: string | null | undefined): boolean =>
+  typeof prompt === 'string' && UX_PICTURE_RE.test(prompt)
 
 /** The ra-quota routes file, relative to the home folder. */
 export const ROUTES_FILE = '.config/ra-quota/routes.json'
@@ -204,8 +212,8 @@ export const ROUTES_FILE = '.config/ra-quota/routes.json'
 /** The command that prints one approved route of a role. */
 export const ROUTE_PICK = '/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick'
 
-/** The agent and the model a spawn call names; model is null when the call names none. */
-export type RoleSpawn = { agent: string; model: string | null }
+/** The agent, the model, and the brief a spawn call names; model and prompt are null when the call names none. */
+export type RoleSpawn = { agent: string; model: string | null; prompt: string | null }
 
 /** The first non-empty string among `values`, trimmed; null when there is none. */
 const firstText = (values: readonly unknown[]): string | null => {
@@ -213,7 +221,7 @@ const firstText = (values: readonly unknown[]): string | null => {
   return typeof found === 'string' ? found.trim() : null
 }
 
-/** The agent and model of a tool call that spawns a subagent: the OpenCode `subagent` tool (`agent`) or a `task` tool (`subagent_type`). Null for every other call. */
+/** The agent, model, and brief of a tool call that spawns a subagent: the OpenCode `subagent` tool (`agent`) or a `task` tool (`subagent_type`). Null for every other call. */
 export const roleSpawnOf = (tool: string, input: unknown): RoleSpawn | null => {
   const name = tool.toLowerCase()
   if (name !== 'subagent' && name !== 'task') return null
@@ -221,7 +229,7 @@ export const roleSpawnOf = (tool: string, input: unknown): RoleSpawn | null => {
   const fields = input as Record<string, unknown>
   const agent = firstText([fields.agent, fields.subagent_type, fields.subagentType])
   if (agent === null) return null
-  return { agent, model: firstText([fields.model]) }
+  return { agent, model: firstText([fields.model]), prompt: firstText([fields.prompt, fields.description, fields.task, fields.text]) }
 }
 
 /** The approved route strings of one role in the routes file text; null when the file is unreadable or the role has no route. */
@@ -244,13 +252,56 @@ export const approvedRoutes = (text: string | null, role: string): string[] | nu
   return routes.length === 0 ? null : routes
 }
 
-/** The spawn-route guard (guard and strict): a `measure-*` spawn must name a route in the approved list of its role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning note. */
+/** The spawn-route guard (guard and strict): a `measure-*` spawn must name a route in the approved list of its role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning note. `measure-ux-browser-review` maps to `review-c`; a picture brief also accepts `vision-review`. */
 export const roleSpawnDecision = (context: GuardContext, routesText: string | null, spawn: RoleSpawn): { decision: Decision; note: string | null } => {
   if (!isGuarding(context)) return { decision: null, note: null }
   if (!spawn.agent.startsWith('measure-')) return { decision: null, note: null }
   const role = ROLE_OF_AGENT[spawn.agent]
   if (role === undefined) {
     return { decision: null, note: `measure-guard: "${spawn.agent}" is not in the route map, so the guard did not check its model.` }
+  }
+  if (spawn.agent === 'measure-ux-browser-review') {
+    const textRoutes = approvedRoutes(routesText, 'review-c')
+    if (!readsPictures(spawn.prompt ?? null)) {
+      if (textRoutes === null) {
+        return { decision: null, note: `measure-guard: cannot read the approved routes of role "review-c" in ~/${ROUTES_FILE}, so the guard did not check the model of "${spawn.agent}".` }
+      }
+      if (spawn.model === null) {
+        return { decision: null, note: `measure-guard: "${spawn.agent}" names no model, so the guard did not check its route. Pass the route that ${ROUTE_PICK} review-c prints.` }
+      }
+      if (textRoutes.includes(spawn.model)) return { decision: null, note: null }
+      return {
+        decision: {
+          deny: [
+            `measure-guard: "${spawn.agent}" names the model "${spawn.model}", which is not an approved route of role "review-c".`,
+            'The approved routes are:',
+            ...textRoutes.map(route => `  - ${route}`),
+            `Run ${ROUTE_PICK} review-c and use the route it prints. ${BYPASS}`,
+          ].join('\n'),
+        },
+        note: null,
+      }
+    }
+    const visionRoutes = approvedRoutes(routesText, 'vision-review')
+    const approved = [...new Set([...(textRoutes ?? []), ...(visionRoutes ?? [])])]
+    if (approved.length === 0) {
+      return { decision: null, note: `measure-guard: cannot read the approved routes of roles "review-c" and "vision-review" in ~/${ROUTES_FILE}, so the guard did not check the model of "${spawn.agent}".` }
+    }
+    if (spawn.model === null) {
+      return { decision: null, note: `measure-guard: "${spawn.agent}" names no model, so the guard did not check its route. Pass the route that ${ROUTE_PICK} review-c or ${ROUTE_PICK} vision-review prints.` }
+    }
+    if (approved.includes(spawn.model)) return { decision: null, note: null }
+    return {
+      decision: {
+        deny: [
+          `measure-guard: "${spawn.agent}" names the model "${spawn.model}", which is not an approved route of roles "review-c" and "vision-review".`,
+          'The approved routes are:',
+          ...approved.map(route => `  - ${route}`),
+          `Run ${ROUTE_PICK} review-c or ${ROUTE_PICK} vision-review and use the route it prints. ${BYPASS}`,
+        ].join('\n'),
+      },
+      note: null,
+    }
   }
   const routes = approvedRoutes(routesText, role)
   if (routes === null) {

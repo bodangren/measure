@@ -1,17 +1,23 @@
 // The spawn-route guard maps measure-phase-acceptance to the phase-acceptance
 // role and measure-closeout to the record role of ~/.config/ra-quota/routes.json;
 // vision-review is a known role with no agent yet (PM request, 2026-11-18).
+// measure-ux-browser-review maps to review-c, and a picture brief also accepts
+// vision-review (PM add-on, 2026-11-18).
 import { describe, expect, test } from 'claude-code/testing'
-import { KNOWN_ROLES, ROLE_OF_AGENT, approvedRoutes, roleSpawnDecision } from '../hooks/guards'
+import { KNOWN_ROLES, ROLE_OF_AGENT, approvedRoutes, roleSpawnDecision, roleSpawnOf } from '../hooks/guards'
 
 const ROUTES = JSON.stringify({
   roles: {
     acceptance: [{ route: 'opencode-go/deepseek-v4-pro#high' }],
     'phase-acceptance': [{ route: 'opencode-go/glm-5.3#high' }],
     record: [{ route: 'opencode-go/deepseek-v4.1-flash' }],
+    'review-c': [{ route: 'opencode-go/glm-4.5#high' }],
     'vision-review': [{ route: 'claude-code/claude-opus-5-5[1m]#high' }],
   },
 })
+
+const REVIEW_C = 'opencode-go/glm-4.5#high'
+const VISION = 'claude-code/claude-opus-5-5[1m]#high'
 
 const context = { snapshot: null, mode: 'guard', setupChoice: null, guardsOff: null } as const
 
@@ -67,5 +73,41 @@ describe('phase acceptance role', () => {
   test('vision-review is a known role with no agent mapped to it', () => {
     expect(KNOWN_ROLES).toContain('vision-review')
     expect(Object.values(ROLE_OF_AGENT)).not.toContain('vision-review')
+  })
+})
+
+describe('ux browser review role', () => {
+  test('measure-ux-browser-review maps to the review-c role', () => {
+    expect(ROLE_OF_AGENT['measure-ux-browser-review']).toBe('review-c')
+  })
+
+  test('the spawn prompt is read from the subagent input', () => {
+    expect(roleSpawnOf('subagent', { agent: 'measure-ux-browser-review', model: REVIEW_C, prompt: 'Review the screenshot' })).toEqual({
+      agent: 'measure-ux-browser-review',
+      model: REVIEW_C,
+      prompt: 'Review the screenshot',
+    })
+  })
+
+  test('a text brief accepts a review-c route with no warning', () => {
+    const spawn = { agent: 'measure-ux-browser-review', model: REVIEW_C, prompt: 'Check the API response shape' } as any
+    const { decision, note } = roleSpawnDecision({ ...context, mode: 'guard' }, ROUTES, spawn)
+    expect(decision).toBeNull()
+    expect(note).toBeNull()
+  })
+
+  test('a text brief refuses a vision-review-only route', () => {
+    const spawn = { agent: 'measure-ux-browser-review', model: VISION, prompt: 'Check the API response shape' } as any
+    const { decision } = roleSpawnDecision({ ...context, mode: 'guard' }, ROUTES, spawn)
+    expect(decision).not.toBeNull()
+    expect(decision?.deny).toContain('not an approved route')
+    expect(decision?.deny).toContain(REVIEW_C)
+  })
+
+  test('a picture brief accepts a vision-review route', () => {
+    const spawn = { agent: 'measure-ux-browser-review', model: VISION, prompt: 'Review the screenshot for layout bugs' } as any
+    const { decision, note } = roleSpawnDecision({ ...context, mode: 'guard' }, ROUTES, spawn)
+    expect(decision).toBeNull()
+    expect(note).toBeNull()
   })
 })
