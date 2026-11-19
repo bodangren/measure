@@ -8,5 +8,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 1: Named generated check error
 
 - [x] Task 1.1: Red tests for the three missing states c87b554
-- [~] Task 1.2: single gate_value call with the named error and CHANGELOG line
-- [ ] Task 1.3: records and closeout
+- [x] Task 1.2: single gate_value call with the named error and CHANGELOG line 3cc383f
+- [~] Task 1.3: records and closeout
