@@ -7,4 +7,4 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Agent live sync
 
-- [~] Task 1.1: fold the live agent edits into the source and records
+- [x] Task 1.1: fold the live agent edits into the source and records 7a20d21
