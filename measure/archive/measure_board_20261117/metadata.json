@@ -1,0 +1,13 @@
+{
+  "track_id": "measure_board_20261117",
+  "type": "feature",
+  "status": "done",
+  "lane": "full",
+  "created_at": "2026-11-17T13:07:00Z",
+  "updated_at": "2026-11-19T12:00:00Z",
+  "description": "Measure board: the measure-status extension shows one accordion section for each Reading Advantage repo, and each section holds a read-only Kanban board of its Measure tracks, with the columns Planned, In progress, Blocked, Waiting on Daniel, and Done (PM assignment A-67, Daniel 2026-11-17)",
+  "estimated_tasks": 28,
+  "actual_tasks": 35,
+  "completed": "2026-11-19",
+  "deviation_notes": "Final acceptance passed at commit b13ea46 on claude-code/claude-sonnet-5-5#max with no blocking finding. Every commit after b13ea46 changes only the plan or is an empty checkpoint commit, so the audited HEAD stays the closeout baseline. The route substitutions are accepted: MiniMax and free-route limits, Kimi over pace, and Claude Sonnet for final acceptance. Phase 1 acceptance ran late at c274da0 to close finding F1 of final acceptance. The adversarial runs in Phases 2 and 3 preceded later fixes, and the phase acceptances record those deviations. No review artifact covers the comment-only commit ebf2540. The Green role-gate exits 1 because tasks of other roles stay open. The PM marked the four User Manual Verification tasks complete on the two ACCEPTs of Daniel, by PM decision. These Nits stay open for closeout: F4 to F9 of final acceptance and F1 and F2 of the Phase 1 acceptance. The estimated task count is 28 by PM decision of 2026-11-18. The closeout runs follow after the archive and registry commits."
+}
