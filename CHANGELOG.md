@@ -22,6 +22,8 @@
 
 ### Bug Fixes
 
+* **installer writes:** a shell command that runs `bin/install-measure-skill` passes the guard with no active task. Other writes under `.config` still need a task. The shared core gains the config path rule and the installer command rule. All three `guards.ts` copies change in parity. Track `installer_adopt_guard_20261119`.
+
 * **closeout deferred and generated:** closeout fails unless each deferred task of the closeout phase cites its done SHA on the line. Closeout runs the generator freshness check from `GENERATED_CHECK_COMMAND` when the repo holds a `measure/generated` folder. The gate skips the check with one INFO line when the folder is absent. Track `closeout_deferred_generated_20261119`.
 
 * **dispositions IDs:** the `dispositions:` line accepts every found finding form. The forms are a single letter with digits, a compound form with dashes, and a slug. The malformed forms stay rejected. Track `gate_brief_fixes_20261119`.

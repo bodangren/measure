@@ -8,6 +8,8 @@ import {
   changedDuringTurn,
   closedTracks,
   editDecision,
+  isConfigPath,
+  isInstallerCommand,
   phaseStartNote,
   isInside,
   relative,
@@ -313,13 +315,15 @@ export async function shellGuardFor(deps, agent, root, mutation) {
   const none = { denial: undefined, note: null, commitDue: false }
   const context = await guardContext(deps, agent, root)
   if (context.snapshot === null || context.guardsOff !== null) return none
+  if (typeof mutation.command === 'string' && isInstallerCommand(mutation.command)) return none
   const paths = shellWritePaths(mutation.command)
   if (paths.length === 0) return none
   const dir = typeof deps.dirOf === 'function' ? deps.dirOf(agent) : root
   const red = strictRed(deps.state, agent.id, context.snapshot)
   for (const target of paths) {
     const resolved = await resolveForGuard(deps.io, target, dir)
-    if (resolved === null || !isInside(context.snapshot.root, resolved)) continue
+    if (resolved === null) continue
+    if (!isInside(context.snapshot.root, resolved) && !isConfigPath(resolved)) continue
     if (isRegistryPath(context.snapshot, resolved)) return { denial: REGISTRY_SHELL_DENY, note: null }
     if (isInside(joinPath(context.snapshot.root, 'measure'), resolved)) continue
     const edit = editDecision(context, resolved)

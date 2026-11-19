@@ -40,10 +40,21 @@ export const isAllowed = (snapshot: Snapshot, path: string): boolean => {
 export const relative = (snapshot: Snapshot, path: string): string =>
   isInside(snapshot.root, path) ? joinPath(path).slice(joinPath(snapshot.root).length + 1) : path
 
+/** True when `path` lies under a `.config` folder. The guard treats such a path as its own work even outside the project root, so the installer targets stay guarded. */
+export const isConfigPath = (path: string): boolean => {
+  const p = joinPath(path)
+  return p.includes('/.config/') || p.endsWith('/.config')
+}
+
+/** True when a shell command runs the Measure skill installer. The installer writes its own targets, so the guard lets it pass with no active task. */
+export const isInstallerCommand = (command: string): boolean => command.includes('install-measure-skill')
+
 /**
  * The edit guard (guard and strict modes): denies a write to a file inside
  * the project root and outside measure/ while no task in the active plan has
- * `[~]`. Allows on a parse error, outside the project, and in advise mode.
+ * `[~]`. It also denies a write under `.config` outside the root, so the
+ * installer targets stay guarded. Allows on a parse error, outside the
+ * project, and in advise mode.
  */
 export const editDecision = (context: GuardContext, path: string): Decision => {
   const { snapshot, mode } = context
@@ -53,7 +64,8 @@ export const editDecision = (context: GuardContext, path: string): Decision => {
     return isAsking && isInside(snapshot.root, path) ? { deny: SETUP_DENY } : null
   }
   if (!snapshot.hasMeasure || snapshot.parseError !== null) return null
-  if (!isInside(snapshot.root, path) || isInside(joinPath(snapshot.root, 'measure'), path)) return null
+  if (isInside(joinPath(snapshot.root, 'measure'), path)) return null
+  if (!isInside(snapshot.root, path) && !isConfigPath(path)) return null
   if (isAllowed(snapshot, path)) return null
 
   const { active } = snapshot
