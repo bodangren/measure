@@ -1157,9 +1157,11 @@ def closeout_feedback(repo: Path, track: str, runner: str = "") -> list[str]:
     if not (measure_dir(repo) / "generated").is_dir():
         print("INFO: no measure/generated folder, skipping the generated freshness check")
     else:
-        command = gate_value(repo, "GENERATED_CHECK_COMMAND")
+        command = os.environ.get("GENERATED_CHECK_COMMAND", "")
         if not command:
-            feedback.append("GENERATED_CHECK_COMMAND is unset: set it in measure/gates.json or the environment to check measure/generated freshness")
+            command = load_gates(repo).get("GENERATED_CHECK_COMMAND", "")
+        if not command:
+            feedback.append("GENERATED_CHECK_COMMAND is unset in the environment and in measure/gates.json: set GENERATED_CHECK_COMMAND to check measure/generated freshness")
         else:
             feedback.extend(gate_command(repo, "GENERATED_CHECK_COMMAND", command, runner=runner))
     if not (archive / CLOSEOUT_MANIFEST).exists():
