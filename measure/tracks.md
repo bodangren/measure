@@ -4,6 +4,26 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Step limits and dispositions**
+  *Link: [./tracks/step_limits_dispositions_20261118/](./tracks/step_limits_dispositions_20261118/)*
+  *Fold the raised live step limits into the repo source and accept any letter finding ID in dispositions (PM request, 2026-11-18)*
+
+- [~] **Track: Role-gate heavy-run wrapper with excludes**
+  *Link: [./tracks/role_gate_heavy_run_20261118/](./tracks/role_gate_heavy_run_20261118/)*
+  *Run each role-gate command through heavy-run.sh when set, with a repeatable --exclude flag (PM request, 2026-11-18)*
+
+- [~] **Track: Orchestrator agent sync**
+  *Link: [./tracks/orchestrator_agent_sync_20261118/](./tracks/orchestrator_agent_sync_20261118/)*
+  *Fold the accepted orchestrator route rules into the repo source (PM decision, 2026-11-18)*
+
+- [~] **Track: Guard phase acceptance**
+  *Link: [./tracks/guard_phase_acceptance_20261118/](./tracks/guard_phase_acceptance_20261118/)*
+  *Map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)*
+
+- [~] **Track: Guard UX browser route**
+  *Link: [./tracks/guard_ux_browser_route_20261118/](./tracks/guard_ux_browser_route_20261118/)*
+  *Map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)*
+
 ---
 
 ## Cancelled Tracks
@@ -469,3 +489,15 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Measure board**
   *Link: [./archive/measure_board_20261117/](./archive/measure_board_20261117/)*
   *Measure board: the measure-status extension shows one accordion section for each Reading Advantage repo, and each section holds a read-only Kanban board of its Measure tracks, with the columns Planned, In progress, Blocked, Waiting on Daniel, and Done (PM assignment A-67, Daniel 2026-11-17)*
+
+- [x] **Track: Superseded closeout**
+  *Link: [./archive/superseded_close_20261117/](./archive/superseded_close_20261117/)*
+  *Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a "Superseded by <target>" line and metadata.json status "superseded". The shared core gains supersededTarget, the three adapters set supersededBy from the plan text and metadata.json, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)*
+
+- [x] **Track: Report-only follow-up**
+  *Link: [./archive/report_only_follow_up_20261117/](./archive/report_only_follow_up_20261117/)*
+  *Report-only follow-up: the measure-guard end-of-turn follow-up and reminder report the open problems instead of ordering a fix. The shared core holds the report-only text, and the OpenCode plugin, the Claude Code mod, and the DSH adapter use it. The text never asks the agent to edit, commit, or push (PM order, 2026-11-17)*
+
+- [x] **Track: Sub-box SHA rule**
+  *Link: [./archive/subbox_sha_20261118/](./archive/subbox_sha_20261118/)*
+  *Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)*

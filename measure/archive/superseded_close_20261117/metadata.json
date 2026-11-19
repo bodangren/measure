@@ -1,0 +1,13 @@
+{
+  "track_id": "superseded_close_20261117",
+  "type": "feature",
+  "status": "done",
+  "created_at": "2026-11-17T00:00:00Z",
+  "updated_at": "2026-11-17T00:00:00Z",
+  "description": "Superseded closeout: measure-guard accepts a registry [x] for a plan with open task boxes when the plan has a \"Superseded by <target>\" line and metadata.json status \"superseded\". The shared core gains supersededTarget, the three adapters set supersededBy from the plan text and metadata.json, and the DSH metadata check skips the actual_tasks equality check for a superseded track (PM order, 2026-11-17)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-17",
+  "lane": "light",
+  "deviation_notes": "The author ran on opencode/deepseek-v4.1-flash-free#high until the free limit, then on opencode-go/deepseek-v4.1-flash. The spec review ran on claude-code/claude-sonnet-5-5#max: round 1 failed with 2 Blockers, round 2 passed at 6f5be18, and the round 2 Nits are fixed. Task 1.1 at 5fde541: Red exit 1 in all three suites (red.log); Green exit 0 (green.log); bun test has one failure, V18 of allow-adversarial, which this track does not change and which is recorded on origin/main (package-test.log); both parity checks exit 0; the DSH suite has 365 pass; heavy-run spec_review_gate exit 0; heavy-run test-registry exit 0 (gates.log). Task 1.2 at 19e21fb holds the CHANGELOG entry, the three README sentences, the README.md line 33 sentence, the finalized metadata.json, the archive move, and the registry removal; the workflow commits and the registry commit 1ab5444 follow. The registry gate ran after the registry commit and exited 0 (test-registry.log). The closeout check then exited 1 with the INFO light lane, no final acceptance, and only the missing closeout manifest FAIL (closeout-check.log)."
+}

@@ -152,8 +152,8 @@ Choose a model by plan budget first and by role difficulty second.
 | Last resort | ChatGPT (OAuth) | `openai/*` | Only when no other family is GO: Daniel uses Codex for his work (Daniel, 2026-11-06). `ra-quota` lists it last. |
 | Liberal | Kimi CN plan | `kimi-code-plan-cn/*` | Volume review and test work |
 | Liberal | MiniMax CN plan | `minimax-cn-coding-plan/*` | Volume and mechanical work |
-| Very high | Volcano Ark Agent Plan (500 CNY a month) | `volcengine-agent-plan/*` | Green, audits, one-off coders |
-| High | Volcano Ark Coding Plan | `coding-plan/*` | Overflow for the Ark Agent Plan |
+| Very high | Volcano Ark Agent Plan (500 CNY a month) | `volcengine-agent-plan/*` | Out (Daniel 2026-11-16): not allowed |
+| High | Volcano Ark Coding Plan | `coding-plan/*` | Out (Daniel 2026-11-16): not allowed |
 | Liberal (open again, Daniel 2026-11-05) | OpenCode Go | `opencode-go/deepseek-v4.1-flash`, `opencode-go/mimo-v2.6-flash`, `opencode-go/muse-spark-1.3-contributor#high` | Volume roles through `ra-quota pick`. Never use `opencode/muse-spark-1.3`. |
 | Metered | Pay per token | `deepseek/*`, `xiaomi/*`, paid `openrouter/*` | Only with explicit user approval |
 
@@ -163,19 +163,19 @@ On the Ark plans, use `glm-5.3-flash` for routine work and `glm-latest` as the e
 
 | Role | Model | Plan |
 |---|---|---|
-| `measure-spec-review` | `kimi-code-plan-cn/kimi-for-coding#high` | Kimi CN |
-| `measure-strategy` | `claude-code/claude-opus-5-5[1m]#high` | Claude |
-| `measure-mid-red` | `ra-quota pick red` (was Sol; Codex last resort since 2026-11-06) | by pick |
-| `measure-jr-green` | `volcengine-agent-plan/glm-5.3-flash#high` | Ark Agent |
-| `measure-review-a-correctness` | `claude-code/claude-opus-5-5[1m]#high` | Claude |
-| `measure-review-b-security` | `ra-quota pick review-b` (was Sol; Codex last resort since 2026-11-06) | by pick |
-| `measure-review-c-ux-api` | `kimi-code-plan-cn/kimi-for-coding#high` | Kimi CN |
-| `measure-adversarial-testing` | `kimi-code-plan-cn/k3-256k#high` | Kimi CN |
-| `measure-ux-browser-review` | `minimax-cn-coding-plan/MiniMax-M3.1-Flash` | MiniMax |
-| `measure-phase-acceptance` | `claude-code/claude-opus-5-5[1m]#medium` | Claude |
-| `measure-orchestrator-audit` | `volcengine-agent-plan/glm-latest#high` | Ark Agent |
-| `measure-final-acceptance` | `ra-quota pick final-acceptance` (was Sol; Codex last resort since 2026-11-06) | by pick |
-| `measure-closeout` | `minimax-cn-coding-plan/MiniMax-M3.1-Flash` | MiniMax |
+| `measure-spec-review` | `ra-quota pick spec-review` | by pick |
+| `measure-strategy` | `ra-quota pick strategy` | by pick |
+| `measure-mid-red` | `ra-quota pick red` | by pick |
+| `measure-jr-green` | `ra-quota pick green` | by pick |
+| `measure-review-a-correctness` | `ra-quota pick review-a` | by pick |
+| `measure-review-b-security` | `ra-quota pick review-b` | by pick |
+| `measure-review-c-ux-api` | `ra-quota pick review-c` | by pick |
+| `measure-adversarial-testing` | `ra-quota pick adversarial` | by pick |
+| `measure-ux-browser-review` | `ra-quota pick review-c` | by pick |
+| `measure-phase-acceptance` | `ra-quota pick phase-acceptance` | by pick |
+| `measure-orchestrator-audit` | `ra-quota pick acceptance` | by pick |
+| `measure-final-acceptance` | `ra-quota pick final-acceptance` | by pick |
+| `measure-closeout` | `ra-quota pick record` | by pick |
 
 Every model in this table started as a subagent on 2026-10-18.
 
@@ -199,10 +199,7 @@ MiMo (`*/mimo-*`), Muse (`*/muse-*`).
 
 ### Substitution
 
-Use the table model by default. `ra-quota pick` is the single override: use the route
-it prints for a role only when the table model's plan quota is low or the model fails
-to start, and record that as a substitution (never as a second default). Record each
-substitution in the role handoff and in the final report.
+The route of every role comes from `ra-quota pick <role> --why` with a `--not-family` flag for each family the independence rules exclude (PM 2026-11-18). Never pass a table default. When pick exits 3, wait, or use the next route that is on Daniel's allowed list (2026-11-16) and record it as a substitution.
 
 For each new role, run
 `/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick <role> --why`
@@ -243,10 +240,10 @@ For the one-off lane, spawn `agent: "coder"` with a model from this list.
 | Task shape | Model |
 |---|---|
 | Simple bounded text | `minimax-cn-coding-plan/MiniMax-M3.1-Flash` |
-| Standards-heavy migration | `volcengine-agent-plan/glm-latest#high` |
-| Medium multi-file feature | `volcengine-agent-plan/glm-5.3-flash#high` |
+| Standards-heavy migration | `ra-quota pick coder` |
+| Medium multi-file feature | `ra-quota pick coder` |
 | Hard backend correctness | `openai/gpt-6.1-sol#high` |
-| Visual / image-to-code | `volcengine-agent-plan/ark-code-latest#high` |
+| Visual / image-to-code | `ra-quota pick coder` |
 | Frontier / image-critical | `claude-code/claude-opus-5-5[1m]#high` |
 
 Do not spawn `coder-*` agents. Metered models need explicit user approval. When you

@@ -13,6 +13,7 @@ import {
   relative,
   stopAction,
   trackCloseDecision,
+  supersededTarget,
   turnProblems,
 } from './core/guards.ts'
 import { dirname, joinPath, parsePlan } from './core/parse.ts'
@@ -100,6 +101,9 @@ export async function editGuardFor(deps, agent, root, mutation) {
   return denyWithPaths(context, first, denied)
 }
 
+/** The text of a file; null when it does not exist. */
+const readOrNone = async (io, path) => ((await io.exists(path)) ? io.readText(path) : null)
+
 /** True for the plan file of a track; the closeout guard checks every one. */
 const isPlanPath = path => path === 'plan.md' || path.endsWith('/plan.md')
 
@@ -132,7 +136,13 @@ export async function closeoutGuardFor(deps, agent, root, mutation) {
       const closing = []
       for (const entry of closedTracks(before, after)) {
         const planPath = await planPathOf(deps.io, joinPath(dirname(path), entry.folder))
-        closing.push({ entry, plan: planPath === null ? null : parsePlan(await readOrEmpty(deps.io, planPath)) })
+        const planText = planPath === null ? null : await readOrNone(deps.io, planPath)
+        const metadataText = await readOrNone(deps.io, joinPath(dirname(path), entry.folder, 'metadata.json'))
+        closing.push({
+          entry,
+          plan: planText === null ? null : parsePlan(planText),
+          supersededBy: planText === null ? null : supersededTarget(planText, metadataText),
+        })
       }
       const result = trackCloseDecision(context, closing)
       if (result.decision !== null) return { decision: result.decision, note: null }

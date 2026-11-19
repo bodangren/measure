@@ -9,7 +9,7 @@ import { modeFrom } from './options'
 import { Bypass, Sessions } from './state'
 import type { CompactionEvent, ContextEvent, PromptEvent, ToolAfterEvent, ToolBeforeEvent } from './hooks/types'
 
-// The host accepts the default export only: no named exports in this file.
+// The host accepts the default export only. The named export of watchIdle serves the tests.
 const PLUGIN_ID = 'measure.guard'
 
 export default Plugin.define({
@@ -82,11 +82,12 @@ const TURN_END_EVENTS = new Set(['session.idle', 'session.execution.succeeded', 
 const TURN_END_DEBOUNCE_MS = 1000
 
 /**
- * Runs the end-of-turn check when a session's execution ends: a synthetic
- * reminder (guard mode, or strict after the follow-ups), or a follow-up prompt
- * (strict). The loop ends when the instance disposes the subscription.
+ * Runs the end-of-turn check when a session's execution ends: a follow-up
+ * prompt (strict), or a reminder that rides on the next prompt (guard mode,
+ * or strict after the follow-ups). The loop ends when the instance disposes
+ * the subscription.
  */
-const watchIdle = async (ctx: PluginContext, guard: Guard): Promise<void> => {
+export const watchIdle = async (ctx: PluginContext, guard: Guard): Promise<void> => {
   const lastCheck = new Map<string, number>()
   try {
     for await (const event of ctx.event.subscribe() as AsyncIterable<SubscribedEvent>) {
@@ -97,13 +98,8 @@ const watchIdle = async (ctx: PluginContext, guard: Guard): Promise<void> => {
       if (now - (lastCheck.get(sessionID) ?? 0) < TURN_END_DEBOUNCE_MS) continue
       lastCheck.set(sessionID, now)
       const action = await guard.onIdle(sessionID)
-      // resume: false keeps the reminder in the transcript without a new agent loop (the live check showed the agent resumes otherwise).
-      if (action.kind === 'remind') {
-        await ctx.session.synthetic({ sessionID, text: action.text, description: 'measure-guard reminder', resume: false })
-        // The synthetic message reaches the agent with the next prompt; the prompt rider would double it.
-        guard.session(sessionID).reminder = null
-      }
-      else if (action.kind === 'follow-up') await ctx.session.prompt({ sessionID, text: action.text })
+      // The guard mode reminder rides on the next real prompt. A synthetic message starts a turn in a finished session.
+      if (action.kind === 'follow-up') await ctx.session.prompt({ sessionID, text: action.text })
     }
   } catch (error) {
     // A closed subscription ends the loop; anything else is logged and the check stops.

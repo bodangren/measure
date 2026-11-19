@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+* **role-gate heavy run:** the `role-gate` command in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now runs each gate command through a heavy-run wrapper when one is set. The wrapper resolves as `--runner`, then `MEASURE_HEAVY_RUN`, then `heavy-run.sh` on PATH; with none found the gate runs the command directly and prints one note line. A repeatable `--exclude <file>` leaves test files out where the command lists or selects them, and fails closed when the command names no matching file. Track `role_gate_heavy_run_20261118`.
+
 ### Chores
 
 * **copywriter allow:** agents/measure-orchestrator.md now allows four global subagents, in this order directly after the "coder" rule and before the "change-quality-reviewer" rule: copywriter, fact-gate-checker, thai-writer, print-proof-auditor; a new S2 role-doc section pins the subagent rule order. Cause: the PR orchestrator session could not spawn the global copywriter agent (Daniel's order of 2026-11-15), the PM added the copywriter rule to the installed copy only and then updated the scope to add fact-gate-checker, thai-writer, and print-proof-auditor to the installed copy, and the installer held the installed file as local-edit, so it missed earlier PRs. Track `copywriter_allow_20261115`.
@@ -11,6 +15,14 @@
 * **prompt trim:** the Measure prompts (AGENTS.md, skills/measure and its claude-skills/measure copy, skills/measure-orchestrator, the agents/measure-*.md roles, and the opencode-measure-guard commands) lose old-model capital-letter wording (shouting labels, MUST, DO NOT, and DO NOT JUMP YET); every Daniel quote, owner rule, human gate, and test-pinned string stays. Track `prompt_audit_20261115`.
 
 ### Bug Fixes
+
+* **phase acceptance route:** the spawn-route guard maps `measure-phase-acceptance` to `phase-acceptance` and `measure-closeout` to `record`, so each `ra-quota pick` route passes the guard. The guard also names `vision-review` as a known role with no agent yet. The map changes in the shared core and its two plugin copies. Track `guard_phase_acceptance_20261118`.
+
+* **ux browser route:** the spawn-route guard maps `measure-ux-browser-review` to `review-c` for text briefs, and to the union of `review-c` and `vision-review` when the brief reads pictures. A brief reads pictures when its prompt holds `screenshot`, `image`, `picture`, `.png`, or `vision` (case-insensitive). The map and the picture rule change in the shared core and its two plugin copies. Track `guard_ux_browser_route_20261118`.
+
+* **sub-box SHA rule:** the closeout check of `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now requires a commit SHA on top-level task lines only. An indented `[x]` sub-box counts as covered when its nearest parent `[x]` line has a SHA. Unticked boxes still fail at every depth, except "deferred" lines. The status command's archive-candidate list uses the same function, so status and the closeout gate agree. Cause: Math has 16 finished tracks that status lists as candidates, but the closeout gate failed 15 of them on sub-step lines under SHA'd Task lines. Track `subbox_sha_20261118`.
+
+* **report-only follow-up:** the measure-guard end-of-turn text now reports the open problems instead of ordering a fix. The shared core holds the line "Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to." The two problem texts state the fact and the usual fix as information. The OpenCode plugin sends no synthetic message at the turn end, so a reminder no longer starts a turn in a finished session. The strict follow-up prompt still starts a turn, up to `MAX_BLOCKS` times per user turn. The Claude Code mod and the DSH adapter use the same text. Cause: a guard prompt started a new turn in a finished build session on 2026-11-17, and the session committed and pushed with no orchestrator check. Track `report_only_follow_up_20261117`.
 
 * **fixture paths:** the mid-red check of `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now counts more files as test files. A file is a test file when a `fixtures` folder sits at any depth under a folder whose name ends in `-tests`, for example `harness/model-guide-tests/fixtures/x.json`. The new helper `is_tests_fixture()` compares whole folder names, is case-sensitive, and never compares the file name. Every other rule of `non_test_paths()` stays. Cause: the Lending project keeps synthetic fixtures under `harness/model-guide-tests/fixtures/`, so the gate listed them as non-test files, and each Red gate there needed a recorded deviation. Track `fixture_paths_20261115`.
 
@@ -59,6 +71,7 @@
 ### Features
 
 * **measure board:** the measure-status extension shows one accordion section for each of eight Reading Advantage repos. Each section holds a read-only Kanban board of the Measure tracks of that repo. The columns are Planned, In progress, Blocked, Waiting on Daniel, and Done. A card shows the track name, the current phase and task, the age of the last file change, and a blocker or gate line. The extension reads files only, through eight contributes.filesystem globs. It runs one local service that sends a comment to the Measure PM session. The status band does not change.
+* **superseded closeout:** measure-guard now accepts a registry `[x]` for a track with open task boxes. The plan must carry a `Superseded by <target>` line, and `metadata.json` must have status `superseded`. The shared core gains `supersededTarget`. `ClosingTrack` gains `supersededBy`, and the OpenCode plugin, the Claude Code mod, and the DSH adapter fill it. A second closing track with open tasks is still denied. The DSH metadata check also skips its `actual_tasks` count for a superseded track. Cause: six archived tracks in ra-math-advantage closed as superseded with open tasks. Track `superseded_close_20261117`.
 
 * **role spawn routes:** the OpenCode plugin now blocks a Measure role spawn whose model is not an approved route of that role in `~/.config/ra-quota/routes.json`. The guard maps the agent to a ra-quota role (for example `measure-mid-red` to `red`), reads the routes file on each spawn, and compares the spawn model with the routes of that role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning. The deny lists the approved routes and points to `ra-quota pick <role>`. Track `role_spawn_route_20261117`.
 

@@ -1,7 +1,7 @@
 ---
 description: Handles Measure Red-phase work by writing targeted failing tests and plan evidence
 mode: subagent
-steps: 48
+steps: 80
 permissions:
   - action: edit
     resource: "*"

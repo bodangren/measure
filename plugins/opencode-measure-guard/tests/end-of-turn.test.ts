@@ -3,12 +3,35 @@ import { describe, expect, test } from 'bun:test'
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { MAX_BLOCKS } from '../src/core/guards'
-import { endTurn, followUpText, isFollowUp, reminderText, startTurn } from '../src/hooks/turn'
+import { MAX_BLOCKS, REPORT_ONLY, stopAction, turnProblems } from '../src/core/guards'
+import { FOLLOW_UP_HEAD, endTurn, followUpText, isFollowUp, reminderText, startTurn } from '../src/hooks/turn'
 import type { PromptEvent } from '../src/hooks/types'
 import { readStateFile } from '../src/state'
 import { TRACK, makeGuard, tempProject, withMeasure } from './fake'
 import type { Guard } from '../src/guard'
+
+/** The report-only line, as a literal. */
+const REPORT_ONLY_TEXT = 'Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to.'
+
+/** The words that no report-only text may use as an order. */
+const ORDER_WORDS = [/\bfix (these|them)\b/i, /\bcommit the\b/i, /\bpush\b(?! because)/i, /\brevert the\b/i, /\bmark the task\b/i]
+
+/** A report text holds the report line and no order word. */
+const assertReportOnly = (text: string): void => {
+  expect(text).toContain(REPORT_ONLY_TEXT)
+  for (const word of ORDER_WORDS) expect(text).not.toMatch(word)
+}
+
+/** The host package is not installed, so the case stubs it before it loads `src/index.ts`. */
+Bun.plugin({
+  name: 'measure-guard-host-stub',
+  setup(build) {
+    build.module('@opencode/plugin', () => ({
+      contents: 'export const Plugin = { define: (x) => x };',
+      loader: 'js',
+    }))
+  },
+})
 
 const prompt = (sessionID = 'ses_1', text = 'hi'): PromptEvent => ({ sessionID, messageID: 'msg_1', prompt: { text } })
 
@@ -29,6 +52,15 @@ const turnWithChange = async (guard: Guard, root: string, sessionID = 'ses_1') =
   await guard.onPrompt(prompt(sessionID))
   writeFileSync(join(root, 'stray.ts'), 'x')
   return guard.onIdle(sessionID)
+}
+
+/** The real problems of a turn: a [x] task with no SHA, and a file outside measure/. */
+const realProblems = async (): Promise<string[]> => {
+  const root = await project('~')
+  const plan = join(root, 'measure/tracks', TRACK, 'plan.md')
+  writeFileSync(plan, readFileSync(plan, 'utf8').replace('- [~] Task', '- [x] Task'))
+  const snapshot = await makeGuard(root).current()
+  return turnProblems(snapshot, ['stray.ts'], [])
 }
 
 describe('turn helpers', () => {
@@ -62,10 +94,34 @@ describe('turn helpers', () => {
   })
 
   test('the texts name the problems', () => {
-    expect(followUpText(['p1'])).toContain('do not end the turn yet')
+    expect(followUpText(['p1'])).toContain('report these problems before you end the turn')
     expect(followUpText(['p1'])).toContain('- p1')
     expect(reminderText(['p1', 'p2'])).toContain('at the end of the last turn')
     expect(reminderText(['p1', 'p2'])).toContain('- p2')
+  })
+})
+
+describe('the report-only text', () => {
+  test('the report line is the export', () => {
+    expect(REPORT_ONLY).toBe(REPORT_ONLY_TEXT)
+  })
+
+  test('the follow-up text and the reminder text are report-only', () => {
+    assertReportOnly(followUpText(['p1']))
+    assertReportOnly(reminderText(['p1', 'p2']))
+  })
+
+  test('the texts of the real problems are report-only', async () => {
+    const problems = await realProblems()
+    expect(problems.length).toBe(2)
+    assertReportOnly(followUpText(problems))
+    assertReportOnly(reminderText(problems))
+  })
+
+  test('the core stop block starts with the plugin head', () => {
+    const block = stopAction('strict', ['p1'], 0).block
+    expect(block).not.toBeNull()
+    expect(block?.startsWith(FOLLOW_UP_HEAD)).toBe(true)
   })
 })
 
@@ -88,6 +144,40 @@ describe('end of turn on the guard', () => {
     await guard.onPrompt(next)
     expect(next.prompt.text).toContain('at the end of the last turn')
     expect(next.prompt.text).toContain('stray.ts')
+  })
+
+  test('guard: the turn end sends no synthetic message and no prompt', async () => {
+    const root = await project('none')
+    const guard = makeGuard(root, 'guard')
+    await guard.onPrompt(prompt('ses_1'))
+    writeFileSync(join(root, 'stray.ts'), 'x')
+    const calls = { synthetic: 0, prompt: 0 }
+    const ctx = {
+      event: {
+        subscribe: async function* () {
+          yield { type: 'session.execution.succeeded', data: { sessionID: 'ses_1' } }
+        },
+      },
+      session: {
+        synthetic: async () => {
+          calls.synthetic += 1
+        },
+        prompt: async () => {
+          calls.prompt += 1
+        },
+      },
+    } as unknown as Parameters<typeof import('../src/index').watchIdle>[0]
+    const { watchIdle } = await import('../src/index')
+    await watchIdle(ctx, guard)
+    expect(calls.synthetic).toBe(0)
+    expect(calls.prompt).toBe(0)
+    const reminder = guard.session('ses_1').reminder
+    expect(reminder).not.toBeNull()
+    assertReportOnly(reminder ?? '')
+    const next = prompt('ses_1')
+    await guard.onPrompt(next)
+    expect(next.prompt.text).toContain('at the end of the last turn')
+    assertReportOnly(next.prompt.text)
   })
 
   test('strict: a follow-up twice, then a reminder; a new prompt starts the count again', async () => {

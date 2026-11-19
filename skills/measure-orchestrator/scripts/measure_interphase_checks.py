@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import re
+import shlex
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -83,7 +86,7 @@ ROLE_ALIASES = {
 }
 
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
-DISPOSITIONS_ITEM_RE = re.compile(r"F[1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
+DISPOSITIONS_ITEM_RE = re.compile(r"[A-Z][1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
 DISPOSITIONS_PREFIX = "dispositions:"
 # A control character (C0 except tab, and DEL) or a zero-width character inside
 # a dispositions value is invisible or misleading in the rendered finding text.
@@ -423,7 +426,7 @@ def closeout_candidates(repo: Path, track_regex: str) -> list[str]:
         if pattern and not pattern.search(track_dir.name):
             continue
         plan = track_dir / "plan.md"
-        if plan.exists() and track_incomplete(plan) == 0:
+        if plan.exists() and not plan_closeout_feedback(plan):
             result.append(track_dir.name)
     return result
 
@@ -755,20 +758,144 @@ def gate_value(repo: Path, key: str) -> str:
     return load_gates(repo).get(key, "")
 
 
-def gate_command(repo: Path, label: str, command: str, *, expect_failure: bool = False, required: bool = True) -> list[str]:
+def resolve_runner(explicit: str = "") -> str:
+    """The heavy-run wrapper path: --runner wins over MEASURE_HEAVY_RUN wins over PATH."""
+    if explicit:
+        return explicit
+    env = os.environ.get("MEASURE_HEAVY_RUN", "")
+    if env:
+        return env
+    return shutil.which("heavy-run.sh") or ""
+
+
+SHELL_OPERATORS = {"&&", "||", ";", "|", "&", "!", "(", ")", "{", "}"}
+
+
+def normalize_exclude(repo: Path, raw: str) -> str | None:
+    """An --exclude value as a repo-relative path, or None when it cannot match."""
+    text = raw.strip()
+    if not text:
+        return None
+    candidate = Path(text)
+    if candidate.is_absolute():
+        try:
+            return candidate.resolve().relative_to(repo.resolve()).as_posix()
+        except ValueError:
+            return None
+    cleaned = text.lstrip("./")
+    return cleaned or None
+
+
+def token_matches(repo: Path, token: str, exclude: str) -> bool:
+    """True when a command token names the excluded repo-relative path."""
+    if token in (exclude, f"./{exclude}"):
+        return True
+    candidate = Path(token)
+    if candidate.is_absolute():
+        try:
+            return candidate.resolve().relative_to(repo.resolve()).as_posix() == exclude
+        except ValueError:
+            return False
+    return False
+
+
+def has_file_operand(tokens: list[str]) -> bool:
+    """True when the command still names a file after the exclusion."""
+    for token in tokens:
+        if token.startswith("-") or token in SHELL_OPERATORS:
+            continue
+        if "." in token or "/" in token:
+            return True
+    return False
+
+
+def apply_exclusions(command: str, excludes: list[str], repo: Path) -> tuple[str, list[str]]:
+    """Remove each excluded file from a gate shell command where it is listed or selected.
+
+    A literal path token that names the file is removed. A glob token is
+    expanded against the repo: a glob that selects the file is replaced with
+    the remaining files. The result is the new command plus the excludes that
+    cannot apply. The caller fails closed on those instead of running the file.
+    """
+    pending = [raw for raw in excludes if raw.strip()]
+    normalized = [(raw, normalize_exclude(repo, raw)) for raw in pending]
+    invalid = sorted({raw for raw, cleaned in normalized if cleaned is None})
+    if invalid:
+        return command, invalid
+    wanted = sorted({cleaned for _, cleaned in normalized if cleaned is not None})
+    try:
+        tokens = shlex.split(command, posix=True)
+    except ValueError:
+        return command, list(wanted)
+    consumed: set[str] = set()
+    # Glob pass: a token that selects an excluded file becomes the other files.
+    for index, token in enumerate(list(tokens)):
+        if token.startswith("-") or not any(char in token for char in "*?["):
+            continue
+        try:
+            found = glob.glob(str(repo / token), recursive=True)
+        except Exception:
+            continue
+        found_rel = sorted({os.path.relpath(path, str(repo)) for path in found})
+        hit = (set(wanted) - consumed) & set(found_rel)
+        if not hit:
+            continue
+        rest = sorted(set(found_rel) - set(wanted))
+        if not rest:
+            # No file is left: a bare test runner would run everything.
+            return command, sorted(hit)
+        tokens[index : index + 1] = rest
+        consumed |= hit
+    # Literal pass: remove each token that names an excluded file.
+    leftover = set(wanted) - consumed
+    original = list(tokens)
+    tokens = [token for token in tokens if not any(token_matches(repo, token, item) for item in leftover)]
+    for token in original:
+        for item in leftover:
+            if token_matches(repo, token, item):
+                consumed.add(item)
+    unappliable = sorted(set(wanted) - consumed)
+    if unappliable:
+        return command, unappliable
+    if wanted and not has_file_operand(tokens):
+        # A bare test runner would run everything, so fail closed too.
+        return command, list(wanted)
+    return shlex.join(tokens), []
+
+
+def gate_command(repo: Path, label: str, command: str, *, expect_failure: bool = False, required: bool = True, runner: str = "", excludes: tuple[str, ...] = ()) -> list[str]:
     if not command:
         return [f"{label} is required but unset"] if required else []
+    if excludes:
+        command, unappliable = apply_exclusions(command, list(excludes), repo)
+        if unappliable:
+            return [
+                f"--exclude {item} cannot be applied to {label}: command names no matching test file"
+                for item in unappliable
+            ]
     timeout = int(os.environ.get("PROJECT_GATE_TIMEOUT_SECONDS", os.environ.get("ROLE_TIMEOUT_SECONDS", "3600")))
-    result = subprocess.run(
-        command,
-        cwd=str(repo),
-        shell=True,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=timeout,
-        check=False,
-    )
+    if runner:
+        # The wrapper takes the gate shell string with -c and returns the command exit code.
+        result = subprocess.run(
+            [runner, "-c", command],
+            cwd=str(repo),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout,
+            check=False,
+        )
+    else:
+        result = subprocess.run(
+            command,
+            cwd=str(repo),
+            shell=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout,
+            check=False,
+        )
     passed = result.returncode != 0 if expect_failure else result.returncode == 0
     if passed:
         return []
@@ -828,13 +955,32 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
         return [f"missing closeout plan: {plan_path}"]
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
     feedback: list[str] = []
+    sha_pattern = re.compile(r"\b[0-9a-f]{7,40}\b")
+    # Each processed line is (indent, status, covered). A parent covers a
+    # sub-box when it is an [x] line that is itself covered.
+    processed: list[tuple[int, str, bool]] = []
     for full_line, status, task in re.findall(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+        # The regex may capture a newline before a top-level checkbox. Measure
+        # only the horizontal white space before the checkbox on its own line.
+        prefix = full_line[: full_line.index("- [")]
+        indent = len(prefix[prefix.rfind("\n") + 1 :].expandtabs(4))
+        has_sha = sha_pattern.search(task) is not None
         if "deferred" in task.lower():
+            # A deferred line gives no feedback. It stays a parent and is covered.
+            processed.append((indent, status, True))
             continue
         if status != "x":
             feedback.append(f"plan task is not complete: {full_line.strip()}")
-        elif not re.search(r"\b[0-9a-f]{7,40}\b", task):
+            processed.append((indent, status, False))
+            continue
+        if indent == 0:
+            covered = has_sha
+        else:
+            parent = next((item for item in reversed(processed) if item[0] < indent), None)
+            covered = has_sha or (parent is not None and parent[1] == "x" and parent[2])
+        if not covered:
             feedback.append(f"completed plan task lacks commit SHA: {full_line.strip()}")
+        processed.append((indent, status, covered))
     return feedback
 
 
@@ -980,6 +1126,12 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
     role = normalize_role(args.role)
     plan = measure_dir(repo) / "tracks" / args.track / "plan.md"
     feedback: list[str] = []
+    runner = resolve_runner(getattr(args, "runner", "") or "")
+    excludes = tuple(getattr(args, "exclude", None) or ())
+    for item in excludes:
+        print(f"INFO: excluded {item}")
+    if not runner and role in {"mid-red", "jr-green", "adversarial-testing", "final-acceptance"}:
+        print("INFO: no heavy-run wrapper found; running gate commands directly")
 
     if not has_agent_result(args.log_file):
         feedback.append("missing MEASURE_AGENT_RESULT block")
@@ -1016,7 +1168,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)
-        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True))
+        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
     elif role == "jr-green":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
@@ -1035,7 +1187,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             feedback.append(f"current phase still has {incomplete} non-deferred incomplete tasks")
         if complete > with_sha:
             feedback.append("some completed [x] tasks lack commit SHA evidence")
-        feedback.extend(gate_command(repo, "GREEN_TEST_COMMAND", gate_value(repo, "GREEN_TEST_COMMAND")))
+        feedback.extend(gate_command(repo, "GREEN_TEST_COMMAND", gate_value(repo, "GREEN_TEST_COMMAND"), runner=runner, excludes=excludes))
     elif role in {
         "review-a",
         "review-b",
@@ -1059,7 +1211,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             elif incomplete:
                 feedback.append(f"current phase still has {incomplete} non-deferred incomplete tasks")
         if role == "adversarial-testing":
-            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS")))
+            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS"), runner=runner, excludes=excludes))
         if role == "ux-browser-review":
             paths, scope, errors = track_ux_paths(repo, args.baseline, args.track, role)
             if scope is not None:
@@ -1071,9 +1223,9 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
             remaining = track_incomplete(plan)
             if remaining:
                 feedback.append(f"track still has {remaining} non-deferred incomplete tasks")
-            feedback.extend(gate_command(repo, "PROJECT_LINT", gate_value(repo, "PROJECT_LINT")))
-            feedback.extend(gate_command(repo, "PROJECT_CHECKS", gate_value(repo, "PROJECT_CHECKS")))
-            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS")))
+            feedback.extend(gate_command(repo, "PROJECT_LINT", gate_value(repo, "PROJECT_LINT"), runner=runner, excludes=excludes))
+            feedback.extend(gate_command(repo, "PROJECT_CHECKS", gate_value(repo, "PROJECT_CHECKS"), runner=runner, excludes=excludes))
+            feedback.extend(gate_command(repo, "PROJECT_TESTS", gate_value(repo, "PROJECT_TESTS"), runner=runner, excludes=excludes))
         if role == "closeout":
             feedback.extend(closeout_feedback(repo, args.track))
         if role == "spec-review":
@@ -1150,6 +1302,8 @@ def build_parser() -> argparse.ArgumentParser:
     role.add_argument("--baseline", default="")
     role.add_argument("--result-file", default="")
     role.add_argument("--log-file", default="")
+    role.add_argument("--runner", default="", help="heavy-run wrapper path; wins over MEASURE_HEAVY_RUN and PATH")
+    role.add_argument("--exclude", action="append", default=[], help="repo-relative test file to leave out; repeatable")
     role.set_defaults(func=cmd_role_gate)
 
     return parser

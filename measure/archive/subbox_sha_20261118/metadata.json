@@ -1,0 +1,13 @@
+{
+  "track_id": "subbox_sha_20261118",
+  "type": "fix",
+  "status": "done",
+  "created_at": "2026-11-18T00:00:00Z",
+  "updated_at": "2026-11-18T00:43:00Z",
+  "description": "Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "completed": "2026-11-18",
+  "lane": "light",
+  "deviation_notes": "The spec review was skipped by PM order. The author model is opencode/hy4-flash-free#high. Task 1.1 of 2026-11-18 at 4babb44: Red exit 1, the new suite failed on cases 1, 3c, and 4 (red.log); Green exit 0, every case passes (green.log); heavy-run spec_review_gate exit 0, 15 suites PASS=15 (run-suites.log); heavy-run test-registry exit 0 (test-registry.log); status smoke closeout_candidates 16 before and 13 after, with gate passes 13 equal to status candidates 13 (smoke.log). The new suite is discovered by the default test_*.py glob of tests/spec_review_gate/run.sh, so no runner edit was needed. All Red, Green, and gate outputs are kept in measure/runs/subbox_sha_20261118/ (gitignored). Task 1.2 closeout runs of 2026-11-18, after the archive commit bf96031, the plan-close commits a0638dc, 6c95dcf, and 383cf7e, and the registry commit 599ef01, in this order: heavy-run.sh bash tests/dsh/test-registry.sh exit 0 (test-registry.log), then the closeout check exit 1 with INFO light lane, no final acceptance, and only the missing closeout manifest FAIL (closeout-check.log)."
+}

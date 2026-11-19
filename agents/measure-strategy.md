@@ -1,7 +1,7 @@
 ---
 description: Creates a risk-based Measure test strategy and assigns applicable review gates before phase execution
 mode: subagent
-steps: 48
+steps: 72
 permissions:
   - action: edit
     resource: "*"

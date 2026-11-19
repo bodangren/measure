@@ -169,6 +169,10 @@ The checker intentionally fails when required configured gates are missing. Set:
 - `PROJECT_DEV_URL` when UX browser review is applicable.
 - `UX_REQUIRED=auto|always|never`.
 
+Run each gate test command through a heavy-run wrapper when one is set. The wrapper resolves as `--runner <path>`, then `MEASURE_HEAVY_RUN`, then `heavy-run.sh` on PATH. With no wrapper, the gate runs the command directly and prints one note line. The wrapper takes the gate shell string with `-c` and returns the command exit code.
+
+Leave test files out with `--exclude <file>`, once per file. The gate removes the file where the command lists it, or where a glob selects it. A command that names no matching test file fails instead of running the file. Each excluded file prints one `INFO: excluded <file>` line.
+
 ## Contracts
 
 Read `references/contracts.md` before writing or reviewing role prompts. It defines the

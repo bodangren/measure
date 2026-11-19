@@ -125,11 +125,13 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
   if (!isGuarding(context)) return { decision: null, note: null }
   const problems: string[] = []
   const blocked: string[] = []
-  for (const { entry, plan } of closing) {
+  const superseded: string[] = []
+  for (const { entry, plan, supersededBy } of closing) {
     if (plan === null) continue
     const tasks = tasksOf(plan)
     const open = tasks.filter(isOpen)
-    if (open.length > 0) {
+    const skip = typeof supersededBy === 'string' && supersededBy !== ''
+    if (open.length > 0 && !skip) {
       const listed = open.slice(0, 10).map(task => {
         const why = task.marker === 'b' ? ' (needs a deferred:<owner> field)' : ''
         return `  - [${task.marker}] ${task.text}${why}`
@@ -138,6 +140,7 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
       problems.push(`"${entry.name}" has ${open.length} open task(s):`, ...listed, ...more)
     }
     blocked.push(...tasks.filter(task => task.marker === 'b').map(task => `  - [b] ${task.text}`))
+    if (skip) superseded.push(`  - "${entry.name}" closes as superseded by ${supersededBy}; its open tasks stay open.`)
   }
   if (problems.length > 0) {
     return {
@@ -151,11 +154,30 @@ export const trackCloseDecision = (context: GuardContext, closing: readonly Clos
       note: null,
     }
   }
-  const note =
-    blocked.length === 0
-      ? null
-      : ['measure-guard: the closed track has these [b] tasks. List them for the user in your report:', ...blocked].join('\n')
-  return { decision: null, note }
+  const notes: string[] = []
+  if (blocked.length > 0) {
+    notes.push(['measure-guard: the closed track has these [b] tasks. List them for the user in your report:', ...blocked].join('\n'))
+  }
+  if (superseded.length > 0) {
+    notes.push(['Superseded tracks:', ...superseded].join('\n'))
+  }
+  return { decision: null, note: notes.length === 0 ? null : notes.join('\n') }
+}
+
+/** The target of a superseded plan; null unless the plan says `Superseded by` and the metadata status is `superseded`. */
+export const supersededTarget = (planText: string, metadataText: string | null): string | null => {
+  const match = planText.match(/^Superseded by (\S+?)[,.]?(\s|$)/m)
+  if (match === null) return null
+  if (metadataText === null) return null
+  let metadata: unknown
+  try {
+    metadata = JSON.parse(metadataText)
+  } catch {
+    return null
+  }
+  if (metadata === null || typeof metadata !== 'object') return null
+  if ((metadata as { status?: unknown }).status !== 'superseded') return null
+  return match[1]
 }
 
 /** The ra-quota role of each Measure agent that the spawn-route guard checks. */
@@ -168,9 +190,21 @@ export const ROLE_OF_AGENT: Record<string, string> = {
   'measure-adversarial-testing': 'adversarial',
   'measure-strategy': 'strategy',
   'measure-spec-review': 'strategy',
-  'measure-phase-acceptance': 'acceptance',
+  'measure-phase-acceptance': 'phase-acceptance',
   'measure-final-acceptance': 'final-acceptance',
+  'measure-closeout': 'record',
+  'measure-ux-browser-review': 'review-c',
 }
+
+/** ra-quota roles the guard knows that no Measure agent maps to yet. */
+export const KNOWN_ROLES: readonly string[] = ['vision-review']
+
+/** The brief asks the role to read pictures when it names one of these, case-insensitive. */
+const UX_PICTURE_RE = /screenshot|image|picture|\.png|vision/i
+
+/** True when the spawn brief asks the role to read pictures. */
+export const readsPictures = (prompt: string | null | undefined): boolean =>
+  typeof prompt === 'string' && UX_PICTURE_RE.test(prompt)
 
 /** The ra-quota routes file, relative to the home folder. */
 export const ROUTES_FILE = '.config/ra-quota/routes.json'
@@ -178,8 +212,8 @@ export const ROUTES_FILE = '.config/ra-quota/routes.json'
 /** The command that prints one approved route of a role. */
 export const ROUTE_PICK = '/home/daniebo/Desktop/advantage-pr/scripts/jobs/ra-quota pick'
 
-/** The agent and the model a spawn call names; model is null when the call names none. */
-export type RoleSpawn = { agent: string; model: string | null }
+/** The agent, the model, and the brief a spawn call names; model and prompt are null when the call names none. */
+export type RoleSpawn = { agent: string; model: string | null; prompt: string | null }
 
 /** The first non-empty string among `values`, trimmed; null when there is none. */
 const firstText = (values: readonly unknown[]): string | null => {
@@ -187,7 +221,7 @@ const firstText = (values: readonly unknown[]): string | null => {
   return typeof found === 'string' ? found.trim() : null
 }
 
-/** The agent and model of a tool call that spawns a subagent: the OpenCode `subagent` tool (`agent`) or a `task` tool (`subagent_type`). Null for every other call. */
+/** The agent, model, and brief of a tool call that spawns a subagent: the OpenCode `subagent` tool (`agent`) or a `task` tool (`subagent_type`). Null for every other call. */
 export const roleSpawnOf = (tool: string, input: unknown): RoleSpawn | null => {
   const name = tool.toLowerCase()
   if (name !== 'subagent' && name !== 'task') return null
@@ -195,7 +229,7 @@ export const roleSpawnOf = (tool: string, input: unknown): RoleSpawn | null => {
   const fields = input as Record<string, unknown>
   const agent = firstText([fields.agent, fields.subagent_type, fields.subagentType])
   if (agent === null) return null
-  return { agent, model: firstText([fields.model]) }
+  return { agent, model: firstText([fields.model]), prompt: firstText([fields.prompt, fields.description, fields.task, fields.text]) }
 }
 
 /** The approved route strings of one role in the routes file text; null when the file is unreadable or the role has no route. */
@@ -218,13 +252,56 @@ export const approvedRoutes = (text: string | null, role: string): string[] | nu
   return routes.length === 0 ? null : routes
 }
 
-/** The spawn-route guard (guard and strict): a `measure-*` spawn must name a route in the approved list of its role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning note. */
+/** The spawn-route guard (guard and strict): a `measure-*` spawn must name a route in the approved list of its role. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed with a warning note. `measure-ux-browser-review` maps to `review-c`; a picture brief also accepts `vision-review`. */
 export const roleSpawnDecision = (context: GuardContext, routesText: string | null, spawn: RoleSpawn): { decision: Decision; note: string | null } => {
   if (!isGuarding(context)) return { decision: null, note: null }
   if (!spawn.agent.startsWith('measure-')) return { decision: null, note: null }
   const role = ROLE_OF_AGENT[spawn.agent]
   if (role === undefined) {
     return { decision: null, note: `measure-guard: "${spawn.agent}" is not in the route map, so the guard did not check its model.` }
+  }
+  if (spawn.agent === 'measure-ux-browser-review') {
+    const textRoutes = approvedRoutes(routesText, 'review-c')
+    if (!readsPictures(spawn.prompt ?? null)) {
+      if (textRoutes === null) {
+        return { decision: null, note: `measure-guard: cannot read the approved routes of role "review-c" in ~/${ROUTES_FILE}, so the guard did not check the model of "${spawn.agent}".` }
+      }
+      if (spawn.model === null) {
+        return { decision: null, note: `measure-guard: "${spawn.agent}" names no model, so the guard did not check its route. Pass the route that ${ROUTE_PICK} review-c prints.` }
+      }
+      if (textRoutes.includes(spawn.model)) return { decision: null, note: null }
+      return {
+        decision: {
+          deny: [
+            `measure-guard: "${spawn.agent}" names the model "${spawn.model}", which is not an approved route of role "review-c".`,
+            'The approved routes are:',
+            ...textRoutes.map(route => `  - ${route}`),
+            `Run ${ROUTE_PICK} review-c and use the route it prints. ${BYPASS}`,
+          ].join('\n'),
+        },
+        note: null,
+      }
+    }
+    const visionRoutes = approvedRoutes(routesText, 'vision-review')
+    const approved = [...new Set([...(textRoutes ?? []), ...(visionRoutes ?? [])])]
+    if (approved.length === 0) {
+      return { decision: null, note: `measure-guard: cannot read the approved routes of roles "review-c" and "vision-review" in ~/${ROUTES_FILE}, so the guard did not check the model of "${spawn.agent}".` }
+    }
+    if (spawn.model === null) {
+      return { decision: null, note: `measure-guard: "${spawn.agent}" names no model, so the guard did not check its route. Pass the route that ${ROUTE_PICK} review-c or ${ROUTE_PICK} vision-review prints.` }
+    }
+    if (approved.includes(spawn.model)) return { decision: null, note: null }
+    return {
+      decision: {
+        deny: [
+          `measure-guard: "${spawn.agent}" names the model "${spawn.model}", which is not an approved route of roles "review-c" and "vision-review".`,
+          'The approved routes are:',
+          ...approved.map(route => `  - ${route}`),
+          `Run ${ROUTE_PICK} review-c or ${ROUTE_PICK} vision-review and use the route it prints. ${BYPASS}`,
+        ].join('\n'),
+      },
+      note: null,
+    }
   }
   const routes = approvedRoutes(routesText, role)
   if (routes === null) {
@@ -306,6 +383,14 @@ export const unshaTasks = (plan: Plan): string[] =>
     .map(task => task.text)
 
 
+/** The report-only line: the problems are information, never an order. */
+export const REPORT_ONLY = 'Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to.'
+
+
+/** The report text: a head, the problems as list items, and the report-only line. */
+export const reportText = (head: string, problems: readonly string[]): string => [head, ...problems.map(one => `- ${one}`), REPORT_ONLY].join('\n')
+
+
 /**
  * The end-of-turn problems: a `[x]` task with no SHA that was not one at the
  * turn start, and files changed during the turn while no task has `[~]`.
@@ -317,13 +402,13 @@ export const turnProblems = (snapshot: Snapshot, changed: readonly string[], kno
   if (active !== null) {
     const known = new Set(knownUnsha)
     for (const text of unshaTasks(active.plan).filter(one => !known.has(one))) {
-      problems.push(`"${text}" is [x] but has no commit SHA. Commit the task, and add the 7-character SHA to its line in plan.md.`)
+      problems.push(`"${text}" is [x] but has no commit SHA. The usual fix is a commit of the task and its 7-character SHA on its line in plan.md.`)
     }
   }
   const outside = changed.filter(path => !isAllowed(snapshot, path))
   if (outside.length > 0 && (active === null || currentTask(active.plan) === null)) {
     const listed = outside.slice(0, 5).join(', ') + (outside.length > 5 ? `, and ${outside.length - 5} more` : '')
-    problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. Mark the task [~] in plan.md (or create a track), or revert the changes.`)
+    problems.push(`Files changed outside measure/ while no task is in progress: ${listed}. The usual fix is a [~] task in plan.md (or a new track), or a revert of the changes.`)
   }
   return problems
 }
@@ -338,7 +423,7 @@ export const stopAction = (mode: Mode, problems: readonly string[], blocks: numb
   if (problems.length === 0) return { block: null, report: false }
   if (mode === 'strict' && blocks < MAX_BLOCKS) {
     return {
-      block: ['measure-guard (strict): do not end the turn yet. Fix these problems first:', ...problems.map(one => `- ${one}`)].join('\n'),
+      block: reportText('measure-guard (strict): report these problems before you end the turn.', problems),
       report: false,
     }
   }

@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import type { ToolCallResult } from 'claude-code'
-import { applyEdit, closedTracks } from '../hooks/guards'
+import { applyEdit, closedTracks, supersededTarget } from '../hooks/guards'
 import { BAND_PLAN, DONE_PLAN } from './fixtures/plans'
 import { ROOT, START, world } from './world'
 
@@ -149,5 +149,130 @@ describe('applyEdit and closedTracks', () => {
     const after = TRACKS_MD.replace('- [~] **Track: Open work**', '- [x] **Track: Open work**')
     expect(closedTracks(TRACKS_MD, after).map(t => t.id)).toEqual(['open_2'])
     expect(closedTracks(TRACKS_MD, TRACKS_MD)).toEqual([])
+  })
+})
+
+const SUPERSEDED_LINE = 'Superseded by target_work_20261116, PM 2026-11-16.'
+
+const SUPERSEDED_TRACKS = `# Project Tracks
+
+- [~] **Track: Superseded work**
+  *Link: [./tracks/superseded_1/](./tracks/superseded_1/)*
+
+- [~] **Track: Open work**
+  *Link: [./tracks/open_2/](./tracks/open_2/)*
+
+- [~] **Track: Mixed work**
+  *Link: [./tracks/mixed_3/](./tracks/mixed_3/)*
+`
+
+const supersededPlan = (line = SUPERSEDED_LINE, task = '- [~] Task: Left open'): string =>
+  `# Implementation Plan: Superseded work\n\n${line}\n\n## Phase 1: Work\n\n${task}\n- [ ] Task: Also open\n`
+
+const openWorkPlan = `# Implementation Plan: Open work
+
+## Phase 1: Work
+
+- [ ] Task: Still open
+`
+
+const supersededFiles = (options: { line?: string; task?: string; metadata?: string | null } = {}): Record<string, string> => ({
+  [TRACKS]: SUPERSEDED_TRACKS,
+  [`${M}/tracks/superseded_1/plan.md`]: supersededPlan(options.line, options.task),
+  [`${M}/tracks/open_2/plan.md`]: openWorkPlan,
+  [`${M}/tracks/mixed_3/plan.md`]: supersededPlan(options.line, options.task),
+  ...(options.metadata === null ? {} : { [`${M}/tracks/superseded_1/metadata.json`]: options.metadata ?? '{"status":"superseded"}' }),
+  [`${M}/tracks/mixed_3/metadata.json`]: '{"status":"done"}',
+})
+
+const closeTrack = ($: Engine, name: string) =>
+  $.tool.call({
+    tool: 'Edit',
+    file_path: TRACKS,
+    old_string: `- [~] **Track: ${name}**`,
+    new_string: `- [x] **Track: ${name}**`,
+  })
+
+describe('superseded closeout', () => {
+  test('supersededTarget reads the target and gates on the metadata status', () => {
+    const plan = '# Plan\n\nSuperseded by foo_20261116, PM 2026-11-16.\n'
+    expect(supersededTarget(plan, '{"status":"superseded"}')).toBe('foo_20261116')
+    expect(supersededTarget(plan, '{bad json')).toBeNull()
+    expect(supersededTarget(plan, null)).toBeNull()
+    expect(supersededTarget(plan, '{"status":"done"}')).toBeNull()
+    expect(supersededTarget(plan, '{"status":"Superseded"}')).toBeNull()
+    expect(supersededTarget(plan, '{"status":"superseded "}')).toBeNull()
+    expect(supersededTarget('# Plan\n\nNo line.\n', '{"status":"superseded"}')).toBeNull()
+  })
+
+  test('a superseded track with open tasks closes, and the note names the target', async ($, on) => {
+    world(on, supersededFiles())
+    await $.session.start(START)
+    const ran = await closeTrack($, 'Superseded work')
+    expect(denied(ran)).toBeUndefined()
+    const text = ran.context?.join('\n') ?? ''
+    expect(text).toContain('Superseded tracks:')
+    expect(text).toContain('"Superseded work" closes as superseded by target_work_20261116; its open tasks stay open.')
+  })
+
+  test('a superseded track with no open task still gets the note item', async ($, on) => {
+    world(on, supersededFiles({ task: '- [x] Task: Done' }))
+    await $.session.start(START)
+    const ran = await closeTrack($, 'Superseded work')
+    expect(denied(ran)).toBeUndefined()
+    expect(ran.context?.join('\n') ?? '').toContain('closes as superseded by target_work_20261116')
+  })
+
+  test('open tasks without the line are denied as today', async ($, on) => {
+    world(on, supersededFiles({ line: 'No superseded line here.' }))
+    await $.session.start(START)
+    expect(denied(await closeTrack($, 'Superseded work'))).toContain('Task: Left open')
+  })
+
+  test('a plan line with metadata status done is denied', async ($, on) => {
+    world(on, supersededFiles({ metadata: '{"status":"done"}' }))
+    await $.session.start(START)
+    expect(denied(await closeTrack($, 'Superseded work'))).toContain('Task: Left open')
+  })
+
+  test('near-miss plan lines are denied', async ($, on) => {
+    const w = world(on, supersededFiles())
+    await $.session.start(START)
+    const bad = [
+      'superseded by target_work_20261116, PM 2026-11-16.',
+      ' Superseded by target_work_20261116, PM 2026-11-16.',
+      '> Superseded by target_work_20261116, PM 2026-11-16.',
+      '## Superseded by target_work_20261116',
+      '- [ ] Superseded by target_work_20261116',
+      'Superseded by',
+    ]
+    for (const line of bad) {
+      w.files[`${M}/tracks/superseded_1/plan.md`] = supersededPlan(line)
+      expect(denied(await closeTrack($, 'Superseded work'))).toBeDefined()
+    }
+  })
+
+  test('a mixed close is denied, and the deny names only the open track', async ($, on) => {
+    const w = world(on, supersededFiles())
+    await $.session.start(START)
+    const both = SUPERSEDED_TRACKS
+      .replace('- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+      .replace('- [~] **Track: Open work**', '- [x] **Track: Open work**')
+    const reason = denied(await $.tool.call({ tool: 'Write', file_path: TRACKS, content: both })) ?? ''
+    expect(reason).toContain('Open work')
+    expect(reason).toContain('Still open')
+    expect(reason).not.toContain('Superseded work')
+    expect(w.files[TRACKS]).toBe(SUPERSEDED_TRACKS)
+  })
+
+  test('a superseded line with its own metadata done is denied beside a good superseded track', async ($, on) => {
+    world(on, supersededFiles())
+    await $.session.start(START)
+    const both = SUPERSEDED_TRACKS
+      .replace('- [~] **Track: Superseded work**', '- [x] **Track: Superseded work**')
+      .replace('- [~] **Track: Mixed work**', '- [x] **Track: Mixed work**')
+    const reason = denied(await $.tool.call({ tool: 'Write', file_path: TRACKS, content: both })) ?? ''
+    expect(reason).toContain('Mixed work')
+    expect(reason).not.toContain('"Superseded work" has')
   })
 })

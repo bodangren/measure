@@ -415,12 +415,16 @@ class RedTrackScopeTest(unittest.TestCase):
 
     # ------------------------------------------------- no other track
     def test_single_track_range_prints_no_info(self) -> None:
-        """AC-8: a range with no commit of another track keeps the old output."""
+        """AC-8: a range with no commit of another track prints no skipped-commit lines."""
         self.look_test_and_plan()
         self.change("tests/test_more.py", "test: add one more case")
         code, out = self.gate()
         self.assertEqual(code, 0, out)
-        self.assertEqual(out.strip(), PASS_LINE)
+        self.assertEqual(
+            out.strip(),
+            "INFO: no heavy-run wrapper found; running gate commands directly\n" + PASS_LINE,
+        )
+        self.assertNotIn("skipped", out)
 
 
 if __name__ == "__main__":

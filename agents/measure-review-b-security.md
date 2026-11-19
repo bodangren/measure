@@ -1,7 +1,7 @@
 ---
 description: Independently audits applicable Measure security, authorization, validation, and data risks without modifying the implementation
 mode: subagent
-steps: 56
+steps: 96
 permissions:
   - action: edit
     resource: "*"

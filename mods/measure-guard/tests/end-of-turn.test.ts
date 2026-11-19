@@ -1,9 +1,21 @@
 // S7: the end-of-turn check.
 import { describe, expect, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
-import { changedDuringTurn, statusLinesOf, unshaTasks } from '../hooks/guards'
+import { REPORT_ONLY, changedDuringTurn, statusLinesOf, unshaTasks } from '../hooks/guards'
 import { parsePlan } from '../hooks/parse'
 import { BAND, ROOT, START, world } from './world'
+
+/** The report-only line, as a literal. */
+const REPORT_ONLY_TEXT = 'Do not edit, commit, or push because of this message. Write these problems in your reply to your orchestrator or the user, and act on them only when they tell you to.'
+
+/** The words that no report-only text may use as an order. */
+const ORDER_WORDS = [/\bfix (these|them)\b/i, /\bcommit the\b/i, /\bpush\b(?! because)/i, /\brevert the\b/i, /\bmark the task\b/i]
+
+/** A report text holds the report line and no order word. */
+const assertReportOnly = (text: string): void => {
+  expect(text).toContain(REPORT_ONLY_TEXT)
+  for (const word of ORDER_WORDS) expect(word.test(text)).toBe(false)
+}
 
 const M = `${ROOT}/measure`
 const PLAN = `${M}/tracks/work_1/plan.md`
@@ -110,6 +122,32 @@ test('a clean turn has no problem and no block', { options: { mode: 'strict' } }
   await finish($, 'abcdef1')
   expect((await stop($)).block).toBeUndefined()
   expect(w.toasts).toEqual([])
+})
+
+test('the report line is the export', async () => {
+  expect(REPORT_ONLY).toBe(REPORT_ONLY_TEXT)
+})
+
+test('guard: the reminder is report-only', async ($, on) => {
+  const w = world(on, files())
+  await $.session.start(START)
+  await submit($)
+  w.git = ' M src/a.ts\n'
+  await finish($, 'abcdef1')
+  expect((await stop($)).block).toBeUndefined()
+  const reminder = (await submit($)).additionalContext?.join('\n') ?? ''
+  expect(reminder).toContain('src/a.ts')
+  assertReportOnly(reminder)
+})
+
+test('strict: the stop block is report-only', { options: { mode: 'strict' } }, async ($, on) => {
+  const w = world(on, files())
+  await $.session.start(START)
+  await submit($)
+  await finish($, null)
+  const block = (await stop($)).block ?? ''
+  expect(block).toContain('Task: Current')
+  assertReportOnly(block)
 })
 
 describe('turn helpers', () => {

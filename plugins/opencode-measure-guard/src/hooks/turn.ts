@@ -1,17 +1,17 @@
 // The end-of-turn check: what a user turn keeps from its start, what the idle
 // event computes, and what the plugin then does. Pure helpers here; the Guard
 // class runs them with the snapshot and the session, and index.ts does the I/O
-// (the synthetic message or the follow-up prompt) through ctx.session.
-import { changedDuringTurn, stopAction, turnProblems, unshaTasks } from '../core/guards'
+// (the follow-up prompt) through ctx.session.
+import { changedDuringTurn, reportText, stopAction, turnProblems, unshaTasks } from '../core/guards'
 import type { Mode, Snapshot, TurnState } from '../types'
 
 /** What the plugin does after an idle check. */
 export type IdleAction =
   /** Nothing to do: no problems, advise mode, the bypass, or no turn. */
   | { kind: 'none'; problems: string[] }
-  /** Guard mode, or strict mode after MAX_BLOCKS follow-ups: a synthetic reminder in the session and a reminder on the next prompt. */
+  /** Guard mode, or strict mode after MAX_BLOCKS follow-ups: a reminder that rides on the next prompt. */
   | { kind: 'remind'; problems: string[]; text: string }
-  /** Strict mode: a follow-up prompt that keeps the agent working on the problems. */
+  /** Strict mode: a follow-up prompt that asks the agent to report the problems. */
   | { kind: 'follow-up'; problems: string[]; text: string }
 
 /** The turn state at a user prompt: the status lines and the `[x]` tasks without SHA at the start. */
@@ -36,15 +36,13 @@ export const endTurn = (mode: Mode, turn: TurnState | null, snapshot: Snapshot, 
 }
 
 /** The first line of a follow-up prompt; the prompt hook keeps the turn open when it sees it. */
-export const FOLLOW_UP_HEAD = 'measure-guard (strict): do not end the turn yet.'
+export const FOLLOW_UP_HEAD = 'measure-guard (strict): report these problems before you end the turn.'
 
 /** True for a prompt the plugin sent itself as a follow-up (strict mode). */
 export const isFollowUp = (text: string): boolean => text.startsWith(FOLLOW_UP_HEAD)
 
-/** The follow-up prompt text (strict mode): the problems and the instruction to fix them now. */
-export const followUpText = (problems: readonly string[]): string =>
-  [`${FOLLOW_UP_HEAD} Fix these problems first:`, ...problems.map(one => `- ${one}`)].join('\n')
+/** The follow-up prompt text (strict mode): the problems and the report-only line. */
+export const followUpText = (problems: readonly string[]): string => reportText(FOLLOW_UP_HEAD, problems)
 
-/** The reminder text for the synthetic message and the next prompt (guard mode, or strict after the follow-ups). */
-export const reminderText = (problems: readonly string[]): string =>
-  ['measure-guard: at the end of the last turn, these problems were open:', ...problems.map(one => `- ${one}`), 'Fix them before you continue.'].join('\n')
+/** The reminder text for the next prompt (guard mode, or strict after the follow-ups). */
+export const reminderText = (problems: readonly string[]): string => reportText('measure-guard: at the end of the last turn, these problems were open:', problems)
