@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Gate brief fixes**
+  *Link: [./tracks/gate_brief_fixes_20261119/](./tracks/gate_brief_fixes_20261119/)*
+  *Gate brief fixes: a gap-closing Red round, the exact result block form, legacy findings mapping, and wider dispositions IDs (PM request, 2026-11-19)*
 
 ---
 
