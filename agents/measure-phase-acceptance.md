@@ -138,6 +138,8 @@ If any of these are present, the phase is not truly complete. Either fix the
 implementation/test or fix the plan text — do not paper over the
 finding with a "we'll fix it later" note.
 
+Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+
 A re-review receives each CONTEST item of your earlier findings. For each item, either
 withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
 `evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding

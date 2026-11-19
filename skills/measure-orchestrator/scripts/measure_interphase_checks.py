@@ -607,6 +607,30 @@ def passing_audit_feedback(path: Path, role: str) -> list[str]:
     return hard_blockers
 
 
+def agent_result_feedback(log_path: str) -> list[str]:
+    """The result-block presence feedback for a role log.
+
+    A missing --log-file value skips the check. A missing path, a folder, or
+    another non-file path counts as no log and keeps the missing-block message,
+    as does a file with no start line — even when a marker word hides inside
+    another word. A file with a start line but no end line names the exact
+    missing end line and shows the block form.
+    """
+    if not log_path:
+        return []
+    if not Path(log_path).is_file():
+        return ["missing MEASURE_AGENT_RESULT block"]
+    markers = {line.strip() for line in Path(log_path).read_text(encoding="utf-8", errors="ignore").split("\n")}
+    if AGENT_RESULT_START in markers and AGENT_RESULT_END in markers:
+        return []
+    if AGENT_RESULT_START in markers:
+        return [
+            "missing END_MEASURE_AGENT_RESULT line: the result block must open with the whole line MEASURE_AGENT_RESULT and close with the whole line END_MEASURE_AGENT_RESULT",
+            "expected block form: MEASURE_AGENT_RESULT, role: <role>, status: <status>, track: <track>, phase: <phase>, commits: <commits>, tests_run: <tests>, files_changed: <files>, plan_updates: <updates>, known_failures: <failures>, handoff: <handoff>, END_MEASURE_AGENT_RESULT",
+        ]
+    return ["missing MEASURE_AGENT_RESULT block"]
+
+
 def has_agent_result(log_path: str) -> bool:
     """A missing path, a folder, or another non-file path counts as no log."""
     if not log_path:
@@ -654,16 +678,17 @@ def last_result_block(log_path: str) -> list[str] | None:
     block_starts = [start for start in starts if floor < start < last_end]
     if not block_starts:
         return None
-    return lines[block_starts[0] + 1 : last_end]
+    start = block_starts[0]
+    return lines[start + 1 : last_end]
 
 
 def block_field(block: list[str], name: str) -> str | None:
     """The stripped value of the first `name:` line of a result block, or None."""
     prefix = f"{name}:"
     for line in block:
-        stripped = line.strip()
-        if stripped.startswith(prefix):
-            return stripped[len(prefix):].strip()
+        value = line.strip()
+        if value.startswith(prefix):
+            return value[len(prefix):].strip()
     return None
 
 
@@ -1162,11 +1187,10 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
     if not runner and role in {"mid-red", "jr-green", "adversarial-testing", "final-acceptance"}:
         print("INFO: no heavy-run wrapper found; running gate commands directly")
 
-    if not has_agent_result(args.log_file):
-        feedback.append("missing MEASURE_AGENT_RESULT block")
-
     if args.log_file and Path(args.log_file).exists():
         feedback.extend(dispositions_feedback(args.log_file))
+
+    feedback.extend(agent_result_feedback(args.log_file))
 
     if role == "strategy":
         strategy = measure_dir(repo) / "tracks" / args.track / "test-strategy.md"

@@ -49,6 +49,8 @@ held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 `retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
 ESCALATE item to the user.
 
+Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+
 Own durable Playwright coverage when browser automation is needed. Add valuable tests, but do not fix production behavior exposed by those tests. Commit useful tests, return `status: "fail"`, and route implementation defects to Green. Any subsequent implementation commit invalidates this result and requires the relevant adversarial gate to rerun. Write provenance-bound audit JSON and end with `MEASURE_AGENT_RESULT`.
 
 The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

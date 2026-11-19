@@ -138,6 +138,8 @@ ESCALATE item to the user.
 
 This is an audit-only role. Do not edit production code, tests, plans, or registry files and do not commit. Write only the orchestrator-supplied result artifact. Route blockers to Green with `retry_recommendation: "retry_implementation"`.
 
+Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+
 Write provenance-bound audit JSON at the supplied result path and end with the required `MEASURE_AGENT_RESULT` block.
 
 The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

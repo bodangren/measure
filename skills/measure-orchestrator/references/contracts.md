@@ -21,6 +21,8 @@ END_MEASURE_AGENT_RESULT
 
 Use `blocked` for product judgment, unresolved unrelated dirty work, missing credentials, missing required runtime, or repeated gate failures. Use `partial` only when useful work was committed but the role did not satisfy its gate.
 
+The block opens with the whole line `MEASURE_AGENT_RESULT`. It holds one `field: value` line for each field above, in the same order. It closes with the whole line `END_MEASURE_AGENT_RESULT`. A log with a start line but no end line fails the role gate with `missing END_MEASURE_AGENT_RESULT line`.
+
 ## Audit Result JSON
 
 Audit roles write JSON at the result path supplied by the orchestrator:

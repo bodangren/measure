@@ -20,6 +20,8 @@
 
 ### Bug Fixes
 
+* **result block form:** every audit role brief and the orchestrator contract now state the exact result block form: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field, and the whole line `END_MEASURE_AGENT_RESULT`. A log with a start line but no end line fails the role gate with `missing END_MEASURE_AGENT_RESULT line` and the expected form. Track `gate_brief_fixes_20261119`.
+
 * **gap-closing Red:** the mid-red gate accepts a Red round that only closes test gaps. The role declares `red_kind: gap_closing` with a `gaps:` line and a `breakage_proof:` line in its result block, and the gate then expects `RED_TEST_COMMAND` to pass. A round without that declaration keeps the failing-first rule. Track `gate_brief_fixes_20261119`.
 
 * **phase acceptance route:** the spawn-route guard maps `measure-phase-acceptance` to `phase-acceptance` and `measure-closeout` to `record`, so each `ra-quota pick` route passes the guard. The guard also names `vision-review` as a known role with no agent yet. The map changes in the shared core and its two plugin copies. Track `guard_phase_acceptance_20261118`.
