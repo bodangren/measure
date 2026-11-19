@@ -7,7 +7,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Installer adopt-matching
 
-- [~] Task 1.1: installer tests for adopt-matching and check hint
+- [x] Task 1.1: installer tests for adopt-matching and check hint fa82fd4
 - [ ] Task 1.2: implement adopt-matching in bin/install-measure-skill
 
 ## Phase 2: Guard installer exception
