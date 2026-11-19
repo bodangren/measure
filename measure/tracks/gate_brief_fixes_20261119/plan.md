@@ -9,6 +9,6 @@ Spec: [./spec.md](./spec.md)
 
 - [x] Task 1.1: gap-closing Red round in the mid-red gate and brief f68a87f
 - [x] Task 1.2: exact result block form in audit briefs, contract, and gate message 16f58bb
-- [~] Task 1.3: legacy findings mapping with a warning in the audit check
-- [ ] Task 1.4: wider dispositions IDs for every found finding form
+- [x] Task 1.3: legacy findings mapping with a warning in the audit check 94698fe
+- [~] Task 1.4: wider dispositions IDs for every found finding form
 - [ ] Task 1.5: records and closeout
