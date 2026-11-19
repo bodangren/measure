@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Generated check error names path and state**
-  *Link: [./tracks/generated_check_error_20261119/](./tracks/generated_check_error_20261119/)*
-  *Closeout generated check names the gates.json path and state*
+- (none)
 
 ---
 
@@ -525,3 +523,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Closeout generated check reads gates.json**
   *Link: [./archive/generated_gates_json_20261119/](./archive/generated_gates_json_20261119/)*
   *Closeout generated check reads gates.json when the env var is missing*
+
+- [x] **Track: Generated check error names path and state**
+  *Link: [./archive/generated_check_error_20261119/](./archive/generated_check_error_20261119/)*
+  *Closeout generated check names the gates.json path and state*
