@@ -48,6 +48,8 @@ Audit roles write JSON at the result path supplied by the orchestrator:
 
 Only write `status: "pass"` when `blocking_findings` and all `*_violations` arrays are empty. Use `inconclusive` for infrastructure/tooling failures that should not count as acceptance.
 
+Results with the legacy `findings` list stay readable. An entry with `[Blocker]` maps to `blocking_findings`. An entry with `[Major]` or `[Nit]` maps to `nonblocking_findings`. The checker prints a warning that names the new keys. An entry without one of these tags cannot map, and the checker rejects it.
+
 UX audits add:
 
 ```json

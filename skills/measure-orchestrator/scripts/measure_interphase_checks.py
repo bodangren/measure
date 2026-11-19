@@ -509,8 +509,6 @@ def validate_audit_payload(payload: object, role: str) -> list[str]:
         feedback.append("retry_recommendation has an invalid value")
     if payload.get("confidence") not in CONFIDENCE_LEVELS:
         feedback.append("confidence must be low, medium, or high")
-    if "findings" in payload:
-        feedback.append("use blocking_findings and nonblocking_findings, not legacy findings")
     if role == "ux-browser-review":
         feedback.extend(validate_ux_payload(payload))
     if role == "spec-review":
@@ -578,6 +576,40 @@ def validate_spec_review_payload(payload: dict[str, object]) -> list[str]:
     return feedback
 
 
+def map_legacy_findings(payload: dict[str, object]) -> list[str]:
+    """Map a legacy `findings` list onto the new finding keys, or report why not.
+
+    Each entry maps by its severity tag: an entry with `[Blocker]` goes to
+    `blocking_findings`, an entry with `[Major]` or `[Nit]` goes to
+    `nonblocking_findings`. The mapped entries extend the lists that are
+    already present. The function prints one WARNING that names the new keys
+    and returns no feedback when every entry maps. Otherwise it changes nothing
+    and returns the rejection.
+    """
+    findings = payload.get("findings")
+    blocking = payload.get("blocking_findings", [])
+    nonblocking = payload.get("nonblocking_findings", [])
+    if (
+        not isinstance(findings, list)
+        or not all(isinstance(item, str) and item.strip() for item in findings)
+        or not isinstance(blocking, list)
+        or not isinstance(nonblocking, list)
+    ):
+        return ["legacy findings must be a list of non-empty strings to map to blocking_findings/nonblocking_findings"]
+    for entry in findings:
+        if "[Blocker]" in entry:
+            blocking.append(entry)
+        elif "[Major]" in entry or "[Nit]" in entry:
+            nonblocking.append(entry)
+        else:
+            return [f"legacy findings entry cannot map to blocking_findings/nonblocking_findings: {entry}"]
+    payload["blocking_findings"] = blocking
+    payload["nonblocking_findings"] = nonblocking
+    del payload["findings"]
+    print("WARNING: legacy findings mapped to blocking_findings/nonblocking_findings; write the new keys in new results")
+    return []
+
+
 def read_audit(path: Path, role: str) -> tuple[dict[str, object] | None, list[str]]:
     if not path.exists():
         return None, [f"missing audit result: {path}"]
@@ -585,6 +617,10 @@ def read_audit(path: Path, role: str) -> tuple[dict[str, object] | None, list[st
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         return None, [f"invalid audit JSON: {exc}"]
+    if isinstance(payload, dict) and "findings" in payload:
+        mapping_feedback = map_legacy_findings(payload)
+        if mapping_feedback:
+            return None, mapping_feedback
     feedback = validate_audit_payload(payload, role)
     return (payload if not feedback else None), feedback
 
