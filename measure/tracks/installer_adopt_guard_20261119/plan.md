@@ -1,0 +1,20 @@
+# Implementation Plan: Installer adopt and guard exception
+
+Track: `installer_adopt_guard_20261119`
+Spec: [./spec.md](./spec.md)
+
+**All commits go on chore/installer-adopt-guard. Push only to origin/chore/installer-adopt-guard, never to main. Only the PM or Daniel merges.**
+
+## Phase 1: Installer adopt-matching
+
+- [~] Task 1.1: installer tests for adopt-matching and check hint
+- [ ] Task 1.2: implement adopt-matching in bin/install-measure-skill
+
+## Phase 2: Guard installer exception
+
+- [ ] Task 2.1: guard tests for installer pass and config cp block
+- [ ] Task 2.2: implement installer exception in the three guards.ts copies
+
+## Phase 3: Records
+
+- [ ] Task 3.1: records and closeout

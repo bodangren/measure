@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Installer adopt and guard exception**
+  *Link: [./tracks/installer_adopt_guard_20261119/](./tracks/installer_adopt_guard_20261119/)*
+  *Installer adopt-matching and guard installer exception: adopt a local edit that matches the source, and let the installer write its own targets without a track*
 
 ---
 
