@@ -479,3 +479,23 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Sub-box SHA rule**
   *Link: [./archive/subbox_sha_20261118/](./archive/subbox_sha_20261118/)*
   *Sub-box SHA rule: the closeout check requires a commit SHA on top-level task lines only. An indented [x] sub-box is covered when its nearest parent [x] line has a SHA. Unticked boxes still fail at every depth, except deferred lines. The status command's archive-candidate list uses the same function (PM request, 2026-11-18)*
+
+- [x] **Track: Guard phase acceptance**
+  *Link: [./archive/guard_phase_acceptance_20261118/](./archive/guard_phase_acceptance_20261118/)*
+  *Guard phase acceptance: map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)*
+
+- [x] **Track: Orchestrator agent sync**
+  *Link: [./archive/orchestrator_agent_sync_20261118/](./archive/orchestrator_agent_sync_20261118/)*
+  *Orchestrator agent sync: fold the accepted route rules into the repo source so the live file and the repo match*
+
+- [x] **Track: Role-gate heavy-run wrapper with excludes**
+  *Link: [./archive/role_gate_heavy_run_20261118/](./archive/role_gate_heavy_run_20261118/)*
+  *Role-gate heavy-run wrapper with excludes: run each role-gate command through heavy-run.sh when set, with a repeatable --exclude flag (PM request, 2026-11-18)*
+
+- [x] **Track: Guard UX browser route**
+  *Link: [./archive/guard_ux_browser_route_20261118/](./archive/guard_ux_browser_route_20261118/)*
+  *Guard UX browser route: map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)*
+
+- [x] **Track: Step limits and dispositions**
+  *Link: [./archive/step_limits_dispositions_20261118/](./archive/step_limits_dispositions_20261118/)*
+  *Step limits and dispositions: fold the raised live step limits into agents/measure-*.md and accept any letter finding ID in dispositions*
