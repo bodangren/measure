@@ -1,13 +1,13 @@
 {
   "track_id": "guard_phase_acceptance_20261118",
   "type": "fix",
-  "status": "in_progress",
+  "status": "done",
   "created_at": "2026-11-18T00:00:00Z",
-  "updated_at": "2026-11-18T00:00:00Z",
+  "updated_at": "2026-11-19T00:00:00Z",
   "description": "Guard phase acceptance: map measure-phase-acceptance to the phase-acceptance pick role in the three guards.ts copies (PM request, 2026-11-18)",
   "estimated_tasks": 2,
-  "actual_tasks": null,
-  "completed": null,
+  "actual_tasks": 3,
+  "completed": "2026-11-19",
   "lane": "light",
-  "deviation_notes": null
+  "deviation_notes": "The PM merged PR #25 on 2026-11-19. Task 1.2 closed with the merge commit."
 }
