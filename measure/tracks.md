@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Closeout generated check reads gates.json**
-  *Link: [./tracks/generated_gates_json_20261119/](./tracks/generated_gates_json_20261119/)*
-  *Closeout generated check reads gates.json when the env var is missing*
+- (none)
 
 ---
 
@@ -521,3 +519,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Installer adopt and guard exception**
   *Link: [./archive/installer_adopt_guard_20261119/](./archive/installer_adopt_guard_20261119/)*
   *Installer adopt-matching and guard installer exception: adopt a local edit that matches the source, and let the installer write its own targets without a track*
+
+- [x] **Track: Closeout generated check reads gates.json**
+  *Link: [./archive/generated_gates_json_20261119/](./archive/generated_gates_json_20261119/)*
+  *Closeout generated check reads gates.json when the env var is missing*
