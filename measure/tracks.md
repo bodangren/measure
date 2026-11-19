@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Generated check error names path and state**
+  *Link: [./tracks/generated_check_error_20261119/](./tracks/generated_check_error_20261119/)*
+  *Closeout generated check names the gates.json path and state*
 
 ---
 

@@ -1,7 +1,6 @@
-"""Gates.json fallback for the generated freshness check.
+"""Generated check error names the gates.json path and state.
 
-Env wins. Gates.json fills the gap when env is missing. Neither fails
-and names the key and the file. No generated folder skips.
+Env wins over gates.json. The env and gates.json pass cases pin that order. Each missing state names the key, the absolute path, and the state. A missing generated folder skips the check.
 """
 
 from __future__ import annotations
@@ -94,6 +93,38 @@ class GeneratedGatesJsonTest(unittest.TestCase):
         self.assertEqual(len(feedback), 1)
         self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
         self.assertIn("measure/gates.json", feedback[0])
+
+    def test_missing_file_names_missing_state(self) -> None:
+        with unittest.mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("GENERATED_CHECK_COMMAND", None)
+            feedback = self.closeout_feedback()
+        self.assertEqual(len(feedback), 1)
+        gates_path = str(self.repo / "measure" / "gates.json")
+        self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
+        self.assertIn(gates_path, feedback[0])
+        self.assertIn("(file missing)", feedback[0])
+
+    def test_unreadable_file_names_unreadable_state(self) -> None:
+        (self.repo / "measure" / "gates.json").write_text("{bad json", encoding="utf-8")
+        with unittest.mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("GENERATED_CHECK_COMMAND", None)
+            feedback = self.closeout_feedback()
+        self.assertEqual(len(feedback), 1)
+        gates_path = str(self.repo / "measure" / "gates.json")
+        self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
+        self.assertIn(gates_path, feedback[0])
+        self.assertIn("(file unreadable or not a JSON object)", feedback[0])
+
+    def test_key_absent_names_absent_state(self) -> None:
+        self.write_gates({})
+        with unittest.mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("GENERATED_CHECK_COMMAND", None)
+            feedback = self.closeout_feedback()
+        self.assertEqual(len(feedback), 1)
+        gates_path = str(self.repo / "measure" / "gates.json")
+        self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
+        self.assertIn(gates_path, feedback[0])
+        self.assertIn("(key absent)", feedback[0])
 
     def test_env_wins_over_gates_json(self) -> None:
         self.write_gates({"GENERATED_CHECK_COMMAND": "false"})
