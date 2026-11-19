@@ -5,12 +5,6 @@ This file tracks all major tracks for the Measure project.
 ## Active Tracks
 
 - [~] **Track: Step limits and dispositions**
-  *Link: [./tracks/step_limits_dispositions_20261118/](./tracks/step_limits_dispositions_20261118/)*
-  *Fold the raised live step limits into the repo source and accept any letter finding ID in dispositions (PM request, 2026-11-18)*
-
-- [~] **Track: Role-gate heavy-run wrapper with excludes**
-  *Link: [./tracks/role_gate_heavy_run_20261118/](./tracks/role_gate_heavy_run_20261118/)*
-  *Run each role-gate command through heavy-run.sh when set, with a repeatable --exclude flag (PM request, 2026-11-18)*
 
 - [~] **Track: Guard UX browser route**
   *Link: [./tracks/guard_ux_browser_route_20261118/](./tracks/guard_ux_browser_route_20261118/)*
