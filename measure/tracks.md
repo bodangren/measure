@@ -12,10 +12,6 @@ This file tracks all major tracks for the Measure project.
   *Link: [./tracks/role_gate_heavy_run_20261118/](./tracks/role_gate_heavy_run_20261118/)*
   *Run each role-gate command through heavy-run.sh when set, with a repeatable --exclude flag (PM request, 2026-11-18)*
 
-- [~] **Track: Orchestrator agent sync**
-  *Link: [./tracks/orchestrator_agent_sync_20261118/](./tracks/orchestrator_agent_sync_20261118/)*
-  *Fold the accepted orchestrator route rules into the repo source (PM decision, 2026-11-18)*
-
 - [~] **Track: Guard UX browser route**
   *Link: [./tracks/guard_ux_browser_route_20261118/](./tracks/guard_ux_browser_route_20261118/)*
   *Map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)*

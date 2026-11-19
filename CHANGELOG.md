@@ -14,6 +14,8 @@
 
 * **prompt trim:** the Measure prompts (AGENTS.md, skills/measure and its claude-skills/measure copy, skills/measure-orchestrator, the agents/measure-*.md roles, and the opencode-measure-guard commands) lose old-model capital-letter wording (shouting labels, MUST, DO NOT, and DO NOT JUMP YET); every Daniel quote, owner rule, human gate, and test-pinned string stays. Track `prompt_audit_20261115`.
 
+* **orchestrator sync:** agents/measure-orchestrator.md now matches the live copy: both Ark plans are out, every role routes through `ra-quota pick`, and one-off coder shapes route through `pick coder`. Track `orchestrator_agent_sync_20261118`.
+
 ### Bug Fixes
 
 * **phase acceptance route:** the spawn-route guard maps `measure-phase-acceptance` to `phase-acceptance` and `measure-closeout` to `record`, so each `ra-quota pick` route passes the guard. The guard also names `vision-review` as a known role with no agent yet. The map changes in the shared core and its two plugin copies. Track `guard_phase_acceptance_20261118`.
