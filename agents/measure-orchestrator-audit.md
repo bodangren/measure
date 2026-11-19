@@ -326,6 +326,8 @@ The orchestrator or a track applies it; this role only reads and reports.
 - **Before any `measure-closeout` run** (the closeout should not archive a track if the
   audit is failing).
 
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
+
 End with the required `MEASURE_AGENT_RESULT` block.
 
 The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

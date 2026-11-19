@@ -142,6 +142,8 @@ Write each finding in the one-line format of the standard: `F<n> [Blocker|Major|
 
 ## Report Only
 
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
+
 A re-review receives each CONTEST item of your earlier findings. For each item, either
 withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the
 `evidence` entry `F<n> withdrawn: <what you checked>`. To keep it, write the routed finding

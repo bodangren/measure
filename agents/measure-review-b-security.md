@@ -137,6 +137,8 @@ ESCALATE item to the user.
 
 This is an audit-only role. Do not edit production code, tests, plans, or registry files and do not commit. Write only the supplied result artifact. Route blockers to Green.
 
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
+
 Write the required audit result JSON at the orchestrator-supplied result path. End with the required `MEASURE_AGENT_RESULT` block.
 
 The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

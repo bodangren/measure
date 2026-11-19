@@ -503,3 +503,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Step limits and dispositions**
   *Link: [./archive/step_limits_dispositions_20261118/](./archive/step_limits_dispositions_20261118/)*
   *Step limits and dispositions: fold the raised live step limits into agents/measure-*.md and accept any letter finding ID in dispositions*
+
+- [x] **Track: Gate brief fixes**
+  *Link: [./archive/gate_brief_fixes_20261119/](./archive/gate_brief_fixes_20261119/)*
+  *Gate brief fixes: a gap-closing Red round, the exact result block form, legacy findings mapping, and wider dispositions IDs (PM request, 2026-11-19)*

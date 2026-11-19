@@ -21,6 +21,8 @@ END_MEASURE_AGENT_RESULT
 
 Use `blocked` for product judgment, unresolved unrelated dirty work, missing credentials, missing required runtime, or repeated gate failures. Use `partial` only when useful work was committed but the role did not satisfy its gate.
 
+The block opens with the whole line `MEASURE_AGENT_RESULT`. It holds one `field: value` line for each field above, in the same order. It closes with the whole line `END_MEASURE_AGENT_RESULT`. A log with a start line but no end line fails the role gate with `missing END_MEASURE_AGENT_RESULT line`.
+
 ## Audit Result JSON
 
 Audit roles write JSON at the result path supplied by the orchestrator:
@@ -45,6 +47,8 @@ Audit roles write JSON at the result path supplied by the orchestrator:
 ```
 
 Only write `status: "pass"` when `blocking_findings` and all `*_violations` arrays are empty. Use `inconclusive` for infrastructure/tooling failures that should not count as acceptance.
+
+Results with the legacy `findings` list stay readable. An entry with `[Blocker]` maps to `blocking_findings`. An entry with `[Major]` or `[Nit]` maps to `nonblocking_findings`. The checker prints a warning that names the new keys. An entry without one of these tags cannot map, and the checker rejects it.
 
 UX audits add:
 
@@ -87,6 +91,8 @@ The `role-gate --role spec-review` check also requires `--baseline`. The baselin
 The orchestrator routes an audit finding to the role that owns the fix. Each routed finding has one id, and the form is:
 
 `F<n> [Blocker|Major|Nit] <scope>: <text>`
+
+Routed findings keep other ID forms too. The forms are a single letter with digits, a compound form with dashes, or a slug. Examples are `M1`, `F-G4`, `ADV-2`, `A-P3-3`, and `storytime-nest`. The `dispositions:` line accepts each form.
 
 - The id is unique in the phase. A spec review finding keeps its own id, severity, and scope.
 - A blocking finding of another audit role becomes `[Blocker]`. A nonblocking finding becomes `[Nit]`. The scope is the role name: `review-a`, `review-b`, `review-c`, `adversarial-testing`, `ux-browser-review`, or `phase-acceptance`.
@@ -152,6 +158,18 @@ A re-review runs on the new HEAD. The next run of the role that raised a finding
 **Re-review scope.** A re-review reports two finding types as blocking: a kept routed finding, and a defect in the lines that the remediation changed. Each other new finding is nonblocking, so a re-review does not restart a chain for work outside the remediation.
 
 **Round limit.** After the second remediation round for one base track, the orchestrator sends the open findings to the user with the cause class and does not start a third round. The cause class is record drift (a pinned count or another volatile claim), an input class found one form at a time, or a review of the review's own record. A third round is allowed only when the track's `metadata.json` holds an `escalation` key with a non-empty reason, for example `"escalation": "third round: the fix2 re-review found a defect in the changed lines"`; `tests/dsh/test-registry.sh` rejects an active `_fix[3-9]_` track without that key.
+
+## Gap-Closing Red
+
+A Red round that only closes test gaps carries tests that already pass. The role declares the round in its result block with these lines:
+
+```
+red_kind: gap_closing
+gaps: <each gap the round closes>
+breakage_proof: <for each new test, the mutation or neutralized-code run that proves the test fails when the covered code is broken>
+```
+
+The `gaps:` value names each covered gap, for example an adversarial finding id. The `breakage_proof:` value records the command and the result of each breakage run. The mid-red gate then expects `RED_TEST_COMMAND` to pass. A round without `red_kind: gap_closing` keeps the rule that the new tests must fail first. An unknown `red_kind` value fails the gate.
 
 ## Marker Matching and Baseline
 

@@ -58,6 +58,8 @@ If you encounter this:
 - Note the fix in `automation-supervisor-closeout-manifest.json` so the audit subagent
   can re-run and confirm A9 is no longer triggered.
 
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
+
 Commit closeout. Write the required audit result JSON and end with `MEASURE_AGENT_RESULT`.
 
 The last line of your final message is `RESULT: PASS` or `RESULT: FAIL` (FAIL when the work or the gate did not pass).

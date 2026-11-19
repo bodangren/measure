@@ -86,7 +86,7 @@ ROLE_ALIASES = {
 }
 
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
-DISPOSITIONS_ITEM_RE = re.compile(r"[A-Z][1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
+DISPOSITIONS_ITEM_RE = re.compile(r"(?:[A-Z][1-9][0-9]*|[A-Za-z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)+)=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
 DISPOSITIONS_PREFIX = "dispositions:"
 # A control character (C0 except tab, and DEL) or a zero-width character inside
 # a dispositions value is invisible or misleading in the rendered finding text.
@@ -509,8 +509,6 @@ def validate_audit_payload(payload: object, role: str) -> list[str]:
         feedback.append("retry_recommendation has an invalid value")
     if payload.get("confidence") not in CONFIDENCE_LEVELS:
         feedback.append("confidence must be low, medium, or high")
-    if "findings" in payload:
-        feedback.append("use blocking_findings and nonblocking_findings, not legacy findings")
     if role == "ux-browser-review":
         feedback.extend(validate_ux_payload(payload))
     if role == "spec-review":
@@ -578,6 +576,40 @@ def validate_spec_review_payload(payload: dict[str, object]) -> list[str]:
     return feedback
 
 
+def map_legacy_findings(payload: dict[str, object]) -> list[str]:
+    """Map a legacy `findings` list onto the new finding keys, or report why not.
+
+    Each entry maps by its severity tag: an entry with `[Blocker]` goes to
+    `blocking_findings`, an entry with `[Major]` or `[Nit]` goes to
+    `nonblocking_findings`. The mapped entries extend the lists that are
+    already present. The function prints one WARNING that names the new keys
+    and returns no feedback when every entry maps. Otherwise it changes nothing
+    and returns the rejection.
+    """
+    findings = payload.get("findings")
+    blocking = payload.get("blocking_findings", [])
+    nonblocking = payload.get("nonblocking_findings", [])
+    if (
+        not isinstance(findings, list)
+        or not all(isinstance(item, str) and item.strip() for item in findings)
+        or not isinstance(blocking, list)
+        or not isinstance(nonblocking, list)
+    ):
+        return ["legacy findings must be a list of non-empty strings to map to blocking_findings/nonblocking_findings"]
+    for entry in findings:
+        if "[Blocker]" in entry:
+            blocking.append(entry)
+        elif "[Major]" in entry or "[Nit]" in entry:
+            nonblocking.append(entry)
+        else:
+            return [f"legacy findings entry cannot map to blocking_findings/nonblocking_findings: {entry}"]
+    payload["blocking_findings"] = blocking
+    payload["nonblocking_findings"] = nonblocking
+    del payload["findings"]
+    print("WARNING: legacy findings mapped to blocking_findings/nonblocking_findings; write the new keys in new results")
+    return []
+
+
 def read_audit(path: Path, role: str) -> tuple[dict[str, object] | None, list[str]]:
     if not path.exists():
         return None, [f"missing audit result: {path}"]
@@ -585,6 +617,10 @@ def read_audit(path: Path, role: str) -> tuple[dict[str, object] | None, list[st
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         return None, [f"invalid audit JSON: {exc}"]
+    if isinstance(payload, dict) and "findings" in payload:
+        mapping_feedback = map_legacy_findings(payload)
+        if mapping_feedback:
+            return None, mapping_feedback
     feedback = validate_audit_payload(payload, role)
     return (payload if not feedback else None), feedback
 
@@ -607,6 +643,30 @@ def passing_audit_feedback(path: Path, role: str) -> list[str]:
     return hard_blockers
 
 
+def agent_result_feedback(log_path: str) -> list[str]:
+    """The result-block presence feedback for a role log.
+
+    A missing --log-file value skips the check. A missing path, a folder, or
+    another non-file path counts as no log and keeps the missing-block message,
+    as does a file with no start line — even when a marker word hides inside
+    another word. A file with a start line but no end line names the exact
+    missing end line and shows the block form.
+    """
+    if not log_path:
+        return []
+    if not Path(log_path).is_file():
+        return ["missing MEASURE_AGENT_RESULT block"]
+    markers = {line.strip() for line in Path(log_path).read_text(encoding="utf-8", errors="ignore").split("\n")}
+    if AGENT_RESULT_START in markers and AGENT_RESULT_END in markers:
+        return []
+    if AGENT_RESULT_START in markers:
+        return [
+            "missing END_MEASURE_AGENT_RESULT line: the result block must open with the whole line MEASURE_AGENT_RESULT and close with the whole line END_MEASURE_AGENT_RESULT",
+            "expected block form: MEASURE_AGENT_RESULT, role: <role>, status: <status>, track: <track>, phase: <phase>, commits: <commits>, tests_run: <tests>, files_changed: <files>, plan_updates: <updates>, known_failures: <failures>, handoff: <handoff>, END_MEASURE_AGENT_RESULT",
+        ]
+    return ["missing MEASURE_AGENT_RESULT block"]
+
+
 def has_agent_result(log_path: str) -> bool:
     """A missing path, a folder, or another non-file path counts as no log."""
     if not log_path:
@@ -617,6 +677,55 @@ def has_agent_result(log_path: str) -> bool:
     text = path.read_text(encoding="utf-8", errors="ignore")
     markers = {line.strip() for line in text.split("\n")}
     return AGENT_RESULT_START in markers and AGENT_RESULT_END in markers
+
+
+def last_result_block(log_path: str) -> list[str] | None:
+    """The lines between the start and the end of the last result block, or None.
+
+    The range rule matches `dispositions_feedback`: the block ends at the last
+    `END_MEASURE_AGENT_RESULT` line that has a `MEASURE_AGENT_RESULT` line above
+    it, and starts at the first `MEASURE_AGENT_RESULT` line after the last end
+    line before that start. A log without an end line, a path that is not a
+    file, or an empty path gives None.
+    """
+    if not log_path:
+        return None
+    path = Path(log_path)
+    if not path.is_file():
+        return None
+    with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
+        text = handle.read()
+    lines = text.split("\n")
+    starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
+    ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
+    last_end = -1
+    if starts:
+        first_start = starts[0]
+        for index in ends:
+            if first_start < index:
+                last_end = index
+    if last_end < 0:
+        return None
+    starts_before_end = [start for start in starts if start < last_end]
+    if not starts_before_end:
+        return None
+    earlier_ends = [index for index in ends if index < starts_before_end[-1]]
+    floor = earlier_ends[-1] if earlier_ends else -1
+    block_starts = [start for start in starts if floor < start < last_end]
+    if not block_starts:
+        return None
+    start = block_starts[0]
+    return lines[start + 1 : last_end]
+
+
+def block_field(block: list[str], name: str) -> str | None:
+    """The stripped value of the first `name:` line of a result block, or None."""
+    prefix = f"{name}:"
+    for line in block:
+        value = line.strip()
+        if value.startswith(prefix):
+            return value[len(prefix):].strip()
+    return None
 
 
 def dispositions_feedback(log_path: str) -> list[str]:
@@ -643,30 +752,11 @@ def dispositions_feedback(log_path: str) -> list[str]:
     path = Path(log_path)
     if not path.is_file():
         return []
-    with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
-        text = handle.read()
-    lines = text.split("\n")
-    starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
-    ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
-    last_end = -1
-    if starts:
-        first_start = starts[0]
-        for index in ends:
-            if first_start < index:
-                last_end = index
-    if last_end < 0:
+    block = last_result_block(log_path)
+    if block is None:
         return []
-    starts_before_end = [start for start in starts if start < last_end]
-    if not starts_before_end:
-        return []
-    earlier_ends = [index for index in ends if index < starts_before_end[-1]]
-    floor = earlier_ends[-1] if earlier_ends else -1
-    block_starts = [start for start in starts if floor < start < last_end]
-    if not block_starts:
-        return []
-    start = block_starts[0]
     values: list[str] = []
-    for line in lines[start + 1 : last_end]:
+    for line in block:
         stripped = line.strip()
         if stripped.startswith(DISPOSITIONS_PREFIX):
             # Keep the raw value too: line.strip() would remove a separator or a
@@ -1133,11 +1223,10 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
     if not runner and role in {"mid-red", "jr-green", "adversarial-testing", "final-acceptance"}:
         print("INFO: no heavy-run wrapper found; running gate commands directly")
 
-    if not has_agent_result(args.log_file):
-        feedback.append("missing MEASURE_AGENT_RESULT block")
-
     if args.log_file and Path(args.log_file).exists():
         feedback.extend(dispositions_feedback(args.log_file))
+
+    feedback.extend(agent_result_feedback(args.log_file))
 
     if role == "strategy":
         strategy = measure_dir(repo) / "tracks" / args.track / "test-strategy.md"
@@ -1168,7 +1257,22 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)
-        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        block = last_result_block(args.log_file) if args.log_file and Path(args.log_file).is_file() else None
+        red_kind = block_field(block, "red_kind") if block is not None else None
+        if red_kind is None:
+            feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        elif red_kind != "gap_closing":
+            feedback.append(f"unknown red_kind: {red_kind}; expected red_kind: gap_closing or no red_kind line")
+            feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        else:
+            gaps = block_field(block, "gaps")
+            proof = block_field(block, "breakage_proof")
+            if not gaps:
+                feedback.append("gap-closing Red round needs a non-empty gaps: line with the covered gaps")
+            if not proof:
+                feedback.append("gap-closing Red round needs a non-empty breakage_proof: line with the mutation or neutralized-code run")
+            if gaps and proof:
+                feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), runner=runner, excludes=excludes))
     elif role == "jr-green":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
