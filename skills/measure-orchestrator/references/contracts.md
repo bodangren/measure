@@ -153,6 +153,18 @@ A re-review runs on the new HEAD. The next run of the role that raised a finding
 
 **Round limit.** After the second remediation round for one base track, the orchestrator sends the open findings to the user with the cause class and does not start a third round. The cause class is record drift (a pinned count or another volatile claim), an input class found one form at a time, or a review of the review's own record. A third round is allowed only when the track's `metadata.json` holds an `escalation` key with a non-empty reason, for example `"escalation": "third round: the fix2 re-review found a defect in the changed lines"`; `tests/dsh/test-registry.sh` rejects an active `_fix[3-9]_` track without that key.
 
+## Gap-Closing Red
+
+A Red round that only closes test gaps carries tests that already pass. The role declares the round in its result block with these lines:
+
+```
+red_kind: gap_closing
+gaps: <each gap the round closes>
+breakage_proof: <for each new test, the mutation or neutralized-code run that proves the test fails when the covered code is broken>
+```
+
+The `gaps:` value names each covered gap, for example an adversarial finding id. The `breakage_proof:` value records the command and the result of each breakage run. The mid-red gate then expects `RED_TEST_COMMAND` to pass. A round without `red_kind: gap_closing` keeps the rule that the new tests must fail first. An unknown `red_kind` value fails the gate.
+
 ## Marker Matching and Baseline
 
 - **Marker lines.** The `MEASURE_AGENT_RESULT` and `END_MEASURE_AGENT_RESULT` lines are recognized only as whole lines after stripping the surrounding whitespace. A marker word inside another word or sentence does not count: a log whose only marker-like text is inside another word has no result block, and the role gate reports the missing block.

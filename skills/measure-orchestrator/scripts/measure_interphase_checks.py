@@ -619,6 +619,54 @@ def has_agent_result(log_path: str) -> bool:
     return AGENT_RESULT_START in markers and AGENT_RESULT_END in markers
 
 
+def last_result_block(log_path: str) -> list[str] | None:
+    """The lines between the start and the end of the last result block, or None.
+
+    The range rule matches `dispositions_feedback`: the block ends at the last
+    `END_MEASURE_AGENT_RESULT` line that has a `MEASURE_AGENT_RESULT` line above
+    it, and starts at the first `MEASURE_AGENT_RESULT` line after the last end
+    line before that start. A log without an end line, a path that is not a
+    file, or an empty path gives None.
+    """
+    if not log_path:
+        return None
+    path = Path(log_path)
+    if not path.is_file():
+        return None
+    with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
+        text = handle.read()
+    lines = text.split("\n")
+    starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
+    ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
+    last_end = -1
+    if starts:
+        first_start = starts[0]
+        for index in ends:
+            if first_start < index:
+                last_end = index
+    if last_end < 0:
+        return None
+    starts_before_end = [start for start in starts if start < last_end]
+    if not starts_before_end:
+        return None
+    earlier_ends = [index for index in ends if index < starts_before_end[-1]]
+    floor = earlier_ends[-1] if earlier_ends else -1
+    block_starts = [start for start in starts if floor < start < last_end]
+    if not block_starts:
+        return None
+    return lines[block_starts[0] + 1 : last_end]
+
+
+def block_field(block: list[str], name: str) -> str | None:
+    """The stripped value of the first `name:` line of a result block, or None."""
+    prefix = f"{name}:"
+    for line in block:
+        stripped = line.strip()
+        if stripped.startswith(prefix):
+            return stripped[len(prefix):].strip()
+    return None
+
+
 def dispositions_feedback(log_path: str) -> list[str]:
     """Validate the optional `dispositions:` line of the last result block (S3).
 
@@ -643,30 +691,11 @@ def dispositions_feedback(log_path: str) -> list[str]:
     path = Path(log_path)
     if not path.is_file():
         return []
-    with path.open(encoding="utf-8", errors="ignore", newline="") as handle:
-        text = handle.read()
-    lines = text.split("\n")
-    starts = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_START]
-    ends = [index for index, line in enumerate(lines) if line.strip() == AGENT_RESULT_END]
-    last_end = -1
-    if starts:
-        first_start = starts[0]
-        for index in ends:
-            if first_start < index:
-                last_end = index
-    if last_end < 0:
+    block = last_result_block(log_path)
+    if block is None:
         return []
-    starts_before_end = [start for start in starts if start < last_end]
-    if not starts_before_end:
-        return []
-    earlier_ends = [index for index in ends if index < starts_before_end[-1]]
-    floor = earlier_ends[-1] if earlier_ends else -1
-    block_starts = [start for start in starts if floor < start < last_end]
-    if not block_starts:
-        return []
-    start = block_starts[0]
     values: list[str] = []
-    for line in lines[start + 1 : last_end]:
+    for line in block:
         stripped = line.strip()
         if stripped.startswith(DISPOSITIONS_PREFIX):
             # Keep the raw value too: line.strip() would remove a separator or a
@@ -1168,7 +1197,22 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
         if non_test:
             feedback.append("Mid Red changed non-test/non-Measure files")
             feedback.extend(f"- {path}" for path in non_test)
-        feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        block = last_result_block(args.log_file) if args.log_file and Path(args.log_file).is_file() else None
+        red_kind = block_field(block, "red_kind") if block is not None else None
+        if red_kind is None:
+            feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        elif red_kind != "gap_closing":
+            feedback.append(f"unknown red_kind: {red_kind}; expected red_kind: gap_closing or no red_kind line")
+            feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), expect_failure=True, runner=runner, excludes=excludes))
+        else:
+            gaps = block_field(block, "gaps")
+            proof = block_field(block, "breakage_proof")
+            if not gaps:
+                feedback.append("gap-closing Red round needs a non-empty gaps: line with the covered gaps")
+            if not proof:
+                feedback.append("gap-closing Red round needs a non-empty breakage_proof: line with the mutation or neutralized-code run")
+            if gaps and proof:
+                feedback.extend(gate_command(repo, "RED_TEST_COMMAND", gate_value(repo, "RED_TEST_COMMAND"), runner=runner, excludes=excludes))
     elif role == "jr-green":
         scope = track_scope(repo, args.baseline, args.track)
         if scope is None:
