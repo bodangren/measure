@@ -8,5 +8,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 1: Generated gates.json fallback
 
 - [x] Task 1.1: tests for env, gates.json, neither, and env-wins dcc072f
-- [ ] Task 1.2: implement the gates.json fallback and CHANGELOG line
+- [x] Task 1.2: implement the gates.json fallback and CHANGELOG line f44eefa
 - [ ] Task 1.3: records and closeout
