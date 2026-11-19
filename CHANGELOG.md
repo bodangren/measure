@@ -22,7 +22,7 @@
 
 ### Bug Fixes
 
-* **generated gates.json fallback:** the closeout generated check reads `GENERATED_CHECK_COMMAND` from the environment first, then from `measure/gates.json`. It fails and names the key and the file when neither holds it. It skips with INFO when no `measure/generated` exists. Track `generated_gates_json_20261119`.
+* **generated gates.json fallback:** the closeout generated check reads `GENERATED_CHECK_COMMAND` from the environment first, then from `measure/gates.json`. That order already held and stays. An empty command fails and names the key, the absolute `gates.json` path, and the state. The state is `file missing`, `file unreadable or not a JSON object`, or `key absent`. It skips with INFO when no `measure/generated` exists. Track `generated_gates_json_20261119`, error `generated_check_error_20261119`.
 
 * **installer writes:** a shell command that runs `bin/install-measure-skill` passes the guard with no active task. Other writes under `.config` still need a task. The shared core gains the config path rule and the installer command rule. All three `guards.ts` copies change in parity. Track `installer_adopt_guard_20261119`.
 

@@ -849,6 +849,20 @@ def gate_value(repo: Path, key: str) -> str:
     return load_gates(repo).get(key, "")
 
 
+def gates_json_state(repo: Path) -> str:
+    """The state of measure/gates.json for the missing-command error."""
+    path = measure_dir(repo) / "gates.json"
+    if not path.exists():
+        return "file missing"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "file unreadable or not a JSON object"
+    if not isinstance(payload, dict):
+        return "file unreadable or not a JSON object"
+    return "key absent"
+
+
 def resolve_runner(explicit: str = "") -> str:
     """The heavy-run wrapper path: --runner wins over MEASURE_HEAVY_RUN wins over PATH."""
     if explicit:
@@ -1157,11 +1171,12 @@ def closeout_feedback(repo: Path, track: str, runner: str = "") -> list[str]:
     if not (measure_dir(repo) / "generated").is_dir():
         print("INFO: no measure/generated folder, skipping the generated freshness check")
     else:
-        command = os.environ.get("GENERATED_CHECK_COMMAND", "")
+        command = gate_value(repo, "GENERATED_CHECK_COMMAND")
         if not command:
-            command = load_gates(repo).get("GENERATED_CHECK_COMMAND", "")
-        if not command:
-            feedback.append("GENERATED_CHECK_COMMAND is unset in the environment and in measure/gates.json: set GENERATED_CHECK_COMMAND to check measure/generated freshness")
+            gates_path = measure_dir(repo) / "gates.json"
+            feedback.append(
+                f"GENERATED_CHECK_COMMAND is not in the environment and not in {gates_path} ({gates_json_state(repo)})"
+            )
         else:
             feedback.extend(gate_command(repo, "GENERATED_CHECK_COMMAND", command, runner=runner))
     if not (archive / CLOSEOUT_MANIFEST).exists():
