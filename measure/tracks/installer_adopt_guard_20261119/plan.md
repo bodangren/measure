@@ -12,7 +12,7 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 2: Guard installer exception
 
-- [ ] Task 2.1: guard tests for installer pass and config cp block
+- [x] Task 2.1: guard tests for installer pass and config cp block 4fcce3f
 - [ ] Task 2.2: implement installer exception in the three guards.ts copies
 
 ## Phase 3: Records
