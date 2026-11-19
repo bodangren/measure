@@ -7,6 +7,6 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 1: Guard UX browser route
 
-- [~] Task 1.1: extend the role-spawn tests in all three packages and confirm they fail
-- [~] Task 1.2: route UX browser review by review-c and vision-review in the three guards.ts copies
-- [ ] Task 1.3: records and closeout
+- [x] Task 1.1: extend the role-spawn tests in all three packages and confirm they fail `92500e2`
+- [x] Task 1.2: route UX browser review by review-c and vision-review in the three guards.ts copies `92500e2`
+- [x] Task 1.3: records and closeout `28c1904`
