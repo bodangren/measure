@@ -5,10 +5,8 @@ This file tracks all major tracks for the Measure project.
 ## Active Tracks
 
 - [~] **Track: Step limits and dispositions**
-
-- [~] **Track: Guard UX browser route**
-  *Link: [./tracks/guard_ux_browser_route_20261118/](./tracks/guard_ux_browser_route_20261118/)*
-  *Map measure-ux-browser-review to review-c and accept vision-review for picture briefs in the three guards.ts copies (PM add-on, 2026-11-18)*
+  *Link: [./tracks/step_limits_dispositions_20261118/](./tracks/step_limits_dispositions_20261118/)*
+  *Fold the raised live step limits into the repo source and accept any letter finding ID in dispositions (PM request, 2026-11-18)*
 
 ---
 
