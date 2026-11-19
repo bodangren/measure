@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Closeout deferred and generated checks**
+  *Link: [./tracks/closeout_deferred_generated_20261119/](./tracks/closeout_deferred_generated_20261119/)*
+  *Closeout deferred and generated checks: a deferred closeout task cites its done SHA, and closeout runs the generator freshness check (Forge request, 2026-11-19)*
 
 ---
 
