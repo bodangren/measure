@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Closeout generated check reads gates.json**
+  *Link: [./tracks/generated_gates_json_20261119/](./tracks/generated_gates_json_20261119/)*
+  *Closeout generated check reads gates.json when the env var is missing*
 
 ---
 

@@ -1,0 +1,1 @@
+{"actual_tasks": 3, "created_at": "2026-11-19T00:00:00Z", "description": "Closeout generated check reads gates.json when the env var is missing", "estimated_tasks": 3, "lane": "light", "status": "active", "track_id": "generated_gates_json_20261119", "type": "fix"}
