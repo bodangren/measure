@@ -17,4 +17,4 @@ Spec: [./spec.md](./spec.md)
 
 ## Phase 3: Records
 
-- [ ] Task 3.1: records and closeout
+- [x] Task 3.1: records and closeout
