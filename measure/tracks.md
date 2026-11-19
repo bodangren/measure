@@ -511,3 +511,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Closeout deferred and generated checks**
   *Link: [./archive/closeout_deferred_generated_20261119/](./archive/closeout_deferred_generated_20261119/)*
   *Closeout deferred and generated checks: a deferred closeout task cites its done SHA, and closeout runs the generator freshness check (Forge request, 2026-11-19)*
+
+- [x] **Track: Agent live sync**
+  *Link: [./archive/agent_live_sync_20261119/](./archive/agent_live_sync_20261119/)*
+  *Agent live sync: fold the live step limits (10 files to 120) and spec-review route rules into agents/measure-*.md, keeping the PR #32 result block form (PM request, 2026-11-19)*

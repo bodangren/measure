@@ -12,6 +12,12 @@ permissions:
   - action: edit
     resource: "**/measure/runs/**"
     effect: allow
+  - action: edit
+    resource: "measure/tracks/*/spec-review.md"
+    effect: allow
+  - action: edit
+    resource: "**/measure/tracks/*/spec-review.md"
+    effect: allow
   - action: shell
     resource: "*"
     effect: allow
