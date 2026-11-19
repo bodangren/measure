@@ -92,6 +92,8 @@ The orchestrator routes an audit finding to the role that owns the fix. Each rou
 
 `F<n> [Blocker|Major|Nit] <scope>: <text>`
 
+Routed findings keep other ID forms too: a single letter with digits (`M1`, `N1`), a compound form with dashes (`F-G4`, `ADV-2`, `A-P3-3`, `R3-1`, `RA-3`, `PM-1`), or a slug (`storytime-nest`). The `dispositions:` line accepts each form.
+
 - The id is unique in the phase. A spec review finding keeps its own id, severity, and scope.
 - A blocking finding of another audit role becomes `[Blocker]`. A nonblocking finding becomes `[Nit]`. The scope is the role name: `review-a`, `review-b`, `review-c`, `adversarial-testing`, `ux-browser-review`, or `phase-acceptance`.
 - The owner of a code finding or a test finding is Green. The owner of a `spec.md` finding or a `plan.md` finding is the user or a build session.

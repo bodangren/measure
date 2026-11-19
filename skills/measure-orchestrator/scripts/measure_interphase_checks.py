@@ -86,7 +86,7 @@ ROLE_ALIASES = {
 }
 
 SPEC_REVIEW_FINDING_RE = re.compile(r"^F[1-9][0-9]* \[(Blocker|Major|Nit)\] .+?: .+")
-DISPOSITIONS_ITEM_RE = re.compile(r"[A-Z][1-9][0-9]*=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
+DISPOSITIONS_ITEM_RE = re.compile(r"(?:[A-Z][1-9][0-9]*|[A-Za-z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)+)=(FIX|DECLINE|(CONTEST|ESCALATE)\((.+)\))")
 DISPOSITIONS_PREFIX = "dispositions:"
 # A control character (C0 except tab, and DEL) or a zero-width character inside
 # a dispositions value is invisible or misleading in the rendered finding text.
