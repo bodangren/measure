@@ -133,7 +133,7 @@ fi
 
 echo "=== edit rules are exactly the three contract rules ==="
 EDIT="$(grep '^edit|' <<< "$RULES_ROLE")"
-EXPECT_EDIT=$'edit|"*"|deny\nedit|"measure/runs/**"|allow\nedit|"**/measure/runs/**"|allow'
+EXPECT_EDIT=$'edit|"*"|deny\nedit|"measure/runs/**"|allow\nedit|"**/measure/runs/**"|allow\nedit|"measure/tracks/*/spec-review.md"|allow\nedit|"**/measure/tracks/*/spec-review.md"|allow'
 if blank "$EDIT"; then fail "edit rules are missing"
 elif [ "$EDIT" = "$EXPECT_EDIT" ]; then pass "edit rules equal the three contract rules"
 else fail "edit rules differ from the contract: [$(flat "$EDIT")]"; fi

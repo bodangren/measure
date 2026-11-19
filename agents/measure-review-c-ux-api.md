@@ -1,7 +1,7 @@
 ---
 description: Independently audits applicable Measure API, route, and user-flow contract wiring without duplicating visual or adversarial review
 mode: subagent
-steps: 96
+steps: 120
 permissions:
   - action: edit
     resource: "*"

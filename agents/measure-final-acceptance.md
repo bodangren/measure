@@ -1,7 +1,7 @@
 ---
 description: Performs immutable-HEAD final Measure acceptance after all phase gates and remediation, before closeout
 mode: subagent
-steps: 80
+steps: 120
 permissions:
   - action: edit
     resource: "*"

@@ -1,7 +1,7 @@
 ---
 description: Independently audits Measure phase correctness, architecture, callers, and test meaning without modifying the implementation
 mode: subagent
-steps: 96
+steps: 120
 permissions:
   - action: edit
     resource: "*"
