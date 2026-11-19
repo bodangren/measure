@@ -1,9 +1,12 @@
-"""S2 contract tests: closeout needs a done SHA on deferred closeout tasks.
+"""S2 contract tests: closeout needs a done SHA on deferred closeout tasks and a fresh generated folder.
 
 A deferred task of the closeout phase cites its done SHA on the line. The
 closeout phase is the last phase of the plan, or a task whose text names
 records, closeout, or regenerate. Deferred tasks in earlier phases keep the
-old rule and give no feedback.
+old rule and give no feedback. Closeout also runs the generator freshness
+check from GENERATED_CHECK_COMMAND: a failing check fails, a missing field
+with a measure/generated folder fails and names the field, and a repo without
+the folder skips the check with one INFO line.
 
 Each case builds a closeout archive fixture in a temporary repository. The
 fixture track is `demo_track`; no test reads the real track folder. Each
@@ -123,6 +126,38 @@ class CloseoutDeferredGeneratedTest(unittest.TestCase):
         self.assertEqual(self.plan_feedback(), [])
 
     # ------------------------------------------------------------------ generated
+    def make_generated(self) -> None:
+        (self.repo / "measure" / "generated").mkdir(parents=True, exist_ok=True)
+
+    def test_generated_folder_with_passing_check_passes(self) -> None:
+        self.make_generated()
+        with unittest.mock.patch.dict(os.environ, {"GENERATED_CHECK_COMMAND": "true"}, clear=False):
+            feedback, _ = self.closeout_feedback()
+        self.assertEqual(feedback, [])
+
+    def test_generated_folder_with_failing_check_fails(self) -> None:
+        self.make_generated()
+        with unittest.mock.patch.dict(os.environ, {"GENERATED_CHECK_COMMAND": "false"}, clear=False):
+            feedback, _ = self.closeout_feedback()
+        self.assertGreaterEqual(len(feedback), 1)
+        self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
+
+    def test_generated_folder_without_field_names_the_field(self) -> None:
+        self.make_generated()
+        with unittest.mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("GENERATED_CHECK_COMMAND", None)
+            feedback, _ = self.closeout_feedback()
+        self.assertEqual(len(feedback), 1)
+        self.assertIn("GENERATED_CHECK_COMMAND", feedback[0])
+
+    def test_missing_generated_folder_skips_with_info(self) -> None:
+        with unittest.mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("GENERATED_CHECK_COMMAND", None)
+            feedback, out = self.closeout_feedback()
+        self.assertEqual(feedback, [])
+        self.assertIn("INFO", out)
+        self.assertIn("measure/generated", out)
+
     def test_closeout_gate_reports_the_deferred_sha_failure(self) -> None:
         self.write_plan(CLOSEOUT_PLAN.replace(
             "- [x] Task 2.1: Records task def5678",

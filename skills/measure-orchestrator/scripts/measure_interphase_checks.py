@@ -809,6 +809,7 @@ GATE_KEYS = (
     "PROJECT_CHECKS",
     "PROJECT_TESTS",
     "PROJECT_DEV_URL",
+    "GENERATED_CHECK_COMMAND",
 )
 
 
@@ -1136,7 +1137,7 @@ def final_acceptance_feedback(repo: Path, track: str) -> list[str]:
     return last_feedback
 
 
-def closeout_feedback(repo: Path, track: str) -> list[str]:
+def closeout_feedback(repo: Path, track: str, runner: str = "") -> list[str]:
     archive = measure_dir(repo) / "archive" / track
     active = measure_dir(repo) / "tracks" / track
     feedback: list[str] = []
@@ -1153,6 +1154,14 @@ def closeout_feedback(repo: Path, track: str) -> list[str]:
         print("INFO: light lane, no final acceptance")
     else:
         feedback.extend(final_acceptance_feedback(repo, track))
+    if not (measure_dir(repo) / "generated").is_dir():
+        print("INFO: no measure/generated folder, skipping the generated freshness check")
+    else:
+        command = gate_value(repo, "GENERATED_CHECK_COMMAND")
+        if not command:
+            feedback.append("GENERATED_CHECK_COMMAND is unset: set it in measure/gates.json or the environment to check measure/generated freshness")
+        else:
+            feedback.extend(gate_command(repo, "GENERATED_CHECK_COMMAND", command, runner=runner))
     if not (archive / CLOSEOUT_MANIFEST).exists():
         feedback.append(f"missing closeout manifest: {archive / CLOSEOUT_MANIFEST}")
     return feedback
@@ -1222,7 +1231,8 @@ def cmd_ux_paths(args: argparse.Namespace) -> int:
 
 def cmd_closeout(args: argparse.Namespace) -> int:
     repo = repo_root(args.repo)
-    feedback = closeout_feedback(repo, args.track)
+    runner = resolve_runner(getattr(args, "runner", "") or "")
+    feedback = closeout_feedback(repo, args.track, runner)
     if feedback:
         for item in feedback:
             print(f"FAIL: {item}")
@@ -1416,6 +1426,7 @@ def build_parser() -> argparse.ArgumentParser:
     closeout = sub.add_parser("closeout", help="validate archived Measure closeout state")
     closeout.add_argument("--repo", default="")
     closeout.add_argument("--track", required=True)
+    closeout.add_argument("--runner", default="", help="heavy-run wrapper path; wins over MEASURE_HEAVY_RUN and PATH")
     closeout.set_defaults(func=cmd_closeout)
 
     role = sub.add_parser("role-gate", help="run the gate for one role handoff")

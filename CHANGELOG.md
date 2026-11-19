@@ -20,6 +20,8 @@
 
 ### Bug Fixes
 
+* **closeout deferred and generated:** closeout fails unless each deferred task of the closeout phase cites its done SHA on the line. Closeout runs the generator freshness check from `GENERATED_CHECK_COMMAND` when the repo holds a `measure/generated` folder. The gate skips the check with one INFO line when the folder is absent. Track `closeout_deferred_generated_20261119`.
+
 * **dispositions IDs:** the `dispositions:` line accepts every found finding form. The forms are a single letter with digits, a compound form with dashes, and a slug. The malformed forms stay rejected. Track `gate_brief_fixes_20261119`.
 
 * **legacy findings:** the audit check accepts a legacy `findings` list with a warning that names the new keys. An entry with `[Blocker]` maps to `blocking_findings`, an entry with `[Major]` or `[Nit]` maps to `nonblocking_findings`. An entry without one of these tags fails the check with a clear message. Track `gate_brief_fixes_20261119`.
