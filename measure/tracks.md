@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Step limits and dispositions**
-  *Link: [./tracks/step_limits_dispositions_20261118/](./tracks/step_limits_dispositions_20261118/)*
-  *Fold the raised live step limits into the repo source and accept any letter finding ID in dispositions (PM request, 2026-11-18)*
+- (none)
 
 ---
 
