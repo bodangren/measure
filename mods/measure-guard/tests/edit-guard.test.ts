@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import type { ToolCallResult } from 'claude-code'
-import { editDecision } from '../hooks/guards'
+import { editDecision, isConfigPath, isInstallerCommand } from '../hooks/guards'
 import { ROOT, START, realFiles, world } from './world'
 
 const GUARD_PLAN = `${ROOT}/measure/tracks/measure_guard_20261004/plan.md`
@@ -94,6 +94,19 @@ test('the guard follows the plan: marking a task [~] opens the edits', async ($,
   expect(denied(await edit($, SOURCE))).toBeUndefined()
 })
 
+test('the installer command passes with no [~] task', async ($, on) => {
+  world(on, noTaskFiles())
+  await $.session.start(START)
+  expect(denied(await bash($, 'bin/install-measure-skill --check'))).toBeUndefined()
+  expect(denied(await bash($, 'bin/install-measure-skill'))).toBeUndefined()
+})
+
+test('a cp into ~/.config/opencode/agents with no [~] task is denied', async ($, on) => {
+  world(on, noTaskFiles())
+  await $.session.start(START)
+  expect(denied(await bash($, 'cp src /tmp/fake-home/.config/opencode/agents/foo.md'))).toBeDefined()
+})
+
 describe('editDecision', () => {
   const base = { mode: 'guard' as const, setupChoice: null, guardsOff: null }
   test('allows a path outside the project root', () => {
@@ -103,6 +116,18 @@ describe('editDecision', () => {
     }
     expect(editDecision({ ...base, snapshot }, '/tmp/scratch/a.ts')).toBeNull()
     expect(editDecision({ ...base, snapshot }, `${ROOT}/src/a.ts`)).not.toBeNull()
+  })
+
+  test('a config path outside the root needs a task', () => {
+    const snapshot = {
+      root: ROOT, hasMeasure: true, isRepo: true, tracksPath: null, tracks: [], active: null, inProgressCount: 0, parseError: null,
+      allow: { folders: [], ignored: [] },
+    }
+    expect(isConfigPath('/tmp/fake-home/.config/opencode/agents/foo.md')).toBe(true)
+    expect(isConfigPath('/tmp/scratch/a.ts')).toBe(false)
+    expect(isInstallerCommand('bin/install-measure-skill --check')).toBe(true)
+    expect(isInstallerCommand('cp src dst')).toBe(false)
+    expect(editDecision({ ...base, snapshot }, '/tmp/fake-home/.config/opencode/agents/foo.md')).not.toBeNull()
   })
 
   test('allows on a parse error and before the first read', () => {
