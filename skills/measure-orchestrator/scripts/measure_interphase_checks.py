@@ -809,6 +809,7 @@ GATE_KEYS = (
     "PROJECT_CHECKS",
     "PROJECT_TESTS",
     "PROJECT_DEV_URL",
+    "GENERATED_CHECK_COMMAND",
 )
 
 
@@ -1046,17 +1047,37 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
     feedback: list[str] = []
     sha_pattern = re.compile(r"\b[0-9a-f]{7,40}\b")
+    # The closeout phase is the last phase block of the plan. A deferred task
+    # of that phase, or a task whose text names records, closeout, or
+    # regenerate, cites its done SHA on the line. Deferred tasks in earlier
+    # phases keep the old rule and give no feedback.
+    last_heading = max(
+        (match.start() for match in re.finditer(r"^## Phase ", text, re.MULTILINE)),
+        default=None,
+    )
     # Each processed line is (indent, status, covered). A parent covers a
     # sub-box when it is an [x] line that is itself covered.
     processed: list[tuple[int, str, bool]] = []
-    for full_line, status, task in re.findall(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+    for match in re.finditer(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+        full_line, status, task = match.groups()
         # The regex may capture a newline before a top-level checkbox. Measure
         # only the horizontal white space before the checkbox on its own line.
         prefix = full_line[: full_line.index("- [")]
         indent = len(prefix[prefix.rfind("\n") + 1 :].expandtabs(4))
         has_sha = sha_pattern.search(task) is not None
-        if "deferred" in task.lower():
-            # A deferred line gives no feedback. It stays a parent and is covered.
+        lowered = task.lower()
+        if "deferred" in lowered:
+            is_closeout = (last_heading is not None and match.start() >= last_heading) or any(
+                word in lowered for word in ("records", "closeout", "regenerate")
+            )
+            if not is_closeout:
+                # A deferred line gives no feedback. It stays a parent and is covered.
+                processed.append((indent, status, True))
+                continue
+            if not has_sha:
+                feedback.append(f"deferred closeout task lacks done SHA: {full_line.strip()}")
+                processed.append((indent, status, False))
+                continue
             processed.append((indent, status, True))
             continue
         if status != "x":
@@ -1116,7 +1137,7 @@ def final_acceptance_feedback(repo: Path, track: str) -> list[str]:
     return last_feedback
 
 
-def closeout_feedback(repo: Path, track: str) -> list[str]:
+def closeout_feedback(repo: Path, track: str, runner: str = "") -> list[str]:
     archive = measure_dir(repo) / "archive" / track
     active = measure_dir(repo) / "tracks" / track
     feedback: list[str] = []
@@ -1133,6 +1154,14 @@ def closeout_feedback(repo: Path, track: str) -> list[str]:
         print("INFO: light lane, no final acceptance")
     else:
         feedback.extend(final_acceptance_feedback(repo, track))
+    if not (measure_dir(repo) / "generated").is_dir():
+        print("INFO: no measure/generated folder, skipping the generated freshness check")
+    else:
+        command = gate_value(repo, "GENERATED_CHECK_COMMAND")
+        if not command:
+            feedback.append("GENERATED_CHECK_COMMAND is unset: set it in measure/gates.json or the environment to check measure/generated freshness")
+        else:
+            feedback.extend(gate_command(repo, "GENERATED_CHECK_COMMAND", command, runner=runner))
     if not (archive / CLOSEOUT_MANIFEST).exists():
         feedback.append(f"missing closeout manifest: {archive / CLOSEOUT_MANIFEST}")
     return feedback
@@ -1202,7 +1231,8 @@ def cmd_ux_paths(args: argparse.Namespace) -> int:
 
 def cmd_closeout(args: argparse.Namespace) -> int:
     repo = repo_root(args.repo)
-    feedback = closeout_feedback(repo, args.track)
+    runner = resolve_runner(getattr(args, "runner", "") or "")
+    feedback = closeout_feedback(repo, args.track, runner)
     if feedback:
         for item in feedback:
             print(f"FAIL: {item}")
@@ -1396,6 +1426,7 @@ def build_parser() -> argparse.ArgumentParser:
     closeout = sub.add_parser("closeout", help="validate archived Measure closeout state")
     closeout.add_argument("--repo", default="")
     closeout.add_argument("--track", required=True)
+    closeout.add_argument("--runner", default="", help="heavy-run wrapper path; wins over MEASURE_HEAVY_RUN and PATH")
     closeout.set_defaults(func=cmd_closeout)
 
     role = sub.add_parser("role-gate", help="run the gate for one role handoff")

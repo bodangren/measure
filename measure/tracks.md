@@ -507,3 +507,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Gate brief fixes**
   *Link: [./archive/gate_brief_fixes_20261119/](./archive/gate_brief_fixes_20261119/)*
   *Gate brief fixes: a gap-closing Red round, the exact result block form, legacy findings mapping, and wider dispositions IDs (PM request, 2026-11-19)*
+
+- [x] **Track: Closeout deferred and generated checks**
+  *Link: [./archive/closeout_deferred_generated_20261119/](./archive/closeout_deferred_generated_20261119/)*
+  *Closeout deferred and generated checks: a deferred closeout task cites its done SHA, and closeout runs the generator freshness check (Forge request, 2026-11-19)*

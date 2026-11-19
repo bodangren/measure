@@ -185,6 +185,10 @@ Do not archive a track just because a markdown artifact says it passed. Closeout
 - no non-deferred plan tasks remain (no `[~]`, no `[ ]` — only `[x]` or `[b]` with
   `deferred:<owner>`)
 - completed tasks include commit SHA evidence
+- each deferred task of the closeout phase cites its done SHA on the line
+- the generator freshness check passes when the repo holds a
+  `measure/generated` folder (`GENERATED_CHECK_COMMAND` in `measure/gates.json`;
+  Forge runs `node measure/tools/generate.mjs --check`)
 - final acceptance audit passed — the closeout check requires a passing
   `measure/runs/<track>/final-acceptance-*.json`; a `"lane": "light"` value in
   `metadata.json` is the one exception and prints `INFO: light lane, no final
