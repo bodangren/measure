@@ -131,7 +131,7 @@ held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 `retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
 ESCALATE item to the user.
 
-Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
 
 Write the required UX audit result JSON and end with `MEASURE_AGENT_RESULT`.
 

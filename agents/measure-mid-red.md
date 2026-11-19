@@ -42,7 +42,7 @@ For every current non-deferred incomplete task:
 
 If a new test passes at HEAD, tighten the contract or mark the task already satisfied with evidence instead of creating a false Red phase.
 
-A gap-closing round is the exception. When the round only closes test gaps and each new test already passes, declare `red_kind: gap_closing` in the `MEASURE_AGENT_RESULT` block, list each covered gap in a `gaps:` line, and record the breakage proof for each new test in a `breakage_proof:` line. Prove each test with a recorded mutation or a neutralized-code run that fails when the covered code is broken. The mid-red gate then expects the Red command to pass. Every other round keeps the failing-first rule.
+A gap-closing round is the exception. A round qualifies when it only closes test gaps and each new test already passes. Declare `red_kind: gap_closing` in the `MEASURE_AGENT_RESULT` block. List each covered gap in a `gaps:` line. Record the breakage proof for each new test in a `breakage_proof:` line. Prove each test with a recorded mutation or a neutralized-code run that fails when the covered code is broken. The mid-red gate then expects the Red command to pass. Every other round keeps the failing-first rule.
 
 ## Test authoring rules (from `measure/anti-patterns.md`)
 

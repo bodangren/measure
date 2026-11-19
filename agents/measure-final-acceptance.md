@@ -148,7 +148,7 @@ Confirm the closeout standard is met:
 Then write the audit result JSON. The orchestrator will route to `measure-closeout` for
 the archive move.
 
-Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
 
 This is a gate-only role. Do not edit implementation, tests, plans, registry, metadata, or archive state and do not commit. Write only the supplied result artifact. Do not archive the track or update closeout metadata. End with `MEASURE_AGENT_RESULT`.
 

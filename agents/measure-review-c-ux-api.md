@@ -120,7 +120,7 @@ Require `phase_base_sha`, `role_base_sha`, and `audited_head_sha`, and confirm t
 
 Use browser inspection only when necessary for contract understanding. Do not duplicate the dedicated UX browser auditor, and do not take ownership of durable Playwright testing; that belongs to the adversarial testing role.
 
-Write the block exactly: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field (`role:`, `status:`, `track:`, `phase:`, `commits:`, `tests_run:`, `files_changed:`, `plan_updates:`, `known_failures:`, `handoff:`), and the whole line `END_MEASURE_AGENT_RESULT`.
+Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
 
 A re-review receives each CONTEST item of your earlier findings. For each item, either
 withdraw it or keep it. To withdraw a finding, omit it from the new findings and add the

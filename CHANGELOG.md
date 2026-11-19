@@ -20,11 +20,11 @@
 
 ### Bug Fixes
 
-* **dispositions IDs:** the `dispositions:` line accepts every finding ID form found in the Desktop repos' `measure/runs/` logs: a single letter with digits, a compound form with dashes, and a slug. The malformed forms stay rejected. Track `gate_brief_fixes_20261119`.
+* **dispositions IDs:** the `dispositions:` line accepts every found finding form. The forms are a single letter with digits, a compound form with dashes, and a slug. The malformed forms stay rejected. Track `gate_brief_fixes_20261119`.
 
 * **legacy findings:** the audit check accepts a legacy `findings` list with a warning that names the new keys. An entry with `[Blocker]` maps to `blocking_findings`, an entry with `[Major]` or `[Nit]` maps to `nonblocking_findings`. An entry without one of these tags fails the check with a clear message. Track `gate_brief_fixes_20261119`.
 
-* **result block form:** every audit role brief and the orchestrator contract now state the exact result block form: the whole line `MEASURE_AGENT_RESULT`, one `field: value` line for each template field, and the whole line `END_MEASURE_AGENT_RESULT`. A log with a start line but no end line fails the role gate with `missing END_MEASURE_AGENT_RESULT line` and the expected form. Track `gate_brief_fixes_20261119`.
+* **result block form:** every audit role brief and the contract now state the exact result block form. The block opens with the whole line `MEASURE_AGENT_RESULT`. It holds one line per template field. It closes with the whole line `END_MEASURE_AGENT_RESULT`. A log with a start line but no end line fails the gate. The message names the missing line and shows the form. Track `gate_brief_fixes_20261119`.
 
 * **gap-closing Red:** the mid-red gate accepts a Red round that only closes test gaps. The role declares `red_kind: gap_closing` with a `gaps:` line and a `breakage_proof:` line in its result block, and the gate then expects `RED_TEST_COMMAND` to pass. A round without that declaration keeps the failing-first rule. Track `gate_brief_fixes_20261119`.
 

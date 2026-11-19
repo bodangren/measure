@@ -8,7 +8,7 @@ Source: PM request 2026-11-19, four items, due 11-21.
 
 ## Decided change
 
-Item 1: allow a gap-closing Red round. The role declares `red_kind: gap_closing` in its result block, lists the gaps, and records proof that each new test fails when the code it covers is broken (a recorded mutation or a neutralized-code run). The gate then expects the Red command to pass. Every other Red round keeps the rule that tests must fail first.
+Item 1: allow a gap-closing Red round. The role declares `red_kind: gap_closing` in its result block and lists the gaps. It records proof that each new test fails when the covered code is broken. The proof is a recorded mutation or a neutralized-code run. The gate then expects the Red command to pass. Every other Red round keeps the rule that tests must fail first.
 
 Item 2: state the exact result block form in every audit role brief and in `contracts.md`. Name the opening `MEASURE_AGENT_RESULT` line, the fields, and the closing `END_MEASURE_AGENT_RESULT` line. Name the exact missing line in the gate message when the end line is absent, and show the form.
 
