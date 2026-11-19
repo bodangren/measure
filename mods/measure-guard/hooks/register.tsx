@@ -25,6 +25,7 @@ import {
   commitReminder,
   editDecision,
   isInside,
+  isInstallerCommand,
   isTestCommand,
   isTestFile,
   needsSetup,
@@ -373,9 +374,10 @@ export const register: Register = (on, options) => {
     }
     // Shell writes: every target the bounded grammar extracts is checked like a file edit
     // (and, in strict mode, by the TDD guard), so `sed -i`, a redirect, or a copy cannot
-    // change a source file behind the guard's back.
+    // change a source file behind the guard's back. The installer writes its
+    // own targets, so its command passes with no active task.
     const shellTargets = e.tool === 'Bash' && typeof e.command === 'string' ? shellWritePaths(e.command) : []
-    if (shellTargets.length > 0) {
+    if (shellTargets.length > 0 && !(typeof e.command === 'string' && isInstallerCommand(e.command))) {
       const shellContext = await guardContext($, mode)
       const shellRoot = shellContext.snapshot?.root ?? (await $.session.root())
       const red = (await $.state.get(RED)).value ?? null

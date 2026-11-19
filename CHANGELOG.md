@@ -4,6 +4,8 @@
 
 ### Features
 
+* **installer adopt:** `bin/install-measure-skill` adopts a local edit that matches the source and reports `adopted <path>`. A plain install adopts by default. `--adopt-matching` makes the adopt explicit. `--check` names the flag for each local-edit. Track `installer_adopt_guard_20261119`.
+
 * **role-gate heavy run:** the `role-gate` command in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now runs each gate command through a heavy-run wrapper when one is set. The wrapper resolves as `--runner`, then `MEASURE_HEAVY_RUN`, then `heavy-run.sh` on PATH; with none found the gate runs the command directly and prints one note line. A repeatable `--exclude <file>` leaves test files out where the command lists or selects them, and fails closed when the command names no matching file. Track `role_gate_heavy_run_20261118`.
 
 ### Chores
@@ -19,6 +21,8 @@
 * **step limits:** agents/measure-*.md now carries the raised live step limits. Track `step_limits_dispositions_20261118`.
 
 ### Bug Fixes
+
+* **installer writes:** a shell command that runs `bin/install-measure-skill` passes the guard with no active task. Other writes under `.config` still need a task. The shared core gains the config path rule and the installer command rule. All three `guards.ts` copies change in parity. Track `installer_adopt_guard_20261119`.
 
 * **closeout deferred and generated:** closeout fails unless each deferred task of the closeout phase cites its done SHA on the line. Closeout runs the generator freshness check from `GENERATED_CHECK_COMMAND` when the repo holds a `measure/generated` folder. The gate skips the check with one INFO line when the folder is absent. Track `closeout_deferred_generated_20261119`.
 

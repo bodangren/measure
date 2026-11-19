@@ -11,6 +11,7 @@ import {
   commitReminder,
   editDecision,
   isInside,
+  isInstallerCommand,
   isTestCommand,
   isTestFile,
   parseCommitCommand,
@@ -219,8 +220,10 @@ export class Guard {
     }
     // Shell writes: the bounded grammar's targets go through the edit and strict TDD guards
     // (the closeout guard still cannot read a shell write's after-text; the end-of-turn check
-    // is its backstop).
+    // is its backstop). The installer writes its own targets, so its command passes.
+    const isInstaller = command !== null && isInstallerCommand(command)
     for (const target of shellTargets) {
+      if (isInstaller) continue
       const resolved = target.startsWith('/') ? joinPath(target) : joinPath(this.root, target)
       this.deny(this.editGuard(context, session, resolved))
       this.deny(tddDecision(context, session.red, resolved))

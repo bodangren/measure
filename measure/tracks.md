@@ -514,4 +514,8 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 
 - [x] **Track: Agent live sync**
   *Link: [./archive/agent_live_sync_20261119/](./archive/agent_live_sync_20261119/)*
-  *Agent live sync: fold the live step limits (10 files to 120) and spec-review route rules into agents/measure-*.md, keeping the PR #32 result block form (PM request, 2026-11-19)*
+  *Agent live sync: fold the live step limits and spec-review route rules into agents/measure-*.md, keeping the PR #32 result block form*
+
+- [x] **Track: Installer adopt and guard exception**
+  *Link: [./archive/installer_adopt_guard_20261119/](./archive/installer_adopt_guard_20261119/)*
+  *Installer adopt-matching and guard installer exception: adopt a local edit that matches the source, and let the installer write its own targets without a track*

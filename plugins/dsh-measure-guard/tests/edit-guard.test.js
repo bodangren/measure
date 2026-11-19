@@ -191,6 +191,20 @@ test('prepareDecision denies through the pre-execute listener and the decision m
 
 const shellExec = command => ({ name: 'bash', agent, arguments: { command } })
 
+test('the installer command passes with no active track', async () => {
+  const deps = depsOf({ snapshot: snapshotOf(NO_TASK_PLAN) })
+  for (const command of ['bin/install-measure-skill --check', 'bin/install-measure-skill']) {
+    const decision = await prepareDecision(deps, shellExec(command))
+    assert.equal(decision.denial, undefined, command)
+  }
+})
+
+test('a cp into ~/.config/opencode/agents with no active track is denied', async () => {
+  const deps = depsOf({ snapshot: snapshotOf(NO_TASK_PLAN) })
+  const decision = await prepareDecision(deps, shellExec('cp src /tmp/fake-home/.config/opencode/agents/foo.md'))
+  assert.match(decision.denial ?? '', /measure-guard/)
+})
+
 test('a shell redirect outside measure/ without a task is denied with the core edit text', async () => {
   const deps = depsOf({ snapshot: snapshotOf(NO_TASK_PLAN) })
   const decision = await prepareDecision(deps, shellExec('echo hi > /repo/src/app.js'))

@@ -118,4 +118,36 @@ describe('edit guard', () => {
     const patch: ToolBeforeEvent = { ...edit('x'), tool: 'apply_patch', input: { patchText: `*** Begin Patch\n*** Update File: ${root}/a.ts\n@@\n-a\n+b\n*** End Patch\n` } }
     await expect(guard.onToolBefore(patch)).rejects.toThrow(/measure-guard/)
   })
+
+  test('the installer command passes with no [~] task', async () => {
+    const root = await withMeasure(await tempProject())
+    noTask(root)
+    const guard = makeGuard(root)
+    for (const command of ['bin/install-measure-skill --check', 'bin/install-measure-skill']) {
+      const event: ToolBeforeEvent = {
+        tool: 'bash',
+        sessionID: 'ses_1',
+        agent: 'build',
+        messageID: 'msg_1',
+        id: 'call_1',
+        input: { command },
+      }
+      await expect(guard.onToolBefore(event)).resolves.toBeUndefined()
+    }
+  })
+
+  test('a cp into ~/.config/opencode/agents with no [~] task is denied', async () => {
+    const root = await withMeasure(await tempProject())
+    noTask(root)
+    const guard = makeGuard(root)
+    const event: ToolBeforeEvent = {
+      tool: 'bash',
+      sessionID: 'ses_1',
+      agent: 'build',
+      messageID: 'msg_1',
+      id: 'call_1',
+      input: { command: 'cp src /tmp/fake-home/.config/opencode/agents/foo.md' },
+    }
+    await expect(guard.onToolBefore(event)).rejects.toThrow(/measure-guard/)
+  })
 })
