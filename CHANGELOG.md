@@ -22,6 +22,8 @@
 
 ### Bug Fixes
 
+* **generated gates.json fallback:** the closeout generated check reads `GENERATED_CHECK_COMMAND` from the environment first, then from `measure/gates.json`. That order already held and stays. An empty command fails and names the key, the absolute `gates.json` path, and the state. The state is `file missing`, `file unreadable or not a JSON object`, or `key absent`. It skips with INFO when no `measure/generated` exists. Track `generated_gates_json_20261119`, error `generated_check_error_20261119`.
+
 * **installer writes:** a shell command that runs `bin/install-measure-skill` passes the guard with no active task. Other writes under `.config` still need a task. The shared core gains the config path rule and the installer command rule. All three `guards.ts` copies change in parity. Track `installer_adopt_guard_20261119`.
 
 * **closeout deferred and generated:** closeout fails unless each deferred task of the closeout phase cites its done SHA on the line. Closeout runs the generator freshness check from `GENERATED_CHECK_COMMAND` when the repo holds a `measure/generated` folder. The gate skips the check with one INFO line when the folder is absent. Track `closeout_deferred_generated_20261119`.
