@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Agent live sync**
+  *Link: [./tracks/agent_live_sync_20261119/](./tracks/agent_live_sync_20261119/)*
+  *Fold the live step limits and spec-review route rules into agents/measure-*.md, keeping the PR #32 result block form (PM request, 2026-11-19)*
 
 ---
 
