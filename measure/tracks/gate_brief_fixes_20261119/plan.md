@@ -11,4 +11,4 @@ Spec: [./spec.md](./spec.md)
 - [x] Task 1.2: exact result block form in audit briefs, contract, and gate message 16f58bb
 - [x] Task 1.3: legacy findings mapping with a warning in the audit check 94698fe
 - [x] Task 1.4: wider dispositions IDs for every found finding form 7e6dc79
-- [~] Task 1.5: records and closeout
+- [x] Task 1.5: records and closeout 6fa8c6e
