@@ -13,7 +13,36 @@ const SECTION = /^#{1,2} /
 const TASK = /^- \[([ ~xb])\] (.*)$/
 const SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/
 const CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/
-const DEFERRED = /\bdeferred:([^\s`]+)/
+const OWNER = /\bdeferred:([A-Za-z0-9._-]*)/
+const LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/
+const BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/
+
+/** FR-3: the text after `deferred:` without its trailing `.`, `_`, and `-`. */
+export const ownerToken = (text: string): string | null => {
+  const match = OWNER.exec(text)
+  if (match === null) return null
+  const token = (match[1] ?? '').replace(/[._-]+$/, '')
+  return token === '' ? null : token
+}
+
+/** FR-3: the task text for a card without its SHA and checkpoint, capped at 140. */
+export const taskLabel = (text: string): string => {
+  const withoutCheckpoint = text.replace(CHECKPOINT, ' ')
+  const withoutSha = withoutCheckpoint.replace(LABEL_SHA, '')
+  const collapsed = withoutSha.replace(/\s+/g, ' ').trim()
+  return collapsed.length > 140 ? `${collapsed.slice(0, 140)}…` : collapsed
+}
+
+/** FR-3: the task text without its id prefix. */
+export const taskBody = (text: string): string => {
+  const match = BODY_PREFIX.exec(text)
+  if (match === null) return text
+  return text.slice(match[0].length).replace(/\s*\*\*$/, '').trim()
+}
+
+/** FR-4: true when the task body starts with `GATE` or the text names the manual check. */
+export const isGateText = (text: string): boolean =>
+  /^GATE\b/.test(taskBody(text)) || text.includes('User Manual Verification')
 
 /** Joins path parts and resolves `.` and `..` segments. */
 export const joinPath = (...parts: string[]): string => {
@@ -101,7 +130,7 @@ export const parsePlan = (md: string): Plan => {
       marker: (task[1] ?? ' ') as Marker,
       text,
       sha: SHA.exec(text)?.[1] ?? null,
-      deferredOwner: DEFERRED.exec(text)?.[1] ?? null,
+      deferredOwner: ownerToken(text),
     })
   })
   return plan

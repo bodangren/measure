@@ -1,80 +1,244 @@
 # measure-status
 
-OpenChamber extension that monitors the Measure status of the open project.
+OpenChamber extension that shows a read-only Measure board for eight
+Reading Advantage repos. It needs OpenChamber 2.7.1 or newer.
 
 ## What it shows
 
-The extension reads the Measure files of the open project:
+The extension reads the Measure files of eight repos under `~/Desktop`.
+It shows one accordion section for each repo. Each section holds a
+read-only board of the Measure tracks of that repo.
 
-- `measure/index.md` — finds the Tracks Registry link.
-- `measure/tracks.md` — lists the tracks and the active one.
-- `<track>/plan.md` — reads the phases and the current task of the active plan.
+The board has five columns: Planned, In progress, Blocked, Waiting on
+Daniel, and Done. A card shows the track title, the current phase and
+task, the age of the last file change, and a blocker or gate line.
 
-It draws a one-line band in the Work Status section and a full panel on
-the rail and the full page. The rail icon carries a badge with the count
-of blocked (`[b]`) tasks in the active plan.
+The rail panel and the full page show the same board. The Work Status
+section keeps its one-line band. The rail icon shows a badge with the
+count of Blocked tracks across the eight repos. A Waiting on Daniel
+track does not count.
+
+The extension reads files and writes no file. It sends one message only,
+and only when the user writes a comment on a blocker.
 
 ## Install
 
-1. Open Settings -> Extensions.
-2. Paste the absolute path of this folder.
-3. Approve the `files` capability.
+1. Open Settings → Extensions.
+2. Open Add and paste the absolute path of the `extensions/measure-status`
+   folder of this repo.
+3. Approve the file access and the service grant.
 
-The extension needs `files` to read the Measure files. It does not need
-`prompt`, `sessions`, `model`, or `shells`.
+The approval dialog lists these eight `filesystem` globs:
+
+```
+~/Desktop/reading-advantage-monorepo/measure/**
+~/Desktop/Workbooks/measure/**
+~/Desktop/advantage-pr/measure/**
+~/Desktop/advantage-forge/measure/**
+~/Desktop/mastery-advantage/measure/**
+~/Desktop/ra-math-advantage/measure/**
+~/Desktop/lending-desk-bench/measure/**
+~/Desktop/measure/measure/**
+```
+
+The `files` capability covers read and write. The extension code only
+reads.
+
+The dialog also lists the `service` grant and the `sessionControl`
+grant. The plain sentence for the dialog is: "This extension reads the
+Measure files of eight repos. It sends one message to the Measure PM
+session when you write a comment on a blocker."
+
+The grant names no session. The constant `PM_SESSION_ID` in
+`src/pm-target.ts` is the only limit on the target.
 
 ## Surfaces
 
-The page serves three surfaces:
+The manifest declares three surfaces:
 
-- `status` — one line above the prompt in the Work Status section.
-- `panel` — the rail panel that the rail icon opens.
+- `status` — the one-line band in the Work Status section, at a height
+  of 48 px. The band shows the Measure state of the open project. It
+  shows no board data.
+- `panel` — the rail panel that the rail icon opens. The manifest sets
+  `panel.mobile` to `true`.
 - `page` — the full-screen page that the Extension pages menu opens.
 
-The Work Status section keeps a tight height. The rail and page add a
-refresh button, a copy button, and the full status view.
+The panel and the page show the same board. The layout follows the width
+of the frame, not the surface.
 
-## Parse rules
+## The board
 
-The parser follows the rules of `mods/measure-guard`:
+Each section header shows the repo id and the count of each column. The
+counts stay visible when the section is closed.
 
-- Status markers: `[ ]` pending, `[~]` in progress, `[x]` done, `[b]` blocked.
-- A `[b]` task closes when its line has a `deferred:<owner>` field.
-- `measure/tracks.md` accepts two entry formats: a bold title with a
-  `*Link:` line after it, or a markdown link to `archive/<id>/index.md`.
-  The scan reads from the line after the title until the next entry line, the
-  next markdown heading, or the end of the file, and takes the first
-  `*Link:` line in that range.
-- The active track is the first `[~]` track whose plan has a `[~]` task;
-  else the first `[~]` track.
-- In `plan.md`, a task is an unindented checkbox line under a `## Phase ...`
-  heading. Indented lines are sub-tasks. Checkbox lines in other `##`
-  sections are not tasks.
-- A completed task line ends with a 7-character SHA, with or without
-  backticks.
-- A phase is checkpointed when its heading has `[checkpoint: <sha>]`.
+A section starts closed. It opens after its first load when it has a
+Blocked card or a Waiting on Daniel card. Below 640 px, only the first
+such section starts open. The choice of the user wins, and a reload
+keeps it.
+
+The columns follow this order at every width: Planned, In progress,
+Blocked, Waiting on Daniel, and Done. A column header shows its name and
+the count of all its cards. A column with no card shows `None`.
+
+A column other than Done shows eight cards and then the button
+`Show N more`. The button opens the full list.
+
+A Planned or In progress card with an age above 30 days goes to a
+closed `Stale (N)` group at the end of its column. A click opens the
+group.
+
+A Blocked card shows the label `BLOCKER`. A Waiting on Daniel card shows
+the label `GATE` or `MANUAL CHECK`. A card that no registry entry names
+shows `Not in the registry`.
+
+The Done column is closed at the first paint and shows its count only.
+An open Done column shows a closed group of the five Done tracks with
+the newest closed date, within 14 days of the load time. The line below
+the group reads `N more done, M archived`. A Done track under `tracks/`
+and not under `archive/` shows the label `Not archived`.
+
+A Blocked card and a Waiting on Daniel card show one small `Comment`
+button. A click opens the box `Comment to PM` and the Send button on
+that card only. One box is open at a time. The Escape key or a finished
+send closes the box. A comment needs at least one visible character and
+at most 2000 characters. The Send button is off while the text holds no
+visible character, while the text is longer than 2000 characters, or
+while a send runs.
+
+The Send button sends one message to the Measure PM session. One click
+sends one message. There is no retry loop. A failed send shows the error
+text, and the button stays usable. After a send the card shows one line
+`sent HH:MM`. The time is the local time of the page. The comment state
+lives in the page only, and the extension stores nothing.
+
+The message holds one field per line: `Repo`, `Track`, `Task`,
+`Blocker`, and `Daniel`. Every value stays plain text. A line with no
+value stays out. A text with no visible character gives no send. A text
+longer than 2000 characters gives no send.
+
+## Reading the files
+
+The board reads only these files:
+
+- `<path>/measure/tracks.md` — the registry of the tracks.
+- `<path>/measure/<folder>/plan.md` — the phases and the tasks.
+- `<path>/measure/<folder>/metadata.json` — the time of the last change.
+
+The board lists only `<path>/measure/tracks` and `<path>/measure/archive`.
+
+The registry accepts the markers `[ ]`, `[~]`, `[x]`, and `[b]`. It
+takes the track folder from the `*Link:` target. An absolute target, a
+URL, or a target above `measure/` gives no folder.
+
+A folder under `tracks/` that no entry names gets a card when it has a
+`plan.md`. A folder under `archive/` that no entry names gets a Done
+card. Each of these cards shows `Not in the registry`.
+
+A track is Done when its registry marker is `[x]` or its folder sits
+under `archive/`. The board never moves a file.
+
+The panel sends a comment to the local service of the extension. The
+service listens on `127.0.0.1` only. It asks every request for the
+bearer token of the host. The service calls `sessions.send` with
+`PM_SESSION_ID`. It runs no command and names no socket of its own.
+
+Reading errors follow this list:
+
+- A failed read of `tracks.md` gives the line `No Measure tracks file at
+  <path>.` or `Cannot read <repo>: <code>.`
+- The code `NOT_GRANTED` adds one banner: `Allow file access outside the
+  project in Settings → Extensions.`
+- A failed read of `plan.md` gives a card with the note `No plan.` or
+  `Plan unreadable`.
+- A failure in one repo does not stop the other repos.
 
 ## Refresh
 
-The panel loads the files on first paint and refreshes them:
+The panel and the page run a full load in these cases:
 
-- When the open project changes.
-- Every 5 seconds, by `stat` of the known files. A change to any mtime or
-  to the set of `[~]` track folders triggers a full reload.
-- When the user clicks the Refresh button.
+- when the surface opens;
+- when the user clicks Refresh;
+- every 60 seconds while the page is visible.
 
-`NO_DIRECTORY` (no open project) and `NOT_FOUND` (a file vanished) fall
-back to the matching empty state.
+A press or a timer tick during a load starts no second load. A reload
+keeps the old cards of a repo on the page until the new data of that
+repo arrives. The board has no partial update. A change in a file shows
+at the next full load.
+
+The page makes at most eight file calls at one time. It loads each repo
+on its own.
+
+The `status` surface reads the Measure files of the open project. It
+loads on open and when the open project changes.
+
+## Layout
+
+Below 640 px, the five columns stack in column order. From 640 px, the
+columns sit side by side. A column is at least 220 px wide and at most
+320 px wide. The row wraps when the columns do not fit.
+
+At 980 px, at least three columns sit side by side. At 1280 px, all
+five columns fit. The page does not scroll sideways at 390, 980, or
+1280 px. A long word wraps.
+
+All buttons and section headers are at least 40 px high. All colours
+come from the `--oc-*` variables of the host. The CSS holds no colour
+literal. The page loads no remote resource.
+
+## The age and its limits
+
+The age of a card is the time of the last change to `plan.md` or
+`metadata.json`. The board uses the file time. The board never uses a
+commit time.
+
+The label shows `<1m` below one minute, `Nm` below one hour, `Nh` below
+one day, and `Nd` below 60 days. From 60 days it shows `Nmo`, with one
+month of 30 days. A future time shows `<1m`. An unknown age shows
+`Updated unknown`.
+
+The page computes the label at each paint. The 60-second reload keeps
+the label current.
+
+The age feeds three limits:
+
+- A Planned or In progress card above 30 days goes to the `Stale (N)`
+  group.
+- A gate task gives Waiting on Daniel only when its age is 14 days or
+  less.
+- The Done group holds only tracks that closed within 14 days.
+
+## Add a repo
+
+A new repo needs three changes:
+
+1. One roster line in `src/roster.ts`.
+2. One `filesystem` glob in `package.json`.
+3. A new approval of the file access in the host.
+
+A test fails when the roster and the manifest globs differ.
 
 ## Build
+
+Run these commands from `extensions/measure-status`:
 
 ```bash
 bun install
 bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=panel/main.js
+bunx openchamber-guest-bundle --node service/main.ts service/main.js
 ```
 
-The shipped `panel/main.js` is the built bundle. The app never compiles
-the extension; it loads the bundle from disk.
+The commit holds the bundles `panel/main.js` and `service/main.js`. The
+host loads the bundles from disk. The host never compiles the extension.
+
+The preview page renders the board code with the invented fixtures in
+`mockup/fixtures.json`. Build the preview with this command:
+
+```bash
+bunx esbuild preview/preview.ts --bundle --format=iife --platform=browser --outfile=preview/preview.js
+```
+
+Open `preview/preview.html` in a browser. The query key `theme` takes
+`light` or `dark`. The file `preview/preview.js` stays out of git.
 
 ## Test
 
@@ -83,23 +247,44 @@ bunx tsc -p . --noEmit
 bunx vitest run
 ```
 
-## Layout
+The tests run in Node. A fake host replaces the file API of OpenChamber.
+The tests use invented fixtures. The send tests never reach the network.
+
+## Files
 
 ```
 extensions/measure-status/
-  package.json        manifest
-  tsconfig.json
+  package.json           manifest, grants, and the eight globs
   README.md
+  tsconfig.json
   src/
-    types.ts          data shapes
-    parse.ts          pure parser
-    measure.ts        snapshot loader over the host file API
-    band.ts           band line and status view model
-    fixtures.ts       plan and tracks fixtures
-    parse.test.ts     parser tests
-    band.test.ts      band line and snapshot loader tests
+    roster.ts            the eight repos and their measure globs
+    registry.ts          the reader of tracks.md and the folder rules
+    parse.ts             the reader of plan.md
+    board.ts             the column rules, the card, the sort, the cap, the counts
+    age.ts               the last change and the age label
+    load.ts              the loader over readFile, stat, and listDir
+    measure.ts           the loader of the band
+    band.ts              the band line of the status surface
+    render.ts            the escaped HTML of the board
+    styles.ts            the CSS string
+    send.ts              the send rules of the comment
+    comment.ts           the message layout and its limits
+    comment-box.ts       the state of the comment box
+    page-state.ts        the repo states of a reload
+    pm-target.ts         the PM session id
+    *.test.ts            the unit and adversarial tests
   panel/
-    index.html        entry
-    main.ts           UI source
-    main.js           built IIFE
+    index.html           the entry of the panel and the page
+    main.ts              the host wiring
+    main.js              the built bundle
+  preview/
+    preview.html         the preview page
+    preview.ts           the preview entry
+  service/
+    main.ts              the local service
+    main.js              the built service
+  mockup/
+    board.html           the accepted static mockup
+    fixtures.json        the invented fixture data
 ```

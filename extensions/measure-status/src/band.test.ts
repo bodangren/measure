@@ -1,19 +1,7 @@
-// The band line and status view model, plus the snapshot loader against an
-// in-memory fake host.
+// The band line, plus the snapshot loader against an in-memory fake host.
 import { describe, expect, test } from 'vitest'
 import type { FileStatResult } from '@openchamber/sdk'
-import {
-  activeId,
-  bandLine,
-  blockedCountOfActivePlan,
-  copyText,
-  markerClassName,
-  markerText,
-  markerTone,
-  needsCurrentTaskBanner,
-  nextPendingText,
-  statusView,
-} from './band'
+import { bandLine, markerClassName, markerText, markerTone } from './band'
 import {
   EDGE_PLAN,
   DONE_PLAN,
@@ -176,63 +164,6 @@ describe('marker helpers', () => {
     for (const m of markers) {
       expect(markerClassName(m)).toBe(`marker-${markerTone(m)}`)
     }
-  })
-})
-
-describe('statusView and copyText', () => {
-  test('lists every track with the active one marked', () => {
-    const view = statusView(activeSnapshot())
-    expect(view.tracks.map(t => t.id)).toEqual(['first_1', 'second_2', 'old_0'])
-    expect(view.tracks.find(t => t.active)?.id).toBe('second_2')
-    expect(view.activePlanPath).toBe('measure/tracks/second_2/plan.md')
-  })
-
-  test('lists the blocked tasks with their owner and the open marker flag', () => {
-    const snapshot = activeSnapshot()
-    snapshot.active = {
-      entry: snapshot.tracks[0]!,
-      planPath: 'measure/tracks/first_1/plan.md',
-      plan: parsePlan(EDGE_PLAN),
-    }
-    const view = statusView(snapshot)
-    expect(view.blockedTasks).toHaveLength(2)
-    expect(view.blockedTasks.find(t => t.deferredOwner === null)).toBeDefined()
-  })
-
-  test('copyText includes the band line, the tracks, the phases, and the [b] tasks', () => {
-    const text = copyText(activeSnapshot())
-    expect(text).toContain('Measure')
-    expect(text).toContain('Tracks:')
-    expect(text).toContain('Active plan: measure/tracks/second_2/plan.md')
-    expect(text).toContain('Phase 1: A')
-  })
-})
-
-describe('helpers', () => {
-  test('activeId returns the active track id or null', () => {
-    expect(activeId(activeSnapshot())).toBe('second_2')
-    expect(activeId({ ...activeSnapshot(), active: null })).toBeNull()
-  })
-
-  test('blockedCountOfActivePlan counts the [b] tasks of the active plan', () => {
-    const snapshot = activeSnapshot()
-    snapshot.active = {
-      entry: snapshot.tracks[0]!,
-      planPath: 'measure/tracks/first_1/plan.md',
-      plan: parsePlan(EDGE_PLAN),
-    }
-    expect(blockedCountOfActivePlan(snapshot)).toBe(2)
-  })
-
-  test('needsCurrentTaskBanner is true only when there is an active plan but no [~] task', () => {
-    expect(needsCurrentTaskBanner(activeSnapshot())).toBe(false)
-    expect(needsCurrentTaskBanner({ ...activeSnapshot(), active: { ...activeSnapshot().active!, plan: parsePlan(PLAN_NO_ACTIVE_TASK) } })).toBe(true)
-    expect(needsCurrentTaskBanner({ ...activeSnapshot(), active: null })).toBe(false)
-  })
-
-  test('nextPendingText returns the first [ ] task or null', () => {
-    expect(nextPendingText(activeSnapshot())).toBeNull()
-    expect(nextPendingText({ ...activeSnapshot(), active: { ...activeSnapshot().active!, plan: parsePlan(PLAN_NO_ACTIVE_TASK) } })).toBe('Task: Next')
   })
 })
 

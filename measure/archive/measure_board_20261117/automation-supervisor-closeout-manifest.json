@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "measure_board_20261117",
+  "track_title": "Measure board",
+  "closeout_baseline_sha": "4b3d82eb563123edb39c4a5f833243d4e79b835d",
+  "track_base_sha": "b2b5d084a25ee24914f4d4a1358a92297087cacc",
+  "audited_head_sha": "b13ea4620c922d65eab379daa64b1369919e6029",
+  "closeout_commit_sha": "b13ea4620c922d65eab379daa64b1369919e6029",
+  "closeout_record_commit_sha": "pending",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/measure_board_20261117/spec-review-f16646c.json", "status": "pass", "audited_head_sha": "f16646c00e726f22731d0e30de8c6da886cf20c0"},
+    {"role": "spec-review", "artifact": "measure/runs/measure_board_20261117/spec-review-cbeea8e.json", "status": "pass", "audited_head_sha": "cbeea8e3d991adc7f58c26c3f7995c02f752b187"},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/measure_board_20261117/review-a-7d43593.json", "status": "pass", "audited_head_sha": "7d435936f9c31bbea2c318829dad0628b5378acc", "note": "Open Nits pass to closeout."},
+    {"role": "review-b", "phase": "Phase 2", "artifact": "measure/runs/measure_board_20261117/review-b-7d43593.json", "status": "pass", "audited_head_sha": "7d435936f9c31bbea2c318829dad0628b5378acc", "note": "Open Nits pass to closeout."},
+    {"role": "review-c", "phase": "Phase 2", "artifact": "measure/runs/measure_board_20261117/review-c-7d43593.json", "status": "pass", "audited_head_sha": "7d435936f9c31bbea2c318829dad0628b5378acc", "note": "Open Nits pass to closeout."},
+    {"role": "adversarial-testing", "phase": "Phase 2", "artifact": "measure/runs/measure_board_20261117/adversarial-ba69e80.json", "status": "fail", "audited_head_sha": "ba69e80", "note": "Red run before the fix. Not an accepted audit. The passing run follows."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/measure_board_20261117/phase-acceptance-1.json", "status": "pass", "audited_head_sha": "c274da0cbaec8f4e7a3a8001331cfca86ef6853f", "note": "Ran late to close final acceptance F1. Open Nits F1 and F2 pass to closeout."},
+    {"role": "phase-acceptance", "phase": "Phase 2", "artifact": "measure/runs/measure_board_20261117/phase-acceptance-2.json", "status": "pass", "audited_head_sha": "d8968140dcde7fdfd3cbcf4a38003eb5a7114731", "note": "Adversarial runs preceded later fixes. The deviation is accepted."},
+    {"role": "phase-acceptance", "phase": "Phase 3", "artifact": "measure/runs/measure_board_20261117/phase-acceptance-3.json", "status": "pass", "audited_head_sha": "44c25d3f64ed286ec78ef43212ad4814ea872f09", "note": "Adversarial runs preceded the focus fix. The deviation is accepted."},
+    {"role": "phase-acceptance", "phase": "Phase 4", "artifact": "measure/runs/measure_board_20261117/phase-acceptance-4.json", "status": "pass", "audited_head_sha": "a206fa2bc8be61e95f4dade51f48760feaa105ab", "note": "Nits F1 and F2 pass to final acceptance."},
+    {"role": "review-a", "phase": "Phase 3", "artifact": "measure/runs/measure_board_20261117/review-a-ui-e893065.json", "status": "pass", "audited_head_sha": "e89306510e7cf2746ec0f8607d407d1a8528b8ce"},
+    {"role": "review-b", "phase": "Phase 3", "artifact": "measure/runs/measure_board_20261117/review-b-ui-e893065.json", "status": "pass", "audited_head_sha": "e89306510e7cf2746ec0f8607d407d1a8528b8ce"},
+    {"role": "review-c", "phase": "Phase 3", "artifact": "measure/runs/measure_board_20261117/review-c-ui-e893065.json", "status": "pass", "audited_head_sha": "e89306510e7cf2746ec0f8607d407d1a8528b8ce"},
+    {"role": "adversarial-testing", "phase": "Phase 3", "artifact": "measure/runs/measure_board_20261117/adversarial-ui-ed7077e.json", "status": "pass", "audited_head_sha": "ed7077e"},
+    {"role": "ux-browser-review", "artifact": "measure/runs/measure_board_20261117/ux-review-ui.json", "status": "pass", "audited_head_sha": "e89306510e7cf2746ec0f8607d407d1a8528b8ce", "note": "Nit F5 passes to closeout."},
+    {"role": "review-a", "phase": "Phase 4", "artifact": "measure/runs/measure_board_20261117/review-a-p4-db8611d.json", "status": "pass", "audited_head_sha": "db8611d4e2f3ddfef65be92390b6f9c2191f296f"},
+    {"role": "review-b", "phase": "Phase 4", "artifact": "measure/runs/measure_board_20261117/review-b-p4-db8611d.json", "status": "pass", "audited_head_sha": "db8611d4e2f3ddfef65be92390b6f9c2191f296f"},
+    {"role": "review-c", "phase": "Phase 4", "artifact": "measure/runs/measure_board_20261117/review-c-p4-db8611d.json", "status": "pass", "audited_head_sha": "db8611d4e2f3ddfef65be92390b6f9c2191f296f", "note": "No review artifact covers the comment-only commit ebf2540. The deviation is accepted."},
+    {"role": "final-acceptance", "artifact": "measure/runs/measure_board_20261117/final-acceptance-measure-board.json", "status": "pass", "audited_head_sha": "b13ea4620c922d65eab379daa64b1369919e6029", "note": "No blocking finding. Nits F1 to F9 pass to closeout; F4 to F9 stay open."},
+    {"role": "closeout", "artifact": "measure/runs/measure_board_20261117/closeout-check.log", "status": "pass", "note": "The first run failed only on the missing manifest. The second run passed after this manifest was written."}
+  ],
+  "models": "Final acceptance ran on claude-code/claude-sonnet-5-5#max. Other roles used substituted routes, recorded in metadata deviation_notes.",
+  "commands": [
+    "git rev-parse HEAD && git status --short && git diff --stat b13ea46..HEAD",
+    "Read measure/tracks/measure_board_20261117/plan.md in full before the move; confirm no [~], no [ ], and no [b] task",
+    "Write metadata.json, CHANGELOG.md, and README.md line 33; git mv measure/tracks/measure_board_20261117 measure/archive/measure_board_20261117; remove the Active Tracks entry",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py plan_closeout_feedback and registry_description_feedback -> no feedback",
+    "HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/spec_review_gate/run.sh -> exit 0 (run-suites.log)",
+    "HEAVY_PRIORITY=p2 bash /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh bash tests/dsh/test-registry.sh -> exit 0 (test-registry-closeout.log)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track measure_board_20261117 -> exit 1 on the missing manifest (closeout-check.log), then exit 0 after this manifest",
+    "bun measure/runs/measure_board_20261117/scripts/leak-check-tree.ts --log measure/runs/measure_board_20261117/leak-check.log -> new_hits=0 on the final HEAD"
+  ],
+  "task_shas": {
+    "1.1": "ac43ad7", "1.2": "51e00b9", "1.3": "7cd7011", "1.4": "bb8d0d3", "1.5": "dd6a559", "1.5a": "5659213", "1.5b": "b8a4014", "1.6": "3cd20b0",
+    "2.1": "5420ab5", "2.2": "62c1edc", "2.3": "e0940a9", "2.3a": "9f8490d", "2.3b": "3f31c7b", "2.4": "d998999", "2.5": "7d43593", "2.6": "ba69e80", "2.7": "d896814",
+    "3.1": "b7ee4b4", "3.2": "9acb407", "3.2a": "ff9ea34", "3.2b": "313cb94", "3.3": "60b7ed8", "3.4": "ed7077e", "3.5": "4875991", "3.6": "44c25d3",
+    "4.1": "def0cca", "4.2": "ebf2540", "4.3": "a206fa2", "4.4": "b13ea46", "4.5": "46f02c5", "4.6": "4b3d82e"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "c0efdc8",
+    "Phase 2": "1c61804",
+    "Phase 3": "4f4ba98",
+    "Phase 4": "792dadf"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (no false-claim text in the archived plan; final acceptance found record wording Nits F7 and Phase 1 acceptance F1, routed to closeout)",
+    "a6_registry_check": "pass (the registry description is neutral and makes no claim that an adversarial test is green)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep -rn measure_board_20261117 tests/ mods/ plugins/",
+    "result": "no match",
+    "test_fix": "none"
+  },
+  "retained_evidence": [
+    "measure/runs/measure_board_20261117/ (all Red, Green, review, phase, final, closeout logs, JSON results, and probe scripts; retained, nothing deleted)",
+    "measure/archive/measure_board_20261117/ (index, plan, spec, spec-review, test-strategy, metadata, and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "out_of_repository_facts": [
+    "Real fixtures, the real-data mockup, the previews, and the real-data screenshots stay in /home/daniebo/.local/share/measure-board-private/. That folder lies under no git work tree.",
+    "measure/runs/ is gitignored. No run artifact, including this closeout log and result, was force-added to git."
+  ],
+  "tech_debt_rows_added": [],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

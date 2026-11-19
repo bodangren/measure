@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Measure board preview</title>
+    <style>
+/* THEME-SETS-START */
+:root, :root[data-oc-theme="light"] {
+  color-scheme: light;
+  --oc-bg: #f7f6f2;
+  --oc-elevated: #ffffff;
+  --oc-fg: #1f1e1b;
+  --oc-muted: #67645d;
+  --oc-subtle: #8a877f;
+  --oc-border: #d8d5cc;
+  --oc-hover: #eeece5;
+  --oc-selection: #dcd8cc;
+  --oc-focus: #2f66c7;
+  --oc-primary: #2f66c7;
+  --oc-muted-surface: #efede6;
+  --oc-elevated-fg: #1f1e1b;
+  --oc-active: #e4e1d8;
+  --oc-selection-fg: #1f1e1b;
+  --oc-primary-fg: #ffffff;
+  --oc-primary-text: #2a5cb5;
+  --oc-success-text: #1d7442;
+  --oc-warning-text: #8a5600;
+  --oc-error-text: #b3261e;
+  --oc-info-text: #1c6896;
+  --oc-success: #2e9e5e;
+  --oc-warning: #d99a1a;
+  --oc-error: #d64545;
+  --oc-info: #2e86c1;
+  --oc-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --oc-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --oc-radius: 8px;
+}
+:root[data-oc-theme="dark"] {
+  color-scheme: dark;
+  --oc-bg: #151413;
+  --oc-elevated: #201f1d;
+  --oc-fg: #e9e7e2;
+  --oc-muted: #a09d95;
+  --oc-subtle: #78756e;
+  --oc-border: #37352f;
+  --oc-hover: #2a2824;
+  --oc-selection: #3b3832;
+  --oc-focus: #7aa5ff;
+  --oc-primary: #7aa5ff;
+  --oc-muted-surface: #1b1a18;
+  --oc-elevated-fg: #e9e7e2;
+  --oc-active: #33312c;
+  --oc-selection-fg: #f3f1ec;
+  --oc-primary-fg: #10100f;
+  --oc-primary-text: #95b6ff;
+  --oc-success-text: #6fcf97;
+  --oc-warning-text: #e8b04a;
+  --oc-error-text: #ff8a80;
+  --oc-info-text: #7ec4ee;
+  --oc-success: #3bb273;
+  --oc-warning: #e0a030;
+  --oc-error: #e5584f;
+  --oc-info: #4a9fd8;
+  --oc-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --oc-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --oc-radius: 8px;
+}
+/* THEME-SETS-END */
+      html, body { margin: 0; padding: 0; background: var(--oc-bg); color: var(--oc-fg); }
+    </style>
+  </head>
+  <body>
+    <div class="mb">
+      <div id="root"></div>
+      <div id="debug"></div>
+    </div>
+    <script src="preview.js"></script>
+  </body>
+</html>

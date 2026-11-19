@@ -1,0 +1,154 @@
+// Closeout nits (PM 2026-11-19): failing pins for the carried review Nits.
+// Every fixture here is invented text. Each test below fails at the Red HEAD.
+import { describe, expect, test } from 'vitest'
+import {
+  emptyCommentBox,
+  escapeCommentBox,
+  finishCommentSend,
+  focusAfter,
+  openCommentBox,
+} from './comment-box'
+import { canSendComment } from './comment'
+import { classifyTrack } from './board'
+import { isSendDisabled } from './send'
+
+const NOW = 1_800_000_000_000
+
+const sources = import.meta.glob(
+  ['../preview/preview.ts', '../panel/main.ts'],
+  { query: '?raw', import: 'default', eager: true },
+) as Record<string, string>
+
+const previewText = (): string => sources['../preview/preview.ts'] ?? ''
+const panelText = (): string => sources['../panel/main.ts'] ?? ''
+
+/**
+ * The CSS-string escape rule for a card key. Green owns this name.
+ * A backslash escapes first, then the quote. A newline is `\a `,
+ * a carriage return is `\d `, and a form feed is `\c `.
+ */
+export const escapeCssString = (key: string): string =>
+  key
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\a ')
+    .replace(/\r/g, '\\d ')
+    .replace(/\f/g, '\\c ')
+
+const KEYS = [
+  'invented-repo/invented_"quoted"',
+  'invented-repo/invented_\\backslash',
+  'invented-repo/invented_]bracket',
+  'invented-repo/invented_\nnewline',
+  'invented-repo/invented_\rreturn',
+  'invented-repo/invented_\ffeed',
+]
+
+describe('the focus selector escapes control characters', () => {
+  test('open names the escaped textarea selector for hostile keys', () => {
+    for (const key of KEYS) {
+      const want = `textarea.comment-input[data-key="${escapeCssString(key)}"]`
+      expect(focusAfter('open', key).selector, `open selector for ${JSON.stringify(key)}`).toBe(want)
+    }
+  })
+
+  test('send-done names the escaped Comment button for hostile keys', () => {
+    for (const key of KEYS) {
+      const want = `button[data-action="open-comment"][data-key="${escapeCssString(key)}"]`
+      expect(focusAfter('send-done', key).selector, `send-done selector for ${JSON.stringify(key)}`).toBe(want)
+    }
+  })
+
+  test('escape names the escaped Comment button for hostile keys', () => {
+    for (const key of KEYS) {
+      const want = `button[data-action="open-comment"][data-key="${escapeCssString(key)}"]`
+      expect(focusAfter('escape', key).selector, `escape selector for ${JSON.stringify(key)}`).toBe(want)
+    }
+  })
+})
+
+describe('the toggle focus rule', () => {
+  test('a pure toggle rule names the clicked toggle button', async () => {
+    const mod = (await import('./comment-box')) as unknown as Record<string, unknown>
+    const rule = mod['focusAfterToggle']
+    expect(rule, 'focusAfterToggle is exported').toBeTypeOf('function')
+    const fn = rule as (action: string, repo: string, column?: string) => { selector: string }
+    expect(fn('toggle-section', 'invented-repo').selector).toContain('toggle-section')
+    expect(fn('toggle-section', 'invented-repo').selector).toContain('invented-repo')
+    expect(fn('toggle-done', 'invented-repo').selector).toContain('toggle-done')
+    expect(fn('toggle-done-group', 'invented-repo').selector).toContain('toggle-done-group')
+    expect(fn('toggle-stale', 'invented-repo', 'blocked').selector).toContain('toggle-stale')
+  })
+
+  test('the preview uses the toggle rule after a toggle repaint', () => {
+    expect(previewText(), 'preview toggle rule').toContain('focusAfterToggle')
+    expect(previewText(), 'preview toggle focus call').toContain('.focus()')
+  })
+
+  test('the panel uses the toggle rule after a toggle repaint', () => {
+    expect(panelText(), 'panel toggle rule').toContain('focusAfterToggle')
+    expect(panelText(), 'panel toggle focus call').toContain('.focus()')
+  })
+})
+
+describe('an invisible-only comment never sends', () => {
+  test('control, zero-width, and bidi characters alone give no send', () => {
+    const samples = [
+      '\u0000\u0007\u0001\u001e\u000b',
+      '​‌﻿',
+      '‪‫‎‏',
+      '\u0000\u0007',
+    ]
+    for (const text of samples) {
+      expect(canSendComment(text), `canSend for ${JSON.stringify(text)}`).toBe(false)
+      expect(isSendDisabled(text, false), `disabled for ${JSON.stringify(text)}`).toBe(true)
+    }
+    expect(canSendComment('Please look')).toBe(true)
+    expect(isSendDisabled('Please look', false)).toBe(false)
+  })
+})
+
+describe('the preview fake sender follows the send rule', () => {
+  test('the preview checks the send rule before its fake send', () => {
+    const text = previewText()
+    const at = text.indexOf('const sendComment')
+    expect(at, 'preview sendComment exists').toBeGreaterThan(-1)
+    const block = text.slice(at, at + 900)
+    expect(block, 'preview send path uses isSendDisabled').toContain('isSendDisabled')
+  })
+})
+
+describe('the band loader runs only on the status surface', () => {
+  test('the directory listener registers only for the status surface', () => {
+    const text = panelText()
+    expect(text, 'panel registers onDirectory').toContain('host.onDirectory')
+    expect(
+      text.lastIndexOf('host.onDirectory'),
+      'onDirectory registers after the status-surface check',
+    ).toBeGreaterThan(text.lastIndexOf("if (surface === 'status')"))
+  })
+})
+
+describe('a finished send closes only its own card box', () => {
+  test('a send on one card keeps the box that reopened on another card', () => {
+    const first = 'invented-repo/invented_1'
+    const second = 'invented-repo/invented_2'
+    let state = emptyCommentBox()
+    state = openCommentBox(state, first)
+    state = openCommentBox(state, second)
+    expect(state.openKey).toBe(second)
+    state = finishCommentSend(state, first, { ok: true, sentAt: NOW })
+    expect(state.openKey, 'the box of the other card stays open').toBe(second)
+    expect(state.status[first]?.status).toBe('sent')
+  })
+
+  test('a finished send still closes its own open box', () => {
+    const key = 'invented-repo/invented_1'
+    let state = emptyCommentBox()
+    state = openCommentBox(state, key)
+    state = finishCommentSend(state, key, { ok: true, sentAt: NOW })
+    expect(state.openKey).toBeNull()
+    void escapeCommentBox
+    void classifyTrack
+  })
+})
