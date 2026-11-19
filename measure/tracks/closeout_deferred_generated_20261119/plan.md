@@ -8,5 +8,5 @@ Spec: [./spec.md](./spec.md)
 ## Phase 1: Closeout deferred and generated checks
 
 - [x] Task 1.1: deferred closeout tasks cite the done SHA 2d99303
-- [~] Task 1.2: generated freshness check in closeout
-- [ ] Task 1.3: records and closeout
+- [x] Task 1.2: generated freshness check in closeout 27c2ed0
+- [~] Task 1.3: records and closeout
