@@ -4,6 +4,8 @@
 
 ### Features
 
+* **installer adopt:** `bin/install-measure-skill` adopts a local edit that matches the source and reports `adopted <path>`. A plain install adopts by default. `--adopt-matching` makes the adopt explicit. `--check` names the flag for each local-edit. Track `installer_adopt_guard_20261119`.
+
 * **role-gate heavy run:** the `role-gate` command in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` now runs each gate command through a heavy-run wrapper when one is set. The wrapper resolves as `--runner`, then `MEASURE_HEAVY_RUN`, then `heavy-run.sh` on PATH; with none found the gate runs the command directly and prints one note line. A repeatable `--exclude <file>` leaves test files out where the command lists or selects them, and fails closed when the command names no matching file. Track `role_gate_heavy_run_20261118`.
 
 ### Chores

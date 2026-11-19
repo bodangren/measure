@@ -15,7 +15,7 @@ set -euo pipefail
 # new file.
 #
 # Usage:
-#   install-measure-skill [--ref <ref>] [--check | --adopt]
+#   install-measure-skill [--ref <ref>] [--check | --adopt | --adopt-matching]
 #   install-measure-skill --cron install | --cron remove
 #
 # Exit codes: 0 success (or no differences with --check), 1 differences
@@ -36,7 +36,7 @@ die() {
 }
 
 usage() {
-  sed -n '14,16p' "$script_path" | sed 's/^# \{0,1\}//'
+  sed -n '17,19p' "$script_path" | sed 's/^# \{0,1\}//'
 }
 
 # Shows a path under HOME as ~/...
@@ -56,8 +56,8 @@ while (($#)); do
       ref="$2"
       shift 2
       ;;
-    --check | --adopt)
-      [[ "$mode" == "install" ]] || die "use only one of --check and --adopt"
+    --check | --adopt | --adopt-matching)
+      [[ "$mode" == "install" ]] || die "use only one of --check, --adopt, and --adopt-matching"
       mode="${1#--}"
       shift
       ;;
@@ -230,6 +230,9 @@ for i in "${!targets[@]}"; do
       if [[ "$mode" != check ]]; then
         src_mode="$(stat -c %a -- "$src")"
         [[ "$(stat -c %a -- "$dst")" == "$src_mode" ]] || chmod "$src_mode" -- "$dst"
+        if [[ -n "${stamped[$rel]:-}" && "${stamped[$rel]}" != "$src_hash" ]]; then
+          printf 'adopted %s\n' "$(show "$dst")"
+        fi
       fi
       new_stamp[$rel]="$src_hash"
     elif [[ -n "${stamped[$rel]:-}" && "$dst_hash" == "${stamped[$rel]}" ]]; then
@@ -237,7 +240,11 @@ for i in "${!targets[@]}"; do
       put "$src" "$dst" || die "cannot write $(show "$dst")"
       written=$((written + 1)) new_stamp[$rel]="$src_hash"
     elif [[ -n "${stamped[$rel]:-}" ]]; then
-      if [[ "$mode" == check ]]; then report local-edit "$dst"; continue; fi
+      if [[ "$mode" == check ]]; then
+        report local-edit "$dst"
+        printf 'hint: fold the source into %s, then run with --adopt-matching\n' "$(show "$dst")"
+        continue
+      fi
       warn local-edit "$dst"
       kept=$((kept + 1)) new_stamp[$rel]="${stamped[$rel]}"
     elif [[ "$mode" == adopt ]]; then
