@@ -1046,17 +1046,37 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
     feedback: list[str] = []
     sha_pattern = re.compile(r"\b[0-9a-f]{7,40}\b")
+    # The closeout phase is the last phase block of the plan. A deferred task
+    # of that phase, or a task whose text names records, closeout, or
+    # regenerate, cites its done SHA on the line. Deferred tasks in earlier
+    # phases keep the old rule and give no feedback.
+    last_heading = max(
+        (match.start() for match in re.finditer(r"^## Phase ", text, re.MULTILINE)),
+        default=None,
+    )
     # Each processed line is (indent, status, covered). A parent covers a
     # sub-box when it is an [x] line that is itself covered.
     processed: list[tuple[int, str, bool]] = []
-    for full_line, status, task in re.findall(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+    for match in re.finditer(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+        full_line, status, task = match.groups()
         # The regex may capture a newline before a top-level checkbox. Measure
         # only the horizontal white space before the checkbox on its own line.
         prefix = full_line[: full_line.index("- [")]
         indent = len(prefix[prefix.rfind("\n") + 1 :].expandtabs(4))
         has_sha = sha_pattern.search(task) is not None
-        if "deferred" in task.lower():
-            # A deferred line gives no feedback. It stays a parent and is covered.
+        lowered = task.lower()
+        if "deferred" in lowered:
+            is_closeout = (last_heading is not None and match.start() >= last_heading) or any(
+                word in lowered for word in ("records", "closeout", "regenerate")
+            )
+            if not is_closeout:
+                # A deferred line gives no feedback. It stays a parent and is covered.
+                processed.append((indent, status, True))
+                continue
+            if not has_sha:
+                feedback.append(f"deferred closeout task lacks done SHA: {full_line.strip()}")
+                processed.append((indent, status, False))
+                continue
             processed.append((indent, status, True))
             continue
         if status != "x":
