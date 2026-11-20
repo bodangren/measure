@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Board keeps focus and shows a plain reason per card**
+  *Link: [./tracks/board_focus_reasons_20261121/](./tracks/board_focus_reasons_20261121/)*
+  *Board keeps focus and shows a plain reason per card*
 
 ---
 
