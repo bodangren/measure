@@ -9,7 +9,8 @@ Test command: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vi
 
 ## Phase 1: Focus survives a refresh
 
-- [ ] Task 1.1: Red DOM tests for held data paints, focus, caret, and draft text (`extensions/measure-status/src/painter.test.ts`, `extensions/measure-status/src/painter-dom.test.ts`, `package.json` plus `bun.lock`)
+- [~] Task 1.1: Red DOM tests for held data paints, focus, caret, and draft text (`extensions/measure-status/src/painter.test.ts`, `extensions/measure-status/src/painter-dom.test.ts`, `package.json` plus `bun.lock`)
+  - Red evidence: `tsc` fails only on the missing `./painter` module (2 errors). `vitest run` fails 2 new suites on the missing module. It passes 21 suites (308 tests). Log: `measure/runs/board_focus_reasons_20261121/red-p1.log`.
 - [ ] Task 1.2: painter module, panel and preview wiring, rebuilt panel/main.js, README Refresh text
 - [ ] Task 1.3: live browser check on the OpenChamber panel
 ## Phase 2: One state and one reason per card
