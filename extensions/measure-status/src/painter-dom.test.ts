@@ -19,7 +19,7 @@ const trackInput = (title: string): TrackInput => ({
   title,
   registryMarker: ' ',
   folder: 'tracks/invented_1',
-  plan: { kind: 'plan', plan: parsePlan('## Phase 1: Work\n\n- [~] Task: Do the work\n') },
+  plan: { kind: 'plan', plan: parsePlan('## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Two deferred:daniel-deploy-word\n') },
   lastChange: NOW,
   doneDate: null,
   doneSource: null,
@@ -156,6 +156,7 @@ describe('held data paints keep focus, caret, and draft text', () => {
     const texts: Record<string, string> = { [key]: 'keep this draft' }
     root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
     const area = findArea(root)
+    restoreComment(root, captureComment(root), texts)
     area.focus()
     area.setSelectionRange(2, 6)
     const snapshot = captureComment(root)
