@@ -11,9 +11,9 @@ Test command: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vi
 
 - [x] Task 1.1: Red DOM tests for held data paints, focus, caret, and draft text (`extensions/measure-status/src/painter.test.ts`, `extensions/measure-status/src/painter-dom.test.ts`, `package.json` plus `bun.lock`) — f56902a
   - Red evidence: `tsc` fails only on the missing `./painter` module (2 errors). `vitest run` fails 2 new suites on the missing module. It passes 21 suites (308 tests). Log: `measure/runs/board_focus_reasons_20261121/red-p1.log`.
-- [x] Task 1.2: painter module, panel and preview wiring, rebuilt panel/main.js, README Refresh text — 5858bad
-  - Green evidence: `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. The bundle rebuild exits 0. Mid Red fixed the DOM fixture at 99ecd2e. Log: `measure/runs/board_focus_reasons_20261121/green-p1.log`.
-- [ ] Task 1.3: live browser check on the OpenChamber panel
+- [x] Task 1.2: painter module, panel and preview wiring, rebuilt panel/main.js, README Refresh text — 5858bad, 1fff4f4
+  - Green evidence: `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. The bundle rebuild exits 0. Mid Red fixed the DOM fixture at 99ecd2e. The F1 fix at 1fff4f4 moves the hold rule to `src/painter.ts` and keeps every paint route. Log: `measure/runs/board_focus_reasons_20261121/green-p1.log`.
+- [~] Task 1.3: live browser check on the OpenChamber panel
 ## Phase 2: One state and one reason per card
 
 - [ ] Task 2.1: Red fixtures for each state, gate word, and the continuation-line tag (`extensions/measure-status/src/card-state.test.ts`)
