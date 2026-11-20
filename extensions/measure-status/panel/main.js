@@ -2914,6 +2914,15 @@ ${GUEST_UI_LOOK_CSS}`;
       selectionEnd: area.selectionEnd
     };
   };
+  var holdComment = (root2, texts, surface2) => {
+    if (surface2 === "status") return false;
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) return false;
+    const key = area.getAttribute("data-key");
+    if (key !== null && (texts[key] ?? "").length > 0) return true;
+    if (area.value.length > 0) return true;
+    return area.ownerDocument.activeElement === area;
+  };
   var restoreComment = (root2, snapshot, texts) => {
     const area = root2.querySelector("textarea.comment-input");
     if (area === null) return;
@@ -3515,16 +3524,10 @@ ${GUEST_UI_LOOK_CSS}`;
     focusToggleNext = null;
     if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column);
   };
-  var holdComment = () => {
-    if (surface === "status") return false;
-    const area = root.querySelector("textarea.comment-input");
-    if (area === null) return false;
-    const key = area.getAttribute("data-key");
-    if (key !== null && (commentState.texts[key] ?? "").length > 0) return true;
-    if (area.value.length > 0) return true;
-    return area.ownerDocument.activeElement === area;
-  };
-  var painter = createPainter({ paintNow: paint, hold: holdComment });
+  var painter = createPainter({
+    paintNow: paint,
+    hold: () => holdComment(root, commentState.texts, surface)
+  });
   var paintStatus = () => {
     root.textContent = "";
     if (current === null) {
@@ -3587,16 +3590,13 @@ ${GUEST_UI_LOOK_CSS}`;
       void loadBoard();
     }, RELOAD_MS);
   };
-  var onCommentBlur = () => {
-    painter.flush();
-  };
   var bind = () => {
     for (const button2 of root.querySelectorAll("[data-action]")) {
       button2.addEventListener("click", onAction);
     }
     for (const area of root.querySelectorAll("textarea.comment-input")) {
       area.addEventListener("input", onCommentInput);
-      area.addEventListener("blur", onCommentBlur);
+      area.addEventListener("blur", () => painter.flush());
     }
   };
   var onAction = (event) => {

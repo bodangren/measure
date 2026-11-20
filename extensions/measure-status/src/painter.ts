@@ -69,6 +69,25 @@ export const captureComment = (root: ParentNode): CommentSnapshot => {
 }
 
 /**
+ * FR-3: decides whether a data paint waits. The status surface never waits.
+ * An open box waits when it has focus, or its key holds a character in texts,
+ * or its own value holds a character. An invisible character also waits.
+ */
+export const holdComment = (
+  root: ParentNode,
+  texts: Readonly<Record<string, string>>,
+  surface: string,
+): boolean => {
+  if (surface === 'status') return false
+  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
+  if (area === null) return false
+  const key = area.getAttribute('data-key')
+  if (key !== null && (texts[key] ?? '').length > 0) return true
+  if (area.value.length > 0) return true
+  return area.ownerDocument.activeElement === area
+}
+
+/**
  * FR-5 and FR-6: puts the text of the open box back. The box gets its focus
  * back with preventScroll and its selection only when it had focus before.
  */

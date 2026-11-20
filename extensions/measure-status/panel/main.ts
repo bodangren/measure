@@ -21,7 +21,7 @@ import {
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
 import { applyRepoResult, startLoad } from '../src/page-state'
-import { captureComment, createPainter, restoreComment } from '../src/painter'
+import { captureComment, createPainter, holdComment, restoreComment } from '../src/painter'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
 import { ROSTER } from '../src/roster'
 import {
@@ -305,22 +305,11 @@ const paint = (): void => {
   if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column)
 }
 
-/**
- * FR-3: a data paint waits while the open box has focus or any character.
- * A held character can be invisible. The status surface never holds.
- */
-const holdComment = (): boolean => {
-  if (surface === 'status') return false
-  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
-  if (area === null) return false
-  const key = area.getAttribute('data-key')
-  if (key !== null && (commentState.texts[key] ?? '').length > 0) return true
-  if (area.value.length > 0) return true
-  return area.ownerDocument.activeElement === area
-}
-
 /** FR-1 and FR-2: data paints wait; user paints draw at once. */
-const painter = createPainter({ paintNow: paint, hold: holdComment })
+const painter = createPainter({
+  paintNow: paint,
+  hold: () => holdComment(root, commentState.texts, surface),
+})
 
 /** Draws the band of the Work Status section. */
 const paintStatus = (): void => {
@@ -397,11 +386,6 @@ const startTimer = (): void => {
 
 // ----- The events of the board. Every button carries a `data-action`.
 
-/** FR-3: a blur of the box runs a pending data paint when the hold is gone. */
-const onCommentBlur = (): void => {
-  painter.flush()
-}
-
 /**
  * Binds every button of the board. Each button keeps its own listener, so a
  * button that a repaint detached still works.
@@ -412,7 +396,7 @@ const bind = (): void => {
   }
   for (const area of root.querySelectorAll<HTMLTextAreaElement>('textarea.comment-input')) {
     area.addEventListener('input', onCommentInput)
-    area.addEventListener('blur', onCommentBlur)
+    area.addEventListener('blur', () => painter.flush())
   }
 }
 
