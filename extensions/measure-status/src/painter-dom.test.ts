@@ -5,7 +5,7 @@
 // src/painter.ts exists. Green must not change this file.
 import { beforeEach, describe, expect, test } from 'vitest'
 import { buildBoard, type TrackInput } from './board'
-import { captureComment, createPainter, restoreComment } from './painter'
+import { captureComment, createPainter, holdComment, restoreComment } from './painter'
 import { parsePlan } from './parse'
 import { cardKey, renderPage, type UiState } from './render'
 import type { RepoState } from './load'
@@ -211,5 +211,171 @@ describe('held data paints keep focus, caret, and draft text', () => {
     expect(painter.pending()).toBe(false)
     expect(root.innerHTML).toContain('Invented track two')
     expect(texts[key]).toBe('draft kept per key')
+  })
+})
+
+describe('holdComment decides the hold from the box, the texts, and the surface', () => {
+  test('no box holds nothing', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    expect(holdComment(root, {}, 'panel')).toBe(false)
+  })
+
+  test('an open empty box with focus holds', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const state = readyState('Invented track one')
+    const key = firstCardKey(state)
+    root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
+    findArea(root).focus()
+    expect(holdComment(root, {}, 'panel')).toBe(true)
+  })
+
+  test('an open empty box without focus holds nothing', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const state = readyState('Invented track one')
+    const key = firstCardKey(state)
+    root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
+    expect(document.activeElement).not.toBe(findArea(root))
+    expect(holdComment(root, {}, 'panel')).toBe(false)
+  })
+
+  test('whitespace-only text in texts holds without focus', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const state = readyState('Invented track one')
+    const key = firstCardKey(state)
+    root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
+    expect(holdComment(root, { [key]: '   ' }, 'panel')).toBe(true)
+  })
+
+  test('an invisible character in the box value holds', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const state = readyState('Invented track one')
+    const key = firstCardKey(state)
+    root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
+    findArea(root).value = '\u200B'
+    expect(holdComment(root, {}, 'panel')).toBe(true)
+  })
+
+  test('the status surface never holds, even with text and focus', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const state = readyState('Invented track one')
+    const key = firstCardKey(state)
+    const texts: Record<string, string> = { [key]: 'status draft' }
+    root.innerHTML = renderPage({ states: [state], ui, now: NOW, busy: false, comments: openComments(key) })
+    restoreComment(root, captureComment(root), texts)
+    findArea(root).focus()
+    expect(holdComment(root, texts, 'status')).toBe(false)
+  })
+})
+
+describe('the holdComment controller keeps the node and spends the pending paint', () => {
+  test('a held box survives data() and a real Escape close paints the new data', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const key = firstCardKey(readyState('Invented track one'))
+    const texts: Record<string, string> = { [key]: 'held draft' }
+    let latest: ReadyState = readyState('Invented track one')
+    let paints = 0
+    let boxOpen = true
+    const painter = createPainter({
+      paintNow: () => {
+        paints += 1
+        root.innerHTML = renderPage({
+          states: [latest],
+          ui,
+          now: NOW,
+          busy: false,
+          comments: boxOpen ? openComments(key) : {},
+        })
+        if (boxOpen) restoreComment(root, captureComment(root), texts)
+      },
+      hold: () => holdComment(root, texts, 'panel'),
+    })
+    root.innerHTML = renderPage({
+      states: [latest],
+      ui,
+      now: NOW,
+      busy: false,
+      comments: openComments(key),
+    })
+    restoreComment(root, captureComment(root), texts)
+    findArea(root).focus()
+    const before = findArea(root)
+
+    latest = readyState('Invented track two')
+    painter.data()
+    expect(paints).toBe(0)
+    expect(painter.pending()).toBe(true)
+    expect(findArea(root)).toBe(before)
+    expect(document.activeElement).toBe(before)
+
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return
+      boxOpen = false
+      painter.user()
+      painter.flush()
+    }
+    document.addEventListener('keydown', onKey)
+    try {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    } finally {
+      document.removeEventListener('keydown', onKey)
+    }
+    expect(boxOpen).toBe(false)
+    expect(paints).toBe(1)
+    expect(painter.pending()).toBe(false)
+    expect(root.innerHTML).toContain('Invented track two')
+    expect(root.querySelector('textarea.comment-input')).toBe(null)
+    expect(texts[key]).toBe('held draft')
+  })
+
+  test('an empty blurred box releases the hold so flush paints', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const key = firstCardKey(readyState('Invented track one'))
+    const texts: Record<string, string> = {}
+    let latest: ReadyState = readyState('Invented track one')
+    let paints = 0
+    const painter = createPainter({
+      paintNow: () => {
+        paints += 1
+        root.innerHTML = renderPage({
+          states: [latest],
+          ui,
+          now: NOW,
+          busy: false,
+          comments: openComments(key),
+        })
+      },
+      hold: () => holdComment(root, texts, 'panel'),
+    })
+    root.innerHTML = renderPage({
+      states: [latest],
+      ui,
+      now: NOW,
+      busy: false,
+      comments: openComments(key),
+    })
+    findArea(root).focus()
+    expect(holdComment(root, texts, 'panel')).toBe(true)
+
+    latest = readyState('Invented track two')
+    painter.data()
+    expect(paints).toBe(0)
+    expect(painter.pending()).toBe(true)
+
+    const area = findArea(root)
+    area.dispatchEvent(new Event('blur'))
+    area.blur()
+    expect(holdComment(root, texts, 'panel')).toBe(false)
+    painter.flush()
+    expect(paints).toBe(1)
+    expect(painter.pending()).toBe(false)
+    expect(root.innerHTML).toContain('Invented track two')
   })
 })
