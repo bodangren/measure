@@ -2878,6 +2878,52 @@ ${GUEST_UI_LOOK_CSS}`;
     return next;
   };
 
+  // src/painter.ts
+  var createPainter = ({ paintNow, hold }) => {
+    let waiting = false;
+    return {
+      data: () => {
+        if (hold()) {
+          waiting = true;
+          return;
+        }
+        waiting = false;
+        paintNow();
+      },
+      user: () => {
+        waiting = false;
+        paintNow();
+      },
+      flush: () => {
+        if (!waiting || hold()) return;
+        waiting = false;
+        paintNow();
+      },
+      pending: () => waiting
+    };
+  };
+  var captureComment = (root2) => {
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) {
+      return { key: null, focused: false, selectionStart: 0, selectionEnd: 0 };
+    }
+    return {
+      key: area.getAttribute("data-key"),
+      focused: area.ownerDocument.activeElement === area,
+      selectionStart: area.selectionStart,
+      selectionEnd: area.selectionEnd
+    };
+  };
+  var restoreComment = (root2, snapshot, texts) => {
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) return;
+    const key = area.getAttribute("data-key");
+    area.value = key === null ? "" : texts[key] ?? "";
+    if (!snapshot.focused || snapshot.key !== key) return;
+    area.focus({ preventScroll: true });
+    area.setSelectionRange(snapshot.selectionStart, snapshot.selectionEnd);
+  };
+
   // src/comment.ts
   var COMMENT_TEXT_MAX = 2e3;
   var field2 = (label, value) => value === "" ? [] : [`${label}: ${value}`];
@@ -3367,14 +3413,6 @@ ${GUEST_UI_LOOK_CSS}`;
     if (isSendDisabled(text, sender.sending)) button2.setAttribute("disabled", "disabled");
     else button2.removeAttribute("disabled");
   };
-  var restoreComment = () => {
-    const area = root.querySelector("textarea.comment-input");
-    if (area === null) return;
-    const key = area.getAttribute("data-key");
-    const text = key === null ? "" : commentState.texts[key] ?? "";
-    area.value = text;
-    setSendState(area, text);
-  };
   var onCommentInput = (event) => {
     const area = event.currentTarget;
     if (!(area instanceof HTMLTextAreaElement)) return;
@@ -3394,7 +3432,7 @@ ${GUEST_UI_LOOK_CSS}`;
       text: commentState.texts[key] ?? ""
     });
     commentState = startCommentSend(commentState, key);
-    paint();
+    painter.user();
     const result = await pending;
     const ownBoxOpen = commentState.openKey === key;
     commentState = finishCommentSend(
@@ -3403,7 +3441,8 @@ ${GUEST_UI_LOOK_CSS}`;
       result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line }
     );
     if (ownBoxOpen) focusNext = { action: "send-done", key };
-    paint();
+    painter.user();
+    painter.flush();
   };
   var busy = false;
   var current = null;
@@ -3459,6 +3498,7 @@ ${GUEST_UI_LOOK_CSS}`;
       paintStatus();
       return;
     }
+    const snapshot = captureComment(root);
     root.innerHTML = renderPage({
       states,
       ui: uiOf(),
@@ -3467,7 +3507,7 @@ ${GUEST_UI_LOOK_CSS}`;
       comments: commentsOf()
     });
     bind();
-    restoreComment();
+    restoreComment(root, snapshot, commentState.texts);
     const next = focusNext;
     focusNext = null;
     if (next !== null) focusOn(next.action, next.key);
@@ -3475,6 +3515,16 @@ ${GUEST_UI_LOOK_CSS}`;
     focusToggleNext = null;
     if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column);
   };
+  var holdComment = () => {
+    if (surface === "status") return false;
+    const area = root.querySelector("textarea.comment-input");
+    if (area === null) return false;
+    const key = area.getAttribute("data-key");
+    if (key !== null && (commentState.texts[key] ?? "").length > 0) return true;
+    if (area.value.length > 0) return true;
+    return area.ownerDocument.activeElement === area;
+  };
+  var painter = createPainter({ paintNow: paint, hold: holdComment });
   var paintStatus = () => {
     root.textContent = "";
     if (current === null) {
@@ -3516,19 +3566,19 @@ ${GUEST_UI_LOOK_CSS}`;
     if (busy) return;
     busy = true;
     states = startLoad(states);
-    paint();
+    painter.data();
     await loadRoster(host, ROSTER, (state) => {
       states = applyRepoResult(states, state.repo.id, state);
-      paint();
+      painter.data();
       void refreshBadge();
     });
     busy = false;
-    paint();
+    painter.data();
     await refreshBadge();
   };
   var loadBand = async (directory) => {
     current = await loadSnapshot(host, directory);
-    paint();
+    painter.data();
   };
   var startTimer = () => {
     if (timer !== null) return;
@@ -3537,12 +3587,16 @@ ${GUEST_UI_LOOK_CSS}`;
       void loadBoard();
     }, RELOAD_MS);
   };
+  var onCommentBlur = () => {
+    painter.flush();
+  };
   var bind = () => {
     for (const button2 of root.querySelectorAll("[data-action]")) {
       button2.addEventListener("click", onAction);
     }
     for (const area of root.querySelectorAll("textarea.comment-input")) {
       area.addEventListener("input", onCommentInput);
+      area.addEventListener("blur", onCommentBlur);
     }
   };
   var onAction = (event) => {
@@ -3560,7 +3614,7 @@ ${GUEST_UI_LOOK_CSS}`;
       if (key2 === null) return;
       commentState = openCommentBox(commentState, key2);
       focusNext = commentState.openKey === key2 ? { action: "open", key: key2 } : { action: "escape", key: key2 };
-      paint();
+      painter.user();
       return;
     }
     if (action === "send-comment") {
@@ -3573,33 +3627,33 @@ ${GUEST_UI_LOOK_CSS}`;
     if (action === "toggle-section") {
       userOpen[repo] = !openOf(repo);
       focusToggleNext = { action: "toggle-section", repo };
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-done") {
       userDoneOpen[repo] = !(userDoneOpen[repo] ?? false);
       focusToggleNext = { action: "toggle-done", repo };
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-done-group") {
       userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false);
       focusToggleNext = { action: "toggle-done-group", repo };
-      paint();
+      painter.user();
       return;
     }
     if (column === null) return;
     const key = `${repo}/${column}`;
     if (action === "show-more") {
       userExpanded[key] = true;
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-stale") {
       const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false;
       userStaleOpen[key] = !staleOpen;
       focusToggleNext = { action: "toggle-stale", repo, column };
-      paint();
+      painter.user();
     }
   };
   var mountedOnce = false;
@@ -3624,13 +3678,14 @@ ${GUEST_UI_LOOK_CSS}`;
         });
       }
     }
-    paint();
+    painter.data();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || commentState.openKey === null) return;
     const key = commentState.openKey;
     commentState = escapeCommentBox(commentState);
     focusNext = { action: "escape", key };
-    paint();
+    painter.user();
+    painter.flush();
   });
 })();

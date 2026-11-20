@@ -21,6 +21,7 @@ import {
 import { loadSnapshot, type MeasureHost } from '../src/measure'
 import { loadRoster, RELOAD_MS, shouldReload, type RepoState } from '../src/load'
 import { applyRepoResult, startLoad } from '../src/page-state'
+import { captureComment, createPainter, restoreComment } from '../src/painter'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
 import { ROSTER } from '../src/roster'
 import {
@@ -167,16 +168,6 @@ const setSendState = (area: HTMLTextAreaElement, text: string): void => {
   else button.removeAttribute('disabled')
 }
 
-/** D1: the open box keeps its text after a repaint. */
-const restoreComment = (): void => {
-  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
-  if (area === null) return
-  const key = area.getAttribute('data-key')
-  const text = key === null ? '' : (commentState.texts[key] ?? '')
-  area.value = text
-  setSendState(area, text)
-}
-
 /** D1: the text of the box follows the user. */
 const onCommentInput = (event: Event): void => {
   const area = event.currentTarget
@@ -199,7 +190,7 @@ const sendComment = async (key: string): Promise<void> => {
     text: commentState.texts[key] ?? '',
   })
   commentState = startCommentSend(commentState, key)
-  paint()
+  painter.user()
   const result = await pending
   const ownBoxOpen = commentState.openKey === key
   commentState = finishCommentSend(
@@ -208,7 +199,8 @@ const sendComment = async (key: string): Promise<void> => {
     result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line },
   )
   if (ownBoxOpen) focusNext = { action: 'send-done', key }
-  paint()
+  painter.user()
+  painter.flush()
 }
 
 /** True while a load runs. A second load starts no work. */
@@ -293,6 +285,7 @@ const paint = (): void => {
     paintStatus()
     return
   }
+  const snapshot = captureComment(root)
   // Every text from a file passes through `escapeHtml` before it reaches this
   // string, so the assignment cannot add an element of the file text.
   root.innerHTML = renderPage({
@@ -303,7 +296,7 @@ const paint = (): void => {
     comments: commentsOf(),
   })
   bind()
-  restoreComment()
+  restoreComment(root, snapshot, commentState.texts)
   const next = focusNext
   focusNext = null
   if (next !== null) focusOn(next.action, next.key)
@@ -311,6 +304,23 @@ const paint = (): void => {
   focusToggleNext = null
   if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column)
 }
+
+/**
+ * FR-3: a data paint waits while the open box has focus or any character.
+ * A held character can be invisible. The status surface never holds.
+ */
+const holdComment = (): boolean => {
+  if (surface === 'status') return false
+  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
+  if (area === null) return false
+  const key = area.getAttribute('data-key')
+  if (key !== null && (commentState.texts[key] ?? '').length > 0) return true
+  if (area.value.length > 0) return true
+  return area.ownerDocument.activeElement === area
+}
+
+/** FR-1 and FR-2: data paints wait; user paints draw at once. */
+const painter = createPainter({ paintNow: paint, hold: holdComment })
 
 /** Draws the band of the Work Status section. */
 const paintStatus = (): void => {
@@ -359,21 +369,21 @@ const loadBoard = async (): Promise<void> => {
   if (busy) return
   busy = true
   states = startLoad(states)
-  paint()
+  painter.data()
   await loadRoster(host, ROSTER, (state) => {
     states = applyRepoResult(states, state.repo.id, state)
-    paint()
+    painter.data()
     void refreshBadge()
   })
   busy = false
-  paint()
+  painter.data()
   await refreshBadge()
 }
 
 /** Reads the Measure files of the open project for the band. */
 const loadBand = async (directory: string | null): Promise<void> => {
   current = await loadSnapshot(host, directory)
-  paint()
+  painter.data()
 }
 
 /** FR-10: a full reload every 60 seconds while the page is visible. */
@@ -387,6 +397,11 @@ const startTimer = (): void => {
 
 // ----- The events of the board. Every button carries a `data-action`.
 
+/** FR-3: a blur of the box runs a pending data paint when the hold is gone. */
+const onCommentBlur = (): void => {
+  painter.flush()
+}
+
 /**
  * Binds every button of the board. Each button keeps its own listener, so a
  * button that a repaint detached still works.
@@ -397,6 +412,7 @@ const bind = (): void => {
   }
   for (const area of root.querySelectorAll<HTMLTextAreaElement>('textarea.comment-input')) {
     area.addEventListener('input', onCommentInput)
+    area.addEventListener('blur', onCommentBlur)
   }
 }
 
@@ -418,7 +434,7 @@ const onAction = (event: Event): void => {
     focusNext = commentState.openKey === key
       ? { action: 'open', key }
       : { action: 'escape', key }
-    paint()
+    painter.user()
     return
   }
   if (action === 'send-comment') {
@@ -431,33 +447,33 @@ const onAction = (event: Event): void => {
   if (action === 'toggle-section') {
     userOpen[repo] = !openOf(repo)
     focusToggleNext = { action: 'toggle-section', repo }
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-done') {
     userDoneOpen[repo] = !(userDoneOpen[repo] ?? false)
     focusToggleNext = { action: 'toggle-done', repo }
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-done-group') {
     userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false)
     focusToggleNext = { action: 'toggle-done-group', repo }
-    paint()
+    painter.user()
     return
   }
   if (column === null) return
   const key = `${repo}/${column}`
   if (action === 'show-more') {
     userExpanded[key] = true
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-stale') {
     const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false
     userStaleOpen[key] = !staleOpen
     focusToggleNext = { action: 'toggle-stale', repo, column }
-    paint()
+    painter.user()
   }
 }
 
@@ -489,7 +505,7 @@ host.onReady((ctx) => {
       })
     }
   }
-  paint()
+  painter.data()
 })
 
 // D1: the Escape key closes the open comment box.
@@ -498,5 +514,6 @@ document.addEventListener('keydown', (event) => {
   const key = commentState.openKey
   commentState = escapeCommentBox(commentState)
   focusNext = { action: 'escape', key }
-  paint()
+  painter.user()
+  painter.flush()
 })

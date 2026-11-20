@@ -168,8 +168,27 @@ at the next full load.
 The page makes at most eight file calls at one time. It loads each repo
 on its own.
 
+Load results, the timer, the Refresh click, and a host ready context are
+data paints. A data paint waits while the open comment box has focus or
+holds a character. An invisible character also holds the paint. A held
+paint changes no DOM node and sets one pending flag. The rail badge
+still updates with each data result.
+
+The pending paint runs when the box closes. The box closes on Escape and
+when a send ends. The pending paint also runs when the box loses focus
+with no text in it.
+
+An action of the user is a user paint. A user paint draws at once. These
+actions are user paints: open a comment, start a send, end a send, toggle
+a section, toggle the Done column, open the Done group, show more cards,
+toggle the stale group, and press Escape. A user paint clears a pending
+data paint and draws the latest data once. After the paint, the open box
+keeps its text for its card key. When the box had focus, it gets focus
+back with no scroll, and it keeps its selection start and end.
+
 The `status` surface reads the Measure files of the open project. It
-loads on open and when the open project changes.
+loads on open and when the open project changes. A paint on the status
+surface never waits.
 
 ## Layout
 
