@@ -10,7 +10,7 @@ Source: PM P3 order, 2026-11-21. Type chore, lane light. Due dates: critical and
 
 - `extensions/measure-status` (has `package.json` and `bun.lock`).
 - `plugins/opencode-measure-guard` (has `package.json` and `bun.lock`).
-- No other folder changes. No feature work. No behavior change except what a package update forces.
+- `tests/deps_audit/` (the audit check, its tests, fixtures and allow file) and `measure/tracks/deps_refresh_20261122/advisories.md` (the record file) are the only other changes. No feature work. No behavior change except what a package update forces.
 
 ## Before counts (bun audit, 2026-11-22)
 
