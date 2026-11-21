@@ -186,7 +186,7 @@ const sendComment = async (key: string): Promise<void> => {
     repo: card.repo,
     trackId: card.trackId,
     taskLine: card.taskText ?? card.note ?? '',
-    blockerLine: card.line ?? '',
+    blockerLine: card.reason ?? '',
     text: commentState.texts[key] ?? '',
   })
   commentState = startCommentSend(commentState, key)
@@ -250,7 +250,7 @@ const openOf = (repo: string): boolean => {
   return sectionOpen(state, uiOf())
 }
 
-/** FR-9: the rail badge shows the Blocked tracks of all loaded repos. */
+/** FR-15: the rail badge shows the Waits for Daniel cards of all loaded repos. */
 const refreshBadge = async (): Promise<void> => {
   const boards = states.flatMap(state =>
     state.status === 'ready' ? [state.board] : [],

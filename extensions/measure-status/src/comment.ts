@@ -24,7 +24,7 @@ export const formatComment = (input: CommentInput): string =>
     ...field('Repo', input.repo),
     ...field('Track', input.trackId),
     ...field('Task', input.taskLine),
-    ...field('Blocker', input.blockerLine),
+    ...field('Reason', input.blockerLine),
     ...field('Daniel', input.text),
   ].join('\n')
 

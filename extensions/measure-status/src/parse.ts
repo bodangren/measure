@@ -11,6 +11,8 @@ const MD_LINK = /\]\(([^)\s]+)\)/
 const PHASE = /^## Phase\b/
 const SECTION = /^#{1,2} /
 const TASK = /^- \[([ ~xb])\] (.*)$/
+const SUB_BULLET = /^\s*[-*+]\s/
+const INDENTED = /^\s+\S/
 const SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/
 const CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/
 const OWNER = /\bdeferred:([A-Za-z0-9._-]*)/
@@ -23,6 +25,24 @@ export const ownerToken = (text: string): string | null => {
   if (match === null) return null
   const token = (match[1] ?? '').replace(/[._-]+$/, '')
   return token === '' ? null : token
+}
+
+/**
+ * FR-9: the first `deferred:<owner>` tag of a task. The first line counts, then
+ * each wrapped continuation line. The scan stops at a sub-bullet, the next
+ * task, or the next heading. Only an indented line is a continuation.
+ */
+const ownerOf = (lines: readonly string[], at: number, firstLine: string): string | null => {
+  const own = ownerToken(firstLine)
+  if (own !== null) return own
+  for (let j = at + 1; j < lines.length; j += 1) {
+    const line = lines[j] ?? ''
+    if (SECTION.test(line) || TASK.test(line) || SUB_BULLET.test(line)) break
+    if (!INDENTED.test(line)) continue
+    const found = ownerToken(line)
+    if (found !== null) return found
+  }
+  return null
 }
 
 /** FR-3: the task text for a card without its SHA and checkpoint, capped at 140. */
@@ -107,8 +127,10 @@ export const parseTracks = (md: string): TrackEntry[] => {
 /** The phases of plan.md with their top-level tasks. */
 export const parsePlan = (md: string): Plan => {
   const plan: Plan = { phases: [] }
+  const lines = md.split('\n')
   let phase: Phase | null = null
-  md.split('\n').forEach((line, i) => {
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i] ?? ''
     if (SECTION.test(line)) {
       phase = null
       if (PHASE.test(line)) {
@@ -120,19 +142,20 @@ export const parsePlan = (md: string): Plan => {
         }
         plan.phases.push(phase)
       }
-      return
+      continue
     }
-    const task = phase === null ? null : TASK.exec(line)
-    if (phase === null || task === null) return
+    if (phase === null) continue
+    const task = TASK.exec(line)
+    if (task === null) continue
     const text = (task[2] ?? '').trim()
     phase.tasks.push({
       line: i,
       marker: (task[1] ?? ' ') as Marker,
       text,
       sha: SHA.exec(text)?.[1] ?? null,
-      deferredOwner: ownerToken(text),
+      deferredOwner: ownerOf(lines, i, text),
     })
-  })
+  }
   return plan
 }
 

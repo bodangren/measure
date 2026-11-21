@@ -19,7 +19,7 @@ describe('formatComment', () => {
         'Repo: invented-repo',
         'Track: invented_track_1',
         'Task: [~] Task: Write the loader',
-        'Blocker: Task: Wait for the copy',
+        'Reason: Task: Wait for the copy',
         'Daniel: Please look at column two',
       ].join('\n'),
     )
@@ -42,7 +42,7 @@ describe('formatComment', () => {
     )
     expect(out).toContain('Track: "><script>')
     expect(out).toContain('Task: <img src=x onerror=alert(1)>')
-    expect(out).toContain('Blocker: javascript:alert(1)')
+    expect(out).toContain('Reason: javascript:alert(1)')
     expect(out).not.toContain('&lt;')
     expect(out).not.toContain('&gt;')
   })
