@@ -1,0 +1,1 @@
+# Empty allow file for fixture cases that allow nothing.
