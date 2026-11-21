@@ -17,7 +17,9 @@ Test command: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vi
   - Live evidence: the UX browser check on 8dafa77 passed all four checks (timer 268 samples, host reply 230 samples, Escape, reopen draft). The browser closed. Result: `measure/runs/board_focus_reasons_20261121/ux-browser-8dafa77.json`.
 ## Phase 2: One state and one reason per card
 
-- [~] Task 2.1: Red fixtures for each state, gate word, the continuation-line tag, and the two User Manual Verification rows (open deferred row gives Waits for PM, closed D1 row gives no Daniel item) (`extensions/measure-status/src/card-state.test.ts`)
-- [ ] Task 2.2: parser tag rule, card states, column names, Comment rule, badge, rebuilt panel/main.js, README and fixtures
+- [x] Task 2.1: Red fixtures for each state, gate word, the continuation-line tag, and the two User Manual Verification rows (open deferred row gives Waits for PM, closed D1 row gives no Daniel item) (`extensions/measure-status/src/card-state.test.ts`) — 6bc2f45
+  - Red evidence: `bunx tsc -p . --noEmit` fails only on the missing `gateForOwner`, `Card.state`, and `Card.reason`. `bunx vitest run` fails 65 new tests in `card-state.test.ts`; 23 other suites pass with 351 existing tests. Log: `measure/runs/board_focus_reasons_20261121/red-p2.log`.
+- [x] Task 2.2: parser tag rule, card states, column names, Comment rule, badge, rebuilt panel/main.js, README and fixtures — 5dfd496
+  - Green evidence: `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. The `panel/main.js` rebuild exits 0. The rail badge counts Waits for Daniel cards. Log: `measure/runs/board_focus_reasons_20261121/green-p2.log`.
 - [ ] Task 2.3: live browser check of the reason lines on the board
 - [ ] Task 2.4: records and closeout
