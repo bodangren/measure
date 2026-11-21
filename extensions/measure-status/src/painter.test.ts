@@ -179,8 +179,21 @@ describe('the panel data paint callers', () => {
   test('loadBoard draws data paints and never a user paint', () => {
     const body = bodySlice(panelText(), 'const loadBoard', 'const loadBand')
     expect(body, 'loadBoard body exists').not.toBe('')
-    expect(body, 'loadBoard data paint').toContain('painter.data()')
+    const dataCalls = body.match(/painter\.data\(\)/g) ?? []
+    expect(dataCalls.length, 'loadBoard data() count').toBe(3)
     expect(body, 'loadBoard has no user paint').not.toContain('painter.user()')
+    const start = body.indexOf('states = startLoad(states)')
+    const roster = body.indexOf('await loadRoster')
+    const end = body.indexOf('busy = false')
+    const first = body.indexOf('painter.data()')
+    const last = body.lastIndexOf('painter.data()')
+    expect(start, 'loadBoard start marker').toBeGreaterThanOrEqual(0)
+    expect(roster, 'loadBoard roster marker').toBeGreaterThanOrEqual(0)
+    expect(end, 'loadBoard end marker').toBeGreaterThanOrEqual(0)
+    expect(start, 'start paint before roster load').toBeLessThan(first)
+    expect(first, 'start paint before roster load').toBeLessThan(roster)
+    expect(roster, 'end paint after roster load').toBeLessThan(end)
+    expect(end, 'end paint after roster load').toBeLessThan(last)
   })
 
   test('the repo-result callback draws a data paint and the badge outside the gate', () => {
@@ -196,14 +209,16 @@ describe('the panel data paint callers', () => {
   test('loadBand draws a data paint and never a user paint', () => {
     const body = bodySlice(panelText(), 'const loadBand', 'const startTimer')
     expect(body, 'loadBand body exists').not.toBe('')
-    expect(body, 'loadBand data paint').toContain('painter.data()')
+    const dataCalls = body.match(/painter\.data\(\)/g) ?? []
+    expect(dataCalls.length, 'loadBand data() count').toBe(1)
     expect(body, 'loadBand has no user paint').not.toContain('painter.user()')
   })
 
   test('host.onReady draws a data paint and never a user paint', () => {
     const body = bodySlice(panelText(), 'host.onReady((ctx) => {', "document.addEventListener('keydown'")
     expect(body, 'host.onReady body exists').not.toBe('')
-    expect(body, 'host.onReady data paint').toContain('painter.data()')
+    const dataCalls = body.match(/painter\.data\(\)/g) ?? []
+    expect(dataCalls.length, 'host.onReady data() count').toBe(1)
     expect(body, 'host.onReady has no user paint').not.toContain('painter.user()')
   })
 })
@@ -235,9 +250,19 @@ describe('the panel user paint callers', () => {
   test('sendComment draws user paints, spends the pending paint, and never a data paint', () => {
     const body = bodySlice(panelText(), 'const sendComment', '/** True while a load runs')
     expect(body, 'sendComment body exists').not.toBe('')
-    expect(body, 'sendComment user paint').toContain('painter.user()')
-    expect(body, 'sendComment flush').toContain('painter.flush()')
+    const userCalls = body.match(/painter\.user\(\)/g) ?? []
+    expect(userCalls.length, 'sendComment user() count').toBe(2)
+    const flushCalls = body.match(/painter\.flush\(\)/g) ?? []
+    expect(flushCalls.length, 'sendComment flush() count').toBe(1)
     expect(body, 'sendComment has no data paint').not.toContain('painter.data()')
+    const first = body.indexOf('painter.user()')
+    const waited = body.indexOf('await pending')
+    const last = body.lastIndexOf('painter.user()')
+    const flushed = body.indexOf('painter.flush()')
+    expect(waited, 'sendComment await marker').toBeGreaterThanOrEqual(0)
+    expect(first, 'send start before await').toBeLessThan(waited)
+    expect(waited, 'send end after await').toBeLessThan(last)
+    expect(last, 'flush after send end').toBeLessThan(flushed)
   })
 
   test('toggle-section draws a user paint and never a data paint', () => {
@@ -278,8 +303,13 @@ describe('the panel user paint callers', () => {
   test('the Escape key draws a user paint, spends the pending paint, and never a data paint', () => {
     const body = bodySlice(panelText(), "document.addEventListener('keydown'", 'END_OF_PANEL_SOURCE')
     expect(body, 'Escape body exists').not.toBe('')
-    expect(body, 'Escape user paint').toContain('painter.user()')
-    expect(body, 'Escape flush').toContain('painter.flush()')
+    const userCalls = body.match(/painter\.user\(\)/g) ?? []
+    expect(userCalls.length, 'Escape user() count').toBe(1)
+    const flushCalls = body.match(/painter\.flush\(\)/g) ?? []
+    expect(flushCalls.length, 'Escape flush() count').toBe(1)
     expect(body, 'Escape has no data paint').not.toContain('painter.data()')
+    expect(body.indexOf('painter.user()'), 'Escape user before flush').toBeLessThan(
+      body.indexOf('painter.flush()'),
+    )
   })
 })
