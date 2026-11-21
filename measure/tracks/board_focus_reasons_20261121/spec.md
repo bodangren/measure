@@ -42,6 +42,7 @@ Open tracks only. Done is unchanged.
 - FR-9: The `deferred:<owner>` tag counts in the first line of a task. It also counts in wrapped continuation lines. A continuation line is indented and is not a sub-bullet. The tag search stops at the first sub-bullet or the next task.
 - FR-10: Human gate words map an owner token to a gate. The match uses the lowercase owner token split on `-`, `_`, `.`, and `;`. One word matches. `deploy` and `traffic` give gate "deploy". `paid` and `spend` give gate "paid spend". `delete` and `deletion` give gate "deletion". `public` (as in public-date) gives gate "public date". `look` and `manual` give gate "look". `thai` gives gate "Thai check". `proof` gives gate "proof". `sudo` and `login` give gate "sudo or login". When one owner token holds two gate words, an order decides. The order is: deletion, paid spend, deploy, public date, sudo or login, proof, Thai check, look. The first match in that order wins.
 - FR-11: State rules. The first match wins.
+  - a0. Waits for PM (manual verification closed by the PM): the first not-done task is a "User Manual Verification" task whose text holds "deferred" or "no visible change" (case-insensitive), with marker [ ], [~], or [b]. This rule wins over rule a and rule b. It also wins over rule R3a and the gate word "manual". Reason line: "Waits for PM: \<task label>".
   - a. Waits for Daniel: the first not-done task in plan order is a [b] task whose owner token holds a human gate word. Or the current task is a gate text under rule R3a, with gate "look". The 14-day age rule stays. Reason line: "Waits for Daniel: \<gate> — \<task label>".
   - b. Running: a task is [~]. Reason line: "Running: \<task label>".
   - c. Waits for PM: the first not-done task is a [b] task with another owner token. Examples are pm, mid-red, later-track, daniel with no gate word, or no token. Or the registry marker is [b] with no plan reason. With no current task, all tasks closed gives "Waits for PM: All tasks closed.". The registry marker [b] with no plan reason gives "Waits for PM: registry marker [b]". Reason line: "Waits for PM: \<task label>" or "Waits for PM: registry marker [b]".
@@ -50,7 +51,7 @@ Open tracks only. Done is unchanged.
 - FR-13: The labels BLOCKER, GATE, and MANUAL CHECK go away. The card shows the reason line in place of "Blocker: ...".
 - FR-14: Only a Waits for Daniel card shows the Comment button. The message field "Blocker" becomes "Reason". It carries the reason line.
 - FR-15: The rail badge counts Waits for Daniel cards.
-- FR-16: Fixtures cover one card per state. They cover one card per gate word group. They cover the lending-desk-bench shape (tag on a continuation line, earlier [~] task), which gives Running. `deferred:pm` and `deferred:mid-red` give Waits for PM when first not-done. The Comment button shows only on Waits for Daniel.
+- FR-16: Fixtures cover one card per state. They cover one card per gate word group. They cover the lending-desk-bench shape (tag on a continuation line, earlier [~] task), which gives Running. `deferred:pm` and `deferred:mid-red` give Waits for PM when first not-done. The Comment button shows only on Waits for Daniel. Row 1 holds this open task text and gives Waits for PM: "- [ ] Task: Measure - User Manual Verification 'Phase D3: the rest of the updates and the moderate/low list' (Protocol in workflow.md). This task is deferred to track close: no visible change. Phase acceptance checks the audit counts and the gate exits; the orchestrator states them to the PM." It shows no Comment button. It adds no badge count. Row 2 holds the closed D1 task text from the deps refresh track plan and gives no Daniel item: "- [x] Task: Measure - User Manual Verification 'Phase D1: dashboard critical and high' (Protocol in workflow.md). Closed at the D1 checkpoint: no visible change; replaced by the print-path comparison with round 11 and the phase acceptance (phase-acceptance-d1-a274e5e4.json). Acceptance at `a274e5e4`." A closed task creates no Daniel item.
 - FR-17: README.md sections "The board" and "Refresh" follow the new rules. `mockup/fixtures.json` follows the new rules.
 
 ## Acceptance criteria
@@ -59,6 +60,7 @@ Open tracks only. Done is unchanged.
 - Each open card shows one state and one reason line. The lending-desk-bench card shows Running, not a blocker.
 - The board keeps five columns with the new names and rules. Only Waits for Daniel cards show the Comment button.
 - The rail badge counts Waits for Daniel cards.
+- A User Manual Verification task that says deferred or no visible change shows Waits for PM, never Waits for Daniel.
 
 ## Out of scope
 
