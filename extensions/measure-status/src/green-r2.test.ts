@@ -2,7 +2,13 @@
 // Next in line reason with a current task. Every fixture here is invented
 // except the committed mockup snapshot.
 import { describe, expect, test } from 'vitest'
-import { classifyTrack, type Card, type TrackInput } from './board'
+import {
+  classifyTrack,
+  type Card,
+  type CardState,
+  type Column,
+  type TrackInput,
+} from './board'
 import { ownerToken, parsePlan, taskLabel } from './parse'
 import { cardKey, renderCard } from './render'
 import raw from '../mockup/fixtures.json'
@@ -86,6 +92,58 @@ describe('F2: the mockup reasons follow the new rules', () => {
     expect(gate).toBeDefined()
     if (gate === undefined) throw new Error('the deletion gate fixture is missing')
     expect(renderCard(gate, NOW, undefined, cardKey(gate, 0))).toContain('open-comment')
+  })
+})
+
+describe('F4: the fixture column matches the classifier column for its state', () => {
+  const cards = (raw as { repos: Array<{ cards: Card[] }> }).repos.flatMap(repo => repo.cards)
+
+  /** The column the real classifier gives for a canonical card of one state. */
+  const columnForState = (state: CardState): Column => {
+    const base = {
+      repo: 'invented-repo',
+      title: 'Invented track',
+      registryMarker: ' ' as const,
+      folder: 'tracks/invented_1',
+      lastChange: null,
+      doneDate: null,
+      doneSource: null,
+      now: NOW,
+    }
+    if (state === 'done') {
+      return classifyTrack({ ...base, registryMarker: 'x', plan: { kind: 'missing' } }).column
+    }
+    const plans: Record<Exclude<CardState, 'done'>, string> = {
+      'waits-daniel': '## Phase 1: Work\n\n- [x] Task: Done\n- [b] Task: Gate deferred:manual\n',
+      'waits-pm': '## Phase 1: Work\n\n- [x] Task: Done\n- [b] Task: Wait deferred:pm\n',
+      running: '## Phase 1: Work\n\n- [~] Task: Work\n',
+      next: '## Phase 1: Work\n\n- [ ] Task: Work\n',
+    }
+    const plan = plans[state as Exclude<CardState, 'done'>]
+    if (plan === undefined) throw new Error(`no plan for state ${state}`)
+    return classifyTrack({ ...base, plan: { kind: 'plan', plan: parsePlan(plan) } }).column
+  }
+
+  test('every card has a consistent column and a non-empty reason', () => {
+    const faults: string[] = []
+    for (const card of cards) {
+      const state = card.state as CardState
+      const expected = columnForState(state)
+      if (state === 'next') {
+        if (card.column !== 'planned' && card.column !== 'in-progress') {
+          faults.push(`${card.trackId}: state next, column ${card.column}`)
+        }
+      } else if (card.column !== expected) {
+        faults.push(`${card.trackId}: state ${state}, column ${card.column}, expected ${expected}`)
+      }
+      if (
+        card.column !== 'done' &&
+        (card.reason === null || card.reason.trim() === '' || card.reason.endsWith(': '))
+      ) {
+        faults.push(`${card.trackId}: empty reason`)
+      }
+    }
+    expect(faults).toEqual([])
   })
 })
 
