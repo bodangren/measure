@@ -1,0 +1,1823 @@
+{
+  "samples": [
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:48.151Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 0,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:48.156Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 2,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:48.658Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 4,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:48.661Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 6,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:49.163Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 8,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:49.167Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 10,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:49.669Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 12,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:49.672Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 14,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:50.178Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 16,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:50.180Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 18,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:50.682Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 20,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:50.685Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 22,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:51.188Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 24,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:51.189Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 26,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:51.692Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 28,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:51.695Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 30,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:52.195Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 32,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:52.197Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 34,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:52.699Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 36,
+      "pending": false
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:52.702Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 38,
+      "pending": false
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:53.206Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 41,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:53.208Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 43,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:53.710Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 45,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:53.712Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 47,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:54.214Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 49,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:54.217Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 51,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:54.719Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 53,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:54.721Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 55,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:55.224Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 57,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:55.227Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 59,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:55.729Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 61,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:55.732Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 63,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:56.234Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 65,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:56.236Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 67,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:56.737Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 69,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:56.740Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 71,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:57.243Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 73,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:57.245Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 75,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:57.748Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 77,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:57.749Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 79,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:58.251Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 81,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:58.257Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 83,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:58.760Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 85,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:58.763Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 87,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:59.265Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 89,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:59.267Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 91,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:33:59.768Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 93,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:33:59.771Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 95,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:00.275Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 97,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:00.280Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 99,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:00.784Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 101,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:00.786Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 103,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:01.289Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 105,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:01.292Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 107,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:01.794Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 109,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:01.796Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 111,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:02.298Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 113,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:02.300Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 115,
+      "pending": true
+    },
+    {
+      "stage": "before",
+      "at": "2026-11-21T21:34:02.802Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6,
+      "rootChanges": 0,
+      "eventCount": 117,
+      "pending": true
+    },
+    {
+      "stage": "typed",
+      "at": "2026-11-21T21:34:02.805Z",
+      "focus": true,
+      "documentFocus": true,
+      "sameNode": true,
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7,
+      "rootChanges": 0,
+      "eventCount": 119,
+      "pending": true
+    }
+  ],
+  "final": {
+    "at": "2026-11-21T21:34:03.307Z",
+    "focus": true,
+    "documentFocus": true,
+    "sameNode": true,
+    "value": "Fixture audit draft omega",
+    "start": 6,
+    "end": 6,
+    "rootChanges": 0,
+    "eventCount": 121,
+    "pending": true
+  },
+  "events": [
+    {
+      "at": "2026-11-21T21:33:48.153Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:48.154Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:48.157Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:48.157Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:48.658Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:48.659Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:48.661Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:48.662Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:49.164Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:49.165Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:49.167Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:49.167Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:49.670Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:49.670Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:49.673Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:49.674Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:50.179Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:50.179Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:50.180Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:50.181Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:50.683Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:50.683Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:50.686Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:50.686Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:51.188Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:51.189Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:51.190Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:51.190Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:51.693Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:51.693Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:51.695Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:51.695Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:52.196Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:52.196Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:52.197Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:52.198Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:52.700Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:52.700Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:52.702Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:52.702Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:53.206Z",
+      "type": "host-message",
+      "messageType": "ready"
+    },
+    {
+      "at": "2026-11-21T21:33:53.207Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:53.208Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:53.209Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:53.209Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:53.711Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:53.712Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:53.713Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:53.713Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:54.215Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:54.215Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:54.218Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:54.218Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:54.720Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:54.721Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:54.722Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:54.722Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:55.224Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:55.225Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:55.227Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:55.227Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:55.730Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:55.730Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:55.732Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:55.733Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:56.235Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:56.235Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:56.236Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:56.236Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:56.738Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:56.739Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:56.741Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:56.741Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:57.243Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:57.244Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:57.246Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:57.246Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:57.748Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:57.749Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:57.750Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:57.750Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:58.252Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:58.253Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:58.257Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:58.258Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:58.760Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:58.761Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:58.763Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:58.763Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:59.266Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:59.266Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:59.267Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:59.267Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:59.769Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:33:59.770Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:59.772Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:33:59.772Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:00.276Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:00.277Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:00.281Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:00.281Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:00.785Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:00.785Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:00.787Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:00.787Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:01.289Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:01.290Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:01.292Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:01.292Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:01.794Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:01.795Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:01.797Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:01.797Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:02.299Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:02.299Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:02.301Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:02.301Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:02.803Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "x",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "at": "2026-11-21T21:34:02.803Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:02.805Z",
+      "type": "keydown",
+      "tag": "TEXTAREA",
+      "key": "Backspace",
+      "value": "Fixturxe audit draft omega",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "at": "2026-11-21T21:34:02.806Z",
+      "type": "input",
+      "tag": "TEXTAREA",
+      "value": "Fixture audit draft omega",
+      "start": 6,
+      "end": 6
+    }
+  ]
+}

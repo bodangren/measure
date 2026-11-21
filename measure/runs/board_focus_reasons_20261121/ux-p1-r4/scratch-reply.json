@@ -1,0 +1,12 @@
+{
+  "source": "OpenChamber session.messages",
+  "session_id": "ses_e0471fc4bffeijIUhEC4Ci9NgD",
+  "title": "UX scratch · board focus",
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "prompt": "Reply with the word OK ten times, one per line.",
+  "message_id": "msg_1fb8f7f41001OxtogX95ctajjy",
+  "created_at": 1795221847878,
+  "completed_at": 1795221849965,
+  "session_status": "idle",
+  "text": "OK\nOK\nOK\nOK\nOK\nOK\nOK\nOK\nOK\nOK"
+}

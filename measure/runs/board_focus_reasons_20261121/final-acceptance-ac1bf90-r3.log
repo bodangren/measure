@@ -1,0 +1,29 @@
+Final acceptance round 3 at ac1bf90cd1a439b81df1b2960dc9e42a81340fdc.
+
+The fresh Phase 2 acceptance passes at current HEAD. Its gate exited 0. The round 2 F1 blocker is closed.
+
+The current acceptance set has one passing result per phase. The ada02de Phase 2 result is superseded history.
+
+All seven tasks are complete with SHA evidence. Fresh A5 and A6 scans found no false-claim pattern.
+
+Round 2 tsc, 431 tests, bundle comparison, PROJECT_LINT, and PROJECT_CHECKS remain valid at unchanged HEAD. PROJECT_CHECKS passed 15 suites with zero failures. The doctor check is not applicable under repository precedent.
+
+Three nonblocking Nits remain: F2, F4, and optional F5.
+
+MEASURE_AGENT_RESULT
+role: final-acceptance
+status: complete
+track: board_focus_reasons_20261121
+phase: track
+commits: none
+tests_run: carried tsc PASS; carried vitest PASS with 431 tests; carried bundle cmp PASS; carried PROJECT_LINT PASS; carried PROJECT_CHECKS PASS with 15 passed and 0 failed suites; fresh Phase 2 gate PASS exit 0; round 3 final gate PASS exit 0
+files_changed: measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90-r3.json; measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90-r3.log
+plan_updates: none
+known_failures: none
+handoff: Final acceptance passes with nonblocking Nits F2, F4, and F5. F2 and F4 carry DECLINE dispositions. F5 is recommended for DECLINE. Closeout must record the light-lane deviation and the PM post-deploy condition. Retry recommendation: none. Gate exit: 0. Facts changed: none.
+END_MEASURE_AGENT_RESULT
+
+Gate output: PASS: final-acceptance gate passed.
+Gate exit code: 0.
+
+RESULT: PASS

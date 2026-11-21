@@ -1,0 +1,29 @@
+# Green P1 result: Task 1.3 plan evidence
+
+This round is plan evidence only. No code or test changed. HEAD matched role base SHA 8dafa77 before the edit on branch fix/board-focus-reasons. Phase base SHA is da1e7bb. The role base SHA is inside phase_base_sha..HEAD. No push.
+
+The UX browser review at 8dafa77 passed all four live checks. Timer check passed 268 samples. Host reply check passed 230 samples. Escape applied the held paint. Reopening restored the draft. The browser closed. Result file: `measure/runs/board_focus_reasons_20261121/ux-browser-8dafa77.json`.
+
+Plan edit: Task 1.3 changed from `[~]` to `[x]` with SHA 8dafa77. One indented evidence line was added under it. No other plan line changed. The only commit is 0db45c6, which holds plan.md alone.
+
+Gate command: `GREEN_TEST_COMMAND="cd extensions/measure-status && bunx vitest run" python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role jr-green --track board_focus_reasons_20261121 --phase "Phase 1: Focus survives a refresh" --baseline da1e7bb --log-file measure/runs/board_focus_reasons_20261121/green-p1-t13.log --runner /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh`, with HEAVY_MIN_AVAIL_MB=1500.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: 0db45c6 (plan evidence only)
+tests_run: no test run in this round; the gate runs GREEN_TEST_COMMAND through the heavy-run wrapper
+files_changed: measure/tracks/board_focus_reasons_20261121/plan.md only
+plan_updates: Task 1.3 closed with 8dafa77 and one live-evidence line; no other line changed
+known_failures: none known before the gate
+handoff: Phase 1 now has Task 1.1, 1.2, and 1.3 closed with SHA evidence. Live focus behavior passed the UX browser check at 8dafa77. No push was made. Plan evidence commit is 0db45c6.
+baseline_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: 8dafa773c16ba34a5052f0731bb03d24e5f9482a
+phase_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+END_MEASURE_AGENT_RESULT
+
+=== gate output ===
+PASS: jr-green gate passed
+GATE_EXIT=0

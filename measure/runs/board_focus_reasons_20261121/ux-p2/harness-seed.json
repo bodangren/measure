@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-21T21:32:02.595Z",
+  "seeded": true,
+  "fixtureCards": 996,
+  "expectedWaiting": 13,
+  "message": "Measure board comment\nRepo: reading-advantage-monorepo\nTrack: gate_delete-file\nReason: Waits for Daniel: deletion — Task: Check delete-file\nDaniel: Fixture audit draft",
+  "messageReason": "Waits for Daniel: deletion — Task: Check delete-file",
+  "fixture_sha256": "83d5eb22e51cf672106d945c6910a95cadd89b1ae33984b719129b088f1015af",
+  "fixture_bytes": 375454,
+  "method": "The debugger seeds the committed fixture cards in the unmodified panel closure before its first ready paint. The harness blocks file, service, and session operations."
+}

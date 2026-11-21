@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-21T20:35:16.005Z",
+  "url": "http://127.0.0.1:38307/api/guest-files/KCtw3FyRxF8EWYng8uwMNA7lfCJwbnUZ/panel/main.js",
+  "resources": [
+    {
+      "name": "http://127.0.0.1:38307/api/guest-files/KCtw3FyRxF8EWYng8uwMNA7lfCJwbnUZ/panel/main.js",
+      "transferSize": 0
+    }
+  ],
+  "status": 200,
+  "served_bytes": 156841,
+  "loaded_bytes": 156841,
+  "committed_bytes": 156841,
+  "served_sha256": "ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7",
+  "loaded_sha256": "ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7",
+  "committed_sha256": "ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7",
+  "identical": true,
+  "messageReasonField": true,
+  "legacyMessageBlockerField": false,
+  "messageUsesCardReason": true
+}

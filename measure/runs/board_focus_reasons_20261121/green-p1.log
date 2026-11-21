@@ -1,0 +1,62 @@
+=== Green P1 F1 remediation gates (role base ca6c367) ===
+=== bunx tsc -p . --noEmit ===
+TSC_EXIT=0
+=== bunx vitest run src/painter.test.ts src/painter-dom.test.ts ===
+
+ RUN  v2.1.9 /home/daniebo/Desktop/measure/extensions/measure-status
+
+ ✓ src/painter.test.ts (31 tests) 8ms
+ ✓ src/painter-dom.test.ts (13 tests) 38ms
+
+ Test Files  2 passed (2)
+      Tests  44 passed (44)
+   Start at  06:35:11
+   Duration  494ms (transform 106ms, setup 0ms, collect 112ms, tests 46ms, environment 161ms, prepare 116ms)
+
+TARGETED_EXIT=0
+=== bunx vitest run ===
+
+ RUN  v2.1.9 /home/daniebo/Desktop/measure/extensions/measure-status
+
+ ✓ src/registry.test.ts (20 tests) 11ms
+ ✓ src/parse.test.ts (32 tests) 14ms
+ ✓ src/board.test.ts (58 tests) 26ms
+ ✓ src/painter.test.ts (31 tests) 9ms
+ ✓ src/load.test.ts (18 tests) 16ms
+ ✓ src/review-nits.test.ts (11 tests) 8ms
+ ✓ src/send.test.ts (15 tests) 13ms
+ ✓ src/band.test.ts (19 tests) 13ms
+ ✓ src/render.test.ts (16 tests) 15ms
+ ✓ src/adversarial-ui.test.ts (35 tests) 122ms
+ ✓ src/adversarial.test.ts (21 tests) 274ms
+ ✓ src/service.test.ts (8 tests) 7ms
+ ✓ src/page-state.test.ts (4 tests) 10ms
+ ✓ src/comment-box.test.ts (6 tests) 6ms
+ ✓ src/closeout-nits2.test.ts (3 tests) 9ms
+ ✓ src/preview-wiring.test.ts (5 tests) 7ms
+ ✓ src/comment-focus.test.ts (5 tests) 4ms
+ ✓ src/comment.test.ts (8 tests) 6ms
+ ✓ src/roster.test.ts (7 tests) 6ms
+ ✓ src/age.test.ts (9 tests) 4ms
+ ✓ src/fixture-archive.test.ts (3 tests) 3ms
+ ✓ src/source.test.ts (5 tests) 4ms
+ ✓ src/painter-dom.test.ts (13 tests) 40ms
+
+ Test Files  23 passed (23)
+      Tests  352 passed (352)
+   Start at  06:35:12
+   Duration  1.28s (transform 1.43s, setup 0ms, collect 2.74s, tests 626ms, environment 192ms, prepare 1.69s)
+
+VITEST_EXIT=0
+=== bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=panel/main.js ===
+
+  panel/main.js  152.4kb
+
+⚡ Done in 12ms
+ESBUILD_EXIT=0
+
+=== role-gate --baseline ca6c367 (GREEN_TEST_COMMAND="cd extensions/measure-status && bunx vitest run") ===
+INFO: no heavy-run wrapper found; running gate commands directly
+FAIL: current phase still has 1 non-deferred incomplete tasks
+GATE_EXIT=1
+NOTE: the incomplete task is Task 1.3 (live browser check), held outside Green. The GREEN_TEST_COMMAND gate passed with exit 0.

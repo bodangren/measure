@@ -1,0 +1,153 @@
+Provisional verdict: inconclusive. The live checks remain pending.
+HEAD: e410fd1455afc469d1e42b095eced8f54980824f
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: e410fd1455afc469d1e42b095eced8f54980824f
+PROJECT_DEV_URL: http://127.0.0.1:38307
+The branch is fix/board-focus-reasons. The working tree has no tracked changes.
+The audit read the spec, Phase 2 plan, Review A result, metadata, contracts, gates, and exact user-facing phase diff.
+The committed bundle SHA-256 is ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7.
+The local bundle has the same hash. The live bundle check remains pending.
+PROJECT_DEV_URL is empty in measure/gates.json. PID 1643370 serves the supplied URL on port 38307.
+No separate routing artifact or test-strategy.md exists for this track. The prompt supplies the route and live checks.
+The audit queued one priority-p1 worker inside heavy-run. Each browser operation uses heavy-run and timeout 30.
+The worker keeps Chrome inside the heavy-run job. This avoids the wrapper cleanup that ended the first Phase 1 start.
+An event watcher will report readiness. The outer command stops after 20 minutes.
+The Workbooks D3 manual row is now closed. The audit will check the current card without changing that plan.
+The browser opened and reloaded the real host page. The audit opened the Measure rail panel.
+Bundle provenance passed at 20:33:31.563Z.
+The loaded script, HTTP response, local file, and committed file have the same SHA-256.
+Each contains 156841 bytes. The SHA-256 is ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7.
+The audit uses the real panel, not the preview.
+Checks 1 and 2 passed for all 242 open cards across eight repositories.
+Every repository has the five columns in the specified order.
+Each open card has exactly one non-empty reason with a valid state prefix.
+The audit found no old label element and no reason that starts with Blocker.
+The audit opened all five Show more controls and all ten stale groups before counting cards.
+Check 3 passed. The domain_trust card shows Running: 1.3 Worktree. Create `../lending-desk-bench-trust` on the new branch.
+Check 4 passed. The Workbooks dependency card shows Waits for PM: All tasks closed. It has no Comment button.
+The Workbooks D3 manual row is closed in the current source plan. This differs from the earlier open-row case.
+Check 5 passed only for the live zero case. All eight repositories have zero Waits for Daniel cards.
+The rail shows no numeric badge, which represents zero. The board shows no Comment button.
+The loaded bundle names the message field Reason and reads card.reason. It has no Blocker message field.
+The audit sent no comment. A positive Waits for Daniel case remains unverified in this live run.
+Check 6 did not run. The live board has no eligible comment box.
+The Phase 1 browser result remains separate evidence. This audit does not claim a fresh focus check.
+The audit saved a desktop accessibility snapshot with 2601 nodes and screenshots of both named cards.
+Check 7 stopped at responsive-390: locate the panel iframe.
+Command: heavy-run.sh timeout 30 node measure/runs/board_focus_reasons_20261121/ux-p2/cdp-step.mjs <endpoint> panel eval responsive-390.json <expression>
+Exit code: 1
+Exact error: Error: The panel target is absent.
+The host removed the rail after the viewport changed to 390 pixels. The screenshot shows the host chat, not the board.
+The audit made no retry and stopped the checks. It will close the browser next.
+The browser close step exited 0 and returned Browser closed.
+The persistent wrapper completed. The final process search found no agent-browser daemon or audit Chrome process.
+The audit browser endpoint on port 44705 is closed.
+Final HEAD: e410fd1455afc469d1e42b095eced8f54980824f. The tracked tree remains clean.
+Final audit verdict: inconclusive. Required positive-state and phone-board coverage remains open.
+
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: Reason checks passed for 242 cards. The positive Comment check and focus check remain unverified. The phone panel check stopped. The role gate exited 1.
+files_changed: ux-browser-e410fd1.json, ux-browser-e410fd1.log, and ux-p2/ under measure/runs/board_focus_reasons_20261121/.
+plan_updates: none
+known_failures: responsive-390: locate the panel iframe; exit 1; Error: The panel target is absent.
+handoff: May the audit use a read-only fixture harness for the positive Waits for Daniel checks and the 390-pixel board check? Options: Authorize the fixture harness (default); Wait for eligible live data and a reachable phone panel. The browser closed.
+END_MEASURE_AGENT_RESULT
+
+Gate output: FAIL: audit status must be pass, got 'inconclusive'; no blocking_findings provided
+Gate exit code: 1
+RESULT: FAIL
+
+PM decision, 2026-11-22: fixture proof is ACCEPTED for the Waits for Daniel checks and the 390 px check.
+The orchestrator authorized one fixture start retry with a 45-minute outer limit.
+HEAD remains e410fd1455afc469d1e42b095eced8f54980824f. The tracked tree remains clean.
+The current lock holder runs harness/model-guide/review-run.sh --set mg-2026-11a --route opencode-go/mimo-v2.6-flash.
+The retry will keep the 30-second limit for each browser operation.
+
+The orchestrator authorized the read-only fixture harness.
+HEAD still matches e410fd1455afc469d1e42b095eced8f54980824f.
+The audit preserves the live evidence. The positive-state, focus, and phone checks will use the harness.
+The harness will serve the committed panel bundle and fixture JSON without changing their bytes.
+Harness method: CDP seeds the committed fixture cards in the panel closure before its first ready paint.
+The bundle bytes remain unchanged. The production renderer, painter, comment formatter, and badge function run.
+The harness blocks file, service, and session operations. It sends no real comment.
+The focus check will send one SDK ready event. The production handler routes that event through painter.data().
+This is a fixture data refresh, not a live OpenChamber event or a timer test.
+The fixture harness start reached its 1200-second outer limit.
+Step: fixture harness start: acquire the heavy-run slot.
+Command: MEASURE_FIXTURE_HARNESS=1 HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 timeout --signal=TERM --kill-after=10s 1200 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh node measure/runs/board_focus_reasons_20261121/ux-p2/browser-worker.mjs
+Exact output: (no output)
+Exit code: 124
+No fixture readiness file exists. The step log contains no fixture browser operation.
+The final process search found no audit browser or fixture worker. The audit stopped its own readiness watcher.
+The audit made no retry after the timeout. The remaining harness checks did not run.
+HEAD remains e410fd1. No tracked file changed.
+FR-8 note: no host focus fault appeared in the live part. No eligible comment box existed for a fresh positive test.
+
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: The earlier live checks passed for 242 cards. The authorized fixture start exited 124 at the 20-minute limit. The role gate exited 1.
+files_changed: ux-browser-e410fd1.json, ux-browser-e410fd1.log, and fixture helpers under ux-p2/.
+plan_updates: none
+known_failures: fixture harness start: acquire the heavy-run slot; exact output: (no output); exit 124.
+handoff: The fixture harness is authorized. Retry when a heavy-run slot is available. Preserve the live evidence. No audit browser runs.
+END_MEASURE_AGENT_RESULT
+
+The authorized retry opened the fixture browser at 21:31:29.673Z.
+The harness loaded the unchanged committed bundle. Its loaded, served, and committed hashes match.
+The committed fixture JSON has SHA-256 83d5eb22e51cf672106d945c6910a95cadd89b1ae33984b719129b088f1015af.
+The harness loaded all 996 cards without changing the JSON.
+The production badge function reported 13. The fixture JSON has 13 Waits for Daniel cards.
+The production comment formatter returned Reason: Waits for Daniel: deletion — Task: Check delete-file.
+The harness recorded no file, service, or session request.
+The fixture board rendered all 257 open cards after expanding six Show more controls and ten stale groups.
+Only the 13 Waits for Daniel cards have Comment buttons. All eight gate groups appear.
+The production badge count is 13, matching both the fixture JSON and the rendered waiting cards.
+The focus spot check passed all 60 samples. Each sample kept focus, draft, caret, and textarea identity.
+The SDK ready event arrived at 21:33:53.206Z. The production painter changed pending from false to true.
+The root observer recorded zero mutations. Typing inserted and removed x at the mid-text caret without changing the draft.
+This positive-state and focus evidence comes from the PM-accepted fixture harness, not the live board.
+Escape applied one root update and cleared the pending paint. Focus returned to the same Comment button.
+Reopening the box restored Fixture audit draft omega.
+The accepted 390-pixel board check passed. The frame and document each measure 390 pixels.
+The textarea stays inside its card. The screenshot shows wrapped reason text, the focus ring, and the badge count 13.
+The phone accessibility snapshot contains 2382 nodes.
+The served fixture JSON has the committed SHA-256 and 375454 bytes.
+The harness still records zero file, service, or session operations.
+The audit reviewed both fixture screenshots. The reason lines and Comment controls stay clear at both widths.
+The remaining positive-state, focus, and phone checks passed on the accepted fixture harness.
+The fixture browser closed. The persistent wrapper completed with exit 0.
+The final process search found no audit browser or fixture worker.
+The browser endpoint and fixture server are closed. HEAD remains e410fd1, with no tracked change.
+Final audit verdict: pass, with the PM-accepted fixture coverage limits recorded in the JSON.
+
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: The live 242-card reason checks passed. The accepted fixture Comment, Reason, badge, focus, and phone checks passed. The role gate exited 0.
+files_changed: ux-browser-e410fd1.json, ux-browser-e410fd1.log, and ux-p2/ under measure/runs/board_focus_reasons_20261121/.
+plan_updates: none
+known_failures: none; the accepted fixture proof resolves the live coverage limits.
+handoff: No findings. HEAD remains e410fd1. No host focus fault appeared in the live part. Both browsers closed. Proceed to phase acceptance.
+END_MEASURE_AGENT_RESULT
+
+Gate output: PASS: ux-browser-review gate passed
+Gate exit code: 0
+Facts changed: the UX audit status is pass at e410fd1.
+RESULT: PASS
+
+The readiness watcher ended with exit 143 after the audit stopped it.
+Gate output: FAIL: audit status must be pass, got 'inconclusive'; no blocking_findings provided
+Gate exit code: 1
+RESULT: FAIL

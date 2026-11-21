@@ -1,0 +1,6 @@
+{
+  "title": "Dependency refresh of dashboard and storytime-song: every package to the latest version that works, all critical and high audit advisories fixed by 2026-11-23, and each remaining moderate or low advisory listed with its reason by 2026-11-25.",
+  "column": "blocked",
+  "reason": "Waits for PM: All tasks closed.",
+  "comments": 0
+}

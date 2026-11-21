@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: tsc PASS; vitest PASS, 351 tests; bundle comparison PASS; all 19 earlier mutations detected; four deletion mutations survived and failed the previous suite; role-gate FAIL, exit 1
+files_changed: measure/runs/board_focus_reasons_20261121/review-a-5f74c11.json; measure/runs/board_focus_reasons_20261121/review-a-5f74c11.log
+plan_updates: none
+known_failures: F1 is closed; F2 blocks acceptance because four existing boundary checks lose coverage
+handoff: Route F2 to Green. Restore separate load and send boundary assertions inside the bounded bodies. Prove the four deletion mutations fail. Task 1.3 stays outside this audit.
+END_MEASURE_AGENT_RESULT

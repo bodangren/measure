@@ -1,0 +1,39 @@
+Closeout run for board_focus_reasons_20261121 on branch fix/board-focus-reasons.
+
+Pre-closeout HEAD: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc. Tree clean.
+Final acceptance: final-acceptance-ac1bf90-r3.json, audited_head_sha ac1bf90cd1a439b81df1b2960dc9e42a81340fdc, status pass, role gate exit 0. Orchestrator re-ran the gate: PASS.
+
+Pre-closeout gates:
+- No [~] task, no [ ] task, no [b] task in plan.md.
+- All seven top-level tasks are [x] with commit SHA evidence.
+- A5: no false-claim text in the plan. Final acceptance found only three record-style Nits, all nonblocking.
+- A6: the registry entry makes no adversarial-test claim; its description equals the metadata description.
+- A9: grep for the fixed path measure/tracks/board_focus_reasons_20261121/ found no match in tests, scripts or support files. No test fix needed.
+
+Mutations:
+- Edited metadata.json: status done, actual_tasks 7, updated_at and completed 2026-11-22, deviation notes recorded.
+- Edited measure/tracks.md: removed the Active Tracks entry, added the Archived Tracks entry.
+- Moved measure/tracks/board_focus_reasons_20261121 to measure/archive/board_focus_reasons_20261121.
+- Wrote automation-supervisor-closeout-manifest.json in the archive folder.
+
+Closeout checker:
+python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track board_focus_reasons_20261121
+Exit 0. Output:
+INFO: light lane, no final acceptance
+INFO: no measure/generated folder, skipping the generated freshness check
+PASS: closeout checks passed
+
+The runs folder is gitignored and will be force-added with the closeout commit.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: complete
+track: board_focus_reasons_20261121
+phase: track closeout
+commits: none at log write time; closeout commit pending
+tests_run: closeout checker exit 0 (PASS: closeout checks passed); final acceptance gate re-run by orchestrator PASS at ac1bf90
+files_changed: metadata.json, measure/tracks.md, archive folder move, closeout manifest, closeout.log, closeout result JSON
+plan_updates: no plan edits in closeout; all seven tasks already [x] with SHA evidence
+known_failures: none
+handoff: Archive and registry are updated. The closeout checker passed with exit 0. Force-add measure/runs/board_focus_reasons_20261121/ and commit with a measure(closeout): message. Open PM condition stays: after the panel deploy the PM checks the first real Waits for Daniel card on the live board and logs the result; a fault opens a bug track. FR-8: no host focus fault in the Phase 1 or Phase 2 live checks.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,145 @@
+=== RED P1 R5 mutation matrix: 4 deletions + 18 substitutions ===
+head: 5f74c11ee8649476eca760248a0e5542367cd822
+method: temp edit of panel/main.ts, full-file run, git checkout restore
+
+mutation matrix: 22 cases (4 deletions + 18 substitutions) against HEAD 5f74c11
+--- [1/22] DELETE loadBoard load-start data(): exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBoard draws data paints and never a user paint 6ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBoard draws data paints and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [2/22] DELETE loadBoard load-end data(): exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBoard draws data paints and never a user paint 6ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBoard draws data paints and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [3/22] DELETE sendComment send-start user(): exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [4/22] DELETE sendComment send-end user(): exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [5/22] open-comment user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > open-comment draws a user paint and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > open-comment draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [6/22] toggle-section user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > toggle-section draws a user paint and never a data paint 6ms
+    FAIL  src/painter.test.ts > the panel user paint callers > toggle-section draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [7/22] toggle-done user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > toggle-done draws a user paint and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > toggle-done draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [8/22] toggle-done-group user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > toggle-done-group draws a user paint and never a data paint 6ms
+    FAIL  src/painter.test.ts > the panel user paint callers > toggle-done-group draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [9/22] show-more user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > show-more draws a user paint and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > show-more draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [10/22] toggle-stale user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > toggle-stale draws a user paint and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > toggle-stale draws a user paint and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [11/22] Escape user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > the Escape key draws a user paint, spends the pending paint, and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > the Escape key draws a user paint, spends the pending paint, and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [12/22] sendComment start user->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint 5ms
+    FAIL  src/painter.test.ts > the panel user paint callers > sendComment draws user paints, spends the pending paint, and never a data paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [13/22] refresh loadBoard->user: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > the Refresh action reaches loadBoard and never a paint call 6ms
+    FAIL  src/painter.test.ts > the panel user paint callers > the Refresh action reaches loadBoard and never a paint call
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [14/22] send-comment slice send->data: exit=1 target-fails=True -> DETECTED
+    × the panel user paint callers > send-comment reaches the sender and never a direct paint call 6ms
+    FAIL  src/painter.test.ts > the panel user paint callers > send-comment reaches the sender and never a direct paint call
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [15/22] loadBoard start data->user: exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBoard draws data paints and never a user paint 6ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBoard draws data paints and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [16/22] repo-result data->user: exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBoard draws data paints and never a user paint 5ms
+    × the panel data paint callers > the repo-result callback draws a data paint and the badge outside the gate 1ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBoard draws data paints and never a user paint
+    FAIL  src/painter.test.ts > the panel data paint callers > the repo-result callback draws a data paint and the badge outside the gate
+    Test Files  1 failed (1)
+    Tests  2 failed | 28 passed (30)
+    restore-diff-empty=True
+--- [17/22] loadBoard end data->user: exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBoard draws data paints and never a user paint 5ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBoard draws data paints and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [18/22] loadBand data->user: exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > loadBand draws a data paint and never a user paint 4ms
+    FAIL  src/painter.test.ts > the panel data paint callers > loadBand draws a data paint and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [19/22] host.onReady data->user: exit=1 target-fails=True -> DETECTED
+    × the panel data paint callers > host.onReady draws a data paint and never a user paint 5ms
+    FAIL  src/painter.test.ts > the panel data paint callers > host.onReady draws a data paint and never a user paint
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [20/22] hold wiring weakened: exit=1 target-fails=True -> DETECTED
+    × the panel holdComment wiring > the panel holds data paints with the shared rule, texts, and surface 10ms
+    FAIL  src/painter.test.ts > the panel holdComment wiring > the panel holds data paints with the shared rule, texts, and surface
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [21/22] blur flush removed: exit=1 target-fails=True -> DETECTED
+    × the panel holdComment wiring > the textarea blur listener calls flush 6ms
+    FAIL  src/painter.test.ts > the panel holdComment wiring > the textarea blur listener calls flush
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+--- [22/22] holdComment import removed: exit=1 target-fails=True -> DETECTED
+    × the panel holdComment wiring > the panel imports holdComment from the painter module 4ms
+    FAIL  src/painter.test.ts > the panel holdComment wiring > the panel imports holdComment from the painter module
+    Test Files  1 failed (1)
+    Tests  1 failed | 29 passed (30)
+    restore-diff-empty=True
+matrix done: 22/22 detected, 0 missed
+driver exit: 0
+
+=== final source state ===
+(no lines above means restored)
+ M extensions/measure-status/src/painter.test.ts

@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-21T20:35:16.234Z",
+  "label": "Measure",
+  "text": "",
+  "html": "<button type=\"button\" role=\"button\" tabindex=\"0\" aria-disabled=\"false\" aria-pressed=\"true\" aria-roledescription=\"sortable\" aria-describedby=\"DndDescribedBy-2\" aria-label=\"Measure\" data-context-surface=\"plugin:measure-status\" class=\"flex h-7 w-7 touch-none select-none items-center justify-center rounded-md transition-colors oc-selected text-interactive-selection-foreground\" id=\"base-ui-_r_134_\" data-slot=\"tooltip-trigger\"><svg class=\"remixicon h-[17px] w-[17px]\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\"><use href=\"#oc-apps\"></use></svg></button>",
+  "frames": [
+    {
+      "src": "http://127.0.0.1:38307/api/guest-files/KCtw3FyRxF8EWYng8uwMNA7lfCJwbnUZ/panel/index.html",
+      "width": 626
+    }
+  ]
+}

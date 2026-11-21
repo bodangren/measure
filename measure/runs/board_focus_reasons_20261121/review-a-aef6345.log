@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: Heavy-run tsc passed; full Vitest passed 419 tests in 24 files; targeted Vitest passed 111 tests; esbuild and cmp passed; role gate exited 1.
+files_changed: review-a-aef6345.json and review-a-aef6345.log
+plan_updates: none
+known_failures: F1 loses semicolon-separated gate words; F2 has empty mockup reasons; F3 falsely reports no current task. The role gate exits 1.
+handoff: Route F1, F2, and F3 to Green. Retry recommendation: retry_implementation. Tests pass but miss these defects. Tasks 2.3 and 2.4 remain open. Gate exit: 1. Facts changed: none.
+END_MEASURE_AGENT_RESULT

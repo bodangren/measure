@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "board_focus_reasons_20261121",
+  "track_title": "Board keeps focus and shows a plain reason per card",
+  "track_base_sha": "849d16f0028fa754b8ec27859d354a1bc324fc31",
+  "closeout_baseline_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc",
+  "audited_head_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc",
+  "closeout_commit_sha": "pending",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/board_focus_reasons_20261121/spec-review-849d16f.json", "status": "pass", "audited_head_sha": "849d16f"},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/board_focus_reasons_20261121/review-a-7ff5df2.json", "status": "pass", "note": "Fix round; Green resolved F1."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/board_focus_reasons_20261121/review-a-8dafa77.json", "status": "pass"},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/board_focus_reasons_20261121/review-a-aef6345.json", "status": "pass", "note": "Fix round; Green resolved F1 to F3."},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/board_focus_reasons_20261121/review-a-643912a.json", "status": "pass", "note": "Fix round; Green resolved F4."},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/board_focus_reasons_20261121/review-a-e410fd1.json", "status": "pass"},
+    {"role": "ux-browser-review", "phase": "Phase 1", "artifact": "measure/runs/board_focus_reasons_20261121/ux-browser-8dafa77.json", "status": "pass", "note": "Four live checks passed. FR-8 saw no host focus fault."},
+    {"role": "ux-browser-review", "phase": "Phase 2", "artifact": "measure/runs/board_focus_reasons_20261121/ux-browser-e410fd1.json", "status": "pass", "note": "Live reason lines passed. Positive Waits for Daniel checks used accepted fixture proof."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/board_focus_reasons_20261121/phase-acceptance-0db45c6.json", "status": "pass", "audited_head_sha": "0db45c64d0bf9c65e8c997aae73607e2a053fb8e", "note": "Three Nits pass to closeout."},
+    {"role": "phase-acceptance", "phase": "Phase 2", "artifact": "measure/runs/board_focus_reasons_20261121/phase-acceptance-ac1bf90.json", "status": "pass", "audited_head_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc", "note": "Three Nits pass to closeout. The superseded ada02de result stays as history."},
+    {"role": "final-acceptance", "artifact": "measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90-r3.json", "status": "pass", "audited_head_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc", "note": "Gate exit 0. Three Nits pass to closeout. Orchestrator re-ran the gate: PASS."},
+    {"role": "closeout", "artifact": "measure/runs/board_focus_reasons_20261121/closeout.log", "status": "pass", "note": "Result block written before the closeout commit."}
+  ],
+  "models": "Final acceptance ran on kimi-code-plan-cn/k3.1-pro#high. The ra-quota pick opencode/deepseek-v4.1-flash-free#high stopped at its free limit.",
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain && git branch --show-current -> ac1bf90cd1a439b81df1b2960dc9e42a81340fdc; clean tree; fix/board-focus-reasons",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, final acceptance, lessons learned and tech debt",
+    "Confirm final-acceptance-ac1bf90-r3.json audited_head_sha equals pre-closeout HEAD ac1bf90",
+    "Confirm no [~], no [ ] and no [b] task in the archived plan; confirm every [x] task has a commit SHA",
+    "Write metadata.json (status done, actual_tasks 7, updated_at and completed 2026-11-22, deviation notes)",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "git mv measure/tracks/board_focus_reasons_20261121 measure/archive/board_focus_reasons_20261121",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track board_focus_reasons_20261121 -> exit 0 (see closeout_check)",
+    "git add -f measure/runs/board_focus_reasons_20261121 and git add the archive, registry and metadata changes; commit with a measure(closeout): message"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track board_focus_reasons_20261121",
+    "exit_code": 0,
+    "output": "INFO: light lane, no final acceptance\nINFO: no measure/generated folder, skipping the generated freshness check\nPASS: closeout checks passed"
+  },
+  "task_shas": {
+    "1.1": "f56902a",
+    "1.2": "5858bad, 1fff4f4",
+    "1.3": "8dafa77",
+    "2.1": "6bc2f45",
+    "2.2": "5dfd496, fa92063, 97ad7b8",
+    "2.3": "e410fd1",
+    "2.4": "e410fd1"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "0db45c6",
+    "Phase 2": "ac1bf90"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (no false-claim text in the archived plan; final acceptance found three record-style Nits, all nonblocking)",
+    "a6_registry_check": "pass (the new registry entry makes no adversarial-test claim; the registry description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep for the fixed path measure/tracks/board_focus_reasons_20261121/ across the repository (tests, scripts, support files) before the move",
+    "result": "no match",
+    "test_fix": "none",
+    "note": "No test or script hardcodes the active track path. The orchestrator's command allowlist for closeout excludes the heavy-run test gate; final acceptance at ac1bf90 already ran tsc, all 431 Vitest tests, esbuild, PROJECT_LINT and PROJECT_CHECKS (15/15) green through heavy-run, and closeout changed no test or product file."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C and adversarial testing were not required. No logins, data, routes or security scope. Reported to the PM.",
+    "The Red gate allowed package.json and bun.lock changes for the happy-dom dev dependency. The PM accepted this.",
+    "No second spec review for the small rule a0 amendment at 50689cc. PM default.",
+    "Phase 2 Waits for Daniel checks and the 390 px check ran on a fixture page. The live board held zero Waits for Daniel cards. The PM accepted fixture proof on 2026-11-22.",
+    "Final acceptance ran on kimi-code-plan-cn/k3.1-pro#high after the ra-quota pick hit its free limit.",
+    "measure/doctor.sh does not exist. PROJECT_CHECKS (15/15) replaced it, as in earlier tracks."
+  ],
+  "open_condition": "After the panel deploy, the PM checks the first real Waits for Daniel card on the live board. The PM checks the Comment button and the Reason field and logs the result. A fault there opens a bug track. It does not reopen this phase.",
+  "fr8_result": "No host focus fault appeared in the Phase 1 live check at 8dafa77 or the Phase 2 live check at e410fd1. The track reports no OpenChamber fault.",
+  "retained_evidence": [
+    "measure/runs/board_focus_reasons_20261121/ (all Red, Green, review, phase, final, UX and closeout logs and JSON results; retained, nothing deleted)",
+    "measure/archive/board_focus_reasons_20261121/ (index, spec, plan, spec-review, metadata and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "lessons_learned_rows_added": [],
+  "tech_debt_rows_added": [],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

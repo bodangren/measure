@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "board_focus_reasons_20261121",
+  "phase": "Phase 2: One state and one reason per card",
+  "baseline_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "phase_base_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "role_base_sha": "643912aa0b9c57323605228f9f14a7d0ae78f85d",
+  "audited_head_sha": "643912aa0b9c57323605228f9f14a7d0ae78f85d",
+  "status": "fail",
+  "summary": "F1-F3 are fixed, and regression tests detect each old defect. The fixture regeneration introduces seven state/column contradictions.",
+  "blocking_findings": [
+    "F4 [Blocker] review-a: extensions/measure-status/mockup/fixtures.json:16,71,310,321,888,889,892 changes seven cards to waits-pm but retains column in-progress. The renderer groups these cards under In progress instead of Waits for PM. This regression violates FR-12 and FR-17. Regenerate consistent card fields and test the state/column mapping for every fixture."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "git rev-parse --short HEAD returned 643912a. The role starts at this HEAD.",
+    "F1 withdrawn: parse.ts:18 preserves semicolons. green-r2.test.ts:29-53 covers all specified separators and the proof;delete priority case.",
+    "F2 withdrawn: the current fixture has zero empty reasons and all eight gate groups. green-r2.test.ts:55-89 covers both requirements.",
+    "F3 withdrawn: board.ts:253,326 uses the current task label. green-r2.test.ts:92-119 covers Planned, In progress, and no-current cases.",
+    "An isolated control copy passes all 11 regression tests. Restoring old parse.ts fails two F1 tests; restoring old fixtures fails three F2 tests.",
+    "Restoring old board.ts fails both current-task F3 tests. Each mutant exits 1 for the expected assertions, without import or runtime failures.",
+    "The fixture probe finds seven waits-pm cards in the in-progress column. At aef6345, those cards were next cards, so remediation introduced this mismatch.",
+    "All 739 Done fixture cards retain their baseline fields, excluding the new state and reason fields.",
+    "The fresh esbuild output equals panel/main.js. The committed Red tests remain unchanged.",
+    "The full heavy-run completes successfully: tsc passes and Vitest passes 430 tests across 25 files.",
+    "preview/preview.ts:55-59 passes fixture cards directly to the board. board.ts:358 groups cards by column, which confirms the F4 effect.",
+    "A rendered board with inv_13 reports In progress total 1 and Waits for PM total 0. Its PM reason appears inside In progress.",
+    "The phase diff leaves painter.ts, painter.test.ts, painter-dom.test.ts, and preview.ts unchanged.",
+    "The existing test edits preserve their behavioral cases and follow the specified columns, labels, Comment scope, and badge change.",
+    "The track has no test-strategy.md. The light-lane spec and plan define the verification command.",
+    "The phase changes no orchestration script, framework contract test, or registry. Framework-wide A3 and A4 checks do not apply.",
+    "The role gate exits 1 for F4 and incomplete Tasks 2.3 and 2.4. The plan and Green log disclose the incomplete phase.",
+    "The full run confirms the passing test claims in plan.md:23-24. A5 finds no false passing claim.",
+    "After the full run, HEAD remains 643912aa0b9c57323605228f9f14a7d0ae78f85d. The tracked tree remains clean."
+  ],
+  "commands": [
+    "git rev-parse --short HEAD; git rev-parse HEAD; git status --short: HEAD is 643912aa0b9c57323605228f9f14a7d0ae78f85d; the tracked tree is clean.",
+    "git diff 50689cc..643912a --stat; git diff aef6345..643912a --stat: reviewed the full phase and the remediation scope.",
+    "git diff 50689cc..643912a -- extensions/measure-status/src/board.ts extensions/measure-status/src/parse.ts extensions/measure-status/src/render.ts extensions/measure-status/src/comment.ts extensions/measure-status/panel/main.ts: reviewed.",
+    "git diff 50689cc..643912a -- extensions/measure-status/README.md extensions/measure-status/src/board.test.ts extensions/measure-status/src/render.test.ts extensions/measure-status/src/comment.test.ts extensions/measure-status/src/comment-box.test.ts extensions/measure-status/src/adversarial-ui.test.ts: reviewed.",
+    "git diff --exit-code 6bc2f45 643912a -- extensions/measure-status/src/card-state.test.ts: exit 0.",
+    "git diff --check 50689cc..643912a: exit 0.",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run': exit 0; tsc passes; 430 tests pass across 25 files.",
+    "From extensions/measure-status: bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=/tmp/measure-p2-r2-main.js && cmp panel/main.js /tmp/measure-p2-r2-main.js: exit 0.",
+    "build-graph scan extensions/measure-status /tmp/measure-p2-review-r2-graph.db: exit 0; 633 nodes and 744 edges.",
+    "build-graph import query confirms board and parser dependencies in panel/main.ts, preview/preview.ts, load.ts, measure.ts, band.ts, render.ts, and their tests.",
+    "For each /tmp/measure-review-a-643912a-XRU3fq/{control,F1,F2,F3}: HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd COPY && ./node_modules/.bin/vitest run --maxWorkers=1 --minWorkers=1 src/green-r2.test.ts'.",
+    "Control: exit 0, 11 passed. F1 with old parse.ts: exit 1, 2 failed and 9 passed. F2 with old fixtures: exit 1, 3 failed and 8 passed.",
+    "F3 with old board.ts: exit 1, 2 failed and 9 passed. Every reverted file came from git show aef6345:PATH.",
+    "bun fixture probe: 996 cards, 257 open cards, zero empty reasons, eight gate groups, seven state/column mismatches, zero false no-current reasons.",
+    "bun baseline comparison: all 739 Done fixture cards retain their baseline fields.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track board_focus_reasons_20261121 --phase 'Phase 2: One state and one reason per card' --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/review-a-643912a.json --log-file measure/runs/board_focus_reasons_20261121/review-a-643912a.log: exit 1."
+  ],
+  "changed_files": [
+    "extensions/measure-status/README.md",
+    "extensions/measure-status/mockup/fixtures.json",
+    "extensions/measure-status/panel/main.js",
+    "extensions/measure-status/panel/main.ts",
+    "extensions/measure-status/src/adversarial-ui.test.ts",
+    "extensions/measure-status/src/board.test.ts",
+    "extensions/measure-status/src/board.ts",
+    "extensions/measure-status/src/card-state.test.ts",
+    "extensions/measure-status/src/comment-box.test.ts",
+    "extensions/measure-status/src/comment.test.ts",
+    "extensions/measure-status/src/comment.ts",
+    "extensions/measure-status/src/green-r2.test.ts",
+    "extensions/measure-status/src/parse.ts",
+    "extensions/measure-status/src/render.test.ts",
+    "extensions/measure-status/src/render.ts",
+    "measure/tracks/board_focus_reasons_20261121/plan.md"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.1-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 3,
+      "evidence": "The F1-F3 fixes work, but fixtures.json:16 and six other changed cards contradict their column."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "Each isolated revert fails the expected green-r2.test.ts assertions, but the suite does not check fixture state/column consistency."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "git diff --name-only aef6345..643912a lists only the remediation files, regression tests, generated bundle, fixtures, and plan."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The review records independent revert mutants, bundle equality, and passing full TypeScript and Vitest commands."
+    }
+  ]
+}

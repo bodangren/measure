@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "board_focus_reasons_20261121",
+  "phase": "Phase 2: One state and one reason per card",
+  "baseline_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "phase_base_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "role_base_sha": "e410fd1455afc469d1e42b095eced8f54980824f",
+  "audited_head_sha": "e410fd1455afc469d1e42b095eced8f54980824f",
+  "status": "pass",
+  "summary": "F1-F4 are fixed, with no remaining finding. Independent full verification passes. Tasks 2.3 and 2.4 remain open.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "git rev-parse --short HEAD returned e410fd1. The role starts at this HEAD.",
+    "F1 withdrawn: parse.ts and board.ts remain unchanged since the passing F1 remediation checks on 643912a.",
+    "F2 withdrawn: all 257 open fixture cards have non-empty reasons. All eight gate groups remain present.",
+    "F3 withdrawn: board.ts remains unchanged since the passing current-task reason checks on 643912a.",
+    "F4 withdrawn: the fixture now has zero state/column mismatches across all 996 cards. green-r2.test.ts:127-146 checks every card.",
+    "The isolated control passes all 12 regression tests. Replacing only fixtures.json with 643912a makes the new F4 test fail.",
+    "The F4 mutant reports exactly inv_13, inv_68, inv_307, inv_318, inv_7, inv_8, and inv_11. The other 11 tests pass.",
+    "Only the column changes on those seven cards. All other fixture fields and all 739 Done cards remain unchanged.",
+    "A render probe puts inv_13 inside Waits for PM. Its board has In progress total 0 and Waits for PM total 1.",
+    "The remediation changes only fixtures.json, green-r2.test.ts, and the track plan. No bundled source changes.",
+    "The fresh esbuild output equals panel/main.js. The committed Red tests remain unchanged.",
+    "The track has no test-strategy.md. The light-lane spec and plan define the verification command.",
+    "The phase changes no orchestration script, framework contract test, or registry. Framework-wide A3 and A4 checks do not apply.",
+    "The earlier cancelled run produced no test result. The priority p1 restart passes TypeScript and all 431 tests across 25 files.",
+    "The independent restart confirms the passing claims in plan.md:23-25. A5 finds no false passing claim.",
+    "After verification ended, HEAD remains e410fd1455afc469d1e42b095eced8f54980824f. The tracked tree remains clean.",
+    "The earlier review-a gate exits 1 because the audit was inconclusive and Tasks 2.3 and 2.4 remain incomplete.",
+    "Restart checks confirm HEAD e410fd1455afc469d1e42b095eced8f54980824f and a clean tracked tree.",
+    "The restart diff confirms exactly seven column-only fixture changes, the F4 regression test, and the plan evidence.",
+    "The restart preserves earlier mutant and bundle evidence because the relevant committed files remain unchanged.",
+    "The restart role-gate exits 1 only because Tasks 2.3 and 2.4 remain incomplete. The audit result passes."
+  ],
+  "commands": [
+    "git rev-parse --short HEAD; git rev-parse HEAD; git status --short: HEAD is e410fd1455afc469d1e42b095eced8f54980824f; the tracked tree is clean.",
+    "git diff --stat 643912a..e410fd1; git diff 643912a..e410fd1 -- extensions/measure-status/src/green-r2.test.ts measure/tracks/board_focus_reasons_20261121/plan.md extensions/measure-status/mockup/fixtures.json: reviewed.",
+    "git diff --check 50689cc..e410fd1: exit 0.",
+    "git diff --exit-code 6bc2f45 e410fd1 -- extensions/measure-status/src/card-state.test.ts: exit 0.",
+    "git diff --exit-code 643912a e410fd1 -- extensions/measure-status/src/parse.ts extensions/measure-status/src/board.ts extensions/measure-status/panel/main.ts extensions/measure-status/panel/main.js extensions/measure-status/src/render.ts extensions/measure-status/src/comment.ts: exit 0.",
+    "Earlier full verification under PID 4077057: exit 143 after cancellation; no tests ran.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run': exit 0; TypeScript passes; 431 tests pass across 25 files.",
+    "From extensions/measure-status: bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=/tmp/measure-p2-r3-main.js && cmp panel/main.js /tmp/measure-p2-r3-main.js: exit 0.",
+    "build-graph scan extensions/measure-status /tmp/measure-p2-review-r3-graph.db: exit 0; 633 nodes and 744 edges.",
+    "The build-graph import query confirms the regression test imports board.ts, parse.ts, render.ts, and fixtures.json. Existing production callers remain unchanged.",
+    "For each /tmp/measure-review-a-e410fd1-Vyy7c3/{control,F4}: HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd COPY && ./node_modules/.bin/vitest run --maxWorkers=1 --minWorkers=1 src/green-r2.test.ts'.",
+    "Control: exit 0, 12 passed. F4 with fixtures from git show 643912a:extensions/measure-status/mockup/fixtures.json: exit 1, exactly the new F4 test fails.",
+    "bun fixture probe: 996 cards, 257 open cards, zero empty reasons, zero state/column mismatches, eight gate groups, seven column-only changes.",
+    "bun render probe: inv_13 appears inside the blocked column; In progress total is 0; Waits for PM total is 1.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track board_focus_reasons_20261121 --phase \"Phase 2: One state and one reason per card\" --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/review-a-e410fd1.json --log-file measure/runs/board_focus_reasons_20261121/review-a-e410fd1.log: exit 1; current phase still has 2 non-deferred incomplete tasks."
+  ],
+  "changed_files": [
+    "extensions/measure-status/README.md",
+    "extensions/measure-status/mockup/fixtures.json",
+    "extensions/measure-status/panel/main.js",
+    "extensions/measure-status/panel/main.ts",
+    "extensions/measure-status/src/adversarial-ui.test.ts",
+    "extensions/measure-status/src/board.test.ts",
+    "extensions/measure-status/src/board.ts",
+    "extensions/measure-status/src/card-state.test.ts",
+    "extensions/measure-status/src/comment-box.test.ts",
+    "extensions/measure-status/src/comment.test.ts",
+    "extensions/measure-status/src/comment.ts",
+    "extensions/measure-status/src/green-r2.test.ts",
+    "extensions/measure-status/src/parse.ts",
+    "extensions/measure-status/src/render.test.ts",
+    "extensions/measure-status/src/render.ts",
+    "measure/tracks/board_focus_reasons_20261121/plan.md"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6.1-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The independent fixture probe finds zero state/column mismatches and zero empty open-card reasons across 996 cards."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "The control passes 12 tests; restoring 643912a fixtures fails exactly the F4 test with the seven expected cards."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "git diff 643912a..e410fd1 changes only seven fixture columns, their regression test, and plan evidence."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The restart passes TypeScript and 431 tests; unchanged committed files preserve the earlier mutant, graph, and bundle evidence."
+    }
+  ]
+}
