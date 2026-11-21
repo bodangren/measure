@@ -23,5 +23,10 @@ Test command: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vi
   - Green evidence: `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. The `panel/main.js` rebuild exits 0. The rail badge counts Waits for Daniel cards. Log: `measure/runs/board_focus_reasons_20261121/green-p2.log`.
   - Review A evidence: F1 semicolon separators, F2 regenerated fixture reasons and gate cards, and F3 Next in line with a current task are fixed at fa92063. `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. Log: `measure/runs/board_focus_reasons_20261121/green-p2-r2.log`.
   - Review A round 2 evidence: F4 fixture columns now come from `classifyTrack`, so all seven state and column contradictions are gone. A fixture test fails on 643912a and passes at 97ad7b8. `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. Log: `measure/runs/board_focus_reasons_20261121/green-p2-r3.log`.
-- [ ] Task 2.3: live browser check of the reason lines on the board
-- [ ] Task 2.4: records and closeout
+- [x] Task 2.3: live browser check of the reason lines on the board — e410fd1
+  - Live evidence: the UX browser check on e410fd1 passed on the live board. All 242 open cards show one state with a plain reason. lending-desk-bench domain_trust shows Running. Workbooks deps_refresh_20261121 D3 shows Waits for PM with no Comment button. Result: `measure/runs/board_focus_reasons_20261121/ux-browser-e410fd1.json`.
+  - Fixture evidence: the live board held zero Waits for Daniel cards, and the phone panel target was absent. These checks ran on a read-only fixture page with the committed bundle and `mockup/fixtures.json`: Comment button only on Waits for Daniel, the Reason field, the badge count, the focus check, and the 390 px layout. The PM accepted fixture proof for these checks (2026-11-22).
+  - PM condition: after the panel deploy, the PM checks the first real Waits for Daniel card on the live board (Comment button and Reason field) and logs it. A fault there opens a bug track. It does not reopen this phase.
+- [x] Task 2.4: records and closeout — e410fd1
+  - FR-8 record: the live browser checks in Phase 1 (8dafa77) and Phase 2 (e410fd1) saw no host focus fault. The track reports no OpenChamber fault.
+  - Track closeout follows final acceptance through the closeout role.
