@@ -20,9 +20,9 @@ Source: PM P3 order, 2026-11-21. Type chore, lane light. Due dates: critical and
 ## Functional requirements
 
 - FR-1: Every package in both folders moves to the latest working version. A working version passes all commands in the Commands section.
-- FR-2: `bun audit` shows 0 critical and 0 high advisories in both folders. When no fixed version exists for an advisory, the track records a written reason per remaining item. The PM accepts each reason.
-- FR-3: The track lists each remaining moderate or low advisory with its reason. Examples: no fixed version, Windows-only, dev-server only.
-- FR-4: Peer dependency ranges in opencode-measure-guard stay compatible with OpenCode 2 (`@opencode/plugin >=2.0.0`). A range rises only when the installed major drops the OpenCode 2 API the plugin uses. The plan states this rule.
+- FR-2: `bun audit` shows 0 critical and 0 high advisories in both folders. When no fixed version exists for an advisory, the track records a written reason per remaining item in `measure/tracks/deps_refresh_20261122/advisories.md`. The PM accepts each reason.
+- FR-3: The track lists each remaining moderate or low advisory with its reason in the same file. Examples: no fixed version, Windows-only, dev-server only.
+- FR-4: Peer floors in opencode-measure-guard stay (`@opencode/plugin >=2.0.0`, `@opentui/* >=0.6.6`, `solid-js >=1.9.0`). A floor rises only when the installed major drops the OpenCode 2 API the plugin uses. The plugin takes solid-js 2 only when it still loads with the OpenCode 2.0.x host. The plan states this rule.
 - FR-5: The committed bundle `extensions/measure-status/panel/main.js` equals a fresh build from the updated sources.
 - FR-6: Work is pushed to `origin/chore/deps-refresh` only. Only the PM or Daniel merges.
 
@@ -37,7 +37,7 @@ Source: PM P3 order, 2026-11-21. Type chore, lane light. Due dates: critical and
 
 - `bun audit` shows 0 critical and 0 high in both folders, or a written reason per remaining item exists which the PM accepts.
 - All commands above exit 0.
-- The moderate/low list is in the track.
+- The moderate/low list is in `measure/tracks/deps_refresh_20261122/advisories.md`.
 
 ## Out of scope
 

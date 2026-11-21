@@ -7,15 +7,25 @@ Spec: [./spec.md](./spec.md)
 
 Test commands: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run`; `cd plugins/opencode-measure-guard && bun test && bun x tsc --noEmit -p . && bash scripts/check-parity.sh`. Build command: `cd extensions/measure-status && bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=panel/main.js`. Run each long command through `/home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh` with `HEAVY_MIN_AVAIL_MB=1500`. Repo gates: `measure/gates.json` PROJECT_LINT and PROJECT_CHECKS.
 
-Peer range rule: opencode-measure-guard keeps `@opencode/plugin >=2.0.0` and the other current floors. A floor rises only when the installed major drops the OpenCode 2 API the plugin uses.
+Version rule. Phase 1 takes the smallest change that clears every critical and high: vitest to >=3.2.6 with its matching @vitest/mocker, vite and tinypool; happy-dom to >=20.14.7; zod to >=4.6.6 and seroval to >=1.6.1 through the bun `overrides` field when the parent (@openchamber/sdk, solid-js 1.9.x) has no fixed release. Phase 2 takes the latest version of every other package. Major-step rule: take the latest major when all commands pass. When a major step breaks a command, fix the code when the fix stays inside the two folders and does not change runtime behavior. Else stay on the newest version that passes, and record the package, the version, and the reason in advisories.md.
 
-## Phase 1: Critical and high advisories
+Peer rule for opencode-measure-guard: devDependencies may move; peer floors stay (@opencode/plugin >=2.0.0, @opentui/* >=0.6.6, solid-js >=1.9.0). solid-js 2 is a peer major: take it only when the plugin still loads with the OpenCode 2.0.x host; else stay on 1.9.x and record the reason in advisories.md.
 
-- [ ] Task 1.1: Red failing check for critical and high advisories (a script or test that runs `bun audit` in both folders and fails on any critical or high), with the before counts recorded (measure-status 21: 4 critical, 5 high, 11 moderate, 1 low; opencode-measure-guard 8: 1 critical, 4 high, 3 moderate)
-- [ ] Task 1.2: Green package updates and code fixes for breaking changes, with the rebuilt `panel/main.js` bundle committed
-- [ ] Task 1.3: records (audit output at 0 critical and 0 high, or a written reason per remaining item; all command exits; the bundle equality check)
+Ownership: Red owns `tests/deps_audit/test.sh` and fixtures. Green owns `run.sh`, the package changes, and code fixes.
 
-## Phase 2: Remaining updates and the moderate/low list
+`measure/gates.json` does not change.
 
-- [ ] Task 2.1: latest working versions for the rest, with all commands green and the rebuilt bundle
-- [ ] Task 2.2: records (the moderate/low list with a reason per item, the peer range statement, closeout)
+## Phase 1: Critical and high advisories (due 2026-11-23)
+
+Audit check contract. New file `tests/deps_audit/run.sh` (bash). It runs `bun audit --json` in extensions/measure-status and plugins/opencode-measure-guard and counts advisories by severity. It prints one line per folder: "`<folder>`: critical N, high N, moderate N, low N". Exit 0 when both folders hold 0 critical and 0 high. Exit 1 when any folder holds a critical or high advisory missing from the allow file. Exit 2 when `bun audit` fails or its output does not parse. The optional allow file `tests/deps_audit/allow.txt` lists advisory ids (GHSA) with a PM-accepted reason, one per line; an allowed id does not count. When `DEPS_AUDIT_FIXTURE_DIR` is set, the parser reads `<folder-name>.json` files from that folder, so tests run without the network.
+
+- [ ] Task 1.1 (due 2026-11-23): Red failing check for critical and high advisories in `tests/deps_audit/test.sh` with fixtures under `tests/deps_audit/fixtures/`. Cases: one critical in one folder gives exit 1; one high gives exit 1; moderate and low only gives exit 0; no advisories gives exit 0; a high whose id is in allow.txt gives exit 0; bad JSON gives exit 2; a live run against the real folders gives exit 1 before the updates (the Red proof). Record the before counts (measure-status 21: 4 critical, 5 high, 11 moderate, 1 low; opencode-measure-guard 8: 1 critical, 4 high, 3 moderate).
+- [ ] Task 1.2 (due 2026-11-23): Green package updates per the version rule, with code fixes for breaking changes and the rebuilt `panel/main.js` bundle committed. Files: `extensions/measure-status/package.json` and `bun.lock`; `plugins/opencode-measure-guard/package.json` and `bun.lock`; `extensions/measure-status/panel/main.js` (rebuilt); source and test files in those two folders only when a breaking change needs a fix; `tests/deps_audit/*`.
+- [ ] Task 1.3 (due 2026-11-23): records in `measure/tracks/deps_refresh_20261122/advisories.md` (audit output at 0 critical and 0 high, or a written reason per remaining item; all command exits; the bundle equality check). Bundle equality command: `cd extensions/measure-status && bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=/tmp/deps-main.js && cmp /tmp/deps-main.js panel/main.js`.
+
+## Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+
+- [ ] Task 2.1 (due 2026-11-25): latest working versions for the rest per the version rule, with all commands green and the rebuilt bundle. Files: the same package.json, bun.lock and bundle files; source and test fixes in the two folders.
+- [ ] Task 2.2 (due 2026-11-25): records in `measure/tracks/deps_refresh_20261122/advisories.md` (the moderate/low list with a reason per item, the peer range statement, closeout). Phase 2 case: the live run gives exit 0 and the moderate/low list matches the live counts.
+
+Record file `measure/tracks/deps_refresh_20261122/advisories.md` holds: the before counts, the after counts per folder, each remaining moderate/low advisory (package, GHSA id, severity, reason), each held-back package (version, reason), and each PM acceptance (date, the PM's words). Task 1.3 and Task 2.2 write to it.
