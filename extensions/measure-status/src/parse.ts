@@ -15,15 +15,15 @@ const SUB_BULLET = /^\s*[-*+]\s/
 const INDENTED = /^\s+\S/
 const SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/
 const CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/
-const OWNER = /\bdeferred:([A-Za-z0-9._-]*)/
+const OWNER = /\bdeferred:([A-Za-z0-9._;-]*)/
 const LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/
 const BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/
 
-/** FR-3: the text after `deferred:` without its trailing `.`, `_`, and `-`. */
+/** FR-10: the text after `deferred:`, keeping `-`, `_`, `.`, and `;`. */
 export const ownerToken = (text: string): string | null => {
   const match = OWNER.exec(text)
   if (match === null) return null
-  const token = (match[1] ?? '').replace(/[._-]+$/, '')
+  const token = (match[1] ?? '').replace(/[._;-]+$/, '')
   return token === '' ? null : token
 }
 

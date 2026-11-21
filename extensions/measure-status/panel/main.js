@@ -1991,13 +1991,13 @@ ${GUEST_UI_LOOK_CSS}`;
   var INDENTED = /^\s+\S/;
   var SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/;
   var CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/;
-  var OWNER = /\bdeferred:([A-Za-z0-9._-]*)/;
+  var OWNER = /\bdeferred:([A-Za-z0-9._;-]*)/;
   var LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/;
   var BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/;
   var ownerToken = (text) => {
     const match = OWNER.exec(text);
     if (match === null) return null;
-    const token = (match[1] ?? "").replace(/[._-]+$/, "");
+    const token = (match[1] ?? "").replace(/[._;-]+$/, "");
     return token === "" ? null : token;
   };
   var ownerOf = (lines, at, firstLine) => {
@@ -2282,6 +2282,7 @@ ${GUEST_UI_LOOK_CSS}`;
     const taskText = current2 === null ? null : taskLabel(current2.text);
     const note = position2 === null ? noteOf(tasks) : null;
     const noteText = note ?? noteOf(tasks);
+    const nextLabel = current2 === null ? noteText : taskLabel(current2.text);
     const empty2 = { doneDate: null, doneSource: null, archived: false };
     const first = tasks.find(FIRST_NOT_DONE) ?? null;
     const cardOf2 = (column2, state, reason, line) => ({
@@ -2337,7 +2338,7 @@ ${GUEST_UI_LOOK_CSS}`;
     }
     const progressed = input.registryMarker === "~" || tasks.some((task) => task.marker === "x");
     const column = progressed ? "in-progress" : "planned";
-    return cardOf2(column, "next", `Next in line: ${noteText}`, null);
+    return cardOf2(column, "next", `Next in line: ${nextLabel}`, null);
   };
   var buildBoard = (repo, inputs) => ({
     repo,

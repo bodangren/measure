@@ -248,6 +248,9 @@ export const classifyTrack = (input: TrackInput): Card => {
   const taskText = current === null ? null : taskLabel(current.text)
   const note = position === null ? noteOf(tasks) : null
   const noteText = note ?? noteOf(tasks)
+  // FR-11 d: the count note belongs to a card with no current task. A card
+  // with a current task names that task instead.
+  const nextLabel = current === null ? noteText : taskLabel(current.text)
   const empty = { doneDate: null, doneSource: null, archived: false }
   const first = tasks.find(FIRST_NOT_DONE) ?? null
 
@@ -320,7 +323,7 @@ export const classifyTrack = (input: TrackInput): Card => {
   // FR-11 d: every other open track needs no input.
   const progressed = input.registryMarker === '~' || tasks.some(task => task.marker === 'x')
   const column: Column = progressed ? 'in-progress' : 'planned'
-  return cardOf(column, 'next', `Next in line: ${noteText}`, null)
+  return cardOf(column, 'next', `Next in line: ${nextLabel}`, null)
 }
 
 /** The board of one repo, in the card order of FR-2. */
