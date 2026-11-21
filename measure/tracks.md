@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Dependency refresh for measure-status and opencode-measure-guard**
+  *Link: [./tracks/deps_refresh_20261122/](./tracks/deps_refresh_20261122/)*
+  *Dependency refresh for measure-status and opencode-measure-guard: latest working packages, zero critical and high advisories, a reasoned moderate/low list*
 
 ---
 
