@@ -96,7 +96,11 @@ The states are Waits for Daniel, Running, Waits for PM, and Next in line.
 A `User Manual Verification` task that says deferred or no visible change
 gives Waits for PM. A gate word in a `[b]` owner gives Waits for Daniel.
 The gate words name deletion, paid spend, deploy, public date, sudo or
-login, proof, Thai check, and look. A `[~]` task gives Running. Each other
+login, proof, Thai check, and look. A `[~]` task gives Running.
+A `[b]` task with a non-gate owner gives Waits for PM. `deferred:pm` and
+`deferred:mid-red` are examples. A registry marker `[b]` gives Waits for PM.
+Its line is `Waits for PM: registry marker [b]`. A plan with all tasks closed
+gives Waits for PM. Its line is `Waits for PM: All tasks closed.`. Each other
 open track gives Next in line. The state rules end at the first match.
 
 The Done column is closed at the first paint and shows its count only.
