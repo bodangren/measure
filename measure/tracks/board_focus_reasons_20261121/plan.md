@@ -19,8 +19,9 @@ Test command: `cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vi
 
 - [x] Task 2.1: Red fixtures for each state, gate word, the continuation-line tag, and the two User Manual Verification rows (open deferred row gives Waits for PM, closed D1 row gives no Daniel item) (`extensions/measure-status/src/card-state.test.ts`) — 6bc2f45
   - Red evidence: `bunx tsc -p . --noEmit` fails only on the missing `gateForOwner`, `Card.state`, and `Card.reason`. `bunx vitest run` fails 65 new tests in `card-state.test.ts`; 23 other suites pass with 351 existing tests. Log: `measure/runs/board_focus_reasons_20261121/red-p2.log`.
-- [x] Task 2.2: parser tag rule, card states, column names, Comment rule, badge, rebuilt panel/main.js, README and fixtures — 5dfd496, fa92063
+- [x] Task 2.2: parser tag rule, card states, column names, Comment rule, badge, rebuilt panel/main.js, README and fixtures — 5dfd496, fa92063, 97ad7b8
   - Green evidence: `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. The `panel/main.js` rebuild exits 0. The rail badge counts Waits for Daniel cards. Log: `measure/runs/board_focus_reasons_20261121/green-p2.log`.
   - Review A evidence: F1 semicolon separators, F2 regenerated fixture reasons and gate cards, and F3 Next in line with a current task are fixed at fa92063. `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. Log: `measure/runs/board_focus_reasons_20261121/green-p2-r2.log`.
+  - Review A round 2 evidence: F4 fixture columns now come from `classifyTrack`, so all seven state and column contradictions are gone. A fixture test fails on 643912a and passes at 97ad7b8. `bunx tsc -p . --noEmit` and `bunx vitest run` each exit 0. Log: `measure/runs/board_focus_reasons_20261121/green-p2-r3.log`.
 - [ ] Task 2.3: live browser check of the reason lines on the board
 - [ ] Task 2.4: records and closeout
