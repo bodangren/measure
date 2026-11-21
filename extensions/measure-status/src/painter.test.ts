@@ -152,93 +152,134 @@ describe('the panel holdComment wiring', () => {
   })
 })
 
+/** FR-7: one onAction handler slice, from its guard to the next action guard. */
+const actionSlice = (text: string, name: string): string => {
+  const guard = `if (action === '${name}')`
+  const start = text.indexOf(guard)
+  if (start < 0) return ''
+  const after = text.slice(start + guard.length)
+  const nextGuard = after.indexOf('if (action ===')
+  const endOfAction =
+    after.indexOf('\n}\n\n// ----- The mount hook') >= 0
+      ? after.indexOf('\n}\n\n// ----- The mount hook')
+      : after.length
+  const end = nextGuard >= 0 ? Math.min(nextGuard, endOfAction) : endOfAction
+  return after.slice(0, end)
+}
+
+/** FR-7: the source from one top-level marker to the next one. */
+const bodySlice = (text: string, from: string, to: string): string => {
+  const start = text.indexOf(from)
+  if (start < 0) return ''
+  const end = text.indexOf(to, start + from.length)
+  return end < 0 ? text.slice(start) : text.slice(start, end)
+}
+
 describe('the panel data paint callers', () => {
-  test('loadBoard start draws a data paint', () => {
-    expect(panelText(), 'loadBoard start').toMatch(
-      /states = startLoad\(states\)[\s\S]{0,60}painter\.data\(\)/,
-    )
+  test('loadBoard draws data paints and never a user paint', () => {
+    const body = bodySlice(panelText(), 'const loadBoard', 'const loadBand')
+    expect(body, 'loadBoard body exists').not.toBe('')
+    expect(body, 'loadBoard data paint').toContain('painter.data()')
+    expect(body, 'loadBoard has no user paint').not.toContain('painter.user()')
   })
 
   test('the repo-result callback draws a data paint and the badge outside the gate', () => {
-    expect(panelText(), 'repo-result data paint').toMatch(
+    const body = bodySlice(panelText(), 'const loadBoard', 'const loadBand')
+    expect(body, 'repo-result data paint').toMatch(
       /applyRepoResult\(states, state\.repo\.id, state\)[\s\S]{0,120}painter\.data\(\)/,
     )
-    expect(panelText(), 'repo-result badge outside the gate').toMatch(
+    expect(body, 'repo-result badge outside the gate').toMatch(
       /painter\.data\(\)\n    void refreshBadge\(\)/,
     )
   })
 
-  test('loadBoard end draws a data paint', () => {
-    expect(panelText(), 'loadBoard end').toMatch(/busy = false\n  painter\.data\(\)/)
+  test('loadBand draws a data paint and never a user paint', () => {
+    const body = bodySlice(panelText(), 'const loadBand', 'const startTimer')
+    expect(body, 'loadBand body exists').not.toBe('')
+    expect(body, 'loadBand data paint').toContain('painter.data()')
+    expect(body, 'loadBand has no user paint').not.toContain('painter.user()')
   })
 
-  test('loadBand draws a data paint', () => {
-    expect(panelText(), 'loadBand').toMatch(
-      /loadSnapshot\(host, directory\)[\s\S]{0,80}painter\.data\(\)/,
-    )
-  })
-
-  test('host.onReady draws a data paint', () => {
-    expect(panelText(), 'host.onReady').toMatch(/host\.onReady\([\s\S]*painter\.data\(\)/)
+  test('host.onReady draws a data paint and never a user paint', () => {
+    const body = bodySlice(panelText(), 'host.onReady((ctx) => {', "document.addEventListener('keydown'")
+    expect(body, 'host.onReady body exists').not.toBe('')
+    expect(body, 'host.onReady data paint').toContain('painter.data()')
+    expect(body, 'host.onReady has no user paint').not.toContain('painter.user()')
   })
 })
 
 describe('the panel user paint callers', () => {
-  test('the Refresh action reaches loadBoard and never a user paint', () => {
-    const text = panelText()
-    const refresh = /if \(action === 'refresh'\) \{[^}]*\}/.exec(text)?.[0] ?? ''
-    expect(refresh, 'refresh reaches loadBoard').toContain('loadBoard()')
-    expect(refresh, 'refresh has no user paint').not.toContain('.user()')
+  test('the Refresh action reaches loadBoard and never a paint call', () => {
+    const slice = actionSlice(panelText(), 'refresh')
+    expect(slice, 'refresh slice exists').not.toBe('')
+    expect(slice, 'refresh reaches loadBoard').toContain('loadBoard()')
+    expect(slice, 'refresh has no user paint').not.toContain('painter.user()')
+    expect(slice, 'refresh has no data paint').not.toContain('painter.data()')
   })
 
-  test('open-comment draws a user paint', () => {
-    expect(panelText(), 'open-comment').toMatch(
-      /if \(action === 'open-comment'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('open-comment draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'open-comment')
+    expect(slice, 'open-comment slice exists').not.toBe('')
+    expect(slice, 'open-comment user paint').toContain('painter.user()')
+    expect(slice, 'open-comment has no data paint').not.toContain('painter.data()')
   })
 
-  test('send start draws a user paint', () => {
-    expect(panelText(), 'send start').toMatch(
-      /startCommentSend\(commentState, key\)[\s\S]{0,40}painter\.user\(\)/,
-    )
+  test('send-comment reaches the sender and never a direct paint call', () => {
+    const slice = actionSlice(panelText(), 'send-comment')
+    expect(slice, 'send-comment slice exists').not.toBe('')
+    expect(slice, 'send-comment reaches sendComment').toContain('void sendComment(key)')
+    expect(slice, 'send-comment has no user paint').not.toContain('painter.user()')
+    expect(slice, 'send-comment has no data paint').not.toContain('painter.data()')
   })
 
-  test('send end draws a user paint and spends the pending paint', () => {
-    const matches = panelText().match(/painter\.user\(\)\n  painter\.flush\(\)/g) ?? []
-    expect(matches.length, 'send end and Escape flush pairs').toBe(2)
+  test('sendComment draws user paints, spends the pending paint, and never a data paint', () => {
+    const body = bodySlice(panelText(), 'const sendComment', '/** True while a load runs')
+    expect(body, 'sendComment body exists').not.toBe('')
+    expect(body, 'sendComment user paint').toContain('painter.user()')
+    expect(body, 'sendComment flush').toContain('painter.flush()')
+    expect(body, 'sendComment has no data paint').not.toContain('painter.data()')
   })
 
-  test('toggle-section draws a user paint', () => {
-    expect(panelText(), 'toggle-section').toMatch(
-      /if \(action === 'toggle-section'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('toggle-section draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'toggle-section')
+    expect(slice, 'toggle-section slice exists').not.toBe('')
+    expect(slice, 'toggle-section user paint').toContain('painter.user()')
+    expect(slice, 'toggle-section has no data paint').not.toContain('painter.data()')
   })
 
-  test('toggle-done draws a user paint', () => {
-    expect(panelText(), 'toggle-done').toMatch(
-      /if \(action === 'toggle-done'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('toggle-done draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'toggle-done')
+    expect(slice, 'toggle-done slice exists').not.toBe('')
+    expect(slice, 'toggle-done user paint').toContain('painter.user()')
+    expect(slice, 'toggle-done has no data paint').not.toContain('painter.data()')
   })
 
-  test('toggle-done-group draws a user paint', () => {
-    expect(panelText(), 'toggle-done-group').toMatch(
-      /if \(action === 'toggle-done-group'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('toggle-done-group draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'toggle-done-group')
+    expect(slice, 'toggle-done-group slice exists').not.toBe('')
+    expect(slice, 'toggle-done-group user paint').toContain('painter.user()')
+    expect(slice, 'toggle-done-group has no data paint').not.toContain('painter.data()')
   })
 
-  test('show-more draws a user paint', () => {
-    expect(panelText(), 'show-more').toMatch(
-      /if \(action === 'show-more'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('show-more draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'show-more')
+    expect(slice, 'show-more slice exists').not.toBe('')
+    expect(slice, 'show-more user paint').toContain('painter.user()')
+    expect(slice, 'show-more has no data paint').not.toContain('painter.data()')
   })
 
-  test('toggle-stale draws a user paint', () => {
-    expect(panelText(), 'toggle-stale').toMatch(
-      /if \(action === 'toggle-stale'\) \{[\s\S]*?painter\.user\(\)/,
-    )
+  test('toggle-stale draws a user paint and never a data paint', () => {
+    const slice = actionSlice(panelText(), 'toggle-stale')
+    expect(slice, 'toggle-stale slice exists').not.toBe('')
+    expect(slice, 'toggle-stale user paint').toContain('painter.user()')
+    expect(slice, 'toggle-stale has no data paint').not.toContain('painter.data()')
   })
 
-  test('the Escape key draws a user paint', () => {
-    expect(panelText(), 'Escape').toMatch(/event\.key !== 'Escape'[\s\S]*?painter\.user\(\)/)
+  test('the Escape key draws a user paint, spends the pending paint, and never a data paint', () => {
+    const body = bodySlice(panelText(), "document.addEventListener('keydown'", 'END_OF_PANEL_SOURCE')
+    expect(body, 'Escape body exists').not.toBe('')
+    expect(body, 'Escape user paint').toContain('painter.user()')
+    expect(body, 'Escape flush').toContain('painter.flush()')
+    expect(body, 'Escape has no data paint').not.toContain('painter.data()')
   })
 })
