@@ -201,7 +201,7 @@ export const ROLE_OF_AGENT: Record<string, string> = {
   'measure-review-c-ux-api': 'review-c',
   'measure-adversarial-testing': 'adversarial',
   'measure-strategy': 'strategy',
-  'measure-spec-review': 'strategy',
+  'measure-spec-review': 'spec-review',
   'measure-phase-acceptance': 'phase-acceptance',
   'measure-final-acceptance': 'final-acceptance',
   'measure-closeout': 'record',
