@@ -61,9 +61,13 @@ in that folder is its `package.json` alone.
 | plugins/opencode-measure-guard | @opentui/solid | 0.6.6 | 0.9.7 |
 | plugins/opencode-measure-guard | @types/bun | 1.3.14 | 1.4.5 |
 | plugins/opencode-measure-guard | typescript | 5.9.3 | 7.0.2 |
+| plugins/opencode-measure-guard | solid-js | 1.9.12 | 1.9.20 |
 
 Every major step passed every command. No source file and no test file needed
 a fix. happy-dom 21.0.4 and @types/node 26.6.6 were already latest.
+Review A F-P2-1 required the newest 1.9.x patch. Commit 59db955 moved solid-js
+from 1.9.12 to 1.9.20. npm published 1.9.20 on 2026-11-19. That version is
+inside the peer range `^1.9.12` of @opentui/solid 0.9.7.
 
 ## Overrides in Phase 2
 
@@ -71,8 +75,9 @@ a fix. happy-dom 21.0.4 and @types/node 26.6.6 were already latest.
   on tinypool. The override had no effect.
 - Kept `zod` override ^4.6.6. @openchamber/sdk 2.8.0 still pins `zod ^4.3.6`.
   That range still allows a version below the fixed 4.6.6.
-- Kept `seroval` override ^1.6.8. solid-js 1.9.12 still pins `seroval ~1.5.0`.
-  That range stays below the fixed versions.
+- Removed `seroval` override ^1.6.8. solid-js 1.9.20 pins `seroval ~1.6.11`.
+  That range is above the fixed 1.6.8. The parent update made the override
+  unneeded. seroval now resolves to 1.6.12.
 - Added `glob` override ^14.0.2 and `minimatch` override ^11.0.1. The parents
   still resolved glob 13.0.5 and minimatch 10.2.5. The overrides resolve
   14.0.6 and 11.0.9.
@@ -101,11 +106,11 @@ advisory. No package stayed on an older version to keep a command green.
 
 ### Phase 2
 
-solid-js stays at 1.9.12 in plugins/opencode-measure-guard. solid-js 2 is a
-peer major. The rule takes a peer major only when the plugin still loads with
-an OpenCode 2.0.x host. No such host is available here, so that load cannot be
-proved. The latest @opentui/solid 0.9.7 also peers `solid-js ^1.9.12`.
-solid-js 2 would conflict with that peer range.
+solid-js 1.9.20 is installed in plugins/opencode-measure-guard. solid-js 2
+stays held. Version 2 is a peer major. The rule takes a peer major only when
+the plugin still loads with an OpenCode 2.0.x host. No such host is available
+here, so that load cannot be proved. The latest @opentui/solid 0.9.7 peers
+`solid-js ^1.9.12`. solid-js 2 would conflict with that peer range.
 
 The peer floors stay unchanged: @opencode/plugin >=2.0.0, @opentui/* >=0.6.6,
 solid-js >=1.9.0.
@@ -201,3 +206,23 @@ with `HEAVY_MIN_AVAIL_MB=1500`.
 | `cd plugins/opencode-measure-guard && bun audit` | 0 | No vulnerabilities found. |
 | `cd extensions/measure-status && bun audit --json` | 0 | `{}` |
 | `cd plugins/opencode-measure-guard && bun audit --json` | 0 | `{}` |
+
+## Review A F-P2-1 fix command exits
+
+Commit 59db955 moved solid-js 1.9.12 -> 1.9.20 and removed the seroval
+override. Every command ran again through heavy-run with
+`HEAVY_MIN_AVAIL_MB=1500`.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `cd plugins/opencode-measure-guard && bun test` | 0 | 186 pass, 0 fail. |
+| `cd plugins/opencode-measure-guard && bun x tsc --noEmit -p .` | 0 | No type error. |
+| `cd plugins/opencode-measure-guard && bash scripts/check-parity.sh` | 0 | parity: ok |
+| `bash plugins/dsh-measure-guard/scripts/check-parity.sh` | 0 | parity: ok |
+| `bash plugins/opencode-measure-guard/scripts/check-parity.sh` | 0 | parity: ok |
+| `bash tests/dsh/run.sh` | 0 | 15 passed, 0 failed. |
+| `bash tests/deps_audit/test.sh` | 0 | 8 checks, PASS=8, FAIL=0. |
+| `bash tests/deps_audit/test-r2.sh` | 0 | 4 checks, PASS=4, FAIL=0. |
+| `cd plugins/opencode-measure-guard && bun audit` | 0 | No vulnerabilities found. |
+| `cd plugins/opencode-measure-guard && bun audit --json` | 0 | `{}` |
+| `bash tests/deps_audit/run.sh` | 0 | 0 critical, 0 high, 0 moderate, 0 low in both folders. |
