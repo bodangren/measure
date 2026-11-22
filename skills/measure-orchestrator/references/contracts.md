@@ -161,13 +161,19 @@ A re-review runs on the new HEAD. The next run of the role that raised a finding
 
 **Late-finding stop rule.** After round 2 of a phase, each new finding goes to `measure/tech-debt.md` instead of Green, unless the wrong-result exception below applies.
 
-A round is one audit cycle on one audited HEAD. Reviews A, B, and C that run in parallel on the same HEAD form one round together. The adversarial pass is its own round. Each re-review after a remediation commit adds one round. A finding that a role raises in round 3 or later of a phase is a late finding. Two worked counts fix the count. (a) Reviews A/B/C on HEAD1 form round 1. The re-review on HEAD2 is round 2, and the adversarial pass on HEAD2 is round 3, so its new findings are late. (b) Review A alone is round 1. The adversarial pass is round 2, and the re-review after the fix is round 3, so its new findings are late.
+A round is one audit cycle on one audited HEAD. Reviews A, B, and C that run in parallel on the same HEAD form one round together. The adversarial pass is its own round. Each re-review after a remediation commit adds one round. A finding that a role raises in round 3 or later of a phase is a late finding.
+
+Two worked counts fix the count. (a) Reviews A/B/C on HEAD1 form round 1. The re-review on HEAD2 is round 2, and the adversarial pass on HEAD2 is round 3, so its new findings are late. (b) Review A alone is round 1. The adversarial pass is round 2, and the re-review after the fix is round 3, so its new findings are late.
 
 A kept routed finding and a defect in the lines that the remediation changed keep the `**Re-review scope.**` treatment. They do not count as new findings.
 
-A new finding that can hide a wrong result in the delivered work gets exactly one fix round. The finding meets this bar only when both tests hold. First, it names a file, value, or behavior that the phase delivers. The item must be a product file that the plan lists for the phase. Tooling, gate scripts, fixtures, logs, and records do not meet this test. Second, it states the wrong output that a user or a downstream consumer would see or receive. Send each other finding to `measure/tech-debt.md`. When the orchestrator cannot decide, it takes the careful call of one fix round and records "unsure" in the reason. Green fixes the finding once. Each further finding from that fix round goes to `measure/tech-debt.md`. No second fix round follows from this rule.
+A new finding that can hide a wrong result in the delivered work gets exactly one fix round. The finding meets this bar only when both tests hold. First, it names a file, value, or behavior that the phase delivers. The item must be a product file that the plan lists for the phase. Test tooling, gate scripts, fixtures, logs, and records do not meet this test.
 
-The two rules fit without contradiction. The Round limit bounds fix rounds that already started. It counts them per base track. The stop rule stops new fix rounds from starting late in a phase. The Round limit wins. When the one fix round would be the third remediation round of the base track, do not start it. Send the finding to the user as the Round limit says. The escalation key rule stays. The stop rule never grants a round beyond the Round limit. A one-fix-round finding under the wrong-result exception counts toward the Round limit count.
+Second, it states the wrong output that a user or a downstream consumer sees or receives. Send each other finding to `measure/tech-debt.md`. When the orchestrator cannot decide, it takes the careful call of one fix round and records "unsure" in the reason. Green fixes the finding once. Each further finding from that fix round goes to `measure/tech-debt.md`. No second fix round follows from this rule.
+
+The two rules fit without contradiction. The Round limit bounds fix rounds that already started. It counts them per base track. The stop rule stops new fix rounds from starting late in a phase. The Round limit wins.
+
+When the one fix round is the third remediation round of the base track, do not start it. Send the finding to the user as the Round limit says. The escalation key rule stays. The stop rule never grants a round beyond the Round limit. A one-fix-round finding under the wrong-result exception counts toward the Round limit count.
 
 Record each call in the track `plan.md` under the current phase heading, one line per finding, in this exact form:
 
