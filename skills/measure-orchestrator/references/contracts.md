@@ -167,13 +167,13 @@ A kept routed finding and a defect in the lines that the remediation changed kee
 
 A new finding that can hide a wrong result in the delivered work gets exactly one fix round. The finding meets this bar only when both tests hold. First, it names a file, value, or behavior that the phase delivers. The item must be a product file that the plan lists for the phase. Tooling, gate scripts, fixtures, logs, and records do not meet this test. Second, it states the wrong output that a user or a downstream consumer would see or receive. Send each other finding to `measure/tech-debt.md`. When the orchestrator cannot decide, it takes the careful call of one fix round and records "unsure" in the reason. Green fixes the finding once. Each further finding from that fix round goes to `measure/tech-debt.md`. No second fix round follows from this rule.
 
-The two rules fit without contradiction. The Round limit bounds fix rounds that already started. It counts them per base track. The stop rule stops new fix rounds from starting late in a phase. The Round limit wins. When the one fix round would be the third remediation round of the base track, do not start it. Send the finding to the user as the Round limit says. The escalation key rule stays. The stop rule never grants a round beyond the Round limit. A one-fix-round finding under FR-2 counts toward the Round limit count.
+The two rules fit without contradiction. The Round limit bounds fix rounds that already started. It counts them per base track. The stop rule stops new fix rounds from starting late in a phase. The Round limit wins. When the one fix round would be the third remediation round of the base track, do not start it. Send the finding to the user as the Round limit says. The escalation key rule stays. The stop rule never grants a round beyond the Round limit. A one-fix-round finding under the wrong-result exception counts toward the Round limit count.
 
 Record each call in the track `plan.md` under the current phase heading, one line per finding, in this exact form:
 
 - Late finding <id>: <tech-debt|one-fix-round> (<reason>)
 
-The reason states why the finding did or did not meet the FR-2 bar.
+The reason states why the finding did or did not meet the wrong-result exception.
 
 The worked example fixes two cases. A fourth-round finding on the phase's own gate script goes to `measure/tech-debt.md`. A finding that the delivered dashboard number is wrong gets one fix round.
 
