@@ -78,6 +78,12 @@ with `HEAVY_MIN_AVAIL_MB=1500`.
 | `bash plugins/opencode-measure-guard/scripts/check-parity.sh` | 0 | parity: ok |
 | `bash tests/dsh/run.sh` | 0 | 15 passed, 0 failed. |
 | `bash tests/deps_audit/test.sh` | 0 | 8 checks, PASS=8, FAIL=0. |
+| `bash tests/deps_audit/test-r2.sh` | 0 | 4 checks, PASS=4, FAIL=0. |
+
+The audit check reads every advisory record. It exits 2 when a record has a
+severity outside critical, high, moderate, and low. An allow line needs the
+GHSA id and a nonempty reason. A bare id exempts nothing. Both rules landed
+with the Review A fix at commit 35d5a7d.
 
 ## Bundle equality
 
