@@ -526,6 +526,14 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
   *Link: [./archive/generated_check_error_20261119/](./archive/generated_check_error_20261119/)*
   *Closeout generated check names the gates.json path and state*
 
+- [x] **Track: Board keeps focus and shows a plain reason per card**
+  *Link: [./archive/board_focus_reasons_20261121/](./archive/board_focus_reasons_20261121/)*
+  *Board keeps focus and shows a plain reason per card*
+
+- [x] **Track: Dependency refresh for measure-status and opencode-measure-guard**
+  *Link: [./archive/deps_refresh_20261122/](./archive/deps_refresh_20261122/)*
+  *Dependency refresh for measure-status and opencode-measure-guard: latest working packages, zero critical and high advisories, a reasoned moderate/low list*
+
 - [x] **Track: Late-finding stop rule for the measure-orchestrator skill**
   *Link: [./archive/late_finding_stop_rule_20261122/](./archive/late_finding_stop_rule_20261122/)*
   *Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan*

@@ -1,0 +1,6 @@
+{
+  "port": 39765,
+  "endpoint": "/home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh: line 1259: warning: command substitution: ignored null byte in input\nws://127.0.0.1:44705/devtools/browser/b008c6ff-7c1c-455c-9409-abe5c4b31da2",
+  "pid": 1858613,
+  "started": "2026-11-21T20:32:36.071Z"
+}

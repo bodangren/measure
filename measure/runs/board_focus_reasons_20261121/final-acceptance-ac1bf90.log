@@ -1,0 +1,30 @@
+Final acceptance audit at ac1bf90cd1a439b81df1b2960dc9e42a81340fdc.
+
+The extension TypeScript check passed. Vitest passed 25 files and 431 tests. The fresh bundle matched panel/main.js.
+
+Blocking finding F1: the latest phase result targets ada02de. The later README change is not a plan or evidence file. The HEAD-scope rule does not cover it.
+
+F2 is not applicable. This repository has no measure/doctor.sh. Two earlier final acceptances record PROJECT_CHECKS as its replacement. PROJECT_CHECKS exited 0 with 15 passed suites and zero failed suites.
+
+The post-acceptance README and plan changes are accurate. No code or test changed in that commit.
+
+MEASURE_AGENT_RESULT
+role: final-acceptance
+status: complete
+track: board_focus_reasons_20261121
+phase: track
+commits: none
+tests_run: heavy-run tsc PASS exit 0; heavy-run vitest PASS exit 0 with 25 files and 431 tests; esbuild and cmp PASS exit 0; PROJECT_LINT PASS exit 0; PROJECT_CHECKS PASS exit 0 with 15 passed and 0 failed suites; A5 A6 A9 audits PASS; doctor not applicable; final role gate FAIL exit 1
+files_changed: measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90.json; measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90.log
+plan_updates: none
+known_failures: F1 latest phase acceptance ada02de does not cover the later README commit under the HEAD-scope rule
+handoff: Do not close the track. The orchestrator has routed a fresh Phase 2 acceptance at ac1bf90. Run final acceptance again after that result. Retry recommendation: escalate_human. Gate exit: 1. Facts changed: PROJECT_CHECKS passed; F2 is not applicable.
+END_MEASURE_AGENT_RESULT
+
+Original gate output: FAIL: audit status must be pass, got 'fail'; F1 and F2 reported.
+Original gate exit code: 1.
+PROJECT_LINT: both parity checks passed.
+PROJECT_CHECKS: exit 0; summary: 15 passed, 0 failed.
+Refinement: F2 is not applicable under the cited repository precedents. F1 remains blocking.
+
+RESULT: FAIL

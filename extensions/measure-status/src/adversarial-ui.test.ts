@@ -49,6 +49,18 @@ const input = (over: Partial<TrackInput> = {}): TrackInput => ({
 
 const cardOf = (over: Partial<TrackInput> = {}): Card => buildBoard('invented-hostile', [input(over)]).cards[0] as Card
 
+/** FR-14: only a Waits for Daniel card shows the Comment button. */
+const danielCardOf = (): Card =>
+  cardOf({
+    registryMarker: ' ',
+    plan: {
+      kind: 'plan',
+      plan: parsePlan(
+        '## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Deploy deferred:daniel-deploy\n',
+      ),
+    },
+  })
+
 const repo = (id: string): RosterRepo => ({ id, path: `~/Desktop/${id}` })
 
 const readyOf = (id: string, title: string): RepoState => ({
@@ -260,11 +272,11 @@ describe('hostile titles and task texts in the renderer', () => {
     expect(countIn(html, 'data-card')).toBe(8)
     expect(html).toContain('Show 4992 more')
     expect(html).toContain('data-action="show-more"')
-    expect(html).toContain('5000 Blocked')
+    expect(html).toContain('5000 Waits for PM')
     expect(elapsedMs).toBeLessThan(10_000)
 
     const page = renderPage({ states: [state], ui: ui(), now: NOW, busy: false })
-    expect(page).toContain('5000 Blocked')
+    expect(page).toContain('5000 Waits for PM')
   })
 
   test('renders all 5,000 cards when the column is expanded', () => {
@@ -324,7 +336,7 @@ describe('hostile attribute values', () => {
   test('escapes a hostile card key in data-key', () => {
     const hostileKey = 'invented-hostile/"><script>&'
     const open: CommentUi = { status: 'idle', sentAt: null, error: null, open: true, disabled: false }
-    const html = renderCard(cardOf({ registryMarker: 'b', plan: { kind: 'missing' } }), NOW, open, hostileKey)
+    const html = renderCard(danielCardOf(), NOW, open, hostileKey)
     expect(html).toContain('data-key="invented-hostile/&quot;&gt;&lt;script&gt;&amp;"')
     expect(html).not.toContain('data-key="invented-hostile/"><script>')
     expect(html).toContain('data-action="send-comment"')
@@ -706,7 +718,7 @@ describe('the card key and the comment state of a card with no folder', () => {
     expect(cardKey(named, 0)).toBe('invented-hostile/named_1')
     // The idle state keeps the box closed and the Send button off.
     const idle = idleComment()
-    const html = renderCard(cardOf({ registryMarker: 'b', plan: { kind: 'missing' } }), NOW, idle, 'k')
+    const html = renderCard(danielCardOf(), NOW, idle, 'k')
     expect(html).toContain('aria-expanded="false"')
     expect(html).not.toContain('<textarea')
   })

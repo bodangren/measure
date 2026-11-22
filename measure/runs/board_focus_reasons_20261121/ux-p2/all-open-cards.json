@@ -1,0 +1,2985 @@
+{
+  "at": "2026-11-21T20:34:24.882Z",
+  "width": 626,
+  "scrollWidth": 620,
+  "repos": [
+    {
+      "repo": "reading-advantage-monorepo",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 24,
+          "visibleCards": 24
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 52,
+          "visibleCards": 52
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 21,
+          "visibleCards": 21
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 240,
+          "visibleCards": 0
+        }
+      ],
+      "header": "24 Planned\n52 In progress\n21 Waits for PM\n4 Not archived\n0 Waits for Daniel\n240 Done"
+    },
+    {
+      "repo": "Workbooks",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 4,
+          "visibleCards": 4
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 8,
+          "visibleCards": 8
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 2,
+          "visibleCards": 2
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 54,
+          "visibleCards": 0
+        }
+      ],
+      "header": "4 Planned\n8 In progress\n2 Waits for PM\n0 Waits for Daniel\n54 Done"
+    },
+    {
+      "repo": "advantage-pr",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 1,
+          "visibleCards": 1
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 3,
+          "visibleCards": 3
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 5,
+          "visibleCards": 5
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 38,
+          "visibleCards": 0
+        }
+      ],
+      "header": "1 Planned\n3 In progress\n5 Waits for PM\n0 Waits for Daniel\n38 Done"
+    },
+    {
+      "repo": "advantage-forge",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 28,
+          "visibleCards": 28
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 48,
+          "visibleCards": 48
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 52,
+          "visibleCards": 0
+        }
+      ],
+      "header": "28 Planned\n48 In progress\n0 Waits for PM\n1 Not archived\n0 Waits for Daniel\n52 Done"
+    },
+    {
+      "repo": "mastery-advantage",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 1,
+          "visibleCards": 1
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 2,
+          "visibleCards": 2
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 13,
+          "visibleCards": 0
+        }
+      ],
+      "header": "1 Planned\n2 In progress\n0 Waits for PM\n0 Waits for Daniel\n13 Done"
+    },
+    {
+      "repo": "ra-math-advantage",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 18,
+          "visibleCards": 18
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 12,
+          "visibleCards": 12
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 1,
+          "visibleCards": 1
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 241,
+          "visibleCards": 0
+        }
+      ],
+      "header": "18 Planned\n12 In progress\n1 Waits for PM\n19 Not archived\n0 Waits for Daniel\n241 Done"
+    },
+    {
+      "repo": "lending-desk-bench",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 9,
+          "visibleCards": 9
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 2,
+          "visibleCards": 2
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 4,
+          "visibleCards": 0
+        }
+      ],
+      "header": "0 Planned\n9 In progress\n2 Waits for PM\n0 Waits for Daniel\n4 Done"
+    },
+    {
+      "repo": "measure",
+      "columns": [
+        {
+          "key": "planned",
+          "name": "Planned",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "in-progress",
+          "name": "In progress",
+          "total": 1,
+          "visibleCards": 1
+        },
+        {
+          "key": "blocked",
+          "name": "Waits for PM",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "waiting",
+          "name": "Waits for Daniel",
+          "total": 0,
+          "visibleCards": 0
+        },
+        {
+          "key": "done",
+          "name": "Done",
+          "total": 129,
+          "visibleCards": 0
+        }
+      ],
+      "header": "0 Planned\n1 In progress\n0 Waits for PM\n0 Waits for Daniel\n129 Done"
+    }
+  ],
+  "cards": [
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Architecture identity and provider debt",
+      "task": "[ ] 0.1 Start check. This task changes no file.",
+      "reason": [
+        "Next in line: 0.1 Start check. This task changes no file."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "The Guild Hall, Milestones, Bestiary, Familiars (wave 3, semester 2)",
+      "task": "[ ] List every leaderboard use and its tests; owner review of the milestone list and the familiar rule",
+      "reason": [
+        "Next in line: List every leaderboard use and its tests; owner review of the milestone list and the familiar rule"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Versioned Workbook Content and Editions",
+      "task": "[ ] Task: Ratify internal editor/publisher/auditor roles, global publishing tenancy, PII exclusion, source eligibility, rights, public-sample, t…",
+      "reason": [
+        "Next in line: Task: Ratify internal editor/publisher/auditor roles, global publishing tenancy, PII exclusion, source eligibility, rights, public-sample, t…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Codecamp Tutor Consolidation",
+      "task": "[ ] Task: Contract and schema definition",
+      "reason": [
+        "Next in line: Task: Contract and schema definition"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Codecamp Mastery Evidence Projection",
+      "task": "[ ] Task: Contract and schema definition",
+      "reason": [
+        "Next in line: Task: Contract and schema definition"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Company Finance Operations Foundation (first draft)",
+      "task": "[ ] Task: Complete evidence-backed product and compliance discovery.",
+      "reason": [
+        "Next in line: Task: Complete evidence-backed product and compliance discovery."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Primary Core Interaction Quality",
+      "task": "[ ] Seed a browser class: students, articles with audio and word timestamps, due vocabulary and sentence cards, one assignment with a lesson",
+      "reason": [
+        "Next in line: Seed a browser class: students, articles with audio and word timestamps, due vocabulary and sentence cards, one assignment with a lesson"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Chibi Quest Reskins (wave 1, semester 2)",
+      "task": "[ ] Pick the Forge art per item (item icons, enemies, NPCs, familiars) and export the 2D cuts; en and th copy list for owner review",
+      "reason": [
+        "Next in line: Pick the Forge art per item (item icons, enemies, NPCs, familiars) and export the 2D cuts; en and th copy list for owner review"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "The Expedition Loop and the World Map (wave 2, semester 2)",
+      "task": "[ ] Read the Forge core (`Quest` API, `quest.ts`, `sim.ts`), the demo host, the 3D port host in Primary, and the lesson track's unlock rules",
+      "reason": [
+        "Next in line: Read the Forge core (`Quest` API, `quest.ts`, `sim.ts`), the demo host, the 3D port host in Primary, and the lesson track's unlock rules"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Primary Knowledge State (T3 of the Primary Mastery Graph Program)",
+      "task": "[ ] Task: Contract & Schema Definition",
+      "reason": [
+        "Next in line: Task: Contract & Schema Definition"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Primary YLE-format Starters Tasks",
+      "task": "[ ] Task: Contract & Schema Definition",
+      "reason": [
+        "Next in line: Task: Contract & Schema Definition"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "ElvGames asset audit and removal (APK and the apps)",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Lazy Lesson Bundles",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — i18n Namespace Split",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Sprite Sheet Resize",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Student Query Bounds",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Runtime and Container Limits",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Shared Package Barrels",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Captcha Verification Integration",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Bound the Metrics Cache",
+      "task": "[ ] Task: Write failing tests",
+      "reason": [
+        "Next in line: Task: Write failing tests"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Memory — Client Quick Wins",
+      "task": "[ ] Task: Write failing tests",
+      "reason": [
+        "Next in line: Task: Write failing tests"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Reading QA — Lesson Seed Completeness",
+      "task": "[ ] Task: Write failing checks for the seed contract",
+      "reason": [
+        "Next in line: Task: Write failing checks for the seed contract"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "Reading QA — Lesson Page Code Defects",
+      "task": "[ ] Task: Diagnose the three endpoint failures",
+      "reason": [
+        "Next in line: Task: Diagnose the three endpoint failures"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "planned",
+      "title": "AGENTS.md Compliance Audit — reading-advantage",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "CI green on master",
+      "task": "[~] 1.5 Run local gates (app lint, architecture check), push to master, watch CI, and close",
+      "reason": [
+        "Running: 1.5 Run local gates (app lint, architecture check), push to master, watch CI, and close"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Sales Advantage Shared Mastery Consumer",
+      "task": "[~] Task: Record the approved Review A remediation Red contracts for trusted",
+      "reason": [
+        "Running: Task: Record the approved Review A remediation Red contracts for trusted"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "www daily blog posts of PR",
+      "task": "[~] 1.4 Post `the-line-that-settled-the-class`, 2026-11-19 (PREPARE only; the orchestrator pushes",
+      "reason": [
+        "Running: 1.4 Post `the-line-that-settled-the-class`, 2026-11-19 (PREPARE only; the orchestrator pushes"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "www change list (standing)",
+      "task": "[~] 0.1 Record the six-field entry format in spec section 4. The orchestrator sends it to the PM. This task only writes the spec. Test: AC-1.",
+      "reason": [
+        "Running: 0.1 Record the six-field entry format in spec section 4. The orchestrator sends it to the PM. This task only writes the spec. Test: AC-1."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "TypeScript 7 Native Compiler Migration",
+      "task": "[ ] Task: Bump vinext 1.2.0 to the latest 1.4.x and adopt the Oxc lessons of the Math test bed.",
+      "reason": [
+        "Next in line: Task: Bump vinext 1.2.0 to the latest 1.4.x and adopt the Oxc lessons of the Math test bed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Master push readiness",
+      "note": "4 open tasks, no current task.",
+      "reason": [
+        "Next in line: 4 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Accounting Drive intake",
+      "note": "32 open tasks, no current task.",
+      "reason": [
+        "Next in line: 32 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Codecamp PR Review Recovery",
+      "note": "2 open tasks, no current task.",
+      "reason": [
+        "Next in line: 2 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary In-App Help (What's New videos)",
+      "task": "[~] 6.4 After each upload day: PR refreshes the links JSON; Monorepo runs the receiving step (new `youtube-ids.json`), and the teacher panel mov…",
+      "reason": [
+        "Running: 6.4 After each upload day: PR refreshes the links JSON; Monorepo runs the receiving step (new `youtube-ids.json`), and the teacher panel mov…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Observability Stack: Sentry + Request Context + Tracing",
+      "task": "[~] Task: `pnpm turbo run test --filter=science-advantage` exits 0. (Closeout gate per `test-strategy.md` §7. **Deferred** — blocked by pre-exis…",
+      "reason": [
+        "Running: Task: `pnpm turbo run test --filter=science-advantage` exits 0. (Closeout gate per `test-strategy.md` §7. **Deferred** — blocked by pre-exis…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Structural UX Alignment",
+      "task": "[ ] Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 4 items to done",
+      "reason": [
+        "Next in line: Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 4 items to done"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Audio and Highlighting Correctness",
+      "task": "[ ] Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 1 items to done",
+      "reason": [
+        "Next in line: Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 1 items to done"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Loading and State Correctness",
+      "task": "[ ] Task: Run available doctor/lint gates for reading-advantage",
+      "reason": [
+        "Next in line: Task: Run available doctor/lint gates for reading-advantage"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Component Deduplication",
+      "task": "[ ] Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 3 items to done",
+      "reason": [
+        "Next in line: Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 3 items to done"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Workbooks SSO Onboarding",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase S4: Make apps/workbooks deployable to Cloud Run' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase S4: Make apps/workbooks deployable to Cloud Run' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Broken UX Fixes",
+      "task": "[ ] Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 0 items to done",
+      "reason": [
+        "Next in line: Task: Update `docs/reading-advantage-ux-refactor-plan.md` Phase 0 items to done"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "APK Multiplayer Platform Capability",
+      "task": "[ ] Task: Spike the deployment target",
+      "reason": [
+        "Next in line: Task: Spike the deployment target"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "APK Standard Game Experience",
+      "task": "[~] Task: Document the shared path and bespoke mechanic hook",
+      "reason": [
+        "Running: Task: Document the shared path and bespoke mechanic hook"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "APK Arcade Portfolio Refactor",
+      "task": "[~] P1.1: Trace all input, result, completion, session, and host consumers.",
+      "reason": [
+        "Running: P1.1: Trace all input, result, completion, session, and host consumers."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Codecamp PR Review as Mastery Evidence",
+      "task": "[~] Task: Verify and document Phase S1",
+      "reason": [
+        "Running: Task: Verify and document Phase S1"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Codecamp SSO Redirect Repair",
+      "task": "[~] Task: Confirm the Green phase",
+      "reason": [
+        "Running: Task: Confirm the Green phase"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Company Employee Identity and SSO",
+      "task": "[~] Task 6: Establish the backend identity module and adapter boundary.",
+      "reason": [
+        "Running: Task 6: Establish the backend identity module and adapter boundary."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Codecamp Targeted Intervention Tutor",
+      "task": "[~] Task: Verify and document Phase S1",
+      "reason": [
+        "Running: Task: Verify and document Phase S1"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "CodeCamp Interactive Media and Diagrams Integration",
+      "task": "[~] Map video IDs for the curated videos in the seed curriculum data (source-integrity Red `2faaf316`; bounded Green `0117e8e1b` retains exactly…",
+      "reason": [
+        "Running: Map video IDs for the curated videos in the seed curriculum data (source-integrity Red `2faaf316`; bounded Green `0117e8e1b` retains exactly…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Wave 4 — App Security & Correctness Backlog (Medium+)",
+      "task": "[~] Task: Implement the correctness fixes behind domain functions.",
+      "reason": [
+        "Running: Task: Implement the correctness fixes behind domain functions."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Wave 5 — Public Surface Completion",
+      "task": "[~] Task: Record baseline www/marketing/science pass/fail for the required verification commands.",
+      "reason": [
+        "Running: Task: Record baseline www/marketing/science pass/fail for the required verification commands."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Wave 6 — Quality, i18n, Accessibility, Adapters & Docs Completion",
+      "task": "[~] Task: Confirm Wave 2 adapter contracts and Wave 3 games runtime package are available.",
+      "reason": [
+        "Running: Task: Confirm Wave 2 adapter contracts and Wave 3 games runtime package are available."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Storage Hardening and Floci Verification",
+      "task": "[ ] Task 1.1: Lock the accepted signed-read behavior with a unit test.",
+      "reason": [
+        "Next in line: Task 1.1: Lock the accepted signed-read behavior with a unit test."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Backend Capability Kernel",
+      "task": "[~] Task 10: Implement descriptor builders and fail-closed registry validation.",
+      "reason": [
+        "Running: Task 10: Implement descriptor builders and fail-closed registry validation."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Durable Job Worker Platform",
+      "task": "[~] Task 14a: Implement the owner-approved first-class analyzer reconciliation",
+      "reason": [
+        "Running: Task 14a: Implement the owner-approved first-class analyzer reconciliation"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Accounting App Foundation",
+      "task": "[~] Task: Implement — submission domain functions extending `finance-operations` records, private-storage evidence upload, submission UI (staff)…",
+      "reason": [
+        "Running: Task: Implement — submission domain functions extending `finance-operations` records, private-storage evidence upload, submission UI (staff)…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Zhongwen Advantage Program",
+      "task": "[~] Task: Verify the YCT level word lists and the Thai Ministry of Education Chinese framework — YCT counts and the YCT 1 list filed in `sources…",
+      "reason": [
+        "Running: Task: Verify the YCT level word lists and the Thai Ministry of Education Chinese framework — YCT counts and the YCT 1 list filed in `sources…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Shared Accounts Across Apps",
+      "task": "[ ] Task: Connection gate: count instances × apps × pools against `max_connections` of `cloud-sql`, set the identity pool size, and stop if the …",
+      "reason": [
+        "Next in line: Task: Connection gate: count instances × apps × pools against `max_connections` of `cloud-sql`, set the identity pool size, and stop if the …"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Science Advantage Relaunch",
+      "task": "[~] Task: Agree the science lesson shape with the workbooks session; they add a `program` discriminator and the science fields to `workbook-sche…",
+      "reason": [
+        "Running: Task: Agree the science lesson shape with the workbooks session; they add a `program` discriminator and the science fields to `workbook-sche…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary RPG skin — every student page inside the Chibi Quest world",
+      "note": "2 open tasks, no current task.",
+      "reason": [
+        "Next in line: 2 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary public pages in the RPG skin (home, about, contact, Our books)",
+      "task": "[ ] Tests, tsc, ESLint green",
+      "reason": [
+        "Next in line: Tests, tsc, ESLint green"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Parity Before the Cutover: quick fixes (ADM-02, ADM-06, TCH-05, TCH-08, STU-02, STU-03, STU-06, STU-07, STU-08, STU-16, STU-17, PUB-04, PUB-05)",
+      "task": "[~] Task: Side-by-side acceptance on the rehearsal copy",
+      "reason": [
+        "Running: Task: Side-by-side acceptance on the rehearsal copy"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Parity Before the Cutover: cleanup (System Testing page, Admin Article Creation, content generation, old game host M4 with the ElvGames copy first, old game URL redirects, AI model configuration)",
+      "task": "[~] Task: Side-by-side acceptance on the rehearsal copy",
+      "reason": [
+        "Running: Task: Side-by-side acceptance on the rehearsal copy"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Mastery Evidence (T2 of the Primary Mastery Graph Program)",
+      "note": "5 open tasks, no current task.",
+      "reason": [
+        "Next in line: 5 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Monorepo Continuous Deployment",
+      "task": "[ ] Task: Confirm that Cloud SQL automated backups and point-in-time recovery are on for `cloud-sql`. (NFR)",
+      "reason": [
+        "Next in line: Task: Confirm that Cloud SQL automated backups and point-in-time recovery are on for `cloud-sql`. (NFR)"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Math Advantage Program",
+      "task": "[~] Task: Agree the math lesson shape fields with the workbooks session — fields sent 2026-10-06; due in the schema by 2026-11-27.",
+      "reason": [
+        "Running: Task: Agree the math lesson shape fields with the workbooks session — fields sent 2026-10-06; due in the schema by 2026-11-27."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Component Deduplication",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Structural Alignment (optional)",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Loading and State Correctness",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Audio and Highlighting Correctness",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Authorization Hardening",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Broken UX Fixes",
+      "task": "[ ] Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)",
+      "reason": [
+        "Next in line: Task: Measure - User Manual Verification 'Phase 4: Generate Docs & Doctor' (Protocol in workflow.md)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "apk_kit_defect_remediation_20260803",
+      "task": "[ ] 2.1 D4 single-completion unhandled rejection.",
+      "reason": [
+        "Next in line: 2.1 D4 single-completion unhandled rejection."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Remote Font Removal",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Primary Proxy Role Normalization",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reading Advantage Full Feature Review",
+      "task": "[~] Task: Run Measure phase acceptance for this review track after line-review synthesis. Evidence pending: prior `phase-acceptance-result.json`…",
+      "reason": [
+        "Running: Task: Run Measure phase acceptance for this review track after line-review synthesis. Evidence pending: prior `phase-acceptance-result.json`…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "in-progress",
+      "title": "Reactive Query Layer",
+      "task": "[~] Task: Confirm prerequisites are complete (Prisma→Drizzle migration; connection pooling)",
+      "reason": [
+        "Running: Task: Confirm prerequisites are complete (Prisma→Drizzle migration; connection pooling)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Storytime at-home release (weeks 1 to 7 in the app)",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: 3.1 (old parent task 3.11) At-home deploy (after the Phase 2b checkpoint and the Phase 1 checkpoint of `storytime_look_20261107`): the exact…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Sales Advantage Go-Live",
+      "note": "4 open tasks, no current task.",
+      "reason": [
+        "Waits for PM: Task: Measure — User Manual Verification 'Preconditions & reconciliation' — deferred:human-gated"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Sales and Marketing SSO Parity and Demo Accounts",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Verify the candidate revisions and complete the owner gates deferred:owner"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Storytime app rebuild (an app in the monorepo)",
+      "note": "1 open task, no current task.",
+      "reason": [
+        "Waits for PM: 3.10 Receive the approved A-42 pin: the week files with approval.loops approved after Daniel's content check (by 2026-11-16). Tests: AC-13.1…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Real Advantage logos on the www site",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Sales Advantage 2027 training — roleplay scoring repair and curriculum rebuild",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Deploy a no-traffic candidate — deferred:after-primary-cutover (owner 2026-10-15: the candidate carries 61 Sales commits since the 202…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Remove the void Storytime code from Primary",
+      "task": "[ ] 3.1 Final acceptance at an immutable HEAD, after the phase gates. Then closeout: archive the track, update `measure/tracks.md`, and mark the…",
+      "reason": [
+        "Waits for PM: 2.1 The next Primary deploy by the team carries the deletion commit. Target: the next Primary deploy. Tests: AC-2.1. deferred:daniel"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Security upgrade — Next.js, React, sharp and the critical and high npm fixes",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "codecamp-advantage — Warm Dashboard Performance",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "codecamp-advantage — Cloud Run Cold-Start Fix",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Small-Company Admin Privilege Simplification",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Publish or consume the failed graph-baseline evidence only as historical/incomplete context; defer the full-repository remediation for…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Business Operations Graph Baseline Remediation",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: If the clean branch is unavailable, generate the exact unaudited route/field denominator, reconcile every node to frozen source anchor…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Company Finance Operations Foundation",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Add live CRM and Tutor owner contracts after their source owners accept the source-native contracts. — deferred:crm-tutor-source-owner…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Accounting Dedicated Database Launch",
+      "task": "[ ] Task: Create documentation",
+      "reason": [
+        "Waits for PM: Task: Measure - User Manual Verification 'Phase 1: Contract & Schema Definition' (Protocol in workflow.md) deferred:owner"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Primary Legacy Data Migration",
+      "note": "1 open task, no current task.",
+      "reason": [
+        "Waits for PM: Run into the cutover target (2026-10-11): stopped after C10; the build lacks legacy behavior. See [primary_parity_20261011](../../sets/prima…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Customer, Licensing, and Minimal CRM Control Plane",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Define strict lead, organization, contact, school-site, note, conversion, deduplication, effective-dated sales-assignment, Company Ope…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "www CRM Lead Intake",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Inventory current Contact Us/waitlist inputs and define strict public lead, consent, attribution, rate-limit, spam, and safe-response …"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Zod 4 Major Migration",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Audit current Zod 3 usage and identify Zod 4 breaking changes. — deferred:track-owner"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Zustand 5 Major Migration",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Audit Zustand 5 breaking changes and current v4 usage in reading-advantage. — deferred:track-owner"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "TypeScript 6 Major Migration",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Audit TS 6 breaking changes relevant to the monorepo. — deferred:track-owner"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "reading-advantage-monorepo",
+      "column": "blocked",
+      "title": "Reading License Control-Plane Migration",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: Task: Rebuild/query the repository graph and inventory every Reading/shared license schema, route, controller, report, session, demo, and te…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "planned",
+      "title": "Visual Refresh: Define Unique Identity",
+      "task": "[ ] Read the current `DESIGN.md` and project code to understand the domain.",
+      "reason": [
+        "Next in line: Read the current `DESIGN.md` and project code to understand the domain."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "planned",
+      "title": "Interactive Digital Export (Blended Learning Expansion)",
+      "task": "[ ] Task: Add `archiver` and `@types/archiver` to `dashboard/package.json` dependencies. Run `npm install`. Run `npm run build` to confirm zero …",
+      "reason": [
+        "Next in line: Task: Add `archiver` and `@types/archiver` to `dashboard/package.json` dependencies. Run `npm install`. Run `npm run build` to confirm zero …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "planned",
+      "title": "Advanced Layout & Component Customization",
+      "task": "[ ] Task: Open `dashboard/lib/workbook-schema.ts` and add the optional `section_order` field as specified in the spec. Run `npx tsc --noEmit` to…",
+      "reason": [
+        "Next in line: Task: Open `dashboard/lib/workbook-schema.ts` and add the optional `section_order` field as specified in the spec. Run `npx tsc --noEmit` to…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "planned",
+      "title": "Localization & Thai-Market Teacher Support",
+      "task": "[ ] Task: Add the optional `thai_instructional_script` field to `WorkbookLessonSchema` in `dashboard/lib/workbook-schema.ts` and the `ThaiInstru…",
+      "reason": [
+        "Next in line: Task: Add the optional `thai_instructional_script` field to `WorkbookLessonSchema` in `dashboard/lib/workbook-schema.ts` and the `ThaiInstru…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "v2 workbook look: the Chibi Quest look of the new app and its step names for the Primary levels 5–9 books; Quest 5 printer file on hold, no date (strategy v1.18).",
+      "task": "[~] Task: Tests (first): the default-look rule per book and edition; the classic golden tests (`content/primary/origins-3.2/print/golden/`, the …",
+      "reason": [
+        "Running: Task: Tests (first): the default-look rule per book and edition; the classic golden tests (`content/primary/origins-3.2/print/golden/`, the …"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Levels 5–9 workbook lessons (Quest 5, Quest 6.1, 6.2, Adventure 7.1–9.3) and online banks of 50 articles per book.",
+      "task": "[~] Read-only inventory of levels 5–9 (`scripts/inventory-legacy.ts`) — done 2026-10-08 on the local copy of the 2026-10-07 export (`data/legacy…",
+      "reason": [
+        "Running: Read-only inventory of levels 5–9 (`scripts/inventory-legacy.ts`) — done 2026-10-08 on the local copy of the 2026-10-07 export (`data/legacy…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "The Storytime song video compositor (Remotion): classroom, phone, poster, and karaoke cuts of each week from the package and the Forge renders; placeholder proof first, Forge art by 2026-11-25.",
+      "task": "[~] Task: the composition: scenes (hard cut only at a scene change), actors with slide motion (only when the cast changes), the gesture inset (2…",
+      "reason": [
+        "Running: Task: the composition: scenes (hard cut only at a scene change), actors with slide motion (only when the cast changes), the gesture inset (2…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Storytime Advantage release-1 print: the Level 2 unit 1 student book, the teacher book, the 7 read-along and 7 decodable books, the covers, and the card kit as PDF/X-1a; week 1 first; Daniel's approval by 2026-11-24, print order 2026-11-25.",
+      "task": "[~] Task: the release proof by 2026-11-20. All print files, the contact sheets, and the print order sheet (item, file, SHA-256, trim, pages, pap…",
+      "reason": [
+        "Running: Task: the release proof by 2026-11-20. All print files, the contact sheets, and the print order sheet (item, file, SHA-256, trim, pages, pap…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Storytime Advantage Level 2 Unit 2 (weeks 9 to 16): the week texts, the picture list for Forge, the Thai parts for Daniel's check, the unit scope change of the makers, the print build with the unit 1 makers, and the hand-offs; unit 1 first; print-ready 2026-12-08 (internal). Series plan: `measure/storytime-series-plan.md`.",
+      "task": "[~] Task 3.5b (Change list, PA-P3-1; D-U2-S3, D-U2-S4, D-U2-S7, D-U2-S9 to D-U2-S12): one author of a Claude model writes `measure/runs/storytim…",
+      "reason": [
+        "Running: Task 3.5b (Change list, PA-P3-1; D-U2-S3, D-U2-S4, D-U2-S7, D-U2-S9 to D-U2-S12): one author of a Claude model writes `measure/runs/storytim…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Origins 3.1 Teacher's Manual for the new Primary app: app text, a new app section, Thai fixes, and an A4 office-print PDF; draft 2026-10-23, final 2026-10-26.",
+      "task": "[~] Task: Daniel's Thai notes and the PR fact notes fixed (date and notes in this plan)",
+      "reason": [
+        "Running: Task: Daniel's Thai notes and the PR fact notes fixed (date and notes in this plan)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Primary injector: write lesson packages into the live and cutover Primary databases, and verify them (task C10).",
+      "task": "[~] JSON shapes of `sentences`, `words`, the translations, and the flashcard rows: from the code (types and generators); the read-only productio…",
+      "reason": [
+        "Running: JSON shapes of `sentences`, `words`, the translations, and the flashcard rows: from the code (types and generators); the read-only productio…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "in-progress",
+      "title": "Book covers from data: a cover kit from the Canva SVGs, front and back templates, web PNGs and PDF/X-1a print files.",
+      "task": "[~] Task: Hero references and a test of one wide picture (Quest 5, 2026-10-07). mmx image-01",
+      "reason": [
+        "Running: Task: Hero references and a test of one wide picture (Quest 5, 2026-10-07). mmx image-01"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "Workbooks",
+      "column": "blocked",
+      "title": "Dependency refresh of dashboard and storytime-song: every package to the latest version that works, all critical and high audit advisories fixed by 2026-11-23, and each remaining moderate or low advisory listed with its reason by 2026-11-25.",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "Workbooks",
+      "column": "blocked",
+      "title": "Print layout audit: vocabulary write-in column collapse and other Paged.js page-break defects in the primary template.",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "planned",
+      "title": "Validated Market Sizing (Q-MK-03)",
+      "task": "[ ] **1.1** Pull OBEC annual statistics for AY 2024 or 2025 (most recent",
+      "reason": [
+        "Next in line: **1.1** Pull OBEC annual statistics for AY 2024 or 2025 (most recent"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "in-progress",
+      "title": "Daily www blog, social posts, and the www release queue (standing program)",
+      "task": "[~] T2.1: Standing task: one post a day by 18:00 ICT from 2026-11-16, each with fb.txt and linkedin.txt, one maker and one checker. Each day add…",
+      "reason": [
+        "Running: T2.1: Standing task: one post a day by 18:00 ICT from 2026-11-16, each with fb.txt and linkedin.txt, one maker and one checker. Each day add…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "in-progress",
+      "title": "Primary \"What's New\" videos — production of the series",
+      "task": "[~] Task: the live YouTube links for Monorepo's in-app help (Daniel, 2026-10-23; Daniel uploads 8 videos a day at most): scripts/video/whats-new…",
+      "reason": [
+        "Running: Task: the live YouTube links for Monorepo's in-app help (Daniel, 2026-10-23; Daniel uploads 8 videos a day at most): scripts/video/whats-new…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "in-progress",
+      "title": "Outputs of the scheduled jobs — one standing task (interim)",
+      "task": "[~] T1.1: Standing task: the outputs of the scheduled jobs only (daily work report, daily reel, Facebook morning check drafts). Any other edit n…",
+      "reason": [
+        "Running: T1.1: Standing task: the outputs of the scheduled jobs only (daily work report, daily reel, Facebook morning check drafts). Any other edit n…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "blocked",
+      "title": "PR facts intake — facts-changed handoffs and the www change list",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "blocked",
+      "title": "Tutor Advantage Rollout — paid classes and tutor growth",
+      "task": "[ ] T2.2 — Record the readiness checklist for both new tutors and their planned classes, using counts and IDs only.",
+      "reason": [
+        "Waits for PM: T2.1 — Hold a short post-pilot review with Phikul through the PM before 2026-11-01. Start from the Pilot class problems section. Confirm eac…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "blocked",
+      "title": "Media Relations Buildout",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: T-MR3.1 — Phikul sends first wave of personalized pitches to at least 5 journalists. (Green/closeout role — human-gated; **deferred:phikul**…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "blocked",
+      "title": "Weekly Drive sort",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-pr",
+      "column": "blocked",
+      "title": "Sales training source set — 2027 sales training aligned to strategy v1.8",
+      "note": "All tasks closed.",
+      "reason": [
+        "Waits for PM: All tasks closed."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Make monorepo master CI green before the cutover",
+      "task": "[ ] Task: Find the 5 `console.error` calls above the baseline (626 against 621) in run 37427931431, commit d535ae7fd.",
+      "reason": [
+        "Next in line: Task: Find the 5 `console.error` calls above the baseline (626 against 621) in run 37427931431, commit d535ae7fd."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Typing Duel: a typing game for saved words and sentences (keyboard and touch)",
+      "task": "[ ] Task: Write `docs/game-typing-duel.md`: the loop, the cue rule and its fallback, the keyboard and touch modes, the combo, the speed bounds a…",
+      "reason": [
+        "Next in line: Task: Write `docs/game-typing-duel.md`: the loop, the cue rule and its fallback, the keyboard and touch modes, the combo, the speed bounds a…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands items: 59 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands vehicles: 15 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands equipment: 27 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands props: 101 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Sound in the games: library takes for the game events",
+      "task": "[ ] Task: Write the event map: every `sfx` event and mood of the games to one row; list the events without a row.",
+      "reason": [
+        "Next in line: Task: Write the event map: every `sfx` event and mood of the games to one row; list the events without a row."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands effects geometry: 33 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_pack_layout_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands wildlife: 63 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_base_character_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_base_character_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands architecture: 82 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands nature: 36 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands monsters: 79 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands NPCs: 110 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands heroes: 44 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands enemies: 64 catalog rows outside the game set",
+      "task": "[ ] Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_game_set_20261009` is accepted, and read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands scenes: the hamlet and the five P0 maps",
+      "task": "[ ] Task: List the component IDs of each of the six scenes from the Chibi Quest scene sources; record which come from the game set and which fro…",
+      "reason": [
+        "Next in line: Task: List the component IDs of each of the six scenes from the Chibi Quest scene sources; record which come from the game set and which fro…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands game skin: model packs, the 2D pack, the avatar pack, and the pack in the launch context",
+      "task": "[ ] Task: Add `pack` to the launch context contract and to the model-pack manifest (`src/apk3d/contracts/`); write the contract tests (default `…",
+      "reason": [
+        "Next in line: Task: Add `pack` to the launch context contract and to the model-pack manifest (`src/apk3d/contracts/`); write the contract tests (default `…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands game set: 89 game rows, 142 avatar pieces, and the sunken vault, before any other production",
+      "task": "[ ] Task: Confirm that `riven_base_character_20261009` is accepted; read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`.",
+      "reason": [
+        "Next in line: Task: Confirm that `riven_base_character_20261009` is accepted; read `packs/riven-lands/PORTING.md` and `packs/riven-lands/fit.md`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands base character, fit contract, and porting recipe",
+      "task": "[ ] Task: Make three base mockups with mmx (front, three-quarter, side, back) at 1.6 m and 5 heads in the Riven Lands language; the owner picks …",
+      "reason": [
+        "Next in line: Task: Make three base mockups with mmx (front, three-quarter, side, back) at 1.6 m and 5 heads in the Riven Lands language; the owner picks …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Riven Lands pack layout stage 1: packs/riven-lands and the --pack option",
+      "task": "[ ] Task: Record the pack contract: `pack.json` schema, the pack resolution order (`--pack`, `FORGE_PACK`, default), and the output path rule in…",
+      "reason": [
+        "Next in line: Task: Record the pack contract: `pack.json` schema, the pack resolution order (`--pack`, `FORGE_PACK`, default), and the output path rule in…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Review Thai story content",
+      "task": "[ ] Task: List story packs with missing or generated Thai glosses.",
+      "reason": [
+        "Next in line: Task: List story packs with missing or generated Thai glosses."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Complete 2D look and lobby parity",
+      "task": "[ ] Task: Record how unlocked looks appear in the 2D view and selector.",
+      "reason": [
+        "Next in line: Task: Record how unlocked looks appear in the 2D view and selector."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Map variants and randomized maps",
+      "task": "[ ] Task: Add the optional `variant` field to `Place` in `scenes/chibi-quest.ts`.",
+      "reason": [
+        "Next in line: Task: Add the optional `variant` field to `Place` in `scenes/chibi-quest.ts`."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Plan and accept adventure scenes",
+      "task": "[ ] Task: Reconcile existing mockups and scene sources with the blueprint rows.",
+      "reason": [
+        "Next in line: Task: Reconcile existing mockups and scene sources with the blueprint rows."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Harden production coordination",
+      "task": "[ ] Task: Document trial directories, ownership rules, concurrency limits, and retry states.",
+      "reason": [
+        "Next in line: Task: Document trial directories, ownership rules, concurrency limits, and retry states."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Plan deferred Forge capabilities",
+      "task": "[ ] Task: Reconcile deferred capability claims against source code and current game needs.",
+      "reason": [
+        "Next in line: Task: Reconcile deferred capability claims against source code and current game needs."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Define companion media production",
+      "task": "[ ] Task: Map the companion categories to known game requirements.",
+      "reason": [
+        "Next in line: Task: Map the companion categories to known game requirements."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "planned",
+      "title": "Complete asset exports and game delivery",
+      "task": "[ ] Task: Define delivery fields for source revision, outputs, clips, presets, and review evidence.",
+      "reason": [
+        "Next in line: Task: Define delivery fields for source revision, outputs, clips, presets, and review evidence."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Chibi Sprouts, release 1 art",
+      "task": "[~] Task: The remaining cast (an adult base for Mom, Dad, Grandma, Grandpa; Tom at about eight).",
+      "reason": [
+        "Running: Task: The remaining cast (an adult base for Mom, Dad, Grandma, Grandpa; Tom at about eight)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rebuild Castle Defense as a tower defense game",
+      "task": "[ ] Task: Write the failing view tests (Red).",
+      "reason": [
+        "Next in line: Task: Write the failing view tests (Red)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rebuild Magic Defense as a missile defense game",
+      "task": "[ ] Task: Write the failing view tests (Red).",
+      "reason": [
+        "Next in line: Task: Write the failing view tests (Red)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rebuild Paladin's Twin Soul as a chapel shooter",
+      "task": "[ ] Task: Write the failing view tests (Red).",
+      "reason": [
+        "Next in line: Task: Write the failing view tests (Red)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rebuild Archer's Revenge as an aim and shoot game",
+      "task": "[ ] Task: Write the failing view tests (Red).",
+      "reason": [
+        "Next in line: Task: Write the failing view tests (Red)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Produce P2 npcs",
+      "task": "[ ] Task: Confirm shared dimensions against the kit reference before launching trials.",
+      "reason": [
+        "Next in line: Task: Confirm shared dimensions against the kit reference before launching trials."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Produce P3 fx-geometry",
+      "task": "[~] Task: Run forge all for each accepted source after visual correction. (Owner rejected the first fireball on 2026-10-25. Opus owns `assets/fi…",
+      "reason": [
+        "Running: Task: Run forge all for each accepted source after visual correction. (Owner rejected the first fireball on 2026-10-25. Opus owns `assets/fi…"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Produce P2 wildlife",
+      "task": "[ ] Task: Build missing sources and review existing sources in the batch.",
+      "reason": [
+        "Next in line: Task: Build missing sources and review existing sources in the batch."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Griffin Sky Joust as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Enchanted Library as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Rune Match as a dual renderer game",
+      "task": "[ ] Task: Check the game on a real touch device. Waits for the owner (platform port spec, open decision 6).",
+      "reason": [
+        "Next in line: Task: Check the game on a real touch device. Waits for the owner (platform port spec, open decision 6)."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Sound library: CC0 sound effects and music for the asset catalog and the games",
+      "task": "[ ] Task: Run `./measure/generate.sh` and `./measure/doctor.sh`; close the track.",
+      "reason": [
+        "Next in line: Task: Run `./measure/generate.sh` and `./measure/doctor.sh`; close the track."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Sound library sources: ElvGames packs, CC-BY sites, and credits",
+      "task": "[ ] Task: Search agents for the miss rows (farm animals, voices first), then the rows with fewer takes than wanted. Round A (2026-10-14, 4 Haiku…",
+      "reason": [
+        "Next in line: Task: Search agents for the miss rows (farm animals, voices first), then the rows with fewer takes than wanted. Round A (2026-10-14, 4 Haiku…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Remove the legacy games from the monorepo",
+      "task": "[ ] Task: F2. The read-to-select-audio mode in the same three games, 3D and 2D, with evidence that passes the monorepo `readToSelectAudioEvidenc…",
+      "reason": [
+        "Next in line: Task: F2. The read-to-select-audio mode in the same three games, 3D and 2D, with evidence that passes the monorepo `readToSelectAudioEvidenc…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Audit self-graded character ratings",
+      "task": "[ ] Task: Independent review of the committed wildlife batches 1 to 5 (26 assets).",
+      "reason": [
+        "Next in line: Task: Independent review of the committed wildlife batches 1 to 5 (26 assets)."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port the dual renderer into the monorepo",
+      "task": "[ ] Task: Open a pull request with the verified port and review evidence. The owner approves the pull request and the deployment. 2026-10-04: th…",
+      "reason": [
+        "Next in line: Task: Open a pull request with the verified port and review evidence. The owner approves the pull request and the deployment. 2026-10-04: th…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Sorcerer Ziggurat as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Spellweavers Run as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Storm Castle Tower as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Village Guardian as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Realm Carver as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite RPG Battle as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Rune Forge Chamber as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Shadow Gate Dungeon as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Potion Rush to the monorepo",
+      "task": "[~] Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …",
+      "reason": [
+        "Running: Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Labyrinth Goblin King as a dual renderer game",
+      "task": "[~] Task: Pass all rules tests and run both renderer checks. Done on 2026-10-02: the full suite passes and the bot played a whole shift to the r…",
+      "reason": [
+        "Running: Task: Pass all rules tests and run both renderer checks. Done on 2026-10-02: the full suite passes and the bot played a whole shift to the r…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Magic Defense as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Paladins Twin Soul as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Haunted Library as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Hero vs. Zombie to the monorepo",
+      "task": "[~] Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …",
+      "reason": [
+        "Running: Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Griffin Riders Escape as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Gryphon Patrol as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Devourer Slime to the monorepo",
+      "task": "[~] Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …",
+      "reason": [
+        "Running: Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Dragon Flight to the monorepo",
+      "task": "[~] Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …",
+      "reason": [
+        "Running: Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Dragon Rider as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Dungeon Liberator to the monorepo",
+      "task": "[~] Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …",
+      "reason": [
+        "Running: Task: Run package and host tests, type checks, localization checks, and browser input checks. 2026-10-04: games package 1,885 tests and kit …"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Archers Revenge as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Astral Mage as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Castle Defense as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Abyssal Well as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rewrite Alchemists Synthesis as a dual renderer game",
+      "task": "[~] Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…",
+      "reason": [
+        "Running: Task: Verify touch input, learning evidence, accessibility, strings, and screenshots. Emulated phone check on 2026-10-04: `qc/run.mjs --phon…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Port Monster Encounters to the monorepo",
+      "task": "[ ] Task: Add application catalog, core replay, renderer input, and evidence tests.",
+      "reason": [
+        "Next in line: Task: Add application catalog, core replay, renderer input, and evidence tests."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Rename the repository to advantage-forge and plan the pack layout",
+      "task": "[ ] Task: Add `packs/riven-lands/` (assets, scenes, `fit.md`, `pack.json`) and a `--pack` option to the CLI. Keep `assets/` in place.",
+      "reason": [
+        "Next in line: Task: Add `packs/riven-lands/` (assets, scenes, `fit.md`, `pack.json`) and a `--pack` option to the CLI. Keep `assets/` in place."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Restore asset quality gates",
+      "task": "[~] Task: Correct source types without suppressing compiler checks. (2026-10-02: type-only corrections in fallen-tree, stalagmite, urn, and cloc…",
+      "reason": [
+        "Running: Task: Correct source types without suppressing compiler checks. (2026-10-02: type-only corrections in fallen-tree, stalagmite, urn, and cloc…"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Plan and accept wilderness scenes",
+      "task": "[~] Task: Review existing examples and complete missing components.",
+      "reason": [
+        "Running: Task: Review existing examples and complete missing components."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Plan and accept settlements scenes",
+      "task": "[~] Task: Review existing examples and complete missing components.",
+      "reason": [
+        "Running: Task: Review existing examples and complete missing components."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Chibi Quest battle teaser videos (16:9 and 9:16)",
+      "task": "[ ] Task: Owner review of the audio and the Thai text (voice-over, counters, end card, and the",
+      "reason": [
+        "Next in line: Task: Owner review of the audio and the Thai text (voice-over, counters, end card, and the"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "advantage-forge",
+      "column": "in-progress",
+      "title": "Resolve dependency launcher reconciliation",
+      "task": "[ ] Task: Inspect package-manager configuration and installed dependency state.",
+      "reason": [
+        "Next in line: Task: Inspect package-manager configuration and installed dependency state."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "mastery-advantage",
+      "column": "planned",
+      "title": "B2 Vocabulary Source Expansion",
+      "task": "[ ] Task 1.1: Acquire and cache Vocabulary in Use Upper-Intermediate (4th edition) PDF",
+      "reason": [
+        "Next in line: Task 1.1: Acquire and cache Vocabulary in Use Upper-Intermediate (4th edition) PDF"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "mastery-advantage",
+      "column": "in-progress",
+      "title": "GSE Grammar Inventory And Inflection-Level Identity",
+      "task": "[ ] Task: Define the grammar-layer contract",
+      "reason": [
+        "Next in line: Task: Define the grammar-layer contract"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "mastery-advantage",
+      "column": "in-progress",
+      "title": "English Lexical Semantic Enrichment",
+      "task": "[ ] Embedding / broad relatedness (deferred)",
+      "reason": [
+        "Next in line: Embedding / broad relatedness (deferred)"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Consume the mastery-advantage Math Graph",
+      "task": "[ ] Task: S1 Contract — record the release",
+      "reason": [
+        "Next in line: Task: S1 Contract — record the release"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Production Deploy Pipeline",
+      "task": "[ ] Task: S1 Contract — define the inventory record",
+      "reason": [
+        "Next in line: Task: S1 Contract — define the inventory record"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "BM2 Convex Auth v2 Migration",
+      "task": "[ ] Task: S1 Contract — record the baseline and the auth contract",
+      "reason": [
+        "Next in line: Task: S1 Contract — record the baseline and the auth contract"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Multi-Year Student History",
+      "task": "[ ] Task: S1 Contract — define the history model",
+      "reason": [
+        "Next in line: Task: S1 Contract — define the history model"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Base App, Convex Auth v2, and Course Data",
+      "task": "[ ] Task: S1 Contract — record the baseline and the references",
+      "reason": [
+        "Next in line: Task: S1 Contract — record the baseline and the references"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Retire the Old Math Apps",
+      "task": "[ ] Task: Record the baseline and the inventory",
+      "reason": [
+        "Next in line: Task: Record the baseline and the inventory"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: AP Precalculus Course Import",
+      "task": "[ ] Task: Record the baseline and the inventory",
+      "reason": [
+        "Next in line: Task: Record the baseline and the inventory"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Integrated Math 1 Course Import",
+      "task": "[ ] Task: Record the baseline and the inventory",
+      "reason": [
+        "Next in line: Task: Record the baseline and the inventory"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Integrated Math 2 Course Import",
+      "task": "[ ] Task: Record the baseline and the inventory",
+      "reason": [
+        "Next in line: Task: Record the baseline and the inventory"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Unified Math App: Seat Licensing",
+      "task": "[ ] Task: S1 Contract — define the license model",
+      "reason": [
+        "Next in line: Task: S1 Contract — define the license model"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Coordinate & Functions",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Number line & Algebra Manipulatives",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Geometry & Transformations",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Statistics & Probability",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Trigonometry & Advanced",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Interaction & Assessment",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Graph-vs-Tracks Review Remediation",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "planned",
+      "title": "Live Classroom Presentation",
+      "task": "[ ] Task: Define live session contract & schema",
+      "reason": [
+        "Next in line: Task: Define live session contract & schema"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Dependency Refresh",
+      "task": "[ ] Task: D2 Red — refresh the remaining update baseline",
+      "reason": [
+        "Next in line: Task: D2 Red — refresh the remaining update baseline"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "KST+SRS v3.2 IM3 Runtime and Data Migration",
+      "task": "[ ] Task 3.8: Prove that narrowing is authorized.",
+      "reason": [
+        "Next in line: Task 3.8: Prove that narrowing is authorized."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "ESLint to Oxlint Migration",
+      "task": "[~] Task: Address review findings before manual completion",
+      "reason": [
+        "Running: Task: Address review findings before manual completion"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "IM3 Complete Review (2026-09-07)",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Teacher-Led First Exposure and Mastery Advantage Pilots",
+      "task": "[ ] **Task 1.1: Approve the corrected pilot specification.**",
+      "reason": [
+        "Next in line: **Task 1.1: Approve the corrected pilot specification.**"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Precalculus Complete Review (2026-09-07)",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "IM2 Complete Review (2026-09-07)",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Graph Node Practice Program",
+      "task": "[~] Task 1.2: Complete the capability inventory through the existing graph tracks.",
+      "reason": [
+        "Running: Task 1.2: Complete the capability inventory through the existing graph tracks."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Danielson SLT presentation rebuild",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Danielson Review (2026-09-07)",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Business Math Review Fixes (2026-09-07)",
+      "task": "[~] Protect phase identity, completion evidence, competency credit, and atomic retries (BM2-01, 04, 05, 20).",
+      "reason": [
+        "Running: Protect phase identity, completion evidence, competency credit, and atomic retries (BM2-01, 04, 05, 20)."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "in-progress",
+      "title": "Danielson admin and coaching improvements",
+      "note": "No plan.",
+      "reason": [
+        "Next in line: No plan."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "ra-math-advantage",
+      "column": "blocked",
+      "title": "OpenRouter SDK AI Layer",
+      "task": "[ ] Task: S2 Contract — define the roles, the PII flag, and the usage record",
+      "reason": [
+        "Waits for PM: Task: Measure - User Manual Verification 'Phase S1: Adopt the OpenRouter SDK' (Protocol in workflow.md) (deferred:closeout-steward)"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "Model guide: seeded-defect review, real-work outcomes, and the use-this-model table",
+      "task": "[~] 4.15 The backlog of nonblocking findings (PM round cap 2026-11-19). Work it after the night run of 2026-11-22, through Red and Green.",
+      "reason": [
+        "Running: 4.15 The backlog of nonblocking findings (PM round cap 2026-11-19). Work it after the night run of 2026-11-22, through Red and Green."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "rigor_a_h",
+      "task": "[~] 1.2 Worktree and toolchain. The precondition is met. The orchestrator",
+      "reason": [
+        "Running: 1.2 Worktree and toolchain. The precondition is met. The orchestrator"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "opencode_host_isolation",
+      "note": "2 open tasks, no current task.",
+      "reason": [
+        "Next in line: 2 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "Grader browser: grade with the system Chrome and regrade the stale scores",
+      "task": "[ ] 2.2 The first live day. The live day grades with the system Chrome.",
+      "reason": [
+        "Next in line: 2.2 The first live day. The live day grades with the system Chrome."
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "Domain trust matrix: safe and risk domains for each model, with failure modes",
+      "task": "[~] 1.3 Worktree. Create `../lending-desk-bench-trust` on the new branch",
+      "reason": [
+        "Running: 1.3 Worktree. Create `../lending-desk-bench-trust` on the new branch"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "bench_incremental",
+      "task": "[ ] 4.1 Dry run against the real `runs/` tree; cross-check classes",
+      "reason": [
+        "Next in line: 4.1 Dry run against the real `runs/` tree; cross-check classes"
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "bench_v2",
+      "note": "2 open tasks, no current task.",
+      "reason": [
+        "Next in line: 2 open tasks, no current task."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "bugfix_bench",
+      "note": "1 open task, no current task.",
+      "reason": [
+        "Next in line: 1 open task, no current task."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "in-progress",
+      "title": "harness_audit",
+      "task": "[ ] 6.3 Grade contract violators instead of invalidating them, and flag the violation.",
+      "reason": [
+        "Next in line: 6.3 Grade contract violators instead of invalidating them, and flag the violation."
+      ],
+      "comments": 0,
+      "stale": true
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "blocked",
+      "title": "Daily model schedule: one model per day, untested first, then the stalest",
+      "note": "3 open tasks, no current task.",
+      "reason": [
+        "Waits for PM: 5.4 First live day. After the first job ends, run `DAY_CHECK <day>`,"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "lending-desk-bench",
+      "column": "blocked",
+      "title": "Migrate the benchmark executor from Pi to OpenCode 2 with Console login",
+      "task": "[ ] 4.6 Go/no-go by 2026-10-24 18:00 (+08:00): the owner confirms cron",
+      "reason": [
+        "Waits for PM: 2.5 Cost: `usage.ts` parses the fixed session export, plain and (deferred:owner)"
+      ],
+      "comments": 0,
+      "stale": false
+    },
+    {
+      "repo": "measure",
+      "column": "in-progress",
+      "title": "Board keeps focus and shows a plain reason per card",
+      "task": "[ ] Task 2.3: live browser check of the reason lines on the board",
+      "reason": [
+        "Next in line: Task 2.3: live browser check of the reason lines on the board"
+      ],
+      "comments": 0,
+      "stale": false
+    }
+  ],
+  "checks": {
+    "columnOrder": true,
+    "onePlainReason": true,
+    "oldLabelElements": 0,
+    "bareBlockerReasons": 0,
+    "commentOnlyOnDaniel": true,
+    "waitingCount": 0,
+    "renderedWaiting": 0,
+    "openCards": 242,
+    "summary": "31 Waits for PM",
+    "emptyColumns": [
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None",
+      "None"
+    ]
+  }
+}

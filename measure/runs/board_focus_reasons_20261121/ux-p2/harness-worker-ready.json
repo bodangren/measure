@@ -1,0 +1,7 @@
+{
+  "port": 46585,
+  "endpoint": "ws://127.0.0.1:41273/devtools/browser/a2620000-c496-4873-a343-86431ee0e9ba",
+  "pid": 3304103,
+  "started": "2026-11-21T21:31:29.673Z",
+  "fixtureUrl": "http://127.0.0.1:37623/fixture-harness.html"
+}

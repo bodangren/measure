@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Spec review passed with zero Blockers. Six Major findings cover the open painter API, undefined paint interactions, the dual classification of the Refresh button, unnamed DOM test files and dependency edit, an undefined gate-word conflict, and a missing reason-line source.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Major] FR-1: createPainter has no stated parameters, result, or paint-kind contract. The painter must cover data paints, user paints, a pending flag, and the badge update. The two paint bodies differ: panel/main.ts paint() also serves the status surface at line 292, and preview/preview.ts paint() at line 242 has no host. Rationale: The Red role must choose the API shape; the zero-decision check leaves no API choice to the implementer.",
+    "F2 [Major] FR-2 and FR-3: The interaction of a pending data paint with a user paint is not stated. When a user paint repaints while a data paint is pending, the spec does not say whether the user paint clears the pending flag, whether the pending paint runs again, or which data reaches the DOM. Rationale: Edge-case behavior is left to the implementer.",
+    "F3 [Major] FR-2: The Refresh button appears in both paint lists. Data paint names the Refresh button, and user paint names any click action, which includes the Refresh click. An implementer who treats the click as a user paint repaints at once and restores the focus fault. Rationale: The two paint rules conflict on the same event.",
+    "F4 [Major] FR-7 and plan Task 1.1: The DOM test files and the package.json edit are not named. FR-7 requires the devDependency happy-dom, but extensions/measure-status/package.json devDependencies at line 42 has no happy-dom, and Task 1.1 at plan.md line 12 names no test file path. Rationale: Each phase must name the files to create or change; the Red role must pick test file locations.",
+    "F5 [Major] FR-10: A gate-word conflict inside one owner token has no rule. The token splits on four separators and one word matches, but a token such as deferred:public-deploy holds two gate words. The spec gives no order for the gates public date and deploy. Rationale: Edge-case behavior is left to the implementer.",
+    "F6 [Major] FR-11: The Next in line reason line names a task label, but no label source exists when no current task is present. board.ts noteOf at line 148 supplies a count note for a plan with no current task, and r2Card at line 167 supplies No plan. for a missing plan. Rationale: A reader cannot tell whether those notes become the reason line."
+  ],
+  "evidence": [
+    "HEAD 849d16f0028fa754b8ec27859d354a1bc324fc31 equals audited_head_sha; branch fix/board-focus-reasons; clean worktree before artifacts",
+    "Standard read from ~/.agents/skills/measure/references/spec-review.md (repository copy skills/measure/references/spec-review.md also present)",
+    "extensions/measure-status/panel/main.ts:298 sets root.innerHTML on every paint; :362,365,369,376,492 call paint; :170-178 restoreComment restores text only",
+    "extensions/measure-status/src/board.ts:238-250 finds the open [b] task before the [~] branch at :252",
+    "extensions/measure-status/src/parse.ts:16 OWNER regex and :128-134 parsePlan read the owner from the single task line",
+    "lending-desk-bench/measure/tracks/domain_trust/plan.md:108-110 places deferred:mid-red on a continuation line while task 1.3 at :93 is [~]",
+    "extensions/measure-status/package.json:42-47 devDependencies list vitest but not happy-dom",
+    "extensions/measure-status/src/render.ts:170-174 renders card.line with a BLOCKER/GATE/MANUAL CHECK label",
+    "extensions/measure-status/preview/preview.ts:242-254 paint() has no host and no data paint path",
+    "extensions/measure-status/src/board.ts:148-154 noteOf and :163-181 r2Card supply notes when no current task exists"
+  ],
+  "commands": [
+    "git rev-parse HEAD && git branch --show-current && git status --short",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role spec-review --file measure/runs/board_focus_reasons_20261121/spec-review-849d16f.json -> PASS: audit result is valid",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo /home/daniebo/Desktop/measure --role spec-review --track board_focus_reasons_20261121 --log-file measure/runs/board_focus_reasons_20261121/spec-review-849d16f.log -> FAIL: --result-file is required for audit roles; --baseline is required for spec-review (orchestrator-supplied command omits both required flags)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo /home/daniebo/Desktop/measure --role spec-review --track board_focus_reasons_20261121 --result-file measure/runs/board_focus_reasons_20261121/spec-review-849d16f.json --baseline 849d16f --log-file measure/runs/board_focus_reasons_20261121/spec-review-849d16f.log -> PASS: spec-review gate passed"
+  ],
+  "changed_files": [
+    "measure/runs/board_focus_reasons_20261121/spec-review-849d16f.json",
+    "measure/runs/board_focus_reasons_20261121/spec-review-849d16f.log"
+  ],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This track fixes two faults in the measure-status board. A new src/painter.ts module schedules two paint kinds and holds a data paint while the open comment box has focus or text, so a refresh, timer, or host-ready event cannot steal focus, caret, or draft text. The parser then reads deferred owner tags on wrapped continuation lines, and the classifier gives each open card one state and one reason line with renamed columns, a rail badge for Waits for Daniel, and a Comment button only on those cards.",
+    "current_system": "The spec says panel/main.ts paint() sets root.innerHTML on every repaint. loadBoard() repaints at load start, for each of the eight repo results, and at load end, and the timer, Refresh button, and host.onReady also repaint. restoreComment() writes the text back but restores no focus, caret, or IME composition. The classifier treats any open [b] task anywhere in the plan as the blocker even when an earlier task is [~], and the parser reads the deferred owner only from the first line of a task, so a continuation-line tag is missed and the lending-desk-bench card shows a blocker line."
+  }
+}

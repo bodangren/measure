@@ -1,0 +1,80 @@
+Provisional verdict: inconclusive. The browser checks remain pending.
+HEAD: 8dafa773c16ba34a5052f0731bb03d24e5f9482a
+phase_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: 8dafa773c16ba34a5052f0731bb03d24e5f9482a
+PROJECT_DEV_URL: http://127.0.0.1:38307
+The original background browser start remains queued as PID 2526782.
+The audit started no second browser.
+The shared lock holder is PID 2507489. One priority-p1 job waits.
+The diff from 5f74c11 to 8dafa77 changes only painter.test.ts.
+The panel bundle has not changed.
+The orchestrator authorized a priority-p1 retry.
+The audit stopped only PIDs 2526782 and 2526847.
+pgrep found no agent-browser process before the retry.
+The audit started the replacement command in the background with HEAVY_PRIORITY=p1 and HEAVY_MIN_AVAIL_MB=1500.
+The priority-p1 start opened the page. The wrapper then closed its Chrome processes as leftover processes.
+The wrapper log confirms this cleanup at 07:35:26. Its header requires this cleanup when a command ends.
+The next plain browser commands attempted an automatic restart and failed because the sandbox was unavailable.
+The audit closed the session. No working browser remained.
+The audit queued one persistent wrapper job with --no-sandbox. It retains the wrapper until the checks finish.
+The persistent wrapper has a 900-second limit after the browser opens. It closes the browser on exit.
+An event watcher will report browser readiness. The audit does not poll the job for completion.
+Check 1 passed. The audit reloaded the host page and opened the Measure rail panel beside the chat draft.
+The rail frame is 626 pixels wide. The document scroll width is 620 pixels.
+The Sales Advantage Go-Live comment box holds Alpha audit draft omega. Its caret is at position 6.
+The textarea has document focus. The audit saved a screenshot and an accessibility snapshot.
+Check 2 passed. The typing monitor ran from 00:40:50.480Z to 00:42:02.834Z.
+All 268 samples kept the textarea node, focus, text, and caret. The root observer recorded zero mutations.
+Each typing cycle inserted x at position 6 and removed it with Backspace.
+Host file responses arrived during the monitor. The audit did not click Refresh.
+The audit created one scratch chat without a prompt. Its title is UX scratch · board focus.
+Its ID is ses_e0471fc4bffeijIUhEC4Ci9NgD. Its model is opencode/deepseek-v4.1-flash-free.
+The model catalog reports zero input and output cost.
+Check 3 passed. The selected scratch chat received the exact requested prompt through session.send.
+The model returned ten OK lines from 00:44:07.878Z to 00:44:09.965Z.
+The typing monitor covered this reply. All 230 samples kept focus, text, caret, and node identity.
+The root observer recorded zero mutations. Keys landed in the textarea.
+The host kept the rail iframe active during and after the reply. No host focus fault appeared.
+The audit touched no other session. It clicked no comment Send button.
+The host check recorded four ready events while the same textarea kept focus.
+Check 4 passed at 00:45:30.745Z. Escape closed the box and applied one root update.
+Focus returned to the same card's Comment button. The board showed current data.
+The TypeScript migration card changed from Updated 7m to Updated 13m after the held paint ran.
+The audit reopened the comment box and confirmed that its draft text stayed intact.
+Tab moved focus to Send. Shift+Tab returned it to the textarea. The audit did not activate Send.
+At a 390-pixel viewport, the rail frame measured 306 pixels. Its scroll width measured 300 pixels.
+The screenshot shows stacked cards, wrapped text, and no horizontal overflow within the board.
+The host later removed the rail during its phone layout change. A second phone capture therefore shows only the chat.
+The audit did not induce empty or error states. The supplied live board loaded all eight repositories.
+The audit reviewed the screenshots. Card groups, spacing, labels, and the textarea focus ring stayed clear.
+The accessibility snapshot includes the Comment to PM label and native textarea and button semantics.
+The old reason labels belong to Phase 2. This audit accepts only the Phase 1 focus behavior.
+The browser close command succeeded. The completion marker releases the persistent wrapper.
+The persistent wrapper completed and reported Browser closed again.
+A final combined shell call received permission.rejected. Its process query did not run.
+Final live verdict: pass. All four requested checks passed at HEAD 8dafa77.
+
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: All four live checks passed. The timer passed 268 samples. The host check passed 230 samples and four ready events. The role gate passed.
+files_changed: ux-browser-8dafa77.json, ux-browser-8dafa77.log, and ux-p1-r4/ under measure/runs/board_focus_reasons_20261121/.
+plan_updates: none
+known_failures: none in the four live checks
+handoff: Scratch chat: UX scratch · board focus. No host focus fault appeared. Browser close succeeded. Run phase acceptance after the role gate.
+END_MEASURE_AGENT_RESULT
+
+Gate output: PASS: ux-browser-review gate passed
+Gate exit code: 0
+agent-browser session list: No active sessions
+Cleanup confirmation: the browser closed, the wrapper completed, and no active browser session remains.
+RESULT: PASS
+
+The later PM order arrived after the completed live check.
+The fresh HEAD check returned 8dafa77. The audit preserved the completed evidence and started no new browser.
+The requested role gate with --baseline 8dafa77 returned: PASS: ux-browser-review gate passed
+Gate exit code: 0
+RESULT: PASS

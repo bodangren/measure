@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "board_focus_reasons_20261121",
+  "phase": "Phase 2: One state and one reason per card",
+  "baseline_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "phase_base_sha": "50689cc97ac6f972a4f5d5fc70feca2867ee0568",
+  "role_base_sha": "aef63458704931bf06a5eb2feb5703ba5b91f4de",
+  "audited_head_sha": "aef63458704931bf06a5eb2feb5703ba5b91f4de",
+  "status": "fail",
+  "summary": "Three defects block acceptance: truncated gate tokens, stale mockup reasons, and false no-current reasons. The role gate exits 1.",
+  "blocking_findings": [
+    "F1 [Blocker] review-a: extensions/measure-status/src/parse.ts:18 truncates owner tokens at semicolons, contrary to FR-10. deferred:a;deploy produces Waits for PM and hides Comment. deferred:proof;delete selects proof instead of deletion. Preserve every specified separator through parsing. Add parser-to-card coverage for each separator and gate priority.",
+    "F2 [Blocker] review-a: extensions/measure-status/mockup/fixtures.json:10 contains an empty Next in line reason; 111 open cards have this defect. Every Daniel fixture uses look, so the mockup omits seven gate groups. Replace the stale fixture reasons and add the required gate cards under FR-16 and FR-17.",
+    "F3 [Blocker] review-a: extensions/measure-status/src/board.ts:250,323 uses noteOf(tasks) even when a current task exists. A plan with one open Task: First shows Next in line: 1 open task, no current task. The card also identifies Task: First as current. FR-11 d permits the note fallback only without a current task. Use the task label when current exists. Cover both Planned and In progress Next cards."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "git rev-parse --short HEAD returned aef6345.",
+    "git diff 6bc2f45 aef6345 -- extensions/measure-status/src/card-state.test.ts returned no changes.",
+    "The targeted heavy-run passed 111 tests across card-state.test.ts, painter.test.ts, and painter-dom.test.ts.",
+    "The full heavy-run completed successfully: tsc passed and Vitest passed 419 tests across 24 files.",
+    "A fresh esbuild bundle equals panel/main.js; cmp exited 0.",
+    "The live lending-desk-bench plan gives Running and parses task 2.1 owner mid-red.",
+    "The live Workbooks plan gives Waits for PM: All tasks closed. Its D3 task is now closed at line 112.",
+    "The direct parser-to-card probe confirms both F1 failures. The fixture probe counts 111 empty reasons and only the look gate.",
+    "The track has no test-strategy.md. The light-lane spec and plan define the test command.",
+    "A one-task plan and a progressed plan both reproduce F3 with non-null positions and taskText.",
+    "All 739 Done fixture cards retain their baseline fields, excluding the new state and reason fields.",
+    "The Phase 2 diff leaves painter.ts, painter.test.ts, painter-dom.test.ts, and preview.ts unchanged.",
+    "The existing test edits follow the specified state rules, label changes, Comment scope, and badge change. No assertion loses its behavioral case.",
+    "The role gate exits 1 for the failed audit and incomplete Tasks 2.3 and 2.4.",
+    "The phase changes no orchestration script, framework contract test, or registry. Framework-wide A3 and A4 checks do not apply.",
+    "Plan lines 21-23 cite the Red and Green logs. Green records a failed phase gate explicitly instead of claiming complete phase acceptance.",
+    "The fresh full run confirms the current-phase Green claims in plan.md:23. A5 finds no false passing claim.",
+    "After every verification command, HEAD remains aef63458704931bf06a5eb2feb5703ba5b91f4de. The tracked tree remains clean."
+  ],
+  "commands": [
+    "git rev-parse --short HEAD; git rev-parse HEAD; git rev-parse 50689cc aef6345: pass; audited HEAD matches the brief.",
+    "git diff 50689cc..aef6345 --stat; git diff 50689cc..aef6345 -- extensions/measure-status/src/parse.ts extensions/measure-status/src/board.ts extensions/measure-status/src/render.ts extensions/measure-status/src/comment.ts extensions/measure-status/panel/main.ts: reviewed.",
+    "git diff 50689cc..aef6345 -- extensions/measure-status/src/board.test.ts extensions/measure-status/src/render.test.ts extensions/measure-status/src/comment.test.ts extensions/measure-status/src/comment-box.test.ts extensions/measure-status/src/adversarial-ui.test.ts extensions/measure-status/README.md: reviewed.",
+    "git diff --check 50689cc..aef6345: exit 0.",
+    "git diff --exit-code 6bc2f45 aef6345 -- extensions/measure-status/src/card-state.test.ts: exit 0.",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run': exit 0; tsc passed; 24 test files and 419 tests passed.",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && ./node_modules/.bin/vitest run --maxWorkers=1 src/card-state.test.ts src/painter.test.ts src/painter-dom.test.ts': exit 1; Vitest worker minimum exceeds the requested maximum. No tests ran.",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && ./node_modules/.bin/vitest run --maxWorkers=1 --minWorkers=1 src/card-state.test.ts src/painter.test.ts src/painter-dom.test.ts': exit 0; 111 tests passed.",
+    "From extensions/measure-status: bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=/tmp/measure-p2-main.js && cmp panel/main.js /tmp/measure-p2-main.js: exit 0.",
+    "build-graph scan extensions/measure-status /tmp/measure-p2-review-graph.db: exit 0; 628 nodes and 735 edges.",
+    "build-graph callers returned no symbol callers; the import query found panel/main.ts, preview/preview.ts, load.ts, render.ts, and their tests. Source searches confirmed the actual callers.",
+    "bun -e probes over parsePlan, classifyTrack, gateForOwner, renderCard, and fixture JSON reproduced F1, F2, and F3.",
+    "bun -e compared baseline Done fixture fields with current Done fields: all 739 cards match.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track board_focus_reasons_20261121 --phase 'Phase 2: One state and one reason per card' --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/review-a-aef6345.json --log-file measure/runs/board_focus_reasons_20261121/review-a-aef6345.log: exit 1."
+  ],
+  "changed_files": [
+    "extensions/measure-status/README.md",
+    "extensions/measure-status/mockup/fixtures.json",
+    "extensions/measure-status/panel/main.js",
+    "extensions/measure-status/panel/main.ts",
+    "extensions/measure-status/src/adversarial-ui.test.ts",
+    "extensions/measure-status/src/board.test.ts",
+    "extensions/measure-status/src/board.ts",
+    "extensions/measure-status/src/card-state.test.ts",
+    "extensions/measure-status/src/comment-box.test.ts",
+    "extensions/measure-status/src/comment.test.ts",
+    "extensions/measure-status/src/comment.ts",
+    "extensions/measure-status/src/parse.ts",
+    "extensions/measure-status/src/render.test.ts",
+    "extensions/measure-status/src/render.ts",
+    "measure/tracks/board_focus_reasons_20261121/plan.md"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.1-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 3,
+      "evidence": "parse.ts:18 loses a specified separator, and board.ts:323 reports no current task despite a current position."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 3,
+      "evidence": "The targeted heavy-run passes 111 tests, but card-state.test.ts:71 tests the semicolon only through gateForOwner."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "git diff --name-only 50689cc..aef6345 lists only the specified extension files and the track plan."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The review reproduces each defect, verifies bundle equality, and confirms the full tsc and Vitest command passes."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "value": "Alpha audit draft omega",
+  "active": "TEXTAREA",
+  "labels": [
+    {
+      "text": "Comment to PM",
+      "for": "comment-reading-advantage-monorepo-sales_advantage_golive_20260701"
+    }
+  ],
+  "send": "<button type=\"button\" class=\"btn comment-send\" data-action=\"send-comment\" data-key=\"reading-advantage-monorepo/sales_advantage_golive_20260701\">Send</button>"
+}

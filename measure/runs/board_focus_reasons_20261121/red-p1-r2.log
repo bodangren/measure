@@ -1,0 +1,21 @@
+=== RED P1 R2 run (fixture fix, Green draft present, uncommitted) ===
+head: f56902a229abdbeca03d726c442db8fb24c530e7
+status:
+ M panel/main.ts
+ M preview/preview.ts
+ M src/painter-dom.test.ts
+ M ../../measure/tracks/board_focus_reasons_20261121/plan.md
+?? src/painter.ts
+
+=== bunx vitest run src/painter-dom.test.ts ===
+
+ RUN  v2.1.9 /home/daniebo/Desktop/measure/extensions/measure-status
+
+ ✓ src/painter-dom.test.ts (5 tests) 24ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  06:16:41
+   Duration  498ms (transform 70ms, setup 0ms, collect 78ms, tests 24ms, environment 144ms, prepare 59ms)
+
+vitest exit: 0

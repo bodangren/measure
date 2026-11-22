@@ -1,0 +1,43 @@
+Phase acceptance (round 2): board_focus_reasons_20261121, Phase 2: One state and one reason per card.
+Route: claude-code/claude-sonnet-5-5#max.
+HEAD: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc (verified at the start and at the end).
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568.
+role_base_sha: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc.
+audited_head_sha: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc.
+
+The first writes of the result JSON and of this log held the provisional verdict inconclusive, while tsc and vitest waited in the heavy-run queue (about 19 minutes). This log holds the final verdict.
+
+Reason for this run: final-acceptance-ac1bf90.json F1 [Blocker] ruled that phase-acceptance-ada02de.json does not cover the README commit under the HEAD-scope rule. This result targets ac1bf90, the current HEAD.
+git diff --name-status ada02de ac1bf90 lists only README.md and plan.md. git diff --exit-code e410fd1 ac1bf90 outside those two files exits 0, so no code, test, fixture, bundle, or dependency byte changed since the Review A and UX results at e410fd1.
+Allowed intermediate commits, named: ada02de (plan.md only) and ac1bf90 (README.md and plan.md). This audit extends the HEAD-scope rule to these two doc-only commits, because it reviewed the doc diff itself. The orchestrator confirms the extension.
+Both prerequisite gates pass at ac1bf90 (review-a gate exit 0, ux-browser-review gate exit 0).
+No Review B, Review C, or adversarial result exists. This audit treats them as not required in this light-lane phase, as the brief states.
+
+Green dispositions carried forward: F1=FIX, F2=DECLINE (defer), F3=FIX, F4=DECLINE (accept).
+F1 [Major] fixed: README.md:100-104 states FR-11 rule c. The two quoted lines equal the strings of spec.md, src/board.ts, and card-state.test.ts (grep -F finds each in all four files). The sentence order follows the code order.
+F3 [Nit] fixed: plan.md:27 names the closed Workbooks D3 row and the three live deferred verification rows. Both claims match ux-p2/workbooks-deps.json, ux-p2/all-open-cards.json, and the Workbooks plan.
+F2 [Nit] and F4 [Nit] stay as nonblocking findings with the DECLINE disposition. A new optional F5 [Nit] notes that the README gives the a0, a, and c rules without the first not-done scope.
+
+tsc and vitest: TSC_VITEST_EXIT=0 (25 test files, 431 tests) through heavy-run.sh, priority p1. Bundle: identical to a fresh esbuild build (SHA-256 ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7).
+A5: no false-claim text in plan.md. A correction to the ada02de evidence: its control grep printed no file, so the pattern check was unproven there; a synthetic positive control now proves the pattern. A3, A4, A6, and A7 do not apply.
+
+Final verdict: pass with three nonblocking Nit findings (F2, F4, F5).
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: bunx tsc -p . --noEmit && bunx vitest run PASS exit 0 (25 files, 431 tests); esbuild bundle comparison PASS (cmp exit 0, identical); A5 grep with positive control PASS (no hit); review-a and ux-browser-review gates at ac1bf90 PASS exit 0; role-gate phase-acceptance PASS exit 0
+files_changed: measure/runs/board_focus_reasons_20261121/phase-acceptance-ac1bf90.json; measure/runs/board_focus_reasons_20261121/phase-acceptance-ac1bf90.log
+plan_updates: none
+known_failures: none
+handoff: Phase 2 passes at ac1bf90 with three nonblocking Nit findings. ac1bf90 changes only README.md and plan.md, and the fixes for F1 and F3 match spec.md FR-11, src/board.ts, and the UX evidence. F2 (rule a0 reads only the first task line) and F4 (counts in plan.md) carry the Green disposition DECLINE. F5 (optional): the README gives the a0, a, and c rules without the first not-done scope; a README change moves HEAD and needs a new acceptance run, so decline it unless Green edits the README for another reason. Confirm one assumption: the HEAD-scope rule extends to the doc-only commits ada02de and ac1bf90, because this audit reviewed the doc diff itself. Run final acceptance again at ac1bf90; its F1 is covered by this result. Closeout must record the light-lane deviation, because metadata.json deviation_notes is empty. The PM condition stays open: after the panel deploy the PM checks the first real Waits for Daniel card, and a fault there opens a bug track. Correction: the ada02de control grep for A5 was unproven; this round fixes it and finds no false claim. Facts changed: none.
+END_MEASURE_AGENT_RESULT
+
+Gate command: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track board_focus_reasons_20261121 --phase "Phase 2: One state and one reason per card" --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/phase-acceptance-ac1bf90.json --log-file measure/runs/board_focus_reasons_20261121/phase-acceptance-ac1bf90.log
+Gate output: PASS: phase-acceptance gate passed
+Gate exit code: 0
+Final HEAD check: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc, tracked tree clean.
+RESULT: PASS

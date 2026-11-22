@@ -10,18 +10,24 @@ import {
   finishCommentSend,
   openCommentBox,
 } from './comment-box'
+import { parsePlan } from './parse'
 import { idleComment, renderCard } from './render'
 import { formatSentLine } from './send'
 
 const NOW = 1_800_000_000_000
 
-const blockedCard = (): Card =>
+const danielCard = (): Card =>
   classifyTrack({
     repo: 'invented-repo',
     title: 'Invented track',
-    registryMarker: 'b',
+    registryMarker: ' ',
     folder: 'tracks/invented_1',
-    plan: { kind: 'missing' },
+    plan: {
+      kind: 'plan',
+      plan: parsePlan(
+        '## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Deploy deferred:daniel-deploy\n',
+      ),
+    },
     lastChange: NOW,
     doneDate: null,
     doneSource: null,
@@ -33,7 +39,7 @@ const opens = (html: string): number =>
 
 describe('one box at a time', () => {
   test('a closed card shows one Comment button and no box', () => {
-    const html = renderCard(blockedCard(), NOW, idleComment(), 'invented-repo/invented_1')
+    const html = renderCard(danielCard(), NOW, idleComment(), 'invented-repo/invented_1')
     expect(opens(html)).toBe(1)
     expect(html).not.toContain('<textarea')
   })
@@ -70,7 +76,7 @@ describe('a finished Send', () => {
     state = finishCommentSend(state, 'invented-repo/first', { ok: true, sentAt: NOW })
     expect(state.openKey).toBeNull()
     expect(state.status['invented-repo/first']?.status).toBe('sent')
-    const html = renderCard(blockedCard(), NOW, {
+    const html = renderCard(danielCard(), NOW, {
       status: 'sent',
       sentAt: NOW,
       error: null,
@@ -90,7 +96,7 @@ describe('a finished Send', () => {
     })
     expect(state.openKey).toBeNull()
     expect(state.status['invented-repo/first']?.status).toBe('error')
-    const html = renderCard(blockedCard(), NOW, {
+    const html = renderCard(danielCard(), NOW, {
       status: 'error',
       sentAt: null,
       error: 'NOT_GRANTED: Access denied',

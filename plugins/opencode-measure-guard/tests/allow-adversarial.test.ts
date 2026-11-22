@@ -249,10 +249,11 @@ describe('loader with a hostile file', () => {
     ).rejects.toThrow(/measure-guard/)
   })
 
-  test('V18 a CR-only file loads one folder and opens no real path', async () => {
+  test('V18 a CR-only file loads no folder and opens no real path', async () => {
     const root = await project({ plan: noTaskPlan() }, 'scripts/daily-report/work/\rsrc/\r')
     const snapshot = await loadSnapshot(root)
-    expect(snapshot.allow.folders).toEqual(['scripts/daily-report/work/\rsrc'])
+    expect(snapshot.allow.folders).toEqual([])
+    expect(snapshot.allow.ignored.map(line => line.reason)).toEqual(['has a control character'])
     expect(guards.isAllowed(snapshot, join(root, 'src/a.ts'))).toBe(false)
     expect(guards.isAllowed(snapshot, join(root, 'scripts/daily-report/work/a.md'))).toBe(false)
   })

@@ -1,0 +1,24 @@
+# Red P1 R3 result: Review A F1 holdComment rule and per-caller route tests
+
+Phase Base SHA da1e7bb and role base SHA 7ff5df2 both resolve. HEAD at start was 7ff5df2. Work is on branch fix/board-focus-reasons. Task 1.3 is now [~] in plan.md (working tree, not committed).
+
+New tests target the F1 gap. The holdComment rule moves to src/painter.ts as an exported function of root, texts, and surface. The panel must call it as `hold: () => holdComment(root, commentState.texts, surface)`.
+
+Red run log: measure/runs/board_focus_reasons_20261121/red-p1-r3.log (git ignored). TSC fails with 2 errors, both TS2305 for the missing holdComment export. Vitest fails 12 tests and passes 340. All 8 new DOM tests fail with "holdComment is not a function". The export pin and the 3 hold-wiring pins fail by assertion. The 16 per-caller route pins pass as regression guards. All other 21 suites pass with no break.
+
+Commit holds only the two test files. No push.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: ca6c367
+tests_run: bunx tsc -p . --noEmit (fails 2 errors, missing holdComment export); bunx vitest run (12 new tests fail on missing export or wiring, 340 pass, 21 suites pass)
+files_changed: extensions/measure-status/src/painter.test.ts (holdComment export pin, hold wiring pins, per-caller data and user route pins), extensions/measure-status/src/painter-dom.test.ts (holdComment case and controller tests)
+plan_updates: Task 1.3 marked [~] in working tree, not committed
+known_failures: 8 DOM holdComment tests fail (no export on HEAD); holdComment export, import, hold wiring, and blur pins fail; per-caller route pins pass as regression guards
+handoff: Green moves holdComment to src/painter.ts with the (root, texts, surface) signature, wires the panel hold to it, and keeps every per-caller data and user route; the 12 Red tests then pass
+baseline_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: 7ff5df2314fcd6b576ef6bb82e820f520ff053db
+END_MEASURE_AGENT_RESULT

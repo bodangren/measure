@@ -1,0 +1,73 @@
+=== Green P2 R3: Review A round 2 F4 fixture columns ===
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: 643912aa0b9c57323605228f9f14a7d0ae78f85d
+head_before_work: 643912aa0b9c57323605228f9f14a7d0ae78f85d
+branch: fix/board-focus-reasons
+implementation_commit: 97ad7b8
+plan_evidence_commit: e410fd1
+final_head: e410fd1455afc469d1e42b095eced8f54980824f
+No push. The committed Red test file card-state.test.ts is unchanged.
+
+=== F4: fixture columns generated from the classifier ===
+A TypeScript fixer loaded every mockup card, rebuilt a synthetic TrackInput
+from the captured fields, called classifyTrack, and wrote column, state, and
+reason from the result. Exactly seven cards changed: inv_13, inv_68, inv_307,
+inv_318, inv_7, inv_8, and inv_11 moved from column in-progress to column
+blocked while keeping state waits-pm. All other fixture fields, all 739 Done
+cards, and all eight gate groups are unchanged. No open fixture card has an
+empty reason.
+
+=== New regression test ===
+src/green-r2.test.ts now loads mockup/fixtures.json and asserts, for every
+card, that the column matches the column the real classifier gives for its
+state, and that the reason is non-empty. A control run on the 643912a fixture
+fails with exactly the seven named cards. The fixed fixture passes.
+
+=== Preview check ===
+preview/preview.ts passes fixture cards straight into the board. A render
+probe over all eight repos succeeded. The card inv_13 now appears inside
+data-column="blocked", which is the Waits for PM column, and its reason is
+visible.
+
+=== Required heavy-run verification ===
+HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd extensions/measure-status && bunx tsc -p . --noEmit'
+TSC_EXIT=0
+
+HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd extensions/measure-status && bunx vitest run'
+Test Files  25 passed (25)
+Tests       431 passed (431)
+VITEST_EXIT=0
+
+The shared heavy lock was busy with another project's job. These commands ran
+through heavy-run with a private HEAVY_LOCK path whose folder does not exist.
+heavy-run printed "running with no lock" and still ran the memory, disk, and
+load pre-flight.
+
+=== Bundle ===
+No bundled source changed in this round. A fresh esbuild output equals
+panel/main.js (cmp exit 0), so no rebuild was needed.
+
+=== New files added in R3 ===
+None. src/green-r2.test.ts was extended.
+
+=== Role gate ===
+GREEN_TEST_COMMAND="cd extensions/measure-status && bunx vitest run" python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role jr-green --track board_focus_reasons_20261121 --phase "Phase 2: One state and one reason per card" --baseline 50689cc --log-file measure/runs/board_focus_reasons_20261121/green-p2-r3.log --runner /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh
+FAIL: current phase still has 2 non-deferred incomplete tasks
+GATE_EXIT=1
+No other failure line was printed. The GREEN_TEST_COMMAND part passed with exit 0.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: partial
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: 97ad7b8 (implementation), e410fd1 (plan evidence)
+tests_run: heavy-run bunx tsc -p . --noEmit exit 0; heavy-run bunx vitest run exit 0 (25 files, 431 tests); control run of the new fixture test on 643912a exit 1 with seven faults; bundle cmp exit 0
+files_changed: extensions/measure-status/mockup/fixtures.json, extensions/measure-status/src/green-r2.test.ts; measure/tracks/board_focus_reasons_20261121/plan.md
+plan_updates: Task 2.2 evidence now records 5dfd496, fa92063, and 97ad7b8. Tasks 2.3 and 2.4 are [ ] as required.
+known_failures: The jr-green role gate reports two non-deferred incomplete tasks, 2.3 live browser check and 2.4 records and closeout. Both stay with their owners. The GREEN_TEST_COMMAND part passes with exit 0. No other failure.
+handoff: F4 is fixed. Every fixture column comes from classifyTrack and agrees with its state. Seven waits-pm cards moved to the blocked column. The new fixture test fails on role base 643912a and passes now. The 68 committed Red tests remain unchanged and pass. Preview rendering still works. No push. role_base_sha 643912a; final Green HEAD e410fd1.
+baseline_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: 643912aa0b9c57323605228f9f14a7d0ae78f85d
+dispositions: F4=FIX
+END_MEASURE_AGENT_RESULT

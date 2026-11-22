@@ -1,0 +1,40 @@
+Provisional verdict: inconclusive. The browser checks remain pending.
+HEAD: 5f74c11ee8649476eca760248a0e5542367cd822
+phase_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: 5f74c11ee8649476eca760248a0e5542367cd822
+PROJECT_DEV_URL: http://127.0.0.1:38307
+Server: PID 1662340, @openchamber/web/build/bin/cli.js, --port 38307.
+The audit read the track index, spec, phase plan, and prior browser result.
+The audit also read the metadata, gates, audit contracts, and exact user-facing phase diff.
+No separate routing artifact or test-strategy.md exists for this track.
+The supplied route is openai/gpt-6.1-sol#high.
+The first heavy-run browser start exceeded the 120-second tool timeout.
+The shared lock remained held by PID 2268998. One priority-p1 job waited.
+The bounded retry retained the required memory floor. The shell tool returned permission.rejected.
+The audit made no further browser start attempt.
+No live browser check ran. No screenshot or accessibility snapshot exists for this run.
+No scratch session was created. Requested title: UX scratch · board focus.
+The timer, scratch reply, Escape, visual, responsive, and accessibility checks remain unverified.
+agent-browser --session measure-ux-r3 close returned: Browser closed.
+The process check found no audit browser or daemon.
+Final HEAD: 5f74c11ee8649476eca760248a0e5542367cd822.
+Final audit verdict: inconclusive. The gate cannot accept this audit.
+
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: Browser start timed out; retry received permission.rejected; role-gate exited 1.
+files_changed: measure/runs/board_focus_reasons_20261121/ux-browser-5f74c11.json and ux-browser-5f74c11.log
+plan_updates: none
+known_failures: The required live browser checks remain unverified.
+handoff: Retry after the shared lock clears and the browser command receives permission. No scratch session exists. Keep Task 1.3 open.
+END_MEASURE_AGENT_RESULT
+
+Gate output: FAIL: applicable UX audit must include screenshot, accessibility, or interaction evidence
+ROLE_GATE_EXIT=1
+Final HEAD remains 5f74c11ee8649476eca760248a0e5542367cd822.
+The final process search found no browser or daemon.
+RESULT: FAIL

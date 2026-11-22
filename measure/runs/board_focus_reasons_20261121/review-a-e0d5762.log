@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: tsc PASS; vitest PASS, 352 tests; bundle comparison PASS; controller harness PASS; hold and host-ready mutations detected; six user-route mutations survived; role-gate FAIL, exit 1
+files_changed: measure/runs/board_focus_reasons_20261121/review-a-e0d5762.json; measure/runs/board_focus_reasons_20261121/review-a-e0d5762.log
+plan_updates: none
+known_failures: F1 remains open because six per-caller assertions accept the wrong paint kind
+handoff: Route F1 to Green. Bound each assertion to its handler and prove all six route mutations fail. Task 1.3 stays outside this audit. Facts changed: none.
+END_MEASURE_AGENT_RESULT

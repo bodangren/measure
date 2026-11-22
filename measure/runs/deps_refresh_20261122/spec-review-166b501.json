@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Round 1 spec review found four Blocker findings in plan.md: the audit check has no named file or invocation, no target versions or major-upgrade rule are named, no phase names the files it changes, and no record destination is named. Review is complete; the role gate also fails on a baseline scope mismatch that the orchestrator must correct.",
+  "blocking_findings": [
+    "F1 [Blocker] plan.md Task 1.1: The red audit check has no named file, command, or exit-code contract, and Task 1.3 names no bundle equality command. Rationale: The task says only 'a script or test' and 'the bundle equality check'; the standard treats an unnamed file location and CLI shape as a design choice left to the implementer.",
+    "F2 [Blocker] plan.md Tasks 1.2 and 2.1: No target versions and no rule for a major upgrade that breaks tests. Rationale: bun outdated shows major steps for vitest 2 to 5, happy-dom 15 to 21, solid-js 1 to 2, TypeScript 5 to 7, @opencode/plugin 2.0.32 to 2.3.2 and @opentui 0.6.6 to 0.9.7; bun audit --json shows happy-dom high ranges <=20.8.7 and <=20.14.6 and a high launch-editor advisory at vite <=6.4.2, so the plan must name which versions clear the highs and what happens when a major step breaks bun test or vitest.",
+    "F3 [Blocker] plan.md Tasks 1.2 and 2.1: Neither phase names the files to create or change. Rationale: FR-1 and FR-2 name two package.json and two bun.lock files, FR-5 names panel/main.ts and panel/main.js, and the guard breaking-change fixes affect source files, but the tasks say only 'package updates and code fixes'; the standard requires each phase to name its files.",
+    "F4 [Blocker] plan.md Tasks 1.3 and 2.2: The record destinations are unnamed. Rationale: FR-2, FR-3 and the acceptance criteria require a written reason per remaining advisory and a moderate/low list, but the tasks say only 'records'; the implementer must choose the file location and the record of PM acceptance."
+  ],
+  "nonblocking_findings": [
+    "F5 [Major] plan.md Phase 1 and Phase 2: No normal or edge test cases are named. Rationale: The plan lists verification commands but no cases such as one critical in either folder fails, zero critical and high passes, and moderate-only stays passing; the standard requires named normal and edge cases per phase.",
+    "F6 [Nit] spec.md Overview: The PM dates 2026-11-23 and 2026-11-25 appear in the spec but are not attached to plan tasks. Rationale: The phase order implies the dates, so the omission does not change what the implementer builds, but the plan should state the deadline on each task."
+  ],
+  "evidence": [
+    "HEAD verified: 166b5014879d9a3d98bdb38a5fe17bfeea770f38, short 166b501, branch chore/deps-refresh, clean working tree; equals the audited_head_sha in this result.",
+    "Baseline a3bc2aa resolves to a commit and is the parent of the single commit 166b501 in a3bc2aa..HEAD.",
+    "bun audit in extensions/measure-status reproduced the spec before counts: 21 vulnerabilities (4 critical, 5 high, 11 moderate, 1 low); paths match the spec list.",
+    "bun audit in plugins/opencode-measure-guard reproduced 8 vulnerabilities (1 critical, 4 high, 3 moderate); paths match the spec list.",
+    "bun outdated in extensions/measure-status: @openchamber/sdk 2.7.2 to 2.7.3, happy-dom 15.11.7 to 21.0.4, typescript 5.9.3 to 7.0.2, vitest 2.1.9 to 5.1.1.",
+    "bun outdated in plugins/opencode-measure-guard: @opencode/plugin 2.0.32 to 2.3.2, @opentui/core and @opentui/solid 0.6.6 to 0.9.7, @types/bun 1.3.14 to 1.4.5, solid-js 1.9.12 to 2.0.3, typescript 5.9.3 to 7.0.2.",
+    "bun audit --json: happy-dom high advisories cover >=15.10.0 <=20.8.7 and <=20.14.6; seroval highs cover <=1.6.7 and critical <=1.6.0; vite <=6.4.2 carries a high launch-editor advisory.",
+    "No existing bun audit or bun outdated check was found in the repository outside this track's spec.md and plan.md, so no reuse target was omitted.",
+    "Role gate with the provisional JSON exited 1: missing result block, provisional inconclusive status, and spec-review committed files outside measure/runs/ (measure/tracks.md and five track documents from the setup commit)."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git rev-parse --short HEAD; git rev-parse --abbrev-ref HEAD; git status --short; git cat-file -t a3bc2aa",
+    "cd extensions/measure-status && bun outdated && bun audit && bun audit --json",
+    "cd plugins/opencode-measure-guard && bun outdated && bun audit && bun audit --json",
+    "git log --oneline a3bc2aa..HEAD; git diff --name-status a3bc2aa..HEAD",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track deps_refresh_20261122 --phase 'track setup' --baseline a3bc2aa --result-file measure/runs/deps_refresh_20261122/spec-review-166b501.json --log-file measure/runs/deps_refresh_20261122/spec-review-166b501.log"
+  ],
+  "changed_files": [
+    "measure/runs/deps_refresh_20261122/spec-review-166b501.json",
+    "measure/runs/deps_refresh_20261122/spec-review-166b501.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "role": "spec-review",
+  "track": "deps_refresh_20261122",
+  "phase": "track setup",
+  "baseline_sha": "a3bc2aa",
+  "audited_head_sha": "166b501",
+  "paraphrase": {
+    "proposes": "This chore track updates every package in extensions/measure-status and plugins/opencode-measure-guard to the latest working version. It removes all critical and high advisories, or records a PM-accepted reason for any advisory with no fixed version. It lists each remaining moderate or low advisory with a reason by 2026-11-25. Phase 1 clears critical and high advisories by 2026-11-23; Phase 2 updates the rest and closes the track. All work stays on chore/deps-refresh and is pushed only to origin/chore/deps-refresh.",
+    "current_system": "Per the spec, extensions/measure-status is an OpenChamber 2.7.1 and newer panel extension with five dev dependencies and a committed esbuild bundle at panel/main.js. plugins/opencode-measure-guard is a Bun-loaded OpenCode 2 plugin with pinned dev dependencies and peer floors of @opencode/plugin >=2.0.0, @opentui/core >=0.6.6, @opentui/solid >=0.6.6 and solid-js >=1.9.0. The 2026-11-22 bun audit recorded 21 advisories in measure-status (4 critical, 5 high, 11 moderate, 1 low) and 8 in the guard (1 critical, 4 high, 3 moderate). Verification uses tsc, vitest, bun test, check-parity.sh and heavy-run.sh, with the bundle rebuilt by esbuild."
+  }
+}

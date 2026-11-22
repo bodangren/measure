@@ -1,0 +1,5 @@
+# Allow list for tests/deps_audit/run.sh.
+# One advisory per line: the GHSA id and the PM-accepted reason.
+# An advisory whose GHSA id appears here does not count in the audit check.
+# The list is empty at the start of the track: every critical and high
+# advisory is cleared by a package update, not by an acceptance.

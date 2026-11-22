@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: tsc exit 0; vitest exit 0, 325 tests passed; bundle rebuild and comparison exit 0; panel harness exit 0; mutation survived all 325 tests; role-gate exit 1
+files_changed: measure/runs/board_focus_reasons_20261121/review-a-7ff5df2.json; measure/runs/board_focus_reasons_20261121/review-a-7ff5df2.log
+plan_updates: none
+known_failures: F1 blocks acceptance because the tests miss panel regressions; Task 1.3 remains open
+handoff: Route F1 to Green for controller coverage and per-caller source assertions. Run the live check separately. Facts changed: none.
+END_MEASURE_AGENT_RESULT

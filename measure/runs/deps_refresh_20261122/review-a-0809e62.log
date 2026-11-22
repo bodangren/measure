@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: deps_refresh_20261122
+phase: Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+commits: none
+tests_run: Guard 186 tests pass; guard typecheck and both parity gates pass; audit suites pass 8 and 4 checks; DSH suite 15 pass; both audits print {}; Solid and seroval runtime probe passes; all tests use p1 heavy-run; role-gate exits 0
+files_changed: review-a-0809e62.json; review-a-0809e62.log
+plan_updates: none
+known_failures: none blocking; F-P2-2 [Nit] plan.md:36 cites the old record SHA for facts added in 0809e62.
+handoff: F-P2-1 is closed. retry_recommendation=none. Solid 1.9.20 is the newest 1.9.x release and requires seroval ~1.6.11; the ignored lock resolves 1.6.12. The committed parent range protects a clean resolve without the override. Keep SDK 2.8.0 and openchamber >=2.7.1. Carry forward the TypeScript 7 real-checking verdict. The record reference Nit does not block acceptance. Facts changed: none.
+dispositions: F-P2-1=FIX
+END_MEASURE_AGENT_RESULT

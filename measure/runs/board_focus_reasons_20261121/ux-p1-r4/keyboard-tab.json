@@ -1,0 +1,5 @@
+{
+  "tag": "BUTTON",
+  "text": "Send",
+  "action": "send-comment"
+}

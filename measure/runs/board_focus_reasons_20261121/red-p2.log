@@ -1,0 +1,158 @@
+=== RED P2 run (Task 2.1 card-state tests) ===
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+head: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+
+=== bunx tsc -p . --noEmit (heavy-run, exit 2) ===
+src/card-state.test.ts(12,3): error TS2305: Module '"./board"' has no exported member 'gateForOwner'.
+src/card-state.test.ts(14,8): error TS2305: Module '"./board"' has no exported member 'CardState'.
+src/card-state.test.ts(140,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(141,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(148,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(149,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(156,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(157,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(164,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(165,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(172,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(173,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(182,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(183,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(191,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(192,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(201,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(202,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(207,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(208,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(217,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(218,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(227,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(228,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(236,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(237,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(243,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(244,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(251,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(252,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(261,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(262,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(276,20): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(277,20): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(278,20): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(291,18): error TS2339: Property 'state' does not exist on type 'Card'.
+src/card-state.test.ts(292,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(293,18): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(324,35): error TS2339: Property 'reason' does not exist on type 'Card'.
+src/card-state.test.ts(343,73): error TS2339: Property 'reason' does not exist on type 'Card'.
+
+=== bunx vitest run (heavy-run, exit 1): failing tests ===
+   × the gate word map (FR-10) > owner "deploy" gives gate "deploy" 4ms
+   × the gate word map (FR-10) > owner "traffic" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "paid" gives gate "paid spend" 0ms
+   × the gate word map (FR-10) > owner "spend" gives gate "paid spend" 0ms
+   × the gate word map (FR-10) > owner "delete" gives gate "deletion" 0ms
+   × the gate word map (FR-10) > owner "deletion" gives gate "deletion" 0ms
+   × the gate word map (FR-10) > owner "public-date" gives gate "public date" 0ms
+   × the gate word map (FR-10) > owner "look" gives gate "look" 1ms
+   × the gate word map (FR-10) > owner "manual" gives gate "look" 0ms
+   × the gate word map (FR-10) > owner "thai" gives gate "Thai check" 1ms
+   × the gate word map (FR-10) > owner "proof" gives gate "proof" 0ms
+   × the gate word map (FR-10) > owner "sudo" gives gate "sudo or login" 0ms
+   × the gate word map (FR-10) > owner "login" gives gate "sudo or login" 0ms
+   × the gate word map (FR-10) > owner "daniel-deploy" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "paid-deploy" gives gate "paid spend" 0ms
+   × the gate word map (FR-10) > owner "deploy-deletion" gives gate "deletion" 0ms
+   × the gate word map (FR-10) > owner "manual-deploy-word" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "sudo-proof" gives gate "sudo or login" 0ms
+   × the gate word map (FR-10) > owner "proof-thai" gives gate "proof" 0ms
+   × the gate word map (FR-10) > owner "thai-look" gives gate "Thai check" 0ms
+   × the gate word map (FR-10) > owner "login-public" gives gate "public date" 0ms
+   × the gate word map (FR-10) > owner "spend-sudo" gives gate "paid spend" 0ms
+   × the gate word map (FR-10) > owner "nodeploy" gives gate null 0ms
+   × the gate word map (FR-10) > owner "unpaid" gives gate null 0ms
+   × the gate word map (FR-10) > owner "Deploy_Now" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "a.deploy" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "a;deploy" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner "DEPLOY" gives gate "deploy" 0ms
+   × the gate word map (FR-10) > owner null gives gate null 0ms
+   × the gate word map (FR-10) > owner "" gives gate null 0ms
+   × the gate word map (FR-10) > owner "pm" gives gate null 0ms
+   × the gate word map (FR-10) > owner "mid-red" gives gate null 0ms
+   × the gate word map (FR-10) > owner "later-track" gives gate null 0ms
+   × the gate word map (FR-10) > owner "daniel" gives gate null 0ms
+   × the gate word map (FR-10) > owner "daniel-word" gives gate null 0ms
+   × the continuation-line deferred tag (FR-9) > the tag counts on a wrapped continuation line 2ms
+   × the continuation-line deferred tag (FR-9) > the tag counts after wrapped words 1ms
+   × the continuation-line deferred tag (FR-9) > the tag counts after an em dash 1ms
+   × one state and one reason per card (FR-11) > a gate word gives Waits for Daniel with the exact reason line 2ms
+   × one state and one reason per card (FR-11) > a wrapped gate tag gives Waits for Daniel 1ms
+   × one state and one reason per card (FR-11) > a gate-text current task gives Waits for Daniel with gate look 1ms
+   × one state and one reason per card (FR-11) > a manual gate word without verification text gives Waits for Daniel 1ms
+   × one state and one reason per card (FR-11) > a tilde task gives Running with the exact reason line 1ms
+   × one state and one reason per card (FR-11) > deferred:pm first not-done gives Waits for PM 1ms
+   × one state and one reason per card (FR-11) > deferred:mid-red first not-done gives Waits for PM 1ms
+   × one state and one reason per card (FR-11) > the lending-desk-bench shape gives Running 2ms
+   × one state and one reason per card (FR-11) > all tasks closed gives Waits for PM with the exact line 0ms
+   × one state and one reason per card (FR-11) > registry marker [b] with no plan reason gives the exact line 1ms
+   × one state and one reason per card (FR-11) > no plan gives Next in line with the exact line 1ms
+   × one state and one reason per card (FR-11) > an unreadable plan gives Next in line with the exact line 0ms
+   × one state and one reason per card (FR-11) > a Next in line card with a done task goes to In progress 1ms
+   × one state and one reason per card (FR-11) > a Next in line card with two open tasks keeps the count 1ms
+   × one state and one reason per card (FR-11) > a Next in line card with registry [~] goes to In progress 1ms
+   × the User Manual Verification rows (FR-11 a0, FR-16) > the open deferred row with [ ] gives Waits for PM 1ms
+   × the User Manual Verification rows (FR-11 a0, FR-16) > the open deferred row with [~] gives Waits for PM 0ms
+   × the User Manual Verification rows (FR-11 a0, FR-16) > the open deferred row with [b] gives Waits for PM 0ms
+   × the User Manual Verification rows (FR-11 a0, FR-16) > the open deferred row shows no Comment button and adds no badge count 5ms
+   × the User Manual Verification rows (FR-11 a0, FR-16) > the closed D1 row creates no Daniel item 1ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > the column names follow FR-12 1ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > BLOCKER, GATE, and MANUAL CHECK labels are gone 0ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > the Waits for Daniel card shows its reason and only it shows Comment 2ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > Waits for PM, Running, and Next cards show no Comment button 1ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > the board names the new columns 5ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > the rail badge counts Waits for Daniel cards 1ms
+   × columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15) > the message field Reason carries the reason line 2ms
+
+=== vitest summary ===
+ Test Files  1 failed | 23 passed (24)
+      Tests  65 failed | 354 passed (419)
+
+=== sample failure causes (right reason, no setup fault) ===
+TypeError: gateForOwner is not a function
+ ❯ src/card-state.test.ts:83:14
+     81|   for (const [owner, gate] of gates) {
+     82|     test(`owner ${JSON.stringify(owner)} gives gate ${JSON.stringify(g…
+--
+AssertionError: expected null to be 'copy-owner' // Object.is equality
+
+- Expected: 
+"copy-owner"
+--
+AssertionError: expected null to be 'copy-owner' // Object.is equality
+
+- Expected: 
+"copy-owner"
+--
+AssertionError: expected null to be 'mid-red' // Object.is equality
+
+- Expected: 
+"mid-red"
+--
+AssertionError: expected undefined to be 'waits-daniel' // Object.is equality
+
+- Expected: 
+"waits-daniel"
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: 6bc2f45
+tests_run: heavy-run tsc (exit 2, only card-state.test.ts errors); heavy-run vitest run (1 file fails with 65 new-test failures for the missing Phase 2 API, 23 files pass, 351 existing tests pass)
+files_changed: extensions/measure-status/src/card-state.test.ts (new, 68 tests), measure/tracks/board_focus_reasons_20261121/plan.md (Task 2.1 [~])
+plan_updates: Task 2.1 marked [~]
+known_failures: gateForOwner missing; Card has no state or reason; column labels, cardLabel, Comment scope, badge count, and Reason field still Phase 1
+handoff: Green implements FR-9 to FR-17 in parse.ts, board.ts, and render.ts (continuation tag, gate map with priority, states with exact reasons, renamed labels, removed labels, Comment only on Waits for Daniel, badge on Waits for Daniel, Reason message field); Green also updates the comment.test.ts Blocker expectation to Reason
+baseline_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+END_MEASURE_AGENT_RESULT

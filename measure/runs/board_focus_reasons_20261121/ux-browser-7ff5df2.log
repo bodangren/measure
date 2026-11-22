@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: The 72-second timer check passed all 70 samples. Escape applied one root update. The role gate failed with exit 1.
+files_changed: measure/runs/board_focus_reasons_20261121/ux-browser-7ff5df2.json; this log; ux-p1 browser evidence
+plan_updates: none
+known_failures: HEAD advanced from 7ff5df2 through ca6c367 to e0d5762. The live host-ready check remains unverified. Gate output: FAIL: audit status must be pass, got 'inconclusive'; no blocking_findings provided
+handoff: Re-run the audit after Green finishes on an immutable HEAD. Use the supplied heavy-run command for browser starts. Browser closed; no audit Chrome process remains. Facts changed: none.
+END_MEASURE_AGENT_RESULT

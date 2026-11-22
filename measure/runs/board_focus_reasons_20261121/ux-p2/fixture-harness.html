@@ -1,0 +1,47 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measure fixture audit</title>
+<style>
+html,body{margin:0;background:#faf9f7;color:#242321;font-family:system-ui,sans-serif}
+header{padding:8px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;background:#eeeae4}
+iframe{display:block;width:100%;height:900px;border:0}
+#badge{padding:3px 8px;border-radius:12px;background:#b64a28;color:white}
+@media(max-width:500px){iframe{height:790px}}
+</style></head><body>
+<header><span>Read-only fixture harness</span><span>Measure <b id="badge" aria-label="Waits for Daniel count">0</b></span></header>
+<iframe title="Measure fixture board" sandbox="allow-scripts" src="/api/guest-files/fixture/panel/index.html"></iframe>
+<script>
+const frame=document.querySelector('iframe');
+window.__fixture={ready:false,badges:[],messages:[],requests:[],fixture:null};
+fetch('/fixtures.json').then(r=>r.json()).then(f=>{window.__fixture.fixture=f;window.__fixture.ready=true});
+window.sendFixtureReady=()=>frame.contentWindow.postMessage({
+  channel:'openchamber.sdk',v:1,type:'ready',
+  payload:{surface:'panel',directory:null,session:null,settings:{},connection:{connected:true},
+    theme:{mode:'light',tokens:{
+      background:'#faf9f7',elevated:'#f3f1ed',foreground:'#242321',muted:'#706b63',subtle:'#756f65',
+      border:'#dedbd4',hover:'#e9e4dc',selection:'#efe4dc',focus:'#b64a28',primary:'#b64a28',
+      mutedSurface:'#f8f6f2',elevatedForeground:'#242321',active:'#e5ddd1',selectionForeground:'#242321',
+      primaryForeground:'#ffffff',primaryText:'#a13d21',successText:'#286443',warningText:'#865b16',
+      errorText:'#a5362a',infoText:'#315e9b',success:'#3c865d',warning:'#b17b20',error:'#bd4a3a',info:'#426fa9',
+      font:'system-ui, sans-serif',mono:'monospace',radius:'8px',fontSize:'14px'
+    }},
+    appearance:{},features:{}
+  }
+},'*');
+addEventListener('message',event=>{
+  if(event.source!==frame.contentWindow||event.data?.channel!=='openchamber.sdk')return;
+  const d=event.data;
+  window.__fixture.messages.push({at:new Date().toISOString(),type:d.type,id:d.id,payload:d.payload});
+  if(d.type==='badge'){
+    const count=d.payload.count??0;
+    window.__fixture.badges.push(count);document.querySelector('#badge').textContent=String(count);
+  }
+  if(!d.id)return;
+  if(['file-read','file-write','file-list','file-stat','service-request','start-session','prompt'].includes(d.type)){
+    window.__fixture.requests.push(d);
+    frame.contentWindow.postMessage({channel:'openchamber.sdk',v:1,type:'result',id:d.id,ok:false,code:'NOT_GRANTED',error:'The fixture harness blocks file and session operations.'},'*');
+  }else{
+    frame.contentWindow.postMessage({channel:'openchamber.sdk',v:1,type:'result',id:d.id,ok:true,payload:{}},'*');
+  }
+});
+</script></body></html>

@@ -9,17 +9,18 @@ The extension reads the Measure files of eight repos under `~/Desktop`.
 It shows one accordion section for each repo. Each section holds a
 read-only board of the Measure tracks of that repo.
 
-The board has five columns: Planned, In progress, Blocked, Waiting on
-Daniel, and Done. A card shows the track title, the current phase and
-task, the age of the last file change, and a blocker or gate line.
+The board has five columns: Planned, In progress, Waits for PM, Waits for
+Daniel, and Done. An open card shows one state and one reason line. A
+card shows the track title, the current phase and task, the age of the
+last file change, and the reason line.
 
 The rail panel and the full page show the same board. The Work Status
 section keeps its one-line band. The rail icon shows a badge with the
-count of Blocked tracks across the eight repos. A Waiting on Daniel
-track does not count.
+count of Waits for Daniel cards across the eight repos. A Waits for PM
+card does not count.
 
 The extension reads files and writes no file. It sends one message only,
-and only when the user writes a comment on a blocker.
+and only when the user writes a comment on a Waits for Daniel card.
 
 ## Install
 
@@ -47,7 +48,7 @@ reads.
 The dialog also lists the `service` grant and the `sessionControl`
 grant. The plain sentence for the dialog is: "This extension reads the
 Measure files of eight repos. It sends one message to the Measure PM
-session when you write a comment on a blocker."
+session when you write a comment on a Waits for Daniel card."
 
 The grant names no session. The constant `PM_SESSION_ID` in
 `src/pm-target.ts` is the only limit on the target.
@@ -72,13 +73,13 @@ Each section header shows the repo id and the count of each column. The
 counts stay visible when the section is closed.
 
 A section starts closed. It opens after its first load when it has a
-Blocked card or a Waiting on Daniel card. Below 640 px, only the first
+Waits for PM card or a Waits for Daniel card. Below 640 px, only the first
 such section starts open. The choice of the user wins, and a reload
 keeps it.
 
 The columns follow this order at every width: Planned, In progress,
-Blocked, Waiting on Daniel, and Done. A column header shows its name and
-the count of all its cards. A column with no card shows `None`.
+Waits for PM, Waits for Daniel, and Done. A column header shows its name
+and the count of all its cards. A column with no card shows `None`.
 
 A column other than Done shows eight cards and then the button
 `Show N more`. The button opens the full list.
@@ -87,9 +88,20 @@ A Planned or In progress card with an age above 30 days goes to a
 closed `Stale (N)` group at the end of its column. A click opens the
 group.
 
-A Blocked card shows the label `BLOCKER`. A Waiting on Daniel card shows
-the label `GATE` or `MANUAL CHECK`. A card that no registry entry names
-shows `Not in the registry`.
+A card shows one reason line. The line names the state and the cause.
+The labels `BLOCKER`, `GATE`, and `MANUAL CHECK` do not appear. A card
+that no registry entry names shows `Not in the registry`.
+
+The states are Waits for Daniel, Running, Waits for PM, and Next in line.
+A `User Manual Verification` task that says deferred or no visible change
+gives Waits for PM. A gate word in a `[b]` owner gives Waits for Daniel.
+The gate words name deletion, paid spend, deploy, public date, sudo or
+login, proof, Thai check, and look. A `[~]` task gives Running.
+A `[b]` task with a non-gate owner gives Waits for PM. `deferred:pm` and
+`deferred:mid-red` are examples. A registry marker `[b]` gives Waits for PM.
+Its line is `Waits for PM: registry marker [b]`. A plan with all tasks closed
+gives Waits for PM. Its line is `Waits for PM: All tasks closed.`. Each other
+open track gives Next in line. The state rules end at the first match.
 
 The Done column is closed at the first paint and shows its count only.
 An open Done column shows a closed group of the five Done tracks with
@@ -97,9 +109,9 @@ the newest closed date, within 14 days of the load time. The line below
 the group reads `N more done, M archived`. A Done track under `tracks/`
 and not under `archive/` shows the label `Not archived`.
 
-A Blocked card and a Waiting on Daniel card show one small `Comment`
-button. A click opens the box `Comment to PM` and the Send button on
-that card only. One box is open at a time. The Escape key or a finished
+Only a Waits for Daniel card shows one small `Comment` button. A click
+opens the box `Comment to PM` and the Send button on that card only. One
+box is open at a time. The Escape key or a finished
 send closes the box. A comment needs at least one visible character and
 at most 2000 characters. The Send button is off while the text holds no
 visible character, while the text is longer than 2000 characters, or
@@ -112,8 +124,8 @@ text, and the button stays usable. After a send the card shows one line
 lives in the page only, and the extension stores nothing.
 
 The message holds one field per line: `Repo`, `Track`, `Task`,
-`Blocker`, and `Daniel`. Every value stays plain text. A line with no
-value stays out. A text with no visible character gives no send. A text
+`Reason`, and `Daniel`. The `Reason` field carries the reason line of the
+card. Every value stays plain text. A line with no value stays out. A text with no visible character gives no send. A text
 longer than 2000 characters gives no send.
 
 ## Reading the files
@@ -168,8 +180,28 @@ at the next full load.
 The page makes at most eight file calls at one time. It loads each repo
 on its own.
 
+Load results, the timer, the Refresh click, and a host ready context are
+data paints. A data paint waits while the open comment box has focus or
+holds a character. An invisible character also holds the paint. A held
+paint changes no DOM node and sets one pending flag. The rail badge
+still updates with each data result. The badge counts the Waits for
+Daniel cards.
+
+The pending paint runs when the box closes. The box closes on Escape and
+when a send ends. The pending paint also runs when the box loses focus
+with no text in it.
+
+An action of the user is a user paint. A user paint draws at once. These
+actions are user paints: open a comment, start a send, end a send, toggle
+a section, toggle the Done column, open the Done group, show more cards,
+toggle the stale group, and press Escape. A user paint clears a pending
+data paint and draws the latest data once. After the paint, the open box
+keeps its text for its card key. When the box had focus, it gets focus
+back with no scroll, and it keeps its selection start and end.
+
 The `status` surface reads the Measure files of the open project. It
-loads on open and when the open project changes.
+loads on open and when the open project changes. A paint on the status
+surface never waits.
 
 ## Layout
 
@@ -203,7 +235,7 @@ The age feeds three limits:
 
 - A Planned or In progress card above 30 days goes to the `Stale (N)`
   group.
-- A gate task gives Waiting on Daniel only when its age is 14 days or
+- A gate task gives Waits for Daniel only when its age is 14 days or
   less.
 - The Done group holds only tracks that closed within 14 days.
 

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "deps_refresh_20261122",
+  "track_title": "Dependency refresh for measure-status and opencode-measure-guard",
+  "track_base_sha": "08c79f9d33c793993c806fa8065bedf539c65ca8",
+  "closeout_baseline_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53",
+  "audited_head_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53",
+  "closeout_commit_sha": "pending",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/deps_refresh_20261122/spec-review-166b501.json", "status": "fail", "note": "First spec review round."},
+    {"role": "spec-review", "artifact": "measure/runs/deps_refresh_20261122/spec-review-3372b1b.json", "status": "fail", "note": "Second round; findings routed to FIX."},
+    {"role": "spec-review", "artifact": "measure/runs/deps_refresh_20261122/spec-review-08c79f9.json", "status": "pass", "audited_head_sha": "08c79f9d33c793993c806fa8065bedf539c65ca8"},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/deps_refresh_20261122/review-a-815afa2.json", "status": "fail", "note": "F1 and F2; Green resolved both."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/deps_refresh_20261122/review-a-dcffc7b.json", "status": "pass", "note": "Phase 1 Review A pass."},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/deps_refresh_20261122/review-a-23372c2.json", "status": "fail", "note": "F-P2-1 on solid-js 1.9.20; commit 59db955 closed it."},
+    {"role": "review-a", "phase": "Phase 2", "artifact": "measure/runs/deps_refresh_20261122/review-a-0809e62.json", "status": "pass", "note": "Phase 2 Review A pass. F-P2-2 withdrawn; F-P2-3 and F-P2-4 passed to phase acceptance."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/deps_refresh_20261122/phase-acceptance-dcffc7b.json", "status": "pass", "audited_head_sha": "dcffc7b", "note": "Phase 1 checkpoint."},
+    {"role": "phase-acceptance", "phase": "Phase 2", "artifact": "measure/runs/deps_refresh_20261122/phase-acceptance-0809e62.json", "status": "pass", "audited_head_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53", "note": "Phase 2 checkpoint."},
+    {"role": "final-acceptance", "artifact": "measure/runs/deps_refresh_20261122/final-acceptance-0809e62.json", "status": "pass", "audited_head_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53", "note": "Gate exit 0. PM re-ran the gate: PASS. Five nonblocking Nits passed to closeout."},
+    {"role": "closeout", "artifact": "measure/runs/deps_refresh_20261122/closeout.log", "status": "pass", "note": "Result block written before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review"],
+  "models": "Final acceptance ran on opencode-go/glm-5.3#high once, above pace, with PM approval on 2026-11-22. The ra-quota pick opencode/deepseek-v4.1-flash-free#high stopped at its free limit.",
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain && git branch --show-current -> 0809e622c1fe3cf5149814aed129a3eca5567c53; clean tree; chore/deps-refresh",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, final acceptance, lessons learned and tech debt",
+    "Confirm final-acceptance-0809e62.json audited_head_sha equals pre-closeout HEAD 0809e62 and status pass",
+    "Confirm all five plan tasks are [x] with commit SHA evidence; no [~], no [ ] and no [b] task; no deferred closeout task",
+    "grep -rn 'measure/tracks/deps_refresh_20261122/' across the repository: nine hits, all inside the track's own documents; no test or script hardcodes the path",
+    "Edit advisories.md to record the PM acceptances of 2026-11-22",
+    "Write metadata.json (status done, actual_tasks 5, updated_at, completed 2026-11-22, six deviation notes)",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "Edit measure/tech-debt.md: resolve the V18 row and add three Low rows",
+    "git mv measure/tracks/deps_refresh_20261122 measure/archive/deps_refresh_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track deps_refresh_20261122 -> exit 0 before the commit (see closeout_check)",
+    "git add the archive, registry and tech-debt changes; git add -f measure/runs/deps_refresh_20261122; commit with measure(closeout): archive deps_refresh_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track deps_refresh_20261122 -> exit 0 after the commit (see closeout.log and the agent result block)"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track deps_refresh_20261122",
+    "exit_code": 0,
+    "output": "INFO: light lane, no final acceptance\nINFO: no measure/generated folder, skipping the generated freshness check\nPASS: closeout checks passed",
+    "run_point": "before the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "9764063",
+    "1.2": "e5a09ad, 35d5a7d",
+    "1.3": "c645ef1",
+    "2.1": "59db955",
+    "2.2": "a0f6eea"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "dcffc7b",
+    "Phase 2": "0809e62"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (no false-claim text in the archived plan; final acceptance ran both audit suites and every cited exit matched)",
+    "a6_registry_check": "pass (the new registry entry makes no adversarial-test claim; the registry description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep for the fixed path measure/tracks/deps_refresh_20261122/ across the repository (tests, scripts, support files) before the move",
+    "hits": [
+      "measure/tracks/deps_refresh_20261122/plan.md (3 hits, lines 28, 35, 38)",
+      "measure/tracks/deps_refresh_20261122/spec-review.md (3 hits, lines 27, 46, 52)",
+      "measure/tracks/deps_refresh_20261122/spec.md (3 hits, lines 13, 23, 40)"
+    ],
+    "result": "no test or script hit; all nine hits are self-references inside the track folder that moved to the archive",
+    "test_fix": "none",
+    "note": "No test hardcodes measure/tracks/<track>/plan.md, so no A9 fix is needed. The orchestrator's closeout command allowlist excludes the heavy-run test gate. Final acceptance at 0809e62 already ran tsc, all 431 Vitest tests, esbuild, PROJECT_LINT and PROJECT_CHECKS (15/15) green through heavy-run, and closeout changed no test or product file."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C, adversarial testing and UX review were not required. There was no login, data, route, security or visible UI change.",
+    "Phase 2 had no Red task in the reviewed plan. The Phase 1 audit tests and the existing suites were its checks.",
+    "Two out-of-scope edits: the match[1] ?? null copies in mods/measure-guard/hooks/guards.ts and plugins/dsh-measure-guard/src/core/guards.ts for the parity gates. The PM accepted them on 2026-11-22.",
+    "Route substitution: final acceptance ran on opencode-go/glm-5.3#high once, above pace, with PM approval on 2026-11-22, because opencode/deepseek-v4.1-flash-free#high stopped at its free limit.",
+    "measure/doctor.sh does not exist. PROJECT_CHECKS (15/15) replaced it, as in earlier tracks.",
+    "PM stop rule: after two remediation rounds, Nits F-P2-2, F-P2-3 and F-P2-4 went to tech-debt with no third round (PM, 2026-11-22)."
+  ],
+  "retained_evidence": [
+    "measure/runs/deps_refresh_20261122/ (all Red, Green, spec-review, review-a, phase, final and closeout logs and JSON results; retained, nothing deleted)",
+    "measure/archive/deps_refresh_20261122/ (index, spec, spec-review, plan, metadata, advisories and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "lessons_learned_rows_added": [],
+  "tech_debt_rows_added": [
+    "V18 row resolved with e5a09ad",
+    "F-P2-4: no esbuild entry in the extension lock after vite 8",
+    "F-P2-2 and F-P2-3: plan.md evidence SHA citation drift",
+    "guard bun.lock gitignored: clean-clone audit result not proven"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

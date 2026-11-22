@@ -1,0 +1,13 @@
+{
+  "track_id": "deps_refresh_20261122",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-22T00:00:00Z",
+  "updated_at": "2026-11-22T14:00:00Z",
+  "completed": "2026-11-22",
+  "description": "Dependency refresh for measure-status and opencode-measure-guard: latest working packages, zero critical and high advisories, a reasoned moderate/low list",
+  "estimated_tasks": 5,
+  "actual_tasks": 5,
+  "deviation_notes": "Light lane: Review B, Review C, adversarial testing and UX review were not required. There was no login, data, route, security or visible UI change. Phase 2 had no Red task in the reviewed plan. The Phase 1 audit tests and the existing suites were its checks. Two out-of-scope edits: the match[1] ?? null copies in mods/measure-guard/hooks/guards.ts and plugins/dsh-measure-guard/src/core/guards.ts for the parity gates. The PM accepted them on 2026-11-22. Route substitution: final acceptance ran on opencode-go/glm-5.3#high once, above pace, with PM approval on 2026-11-22, because opencode/deepseek-v4.1-flash-free#high stopped at its free limit. measure/doctor.sh does not exist. PROJECT_CHECKS (15/15) replaced it, as in earlier tracks. PM stop rule: after two remediation rounds, Nits F-P2-2, F-P2-3 and F-P2-4 went to tech-debt with no third round (PM, 2026-11-22)."
+}
