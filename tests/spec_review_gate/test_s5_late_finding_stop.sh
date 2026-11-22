@@ -20,7 +20,7 @@
 #   - `- Late finding <id>: <tech-debt|one-fix-round> (<reason>)` (exact line)
 #   - `The Round limit bounds fix rounds that already started.`
 #   - `The stop rule stops new fix rounds from starting late in a phase.`
-#   - `A one-fix-round finding under FR-2 counts toward the Round limit count.`
+#   - `A one-fix-round finding under the wrong-result exception counts toward the Round limit count.`
 #   - `The Round limit wins.`
 #   - `A fourth-round finding on the phase's own gate script`
 #   - `the delivered dashboard number is wrong gets one fix round`
@@ -160,7 +160,7 @@ has_line 'contracts.md: the exact record-line form' "$CONTRACTS" '- Late finding
 # FR-3: the two-rule fit
 in_flat 'stop rule: the Round limit bounds started fix rounds' "$STOP" 'The Round limit bounds fix rounds that already started.'
 in_flat 'stop rule: the stop rule stops new fix rounds late in a phase' "$STOP" 'The stop rule stops new fix rounds from starting late in a phase.'
-in_flat 'stop rule: a one-fix-round finding counts toward the Round limit' "$STOP" 'A one-fix-round finding under FR-2 counts toward the Round limit count.'
+in_flat 'stop rule: a one-fix-round finding counts toward the Round limit' "$STOP" 'A one-fix-round finding under the wrong-result exception counts toward the Round limit count.'
 in_flat 'stop rule: the Round limit wins' "$STOP" 'The Round limit wins.'
 
 # ---------------------------------------------------------------------------
