@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tests/spec_review_gate/run.sh
+      - run: bash tests/dsh/run.sh
+      - run: bash plugins/dsh-measure-guard/scripts/check-parity.sh
+      - run: bash plugins/opencode-measure-guard/scripts/check-parity.sh
