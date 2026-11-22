@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Guard spec-review route**
+  *Link: [./tracks/guard_spec_review_route_20261123/](./tracks/guard_spec_review_route_20261123/)*
+  *The measure-guard spawn-route guard maps the agent `measure-spec-review` to the ra-quota role `spec-review` (not `strategy`) in the three `guards.ts` parity copies*
 
 ---
 
