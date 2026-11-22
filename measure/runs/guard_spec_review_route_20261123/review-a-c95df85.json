@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "guard_spec_review_route_20261123",
+  "phase": "Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)",
+  "baseline_sha": "1a21076",
+  "phase_base_sha": "1a21076",
+  "role_base_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "status": "pass",
+  "summary": "The three adapters now map measure-spec-review to spec-review, and the route-specific and parity tests pass.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD is c95df8595601f3e6d04351cd5577cc2f3dc761f7; the working tree was clean before the audit artifact.",
+    "The exact 1a21076..c95df8595601f3e6d04351cd5577cc2f3dc761f7 diff changes only the three mapping values, role-spawn tests, and the current plan records.",
+    "All three mapping copies retain measure-strategy: strategy and set measure-spec-review: spec-review (guards.ts:203-204).",
+    "mods/measure-guard/tests/role-spawn.test.ts covers approvedRoutes and roleSpawnDecision for a spec-review-only route (lines 85-98); the other two adapters assert both mappings.",
+    "The recorded Red expectations would fail under the old mapping: the new assertions expect spec-review while the pre-change value was strategy; the mods route test also expects the spec-review route.",
+    "No non-archived source or documentation result from the scoped search retained the obsolete strategy mapping; archived track records remain historical.",
+    "ra-quota roles lists the spec-review role.",
+    "No test-strategy.md exists for this active track or at the project root; the current spec and plan define the test commands.",
+    "No build-graph database exists in the repository. Scanning would create a database outside the two permitted audit artifacts, so the route map and direct callers were checked from source and tests."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --short; git diff --check 1a21076..c95df8595601f3e6d04351cd5577cc2f3dc761f7 — HEAD matched; clean tree before audit artifact; diff check exit 0.",
+    "ra-quota roles — output lists spec-review.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash plugins/dsh-measure-guard/scripts/check-parity.sh' — exit 0, parity: ok.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh' — exit 0, parity: ok.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bun test' in plugins/opencode-measure-guard — exit 0, 187 pass, 0 fail.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js' — exit 0, 384 pass, 0 fail.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'claude plugin test mods/measure-guard' — exit 0, 125 pass, 0 fail.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0, 24 suites pass, 0 fail.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/dsh/run.sh' — exit 0, 15 passed, 0 failed.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track guard_spec_review_route_20261123 --phase 'Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)' --baseline 1a21076 --result-file measure/runs/guard_spec_review_route_20261123/review-a-c95df85.json --log-file measure/runs/guard_spec_review_route_20261123/review-a-c95df85.log — exit 0, PASS."
+  ],
+  "changed_files": [
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/tests/role-spawn.test.ts",
+    "plugins/dsh-measure-guard/src/core/guards.ts",
+    "plugins/dsh-measure-guard/tests/role-spawn.test.js",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/tests/role-spawn.test.ts",
+    "measure/tracks/guard_spec_review_route_20261123/plan.md"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {"axis": "correctness", "score": 5, "evidence": "All adapter mappings agree at guards.ts:203-204, and the mods route-selection test passes."},
+    {"axis": "test_meaning", "score": 5, "evidence": "The role-spawn assertions pass in the 125-test Claude mod suite, 187-test OpenCode suite, and 384-test DSH suite."},
+    {"axis": "scope_discipline", "score": 5, "evidence": "The audited diff contains only the planned mapping, tests, and plan evidence."},
+    {"axis": "evidence_quality", "score": 4, "evidence": "Both parity checks, both project gates, three adapter suites, and the role gate exited 0; no graph database was available without creating another artifact."}
+  ]
+}

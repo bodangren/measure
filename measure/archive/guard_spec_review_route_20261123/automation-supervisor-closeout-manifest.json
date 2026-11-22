@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "guard_spec_review_route_20261123",
+  "track_title": "Guard spec-review route",
+  "track_base_sha": "1a21076",
+  "closeout_baseline_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.json", "status": "pass", "audited_head_sha": "1a210765cd13c2ed0a7cfda22c53c00c0163328a", "note": "Setup spec review on a substituted route; no finding."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/guard_spec_review_route_20261123/review-a-c95df85.json", "status": "pass", "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7", "note": "No finding."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/guard_spec_review_route_20261123/phase-acceptance-c95df85.json", "status": "pass", "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7", "note": "Gate checkpoint; two nonblocking doc nits. The orchestrator re-ran the gate: PASS."},
+    {"role": "closeout", "artifact": "measure/runs/guard_spec_review_route_20261123/closeout.log", "status": "pass", "note": "Result block written before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review ran on opencode-go/hy4-flash-free#high. Review A ran on openai/gpt-6-luna#high. Phase acceptance waited for a free route and ran on openai/gpt-6.2-sol#high.",
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git rev-parse --abbrev-ref HEAD -> c95df8595601f3e6d04351cd5577cc2f3dc761f7; clean tree; fix/guard_spec_review_route",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, phase acceptance, review A, lessons learned and tech debt",
+    "Confirm phase-acceptance-c95df85.json audited_head_sha equals the pre-closeout HEAD c95df8595601f3e6d04351cd5577cc2f3dc761f7 and status pass",
+    "Confirm all three plan tasks are [x] with commit SHA evidence; zero [~], zero [ ] and zero [b] tasks; no deferred closeout task",
+    "Grep the repository for the fixed path measure/tracks/guard_spec_review_route_20261123/ and for the track id; five id hits, all inside the track's own documents and the registry, zero hits in tests, scripts or support files",
+    "Write metadata.json: status done, actual_tasks 3, updated_at and completed 2026-11-23, six deviation notes",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "git mv measure/tracks/guard_spec_review_route_20261123 measure/archive/guard_spec_review_route_20261123",
+    "Write this closeout manifest in the archive, plus closeout.log and closeout-result-c95df85.json in measure/runs/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track guard_spec_review_route_20261123 -> exit 0 before the commit (see closeout_check)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/guard_spec_review_route_20261123/closeout-result-c95df85.json -> exit 0",
+    "git add measure/tracks.md and the archive; git add -f measure/runs/guard_spec_review_route_20261123; commit with measure(closeout): archive guard_spec_review_route_20261123",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track guard_spec_review_route_20261123 -> exit 0 after the commit (see closeout.log and the agent result block)"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track guard_spec_review_route_20261123",
+    "exit_code": 0,
+    "output": "INFO: light lane, no final acceptance\nINFO: no measure/generated folder, skipping the generated freshness check\nPASS: closeout checks passed",
+    "run_point": "before the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "034a7c7",
+    "1.2": "91aa330",
+    "1.3": "fe3e8e8, c95df85"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "c95df8595601f3e6d04351cd5577cc2f3dc761f7"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (the archived plan cites only observed exit 0 results; no false-claim text)",
+    "a6_registry_check": "pass (the archived entry makes no adversarial-test claim and its description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/guard_spec_review_route_20261123/ and for the track id before the move",
+    "hits": [
+      "measure/tracks.md line 8: the active registry link, removed at closeout",
+      "measure/tracks/guard_spec_review_route_20261123/spec-review.md line 1: self-reference inside the moved folder",
+      "measure/tracks/guard_spec_review_route_20261123/metadata.json line 2: self-reference inside the moved folder",
+      "measure/tracks/guard_spec_review_route_20261123/index.md line 1: self-reference inside the moved folder",
+      "measure/tracks/guard_spec_review_route_20261123/plan.md line 3: self-reference inside the moved folder"
+    ],
+    "result": "zero hits for the fixed path measure/tracks/guard_spec_review_route_20261123/; zero hits in tests, scripts or support files",
+    "test_fix": "none",
+    "note": "No test hardcodes measure/tracks/<track>/plan.md, so no test can break from the archive move. The orchestrator's closeout command allowlist excludes the heavy-run test gate, so closeout did not rerun it. Phase acceptance at c95df85 already ran tests/spec_review_gate/run.sh and tests/dsh/run.sh green through heavy-run. Closeout changed no test or product file."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run (one mapping line in three parity copies).",
+    "Spec review ran on opencode-go/hy4-flash-free#high, not on the spec-review pick openai/gpt-6.2-sol#high: the guard bug this track fixes checked the spec-review spawn against the strategy list and blocked the pick.",
+    "Phase acceptance waited for a free route (ra-quota wait phase-acceptance, exit 3 first) and ran on openai/gpt-6.2-sol#high.",
+    "The build session pushed the branch as fix/guard_spec_review_route (underscores), not the hyphen name in the brief.",
+    "Phase acceptance noted two non-blocking doc nits: the plan pins historical Red counts, and the spec and plan name bun where the mods tests run under claude plugin test. Both were left as they are.",
+    "measure/doctor.sh does not exist; PROJECT_CHECKS replaced it, as in earlier tracks."
+  ],
+  "retained_evidence": [
+    "measure/runs/guard_spec_review_route_20261123/ (red, green, spec-review, review-a, phase-acceptance, closeout log and closeout audit result; all retained)",
+    "measure/archive/guard_spec_review_route_20261123/ (index, spec, spec-review, plan, metadata and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "lessons_learned_rows_added": [],
+  "tech_debt_rows_added": [],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

@@ -76,6 +76,28 @@ describe('phase acceptance role', () => {
   })
 })
 
+describe('spec review role', () => {
+  test('measure-spec-review maps to the spec-review role and measure-strategy stays on strategy', () => {
+    expect(ROLE_OF_AGENT['measure-spec-review']).toBe('spec-review')
+    expect(ROLE_OF_AGENT['measure-strategy']).toBe('strategy')
+  })
+
+  test('the spec-review pick route passes for measure-spec-review', () => {
+    const SPEC_ROUTES = JSON.stringify({
+      roles: {
+        strategy: [{ route: 'opencode-go/strategy-route#high' }],
+        'spec-review': [{ route: 'opencode-go/spec-review-route#high' }],
+      },
+    })
+    expect(approvedRoutes(SPEC_ROUTES, ROLE_OF_AGENT['measure-spec-review'])).toEqual(['opencode-go/spec-review-route#high'])
+    const { decision } = roleSpawnDecision({ ...context, mode: 'guard' }, SPEC_ROUTES, {
+      agent: 'measure-spec-review',
+      model: 'opencode-go/spec-review-route#high',
+    })
+    expect(decision).toBeNull()
+  })
+})
+
 describe('ux browser review role', () => {
   test('measure-ux-browser-review maps to the review-c role', () => {
     expect(ROLE_OF_AGENT['measure-ux-browser-review']).toBe('review-c')

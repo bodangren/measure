@@ -1,0 +1,73 @@
+# Green round log: Phase 1 Task 1.2 (implementation) and Task 1.3 (records)
+
+Track: guard_spec_review_route_20261123
+Phase: Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)
+Role: measure-jr-green (jr-green), model MiniMax-M3.1-Flash
+phase_base_sha: 1a21076 (immutable, the track setup commit)
+role_base_sha: 034a7c7 (the committed Red change this role started from)
+Verified before work: `git rev-parse HEAD` gave 034a7c7 with an empty `git status --short`. The committed Red change sits inside phase_base_sha..HEAD (1a21076..034a7c7).
+Resulting HEAD: c95df8595601f3e6d04351cd5577cc2f3dc761f7
+
+Commits of this role:
+- 91aa330 measure(green): spec-review agent maps to the spec-review role
+- fe3e8e8 measure(plan): guard_spec_review_route records
+- c95df85 measure(plan): close Task 1.3 with the records commit SHA
+
+Files changed (production): mods/measure-guard/hooks/guards.ts, plugins/dsh-measure-guard/src/core/guards.ts, plugins/opencode-measure-guard/src/core/guards.ts
+Files changed (plan): measure/tracks/guard_spec_review_route_20261123/plan.md
+New files added: none
+Committed Red tests changed: none. The four Red tests from 034a7c7 are unchanged.
+
+## Change
+
+Task 1.1 was closed with its Red SHA 034a7c7 before any edit. Then Task 1.2
+changed one mapping line in each of the three parity copies: line 204 now reads
+`'measure-spec-review': 'spec-review'`. No other production line changed.
+`git diff 034a7c7 91aa330 --stat` lists only the three guards.ts files, one line
+each. The three copies stay in parity: both parity checks exit 0.
+
+## Red rerun before the change
+
+`node --test plugins/dsh-measure-guard/tests/role-spawn.test.js` at HEAD 034a7c7
+-> EXIT=1, 13 tests (PASS=12, FAIL=1). The only failure is the committed Red
+test: actual 'strategy', expected 'spec-review'. The Red test still failed
+before the change.
+
+## Test evidence (each through heavy-run.sh with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500)
+
+- `bash plugins/dsh-measure-guard/scripts/check-parity.sh` -> EXIT=0, prints `parity: ok`.
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> EXIT=0, prints `parity: ok`.
+- `bun test` in plugins/opencode-measure-guard -> EXIT=0, 187 pass / 0 fail.
+- `node --test plugins/dsh-measure-guard/tests/*.test.js` -> EXIT=0, 384 pass / 0 fail.
+- `claude plugin test mods/measure-guard` -> EXIT=0, 125 pass / 0 fail. The real runner works in this shell, so the mods suite runs for real (DESIGN.md line 108). Both new mods tests pass.
+- `bash tests/spec_review_gate/run.sh` -> EXIT=0, 24 suites PASS=24, FAIL=0.
+- `bash tests/dsh/run.sh` -> EXIT=0, 15 passed, 0 failed.
+
+## Known failures
+
+None. Every command above exited 0, so no tech-debt row was needed and
+measure/tech-debt.md is unchanged. The failures at 034a7c7 are the committed
+Red tests, not known failures at the base.
+
+## Records
+
+plan.md closes Task 1.1 with ` — 034a7c7`, Task 1.2 with ` — 91aa330`, and
+Task 1.3 with ` — fe3e8e8`. Each task has one evidence line that cites the
+commands and the exits, with no pinned counts. The track stays open:
+measure/tracks.md and metadata.json are not touched here.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: guard_spec_review_route_20261123
+phase: Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)
+baseline_sha: 1a21076
+role_base_sha: 034a7c7
+resulting_head: c95df8595601f3e6d04351cd5577cc2f3dc761f7
+commits: 91aa330 measure(green): spec-review agent maps to the spec-review role; fe3e8e8 measure(plan): guard_spec_review_route records; c95df85 measure(plan): close Task 1.3 with the records commit SHA
+tests_run: node --test plugins/dsh-measure-guard/tests/role-spawn.test.js at 034a7c7 (EXIT=1, 12 pass / 1 fail, only the committed Red test); bash plugins/dsh-measure-guard/scripts/check-parity.sh (EXIT=0); bash plugins/opencode-measure-guard/scripts/check-parity.sh (EXIT=0); bun test in plugins/opencode-measure-guard (EXIT=0); node --test plugins/dsh-measure-guard/tests/*.test.js (EXIT=0); claude plugin test mods/measure-guard (EXIT=0); bash tests/spec_review_gate/run.sh (EXIT=0); bash tests/dsh/run.sh (EXIT=0)
+files_changed: mods/measure-guard/hooks/guards.ts, plugins/dsh-measure-guard/src/core/guards.ts, plugins/opencode-measure-guard/src/core/guards.ts, measure/tracks/guard_spec_review_route_20261123/plan.md
+plan_updates: Task 1.1 [x] with ` — 034a7c7` and its evidence line; Task 1.2 [x] with ` — 91aa330` and its evidence line; Task 1.3 [x] with ` — fe3e8e8` and its evidence line
+known_failures: none
+handoff: Green HEAD is c95df8595601f3e6d04351cd5577cc2f3dc761f7 and phase_base_sha is 1a21076 (immutable); role_base_sha was 034a7c7. Task 1.1 [x] with 034a7c7, Task 1.2 [x] with 91aa330, Task 1.3 [x] with fe3e8e8. New files: none. Targeted Red command at 034a7c7: node --test plugins/dsh-measure-guard/tests/role-spawn.test.js EXIT=1, 12 pass / 1 fail, only the committed Red test (actual 'strategy', expected 'spec-review'). Targeted Green command: node --test plugins/dsh-measure-guard/tests/*.test.js EXIT=0. The three guards.ts copies each changed one line (204) to 'measure-spec-review': 'spec-review'; both parity checks exit 0; bun test (opencode), claude plugin test (mods), node --test (dsh), tests/spec_review_gate/run.sh and tests/dsh/run.sh all exit 0. No known failure and no tech-debt row. The review roles read the three production files and plan.md; the committed Red tests stay unchanged.
+END_MEASURE_AGENT_RESULT

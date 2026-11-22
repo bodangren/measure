@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "guard_spec_review_route_20261123",
+  "phase": "Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)",
+  "baseline_sha": "1a21076",
+  "phase_base_sha": "1a21076",
+  "role_base_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "status": "pass",
+  "summary": "Phase 1 passes at c95df85. The guard uses the spec-review route list, and all seven required checks exit 0. Two documentation findings do not block acceptance.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] phase-acceptance: plan.md:12 pins historical Red test counts. Cite red-p1.log for the counts.",
+    "F2 [Nit] phase-acceptance: spec.md:12 and plan.md:14 name Bun for the Claude mod. DESIGN.md:108 documents the Claude plugin test runner, which plan.md:15 records."
+  ],
+  "evidence": [
+    "Git reported a clean tree on fix/guard_spec_review_route at the full role_base_sha and audited_head_sha before the audit artifacts.",
+    "The exact phase range starts at 1a21076 and contains 034a7c7, 91aa330, fe3e8e8, and c95df85. No test-only exception applies to the Review A result.",
+    "The phase uses the light lane declared by metadata.json:5 and the PM order in spec.md:7. The brief exempts Review B, Review C, adversarial testing, and UX browser review. The diff changes no UI.",
+    "The setup spec review targets 1a21076. Red targets 034a7c7. Green and Review A target c95df85. Review A's checker exited 0 on this checkout.",
+    "The brief records a spec-review route substitution at setup because the old guard blocked the first pick. The setup result remains a spec review at 1a21076.",
+    "No separate test-strategy.md exists for this track or at the project root. The spec, plan, and measure/gates.json name the commands.",
+    "Task 1.1: 034a7c7 adds four tests across three files. The tests do not change after Red. red-p1.log records the OpenCode and DSH assertion failures at 034a7c7.",
+    "The DSH Git object probe reproduced the documented targeted Red result: 12 passed and one failed. The only failure compared actual strategy with expected spec-review.",
+    "The Node VM probe loaded both committed Claude callbacks and their production modules from each Git tree. Both callbacks failed on the old route at 034a7c7 and passed at c95df85. The probe supplies the test API only; it does not claim a historical Claude runner invocation.",
+    "Task 1.2: 91aa330 changes only the map entry at guards.ts:204 in three parity copies. The strategy entry stays at guards.ts:203.",
+    "The OpenCode Guard.onToolBefore probe uses the host ra-quota routes file. It accepts the spec-review-only route and rejects the strategy-only route for measure-spec-review. It accepts the strategy-only route for measure-strategy.",
+    "OpenCode guard.ts:203-208 calls the shared route decision. OpenCode README.md:72 documents that Claude and DSH carry the core but do not call it.",
+    "Task 1.3: fe3e8e8 adds the two project gate exit records and c95df85 adds the task SHA. Each completed task points to a commit that did its work.",
+    "A5: each exit 0 claim at plan.md:15 and plan.md:17 matches the independent run. Both project gates complete, and no intentional Red test fails in a current suite.",
+    "A3 and A4: the changed route contract tests assert role values and a route array. They introduce no count, baseline, or marker checks. A6 and A7 do not apply because the diff changes no registry or banned-term filter."
+  ],
+  "commands": [
+    "git status --porcelain=v1; git rev-parse --abbrev-ref HEAD; git rev-parse HEAD; git diff --check 1a21076..HEAD — clean tree, exact branch and HEAD, and no diff errors.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track guard_spec_review_route_20261123 --phase 'Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)' --baseline 1a21076 --result-file measure/runs/guard_spec_review_route_20261123/review-a-c95df85.json --log-file measure/runs/guard_spec_review_route_20261123/review-a-c95df85.log — exit 0.",
+    "ra-quota roles — lists separate spec-review and strategy roles.",
+    "node --experimental-vm-modules --disable-warning=ExperimentalWarning --input-type=module -e <Git object probe of the two committed Claude callbacks> — exit 0. Both callbacks fail at Red and pass at the audited HEAD. An initial attempt omitted guardsOff in a separate probe; the corrected context uses guardsOff: null.",
+    "node --input-type=module -e <DSH test with the Red Git object loader> — the node:test run exited 1. Only the new mapping assertion failed.",
+    "bun -e <OpenCode Guard.onToolBefore probe using the host ra-quota routes file> — exit 0. No subagent started.",
+    "The seven commands below ran in one /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c job with HEAVY_PRIORITY=p1 and HEAVY_MIN_AVAIL_MB=1500. The wrapper exited 0.",
+    "bash plugins/opencode-measure-guard/scripts/check-parity.sh — exit 0, parity: ok.",
+    "bash plugins/dsh-measure-guard/scripts/check-parity.sh — exit 0, parity: ok.",
+    "cd plugins/opencode-measure-guard && bun test — exit 0, 187 passed and 0 failed.",
+    "node --test --test-reporter=dot plugins/dsh-measure-guard/tests/*.test.js — exit 0. The dot reporter printed 384 passing tests.",
+    "claude plugin test mods/measure-guard — exit 0, 125 passed and 0 failed. Both new tests passed.",
+    "bash tests/spec_review_gate/run.sh — exit 0, 24 suites passed and 0 failed.",
+    "bash tests/dsh/run.sh — exit 0, 15 passed and 0 failed. The reference test used its documented profile fixture fallback.",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track guard_spec_review_route_20261123 --phase 'Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)' --baseline 1a21076 --result-file measure/runs/guard_spec_review_route_20261123/phase-acceptance-c95df85.json --log-file measure/runs/guard_spec_review_route_20261123/phase-acceptance-c95df85.log — exit 0."
+  ],
+  "changed_files": [
+    "measure/tracks/guard_spec_review_route_20261123/plan.md",
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/tests/role-spawn.test.ts",
+    "plugins/dsh-measure-guard/src/core/guards.ts",
+    "plugins/dsh-measure-guard/tests/role-spawn.test.js",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/tests/role-spawn.test.ts"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {"axis": "correctness", "score": 5, "evidence": "The host-file probe used guard.ts:203-208 and accepted and rejected routes according to the selected role."},
+    {"axis": "test_meaning", "score": 5, "evidence": "Each new role-spawn test fails at 034a7c7 and passes at c95df85, with the Node VM probe covering both Claude Red assertions."},
+    {"axis": "scope_discipline", "score": 5, "evidence": "The diff at 91aa330 changes only guards.ts:204 in each planned copy."},
+    {"axis": "evidence_quality", "score": 4, "evidence": "Every current gate exit is observed, but the historical OpenCode Red exit comes from red-p1.log."}
+  ],
+  "reviewer_ratings": [
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6-luna#high", "agreed": true, "score": 4, "evidence": "The independent checks confirm the pass, but Review A did not flag the counts at plan.md:12 or the runner at plan.md:14."}
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track": "guard_spec_review_route_20261123",
+  "phase": "track closeout",
+  "baseline_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "audited_head_sha": "c95df8595601f3e6d04351cd5577cc2f3dc761f7",
+  "status": "pass",
+  "summary": "Closeout passes at c95df85. The track folder moved to measure/archive, the registry entry moved and matches the metadata description, and metadata records status done with three completed tasks. The closeout checker exited 0 before and after the commit. No bulky run artifact was deleted.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Pre-closeout HEAD is c95df8595601f3e6d04351cd5577cc2f3dc761f7 on branch fix/guard_spec_review_route with a clean tree.",
+    "phase-acceptance-c95df85.json has status pass, role phase-acceptance, and audited_head_sha c95df8595601f3e6d04351cd5577cc2f3dc761f7, which equals the pre-closeout HEAD. The orchestrator re-ran the gate with PASS.",
+    "review-a-c95df85.json has status pass at the same audited HEAD. spec-review-1a21076.json passes with no finding.",
+    "The archived plan has three [x] tasks with commit SHA evidence, zero [~], zero [ ] and zero [b] tasks, and no deferred closeout task.",
+    "measure/tracks.md has no active entry for the track. Its archived entry description equals the metadata description.",
+    "metadata.json records status done, actual_tasks 3, updated_at, completed 2026-11-23 and six deviation notes.",
+    "The closeout checker printed INFO light lane, INFO no generated folder and PASS closeout checks passed, with exit 0 before and after the commit.",
+    "The A9 grep found no fixed active track path in tests, scripts or support files, so no test fix was needed. The orchestrator's allowlist excludes the heavy-run test gate; phase acceptance at c95df85 already ran both project gates green through heavy-run.",
+    "No lessons-learned or tech-debt row was added. The change was one mapping line in three parity copies with no durable new lesson and no new debt."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git rev-parse --abbrev-ref HEAD",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track guard_spec_review_route_20261123 -> exit 0 before and after the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/guard_spec_review_route_20261123/closeout-result-c95df85.json -> exit 0",
+    "grep the repository for measure/tracks/guard_spec_review_route_20261123/ and for the track id before the move -> no test or script hit"
+  ],
+  "changed_files": [
+    "measure/archive/guard_spec_review_route_20261123/",
+    "measure/archive/guard_spec_review_route_20261123/metadata.json",
+    "measure/archive/guard_spec_review_route_20261123/automation-supervisor-closeout-manifest.json",
+    "measure/tracks.md",
+    "measure/runs/guard_spec_review_route_20261123/closeout.log",
+    "measure/runs/guard_spec_review_route_20261123/closeout-result-c95df85.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

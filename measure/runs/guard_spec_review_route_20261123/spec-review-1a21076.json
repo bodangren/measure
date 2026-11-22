@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "guard_spec_review_route_20261123",
+  "phase": "track setup",
+  "baseline_sha": "1a210765cd13c2ed0a7cfda22c53c00c0163328a",
+  "audited_head_sha": "1a210765cd13c2ed0a7cfda22c53c00c0163328a",
+  "status": "pass",
+  "summary": "The spec states a one-line mapping fix in three named parity copies, names the Red and Green test files, names the gate commands, and leaves no design choice that would make Red or Green guess. Paraphrase and both zoom-out and zero-decision checks pass. No findings.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD 1a210765cd13c2ed0a7cfda22c53c00c0163328a verified; working tree clean; branch fix/guard_spec_review_route",
+    "ROLE_OF_AGENT maps measure-spec-review to strategy at line 204 in mods/measure-guard/hooks/guards.ts, plugins/dsh-measure-guard/src/core/guards.ts, and plugins/opencode-measure-guard/src/core/guards.ts",
+    "ra-quota roles lists a spec-review role separate from strategy",
+    "Named scripts exist: plugins/opencode-measure-guard/scripts/check-parity.sh, plugins/dsh-measure-guard/scripts/check-parity.sh, tests/spec_review_gate/run.sh, tests/dsh/run.sh, /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh",
+    "Phase-acceptance test pattern in mods/measure-guard/tests/role-spawn.test.ts lines 29-47 covers the route decision and deny case",
+    "measure/gates.json lists the named RED, GREEN, PROJECT_LINT, PROJECT_CHECKS, and PROJECT_TESTS commands"
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git rev-parse --abbrev-ref HEAD",
+    "ra-quota roles",
+    "sed -n '200,207p' on the three guards.ts parity copies",
+    "file existence checks on the named parity scripts, gate scripts, and heavy-run.sh",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track guard_spec_review_route_20261123 --phase track setup --baseline 1a21076 --result-file measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.json --log-file measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.log"
+  ],
+  "changed_files": [
+    "measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.json",
+    "measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This chore changes one mapping in the measure-guard spawn-route guard so the agent measure-spec-review uses the ra-quota spec-review role instead of strategy. Three parity copies of guards.ts change at line 204. Red adds mapping assertions and a spec-review route-decision test; Green applies the mapping change and runs parity checks and plugin tests. Two pre-merge gate scripts must exit zero, and known test failures stay recorded as tech debt.",
+    "current_system": "The guard reads ROLE_OF_AGENT in guards.ts to map each measure agent to a ra-quota role, then checks the spawn model against the approved routes for that role. Today ROLE_OF_AGENT maps measure-spec-review to strategy, so spec-review spawns face the strategy route list even though ra-quota has a separate spec-review role. The same map exists in three parity copies under mods/measure-guard and the two plugins, and role-spawn tests cover other roles with the same pattern."
+  }
+}
