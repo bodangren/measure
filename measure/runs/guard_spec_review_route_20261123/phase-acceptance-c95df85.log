@@ -1,0 +1,26 @@
+Audited HEAD and role base: c95df8595601f3e6d04351cd5577cc2f3dc761f7
+Phase base: 1a21076. Review A targets the audited HEAD. No test-only exception applies.
+
+Check exit codes:
+0  bash plugins/opencode-measure-guard/scripts/check-parity.sh
+0  bash plugins/dsh-measure-guard/scripts/check-parity.sh
+0  cd plugins/opencode-measure-guard && bun test
+0  node --test --test-reporter=dot plugins/dsh-measure-guard/tests/*.test.js
+0  claude plugin test mods/measure-guard
+0  bash tests/spec_review_gate/run.sh
+0  bash tests/dsh/run.sh
+0  heavy-run.sh
+0  phase-acceptance role gate
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: guard_spec_review_route_20261123
+phase: Phase 1: Spec-review agent uses the spec-review route list (due 2026-11-24)
+commits: none
+tests_run: Both parity checks, all three plugin suites, both project gates, and the role gate exited 0. The host route probe passed. The Red assertion probes found the expected failures.
+files_changed: phase-acceptance-c95df85.json and phase-acceptance-c95df85.log
+plan_updates: none
+known_failures: none
+handoff: Phase 1 passes at c95df85. No blockers. F1 records pinned Red counts. F2 records the incorrect Claude runner name. retry_recommendation=none.
+END_MEASURE_AGENT_RESULT

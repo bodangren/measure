@@ -1,0 +1,13 @@
+{
+  "track_id": "guard_spec_review_route_20261123",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-23T00:00:00Z",
+  "updated_at": "2026-11-23T12:00:00Z",
+  "completed": "2026-11-23",
+  "description": "The measure-guard spawn-route guard maps the agent measure-spec-review to the ra-quota role strategy; it must map to the role spec-review. One mapping line changes in three parity copies.",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run (one mapping line in three parity copies). Spec review ran on opencode-go/hy4-flash-free#high, not on the spec-review pick openai/gpt-6.2-sol#high: the guard bug this track fixes checked the spec-review spawn against the strategy list and blocked the pick. Phase acceptance waited for a free route (ra-quota wait phase-acceptance, exit 3 first) and ran on openai/gpt-6.2-sol#high. The build session pushed the branch as fix/guard_spec_review_route (underscores), not the hyphen name in the brief. Phase acceptance noted two non-blocking doc nits: the plan pins historical Red counts, and the spec and plan name bun where the mods tests run under claude plugin test. Both were left as they are. measure/doctor.sh does not exist; PROJECT_CHECKS replaced it, as in earlier tracks."
+}

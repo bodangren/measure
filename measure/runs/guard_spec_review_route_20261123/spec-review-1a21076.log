@@ -1,0 +1,66 @@
+Spec review: guard_spec_review_route_20261123
+Round: 1
+Reviewer: measure-spec-review subagent, opencode-go/hy4-flash-free#high
+Baseline: 1a210765cd13c2ed0a7cfda22c53c00c0163328a
+Audited HEAD: 1a210765cd13c2ed0a7cfda22c53c00c0163328a
+
+PRECHECK
+HEAD equals the audited HEAD. The working tree is clean. The branch is fix/guard_spec_review_route. The Author model came from the brief, so I did not read spec-review.md.
+
+INPUTS READ
+- measure/tracks/guard_spec_review_route_20261123/spec.md
+- measure/tracks/guard_spec_review_route_20261123/plan.md
+- measure/tracks/guard_spec_review_route_20261123/metadata.json
+- measure/tracks/guard_spec_review_route_20261123/index.md
+- /home/daniebo/.agents/skills/measure/references/spec-review.md
+- skills/measure-orchestrator/references/contracts.md
+- ROLE_OF_AGENT in the three guards.ts parity copies
+- The three role-spawn test files
+- measure/gates.json
+- ra-quota roles output
+
+### What this track proposes
+This chore changes one mapping in the measure-guard spawn-route guard so the agent measure-spec-review uses the ra-quota spec-review role instead of strategy. Three parity copies of guards.ts change at line 204. Red adds mapping assertions and a spec-review route-decision test; Green applies the mapping change and runs parity checks and plugin tests. Two pre-merge gate scripts must exit zero, and known test failures stay recorded as tech debt.
+
+### How the current system works, per this spec
+The guard reads ROLE_OF_AGENT in guards.ts to map each measure agent to a ra-quota role, then checks the spawn model against the approved routes for that role. Today ROLE_OF_AGENT maps measure-spec-review to strategy, so spec-review spawns face the strategy route list even though ra-quota has a separate spec-review role. The same map exists in three parity copies under mods/measure-guard and the two plugins, and role-spawn tests cover other roles with the same pattern.
+
+### Findings
+- None
+
+ZOOM-OUT CHECK
+1. Root problem: the spec fixes the wrong map entry at its source. Pass.
+2. Speculative feature: none. Pass.
+3. Premature optimization: none. Pass.
+4. Reuse: ROLE_OF_AGENT at guards.ts line 196; roleSpawnDecision and approvedRoutes in guards.ts; the phase-acceptance tests at mods/measure-guard/tests/role-spawn.test.ts lines 29-47. Pass.
+5. Placement: the map in the three named parity copies. Pass.
+6. Requirement level: behavior and commands, not implementation detail. Pass.
+
+ZERO-DECISION CHECK
+- Schema: unchanged. API or CLI shape: unchanged. Dependency: none added.
+- Edge-case behavior: the plan keeps measure-strategy mapped to strategy.
+- File location: the spec names every file and line 204.
+- Test cases: the plan names the mapping tests and the route-decision test.
+- Each phase names its files, tests, and gate commands, and leaves a testable state.
+
+FACT CHECKS
+- All three guards.ts copies hold 'measure-spec-review': 'strategy' at line 204.
+- ra-quota roles lists a spec-review role separate from strategy.
+- Every named parity script, gate script, and heavy-run.sh path exists.
+- measure/gates.json lists the named RED, GREEN, PROJECT_LINT, PROJECT_CHECKS, and PROJECT_TESTS commands.
+
+VERDICT
+Pass. No Blocker, Major, or Nit findings. retry_recommendation is none.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: guard_spec_review_route_20261123
+phase: track setup
+commits: none
+tests_run: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track guard_spec_review_route_20261123 --phase "track setup" --baseline 1a21076 --result-file measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.json --log-file measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.log (PASS, exit 0)
+files_changed: measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.json, measure/runs/guard_spec_review_route_20261123/spec-review-1a21076.log
+plan_updates: none (report-only)
+known_failures: none
+handoff: No findings. The spec is ready for Red on Task 1.1.
+END_MEASURE_AGENT_RESULT
