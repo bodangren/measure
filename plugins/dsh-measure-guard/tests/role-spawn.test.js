@@ -119,3 +119,8 @@ test('a picture brief accepts a vision-review route', () => {
   assert.equal(decision, null)
   assert.equal(note, null)
 })
+
+test('measure-spec-review maps to the spec-review role and measure-strategy stays on strategy', () => {
+  assert.equal(ROLE_OF_AGENT['measure-spec-review'], 'spec-review')
+  assert.equal(ROLE_OF_AGENT['measure-strategy'], 'strategy')
+})

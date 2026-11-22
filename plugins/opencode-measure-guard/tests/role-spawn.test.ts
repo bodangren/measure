@@ -210,4 +210,9 @@ describe('role spawn routes', () => {
     const call = before('subagent', { agent: 'measure-mid-red', model: DENY_MODEL })
     await expect(guard.onToolBefore(call)).resolves.toBeUndefined()
   })
+
+  test('spec review: measure-spec-review maps to spec-review and measure-strategy stays on strategy', () => {
+    expect(ROLE_OF_AGENT['measure-spec-review']).toBe('spec-review')
+    expect(ROLE_OF_AGENT['measure-strategy']).toBe('strategy')
+  })
 })
