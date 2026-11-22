@@ -19,7 +19,7 @@
     "@opentui/core": "0.9.7",
     "@opentui/solid": "0.9.7",
     "@types/bun": "1.4.5",
-    "solid-js": "1.9.12",
+    "solid-js": "1.9.20",
     "typescript": "7.0.2"
   },
   "peerDependencies": {
@@ -29,7 +29,6 @@
     "solid-js": ">=1.9.0"
   },
   "overrides": {
-    "seroval": "^1.6.8",
     "glob": "^14.0.2",
     "minimatch": "^11.0.1"
   }
