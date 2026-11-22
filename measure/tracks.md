@@ -4,10 +4,6 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: CI workflow for the measure repo**
-  *Link: [./tracks/ci_workflow_20261123/](./tracks/ci_workflow_20261123/)*
-  *CI for the measure repo: a GitHub Actions workflow runs the four repo checks on each pull request and each push to main, so the pre-merge rule becomes a machine check (PM assignment A-new, due 2026-11-25).*
-
 ---
 
 ## Cancelled Tracks
@@ -549,3 +545,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Guard spec-review route**
   *Link: [./archive/guard_spec_review_route_20261123/](./archive/guard_spec_review_route_20261123/)*
   *The measure-guard spawn-route guard maps the agent measure-spec-review to the ra-quota role strategy; it must map to the role spec-review. One mapping line changes in three parity copies.*
+
+- [x] **Track: CI workflow for the measure repo**
+  *Link: [./archive/ci_workflow_20261123/](./archive/ci_workflow_20261123/)*
+  *CI for the measure repo: a GitHub Actions workflow runs the four repo checks on each pull request and each push to main, so the pre-merge rule becomes a machine check (PM assignment A-new, due 2026-11-25).*

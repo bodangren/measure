@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "ci_workflow_20261123",
+  "track_title": "CI workflow for the measure repo",
+  "track_base_sha": "064f188",
+  "closeout_baseline_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/ci_workflow_20261123/spec-review-006f46d.json", "status": "pass", "audited_head_sha": "006f46d", "note": "Round 1 failed with four Blockers, all fixed in 006f46d. Round 2 passed."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/ci_workflow_20261123/review-a-c74252d.json", "status": "pass", "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06", "note": "Nonblocking F1 (Nit), declined; recorded as tech debt."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.json", "status": "pass", "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06", "note": "Nonblocking F2 and F3 (Nits); F2 declined and F3 recorded as tech debt. The PM re-ran the gate: PASS."},
+    {"role": "closeout", "artifact": "measure/runs/ci_workflow_20261123/closeout.log", "status": "pass", "note": "Result block written before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review Round 1 ran on openai/gpt-6.1-terra#high (failed). Round 2 and the fix round ran on the spec-review route and passed. Review A ran on openai/gpt-6-luna#high. Phase acceptance ran on claude-agent/sonnet#max.",
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git branch --show-current -> c74252d3362077f9baa3dbe962230d66f86e6a06; clean tree; chore/ci-workflow",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, phase acceptance, Review A, lessons learned and tech debt",
+    "Confirm phase-acceptance-c74252d.json audited_head_sha equals the pre-closeout HEAD c74252d3362077f9baa3dbe962230d66f86e6a06 and status pass",
+    "Confirm all four plan tasks are [x] with commit SHA evidence; zero [~], zero [ ] and zero [b] tasks; no deferred closeout task",
+    "grep the repository for the fixed path measure/tracks/ci_workflow_20261123/ before the move: one hit, measure/tracks.md line 8 (the active registry link, removed at closeout); zero hits in tests, scripts or support files",
+    "grep the repository for measure/tracks/ci_workflow_20261123 after the move (excluding measure/runs): zero hits",
+    "Write metadata.json: status done, actual_tasks 4, updated_at and completed 2026-11-23, deviation notes",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "Add three Low Open rows to measure/tech-debt.md for the tracked nits (dated 2026-11-23, track ci_workflow_20261123)",
+    "git mv measure/tracks/ci_workflow_20261123 measure/archive/ci_workflow_20261123",
+    "Write this closeout manifest in the archive, plus closeout.log and closeout-result-c74252d.json in measure/runs/ci_workflow_20261123/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track ci_workflow_20261123 -> exit before the commit (see closeout.log)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/ci_workflow_20261123/closeout-result-c74252d.json -> exit before the commit (see closeout.log)",
+    "git add measure/tracks.md measure/tech-debt.md and the archive; git add -f measure/runs/ci_workflow_20261123; commit with measure(closeout): archive ci_workflow_20261123",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track ci_workflow_20261123 -> exit after the commit (see closeout.log)"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track ci_workflow_20261123",
+    "exit_code_before_commit": 0,
+    "exit_code_after_commit": "reported in the final message of the closeout session",
+    "run_point": "before and after the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "1f142cc",
+    "1.2": "eae63f3",
+    "1.3": "522f463",
+    "1.4": "522f463"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "c74252d3362077f9baa3dbe962230d66f86e6a06"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (phase acceptance A5 holds at c74252d; the plan cites only observed results)",
+    "a6_registry_check": "pass (the archived entry makes no adversarial-test claim and its description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/ci_workflow_20261123/ before the move and after the move",
+    "hits_before_move": [
+      "measure/tracks.md line 8: the active registry link, removed at closeout"
+    ],
+    "hits_after_move": [],
+    "tests_scripts_support_hits": 0,
+    "note": "tests/ci/test-workflow.sh names the track id in a comment only, not the fixed path. No test path fix was needed. The post-move test gate was not rerun because the closeout command allowlist excludes heavy-run; the A9 grep is the evidence."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run.",
+    "Spec review Round 1 failed with four Blockers; all were fixed in 006f46d and Round 2 passed.",
+    "Task 1.2 was split between Green (local workflow) and a build session (push and Actions watch); the Green gate ran once at the phase end.",
+    "The first Actions run (45075474798) failed on the shallow checkout; the root fix is fetch-depth 0 (eae63f3).",
+    "The red proof used draft PR #44; it was closed unmerged and the branch was deleted.",
+    "The repo owner merged PR #43 before the records commits 522f463 and c74252d; those commits, this closeout and the tech-debt rows go in a second pull request.",
+    "measure/doctor.sh does not exist; PROJECT_CHECKS replaced it, as in earlier tracks."
+  ],
+  "retained_evidence": [
+    "measure/runs/ci_workflow_20261123/ (all logs and audit JSON files, force-added)",
+    "measure/archive/ci_workflow_20261123/plan.md (SHA evidence for each task)",
+    "Actions runs 45075474798 (first failure), 45076806403 (green), 45077462199 (red proof), 45078557826 (push to main)"
+  ],
+  "artifact_cleanup": "none; no bulky run artifact was deleted",
+  "lessons_learned_rows_added": 0,
+  "tech_debt_rows_added": [
+    "tests/ci/test-workflow.sh absolute-path prefix rule (Review A F1, Nit, declined)",
+    "tests/ci/test-workflow.sh masked-gate gap (Phase acceptance F2, Nit, declined)",
+    "CI scope: node and bun suites run by hand only (Phase acceptance F3, Nit)"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

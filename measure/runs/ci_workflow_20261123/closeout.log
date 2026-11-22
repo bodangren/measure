@@ -1,0 +1,28 @@
+Closeout of ci_workflow_20261123 at pre-closeout HEAD c74252d3362077f9baa3dbe962230d66f86e6a06.
+
+Pre-closeout state: branch chore/ci-workflow, clean tree, HEAD verified. Phase acceptance phase-acceptance-c74252d.json has status pass and audited_head_sha equal to HEAD. Review A review-a-c74252d.json has status pass at the same HEAD. Light lane: no final acceptance is required.
+
+The plan has four tasks, all [x], each with commit SHA evidence. Zero [~], zero [ ] and zero [b] tasks. No deferred closeout task.
+
+A9: the fixed path measure/tracks/ci_workflow_20261123/ had one hit before the move (measure/tracks.md line 8, the active registry link, removed at closeout). Zero hits in tests, scripts or support files. No test path fix was needed. tests/ci/test-workflow.sh names the track id in a comment only.
+
+Actions: git mv of the track folder to measure/archive/; active entry removed from measure/tracks.md and an archived entry added with the metadata description; metadata set to status done, actual_tasks 4, completed 2026-11-23, updated_at 2026-11-23T12:00:00Z, deviation notes; three Low Open rows added to measure/tech-debt.md (dated 2026-11-23, track ci_workflow_20261123); closeout manifest written in the archive; this log and closeout-result-c74252d.json written in measure/runs/ci_workflow_20261123/.
+
+Checker before the commit: closeout exit 0 (INFO light lane; INFO no generated folder; PASS closeout checks passed). audit-result closeout exit 0 (PASS: audit result is valid).
+
+Test gate: not rerun after the move. The closeout command allowlist excludes heavy-run. The A9 grep is the evidence for this move.
+
+Nothing was pushed. No bulky run artifact was deleted. No lesson row was added.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: pass
+track: ci_workflow_20261123
+phase: track closeout
+commits: Task 1.1 1f142cc; Task 1.2 eae63f3; Task 1.3 522f463; Task 1.4 522f463; closeout commit pending at write time (pre-closeout HEAD c74252d3362077f9baa3dbe962230d66f86e6a06)
+tests_run: closeout checker exit 0 before the commit; audit-result closeout exit 0; A9 grep zero hits in tests, scripts and support files after the move; no heavy-run test gate rerun because the closeout command allowlist excludes it
+files_changed: moved measure/tracks/ci_workflow_20261123 to measure/archive/ci_workflow_20261123 (index.md, metadata.json, plan.md, spec-review.md, spec.md); measure/tracks.md; measure/tech-debt.md; measure/archive/ci_workflow_20261123/automation-supervisor-closeout-manifest.json; measure/runs/ci_workflow_20261123/closeout.log; measure/runs/ci_workflow_20261123/closeout-result-c74252d.json (force-added)
+plan_updates: none; the archived plan was already closeout clean with four [x] tasks and SHA evidence
+known_failures: none; light lane omits review-b, review-c, adversarial testing, ux review and final acceptance; Review A F1 and phase acceptance F2 and F3 are Nits recorded as tech-debt rows
+handoff: track archived, registry updated, metadata done, three tech-debt rows open; checker exit 0 before the commit, post-commit exit reported in the final message; no question for the orchestrator; no bulky artifact deleted; nothing pushed
+END_MEASURE_AGENT_RESULT

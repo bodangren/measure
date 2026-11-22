@@ -1,0 +1,18 @@
+MEASURE_AGENT_RESULT
+role: measure-mid-red
+track: ci_workflow_20261123
+phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+task: T1.1
+baseline_sha: 064f188
+role_base_sha: 064f188
+head_sha: 1f142cc6e27b7675967fc4f21979d0e547fef59d
+commits: 1f142cc measure(red): ci workflow contract test (track_id: ci_workflow_20261123)
+tests: tests/ci/run.sh, tests/ci/test-workflow.sh (16 contract checks)
+files: tests/ci/run.sh (new), tests/ci/test-workflow.sh (new), measure/tracks/ci_workflow_20261123/plan.md (Task 1.1 [~] marker + Red evidence)
+red_command: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/ci/run.sh'
+red_exit: 1
+red_reason: .github/workflows/ci.yml does not exist; workflow-file-exists FAILs and all 15 dependent checks FAIL (PASS=0, FAIL=16)
+breakage_proof: /tmp fixtures only, no .github/ file created. Good fixture passes (exit 0). Each mutant fails: m1 second trigger (schedule) -> trigger-no-other; m2 missing 4th command -> four-commands-present/commands-in-order/no-extra-run-steps; m3 swapped command order -> commands-in-order; m4 heavy-run wrapper -> four-commands-present/no-heavy-run/no-absolute-path; m5 unpinned actions/checkout@main -> actions-pinned.
+remaining_failures: bash tests/ci/run.sh exits 1 (expected Red state; Green Task 1.2 adds .github/workflows/ci.yml)
+production_files_touched: none (.github/ not created)
+END_MEASURE_AGENT_RESULT

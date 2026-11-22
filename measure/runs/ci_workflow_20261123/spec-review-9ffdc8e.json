@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "ci_workflow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "9ffdc8e781b581dd0e33087844a99b5d044d0d3e",
+  "audited_head_sha": "9ffdc8e781b581dd0e33087844a99b5d044d0d3e",
+  "status": "fail",
+  "summary": "The plan leaves one runner decision and has three proof or runner conflicts.",
+  "blocking_findings": [
+    "F1 [Blocker] plan.md Phase 1 Task 1.1: The plan leaves the contract test runner and its file location to Red. Rationale: The two options change which files run the test and whether the four CI commands execute it.",
+    "F2 [Blocker] plan.md Phase 1 Task 1.3: The plan requires a throwaway branch push but permits pushes only to origin/chore/ci-workflow. Rationale: The proof cannot use a separate remote branch under both instructions.",
+    "F3 [Blocker] spec.md FR-1 and FR-5: The proof requires a red check on a throwaway branch, but branch pushes outside main do not trigger the workflow. Rationale: The plan must name a pull request or another permitted event for the red proof.",
+    "F4 [Blocker] spec.md FR-7: The spec requires a machine-specific wrapper for every long command without defining its availability or scope on the Actions runner. Rationale: The runner cannot execute that absolute path unless it exists, and Q2 does not resolve the mandatory wrapper requirement."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD and baseline both resolve to 9ffdc8e781b581dd0e33087844a99b5d044d0d3e; the tree was clean before artifact creation.",
+    "Reviewed the track spec, plan, metadata, index, project context, four command scripts, and the no-CI debt row.",
+    "The two existing test runners discover tests only within their own directories.",
+    "Q1 and Q2 request runtime discovery; the findings identify separate unresolved choices or conflicts.",
+    "Zoom-out: the track addresses the CI gap and adds no apparent speculative feature or optimization.",
+    "Zero-decision: the test runner location is not fixed; branch proof and wrapper instructions conflict or lack runner scope."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "role-gate --role spec-review: exit 1; audit status fail"
+  ],
+  "changed_files": [
+    "measure/runs/ci_workflow_20261123/spec-review-9ffdc8e.json",
+    "measure/runs/ci_workflow_20261123/spec-review-9ffdc8e.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "The track adds one GitHub Actions job for four existing checks on pull requests and pushes to main. It proves a green check and a deliberate red check, then configures or reports the required check. It closes the no-CI debt row.",
+    "current_system": "The spec says the repository has no CI workflow. The four checks run as local scripts, and main has no branch protection."
+  }
+}

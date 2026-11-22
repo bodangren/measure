@@ -1,0 +1,47 @@
+# Green round 2 log: CI checkout full-history fix
+
+Track: ci_workflow_20261123
+Phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+Role: measure-jr-green (jr-green), model opencode-go/hy4-flash-free
+phase_base_sha: 064f188 (immutable)
+role_base_sha: 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554
+Verified before work: HEAD was 0a8c9a9 with an empty `git status --short` on branch chore/ci-workflow.
+Resulting HEAD: 1d7da70909a1840fbe7964f99073f90c91c790c5
+
+Commits of this round:
+- eae63f332e87c4c42e8ad595705b7b62ae96c9ab measure(green): ci checkout fetches full history
+- 1d7da70909a1840fbe7964f99073f90c91c790c5 measure(plan): ci_workflow first run evidence
+
+## Cause read from the tests
+
+The first Actions run on PR #43 failed at `bash tests/spec_review_gate/run.sh`. Two checks read commits with `git cat-file -e <sha>:<path>`: test_s1_new_track.sh line 161 reads 7d72b40665074a89f5be606935cad94a1ef1e4e9, and test_s2_role_docs.sh lines 262-263 read ccdaae22a965f06c64ecde9f735a1ed49db3ce5e and short 25b9064. `actions/checkout@v4` fetched one commit only, so those objects were absent. No tag or branch is needed; full history is enough.
+
+## Change
+
+The checkout step gains `with: fetch-depth: 0`. No test was skipped. The four commands and their order are unchanged. The contract test accepts the `with:` block.
+
+## Test evidence
+
+`HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/ci/run.sh'` -> EXIT=0. The contract test reported 19 checks pass and 0 fail. The runner summary was `== summary: 1 passed, 0 failed ==`.
+
+The role-gate was skipped this round by handoff instruction. The phase still has open tasks by design.
+
+## Records
+
+plan.md keeps Task 1.2 [~] and gains one evidence line for the first Actions run, its cause, and the fix. It has no pinned counts. No other task marker changed. Committed Red tests are unchanged. No push was made.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: ci_workflow_20261123
+phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+baseline_sha: 064f188
+role_base_sha: 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554
+resulting_head: 1d7da70909a1840fbe7964f99073f90c91c790c5
+commits: eae63f332e87c4c42e8ad595705b7b62ae96c9ab measure(green): ci checkout fetches full history; 1d7da70909a1840fbe7964f99073f90c91c790c5 measure(plan): ci_workflow first run evidence
+tests_run: bash tests/ci/run.sh through heavy-run (EXIT=0, 19 checks pass)
+files_changed: .github/workflows/ci.yml, measure/tracks/ci_workflow_20261123/plan.md
+plan_updates: Task 1.2 stays [~] and gains one evidence line for the first Actions run, its cause, and the fix; no other marker changed
+known_failures: none locally; the green Actions run is still to come
+handoff: phase_base_sha is 064f188 (immutable) and the new Green HEAD is 1d7da70909a1840fbe7964f99073f90c91c790c5; role_base_sha was 0a8c9a9. The first Actions run on PR #43 failed because actions/checkout@v4 fetched one commit; test_s1_new_track.sh and test_s2_role_docs.sh need commit objects 7d72b406, ccdaae22, and 25b9064 via `git cat-file -e`. No tag or branch was needed. Commit eae63f3 adds `with: fetch-depth: 0`; no test was skipped and no command changed. The contract test accepts the `with:` block and exits 0 through heavy-run. Task 1.2 stays [~] for the green Actions run. The role-gate was skipped by handoff instruction. No task was marked [b]. No push was made.
+END_MEASURE_AGENT_RESULT
