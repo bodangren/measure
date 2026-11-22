@@ -1,0 +1,12 @@
+{
+  "track_id": "test_s2_subagent_pin_20261122",
+  "type": "chore",
+  "status": "in-progress",
+  "lane": "light",
+  "created_at": "2026-11-22T00:00:00Z",
+  "updated_at": "2026-11-22T00:00:00Z",
+  "description": "Update the test_s2_role_docs.sh subagent pin to the nine pairs now in agents/measure-orchestrator.md (adds the www-publisher allow row); the agent file does not change",
+  "estimated_tasks": 2,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

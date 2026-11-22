@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Test S2 subagent pin matches the orchestrator subagent rules**
+  *Link: [./tracks/test_s2_subagent_pin_20261122/](./tracks/test_s2_subagent_pin_20261122/)*
+  *Update the test_s2_role_docs.sh subagent pin to the nine pairs now in agents/measure-orchestrator.md (adds the www-publisher allow row); the agent file does not change.*
+
 ---
 
 ## Cancelled Tracks
