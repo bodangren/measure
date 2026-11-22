@@ -1,0 +1,70 @@
+Final acceptance audit: deps_refresh_20261122
+Role: final-acceptance. Route: opencode-go/glm-5.3#high.
+track_base_sha: 08c79f9d33c793993c806fa8065bedf539c65ca8
+role_base_sha: 0809e622c1fe3cf5149814aed129a3eca5567c53
+audited_head_sha: 0809e622c1fe3cf5149814aed129a3eca5567c53
+HEAD matches the audited HEAD on chore/deps-refresh. The tracked tree is clean.
+The track baseline 08c79f9 is an ancestor of HEAD. The phase baselines are ancestors of their audited HEADs.
+
+Phase and review evidence
+Phase 1: phase-acceptance-dcffc7b.json passes at dcffc7b with baseline 08c79f9.
+Phase 2: phase-acceptance-0809e62.json passes at 0809e62 with baseline dcffc7b.
+Exactly one passing phase-acceptance result exists per plan phase.
+Each audited HEAD is an ancestor of current HEAD. The latest equals current HEAD.
+git diff --name-only 0809e62 HEAD: empty. git diff --name-only dcffc7b HEAD: empty.
+No later commit needs the covered-commit rule.
+Review A: 815afa2 fail (F1, F2), dcffc7b pass, 23372c2 fail (F-P2-1), 0809e62 pass.
+Spec review: spec-review-08c79f9.json passes at the track baseline; spec.md is unchanged since.
+
+Plan and acceptance evidence
+All five tasks are [x] with ancestor SHA evidence: 9764063; e5a09ad, 35d5a7d; c645ef1; 59db955; a0f6eea.
+No open task remains. measure/gates.json is unchanged and no configured gate is unset.
+AC1: bun audit exits 0 in both folders; bun audit --json prints {}. Zero advisories.
+AC2: every spec command exits 0 (tsc, vitest 431 tests, bun test 186 pass, tsc, parity, esbuild, cmp).
+AC3: advisories.md holds the empty moderate/low list, the four cleared GHSA ids, the
+solid-js 2.x hold reason, and the unchanged peer floors; run.sh prints zero counts.
+FR-5: cmp proves the committed panel/main.js equals a fresh esbuild build.
+PM decisions of 2026-11-22 cover F-P2-2, F-P2-3, F-P2-4, the guard-core copies,
+and the openchamber >=2.7.1 floor with SDK 2.8.0. No third review round runs.
+
+Configured gates (run through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500)
+PROJECT_LINT: bash plugins/dsh-measure-guard/scripts/check-parity.sh && bash plugins/opencode-measure-guard/scripts/check-parity.sh: exit 0, parity ok.
+PROJECT_CHECKS: bash tests/dsh/run.sh: exit 0, 15 passed, 0 failed. No measure/doctor.sh
+exists; PROJECT_CHECKS replaces it, as in final-acceptance-8a8efe2.json and
+final-acceptance-00a0149.json.
+PROJECT_TESTS (configured): bash tests/spec_review_gate/run.sh && node --test
+plugins/dsh-measure-guard/tests/*.test.js: exit 0; 22 suites PASS; 383 tests pass.
+PROJECT_TESTS (brief override): bash tests/deps_audit/test.sh && bash tests/deps_audit/test-r2.sh:
+exit 0; PASS=8, FAIL=0 and PASS=4, FAIL=0.
+Guard folder: bun test 186 pass 0 fail; bun x tsc --noEmit -p . exit 0; parity ok.
+A first heavy-run batch used a wrong relative path (../plugins from extensions/),
+so the guard steps were re-run with the correct path; all other steps were valid.
+
+Pre-closeout anti-pattern audit
+A5: every PASS/FAIL claim in plan.md matches this run. The Red claim PASS=0, FAIL=8 at
+9764063 matches git ls-tree (no run.sh there). The guard 186-pass and dsh 15-pass counts match.
+A6: the measure/tracks.md entry stays [~] with no overstatement; the audit tests pass.
+A9: no test under tests/ references an archived track path; only the self-created
+rehearsal_20260101 fixture of tests/dsh/rehearsal appears.
+
+Conclusion
+Final acceptance passes at 0809e62. No blocking finding remains.
+Nonblocking items: the tech-debt rows for F-P2-2, F-P2-3, and F-P2-4 are pending for
+closeout; advisories.md:173-174 still says the PM decision is pending though the PM
+accepted on 2026-11-22; measure/tech-debt.md:11 lists the V18 failure as Open though
+this track fixed it; the gitignored guard bun.lock keeps the clean-clone audit
+unverified; the extension lock has no esbuild entry (PM-accepted, later chore).
+This role makes no implementation change, no plan or registry edit, and no commit.
+
+MEASURE_AGENT_RESULT
+role: final-acceptance
+status: complete
+track: deps_refresh_20261122
+phase: track review
+commits: none
+tests_run: bun audit both folders pass ({} JSON); measure-status tsc and vitest 431 tests pass; guard bun test 186 pass, tsc, parity pass; PROJECT_LINT pass; PROJECT_CHECKS pass (15 passed); PROJECT_TESTS configured pass (22 suites, 383 tests) and brief override pass (PASS=8, PASS=4); deps_audit run.sh zero counts; esbuild build and cmp pass
+files_changed: measure/runs/deps_refresh_20261122/final-acceptance-0809e62.json; measure/runs/deps_refresh_20261122/final-acceptance-0809e62.log
+plan_updates: none
+known_failures: none blocking; carried nonblocking items are listed in the JSON for closeout
+handoff: Route to measure-closeout. Record the F-P2-2, F-P2-3, and F-P2-4 tech-debt rows, the PM acceptance of the guard-core copies and the openchamber floor, and the resolved V18 tech-debt row. No archive or metadata change occurred here.
+END_MEASURE_AGENT_RESULT

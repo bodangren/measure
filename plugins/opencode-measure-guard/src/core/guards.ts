@@ -189,7 +189,7 @@ export const supersededTarget = (planText: string, metadataText: string | null):
   }
   if (metadata === null || typeof metadata !== 'object') return null
   if ((metadata as { status?: unknown }).status !== 'superseded') return null
-  return match[1]
+  return match[1] ?? null
 }
 
 /** The ra-quota role of each Measure agent that the spawn-route guard checks. */

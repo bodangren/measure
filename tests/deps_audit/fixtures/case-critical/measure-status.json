@@ -1,0 +1,1 @@
+{"happy-dom": [{"cwe": ["CWE-94"], "cvss": {"score": 0, "vectorString": null}, "id": 1108946, "severity": "critical", "title": "Happy DOM: VM Context Escape can lead to Remote Code Execution", "url": "https://github.com/advisories/GHSA-37j7-fg3j-429f", "vulnerable_versions": "<20.0.0"}]}

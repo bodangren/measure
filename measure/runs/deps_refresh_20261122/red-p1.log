@@ -1,0 +1,53 @@
+# Red log — Phase 1 Task 1.1 (deps_refresh_20261122)
+
+Role: measure-mid-red. phase_base_sha = role_base_sha = 08c79f9.
+HEAD at Red time: 08c79f9 (clean tree, verified before editing).
+Red commit: 9764063.
+
+## Before counts (raw `bun audit`, 2026-11-22)
+
+- extensions/measure-status: 21 vulnerabilities (4 critical, 5 high, 11 moderate, 1 low)
+- plugins/opencode-measure-guard: 8 vulnerabilities (1 critical, 4 high, 3 moderate)
+
+## Red test run: `bash tests/deps_audit/test.sh`
+
+`tests/deps_audit/run.sh` does not exist, so every case fails with exit 127
+(`bash: .../tests/deps_audit/run.sh: No such file or directory`). That is the
+expected Red state.
+
+- critical-in-one-folder: FAIL (wants exit 1, got 127)
+- high-in-one-folder: FAIL (wants exit 1, got 127)
+- moderate-and-low-only: FAIL (wants exit 0, got 127)
+- no-advisories: FAIL (wants exit 0, got 127)
+- allowed-high: FAIL (wants exit 0, got 127)
+- bad-json: FAIL (wants exit 2, got 127)
+- output-line-format: FAIL (rc=127)
+- live-run: FAIL (wants exit 0, got 127)
+- Total: 8 checks (PASS=0, FAIL=8), test.sh exits 1.
+
+## Existing suite (nothing else broke)
+
+`HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/dsh/run.sh'`:
+15 passed, 0 failed.
+
+## Handoff for Green (Task 1.2)
+
+Write `tests/deps_audit/run.sh` implementing the env contract stated in the
+`test.sh` header: DEPS_AUDIT_FIXTURE_DIR (reads <dir>/measure-status.json and
+<dir>/opencode-measure-guard.json) and DEPS_AUDIT_ALLOW_FILE (defaults to
+tests/deps_audit/allow.txt; a GHSA id token per line exempts that advisory).
+Then update packages per the version rule until the live case exits 0.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: deps_refresh_20261122
+phase: Phase 1: Critical and high advisories (due 2026-11-23)
+baseline_sha: 08c79f9
+commits: 9764063
+tests_run: bash tests/deps_audit/test.sh -> 8 FAIL (exit 127, run.sh missing; expected Red); heavy-run tests/dsh/run.sh -> 15 passed, 0 failed
+files_changed: tests/deps_audit/test.sh, tests/deps_audit/fixtures/* (6 cases + allow fixtures); measure/tracks/deps_refresh_20261122/plan.md (Task 1.1 [~])
+plan_updates: Task 1.1 marked [~]; no task completed
+known_failures: all 8 deps_audit checks fail because tests/deps_audit/run.sh does not exist yet (Green Task 1.2 writes it)
+handoff: Green writes tests/deps_audit/run.sh per the test.sh header contract, then applies package updates until the live case exits 0
+END_MEASURE_AGENT_RESULT

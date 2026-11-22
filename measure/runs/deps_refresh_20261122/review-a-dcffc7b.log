@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: deps_refresh_20261122
+phase: Phase 1: Critical and high advisories (due 2026-11-23)
+commits: none
+tests_run: All required commands pass through p1 heavy-run; vitest 431 pass; guard 186 pass; audit tests 8 pass and 4 pass; both typechecks and parity gates pass; bundle cmp exits 0; DSH suite 15 pass; old parser mutation fails all four regression checks as expected; 11 parser probes and four shell probes pass; SDK and Solid compatibility probes pass; role-gate exits 0
+files_changed: review-a-dcffc7b.json; review-a-dcffc7b.log
+plan_updates: none
+known_failures: none
+handoff: F1 and F2 are closed. retry_recommendation=none. Scope note 1 preserves runtime behavior and satisfies both parity gates. Scope note 2 corrects V18 to the documented control-character rule and retains both real-path denials. The PM retains scope approval. Phase 2 remains open. Facts changed: none.
+dispositions: F1=FIX; F2=FIX
+END_MEASURE_AGENT_RESULT

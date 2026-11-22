@@ -1,0 +1,63 @@
+# Green log — Review A F-P2-1 fix (deps_refresh_20261122)
+
+Role: measure-jr-green. phase_base_sha = dcffc7b. role_base_sha = 23372c2.
+HEAD at Green start: 23372c2 (clean tree, verified before editing).
+Implementation commit: 59db955. Plan and records commit: 0809e62.
+Final Green HEAD: 0809e62. Branch: chore/deps-refresh. No push.
+
+## Finding and disposition
+
+Review A at 23372c2 failed on F-P2-1. The guard pinned solid-js 1.9.12 while
+npm published 1.9.20 inside the accepted 1.9 line. The fix moves solid-js to
+1.9.20. The 2.x hold stays.
+
+## Change
+
+- `plugins/opencode-measure-guard/package.json`: solid-js 1.9.12 -> 1.9.20.
+- The seroval override ^1.6.8 was removed. solid-js 1.9.20 pins
+  `seroval ~1.6.11`, which is above the fixed 1.6.8. seroval now resolves to
+  1.6.12. The parent update made the override unneeded.
+- The glob ^14.0.2 and minimatch ^11.0.1 overrides stay at 14.0.6 and 11.0.9.
+- The peer floors stay unchanged.
+- `plan.md`: Task 2.1 closed at 59db955. Task 2.2 stays closed at a0f6eea.
+- `advisories.md`: package table, override section, held-back entry, and the
+  re-run command exits updated. The held-back entry now names solid-js 1.9.20
+  and holds 2.x with the stated reason.
+
+No source file, test file, or committed Red test changed. No new file was
+added. The extension package, lock, and bundle are unchanged.
+
+## Checks (each through heavy-run, HEAVY_MIN_AVAIL_MB=1500)
+
+Install: `timeout 120 bun add -D --exact solid-js@1.9.20` then
+`timeout 120 bun install`. Both exits 0. Resolved versions: solid-js 1.9.20,
+seroval 1.6.12, seroval-plugins 1.6.12, glob 14.0.6, minimatch 11.0.9.
+
+- `cd plugins/opencode-measure-guard && bun test` -> exit 0 (186 pass, 0 fail).
+- `cd plugins/opencode-measure-guard && bun x tsc --noEmit -p .` -> exit 0.
+- `cd plugins/opencode-measure-guard && bash scripts/check-parity.sh` -> exit 0.
+- `bash plugins/dsh-measure-guard/scripts/check-parity.sh` -> exit 0.
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> exit 0.
+- `bash tests/dsh/run.sh` -> exit 0 (15 passed, 0 failed).
+- `bash tests/deps_audit/test.sh` -> exit 0 (8 checks, PASS=8, FAIL=0).
+- `bash tests/deps_audit/test-r2.sh` -> exit 0 (4 checks, PASS=4, FAIL=0).
+- `cd plugins/opencode-measure-guard && bun audit` -> exit 0, no vulnerabilities.
+- `cd plugins/opencode-measure-guard && bun audit --json` -> exit 0, `{}`.
+- `bash tests/deps_audit/run.sh` -> exit 0. measure-status: critical 0, high
+  0, moderate 0, low 0. opencode-measure-guard: critical 0, high 0, moderate
+  0, low 0.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: deps_refresh_20261122
+phase: Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+baseline_sha: dcffc7b
+commits: 59db955, 0809e62
+tests_run: guard bun test -> exit 0 (186 pass, 0 fail); guard bun x tsc --noEmit -p . -> exit 0; guard check-parity -> exit 0; both repo parity scripts -> exit 0; bash tests/dsh/run.sh -> exit 0 (15 passed, 0 failed); bash tests/deps_audit/test.sh -> exit 0 (8 checks, PASS=8, FAIL=0); bash tests/deps_audit/test-r2.sh -> exit 0 (4 checks, PASS=4, FAIL=0); guard bun audit -> exit 0 (No vulnerabilities found); guard bun audit --json -> exit 0 ({}); bash tests/deps_audit/run.sh -> exit 0 (0 advisories in both folders)
+files_changed: plugins/opencode-measure-guard/package.json, measure/tracks/deps_refresh_20261122/plan.md, measure/tracks/deps_refresh_20261122/advisories.md
+plan_updates: Task 2.1 flipped back to [x] at 59db955 with the Green evidence line in 0809e62; Task 2.2 stays [x] at a0f6eea; no task moved to [b]
+known_failures: none
+handoff: phase_base_sha dcffc7b; role_base_sha 23372c2; final Green HEAD 0809e62. F-P2-1 is fixed by moving solid-js to 1.9.20. The 2.x hold stays because @opentui/solid 0.9.7 peers ^1.9.12 and no OpenCode 2.0.x host proves that 2.x loads. The seroval override was removed because solid-js 1.9.20 pins ~1.6.11; seroval resolves to 1.6.12. All required checks pass and both folders hold 0 advisories. No new file was added. No committed Red test changed. The extension package, lock, and bundle are unchanged. No push was made.
+dispositions: F-P2-1=FIX
+END_MEASURE_AGENT_RESULT

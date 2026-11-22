@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: deps_refresh_20261122
+phase: Phase 1: Critical and high advisories (due 2026-11-23)
+commits: none
+tests_run: Through heavy-run (p1, HEAVY_MIN_AVAIL_MB=1500), all 12 steps exit 0: measure-status tsc; vitest (25 files, 431 tests); guard bun test (186 pass, 0 fail); guard tsc; guard check-parity; deps_audit test.sh (PASS=8, FAIL=0); test-r2.sh (PASS=4, FAIL=0); esbuild to /tmp and cmp with panel/main.js; both repo parity gates; tests/dsh/run.sh (15 passed, 0 failed). Live bun audit: measure-status 0 critical, 0 high, 3 moderate, 0 low; guard 0 critical, 0 high, 2 moderate, 0 low. The phase-acceptance role gate exits 0
+files_changed: measure/runs/deps_refresh_20261122/phase-acceptance-dcffc7b.json; measure/runs/deps_refresh_20261122/phase-acceptance-dcffc7b.log
+plan_updates: none
+known_failures: none
+handoff: PASS at dcffc7b with no blocker; retry_recommendation=none. Both scope-note items do not block the phase: the guard-core copies are required by both parity gates, and V18 now matches the documented control-character rule. The PM approves or rejects the scope exceptions (F1). Light lane confirmed: no login, data, route, security, or UI change, and the panel bundle is byte-equal. Nits: F1 scope exceptions, F2 guard bun.lock is untracked so the guard result is not proven for a clean clone, F3 advisories.md:94-97 wording, F4 pinned counts in plan.md. The 8 phase commits are local; origin/chore/deps-refresh still holds 08c79f9; push only to that branch. Phase 2 (Tasks 2.1 and 2.2) stays open. Facts changed: none.
+END_MEASURE_AGENT_RESULT

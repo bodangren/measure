@@ -90,7 +90,6 @@
           offset = 0;
         }
       },
-      /** Fills `out` from the queue and pads the rest with silence. */
       pull: (out) => {
         let written = 0;
         while (written < out.length && chunks.length > 0) {
@@ -246,13 +245,25 @@
     }
   };
 
+  // node_modules/@openchamber/sdk/dist/navigation.js
+  var GUEST_COMMIT_SHA = /^[0-9a-f]{7,64}$/i;
+  var isGuestCommitSha = (value) => GUEST_COMMIT_SHA.test(value);
+  var GUEST_WALKTHROUGH_BASE_MAX = 255;
+  var guestNavigationCalls = (request, nextId2, refuse) => ({
+    openCommit: (sha) => isGuestCommitSha(sha) ? request({ channel: OPENCHAMBER_SDK_CHANNEL, v: OPENCHAMBER_SDK_API_VERSION, type: "open-commit", id: nextId2(), payload: { sha } }) : refuse("Commit id must be 7 to 64 hex characters."),
+    openWalkthrough: ({ base }) => {
+      const trimmed = base.trim();
+      if (!trimmed || trimmed.length > GUEST_WALKTHROUGH_BASE_MAX)
+        return refuse(`Base must contain 1 to ${GUEST_WALKTHROUGH_BASE_MAX} characters.`);
+      return request({ channel: OPENCHAMBER_SDK_CHANNEL, v: OPENCHAMBER_SDK_API_VERSION, type: "open-walkthrough", id: nextId2(), payload: { base: trimmed } });
+    }
+  });
+
   // node_modules/@openchamber/sdk/dist/contract.js
   var GUEST_BLOCK_ANSWER_MAX = 2e3;
   var GUEST_FILE_STAT_KINDS = ["file", "directory", "other", "missing"];
   var isStartSessionResult = (value) => Boolean(value && "sessionId" in value);
   var isPromptResult = (value) => Boolean(value && "sent" in value && !("sessionId" in value));
-  var GUEST_COMMIT_SHA = /^[0-9a-f]{7,64}$/i;
-  var isGuestCommitSha = (value) => GUEST_COMMIT_SHA.test(value);
   var GUEST_TOAST_MAX = 500;
   var GUEST_CLIPBOARD_TEXT_MAX = 32e3;
   var GUEST_COMPOSE_TEXT_MAX = 16e3;
@@ -828,11 +839,7 @@
       };
       microphone = open;
       try {
-        const result = await send(
-          { ...envelope, type: "microphone-open", id: nextId(ids), payload: { sampleRate: context.sampleRate } },
-          // The host may be waiting on the system's permission prompt.
-          GUEST_MICROPHONE_OPEN_TIMEOUT_MS
-        );
+        const result = await send({ ...envelope, type: "microphone-open", id: nextId(ids), payload: { sampleRate: context.sampleRate } }, GUEST_MICROPHONE_OPEN_TIMEOUT_MS);
         if (!result || !("opened" in result) || result.opened !== true) {
           throw new HostRequestError("HOST_REJECTED", "Host did not open the microphone.");
         }
@@ -1221,13 +1228,7 @@
         id: nextId(ids),
         payload: { url }
       }),
-      openCommit: (sha) => isGuestCommitSha(sha) ? request({
-        channel: OPENCHAMBER_SDK_CHANNEL,
-        v: OPENCHAMBER_SDK_API_VERSION,
-        type: "open-commit",
-        id: nextId(ids),
-        payload: { sha }
-      }) : Promise.reject(new HostRequestError("HOST_REJECTED", "Commit id must be 7 to 64 hex characters.")),
+      ...guestNavigationCalls(request, () => nextId(ids), (message) => Promise.reject(new HostRequestError("HOST_REJECTED", message))),
       answerBlock: (text) => request({
         channel: OPENCHAMBER_SDK_CHANNEL,
         v: OPENCHAMBER_SDK_API_VERSION,
