@@ -1,0 +1,164 @@
+# Green log — Phase 1 Task 1.2 (deps_refresh_20261122)
+
+Role: measure-jr-green. phase_base_sha = 08c79f9. role_base_sha = 9764063.
+HEAD at Green start: 9764063 (clean tree, verified before editing).
+Implementation commit: e5a09ad. Plan-evidence commit: 45ea9fd.
+Branch: chore/deps-refresh. No push.
+
+## Step 1: `tests/deps_audit/run.sh` before the package updates
+
+Green wrote `tests/deps_audit/run.sh` (the check the Red test names) and the
+empty `tests/deps_audit/allow.txt`. The package updates came after, so the
+live case failed first.
+
+`bash tests/deps_audit/test.sh`:
+
+- critical-in-one-folder: PASS (exit 1)
+- high-in-one-folder: PASS (exit 1)
+- moderate-and-low-only: PASS (exit 0)
+- no-advisories: PASS (exit 0)
+- allowed-high: PASS (exit 0)
+- bad-json: PASS (exit 2)
+- output-line-format: PASS
+- live-run: FAIL (wants exit 0, got 1)
+- Total: 8 checks (PASS=7, FAIL=1), test.sh exits 1.
+
+Live output before the updates (run.sh exit 1):
+
+```
+run.sh: critical measure-status in happy-dom: GHSA-37j7-fg3j-429f
+run.sh: high measure-status in happy-dom: GHSA-w4gp-fjgq-3q4g
+run.sh: high measure-status in happy-dom: GHSA-6q6h-j7hj-3r64
+run.sh: high measure-status in happy-dom: GHSA-c8p4-j97h-3vg8
+run.sh: critical measure-status in tinypool: GHSA-5gmw-xhrv-c9v3
+run.sh: critical measure-status in tinypool: GHSA-85c8-ppgw-ccpr
+run.sh: high measure-status in vite: GHSA-587h-7wmj-h5pm
+run.sh: critical measure-status in vitest: GHSA-5xrq-8626-4rwp
+run.sh: high measure-status in zod: GHSA-mrhx-c7xc-m3w5
+run.sh: critical opencode-measure-guard in seroval: GHSA-p6vx-979v-rg4c
+run.sh: high opencode-measure-guard in seroval: GHSA-jp82-f5mq-hwhp
+run.sh: high opencode-measure-guard in seroval: GHSA-97r2-qh9m-474h
+run.sh: high opencode-measure-guard in seroval: GHSA-wp97-x4hv-qvhp
+run.sh: high opencode-measure-guard in seroval: GHSA-7rv5-mrxv-xcr9
+measure-status: critical 4, high 5, moderate 11, low 1
+opencode-measure-guard: critical 1, high 4, moderate 3, low 0
+```
+
+## Step 2: package updates (version rule)
+
+First fixed version of each critical and high advisory, read from
+`bun audit --json` at Green time:
+
+| Package | Advisory | Severity | First fixed version |
+| --- | --- | --- | --- |
+| happy-dom | GHSA-37j7-fg3j-429f, GHSA-w4gp-fjgq-3q4g, GHSA-6q6h-j7hj-3r64, GHSA-c8p4-j97h-3vg8 | critical, high | 20.0.0, 20.8.9, 20.8.8, 21.0.0 (no 20.14.7 exists) |
+| vitest | GHSA-5xrq-8626-4rwp | critical | 3.2.6 |
+| tinypool | GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr | critical | 2.1.1, 2.1.2 |
+| vite | GHSA-587h-7wmj-h5pm | high | 6.4.4 |
+| zod | GHSA-mrhx-c7xc-m3w5 | high | 4.6.6 |
+| seroval | GHSA-p6vx-979v-rg4c, GHSA-jp82-f5mq-hwhp, GHSA-97r2-qh9m-474h, GHSA-wp97-x4hv-qvhp, GHSA-7rv5-mrxv-xcr9 | critical, high | 1.6.1, 1.6.3, 1.6.8, 1.6.8, 1.6.8 |
+
+Changes:
+
+- `extensions/measure-status/package.json`: happy-dom ^15.11.7 -> ^21.0.0,
+  vitest ^2.1.0 -> ^3.2.7, vite added at ^6.4.4, and the overrides
+  tinypool ^2.1.2 and zod ^4.6.6. The overrides cover the two parents with
+  no fixed release: vitest 3.2.7 pins tinypool ^1.1.1, and @openchamber/sdk
+  2.7.2 pins zod ^4.3.6. `bun.lock` refreshed.
+- `plugins/opencode-measure-guard/package.json`: the override seroval ^1.6.8.
+  solid-js stays 1.9.12 and the peer floors stay (@opencode/plugin >=2.0.0,
+  @opentui/* >=0.6.6, solid-js >=1.9.0). solid-js 1.9.x pins seroval ~1.5.0
+  and has no fixed release, so the override carries the fix. The guard's
+  `bun.lock` is gitignored, so only `package.json` is committed.
+- The lock of extensions/measure-status held stale nested entries
+  (`vitest/vite`, `vite-node/vite` at vite 5.4.21 and esbuild 0.21.5). Bun
+  kept them and `bun audit` read them. The entries were dropped and
+  `bun install` re-resolved them to the root vite 6.4.6 and esbuild 0.25.12.
+
+After counts (`bun audit --json`):
+
+- extensions/measure-status: 0 critical, 0 high, 3 moderate, 0 low
+- plugins/opencode-measure-guard: 0 critical, 0 high, 2 moderate, 0 low
+
+Held-back packages: none. Every package moved to a version that clears the
+critical and high advisories, and every command exits 0.
+
+Remaining moderates for `advisories.md` (Task 1.3):
+
+- @vitest/mocker GHSA-82fw-gwwq-j7x9 (moderate; fixed in 4.1.11)
+- @vitest/mocker GHSA-qxg6-89mg-rqv8 (moderate; fixed in 4.1.12)
+- vitest GHSA-82fw-gwwq-j7x9 (moderate; fixed in 4.1.11)
+- glob GHSA-3g3m-2fjr-6pw4 (moderate; vulnerable >=9.0.0 <=14.0.1, fixed in 14.0.2)
+- minimatch GHSA-g3hv-75wg-m249 (moderate; vulnerable >=7.0.0 <11.0.1, fixed in 11.0.1)
+
+## Step 3: bundle
+
+`bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=panel/main.js`
+rebuilds `extensions/measure-status/panel/main.js` byte for byte, so the file
+is unchanged in the commit. The plan's equality check
+(`bunx esbuild panel/main.ts --bundle --format=iife --platform=browser --outfile=/tmp/deps-main.js && cmp /tmp/deps-main.js panel/main.js`)
+exits 0.
+
+## Step 4: two defects the installed toolchain exposed
+
+Both defects pre-date this track; the guard folder had no `node_modules`, so
+no command of the plugin could run before Task 1.2.
+
+1. `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts` case V18
+   expected a CR-only allow entry to load as a folder. The parser rejects
+   every entry with a C0 control character since commit 6d2fdcf, and
+   `mods/measure-guard/README.md` states that rule (row 1). The sibling
+   cases V6 and V7 were updated in that commit; V18 was left behind and
+   failed. V18 now expects the folder list to be empty and the ignore reason
+   to be `has a control character`. The case still proves that no real path
+   opens.
+2. `src/core/guards.ts` returned `match[1]` under `noUncheckedIndexedAccess`,
+   so `bun x tsc --noEmit -p .` failed with TS2322. The fix is
+   `match[1] ?? null`; the regex always fills the group, so the runtime
+   behaviour does not change. The shared core lives in three copies, and the
+   two parity gates require identical copies, so the same one line changed
+   `mods/measure-guard/hooks/guards.ts` and
+   `plugins/dsh-measure-guard/src/core/guards.ts` as well. Those two folders
+   sit outside the scope of the spec.
+
+## Step 5: verification (each command through heavy-run.sh, HEAVY_MIN_AVAIL_MB=1500)
+
+- `cd extensions/measure-status && bunx tsc -p . --noEmit` -> exit 0
+- `cd extensions/measure-status && bunx vitest run` -> exit 0 (25 files, 431 tests passed)
+- `cd plugins/opencode-measure-guard && bun test` -> exit 0 (186 pass, 0 fail)
+- `cd plugins/opencode-measure-guard && bun x tsc --noEmit -p .` -> exit 0
+- `cd plugins/opencode-measure-guard && bash scripts/check-parity.sh` -> exit 0 (parity: ok)
+- `bash plugins/dsh-measure-guard/scripts/check-parity.sh` -> exit 0 (parity: ok)
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> exit 0 (parity: ok)
+- `bash tests/dsh/run.sh` -> exit 0 (15 passed, 0 failed)
+- `bash tests/deps_audit/test.sh` -> exit 0 (8 checks, PASS=8, FAIL=0)
+- bundle equality `cmp /tmp/deps-main.js panel/main.js` -> exit 0
+
+## Files changed
+
+- `tests/deps_audit/run.sh` (new, executable)
+- `tests/deps_audit/allow.txt` (new)
+- `extensions/measure-status/package.json`, `extensions/measure-status/bun.lock`
+- `plugins/opencode-measure-guard/package.json`
+- `plugins/opencode-measure-guard/src/core/guards.ts`
+- `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts`
+- `mods/measure-guard/hooks/guards.ts` (shared source of the guard core)
+- `plugins/dsh-measure-guard/src/core/guards.ts` (shared source copy)
+- `measure/tracks/deps_refresh_20261122/plan.md` (task markers)
+
+New files for the audit scope: `tests/deps_audit/run.sh` and
+`tests/deps_audit/allow.txt`. No file was added under `measure/tracks/`.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: deps_refresh_20261122
+phase: Phase 1: Critical and high advisories (due 2026-11-23)
+baseline_sha: 08c79f9
+commits: e5a09ad, 45ea9fd
+tests_run: bash tests/deps_audit/test.sh -> exit 0 (8 checks, PASS=8, FAIL=0); extensions/measure-status bunx tsc -p . --noEmit -> exit 0; extensions/measure-status bunx vitest run -> exit 0 (25 files, 431 tests); plugins/opencode-measure-guard bun test -> exit 0 (186 pass, 0 fail); plugins/opencode-measure-guard bun x tsc --noEmit -p . -> exit 0; both check-parity.sh scripts -> exit 0; bash tests/dsh/run.sh -> exit 0 (15 passed, 0 failed); bundle cmp -> exit 0; bun audit --json -> measure-status 0 critical, 0 high, 3 moderate, 0 low and opencode-measure-guard 0 critical, 0 high, 2 moderate, 0 low
+files_changed: tests/deps_audit/run.sh, tests/deps_audit/allow.txt, extensions/measure-status/package.json, extensions/measure-status/bun.lock, plugins/opencode-measure-guard/package.json, plugins/opencode-measure-guard/src/core/guards.ts, plugins/opencode-measure-guard/tests/allow-adversarial.test.ts, mods/measure-guard/hooks/guards.ts, plugins/dsh-measure-guard/src/core/guards.ts, measure/tracks/deps_refresh_20261122/plan.md
+plan_updates: Task 1.1 closed at 9764063 with the Red evidence line; Task 1.2 closed at e5a09ad with the Green evidence line; Task 1.3 left open
+known_failures: none in the Phase 1 commands; the role gate still reports the open Task 1.3
+handoff: Task 1.3 writes measure/tracks/deps_refresh_20261122/advisories.md. Use the after counts in this log (measure-status 0 critical, 0 high, 3 moderate, 0 low; opencode-measure-guard 0 critical, 0 high, 2 moderate, 0 low), the five remaining moderates with their fixed versions, and the note that no package was held back. Phase 2 can move vitest to 4.1.12, which clears the three vitest moderates, and glob to 14.0.2 and minimatch to 11.0.1, which clear the two guard moderates. Two changes reach outside the two folders of the spec: the shared guard core fix in mods/measure-guard/hooks/guards.ts and plugins/dsh-measure-guard/src/core/guards.ts, which the two parity gates require to stay identical to the plugin copy. The guard case V18 was aligned with the documented control-character rule of mods/measure-guard/README.md. The guard bun.lock is gitignored, so the guard commit holds package.json only.
+END_MEASURE_AGENT_RESULT

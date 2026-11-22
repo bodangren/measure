@@ -4,10 +4,6 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Dependency refresh for measure-status and opencode-measure-guard**
-  *Link: [./tracks/deps_refresh_20261122/](./tracks/deps_refresh_20261122/)*
-  *Dependency refresh for measure-status and opencode-measure-guard: latest working packages, zero critical and high advisories, a reasoned moderate/low list*
-
 ---
 
 ## Cancelled Tracks
@@ -533,3 +529,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Board keeps focus and shows a plain reason per card**
   *Link: [./archive/board_focus_reasons_20261121/](./archive/board_focus_reasons_20261121/)*
   *Board keeps focus and shows a plain reason per card*
+
+- [x] **Track: Dependency refresh for measure-status and opencode-measure-guard**
+  *Link: [./archive/deps_refresh_20261122/](./archive/deps_refresh_20261122/)*
+  *Dependency refresh for measure-status and opencode-measure-guard: latest working packages, zero critical and high advisories, a reasoned moderate/low list*

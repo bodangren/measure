@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: deps_refresh_20261122
+phase: Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+commits: none
+tests_run: Through heavy-run (p1, HEAVY_MIN_AVAIL_MB=1500), all 15 steps exit 0: measure-status tsc and extended diagnostics (TypeScript 7.0.2); vitest 5.1.1 (25 files, 431 tests); guard bun test (186 pass, 0 fail); guard tsc and extended diagnostics; guard check-parity; both repo parity gates; tests/dsh/run.sh (15 passed, 0 failed); deps_audit test.sh (PASS=8, FAIL=0); test-r2.sh (PASS=4, FAIL=0); run.sh (zero counts); esbuild 0.25.12 to /tmp and cmp with panel/main.js. Negative control: tsc --lib es5 exits 1 with 102 and 2 semantic errors. Fresh service bundle equals service/main.js. Live bun audit: both folders print {} and exit 0. The phase-acceptance role gate exits 0
+files_changed: measure/runs/deps_refresh_20261122/phase-acceptance-0809e62.json; measure/runs/deps_refresh_20261122/phase-acceptance-0809e62.log
+plan_updates: none
+known_failures: none
+handoff: PASS at 0809e62 with no blocker; retry_recommendation=none. Light lane confirmed: the panel bundle changed only through SDK 2.8.0, the panel calls no new SDK method, and the wire version is unchanged. Keep SDK 2.8.0 and the openchamber >=2.7.1 floor; the PM decides on a higher floor. The solid-js 2 hold stands on the peer range alone. TypeScript 7.0.2 does real checking. The decline of F-P2-2 is acceptable. New Nits: F-P2-3 (plan.md:33 cites 59db955 only; 2e8b71f is missing) and F-P2-4 (esbuild is not in the lock and the build uses a leftover 0.25.12; no clean install was run). One docs-only edit of plan.md:33 and plan.md:36 fixes F-P2-2 and F-P2-3. Contracts.md Round limit applies: this track had two remediation rounds, so the user decides on a third round. The 6 phase commits are local; origin/chore/deps-refresh holds dcffc7b; push only to that branch. Open PM decisions: the guard-core copies outside the two folders, and the openchamber floor. Facts changed: none.
+END_MEASURE_AGENT_RESULT

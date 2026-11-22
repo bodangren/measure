@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track": "deps_refresh_20261122",
+  "phase": "track closeout",
+  "baseline_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53",
+  "audited_head_sha": "0809e622c1fe3cf5149814aed129a3eca5567c53",
+  "status": "pass",
+  "summary": "Closeout passes at 0809e62. The track folder moved to measure/archive, the registry entry moved and matches the metadata description, and metadata records status done with five completed tasks. The closeout checker exited 0 before and after the commit. No bulky run artifact was deleted.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Pre-closeout HEAD is 0809e622c1fe3cf5149814aed129a3eca5567c53 on branch chore/deps-refresh with a clean tree.",
+    "final-acceptance-0809e62.json has status pass, role final-acceptance, audited_head_sha 0809e622c1fe3cf5149814aed129a3eca5567c53, which equals the pre-closeout HEAD. The orchestrator re-ran the gate with PASS and exit 0.",
+    "phase-acceptance-dcffc7b.json and phase-acceptance-0809e62.json both have status pass and audited HEADs dcffc7b and 0809e62.",
+    "The archived plan has five [x] tasks with commit SHA evidence, no [~], no [ ] and no [b] task, and no deferred closeout task.",
+    "measure/tracks.md has no active entry for the track. Its archived entry description equals the metadata description.",
+    "metadata.json records status done, actual_tasks 5, updated_at, completed 2026-11-22 and six deviation notes.",
+    "advisories.md records the PM acceptances of 2026-11-22 for the guard-core copies and the openchamber >=2.7.1 floor with @openchamber/sdk 2.8.0.",
+    "tech-debt.md resolves the V18 row with e5a09ad and adds three Low rows. It has 20 lines, below the 50-line limit.",
+    "The closeout checker printed INFO light lane, INFO no measure/generated folder and PASS closeout checks passed, with exit 0 before and after the commit.",
+    "A9 grep for the fixed active track path found nine hits, all inside the track's own documents. No test or script hardcodes the path, so no test fix was needed.",
+    "No lessons-learned row was added. The work was a dependency refresh with no durable reusable lesson."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain && git branch --show-current",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track deps_refresh_20261122 -> exit 0 before and after the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/deps_refresh_20261122/closeout-result-0809e62.json -> exit 0"
+  ],
+  "changed_files": [
+    "measure/archive/deps_refresh_20261122/",
+    "measure/archive/deps_refresh_20261122/automation-supervisor-closeout-manifest.json",
+    "measure/archive/deps_refresh_20261122/metadata.json",
+    "measure/archive/deps_refresh_20261122/advisories.md",
+    "measure/tracks.md",
+    "measure/tech-debt.md",
+    "measure/runs/deps_refresh_20261122/closeout.log",
+    "measure/runs/deps_refresh_20261122/closeout-result-8c9d76b.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: deps_refresh_20261122
+phase: Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+commits: none
+tests_run: All required commands pass through p1 heavy-run; panel 431 tests pass; guard 186 tests pass; both typechecks pass; audit tests pass 8 and 4 checks; fresh bundle cmp exits 0; both parity gates pass; DSH suite 15 pass; both audits print {}; extended diagnostics and in-memory TypeScript negative probes pass; role-gate exits 1 because F-P2-1 remains blocking
+files_changed: review-a-23372c2.json; review-a-23372c2.log
+plan_updates: none
+known_failures: F-P2-1 [Blocker] plugins/opencode-measure-guard/package.json:22 retains solid-js 1.9.12 without evaluating the available, peer-compatible 1.9.20 patch.
+handoff: Route F-P2-1 to Green with retry_recommendation=retry_implementation. The 2.x hold is justified, but it does not justify the older 1.9.x pin. Evaluate 1.9.20 and update the pin and records, or document a failing command. Recommend keeping SDK 2.8.0 and openchamber >=2.7.1 because every used host method and validator preserves the 2.7.1 wire contract. No live 2.7.1 host instance was tested. TypeScript 7 checks real files and enforces strict, null, index, and override rules. The corrected scope note is accurate. Facts changed: none.
+END_MEASURE_AGENT_RESULT

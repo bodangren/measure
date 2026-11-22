@@ -158,7 +158,8 @@ at 0.25.12. No file under `panel/` or `src/` changed.
 
 The extension still declares `openchamber >=2.7.1` in its `engines` field.
 The bundle now builds against @openchamber/sdk 2.8.0. This track did not
-change the declared floor. The PM can decide whether to raise it.
+change the declared floor. The PM accepted the openchamber >=2.7.1 floor with
+@openchamber/sdk 2.8.0 on 2026-11-22 and left the floor unchanged.
 
 ## Scope note
 
@@ -170,8 +171,8 @@ the spec.
    `plugins/dsh-measure-guard/src/core/guards.ts`. These files sit outside
    the two folders. The two parity gates require identical copies, so the
    one line had to change in all three files. The regex always fills the
-   group, so the runtime behaviour stays the same. The PM decision is
-   pending.
+   group, so the runtime behaviour stays the same. The PM accepted these two
+   guard-core copies on 2026-11-22.
 2. The V18 case sits in
    `plugins/opencode-measure-guard/tests/allow-adversarial.test.ts`. That
    path is inside the guard folder. The case changed to match the documented
@@ -180,8 +181,8 @@ the spec.
    rejects such an entry since commit 6d2fdcf. The sibling cases V6 and V7
    changed in that commit. The case still proves that no real path opens.
 
-Review A passed both items at dcffc7b with no findings. Review A does not
-replace the PM decision on the outside-folder change.
+Review A passed both items at dcffc7b with no findings. The PM accepted the
+outside-folder guard-core copies on 2026-11-22, separate from Review A.
 
 ## Phase 2 command exits
 

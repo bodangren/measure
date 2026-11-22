@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: blocked
+track: deps_refresh_20261122
+phase: Phase 1: Critical and high advisories (due 2026-11-23)
+commits: none
+tests_run: bun audit and bun audit --json in both folders return 1 with only moderate advisories; every wrapped test and probe returns 143 after cancellation during the shared lock wait; role-gate exits 1 because F1 and F2 remain blocking
+files_changed: review-a-815afa2.json; review-a-815afa2.log
+plan_updates: none
+known_failures: F1 [Blocker] tests/deps_audit/run.sh:114-124 accepts unknown or missing severity; F2 [Blocker] tests/deps_audit/run.sh:86-88 accepts an allowance without a reason; required tests and bundle equality remain unverified
+handoff: Route F1 and F2 to Green with retry_implementation. Both findings use static evidence because their probes did not start. The first lock wait exceeded 20 minutes. The lock holder was PID 1265902, priority p1, command ./forge all sprout-mom. Rerun all verification after remediation when the lock permits it. The guard copies preserve runtime behavior and satisfy parity. V18 corrects the documented control-character expectation and retains both path denials. Facts changed: none.
+END_MEASURE_AGENT_RESULT

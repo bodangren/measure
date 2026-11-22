@@ -1,0 +1,77 @@
+# Green log — Phase 2 Task 2.2 (deps_refresh_20261122)
+
+Role: measure-jr-green. phase_base_sha = dcffc7b. role_base_sha = 2097feb.
+HEAD at Green start: 2097feb (clean tree, verified before editing).
+Records commit: a0f6eea. Plan-evidence commit: 23372c2. Final Green HEAD: 23372c2.
+Branch: chore/deps-refresh. No push.
+
+Task 2.2 records the Phase 2 results. It changes only `advisories.md` and
+`plan.md`. It adds no code, no test, and no new file.
+
+## Bundle diff finding
+
+`git diff dcffc7b 2e8b71f -- extensions/measure-status/panel/main.js` shows
+one cause. The @openchamber/sdk 2.7.2 -> 2.8.0 update adds
+`dist/navigation.js`. That module defines `guestNavigationCalls`,
+`openWalkthrough`, and `GUEST_COMMIT_SHA`. The new `openCommit` uses a spread
+of those calls. The remaining lines drop an SDK comment and join SDK call
+lines. esbuild stayed at 0.25.12. No file under `panel/` or `src/` changed.
+
+The extension still declares `openchamber >=2.7.1` in its `engines` field.
+The bundle now builds against @openchamber/sdk 2.8.0. This track did not
+change the declared floor. The PM can decide whether to raise it.
+
+## Corrected Phase 1 scope note (finding F3)
+
+Only the guard-core copy reaches outside the two folders. The V18 case sits
+inside `plugins/opencode-measure-guard/tests/`. Review A passed both items at
+dcffc7b with no findings. The PM decision on the outside-folder change stays
+pending.
+
+## Record contents
+
+`advisories.md` at a0f6eea holds:
+
+- Phase 2 package changes with old and new versions in both folders.
+- The removed tinypool override and its reason.
+- The kept zod and seroval overrides and their reasons.
+- The new glob and minimatch overrides and resolved versions.
+- The after counts, dated 2026-11-22. Both folders hold 0 critical, 0 high,
+  0 moderate, and 0 low.
+- An empty moderate and low list. It names the four cleared GHSA ids:
+  GHSA-82fw-gwwq-j7x9, GHSA-qxg6-89mg-rqv8, GHSA-3g3m-2fjr-6pw4, and
+  GHSA-g3hv-75wg-m249.
+- The held-back solid-js 1.9.12 with its reason.
+- The unchanged peer floors: @opencode/plugin >=2.0.0, @opentui/* >=0.6.6,
+  solid-js >=1.9.0.
+- The bundle cause and the engines statement above.
+- The corrected scope note above.
+- Every Phase 2 command exit.
+
+## Targeted checks
+
+`HEAVY_MIN_AVAIL_MB=1500 GREEN_TEST_COMMAND="bash tests/deps_audit/test.sh && bash tests/deps_audit/test-r2.sh"`:
+
+- `bash tests/deps_audit/test.sh` -> exit 0 (8 checks, PASS=8, FAIL=0).
+- `bash tests/deps_audit/test-r2.sh` -> exit 0 (4 checks, PASS=4, FAIL=0).
+- `bash tests/deps_audit/run.sh` -> exit 0. measure-status: critical 0, high
+  0, moderate 0, low 0. opencode-measure-guard: critical 0, high 0, moderate
+  0, low 0.
+- `bun audit --json` -> `{}` in both folders.
+
+`plan.md` marks Task 2.1 [x] at 2e8b71f and Task 2.2 [x] at a0f6eea. Each
+line ends with the SHA of its work. No task is [~] or [b].
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: deps_refresh_20261122
+phase: Phase 2: Remaining updates and the moderate/low list (due 2026-11-25)
+baseline_sha: dcffc7b
+commits: a0f6eea, 23372c2
+tests_run: bash tests/deps_audit/test.sh -> exit 0 (8 checks, PASS=8, FAIL=0); bash tests/deps_audit/test-r2.sh -> exit 0 (4 checks, PASS=4, FAIL=0); bash tests/deps_audit/run.sh -> exit 0 (0 critical, 0 high, 0 moderate, 0 low in both folders); bun audit --json -> {} in both folders
+files_changed: measure/tracks/deps_refresh_20261122/advisories.md, measure/tracks/deps_refresh_20261122/plan.md
+plan_updates: Task 2.2 closed at a0f6eea with the Green evidence line in 23372c2; Task 2.1 stays [x] at 2e8b71f; no task moved to [b]
+known_failures: none
+handoff: phase_base_sha dcffc7b; role_base_sha 2097feb; final Green HEAD 23372c2. Task 2.2 flipped to [x] with SHA evidence at a0f6eea. No task flipped to [b]. No new file was added. The moderate and low list is empty in both folders. The four cleared GHSA ids are GHSA-82fw-gwwq-j7x9, GHSA-qxg6-89mg-rqv8, GHSA-3g3m-2fjr-6pw4, GHSA-g3hv-75wg-m249. The bundle diff comes only from @openchamber/sdk 2.8.0; esbuild stayed at 0.25.12 and no local source changed. The extension still declares openchamber >=2.7.1 while it builds against sdk 2.8.0; the PM can decide whether to raise the floor. The Phase 1 scope note now states that only the guard-core copy sits outside the two folders, that V18 sits inside the guard folder, that Review A passed both items, and that the PM decision stays pending. Phase 2 is complete. This role did not push.
+END_MEASURE_AGENT_RESULT
