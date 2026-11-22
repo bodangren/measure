@@ -8,5 +8,6 @@
   "description": "Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan",
   "estimated_tasks": 3,
   "actual_tasks": null,
-  "deviation_notes": ""
+  "deviation_notes": "",
+  "escalation": "third round: the round-3 re-review found a defect in the changed plan line (Review A F1 on 03c1970); records only"
 }
