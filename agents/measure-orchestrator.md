@@ -43,6 +43,45 @@ permissions:
     resource: "python3 */measure-orchestrator/scripts/measure_interphase_checks.py role-gate *"
     effect: allow
   - action: shell
+    resource: "python3 *measure_interphase_checks.py *"
+    effect: allow
+  - action: shell
+    resource: "export RED_TEST_COMMAND=*"
+    effect: allow
+  - action: shell
+    resource: "export GREEN_TEST_COMMAND=*"
+    effect: allow
+  - action: shell
+    resource: "export PROJECT_LINT=*"
+    effect: allow
+  - action: shell
+    resource: "export PROJECT_CHECKS=*"
+    effect: allow
+  - action: shell
+    resource: "export PROJECT_TESTS=*"
+    effect: allow
+  - action: shell
+    resource: "export PROJECT_DEV_URL=*"
+    effect: allow
+  - action: shell
+    resource: "export GENERATED_CHECK_COMMAND=*"
+    effect: allow
+  - action: shell
+    resource: "echo EXIT=*"
+    effect: allow
+  - action: shell
+    resource: "*/scripts/jobs/ra-quota pick *"
+    effect: allow
+  - action: shell
+    resource: "*/scripts/jobs/ra-quota status*"
+    effect: allow
+  - action: shell
+    resource: "*/scripts/jobs/ra-quota --fresh status*"
+    effect: allow
+  - action: shell
+    resource: "*/scripts/jobs/safe-push *"
+    effect: allow
+  - action: shell
     resource: "git commit*"
     effect: deny
   - action: shell
@@ -113,6 +152,9 @@ permissions:
     effect: allow
   - action: subagent
     resource: "coder"
+    effect: allow
+  - action: subagent
+    resource: "www-publisher"
     effect: allow
   - action: subagent
     resource: "copywriter"

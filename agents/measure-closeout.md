@@ -51,7 +51,18 @@ When a track is moved to `measure/archive/`, the next consideration is **A9
 hardcode `measure/tracks/<id>/plan.md`; after archive these tests will fail forever
 unless they also look in `measure/archive/<id>/plan.md`.
 
-If you encounter this:
+Check it actively; do not wait to encounter it (PM 2026-11-20, after the Graph
+closeout move broke 7 old Math checks that no gate saw):
+
+1. Before the move, grep the repository (tests, scripts, support files) for the fixed
+   path `measure/tracks/<track>/`. List each hit in the manifest.
+2. After the move, run the project test gate once through `scripts/jobs/heavy-run.sh`
+   (or the repo's heavy-run wrapper). Save only its summary lines.
+3. If a check fails because of the move, fix the reference as below in the same
+   closeout. If the fix needs a test change that is outside closeout scope, end with
+   `RESULT: FAIL` and name the files, so that the orchestrator runs a Red round.
+
+To fix a reference:
 
 - Fix the test to use a `track_dir_resolve()` helper (when `tests/_lib/` is installed).
 - Or, in the interim, update the test to check both paths.
