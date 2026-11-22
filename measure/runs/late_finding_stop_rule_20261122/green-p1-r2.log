@@ -1,0 +1,59 @@
+Phase 1 Green round 2 — Review A F1 — late_finding_stop_rule_20261122
+
+Immutable phase_base_sha: c49d008.
+role_base_sha for this round: 1dd106c1cc0f098ebdf55067071dc2843cad2502.
+Final Green HEAD: 88b31e5a05d438cc9b045edf0e151ccd4174220d.
+The tree is clean at this HEAD.
+
+Routed finding F1 is FIX.
+The two track-local ids are gone from the delivered contract text.
+Line 170 now reads "A one-fix-round finding under the wrong-result exception counts toward the Round limit count."
+Line 176 now reads "The reason states why the finding did or did not meet the wrong-result exception."
+Both sentences use the phrase that the stop-rule paragraph defines.
+No "FR-" string remains in contracts.md.
+
+New suite: tests/spec_review_gate/test_s5b_standalone.sh.
+It fails against the old text: 5 checks, PASS=2, FAIL=3.
+It passes against the new text: 5 checks, PASS=5, FAIL=0.
+It holds the standard mktemp guard, so test_mktemp_failure.sh passes 23 checks, PASS=23, FAIL=0.
+
+test_s5 DOES pin the old phrase.
+Case: "stop rule: a one-fix-round finding counts toward the Round limit" at line 163.
+The assertion is 'A one-fix-round finding under FR-2 counts toward the Round limit count.'
+The header also pins that phrase at line 23.
+test_s5 was not edited. A Red retry must update that case to the standalone phrase.
+
+Direct commands after the fix:
+  bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 1, 26 checks (PASS=25, FAIL=1, only the pinned FR-2 case).
+  bash tests/spec_review_gate/test_s5b_standalone.sh -> exit 0, 5 checks (PASS=5, FAIL=0).
+  bash tests/spec_review_gate/test_mktemp_failure.sh -> exit 0, 23 checks (PASS=23, FAIL=0).
+
+Heavy command after the fix:
+  HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'
+  Exit 1. 24 suites, 23 pass, 1 fail. The only failing suite is test_s5_late_finding_stop.sh.
+
+Commits:
+  081e6d2ba8a4c3e22c9b89437211786faebe085c — contracts.md text fix and the new suite.
+  88b31e5a05d438cc9b045edf0e151ccd4174220d — plan evidence with the SHA on Task 1.2.
+Tasks flipped to [x] this round: Task 1.2, with the SHA 081e6d2 at the end of the line.
+Tasks flipped to [b] this round: none.
+New files added: tests/spec_review_gate/test_s5b_standalone.sh.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+baseline_sha: c49d008
+role_base_sha: 1dd106c1cc0f098ebdf55067071dc2843cad2502
+commits: 081e6d2ba8a4c3e22c9b89437211786faebe085c (text and new suite); 88b31e5a05d438cc9b045edf0e151ccd4174220d (plan evidence)
+tests_run: test_s5_late_finding_stop.sh exit 1 (25 pass, 1 fail on the pinned FR-2 case); test_s5b_standalone.sh exit 0 (5 pass); test_mktemp_failure.sh exit 0 (23 pass); heavy-run full run.sh exit 1 (24 suites, 23 pass, 1 fail on test_s5)
+files_changed: skills/measure-orchestrator/references/contracts.md; tests/spec_review_gate/test_s5b_standalone.sh (new); measure/tracks/late_finding_stop_rule_20261122/plan.md
+plan_updates: Task 1.2 stays [x] with SHA 081e6d2 at the end of the line; the evidence line records the pending Red retry
+known_failures: test_s5 case "stop rule: a one-fix-round finding counts toward the Round limit" at line 163 pins the old FR-2 phrase; no other failure. A Red retry must update that case.
+new_files_added: tests/spec_review_gate/test_s5b_standalone.sh
+phase_base_sha: c49d008
+final_green_head: 88b31e5a05d438cc9b045edf0e151ccd4174220d
+dispositions: F1=FIX
+handoff: Review roles audit final Green HEAD 88b31e5 against immutable phase_base_sha c49d008. The delivered contract text now reads standalone. Route the pinned test_s5 case to a Red retry before the phase gate can pass. No task is deferred.
+END_MEASURE_AGENT_RESULT

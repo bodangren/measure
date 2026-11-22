@@ -1,0 +1,49 @@
+Phase acceptance log, track late_finding_stop_rule_20261122, Phase 1.
+Audited HEAD: 34789e724564bf3830cab04b33d472729a15ca52 (clean tree before and after the runs).
+phase_base_sha: c49d0088858785e53e67ee0e8e0eb87b14d62102. role_base_sha: 34789e724564bf3830cab04b33d472729a15ca52.
+
+Prerequisites (light lane: spec review plus Review A, no final acceptance):
+  spec review: PASS at c49d008 (spec.md unchanged since).
+  Review A round 1 at 1dd106c: inconclusive (heavy-run lock); Nit F1 fixed by 081e6d2.
+  Review A round 2 at 34789e7: PASS, same HEAD as this audit.
+  Review B, Review C, adversarial testing, and UX review are not required for this lane.
+
+Commands at HEAD (heavy-run, HEAVY_PRIORITY=p1, HEAVY_MIN_AVAIL_MB=1500):
+  bash tests/spec_review_gate/run.sh: exit 0, 24 suites (PASS=24, FAIL=0).
+  bash tests/dsh/run.sh: exit 0, 15 passed, 0 failed.
+  PROJECT_LINT, both check-parity.sh scripts: exit 0, parity: ok twice.
+  node --test plugins/dsh-measure-guard/tests/*.test.js: exit 0, 383 tests, 383 pass, 0 fail.
+
+Red proof (c49d008 documents plus HEAD tests, scratch fixture, removed after use):
+  test_s5_late_finding_stop.sh: exit 1, 26 checks (PASS=1, FAIL=25).
+  test_s5b_standalone.sh: exit 1, 5 checks (PASS=1, FAIL=4).
+Mutants (one file from an older commit, HEAD for the rest):
+  SKILL.md from c49d008: 2 FAIL. Each of the four role files from c49d008: 1 FAIL.
+  contracts.md from 1dd106c: test_s5 1 FAIL, test_s5b 3 FAIL.
+  contracts.md from c49d008: test_s5 19 FAIL.
+  HEAD control: test_s5 26 of 26, test_s5b 5 of 5.
+
+Prose check (ASD-STE100) of contracts.md lines 162 to 178:
+  Longest sentence: 22 words. Paragraph sentence counts: 1, 10, 2, 11, 10.
+  Three paragraphs break the 6-sentence limit (F1).
+
+Findings (all nonblocking): F1 Major (STE paragraphs), F2 Nit (Tooling versus test tooling),
+F3 Nit (stale round sentence in plan.md line 22), F4 Nit (plan.md scope claim and pinned counts).
+Late findings in this track: none. Phase 1 has two review rounds; no round reached round 3.
+
+Gate command (run on the JSON and this log):
+  python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track late_finding_stop_rule_20261122 --phase "Phase 1: Stop-rule text and doc test (due 2026-11-24)" --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-34789e7.json --log-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-34789e7.log
+  Result: exit 0, PASS: phase-acceptance gate passed.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: none
+tests_run: run.sh exit 0 (24 suites, PASS=24, FAIL=0); tests/dsh/run.sh exit 0 (15 passed, 0 failed); PROJECT_LINT exit 0 (parity ok twice); node --test exit 0 (383 pass, 0 fail); Red fixture at c49d008 exit 1 (PASS=1, FAIL=25); mutants fail as expected; HEAD control exit 0
+files_changed: measure/runs/late_finding_stop_rule_20261122/phase-acceptance-34789e7.json and .log
+plan_updates: none
+known_failures: none; four nonblocking findings stay open (F1 Major, F2 to F4 Nit)
+handoff: Acceptance passes at 34789e7 with no blocker. Decide on F1 (three over-long paragraphs) before closeout, because a later fix needs a new track. Fix F2 to F4 during closeout or record them in measure/tech-debt.md. Push only to origin/docs/late-finding-stop-rule (8 commits are unpushed). Installed copies carry the rule only after merge and an installer run.
+END_MEASURE_AGENT_RESULT

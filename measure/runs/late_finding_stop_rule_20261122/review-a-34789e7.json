@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Round-two review passes. The contract now uses standalone wording, the new regression test fails on old text and a missing deliverable, and both requested wrapped suites pass.",
+  "role": "review-a",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "Phase 1: Stop-rule text and doc test (due 2026-11-24)",
+  "baseline_sha": "c49d008",
+  "phase_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "34789e724564bf3830cab04b33d472729a15ca52",
+  "audited_head_sha": "34789e724564bf3830cab04b33d472729a15ca52",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "F1 withdrawn: `contracts.md:170,176` now names the wrong-result exception instead of the track-local FR-2 id; `test_s5b_standalone.sh` passes at HEAD and fails against the old 1dd106c contract wording.",
+    "Confirmed audited_head_sha equals HEAD 34789e724564bf3830cab04b33d472729a15ca52; the initial worktree was clean.",
+    "The exact c49d008..34789e7 phase diff contains the planned documentation files, plan, and two S5 tests; only the exception wording and S5 pin changed after round one.",
+    "No `test-strategy.md` exists for this active track; `plan.md` and `measure/gates.json` list the test commands.",
+    "`test_s5b_standalone.sh` on a temporary fixture with the old 1dd106c contract exited 1 with 3 FAIL; it detected the FR identifier and missing standalone phrases.",
+    "`test_s5b_standalone.sh` on a temporary fixture with an empty contracts.md exited 1 with 5 FAIL, including missing-file and empty-extract failures.",
+    "`red-p1-r2.log` has a final gap-closing result block with `red_kind: gap_closing`, a named gap, and a breakage proof.",
+    "`bash tests/spec_review_gate/run.sh` through the requested p1 heavy-run wrapper exited 0: 24 suites passed.",
+    "`bash tests/dsh/run.sh` through the requested p1 heavy-run wrapper exited 0: 15 passed, 0 failed.",
+    "The requested `review-a` role gate exited 0 with `PASS: review-a gate passed`.",
+    "Round-count definitions, both worked counts, the wrong-result exception, examples, and pointer lines remain consistent; the changed contract sentences contain no track-local ID.",
+    "The changed contract sentences and test comments use direct, active wording; no sentence in the changed prose exceeds 25 words."
+  ],
+  "commands": [
+    "git status --short && git rev-parse HEAD && git diff --name-status c49d008..HEAD — clean initial tree; HEAD=34789e724564bf3830cab04b33d472729a15ca52; exact phase diff reviewed",
+    "Temporary fixture with 1dd106c contracts.md running test_s5b_standalone.sh — OLD_TEXT_MUTANT_EXIT=1; PASS=2, FAIL=3",
+    "bash tests/spec_review_gate/test_s5b_standalone.sh — exit 0; PASS=5, FAIL=0",
+    "bash tests/spec_review_gate/test_s5_late_finding_stop.sh — exit 0; PASS=26, FAIL=0",
+    "Temporary fixture with empty contracts.md running test_s5b_standalone.sh — MISSING_DELIVERABLE_EXIT=1; PASS=0, FAIL=5",
+    "git diff --check c49d008..34789e7 — exit 0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0; 24 suites passed",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh' — exit 0; 15 passed, 0 failed",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track late_finding_stop_rule_20261122 --phase 'Phase 1: Stop-rule text and doc test (due 2026-11-24)' --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/review-a-34789e7.json --log-file measure/runs/late_finding_stop_rule_20261122/review-a-34789e7.log — exit 0; PASS: review-a gate passed"
+  ],
+  "changed_files": [
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "tests/spec_review_gate/test_s5_late_finding_stop.sh",
+    "tests/spec_review_gate/test_s5b_standalone.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The updated exception wording at `skills/measure-orchestrator/references/contracts.md:170,176` resolves F1 and preserves the Round limit fit."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "`test_s5b_standalone.sh` fails on old text and missing deliverables, and both requested heavy-run suites exited 0."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-only c49d008..34789e7` contains the planned docs, tests, and phase plan evidence."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The audit records baseline and missing-deliverable mutant exits, both wrapped suite results, provenance SHAs, and the gap-closing proof."
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "The paragraph split preserves meaning and meets the sentence limit. A changed plan line is already stale: it says no phase round reached round 3, while this remediation re-review is round 3.",
+  "role": "review-a",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "Phase 1: Stop-rule text and doc test (due 2026-11-24)",
+  "baseline_sha": "c49d008",
+  "phase_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "03c1970350f237989445b277d37fa76cab7ed176",
+  "audited_head_sha": "03c1970350f237989445b277d37fa76cab7ed176",
+  "blocking_findings": [
+    "F1 [Blocker] review-a: `measure/tracks/late_finding_stop_rule_20261122/plan.md:22` says no round reached round 3, but this is the phase's third Review A cycle after remediation commit 658bccc. This changed record line is false at the audited HEAD. Qualify the claim with its as-of HEAD or correct the current round record."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Confirmed audited_head_sha equals HEAD 03c1970350f237989445b277d37fa76cab7ed176; the initial worktree was clean.",
+    "The F1 plan line is part of the remediation diff `34789e7..03c1970`; `plan.md:22` states that no round reached round 3.",
+    "The late-finding definition in `skills/measure-orchestrator/references/contracts.md:164` counts each re-review after a remediation commit as a round; this review follows remediation commit 658bccc and is round 3 of the phase.",
+    "The paragraph split in `skills/measure-orchestrator/references/contracts.md:164-176` keeps each paragraph to six sentences or fewer.",
+    "`git diff --word-diff=porcelain 34789e7..03c1970 -- skills/measure-orchestrator/references/contracts.md` shows only the requested paragraph splits and the wording changes `would see` to `sees`, `would receive` to `receives`, `would be` to `is`, and `Tooling` to `Test tooling`.",
+    "The revised conditional preserves the Round limit boundary: a one-fix round that is the third remediation round does not start.",
+    "Plan lines 17-21 cite the breakage log and verification logs; the plan no longer pins test or suite counts, and the recorded command exits match their cited logs.",
+    "No `test-strategy.md` exists for this active track; the plan and `measure/gates.json` specify the test commands.",
+    "`bash tests/spec_review_gate/test_s5_late_finding_stop.sh` exited 0 with 26/26 checks; `bash tests/spec_review_gate/test_s5b_standalone.sh` exited 0 with 5/5 checks.",
+    "Missing-deliverable fixtures for both S5 tests exited 1: test_s5 had 26 failures, and test_s5b had 5 failures.",
+    "The p1 heavy-run spec-review suite exited 0 with 24 suites passed.",
+    "No new late finding outside the changed plan line was reported.",
+    "The requested review-a role gate exited 1 because a blocking finding prevents a passing audit."
+  ],
+  "commands": [
+    "git status --short && git rev-parse HEAD && git diff --name-status c49d008..HEAD — clean initial tree; HEAD=03c1970350f237989445b277d37fa76cab7ed176; exact phase diff reviewed",
+    "git diff --word-diff=porcelain 34789e7..03c1970 -- skills/measure-orchestrator/references/contracts.md — paragraph splits and the three requested wording substitutions only",
+    "bash tests/spec_review_gate/test_s5_late_finding_stop.sh — exit 0; 26 checks passed",
+    "bash tests/spec_review_gate/test_s5b_standalone.sh — exit 0; 5 checks passed",
+    "Temporary missing-deliverable fixtures for test_s5 and test_s5b — both exited 1; 26/26 and 5/5 checks failed, respectively",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0; 24 suites passed",
+    "git diff --check c49d008..03c1970 — exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track late_finding_stop_rule_20261122 --phase 'Phase 1: Stop-rule text and doc test (due 2026-11-24)' --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/review-a-03c1970.json --log-file measure/runs/late_finding_stop_rule_20261122/review-a-03c1970.log — exit 1; audit status must be pass, got fail"
+  ],
+  "changed_files": [
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "tests/spec_review_gate/test_s5_late_finding_stop.sh",
+    "tests/spec_review_gate/test_s5b_standalone.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 3,
+      "evidence": "`measure/tracks/late_finding_stop_rule_20261122/plan.md:22` has an inaccurate round-count claim, while `contracts.md:164-176` preserves the stop-rule meaning."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "Both direct S5 tests pass, both missing-deliverable fixtures fail, and the full spec-review suite passes 24 suites."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-only 34789e7..03c1970` contains only the plan and contract file."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The audit records exact SHAs, changed-line evidence, mutant results, direct test results, and the heavy-run exit."
+    }
+  ]
+}

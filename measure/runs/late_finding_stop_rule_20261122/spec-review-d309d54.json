@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "fail",
+  "summary": "Round 1 review of a documentation chore. The spec states the rule and its placement, but the round count, the wrong-result exception, and the Round limit boundary lack decidable definitions. One Blocker and three Major findings need author resolution before Green writes the contract text.",
+  "role": "spec-review",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "track setup",
+  "baseline_sha": "d309d545a0751765cacf44928ca9c8682c86b2d9",
+  "audited_head_sha": "d309d545a0751765cacf44928ca9c8682c86b2d9",
+  "blocking_findings": [
+    "F1 [Blocker] spec.md FR-1: The round count leaves two cases undecided: parallel Review A/B/C results, and a first adversarial run after review rounds. Rationale: The spec calls the first audit result round 1. It adds a round for a re-review or adversarial rerun only. It never says that A/B/C share one round. It never says that a first adversarial pass adds one. The 'after the second round' trigger changes with the reading. The plan leaves the choice to Green."
+  ],
+  "nonblocking_findings": [
+    "F2 [Major] spec.md FR-2: Comprehension gap: The exception 'can hide a wrong result in the delivered work' has no decidable test. Rationale: The spec gives two examples but no rule that separates delivered-work errors from test tooling. The exception is the only path to a fix round after round two. Different orchestrators can classify the same finding differently.",
+    "F3 [Major] spec.md FR-3: The fit does not say which rule wins when an FR-2 fix round would be the third remediation round. Rationale: FR-2 grants one fix round. Round limit forbids a third round without the metadata escalation key. FR-3 only says the fix round counts toward the Round limit count. The boundary needs a stated outcome before Green writes the text.",
+    "F4 [Major] plan.md Task 1.1: The plan claims every Red case fails, but it does not require each case to search only new text. Rationale: 'Round limit', 'base track', and 're-review' already appear in contracts.md. A case matching those strings passes at Red. The failing-first proof then breaks.",
+    "F5 [Nit] spec.md FR-4: The phrase 'the phase's plan.md' can name a per-phase plan file, but the repo holds one plan.md per track. Rationale: The record-line form is exact. Only the file phrase needs a target such as the track plan under the current phase."
+  ],
+  "evidence": [
+    "HEAD d309d545a0751765cacf44928ca9c8682c86b2d9 equals audited_head_sha; git status --porcelain is empty; branch is docs/late-finding-stop-rule.",
+    "Review standard read at ~/.agents/skills/measure/references/spec-review.md; repository copy has the same size and heading.",
+    "Contracts standard read at skills/measure-orchestrator/references/contracts.md; Re-review scope at line 158, Round limit at line 160.",
+    "The Round limit counts remediation rounds per base track with an escalation key for a third round; the stop rule counts review and adversarial rounds per phase; the two counters differ and the boundary is not stated.",
+    "FR-1 says the first audit result is round 1 and each re-review or adversarial rerun adds one. A first adversarial pass after review rounds is not a rerun, so its round number is undefined.",
+    "FR-2 gives the gate-script and wrong-dashboard-number examples but no general test for the exception; FR-5 repeats the same two examples.",
+    "FR-5 Math D1 example matches the spec narrative at line 9: a fourth-round finding on the phase's own gate script goes to tech-debt.",
+    "FR-4 gives the exact record line '- Late finding <id>: <tech-debt|one-fix-round> (<reason>)' and places records in the phase plan.md; the repo holds one plan.md per track.",
+    "No live copy of the rule text needs an update: 'Round limit' appears only in contracts.md, the archive, the 2026-11-10 review, and this track. claude-skills/ and skills/measure-orchestrator-workspace/ have no match. claude-skills/measure.skill is an April 2026 zip of the base measure skill with no orchestrator contracts.",
+    "All seven targeted new strings are absent from contracts.md at baseline (**Late-finding stop rule.**, tech-debt, one-fix-round, Late finding, per base track, delivered work, wrong result), so Red cases anchored in new text can fail.",
+    "test_s5_late_finding_stop.sh is absent at baseline, as expected before Red; run.sh globs test_*.sh and will pick it up.",
+    "test_s2_role_docs.sh pins SKILL.md Role Order, Spec review gate, Model Selection, and Inter-Phase Checks; those sections are outside ## Contracts, so one pointer line there keeps the pins.",
+    "Each of the four named role files holds the re-review CONTEST paragraph; a case-insensitive grep for 'round' finds no match in them, so FR-6's no-round-logic claim holds."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> d309d545a0751765cacf44928ca9c8682c86b2d9",
+    "git status --porcelain -> empty",
+    "grep -rln 'Round limit' . -> contracts.md, archive/orchestrator_process_fixes_20261111, measure/reviews/2026-11-10-orchestrator-process-review.md, this track's spec.md and plan.md",
+    "grep -cF for seven new strings in contracts.md -> 0 for each",
+    "unzip -l claude-skills/measure.skill -> 2026-04-25 base measure skill files, no orchestrator contracts",
+    "audit-result --role spec-review --file ... -> PASS: audit result is valid (exit 0)",
+    "role-gate --repo . --role spec-review --track late_finding_stop_rule_20261122 --phase 'track setup' --baseline d309d54 -> exit 1: audit status must be pass, got 'fail' (F1 Blocker)"
+  ],
+  "changed_files": [
+    "measure/runs/late_finding_stop_rule_20261122/spec-review-d309d54.json",
+    "measure/runs/late_finding_stop_rule_20261122/spec-review-d309d54.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This track documents a stop rule for late findings in the measure-orchestrator skill. After the second review or adversarial round of a phase, a new finding goes to measure/tech-debt.md instead of Green. A finding that can hide a wrong result in the delivered work gets one fix round. The orchestrator records each call and its reason in the phase plan. The rule text, a record-line form, a two-rule fit, and an example go in contracts.md, with pointer lines in SKILL.md and four role files.",
+    "current_system": "Per the spec, contracts.md holds the Re-review scope rule and the Round limit rule. Re-review scope keeps a kept routed finding and a defect in changed lines blocking, and treats other new findings as nonblocking. Round limit sends open findings to the user after the second remediation round for a base track, with an escalation key escape hatch for a third round. SKILL.md points to contracts.md under its Contracts section. The four named role files hold only re-review CONTEST handling and no round logic."
+  }
+}

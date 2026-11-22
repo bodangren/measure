@@ -1,0 +1,42 @@
+Phase 1 Green — late_finding_stop_rule_20261122
+
+Immutable phase_base_sha: c49d008 (c49d008 full sha supplied by the orchestrator).
+Separate role_base_sha: 39cf9f5f6a063dfbc6cb49ec54e19056af4474a9.
+Final Green HEAD: 1dd106c1cc0f098ebdf55067071dc2843cad2502.
+The committed Red change 39cf9f5 is the only commit in c49d008..HEAD at Red time.
+
+Targeted Red command before the Green text:
+  bash tests/spec_review_gate/test_s5_late_finding_stop.sh
+  Exit 1. 26 checks: PASS=1, FAIL=25. Only the file-exists precondition passed.
+
+Targeted command after the Green text:
+  bash tests/spec_review_gate/test_s5_late_finding_stop.sh
+  Exit 0. 26 checks: PASS=26, FAIL=0.
+  The heavy-run wrapper also returned exit 0 with 26 checks, 26 pass.
+
+Other gates after the Green text:
+  bash tests/spec_review_gate/run.sh -> exit 0, 23 suites, 23 pass.
+  PROJECT_CHECKS bash tests/dsh/run.sh -> exit 0, 15 passed, 0 failed.
+  PROJECT_LINT both check-parity.sh -> exit 0, "parity: ok" from each script.
+  node --test plugins/dsh-measure-guard/tests/*.test.js -> exit 0, 383 tests pass.
+
+Tasks flipped to [x], each with commit SHA evidence:
+  Task 1.1 -> [x] with 39cf9f5, the committed Red test.
+  Task 1.2 -> [x] with 0b5c1541a34bfc403356377a0d31d475763ebf0b, the text commit.
+  Task 1.3 -> [x] with 4bdb3d3a20f085e4d9d9ce971124cde880730e27, the plan-evidence commit.
+Tasks flipped to [b] with deferred owner: none.
+New files added: none. The Green change edited only existing files.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+baseline_sha: c49d008
+commits: 0b5c1541a34bfc403356377a0d31d475763ebf0b (text); 4bdb3d3a20f085e4d9d9ce971124cde880730e27 (plan evidence for 1.1 and 1.2); 1dd106c1cc0f098ebdf55067071dc2843cad2502 (plan evidence for 1.3)
+tests_run: bash tests/spec_review_gate/test_s5_late_finding_stop.sh exit 0 (26 checks, 26 pass, also via heavy-run); bash tests/spec_review_gate/run.sh exit 0 (23 suites, 23 pass); bash tests/dsh/run.sh exit 0 (15 passed, 0 failed); both check-parity.sh exit 0; node --test plugins/dsh-measure-guard/tests/*.test.js exit 0 (383 tests pass)
+files_changed: skills/measure-orchestrator/references/contracts.md; skills/measure-orchestrator/SKILL.md; agents/measure-review-a-correctness.md; agents/measure-review-b-security.md; agents/measure-review-c-ux-api.md; agents/measure-adversarial-testing.md; measure/tracks/late_finding_stop_rule_20261122/plan.md
+plan_updates: Task 1.1 [x] with 39cf9f5; Task 1.2 [x] with 0b5c154 and one evidence line; Task 1.3 [x] with 4bdb3d3, command exits, and "Late finding: none" for the spec review round and the Red round so far
+known_failures: none
+handoff: Review roles receive final Green HEAD 1dd106c1cc0f098ebdf55067071dc2843cad2502 against immutable phase_base_sha c49d008. New files: none. The stop-rule text sits in contracts.md after the Round limit paragraph; one pointer line sits under SKILL.md ## Contracts; one pointer line sits in each of the four role files. No routed findings in this brief. No task is deferred. RESULT: PASS
+END_MEASURE_AGENT_RESULT

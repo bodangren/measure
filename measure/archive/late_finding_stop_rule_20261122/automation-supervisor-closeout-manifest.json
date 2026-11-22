@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "late_finding_stop_rule_20261122",
+  "track_title": "Late-finding stop rule for the measure-orchestrator skill",
+  "lane": "light",
+  "closeout_baseline_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "audited_head_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "closeout_commit_sha": "pending (written before the commit; see MEASURE_AGENT_RESULT and git log after commit)",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/late_finding_stop_rule_20261122/spec-review-d309d54.json", "status": "fail", "audited_head_sha": "d309d545a075", "note": "Pre-Green spec review that raised the findings; not an accepted audit. The passing run follows."},
+    {"role": "spec-review", "artifact": "measure/runs/late_finding_stop_rule_20261122/spec-review-c49d008.json", "status": "pass", "audited_head_sha": "c49d00888587"},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/review-a-1dd106c.json", "status": "inconclusive", "audited_head_sha": "1dd106c1cc0f", "note": "Round 1 was inconclusive because of the heavy-run lock; round 2 ran the suites."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/review-a-34789e7.json", "status": "pass", "audited_head_sha": "34789e724564"},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/review-a-03c1970.json", "status": "fail", "audited_head_sha": "03c1970350f2", "note": "Round 3 raised one blocker on the changed plan line; remediated, and round 4 passed."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/review-a-1c04a3b.json", "status": "pass", "audited_head_sha": "1c04a3b79757", "note": "Round 4 passed at the pre-closeout HEAD with no finding."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/phase-acceptance-34789e7.json", "status": "pass", "audited_head_sha": "34789e724564", "note": "Superseded by the run at 1c04a3b."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.json", "status": "pass", "audited_head_sha": "1c04a3b79757", "note": "Gating phase acceptance at the pre-closeout HEAD; no finding."},
+    {"role": "closeout", "artifact": "measure/runs/late_finding_stop_rule_20261122/closeout.log", "status": "pass", "note": "Baseline checker exit 1 before the archive move; pre-commit and post-commit runs exit 0."}
+  ],
+  "models": "Light lane. Review A ran on substituted routes; final acceptance was not run. See metadata.json deviation_notes.",
+  "commands": [
+    "git rev-parse HEAD && git branch --show-current && git status --porcelain -> 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5, docs/late-finding-stop-rule, clean tree",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 -> exit 1 on the untouched pre-closeout state (active track still present, no archive, metadata not done, no manifest, no final acceptance)",
+    "grep -rn 'measure/tracks/late_finding_stop_rule_20261122/' tests/ mods/ plugins/ scripts/ agents/ skills/ -> no match (A9)",
+    "grep -nE '^\\s*- \\[[ ~x]\\]' measure/tracks/late_finding_stop_rule_20261122/plan.md -> three [x] lines, zero [~] and zero [ ]",
+    "git mv measure/tracks/late_finding_stop_rule_20261122 measure/archive/late_finding_stop_rule_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 -> exit 0 before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/late_finding_stop_rule_20261122/closeout-1c04a3b.json -> exit 0",
+    "git add measure/archive/late_finding_stop_rule_20261122 measure/tracks.md && git add -f measure/runs/late_finding_stop_rule_20261122 && git commit -m 'measure(closeout): archive late_finding_stop_rule_20261122'",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 -> exit 0 after the commit"
+  ],
+  "task_shas": {
+    "1.1": "39cf9f5, 24cf00e",
+    "1.2": "081e6d2, 658bccc",
+    "1.3": "4bdb3d3"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (no false-claim text in the plan; each claim cites a real SHA or log)",
+    "a6_registry_check": "pass (the archived registry note is neutral and claims no adversarial test state)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep -rn 'measure/tracks/late_finding_stop_rule_20261122/' tests/ mods/ plugins/ scripts/ agents/ skills/",
+    "result": "no match; matches exist only inside measure/runs/late_finding_stop_rule_20261122/ evidence files, which are retained and are not tests",
+    "test_fix": "none"
+  },
+  "retained_evidence": [
+    "measure/runs/late_finding_stop_rule_20261122/ (all Red, Green, review, phase-acceptance, closeout logs and JSON results; retained, nothing deleted)",
+    "measure/archive/late_finding_stop_rule_20261122/ (index, plan, spec, spec-review, metadata, and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "lessons_and_tech_debt": {
+    "lessons_learned_updated": false,
+    "tech_debt_updated": false,
+    "note": "Phase acceptance raised no finding. No new lesson or tech-debt row is warranted. The deviations are in metadata.json."
+  },
+  "out_of_repository_facts": [
+    "measure/runs/ is gitignored. The closeout log, audit result, and all run evidence were force-added to git with git add -f."
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

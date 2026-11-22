@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: none
+tests_run: test_s5 exited 0 (26/26); test_s5b exited 0 (5/5); missing-deliverable fixtures exited 1 for both tests; p1 heavy-run spec-review suite exited 0 (24 suites passed); role-gate exited 1 on blocker F1
+files_changed: measure/runs/late_finding_stop_rule_20261122/review-a-03c1970.json and .log
+plan_updates: none
+known_failures: F1 Blocker: plan.md:22 says no round reached round 3, but this re-review is round 3 after 658bccc
+handoff: route F1 to Green; the changed plan line needs an as-of qualifier or a current round record
+END_MEASURE_AGENT_RESULT

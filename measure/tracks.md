@@ -4,10 +4,6 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Late-finding stop rule for the measure-orchestrator skill**
-  *Link: [./tracks/late_finding_stop_rule_20261122/](./tracks/late_finding_stop_rule_20261122/)*
-  *After the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan.*
-
 ---
 
 ## Cancelled Tracks
@@ -529,3 +525,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Generated check error names path and state**
   *Link: [./archive/generated_check_error_20261119/](./archive/generated_check_error_20261119/)*
   *Closeout generated check names the gates.json path and state*
+
+- [x] **Track: Late-finding stop rule for the measure-orchestrator skill**
+  *Link: [./archive/late_finding_stop_rule_20261122/](./archive/late_finding_stop_rule_20261122/)*
+  *Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan*

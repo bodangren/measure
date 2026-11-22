@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: none
+tests_run: old-text S5b mutant exited 1 (3 fail); missing-deliverable S5b fixture exited 1 (5 fail); test_s5 passed 26/26; test_s5b passed 5/5; spec-review suite passed 24/24 through p1 heavy-run; dsh suite passed 15/15 through p1 heavy-run; role-gate passed
+files_changed: measure/runs/late_finding_stop_rule_20261122/review-a-34789e7.json and .log
+plan_updates: none
+known_failures: none
+handoff: F1 withdrawn; the contract wording is standalone; both required wrapped suites passed
+END_MEASURE_AGENT_RESULT

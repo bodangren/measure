@@ -1,0 +1,35 @@
+Closeout log for track late_finding_stop_rule_20261122 (light lane, chore).
+
+Pre-closeout HEAD is 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 on branch
+docs/late-finding-stop-rule. The tree is clean. The gating phase-acceptance
+result phase-acceptance-1c04a3b.json has status pass and audited_head_sha equal
+to that HEAD. Review A round 4 at 1c04a3b also passed with no finding.
+
+The plan has three [x] tasks, each with a commit SHA: 39cf9f5 and 24cf00e
+(Task 1.1), 081e6d2 and 658bccc (Task 1.2), and 4bdb3d3 (Task 1.3). There is
+no [~] task, no [ ] task, and no [b] task. The plan has no false-claim text.
+The registry note makes no adversarial-test claim.
+
+Actions: git mv of the track folder to measure/archive/; active entry removed
+from measure/tracks.md and an archived entry added; metadata set to done with
+actual_tasks 3, completed 2026-11-22, updated_at, and six deviation notes;
+closeout manifest written in the archive; this log and the closeout audit
+result written in measure/runs/. No test needed a path fix (A9).
+
+Checker exit before any change: 1 (expected: active folder present, no archive,
+metadata not done, no manifest). Checker exit after the changes and before the
+commit: 0. Checker exit after the commit: see MEASURE_AGENT_RESULT below.
+The audit result closeout-1c04a3b.json validates with the checker.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: pass
+track: late_finding_stop_rule_20261122
+phase: track closeout
+commits: Task 1.1 39cf9f5,24cf00e; Task 1.2 081e6d2,658bccc; Task 1.3 4bdb3d3; closeout commit pending at write time (pre-closeout HEAD 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5)
+tests_run: closeout checker exit 1 before changes and exit 0 before and after commit; audit-result closeout validation exit 0; A9 grep no match in tests/mods/plugins/scripts/agents/skills; plan marker scan three [x], zero [~], zero [ ], zero [b]
+files_changed: measure/tracks.md; measure/archive/late_finding_stop_rule_20261122/metadata.json; measure/archive/late_finding_stop_rule_20261122/automation-supervisor-closeout-manifest.json; moved folder measure/tracks/late_finding_stop_rule_20261122 to measure/archive/late_finding_stop_rule_20261122; measure/runs/late_finding_stop_rule_20261122/closeout.log; measure/runs/late_finding_stop_rule_20261122/closeout-1c04a3b.json (force-added)
+plan_updates: none; the plan was already closeout-clean with three [x] tasks and SHA evidence
+known_failures: baseline closeout checker exit 1 is expected on the untouched pre-closeout state; historical spec-review-d309d54 (fail), review-a-1dd106c (inconclusive), review-a-03c1970 (fail) and phase-acceptance-34789e7 (superseded) are recorded and superseded by passing runs at c49d008 and 1c04a3b
+handoff: closed track archived; metadata done; checker passes after commit; no question for the orchestrator; no final acceptance in the light lane; nothing pushed
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,60 @@
+Phase acceptance log, round 2, track late_finding_stop_rule_20261122, Phase 1.
+Audited HEAD: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 (clean tree before and after the runs).
+phase_base_sha: c49d0088858785e53e67ee0e8e0eb87b14d62102. role_base_sha: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5.
+
+Prerequisites (light lane: spec review plus Review A, no final acceptance):
+  spec review: PASS at c49d008 (spec.md unchanged since).
+  Review A round 1 at 1dd106c: inconclusive (heavy-run lock); Nit F1 fixed by 081e6d2.
+  Review A round 2 at 34789e7: PASS.
+  Review A round 3 at 03c1970: FAIL, one blocker (stale round claim at plan.md:22); fixed by 1c04a3b.
+  Review A round 4 at 1c04a3b: PASS, same HEAD as this audit.
+  Review B, Review C, adversarial testing, and UX review are not required for this lane.
+
+Closure of my round-1 findings (result phase-acceptance-34789e7.json):
+  F1 closed: nine paragraphs on contracts.md lines 162 to 178 hold 1, 5, 5, 2, 5, 6, 5, 5, 1 sentences. The word "would" occurs 0 times.
+  F2 closed: contracts.md:170 reads "Test tooling, gate scripts, fixtures, logs, and records do not meet this test."
+  F3 closed: plan.md:22 lists Review A rounds 1 to 3 with their HEADs and keeps "Late finding: none".
+  F4 closed: plan.md:18 names test_s5b_standalone.sh. No pinned count remains in the plan.
+
+Text diff 34789e7..658bccc (contracts.md):
+  Three word changes plus paragraph splits. After whitespace collapse, the old text with the three substitutions equals the new text.
+  Tooling becomes Test tooling. "would see or receive" becomes "sees or receives". "would be the third remediation round" becomes "is the third remediation round".
+  contracts.md is unchanged between 658bccc and HEAD.
+
+Escalation key: valid under the Round limit (contracts.md:160). metadata.json holds a non-empty escalation reason.
+  review-a-03c1970.json F1 is a defect in plan.md:22, a line that 03c1970 changed. The reason is true.
+Plan: honest. Late finding: none stays true. plan.md:22 is an as-of record of Review A rounds 1 to 3.
+  Review A round 4 on 1c04a3b raised no finding.
+
+Commands at HEAD:
+  test_s5_late_finding_stop.sh (direct): exit 0, 26 checks (PASS=26, FAIL=0).
+  test_s5b_standalone.sh (direct): exit 0, 5 checks (PASS=5, FAIL=0).
+  heavy-run p1, bash tests/spec_review_gate/run.sh: exit 0, 24 suites (PASS=24, FAIL=0). Start 19:17:10, end 19:20:54, lock wait about 2 minutes.
+  tests/dsh/test-registry.sh (direct): exit 0.
+Not re-run at HEAD: the whole dsh suite, PROJECT_LINT, and the node tests. The brief did not name them.
+  Their 34789e7 results stand. Only contracts.md, plan.md, and metadata.json changed since 34789e7, and no suite names contracts.md.
+
+Prose check (ASD-STE100) of contracts.md lines 162 to 184:
+  Every paragraph holds 6 sentences or less (the maximum is 6, on line 172). The longest sentence has 22 words (24 with the bold label on line 162).
+  My round-1 F3 text ("no round reached round 3") was time-bound. It became false at Review A round 3 and caused the third remediation round.
+  The fix in 1c04a3b records each round with its HEAD.
+
+New findings: none. Late findings in this round: none.
+
+Gate command (run on the JSON and this log):
+  python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track late_finding_stop_rule_20261122 --phase "Phase 1: Stop-rule text and doc test (due 2026-11-24)" --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.json --log-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.log
+  Result: exit 0, PASS: phase-acceptance gate passed.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: none
+tests_run: test_s5_late_finding_stop.sh exit 0 (26 checks, PASS=26, FAIL=0); test_s5b_standalone.sh exit 0 (5 checks, PASS=5, FAIL=0); p1 heavy-run spec_review_gate/run.sh exit 0 (24 suites, PASS=24, FAIL=0); tests/dsh/test-registry.sh exit 0; not re-run at HEAD: whole dsh suite, PROJECT_LINT, node tests (34789e7 results stand)
+files_changed: measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.json and .log
+plan_updates: none
+known_failures: none; no finding is open
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX
+handoff: Acceptance passes at 1c04a3b with no blocker and no new finding. At closeout, record test_s5b_standalone.sh and the escalation key in deviation_notes of metadata.json, because spec.md Scope says no other files change. Push only to origin/docs/late-finding-stop-rule (11 commits are unpushed). Installed copies carry the rule only after merge and an installer run.
+END_MEASURE_AGENT_RESULT
