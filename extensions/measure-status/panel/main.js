@@ -1987,16 +1987,30 @@ ${GUEST_UI_LOOK_CSS}`;
   var PHASE = /^## Phase\b/;
   var SECTION = /^#{1,2} /;
   var TASK = /^- \[([ ~xb])\] (.*)$/;
+  var SUB_BULLET = /^\s*[-*+]\s/;
+  var INDENTED = /^\s+\S/;
   var SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/;
   var CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/;
-  var OWNER = /\bdeferred:([A-Za-z0-9._-]*)/;
+  var OWNER = /\bdeferred:([A-Za-z0-9._;-]*)/;
   var LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/;
   var BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/;
   var ownerToken = (text) => {
     const match = OWNER.exec(text);
     if (match === null) return null;
-    const token = (match[1] ?? "").replace(/[._-]+$/, "");
+    const token = (match[1] ?? "").replace(/[._;-]+$/, "");
     return token === "" ? null : token;
+  };
+  var ownerOf = (lines, at, firstLine) => {
+    const own = ownerToken(firstLine);
+    if (own !== null) return own;
+    for (let j = at + 1; j < lines.length; j += 1) {
+      const line = lines[j] ?? "";
+      if (SECTION.test(line) || TASK.test(line) || SUB_BULLET.test(line)) break;
+      if (!INDENTED.test(line)) continue;
+      const found = ownerToken(line);
+      if (found !== null) return found;
+    }
+    return null;
   };
   var taskLabel = (text) => {
     const withoutCheckpoint = text.replace(CHECKPOINT, " ");
@@ -2058,8 +2072,10 @@ ${GUEST_UI_LOOK_CSS}`;
   };
   var parsePlan = (md) => {
     const plan = { phases: [] };
+    const lines = md.split("\n");
     let phase = null;
-    md.split("\n").forEach((line, i) => {
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i] ?? "";
       if (SECTION.test(line)) {
         phase = null;
         if (PHASE.test(line)) {
@@ -2071,19 +2087,20 @@ ${GUEST_UI_LOOK_CSS}`;
           };
           plan.phases.push(phase);
         }
-        return;
+        continue;
       }
-      const task = phase === null ? null : TASK.exec(line);
-      if (phase === null || task === null) return;
+      if (phase === null) continue;
+      const task = TASK.exec(line);
+      if (task === null) continue;
       const text = (task[2] ?? "").trim();
       phase.tasks.push({
         line: i,
         marker: task[1] ?? " ",
         text,
         sha: SHA.exec(text)?.[1] ?? null,
-        deferredOwner: ownerToken(text)
+        deferredOwner: ownerOf(lines, i, text)
       });
-    });
+    }
     return plan;
   };
   var isOpen = (task) => task.marker === " " || task.marker === "~" || task.marker === "b" && task.deferredOwner === null;
@@ -2144,8 +2161,8 @@ ${GUEST_UI_LOOK_CSS}`;
   var COLUMN_LABELS = {
     planned: "Planned",
     "in-progress": "In progress",
-    blocked: "Blocked",
-    waiting: "Waiting on Daniel",
+    blocked: "Waits for PM",
+    waiting: "Waits for Daniel",
     done: "Done"
   };
   var COLUMN_CAP = 8;
@@ -2153,21 +2170,27 @@ ${GUEST_UI_LOOK_CSS}`;
   var DONE_WINDOW_DAYS = 14;
   var DAY_MS = 864e5;
   var STALE_DAYS = 30;
-  var DANIEL_TOKENS = /* @__PURE__ */ new Set([
-    "daniel",
-    "user",
-    "owner",
-    "po",
-    "product-owner",
-    "human",
-    "human-gated",
-    "both-owners"
-  ]);
-  var isDanielToken = (token) => {
-    if (token === null) return false;
-    const lower = token.toLowerCase();
-    return DANIEL_TOKENS.has(lower) || lower.startsWith("owner-") || lower.startsWith("daniel-");
+  var DASH = " \u2014 ";
+  var GATE_WORDS = [
+    { gate: "deletion", words: ["delete", "deletion"] },
+    { gate: "paid spend", words: ["paid", "spend"] },
+    { gate: "deploy", words: ["deploy", "traffic"] },
+    { gate: "public date", words: ["public"] },
+    { gate: "sudo or login", words: ["sudo", "login"] },
+    { gate: "proof", words: ["proof"] },
+    { gate: "Thai check", words: ["thai"] },
+    { gate: "look", words: ["look", "manual"] }
+  ];
+  var gateForOwner = (owner) => {
+    if (owner === null || owner === "") return null;
+    const words = owner.toLowerCase().split(/[-_.;]+/).filter((word) => word !== "");
+    for (const entry of GATE_WORDS) {
+      if (words.some((word) => entry.words.includes(word))) return entry.gate;
+    }
+    return null;
   };
+  var isClosedVerification = (text) => /user manual verification/i.test(text) && /deferred|no visible change/i.test(text);
+  var FIRST_NOT_DONE = (task) => task.marker !== "x";
   var lastDoneIndex = (tasks) => {
     let out = -1;
     tasks.forEach((task, index) => {
@@ -2204,15 +2227,19 @@ ${GUEST_UI_LOOK_CSS}`;
   var trackIdOf = (folder) => folder === null ? "" : folder.split("/").pop() ?? "";
   var r2Card = (base, marker, plan) => {
     const note = plan.kind === "unreadable" ? "Plan unreadable" : "No plan.";
-    const column = marker === "b" ? "blocked" : marker === "~" ? "in-progress" : "planned";
+    const reasonNote = note.endsWith(".") ? note : `${note}.`;
+    const registryBlocked = marker === "b";
+    const column = registryBlocked ? "blocked" : marker === "~" ? "in-progress" : "planned";
     return {
       ...base,
       column,
+      state: registryBlocked ? "waits-pm" : "next",
+      reason: registryBlocked ? "Waits for PM: registry marker [b]" : `Next in line: ${reasonNote}`,
       position: null,
       marker: null,
       taskText: null,
       note,
-      line: column === "blocked" ? "Registry marker [b]." : null,
+      line: registryBlocked ? "Registry marker [b]." : null,
       doneDate: null,
       doneSource: null,
       archived: false
@@ -2232,6 +2259,8 @@ ${GUEST_UI_LOOK_CSS}`;
       return {
         ...base,
         column: "done",
+        state: "done",
+        reason: null,
         position: null,
         marker: null,
         taskText: null,
@@ -2252,107 +2281,69 @@ ${GUEST_UI_LOOK_CSS}`;
     const marker = current2?.marker ?? null;
     const taskText = current2 === null ? null : taskLabel(current2.text);
     const note = position2 === null ? noteOf(tasks) : null;
+    const noteText = note ?? noteOf(tasks);
+    const nextLabel = current2 === null ? noteText : taskLabel(current2.text);
     const empty2 = { doneDate: null, doneSource: null, archived: false };
-    if (current2 !== null && isGateText(current2.text) && gateAgeOk(input.lastChange, input.now)) {
-      return {
-        ...base,
-        ...empty2,
-        column: "waiting",
-        position: position2,
-        marker,
-        taskText,
-        note: null,
-        line: current2.text
-      };
-    }
-    const openBlocker = tasks.find((task) => task.marker === "b" && isOpen(task));
-    if (openBlocker !== void 0) {
-      return {
-        ...base,
-        ...empty2,
-        column: "blocked",
-        position: position2,
-        marker,
-        taskText,
-        note,
-        line: openBlocker.text
-      };
-    }
-    if (current2 !== null && current2.marker === "~") {
-      return {
-        ...base,
-        ...empty2,
-        column: "in-progress",
-        position: position2,
-        marker,
-        taskText,
-        note: null,
-        line: null
-      };
-    }
-    if (current2 !== null) {
-      const blocked = input.registryMarker === "b";
-      const progressed = input.registryMarker === "~" || tasks.some((task) => task.marker === "x");
-      const column = blocked ? "blocked" : progressed ? "in-progress" : "planned";
-      return {
-        ...base,
-        ...empty2,
-        column,
-        position: position2,
-        marker,
-        taskText,
-        note: null,
-        line: blocked ? "Registry marker [b]." : null
-      };
-    }
-    const danielBlocker = tasks.find(
-      (task) => task.marker === "b" && isDanielToken(ownerToken(task.text))
-    );
-    if (danielBlocker !== void 0) {
-      return {
-        ...base,
-        ...empty2,
-        column: "waiting",
-        position: null,
-        marker: null,
-        taskText: null,
-        note,
-        line: danielBlocker.text
-      };
-    }
-    const otherBlocker = tasks.find((task) => task.marker === "b");
-    if (otherBlocker !== void 0) {
-      return {
-        ...base,
-        ...empty2,
-        column: "blocked",
-        position: null,
-        marker: null,
-        taskText: null,
-        note,
-        line: otherBlocker.text
-      };
-    }
-    return {
+    const first = tasks.find(FIRST_NOT_DONE) ?? null;
+    const cardOf2 = (column2, state, reason, line) => ({
       ...base,
       ...empty2,
-      column: "in-progress",
-      position: null,
-      marker: null,
-      taskText: null,
+      column: column2,
+      state,
+      reason,
+      position: position2,
+      marker,
+      taskText,
       note,
-      line: null
-    };
+      line
+    });
+    if (first !== null && isClosedVerification(first.text)) {
+      return cardOf2("blocked", "waits-pm", `Waits for PM: ${taskLabel(first.text)}`, first.text);
+    }
+    if (first !== null && first.marker === "b") {
+      const gate = gateForOwner(first.deferredOwner);
+      if (gate !== null) {
+        return cardOf2(
+          "waiting",
+          "waits-daniel",
+          `Waits for Daniel: ${gate}${DASH}${taskLabel(first.text)}`,
+          first.text
+        );
+      }
+    }
+    if (current2 !== null && isGateText(current2.text) && gateAgeOk(input.lastChange, input.now)) {
+      return cardOf2(
+        "waiting",
+        "waits-daniel",
+        `Waits for Daniel: look${DASH}${taskLabel(current2.text)}`,
+        current2.text
+      );
+    }
+    if (current2 !== null && current2.marker === "~") {
+      return cardOf2("in-progress", "running", `Running: ${taskLabel(current2.text)}`, null);
+    }
+    if (first !== null && first.marker === "b") {
+      return cardOf2("blocked", "waits-pm", `Waits for PM: ${taskLabel(first.text)}`, first.text);
+    }
+    if (input.registryMarker === "b") {
+      return cardOf2(
+        "blocked",
+        "waits-pm",
+        "Waits for PM: registry marker [b]",
+        "Registry marker [b]."
+      );
+    }
+    if (current2 === null && noteText === "All tasks closed.") {
+      return cardOf2("blocked", "waits-pm", "Waits for PM: All tasks closed.", null);
+    }
+    const progressed = input.registryMarker === "~" || tasks.some((task) => task.marker === "x");
+    const column = progressed ? "in-progress" : "planned";
+    return cardOf2(column, "next", `Next in line: ${nextLabel}`, null);
   };
   var buildBoard = (repo, inputs) => ({
     repo,
     cards: inputs.map(classifyTrack)
   });
-  var cardLabel = (card) => {
-    if (card.column === "blocked") return "BLOCKER";
-    if (card.column !== "waiting") return null;
-    return card.line !== null && card.line.includes("User Manual Verification") ? "MANUAL CHECK" : "GATE";
-  };
   var sortCards = (cards) => [...cards].sort((one, two) => {
     if (one.lastChange === null && two.lastChange === null) return 0;
     if (one.lastChange === null) return 1;
@@ -2403,7 +2394,7 @@ ${GUEST_UI_LOOK_CSS}`;
     };
   };
   var blockedTracks = (boards) => boards.reduce(
-    (sum, board) => sum + board.cards.filter((card) => card.column === "blocked").length,
+    (sum, board) => sum + board.cards.filter((card) => card.column === "waiting").length,
     0
   );
 
@@ -2878,6 +2869,61 @@ ${GUEST_UI_LOOK_CSS}`;
     return next;
   };
 
+  // src/painter.ts
+  var createPainter = ({ paintNow, hold }) => {
+    let waiting = false;
+    return {
+      data: () => {
+        if (hold()) {
+          waiting = true;
+          return;
+        }
+        waiting = false;
+        paintNow();
+      },
+      user: () => {
+        waiting = false;
+        paintNow();
+      },
+      flush: () => {
+        if (!waiting || hold()) return;
+        waiting = false;
+        paintNow();
+      },
+      pending: () => waiting
+    };
+  };
+  var captureComment = (root2) => {
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) {
+      return { key: null, focused: false, selectionStart: 0, selectionEnd: 0 };
+    }
+    return {
+      key: area.getAttribute("data-key"),
+      focused: area.ownerDocument.activeElement === area,
+      selectionStart: area.selectionStart,
+      selectionEnd: area.selectionEnd
+    };
+  };
+  var holdComment = (root2, texts, surface2) => {
+    if (surface2 === "status") return false;
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) return false;
+    const key = area.getAttribute("data-key");
+    if (key !== null && (texts[key] ?? "").length > 0) return true;
+    if (area.value.length > 0) return true;
+    return area.ownerDocument.activeElement === area;
+  };
+  var restoreComment = (root2, snapshot, texts) => {
+    const area = root2.querySelector("textarea.comment-input");
+    if (area === null) return;
+    const key = area.getAttribute("data-key");
+    area.value = key === null ? "" : texts[key] ?? "";
+    if (!snapshot.focused || snapshot.key !== key) return;
+    area.focus({ preventScroll: true });
+    area.setSelectionRange(snapshot.selectionStart, snapshot.selectionEnd);
+  };
+
   // src/comment.ts
   var COMMENT_TEXT_MAX = 2e3;
   var field2 = (label, value) => value === "" ? [] : [`${label}: ${value}`];
@@ -2886,7 +2932,7 @@ ${GUEST_UI_LOOK_CSS}`;
     ...field2("Repo", input.repo),
     ...field2("Track", input.trackId),
     ...field2("Task", input.taskLine),
-    ...field2("Blocker", input.blockerLine),
+    ...field2("Reason", input.blockerLine),
     ...field2("Daniel", input.text)
   ].join("\n");
   var INVISIBLE = /[\p{Cc}\p{Cf}\s]/u;
@@ -3038,11 +3084,8 @@ ${GUEST_UI_LOOK_CSS}`;
       } else if (card.note !== null) {
         parts.push(`<div class="card-note">${escapeHtml(card.note)}</div>`);
       }
-      if (card.line !== null) {
-        const label = cardLabel(card) ?? "";
-        parts.push(
-          `<div class="card-line"><span class="line-label">${label}</span>${escapeHtml(card.line)}</div>`
-        );
+      if (card.reason !== null) {
+        parts.push(`<div class="card-line">${escapeHtml(card.reason)}</div>`);
       }
     }
     if (!card.registered) parts.push('<div class="card-flag">Not in the registry</div>');
@@ -3056,7 +3099,7 @@ ${GUEST_UI_LOOK_CSS}`;
       const age = card.lastChange === null ? "Updated unknown" : `Updated ${formatAge(now, card.lastChange)}`;
       parts.push(`<div class="card-foot" title="${AGE_TIP}">${age}</div>`);
     }
-    if (card.column === "blocked" || card.column === "waiting") {
+    if (card.column === "waiting") {
       parts.push(commentControl(key ?? "", comment));
     }
     const tone2 = card.column === "blocked" || card.column === "waiting" ? card.column : "none";
@@ -3168,21 +3211,20 @@ ${GUEST_UI_LOOK_CSS}`;
     const board = `<div class="board"${open ? "" : " hidden"}>${columns}</div>`;
     return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, open, chipsOf(state.board))}${board}</section>`;
   };
-  var blockedOf = (view) => blockedTracks(view.states.flatMap((state) => state.status === "ready" ? [state.board] : []));
-  var waitingOf = (view) => view.states.flatMap((state) => state.status === "ready" ? [state.board] : []).reduce(
-    (sum, board) => sum + board.cards.filter((card) => card.column === "waiting").length,
+  var countOf = (view, column) => view.states.flatMap((state) => state.status === "ready" ? [state.board] : []).reduce(
+    (sum, board) => sum + board.cards.filter((card) => card.column === column).length,
     0
   );
   var renderPage = (view) => {
-    const blocked = blockedOf(view);
-    const waiting = waitingOf(view);
+    const pm = countOf(view, "blocked");
+    const waiting = countOf(view, "waiting");
     const summary = [];
-    if (blocked > 0) {
-      summary.push(`<span class="badge" data-tone="blocked">${blocked} Blocked</span>`);
+    if (pm > 0) {
+      summary.push(`<span class="badge" data-tone="blocked">${pm} Waits for PM</span>`);
     }
     if (waiting > 0) {
       summary.push(
-        `<span class="badge" data-tone="waiting">${waiting} Waiting on Daniel</span>`
+        `<span class="badge" data-tone="waiting">${waiting} Waits for Daniel</span>`
       );
     }
     const needsGrant = view.states.some(
@@ -3367,14 +3409,6 @@ ${GUEST_UI_LOOK_CSS}`;
     if (isSendDisabled(text, sender.sending)) button2.setAttribute("disabled", "disabled");
     else button2.removeAttribute("disabled");
   };
-  var restoreComment = () => {
-    const area = root.querySelector("textarea.comment-input");
-    if (area === null) return;
-    const key = area.getAttribute("data-key");
-    const text = key === null ? "" : commentState.texts[key] ?? "";
-    area.value = text;
-    setSendState(area, text);
-  };
   var onCommentInput = (event) => {
     const area = event.currentTarget;
     if (!(area instanceof HTMLTextAreaElement)) return;
@@ -3390,11 +3424,11 @@ ${GUEST_UI_LOOK_CSS}`;
       repo: card.repo,
       trackId: card.trackId,
       taskLine: card.taskText ?? card.note ?? "",
-      blockerLine: card.line ?? "",
+      blockerLine: card.reason ?? "",
       text: commentState.texts[key] ?? ""
     });
     commentState = startCommentSend(commentState, key);
-    paint();
+    painter.user();
     const result = await pending;
     const ownBoxOpen = commentState.openKey === key;
     commentState = finishCommentSend(
@@ -3403,7 +3437,8 @@ ${GUEST_UI_LOOK_CSS}`;
       result.ok ? { ok: true, sentAt: result.sentAt } : { ok: false, error: result.line }
     );
     if (ownBoxOpen) focusNext = { action: "send-done", key };
-    paint();
+    painter.user();
+    painter.flush();
   };
   var busy = false;
   var current = null;
@@ -3459,6 +3494,7 @@ ${GUEST_UI_LOOK_CSS}`;
       paintStatus();
       return;
     }
+    const snapshot = captureComment(root);
     root.innerHTML = renderPage({
       states,
       ui: uiOf(),
@@ -3467,7 +3503,7 @@ ${GUEST_UI_LOOK_CSS}`;
       comments: commentsOf()
     });
     bind();
-    restoreComment();
+    restoreComment(root, snapshot, commentState.texts);
     const next = focusNext;
     focusNext = null;
     if (next !== null) focusOn(next.action, next.key);
@@ -3475,6 +3511,10 @@ ${GUEST_UI_LOOK_CSS}`;
     focusToggleNext = null;
     if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column);
   };
+  var painter = createPainter({
+    paintNow: paint,
+    hold: () => holdComment(root, commentState.texts, surface)
+  });
   var paintStatus = () => {
     root.textContent = "";
     if (current === null) {
@@ -3516,19 +3556,19 @@ ${GUEST_UI_LOOK_CSS}`;
     if (busy) return;
     busy = true;
     states = startLoad(states);
-    paint();
+    painter.data();
     await loadRoster(host, ROSTER, (state) => {
       states = applyRepoResult(states, state.repo.id, state);
-      paint();
+      painter.data();
       void refreshBadge();
     });
     busy = false;
-    paint();
+    painter.data();
     await refreshBadge();
   };
   var loadBand = async (directory) => {
     current = await loadSnapshot(host, directory);
-    paint();
+    painter.data();
   };
   var startTimer = () => {
     if (timer !== null) return;
@@ -3543,6 +3583,7 @@ ${GUEST_UI_LOOK_CSS}`;
     }
     for (const area of root.querySelectorAll("textarea.comment-input")) {
       area.addEventListener("input", onCommentInput);
+      area.addEventListener("blur", () => painter.flush());
     }
   };
   var onAction = (event) => {
@@ -3560,7 +3601,7 @@ ${GUEST_UI_LOOK_CSS}`;
       if (key2 === null) return;
       commentState = openCommentBox(commentState, key2);
       focusNext = commentState.openKey === key2 ? { action: "open", key: key2 } : { action: "escape", key: key2 };
-      paint();
+      painter.user();
       return;
     }
     if (action === "send-comment") {
@@ -3573,33 +3614,33 @@ ${GUEST_UI_LOOK_CSS}`;
     if (action === "toggle-section") {
       userOpen[repo] = !openOf(repo);
       focusToggleNext = { action: "toggle-section", repo };
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-done") {
       userDoneOpen[repo] = !(userDoneOpen[repo] ?? false);
       focusToggleNext = { action: "toggle-done", repo };
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-done-group") {
       userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false);
       focusToggleNext = { action: "toggle-done-group", repo };
-      paint();
+      painter.user();
       return;
     }
     if (column === null) return;
     const key = `${repo}/${column}`;
     if (action === "show-more") {
       userExpanded[key] = true;
-      paint();
+      painter.user();
       return;
     }
     if (action === "toggle-stale") {
       const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false;
       userStaleOpen[key] = !staleOpen;
       focusToggleNext = { action: "toggle-stale", repo, column };
-      paint();
+      painter.user();
     }
   };
   var mountedOnce = false;
@@ -3624,13 +3665,14 @@ ${GUEST_UI_LOOK_CSS}`;
         });
       }
     }
-    paint();
+    painter.data();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || commentState.openKey === null) return;
     const key = commentState.openKey;
     commentState = escapeCommentBox(commentState);
     focusNext = { action: "escape", key };
-    paint();
+    painter.user();
+    painter.flush();
   });
 })();

@@ -1,0 +1,25 @@
+Restart verification:
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd extensions/measure-status && bunx tsc -p . --noEmit && bunx vitest run'
+Exit: 0.
+TypeScript passes.
+Test Files: 25 passed (25).
+Tests: 431 passed (431).
+
+Restart gate:
+python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track board_focus_reasons_20261121 --phase "Phase 2: One state and one reason per card" --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/review-a-e410fd1.json --log-file measure/runs/board_focus_reasons_20261121/review-a-e410fd1.log
+FAIL: current phase still has 2 non-deferred incomplete tasks
+Exit: 1.
+
+MEASURE_AGENT_RESULT
+role: review-a
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: Priority p1 heavy-run TypeScript and Vitest exit 0; 431 tests pass across 25 files. Earlier mutant and bundle evidence remain valid.
+files_changed: review-a-e410fd1.json and review-a-e410fd1.log
+plan_updates: none
+known_failures: The role gate exits 1 because Tasks 2.3 and 2.4 remain open. No code finding remains.
+handoff: Audit status: pass. Findings: none. F1-F4 remain fixed. retry_recommendation: none. Gate exit: 1. Continue with the live browser check and closeout. Facts changed: none.
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX
+END_MEASURE_AGENT_RESULT

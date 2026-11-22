@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "role": "final-acceptance",
+  "track": "board_focus_reasons_20261121",
+  "phase": "track",
+  "track_base_sha": "849d16f0028fa754b8ec27859d354a1bc324fc31",
+  "baseline_sha": "da1e7bbedb824c0a63488108ca75a63476b4cac9",
+  "role_base_sha": "da1e7bbedb824c0a63488108ca75a63476b4cac9",
+  "audited_head_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc",
+  "status": "pass",
+  "summary": "Final acceptance passes at ac1bf90. The current acceptance set has one passing result per phase. Phase 2 now targets current HEAD. All tasks have SHA evidence. Round 2 gates remain valid at unchanged HEAD. Three nonblocking Nits remain.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F2 [Nit] phase-acceptance: src/board.ts:276 reads rule-a0 text only from the first task line. A continuation-only deferral can produce Waits for Daniel through rule R3a. The fresh eight-repo scan found no such row. Green declined this Nit for deferral. It remains nonblocking.",
+    "F4 [Nit] phase-acceptance: plan.md:21 and plan.md:27 pin test and live-check counts. The counts match red-p2.log and the UX evidence. Green accepted and declined this record-style Nit. No A5 mismatch exists.",
+    "F5 [Nit] phase-acceptance: README.md:96-100 omits the first-not-done scope when summarizing rules a0, a, and c. The implementation uses the correct scope. This optional documentation Nit is recommended for DECLINE because another README commit would require another acceptance run."
+  ],
+  "evidence": [
+    "HEAD is ac1bf90cd1a439b81df1b2960dc9e42a81340fdc on branch fix/board-focus-reasons. git status --porcelain=v1 returned no entry.",
+    "git diff --name-only ac1bf90 HEAD returned no path. The final audit HEAD equals current HEAD.",
+    "The current acceptance set contains phase-acceptance-0db45c6.json for Phase 1 and phase-acceptance-ac1bf90.json for Phase 2. Both have status pass.",
+    "phase-acceptance-ada02de.json is superseded history. The fresh ac1bf90 result replaces it for the current acceptance set.",
+    "Phase 1 has baseline da1e7bb and audited HEAD 0db45c6. Phase 2 has baseline 50689cc and audited HEAD ac1bf90.",
+    "git merge-base --is-ancestor confirmed each baseline before its audited HEAD. It also confirmed both audited HEADs before current HEAD.",
+    "phase-acceptance-ac1bf90.json has no blocking finding or violation. Its recorded role gate exited 0. The orchestrator re-ran that gate and reports PASS.",
+    "The round 2 F1 blocker is closed. The latest Phase 2 result now targets ac1bf90 and covers the README and plan commit.",
+    "The plan has seven completed tasks and no open task. Every completed top-level task names commit SHA evidence.",
+    "All nine cited task SHAs resolve to commits. Each cited commit is an ancestor of ac1bf90.",
+    "git diff --check 849d16f..ac1bf90 exited 0.",
+    "Fresh A5 and A6 scans returned no match. The round 2 A9 scan remains valid because tests and archive paths did not change.",
+    "Round 2 TypeScript verification passed at the same HEAD through heavy-run.sh. Exit code was 0.",
+    "Round 2 Vitest verification passed at the same HEAD through heavy-run.sh. It reported 25 passed files and 431 passed tests.",
+    "Round 2 esbuild and cmp passed at the same HEAD. The fresh bundle matched panel/main.js.",
+    "Round 2 PROJECT_LINT passed at the same HEAD. Both parity commands returned parity: ok.",
+    "Round 2 PROJECT_CHECKS completed with exit 0. tests/dsh/run.sh reported 15 passed suites and zero failed suites.",
+    "The doctor check is not applicable. final-acceptance-8a8efe2.json:67 and final-acceptance-00a0149.json:45 establish PROJECT_CHECKS as its replacement.",
+    "The fresh Phase 2 acceptance independently repeated tsc, all 431 tests, and the bundle comparison at ac1bf90. All passed.",
+    "FR-1 through FR-8 remain covered by the Phase 1 acceptance and live UX evidence. No Phase 1 file changed after that acceptance except the Phase 2 panel reason wiring.",
+    "FR-9 through FR-17 and all five acceptance criteria are covered by phase-acceptance-ac1bf90.json. That result re-checks code, tests, fixtures, live evidence, and the doc-only fixes.",
+    "The PM-accepted light-lane deviations remain honored. Review B, Review C, and adversarial testing are not required.",
+    "The PM-accepted fixture proof covers positive Waits for Daniel checks and the 390-pixel check. The post-deploy PM condition remains in plan.md:29.",
+    "Both UX results report host_focus_fault_observed false. The FR-8 record in plan.md:31 remains accurate.",
+    "Closeout must record the light-lane deviation because metadata.json deviation_notes is empty.",
+    "No test uses a skip, only, todo, or fails marker. The exact-diff and test-quality audits from round 2 remain valid at unchanged HEAD.",
+    "The round 3 final-acceptance role gate passed with exit 0. It used priority p1, a 1500 MB floor, and the required heavy-run wrapper."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain=v1 && git branch --show-current -> ac1bf90cd1a439b81df1b2960dc9e42a81340fdc; clean tree; fix/board-focus-reasons",
+    "git merge-base --is-ancestor da1e7bb 0db45c6; git merge-base --is-ancestor 50689cc ac1bf90; both audited HEADs to HEAD -> every exit 0",
+    "git diff --name-only ac1bf90 HEAD -> no output; exit 0",
+    "git rev-parse --verify and git merge-base --is-ancestor for all nine task SHAs -> every command exit 0",
+    "git diff --check 849d16f..ac1bf90 -> exit 0",
+    "Fresh plan marker, A5, and A6 read-only scans -> no matches",
+    "Carried forward at unchanged HEAD: heavy-run tsc -> exit 0",
+    "Carried forward at unchanged HEAD: heavy-run vitest -> exit 0; 25 files and 431 tests passed",
+    "Carried forward at unchanged HEAD: esbuild and cmp -> exit 0; identical bundle",
+    "Carried forward at unchanged HEAD: PROJECT_LINT -> exit 0; both parity checks passed",
+    "Carried forward at unchanged HEAD: PROJECT_CHECKS -> exit 0; 15 passed, 0 failed",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 PROJECT_TESTS='cd extensions/measure-status && bunx vitest run' final-acceptance role gate with heavy-run.sh -> PASS: final-acceptance gate passed; exit 0"
+  ],
+  "changed_files": [
+    "measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90-r3.json",
+    "measure/runs/board_focus_reasons_20261121/final-acceptance-ac1bf90-r3.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "kimi-code-plan-cn/k3.1-pro#high",
+  "ratings": [
+    {"axis": "correctness", "score": 4, "evidence": "src/board.ts:210-327 and src/painter.ts:25-106 implement the specified behavior, while F2 leaves one ambiguous wrapped-text edge."},
+    {"axis": "test_meaning", "score": 4, "evidence": "Fresh Phase 2 acceptance repeats 431 tests and the bundle check, but F2 retains no continuation-only verification test."},
+    {"axis": "scope_discipline", "score": 4, "evidence": "git diff --stat 849d16f..ac1bf90 lists the planned extension and record files plus one small CHANGELOG entry."},
+    {"axis": "evidence_quality", "score": 5, "evidence": "Every verdict has fresh phase evidence, current HEAD commands, or carried command results bound to unchanged ac1bf90."}
+  ],
+  "reviewer_ratings": [
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 5, "evidence": "review-a-7ff5df2.json F1 was valid, and current painter.test.ts:134-224 now pins the hold and host-ready routes."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 5, "evidence": "review-a-e0d5762.json F1 was valid, and current painter.test.ts:226-301 bounds each user-action slice."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 5, "evidence": "review-a-5f74c11.json F2 was valid, and current painter.test.ts:178-266 restores boundary counts and order."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 4, "evidence": "review-a-8dafa77.json pass agrees with the route pins and the repeated passing suite."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 5, "evidence": "review-a-aef6345.json F1-F3 match the old defects, and green-r2.test.ts:35-178 covers their fixes."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 5, "evidence": "review-a-643912a.json F4 names the seven fixture mismatches, and green-r2.test.ts:127-147 now rejects them."},
+    {"reviewer_role": "review-a", "reviewer_route": "openai/gpt-6.1-sol#high", "agreed": true, "score": 4, "evidence": "review-a-e410fd1.json pass remains valid, although it missed the README rule-c omission later fixed at ac1bf90."}
+  ],
+  "role_gate": {
+    "exit_code": 0,
+    "output": "PASS: final-acceptance gate passed"
+  }
+}

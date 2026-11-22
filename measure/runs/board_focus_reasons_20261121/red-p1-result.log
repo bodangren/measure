@@ -1,0 +1,28 @@
+# Red P1 result: Board keeps focus and shows a plain reason per card
+
+Phase Base SHA and role base SHA both resolve to da1e7bbedb824c0a63488108ca75a63476b4cac9. HEAD before work matched the base. Work is on branch fix/board-focus-reasons.
+
+Task 1.1 is now [~] in plan.md. New tests live in extensions/measure-status/src/painter.test.ts (pure rules plus raw-source wiring pin) and extensions/measure-status/src/painter-dom.test.ts (happy-dom DOM rules). Package file gains happy-dom 15.11.7. Bun lock holds the new entry.
+
+Red run log: measure/runs/board_focus_reasons_20261121/red-p1.log (git ignored). TSC fails only on the missing ./painter module (2 errors). Vitest fails 2 new suites on the missing module. It passes 21 suites (308 tests). No old suite broke.
+
+Dirty paths: 2 new test files (relevant), package.json and bun.lock (explicit brief order), plan.md (marker plus Red proof). Runs dir is git ignored. No unrelated work. No push.
+
+Gate runs (both exit 1, for config causes outside the Red contract):
+- Brief form with --role mid-red (brief says --role red, which the checker rejects as unknown): also missing --phase, default RED_TEST_COMMAND targets the DSH guard suite (383 pass, so expected-failure fails). Output names phase '', package.json, bun.lock, and RED_TEST_COMMAND.
+- Intended form with --phase "Phase 1: Focus survives a refresh" and RED_TEST_COMMAND="cd extensions/measure-status && bunx vitest run": RED_TEST_COMMAND fails as Red wants (2 new suites fail). Phase check passes. Only package.json and bun.lock stay flagged, although the brief orders both.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: partial
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: f56902a
+tests_run: bunx tsc -p . --noEmit (fails 2 errors, missing ./painter); bunx vitest run (2 new suites fail on missing ./painter, 21 suites pass, 308 tests pass)
+files_changed: extensions/measure-status/src/painter.test.ts (new), extensions/measure-status/src/painter-dom.test.ts (new), extensions/measure-status/package.json (happy-dom), extensions/measure-status/bun.lock (happy-dom), measure/tracks/board_focus_reasons_20261121/plan.md ([~] plus Red proof)
+plan_updates: Task 1.1 marked [~]; Red proof line added under Phase 1
+known_failures: painter.test.ts fails (missing src/painter.ts); painter-dom.test.ts fails (missing src/painter.ts); role gate exits 1 on package.json/bun.lock manifest rule plus brief gate config (role name, phase, default RED_TEST_COMMAND)
+handoff: Green implements src/painter.ts to the spec and routes panel/main.ts through data()/user() and preview/preview.ts through user() only; then the 2 Red suites pass. Orchestrator decides: waive package.json/bun.lock in Red scope and set RED_TEST_COMMAND plus --phase for this track.
+baseline_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+END_MEASURE_AGENT_RESULT

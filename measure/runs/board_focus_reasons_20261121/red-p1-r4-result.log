@@ -1,0 +1,25 @@
+# Red P1 R4 result: F1 route pins scoped per handler with mutation proof
+
+HEAD at start was e0d5762, which equals the role base SHA. The phase base SHA da1e7bb resolves. Work is on branch fix/board-focus-reasons. Task 1.3 stays [~].
+
+The old pins matched user() calls past the handler edge, so six user-route breaks passed the suite. Each pin now slices its own source: one onAction handler from its guard to the next action guard, or one function body between top-level markers. User slices must hold user() and no data(). Data bodies must hold data() and no user().
+
+Baseline on correct code: tsc exits 0, full vitest run passes 23 suites and 351 tests. Log: red-p1-r4.log. Mutation matrix: 18 of 18 breaks detected, each restored at once. Log: red-p1-r4-mutations.log. The panel source diff is empty at the end.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: 5f74c11
+tests_run: bunx tsc -p . --noEmit (exit 0); bunx vitest run (23 suites pass, 351 tests pass); 18 temp mutations of panel/main.ts each fail the sliced pin and restore clean
+files_changed: extensions/measure-status/src/painter.test.ts (per-handler actionSlice and bodySlice pins)
+plan_updates: none (Task 1.3 already [~])
+known_failures: none on correct HEAD; each listed mutation fails its pin until restored
+handoff: Green keeps the current wiring; the sliced pins guard every data and user route
+red_kind: gap_closing
+gaps: open-comment, toggle-section, toggle-done, toggle-done-group, show-more, and toggle-stale user routes; Escape, sendComment, Refresh, send-comment, loadBoard, loadBand, host.onReady, hold wiring, blur flush, and holdComment import routes
+breakage_proof: 18 temp panel/main.ts mutations (user to data in each of the six routes plus Escape, sendComment, and send-comment slice; data to user in loadBoard start, repo result, loadBoard end, loadBand, and host.onReady; weakened hold wiring; removed blur flush; removed holdComment import), each run as bunx vitest run src/painter.test.ts with exit 1 on its sliced pin and git checkout restore, recorded in red-p1-r4-mutations.log with an empty final panel diff
+baseline_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: e0d57620caff900eb1dac52f4b939051fc6e5667
+END_MEASURE_AGENT_RESULT

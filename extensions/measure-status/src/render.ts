@@ -4,8 +4,6 @@ import { formatAge } from './age'
 import {
   COLUMNS,
   COLUMN_LABELS,
-  blockedTracks,
-  cardLabel,
   columnView,
   doneSummary,
   type Card,
@@ -167,11 +165,8 @@ export const renderCard = (
     } else if (card.note !== null) {
       parts.push(`<div class="card-note">${escapeHtml(card.note)}</div>`)
     }
-    if (card.line !== null) {
-      const label = cardLabel(card) ?? ''
-      parts.push(
-        `<div class="card-line"><span class="line-label">${label}</span>${escapeHtml(card.line)}</div>`,
-      )
+    if (card.reason !== null) {
+      parts.push(`<div class="card-line">${escapeHtml(card.reason)}</div>`)
     }
   }
 
@@ -192,7 +187,8 @@ export const renderCard = (
     parts.push(`<div class="card-foot" title="${AGE_TIP}">${age}</div>`)
   }
 
-  if (card.column === 'blocked' || card.column === 'waiting') {
+  // FR-14: only a Waits for Daniel card shows the Comment button.
+  if (card.column === 'waiting') {
     parts.push(commentControl(key ?? '', comment))
   }
 
@@ -338,28 +334,24 @@ export const renderSection = (
   return `<section class="repo" data-repo="${escapeHtml(repoId)}">${headerOf(repoId, open, chipsOf(state.board))}${board}</section>`
 }
 
-/** FR-9: the Blocked tracks of the loaded repos. */
-const blockedOf = (view: PageView): number =>
-  blockedTracks(view.states.flatMap(state => (state.status === 'ready' ? [state.board] : [])))
-
-/** The Waiting on Daniel tracks of the loaded repos. */
-const waitingOf = (view: PageView): number =>
+/** The card count of one column across the loaded repos. */
+const countOf = (view: PageView, column: Column): number =>
   view.states.flatMap(state => (state.status === 'ready' ? [state.board] : [])).reduce(
-    (sum, board) => sum + board.cards.filter(card => card.column === 'waiting').length,
+    (sum, board) => sum + board.cards.filter(card => card.column === column).length,
     0,
   )
 
 /** FR-7 and FR-10: the whole page, with the header, the banner, and the sections. */
 export const renderPage = (view: PageView): string => {
-  const blocked = blockedOf(view)
-  const waiting = waitingOf(view)
+  const pm = countOf(view, 'blocked')
+  const waiting = countOf(view, 'waiting')
   const summary: string[] = []
-  if (blocked > 0) {
-    summary.push(`<span class="badge" data-tone="blocked">${blocked} Blocked</span>`)
+  if (pm > 0) {
+    summary.push(`<span class="badge" data-tone="blocked">${pm} Waits for PM</span>`)
   }
   if (waiting > 0) {
     summary.push(
-      `<span class="badge" data-tone="waiting">${waiting} Waiting on Daniel</span>`,
+      `<span class="badge" data-tone="waiting">${waiting} Waits for Daniel</span>`,
     )
   }
 

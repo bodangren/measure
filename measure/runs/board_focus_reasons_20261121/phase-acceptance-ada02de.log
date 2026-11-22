@@ -1,0 +1,41 @@
+Phase acceptance: board_focus_reasons_20261121, Phase 2: One state and one reason per card.
+Route: claude-code/claude-sonnet-5-5#max.
+HEAD: ada02de2bb22aff99bbd8194390438c2da6a36b2 (verified at the start and at the end).
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568.
+role_base_sha: ada02de2bb22aff99bbd8194390438c2da6a36b2.
+audited_head_sha: ada02de2bb22aff99bbd8194390438c2da6a36b2.
+
+The first write of the result JSON held the provisional verdict inconclusive, while tsc and vitest waited in the heavy-run queue. This log holds the final verdict.
+
+Prerequisite results: review-a-e410fd1.json (pass, no finding) and ux-browser-e410fd1.json (pass). Both target e410fd1.
+One plan-only commit (ada02de) lies between e410fd1 and the audited HEAD. git diff --name-status lists only plan.md. Allowed commit: ada02de.
+Both prerequisite gates pass at ada02de (review-a gate exit 0, ux-browser-review gate exit 0).
+No Review B, Review C, or adversarial result exists. This audit treats them as not required in this light-lane phase, as the brief states.
+
+tsc: TSC_EXIT=0. vitest: VITEST_EXIT=0 (25 test files, 431 tests). Bundle: identical to a fresh esbuild build (SHA-256 ff9b17a4144b714b0fb7f9eb257489a0bbfffa723916296e3763e974f9f4cca7, the digest of the bundle that the live host loaded).
+card-state.test.ts: byte-identical at 6bc2f45 and at HEAD. Green edits to older tests follow spec renames.
+A5: no false-claim text in plan.md. A3, A4, A6, and A7 do not apply to this phase diff.
+FR-9 to FR-17 and the five acceptance criteria hold in code, tests, and the UX evidence. Rule a0 comes first in the code (board.ts:276).
+Live evidence re-derived from the raw files: 242 live open cards, each with one valid state prefix; domain_trust shows Running; zero Comment buttons with zero Waits for Daniel cards.
+Fixture evidence (PM-accepted, 2026-11-22) re-derived from the raw files: 257 open cards, 13 Waits for Daniel cards, Comment on those 13 only, eight gate groups, badge 13, 60 focus samples.
+
+Final verdict: pass with one Major finding (F1) and three Nit findings (F2, F3, F4). All four are nonblocking.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: bunx tsc -p . --noEmit PASS exit 0; bunx vitest run PASS exit 0 (25 files, 431 tests); esbuild bundle comparison PASS (cmp exit 0, identical); A5 grep PASS (no hit); review-a and ux-browser-review gates at ada02de PASS exit 0; role-gate phase-acceptance PASS exit 0
+files_changed: measure/runs/board_focus_reasons_20261121/phase-acceptance-ada02de.json; measure/runs/board_focus_reasons_20261121/phase-acceptance-ada02de.log
+plan_updates: none
+known_failures: none
+handoff: Phase 2 passes at ada02de with one Major and three Nit findings, all nonblocking. F1 [Major]: README.md:95-100 omits FR-11 rule c and says Each other open track gives Next in line; fix it with a doc-only commit before closeout, and the orchestrator decides whether a README-only commit keeps this acceptance. F2 [Nit]: rule a0 reads only the first task line, and no real row has the wrapped shape. F3 [Nit]: plan.md:27 names the D3 card, but the live card shows All tasks closed. F4 [Nit]: plan.md:21 and plan.md:27 pin counts. Confirm two assumptions: no Review B, Review C, or adversarial run is required in this light-lane phase, and the plan-only commit ada02de keeps the prerequisite results valid. Closeout must record the light-lane deviation, because metadata.json deviation_notes is empty. FR-8: no host focus fault in the Phase 1 live check (8dafa77) or the Phase 2 live check (e410fd1), but the Phase 2 live board held no eligible comment box. The PM condition stays open: after the panel deploy the PM checks the first real Waits for Daniel card, and a fault there opens a bug track. Facts changed: none.
+END_MEASURE_AGENT_RESULT
+
+Gate command: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track board_focus_reasons_20261121 --phase "Phase 2: One state and one reason per card" --baseline 50689cc --result-file measure/runs/board_focus_reasons_20261121/phase-acceptance-ada02de.json --log-file measure/runs/board_focus_reasons_20261121/phase-acceptance-ada02de.log
+Gate output: PASS: phase-acceptance gate passed
+Gate exit code: 0
+Final HEAD check: ada02de2bb22aff99bbd8194390438c2da6a36b2, tracked tree clean.
+RESULT: PASS

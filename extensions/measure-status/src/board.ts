@@ -3,7 +3,6 @@
 import {
   isGateText,
   isOpen,
-  ownerToken,
   taskLabel,
   tasksOf,
 } from './parse'
@@ -18,8 +17,8 @@ export const COLUMNS: readonly Column[] = ['planned', 'in-progress', 'blocked', 
 export const COLUMN_LABELS: Readonly<Record<Column, string>> = {
   planned: 'Planned',
   'in-progress': 'In progress',
-  blocked: 'Blocked',
-  waiting: 'Waiting on Daniel',
+  blocked: 'Waits for PM',
+  waiting: 'Waits for Daniel',
   done: 'Done',
 }
 
@@ -29,8 +28,12 @@ export const DONE_WINDOW_DAYS = 14
 
 const DAY_MS = 86_400_000
 const STALE_DAYS = 30
+const DASH = ' \u2014 '
 
 export type CardPosition = { phase: number; phases: number; task: number; tasks: number }
+
+/** FR-11: the one state of an open card. Done cards carry state `done`. */
+export type CardState = 'waits-daniel' | 'running' | 'waits-pm' | 'next' | 'done'
 
 export type Card = {
   repo: string
@@ -38,6 +41,9 @@ export type Card = {
   /** The folder name of the track; empty when the folder is unknown. */
   trackId: string
   column: Column
+  state: CardState
+  /** FR-11: the one reason line shown on the card; null for Done. */
+  reason: string | null
   position: CardPosition | null
   marker: Marker | null
   taskText: string | null
@@ -88,22 +94,37 @@ export type DoneSummary = {
   notArchived: number
 }
 
-const DANIEL_TOKENS = new Set([
-  'daniel',
-  'user',
-  'owner',
-  'po',
-  'product-owner',
-  'human',
-  'human-gated',
-  'both-owners',
-])
+/** FR-10: one gate and the owner words that name it. */
+const GATE_WORDS: ReadonlyArray<{ gate: string; words: readonly string[] }> = [
+  { gate: 'deletion', words: ['delete', 'deletion'] },
+  { gate: 'paid spend', words: ['paid', 'spend'] },
+  { gate: 'deploy', words: ['deploy', 'traffic'] },
+  { gate: 'public date', words: ['public'] },
+  { gate: 'sudo or login', words: ['sudo', 'login'] },
+  { gate: 'proof', words: ['proof'] },
+  { gate: 'Thai check', words: ['thai'] },
+  { gate: 'look', words: ['look', 'manual'] },
+]
 
-const isDanielToken = (token: string | null): boolean => {
-  if (token === null) return false
-  const lower = token.toLowerCase()
-  return DANIEL_TOKENS.has(lower) || lower.startsWith('owner-') || lower.startsWith('daniel-')
+/**
+ * FR-10: the gate of an owner token. The token is lowercased and split on
+ * `-`, `_`, `.`, and `;`. A whole word matches. The first gate in GATE_WORDS
+ * wins when the token holds more than one gate word.
+ */
+export const gateForOwner = (owner: string | null): string | null => {
+  if (owner === null || owner === '') return null
+  const words = owner.toLowerCase().split(/[-_.;]+/).filter(word => word !== '')
+  for (const entry of GATE_WORDS) {
+    if (words.some(word => entry.words.includes(word))) return entry.gate
+  }
+  return null
 }
+
+/** FR-11 a0: a verification task that the PM closed without a visible change. */
+const isClosedVerification = (text: string): boolean =>
+  /user manual verification/i.test(text) && /deferred|no visible change/i.test(text)
+
+const FIRST_NOT_DONE = (task: Task): boolean => task.marker !== 'x'
 
 const lastDoneIndex = (tasks: readonly Task[]): number => {
   let out = -1
@@ -166,15 +187,19 @@ const r2Card = (
   plan: PlanState,
 ): Card => {
   const note = plan.kind === 'unreadable' ? 'Plan unreadable' : 'No plan.'
-  const column: Column = marker === 'b' ? 'blocked' : marker === '~' ? 'in-progress' : 'planned'
+  const reasonNote = note.endsWith('.') ? note : `${note}.`
+  const registryBlocked = marker === 'b'
+  const column: Column = registryBlocked ? 'blocked' : marker === '~' ? 'in-progress' : 'planned'
   return {
     ...base,
     column,
+    state: registryBlocked ? 'waits-pm' : 'next',
+    reason: registryBlocked ? 'Waits for PM: registry marker [b]' : `Next in line: ${reasonNote}`,
     position: null,
     marker: null,
     taskText: null,
     note,
-    line: column === 'blocked' ? 'Registry marker [b].' : null,
+    line: registryBlocked ? 'Registry marker [b].' : null,
     doneDate: null,
     doneSource: null,
     archived: false,
@@ -197,6 +222,8 @@ export const classifyTrack = (input: TrackInput): Card => {
     return {
       ...base,
       column: 'done',
+      state: 'done',
+      reason: null,
       position: null,
       marker: null,
       taskText: null,
@@ -220,105 +247,83 @@ export const classifyTrack = (input: TrackInput): Card => {
   const marker = current?.marker ?? null
   const taskText = current === null ? null : taskLabel(current.text)
   const note = position === null ? noteOf(tasks) : null
+  const noteText = note ?? noteOf(tasks)
+  // FR-11 d: the count note belongs to a card with no current task. A card
+  // with a current task names that task instead.
+  const nextLabel = current === null ? noteText : taskLabel(current.text)
   const empty = { doneDate: null, doneSource: null, archived: false }
+  const first = tasks.find(FIRST_NOT_DONE) ?? null
 
-  if (current !== null && isGateText(current.text) && gateAgeOk(input.lastChange, input.now)) {
-    return {
-      ...base,
-      ...empty,
-      column: 'waiting',
-      position,
-      marker,
-      taskText,
-      note: null,
-      line: current.text,
-    }
-  }
-
-  const openBlocker = tasks.find(task => task.marker === 'b' && isOpen(task))
-  if (openBlocker !== undefined) {
-    return {
-      ...base,
-      ...empty,
-      column: 'blocked',
-      position,
-      marker,
-      taskText,
-      note,
-      line: openBlocker.text,
-    }
-  }
-
-  if (current !== null && current.marker === '~') {
-    return {
-      ...base,
-      ...empty,
-      column: 'in-progress',
-      position,
-      marker,
-      taskText,
-      note: null,
-      line: null,
-    }
-  }
-
-  if (current !== null) {
-    const blocked = input.registryMarker === 'b'
-    const progressed =
-      input.registryMarker === '~' || tasks.some(task => task.marker === 'x')
-    const column: Column = blocked ? 'blocked' : progressed ? 'in-progress' : 'planned'
-    return {
-      ...base,
-      ...empty,
-      column,
-      position,
-      marker,
-      taskText,
-      note: null,
-      line: blocked ? 'Registry marker [b].' : null,
-    }
-  }
-
-  const danielBlocker = tasks.find(
-    task => task.marker === 'b' && isDanielToken(ownerToken(task.text)),
-  )
-  if (danielBlocker !== undefined) {
-    return {
-      ...base,
-      ...empty,
-      column: 'waiting',
-      position: null,
-      marker: null,
-      taskText: null,
-      note,
-      line: danielBlocker.text,
-    }
-  }
-
-  const otherBlocker = tasks.find(task => task.marker === 'b')
-  if (otherBlocker !== undefined) {
-    return {
-      ...base,
-      ...empty,
-      column: 'blocked',
-      position: null,
-      marker: null,
-      taskText: null,
-      note,
-      line: otherBlocker.text,
-    }
-  }
-
-  return {
+  const cardOf = (
+    column: Column,
+    state: CardState,
+    reason: string | null,
+    line: string | null,
+  ): Card => ({
     ...base,
     ...empty,
-    column: 'in-progress',
-    position: null,
-    marker: null,
-    taskText: null,
+    column,
+    state,
+    reason,
+    position,
+    marker,
+    taskText,
     note,
-    line: null,
+    line,
+  })
+
+  // FR-11 a0: a verification task closed by the PM wins over every other rule.
+  if (first !== null && isClosedVerification(first.text)) {
+    return cardOf('blocked', 'waits-pm', `Waits for PM: ${taskLabel(first.text)}`, first.text)
   }
+
+  // FR-11 a: a human gate word on the first not-done task, or a gate text
+  // current task under rule R3a with gate `look`.
+  if (first !== null && first.marker === 'b') {
+    const gate = gateForOwner(first.deferredOwner)
+    if (gate !== null) {
+      return cardOf(
+        'waiting',
+        'waits-daniel',
+        `Waits for Daniel: ${gate}${DASH}${taskLabel(first.text)}`,
+        first.text,
+      )
+    }
+  }
+  if (current !== null && isGateText(current.text) && gateAgeOk(input.lastChange, input.now)) {
+    return cardOf(
+      'waiting',
+      'waits-daniel',
+      `Waits for Daniel: look${DASH}${taskLabel(current.text)}`,
+      current.text,
+    )
+  }
+
+  // FR-11 b: a task is [~].
+  if (current !== null && current.marker === '~') {
+    return cardOf('in-progress', 'running', `Running: ${taskLabel(current.text)}`, null)
+  }
+
+  // FR-11 c: another [b] owner, a registry marker [b], or all tasks closed.
+  if (first !== null && first.marker === 'b') {
+    return cardOf('blocked', 'waits-pm', `Waits for PM: ${taskLabel(first.text)}`, first.text)
+  }
+  if (input.registryMarker === 'b') {
+    return cardOf(
+      'blocked',
+      'waits-pm',
+      'Waits for PM: registry marker [b]',
+      'Registry marker [b].',
+    )
+  }
+  if (current === null && noteText === 'All tasks closed.') {
+    return cardOf('blocked', 'waits-pm', 'Waits for PM: All tasks closed.', null)
+  }
+
+  // FR-11 d: every other open track needs no input.
+  const progressed = input.registryMarker === '~' || tasks.some(task => task.marker === 'x')
+  const column: Column = progressed ? 'in-progress' : 'planned'
+  return cardOf(column, 'next', `Next in line: ${nextLabel}`, null)
 }
 
 /** The board of one repo, in the card order of FR-2. */
@@ -327,14 +332,8 @@ export const buildBoard = (repo: string, inputs: readonly TrackInput[]): RepoBoa
   cards: inputs.map(classifyTrack),
 })
 
-/** FR-5 and FR-15 C1: the label of a blocked or waiting card. */
-export const cardLabel = (card: Card): 'BLOCKER' | 'MANUAL CHECK' | 'GATE' | null => {
-  if (card.column === 'blocked') return 'BLOCKER'
-  if (card.column !== 'waiting') return null
-  return card.line !== null && card.line.includes('User Manual Verification')
-    ? 'MANUAL CHECK'
-    : 'GATE'
-}
+/** FR-13: the BLOCKER, GATE, and MANUAL CHECK labels are gone. */
+export const cardLabel = (_card: Card): null => null
 
 const sortCards = (cards: readonly Card[]): Card[] =>
   [...cards].sort((one, two) => {
@@ -411,9 +410,9 @@ export const doneSummary = (board: RepoBoard, now: number): DoneSummary => {
   }
 }
 
-/** FR-9: the Blocked tracks of all loaded boards. */
+/** FR-15: the rail badge counts the Waits for Daniel cards of all boards. */
 export const blockedTracks = (boards: readonly RepoBoard[]): number =>
   boards.reduce(
-    (sum, board) => sum + board.cards.filter(card => card.column === 'blocked').length,
+    (sum, board) => sum + board.cards.filter(card => card.column === 'waiting').length,
     0,
   )

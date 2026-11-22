@@ -18,6 +18,7 @@ import {
   type FocusAction,
   type ToggleAction,
 } from '../src/comment-box'
+import { captureComment, createPainter, restoreComment } from '../src/painter'
 import type { RosterRepo } from '../src/roster'
 import { cardKey, renderPage, sectionOpen, type CommentUi, type UiState } from '../src/render'
 import { isSendDisabled } from '../src/send'
@@ -138,16 +139,6 @@ const setSendState = (area: HTMLTextAreaElement, text: string): void => {
   else button.removeAttribute('disabled')
 }
 
-/** D1: the open box keeps its text after a repaint. */
-const restoreComment = (): void => {
-  const area = root.querySelector<HTMLTextAreaElement>('textarea.comment-input')
-  if (area === null) return
-  const key = area.getAttribute('data-key')
-  const text = key === null ? '' : (commentState.texts[key] ?? '')
-  area.value = text
-  setSendState(area, text)
-}
-
 /** D1: the text of the box follows the user. */
 const onCommentInput = (event: Event): void => {
   const area = event.currentTarget
@@ -169,19 +160,19 @@ const sendComment = async (key: string): Promise<void> => {
           ? `Use ${COMMENT_TEXT_MAX} characters or fewer.`
           : 'Write a comment first.',
     })
-    paint()
+    painter.user()
     return
   }
   const pending = fakeSend(text)
   commentState = startCommentSend(commentState, key)
   sending = true
-  paint()
+  painter.user()
   const outcome = await pending
   sending = false
   const ownBoxOpen = commentState.openKey === key
   commentState = finishCommentSend(commentState, key, outcome)
   if (ownBoxOpen) focusNext = { action: 'send-done', key }
-  paint()
+  painter.user()
 }
 
 /**
@@ -240,11 +231,12 @@ const focusToggleOn = (
 
 /** Draws the board. */
 const paint = (): void => {
+  const snapshot = captureComment(root)
   // Every text from a file passes through `escapeHtml` before it reaches this
   // string, so the assignment cannot add an element of the file text.
   root.innerHTML = renderPage({ states, ui: uiOf(), now, busy: false, comments: commentsOf() })
   bind()
-  restoreComment()
+  restoreComment(root, snapshot, commentState.texts)
   const next = focusNext
   focusNext = null
   if (next !== null) focusOn(next.action, next.key)
@@ -252,6 +244,9 @@ const paint = (): void => {
   focusToggleNext = null
   if (nextToggle !== null) focusToggleOn(nextToggle.action, nextToggle.repo, nextToggle.column)
 }
+
+/** FR-1 and FR-2: the preview has no data paints. Every draw is a user paint. */
+const painter = createPainter({ paintNow: paint, hold: () => false })
 
 // ----- The events of the board. Every button carries a `data-action`.
 
@@ -276,7 +271,7 @@ const onAction = (event: Event): void => {
   const column = button.getAttribute('data-column')
 
   if (action === 'refresh') {
-    paint()
+    painter.user()
     return
   }
   if (action === 'open-comment') {
@@ -286,7 +281,7 @@ const onAction = (event: Event): void => {
     focusNext = commentState.openKey === key
       ? { action: 'open', key }
       : { action: 'escape', key }
-    paint()
+    painter.user()
     return
   }
   if (action === 'send-comment') {
@@ -299,33 +294,33 @@ const onAction = (event: Event): void => {
   if (action === 'toggle-section') {
     userOpen[repo] = !openOf(repo)
     focusToggleNext = { action: 'toggle-section', repo }
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-done') {
     userDoneOpen[repo] = !(userDoneOpen[repo] ?? false)
     focusToggleNext = { action: 'toggle-done', repo }
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-done-group') {
     userDoneGroupOpen[repo] = !(userDoneGroupOpen[repo] ?? false)
     focusToggleNext = { action: 'toggle-done-group', repo }
-    paint()
+    painter.user()
     return
   }
   if (column === null) return
   const key = `${repo}/${column}`
   if (action === 'show-more') {
     userExpanded[key] = true
-    paint()
+    painter.user()
     return
   }
   if (action === 'toggle-stale') {
     const staleOpen = (uiOf().staleOpen ?? {})[key] ?? false
     userStaleOpen[key] = !staleOpen
     focusToggleNext = { action: 'toggle-stale', repo, column }
-    paint()
+    painter.user()
   }
 }
 
@@ -335,10 +330,10 @@ document.addEventListener('keydown', (event) => {
   const key = commentState.openKey
   commentState = escapeCommentBox(commentState)
   focusNext = { action: 'escape', key }
-  paint()
+  painter.user()
 })
 
-paint()
+painter.user()
 
 if (query.get('debug') === '1' && debug !== null) {
   debug.textContent = `scrollWidth=${document.documentElement.scrollWidth} innerWidth=${window.innerWidth}`

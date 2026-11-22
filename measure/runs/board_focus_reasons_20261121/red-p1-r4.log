@@ -1,0 +1,11 @@
+=== RED P1 R4 baseline: sliced pins on correct HEAD (gap fix, must pass) ===
+head: e0d57620caff900eb1dac52f4b939051fc6e5667
+tsc exit: 0
+ ✓ src/source.test.ts (5 tests) 4ms
+ ✓ src/painter-dom.test.ts (13 tests) 36ms
+
+ Test Files  23 passed (23)
+      Tests  351 passed (351)
+   Start at  07:18:57
+   Duration  1.48s (transform 1.86s, setup 0ms, collect 3.55s, tests 773ms, environment 184ms, prepare 1.87s)
+

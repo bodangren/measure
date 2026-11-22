@@ -1,0 +1,24 @@
+# Red P1 R2 result: fixture fix for painter-dom.test.ts
+
+Green named two fixture defects. The plan held one [~] task, so the card sat In progress and render.ts drew no comment box. The restore test set a selection on an empty box. Both are now fixed. The branch holds Green's uncommitted draft. This fix stays clear of it.
+
+Fix 1: the fixture plan now reads `- [x] Task: One` plus `- [b] Task: Two deferred:daniel-deploy-word`. The card now renders a comment box today. The first not-done [b] task holds a gate word, so Phase 2 reads it as Waits for Daniel.
+
+Fix 2: the restore test now calls restoreComment before focus and selection. The box holds text before setSelectionRange runs. The other selection tests already restored first.
+
+Run log: measure/runs/board_focus_reasons_20261121/red-p1-r2.log (git ignored). Command `bunx vitest run src/painter-dom.test.ts` with the Green draft present gives 5 passed, 0 failed. Commit holds only painter-dom.test.ts. No push.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: 99ecd2e
+tests_run: bunx vitest run src/painter-dom.test.ts with Green draft present (5 passed, 0 failed)
+files_changed: extensions/measure-status/src/painter-dom.test.ts (fixture plan plus restore-before-selection)
+plan_updates: none (plan.md stays with Green uncommitted)
+known_failures: none in this file with the Green draft present; without src/painter.ts the suite still fails on the missing module as Red wants
+handoff: Green keeps its draft files; the fixed suite passes on them and still guards the Red contract
+baseline_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+role_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9
+END_MEASURE_AGENT_RESULT

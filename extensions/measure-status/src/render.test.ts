@@ -100,14 +100,14 @@ describe('renderCard', () => {
 })
 
 describe('renderSection', () => {
-  test('shows the header counts and the Blocked badge', () => {
+  test('shows the header counts and the Waits for PM badge', () => {
     const board = buildBoard('invented-repo', [
       input({ title: 'Blocked one', registryMarker: 'b', plan: { kind: 'missing' } }),
       input({ title: 'Planned one', plan: { kind: 'plan', plan: parsePlan('## Phase 1: W\n\n- [ ] Task: One\n') } }),
     ])
     const html = renderSection({ status: 'ready', repo: { id: 'invented-repo', path: '~/Desktop/invented-repo' }, board }, ui(), NOW)
     expect(html).toContain('invented-repo')
-    expect(html).toContain('Blocked')
+    expect(html).toContain('Waits for PM')
     expect(html).toContain('aria-expanded')
   })
 

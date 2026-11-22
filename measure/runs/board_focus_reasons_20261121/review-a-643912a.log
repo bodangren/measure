@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: none
+tests_run: Heavy-run tsc passes; Vitest passes 430 tests across 25 files; the control passes 11 tests; revert mutants fail the expected F1-F3 tests; bundle comparison passes; gate exits 1.
+files_changed: review-a-643912a.json and review-a-643912a.log
+plan_updates: none
+known_failures: F4 finds seven fixture cards with waits-pm state and in-progress column.
+handoff: Route F4 to Green. retry_recommendation: retry_implementation. F1-F3 are fixed. Full verification passes but misses F4. Tasks 2.3 and 2.4 remain open. Gate exit: 1. Facts changed: none.
+dispositions: F1=FIX; F2=FIX; F3=FIX
+END_MEASURE_AGENT_RESULT

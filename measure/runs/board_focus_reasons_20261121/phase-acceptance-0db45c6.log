@@ -1,0 +1,37 @@
+Phase acceptance: board_focus_reasons_20261121, Phase 1: Focus survives a refresh.
+Route: claude-code/claude-sonnet-5-5#max.
+HEAD: 0db45c64d0bf9c65e8c997aae73607e2a053fb8e (verified at the start and at the end).
+phase_base_sha: da1e7bbedb824c0a63488108ca75a63476b4cac9.
+role_base_sha: 0db45c64d0bf9c65e8c997aae73607e2a053fb8e.
+audited_head_sha: 0db45c64d0bf9c65e8c997aae73607e2a053fb8e.
+
+The first write of the result JSON held the provisional verdict inconclusive. This log holds the final verdict.
+
+Prerequisite results: review-a-8dafa77.json (pass) and ux-browser-8dafa77.json (pass). Both target 8dafa77.
+One plan-only commit (0db45c6) lies between 8dafa77 and the audited HEAD. git diff --exit-code with plan.md excluded exits 0.
+Allowed commit: 0db45c6. The role rule names test-only commits and measure/runs commits. This audit applies the same reasoning to this plan-only commit.
+No Review B, Review C, or adversarial result exists. This audit treats them as not required in this light-lane phase. The orchestrator confirms this scoping.
+
+tsc: exit 0. vitest: exit 0 (23 test files, 351 tests). Bundle: identical to a fresh esbuild build (SHA-256 7160f902e4b541a4fdb515ba26024c49290e57e5e7dbc3cbbf51891f94c19ac2).
+A5: no false-claim text in plan.md. A3, A4, A6, and A7 do not apply to this phase diff.
+Live evidence re-derived from the raw files: 268 timer samples and 230 host-reply samples, all focused, same node, zero root mutations, four ready messages.
+
+Final verdict: pass with three nonblocking Nits (F1, F2, F3).
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: bunx tsc -p . --noEmit PASS exit 0; bunx vitest run PASS exit 0 (23 files, 351 tests); esbuild bundle comparison PASS (identical); A5 grep PASS (no hit); role-gate PASS exit 0
+files_changed: measure/runs/board_focus_reasons_20261121/phase-acceptance-0db45c6.json; measure/runs/board_focus_reasons_20261121/phase-acceptance-0db45c6.log
+plan_updates: none
+known_failures: none
+handoff: Phase 1 passes at 0db45c6 with three nonblocking Nits: F1 (blur-flush edge cases never run live), F2 (untested FR-1 and FR-5 clauses plus stale test headers), F3 (counts pinned in plan.md). Confirm two assumptions: no Review B, Review C, or adversarial run is required in this light-lane phase, and the plan-only commit 0db45c6 keeps the prerequisite results valid. Task 2.4 must report that the live check saw no host focus fault (FR-8). Phase 2 may start.
+END_MEASURE_AGENT_RESULT
+
+Gate command: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track board_focus_reasons_20261121 --phase "Phase 1: Focus survives a refresh" --baseline da1e7bb --result-file measure/runs/board_focus_reasons_20261121/phase-acceptance-0db45c6.json --log-file measure/runs/board_focus_reasons_20261121/phase-acceptance-0db45c6.log
+Gate output: PASS: phase-acceptance gate passed
+Gate exit code: 0
+RESULT: PASS

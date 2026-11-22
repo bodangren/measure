@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "role": "ux-browser-review",
+  "track": "board_focus_reasons_20261121",
+  "phase": "Phase 1: Focus survives a refresh",
+  "baseline_sha": "da1e7bbedb824c0a63488108ca75a63476b4cac9",
+  "phase_base_sha": "da1e7bbedb824c0a63488108ca75a63476b4cac9",
+  "role_base_sha": "7ff5df2314fcd6b576ef6bb82e820f520ff053db",
+  "audited_head_sha": "7ff5df2314fcd6b576ef6bb82e820f520ff053db",
+  "status": "inconclusive",
+  "summary": "The timer check passed, but HEAD advanced during the audit. A new audit must check the final commit.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD matched 7ff5df2314fcd6b576ef6bb82e820f520ff053db at the audit start. The branch is fix/board-focus-reasons.",
+    "HEAD advanced to ca6c367579b6c659e4d090b15fad0d1f0b790017 during the browser check. That commit changes the painter tests.",
+    "The final HEAD is e0d57620caff900eb1dac52f4b939051fc6e5667. This result remains bound to the requested 7ff5df2 commit.",
+    "The server process is PID 1662340. Its @openchamber/web/build/bin/cli.js command uses --port 38307 and --host 127.0.0.1.",
+    "No @openchamber/web/server/index.js process appears. The CLI process confirms the supplied URL: http://127.0.0.1:38307.",
+    "The audit read the track index, spec, plan, metadata, author record, registry, Green log, contracts, and phase diff da1e7bb..7ff5df2.",
+    "The track has no test-strategy.md or separate routing artifact. The prompt supplies the model route: openai/gpt-6.1-sol#high.",
+    "PROJECT_DEV_URL is empty in measure/gates.json. The prompt supplies the live target. No configuration file changed.",
+    "The audit opened the real Measure extension page. It opened the Sales Advantage Go-Live comment box in the Blocked column.",
+    "The audit entered Alpha audit draft omega and set the caret to position 6. It never clicked Send or Refresh.",
+    "The 72-second monitor ran from 23:28:22.845Z to 23:29:35.185Z. Every sample kept the same textarea node and active textarea.",
+    "All 35 typing cycles inserted x at position 6 and removed it with Backspace. Each cycle restored the original value and caret.",
+    "Host responses arrived in bursts at 23:28:00 and 23:29:00. These bursts confirm automatic reloads without a Refresh click.",
+    "The root observer recorded zero mutations throughout the typing monitor. The Refresh label stayed unchanged because the held paint also holds that label.",
+    "The open textarea retained focus through all 70 samples. No unsolicited focus transfer to the host chat input occurred during this monitor.",
+    "Escape closed the box at 23:30:09.584Z. The root changed once, and focus returned to the Comment button.",
+    "The page showed the latest loaded board after Escape. The audit did not modify repository data to test a changed card.",
+    "The audit also opened the rail panel. Its 626-pixel frame stacked the columns without horizontal document overflow.",
+    "The desktop page used clear column groups, visible card spacing, a labeled textarea, and a visible focus ring. The accessibility snapshot names Comment to PM.",
+    "The rail screenshot shows the Refreshing state. The initial accessibility snapshots also showed per-repository Loading states.",
+    "The audit attempted a live host-ready check through session navigation. OpenChamber unmounted the rail iframe when the selected session changed.",
+    "Session navigation focused the host composer after it removed the iframe. This event is not a focus transfer without repaint.",
+    "The host-ready survival check remains unverified. The audit sent no synthetic host event and changed no theme, grant, setting, or session content.",
+    "The audit did not test a phone viewport, an empty repository, or an error state before HEAD changed.",
+    "The agent-browser eval command ignored its selected iframe. A CDP connection to that browser read document.activeElement inside the sandboxed iframe.",
+    "The browser closed successfully. A process check found none of this audit's Chrome processes or crash handlers running.",
+    "The browser started before the load note. No browser start occurred after that note. Future starts must use the supplied heavy-run command."
+  ],
+  "commands": [
+    "git status --short; git rev-parse HEAD; git diff da1e7bb..7ff5df2 -- extensions/measure-status",
+    "ps -eo pid,args: confirmed the OpenChamber CLI process and --port 38307",
+    "npx --yes agent-browser --version: 0.43.0",
+    "npx --yes agent-browser --session measure-ux-p1 open http://127.0.0.1:38307: sandbox launch failed",
+    "npx --yes agent-browser --session measure-ux-p1 --args --no-sandbox open http://127.0.0.1:38307: passed",
+    "agent-browser: set viewport 1440 1000; opened Measure; opened Comment; filled the textarea; captured screenshots and snapshots",
+    "node measure/runs/board_focus_reasons_20261121/ux-p1/cdp-audit.mjs setup: recorded focus, text, caret, and node identity",
+    "node measure/runs/board_focus_reasons_20261121/ux-p1/cdp-audit.mjs monitor: passed all 70 focus and caret samples across 72 seconds",
+    "agent-browser press Escape: closed the box and applied one root update",
+    "agent-browser: opened the rail panel and selected the existing Measure session; navigation removed the old iframe",
+    "npx --yes agent-browser --session measure-ux-p1 close: Browser closed",
+    "ps -p 1234083,1234091,1234093,1234096,1234097,1234153,1234157,1234169,1234210,1234221,1234230,1234249,1435945,1460812,1462531 -o pid,ppid,args: no processes remained",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role ux-browser-review --track board_focus_reasons_20261121 --phase \"Phase 1: Focus survives a refresh\" --baseline da1e7bb --result-file measure/runs/board_focus_reasons_20261121/ux-browser-7ff5df2.json --log-file measure/runs/board_focus_reasons_20261121/ux-browser-7ff5df2.log: exit 1; FAIL: audit status must be pass, got 'inconclusive'; no blocking_findings provided",
+    "python3 JSON parser: valid result JSON"
+  ],
+  "changed_files": [
+    "measure/runs/board_focus_reasons_20261121/ux-browser-7ff5df2.json",
+    "measure/runs/board_focus_reasons_20261121/ux-browser-7ff5df2.log",
+    "measure/runs/board_focus_reasons_20261121/ux-p1/"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_audit",
+  "confidence": "medium",
+  "ux_applicability": "applicable",
+  "webbridge_status": "healthy",
+  "webbridge_evidence": {
+    "screenshots": [
+      "measure/runs/board_focus_reasons_20261121/ux-p1/open-1440.png",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/after-timer-1440.png",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/after-escape-1440.png",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/rail-1440-loading.png",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/rail-1440.png"
+    ],
+    "accessibility_snapshots": [
+      "measure/runs/board_focus_reasons_20261121/ux-p1/open-1440-ax.json"
+    ],
+    "interactions": [
+      "measure/runs/board_focus_reasons_20261121/ux-p1/before-timer.json",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/timer-72s.json",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/after-escape.json",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/rail-before-ready.json",
+      "measure/runs/board_focus_reasons_20261121/ux-p1/host-after-session-attempt.json"
+    ]
+  },
+  "final_head_sha": "e0d57620caff900eb1dac52f4b939051fc6e5667",
+  "model": "openai/gpt-6.1-sol",
+  "project_dev_url": "http://127.0.0.1:38307",
+  "host_focus_fault_observed": false,
+  "host_ready_check": "unverified: session navigation removed the iframe",
+  "browser_cleanup": "Browser closed. No audit Chrome process or crash handler remains.",
+  "role_gate": {
+    "exit_code": 1,
+    "output": "FAIL: audit status must be pass, got 'inconclusive'; no blocking_findings provided"
+  }
+}

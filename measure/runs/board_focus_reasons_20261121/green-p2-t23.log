@@ -1,0 +1,39 @@
+=== Green P2: plan evidence for Tasks 2.3 and 2.4 ===
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: e410fd1455afc469d1e42b095eced8f54980824f
+head_before_work: e410fd1455afc469d1e42b095eced8f54980824f
+branch: fix/board-focus-reasons
+plan_commit: ada02de2bb22aff99bbd8194390438c2da6a36b2
+final_head: ada02de2bb22aff99bbd8194390438c2da6a36b2
+No push.
+
+=== Scope ===
+Plan only. No code file changed. No other task line changed. Task 2.3 is [x]
+with e410fd1 and three evidence lines. Task 2.4 is [x] with e410fd1 and two
+evidence lines. The text comes from the brief and matches
+measure/runs/board_focus_reasons_20261121/ux-browser-e410fd1.json, whose status
+is pass, whose audited head is e410fd1, and whose host focus fault flag is false.
+
+=== Gate ===
+The jr-green gate runs GREEN_TEST_COMMAND through heavy-run. No source changed
+since e410fd1, where bunx tsc -p . --noEmit exited 0 and bunx vitest run passed
+25 files and 431 tests.
+
+=== Role gate output ===
+PASS: jr-green gate passed
+GATE_EXIT=0
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: ada02de (plan evidence only)
+tests_run: GREEN_TEST_COMMAND "cd extensions/measure-status && bunx vitest run" run by the jr-green gate through heavy-run; prior e410fd1 heavy-run tsc exit 0 and vitest exit 0 (25 files, 431 tests)
+files_changed: measure/tracks/board_focus_reasons_20261121/plan.md only
+plan_updates: Task 2.3 closed [x] with e410fd1 and live, fixture, and PM-condition evidence. Task 2.4 closed [x] with e410fd1 and FR-8 and closeout evidence. No other task line changed.
+known_failures: none
+handoff: Phase 2 now has every task [x] with commit SHA evidence. The live UX check passed on e410fd1 with 242 open reason checks. The PM condition after panel deploy is recorded in Task 2.3 and does not reopen this phase. Track closeout follows final acceptance through the closeout role. No push. phase_base_sha 50689cc; final HEAD ada02de.
+baseline_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: e410fd1455afc469d1e42b095eced8f54980824f
+END_MEASURE_AGENT_RESULT

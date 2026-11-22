@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: ux-browser-review
+status: blocked
+track: board_focus_reasons_20261121
+phase: Phase 1: Focus survives a refresh
+commits: none
+tests_run: pending
+files_changed: measure/runs/board_focus_reasons_20261121/ux-browser-e0d5762.json; this log
+plan_updates: none
+known_failures: The repeated browser audit is in progress. This verdict is provisional.
+handoff: Wait for the completed audit.
+END_MEASURE_AGENT_RESULT

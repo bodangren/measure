@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-21T21:35:55.687Z",
+  "width": 390,
+  "scrollWidth": 390,
+  "bodyWidth": 390,
+  "value": "Fixture audit draft omega",
+  "focus": true,
+  "area": {
+    "x": 55,
+    "y": 371.109375,
+    "width": 282,
+    "height": 48.5,
+    "top": 371.109375,
+    "right": 337,
+    "bottom": 419.609375,
+    "left": 55
+  },
+  "card": {
+    "x": 42,
+    "y": 165.546875,
+    "width": 306,
+    "height": 311.0625,
+    "top": 165.546875,
+    "right": 348,
+    "bottom": 476.609375,
+    "left": 42
+  },
+  "reason": "Waits for Daniel: deletion — Task: Check delete-file",
+  "label": "Comment to PM"
+}

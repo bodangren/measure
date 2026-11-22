@@ -49,8 +49,8 @@ describe('the column contract', () => {
     expect(COLUMN_LABELS).toEqual({
       planned: 'Planned',
       'in-progress': 'In progress',
-      blocked: 'Blocked',
-      waiting: 'Waiting on Daniel',
+      blocked: 'Waits for PM',
+      waiting: 'Waits for Daniel',
       done: 'Done',
     })
   })
@@ -147,14 +147,14 @@ describe('R3a: a gate task', () => {
       note: null,
     })
     expect(track.position).toMatchObject({ phase: 1, phases: 1, task: 2, tasks: 2 })
-    expect(cardLabel(track)).toBe('MANUAL CHECK')
+    expect(cardLabel(track)).toBeNull()
   })
 
   test('is Waiting on Daniel for a GATE body', () => {
     const md = '## Phase 1: A\n\n- [x] Task: One\n- [ ] Task 1.5: GATE. PM look, then Daniel accepts the look.\n'
     const track = card({ plan: { kind: 'plan', plan: plan(md) } })
     expect(track.column).toBe('waiting')
-    expect(cardLabel(track)).toBe('GATE')
+    expect(cardLabel(track)).toBeNull()
   })
 
   test('gives no gate at 14 days plus one millisecond', () => {
@@ -195,10 +195,16 @@ describe('R3a: a gate task', () => {
 })
 
 describe('R3b: an open [b] task', () => {
-  test('is Blocked with the text of the first such task', () => {
+  test('gives Running when a [~] task follows a [b] task with no gate', () => {
     const md = '## Phase 1: A\n\n- [x] Task: One\n- [b] Task: Two\n- [~] Task: Three\n'
     const track = card({ plan: { kind: 'plan', plan: plan(md) } })
-    expect(track).toMatchObject({ column: 'blocked', line: 'Task: Two', marker: '~' })
+    expect(track).toMatchObject({
+      column: 'in-progress',
+      state: 'running',
+      line: null,
+      marker: '~',
+      reason: 'Running: Task: Three',
+    })
     expect(track.position).toMatchObject({ task: 3 })
   })
 
@@ -265,8 +271,8 @@ describe('R4: no current task', () => {
     })
   })
 
-  test('is Waiting on Daniel for each Daniel token', () => {
-    for (const owner of ['daniel', 'Owner', 'both-owners', 'daniel-deploy-word']) {
+  test('is Waiting on Daniel for each gate owner token', () => {
+    for (const owner of ['daniel-deploy', 'manual', 'paid', 'public-date', 'proof', 'sudo']) {
       expect(card({ plan: { kind: 'plan', plan: plan(closed(owner)) } }).column).toBe('waiting')
     }
   })
@@ -279,9 +285,15 @@ describe('R4: no current task', () => {
     }
   })
 
-  test('is In progress with the note All tasks closed. when no task is open', () => {
+  test('is Waits for PM with the note All tasks closed. when no task is open', () => {
     const track = card({ plan: { kind: 'plan', plan: plan('## Phase 1: A\n\n- [x] Task: One\n') } })
-    expect(track).toMatchObject({ column: 'in-progress', position: null, note: 'All tasks closed.' })
+    expect(track).toMatchObject({
+      column: 'blocked',
+      state: 'waits-pm',
+      reason: 'Waits for PM: All tasks closed.',
+      position: null,
+      note: 'All tasks closed.',
+    })
   })
 })
 
@@ -484,18 +496,24 @@ describe('columnView', () => {
 })
 
 describe('blockedTracks', () => {
-  test('counts the Blocked cards of every board', () => {
-    const blocked = input({ plan: { kind: 'missing' }, registryMarker: 'b' })
+  test('counts the Waits for Daniel cards of every board', () => {
+    const waiting = input({
+      plan: {
+        kind: 'plan',
+        plan: plan('## Phase 1: A\n\n- [x] Task: One\n- [ ] Task 1.5: GATE look\n'),
+      },
+      lastChange: NOW,
+    })
     const boards = [
-      buildBoard('invented-a', [blocked, input({ registryMarker: 'x' })]),
-      buildBoard('invented-b', [blocked, blocked]),
+      buildBoard('invented-a', [waiting, input({ registryMarker: 'x' })]),
+      buildBoard('invented-b', [waiting, waiting]),
     ]
     expect(blockedTracks(boards)).toBe(3)
   })
 })
 
 describe('cardLabel', () => {
-  test('gives the label of a blocked or waiting card only', () => {
+  test('gives no label to any card (FR-13)', () => {
     const blocked = card({ plan: { kind: 'missing' }, registryMarker: 'b' })
     const manual = card({
       plan: {
@@ -506,9 +524,9 @@ describe('cardLabel', () => {
     const gate = card({
       plan: { kind: 'plan', plan: plan('## Phase 1: A\n\n- [x] Task: One\n- [ ] Task 1.5: GATE. PM look\n') },
     })
-    expect(cardLabel(blocked)).toBe('BLOCKER')
-    expect(cardLabel(manual)).toBe('MANUAL CHECK')
-    expect(cardLabel(gate)).toBe('GATE')
+    expect(cardLabel(blocked)).toBeNull()
+    expect(cardLabel(manual)).toBeNull()
+    expect(cardLabel(gate)).toBeNull()
     expect(cardLabel(card({ registryMarker: 'x' }))).toBeNull()
     expect(cardLabel(card())).toBeNull()
   })

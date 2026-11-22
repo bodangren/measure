@@ -527,3 +527,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Generated check error names path and state**
   *Link: [./archive/generated_check_error_20261119/](./archive/generated_check_error_20261119/)*
   *Closeout generated check names the gates.json path and state*
+
+- [x] **Track: Board keeps focus and shows a plain reason per card**
+  *Link: [./archive/board_focus_reasons_20261121/](./archive/board_focus_reasons_20261121/)*
+  *Board keeps focus and shows a plain reason per card*

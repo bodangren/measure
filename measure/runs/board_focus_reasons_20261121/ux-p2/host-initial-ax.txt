@@ -1,0 +1,222 @@
+/home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh: line 1259: warning: command substitution: ignored null byte in input
+- generic "PagesIssues and PRsScheduled tasksArchiveStatsIntegrations catalogPinnedMonorepo (tower)6sWorkbooks" [ref=e1] clickable [onclick]
+  - button "Open sessions" [ref=e3]
+  - button "New session" [ref=e4]
+  - generic [ref=e5] hint="icon:oc-list-settings" clickable [onclick]
+    - button "Customize sections" [expanded=false, ref=e6]
+    - button "Display mode" [expanded=false, ref=e7]
+  - textbox "Search sessions" [ref=e10]
+  - button "Pages" [expanded=true, ref=e80]
+  - button [ref=e12]
+  - button "Issues and PRs" [ref=e13]
+  - button "Scheduled tasks" [ref=e14]
+  - button "Archive" [ref=e15] hint="icon:oc-archive"
+  - button "Stats" [ref=e16]
+  - button "Integrations catalog" [ref=e17]
+  - button "Pinned" [ref=e18] hint="icon:oc-arrow-down-s"
+    - generic "Pinned" [ref=e47] clickable [cursor:pointer, onclick]
+      - button "Pinned" [expanded=true, ref=e185] hint="icon:oc-arrow-down-s"
+  - button "Expand subsessions Monorepo (tower) Unread updates Last turn took 6s Archive Session menu" [disabled, ref=e19]
+    - generic "Monorepo (tower)6s" [ref=e48] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e81] hint="icon:oc-arrow-right-s"
+      - button "Monorepo (tower) Unread updates Last turn took 6s" [disabled, ref=e82]
+        - generic "Unread updates" [ref=e186] hint="icon:oc-robot-2; id:base-ui-_r_g3_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e128] hint="icon:oc-archive; id:base-ui-_r_g5_"
+      - button "Session menu" [expanded=false, disabled, ref=e129] hint="icon:oc-more-2; id:base-ui-_r_ga_"
+  - button "Expand subsessions Workbooks (tower) Unread updates Last turn took 15s Archive Session menu" [disabled, ref=e20]
+    - generic "Workbooks (tower)15s" [ref=e49] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e83] hint="icon:oc-arrow-right-s"
+      - button "Workbooks (tower) Unread updates Last turn took 15s" [disabled, ref=e84]
+        - generic "Unread updates" [ref=e187] hint="icon:oc-circle; id:base-ui-_r_gm_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e130] hint="icon:oc-archive; id:base-ui-_r_go_"
+      - button "Session menu" [expanded=false, disabled, ref=e131] hint="icon:oc-more-2; id:base-ui-_r_gt_"
+  - button "Expand subsessions ra-math-monorepo #1 · Issue open, #2 · Issue open, #3 · Completed, #4 · Completed Unread updates Last turn took 26s Archive Session menu" [disabled, ref=e21]
+    - generic "ra-math-monorepo26s" [ref=e50] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e85] hint="icon:oc-arrow-right-s"
+      - button "ra-math-monorepo #1 · Issue open, #2 · Issue open, #3 · Completed, #4 · Completed Unread updates Last turn took 26s" [disabled, ref=e86]
+        - button "#1 · Issue open, #2 · Issue open, #3 · Completed, #4 · Completed" [disabled, ref=e188]
+        - generic "Unread updates" [ref=e189] hint="icon:oc-robot-2; id:base-ui-_r_hb_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e132] hint="icon:oc-archive; id:base-ui-_r_hd_"
+      - button "Session menu" [expanded=false, disabled, ref=e133] hint="icon:oc-more-2; id:base-ui-_r_hi_"
+  - button "Disk janitor Unread updates Last turn took 19s Archive Session menu" [disabled, ref=e22]
+    - generic "Disk janitor19s" [ref=e51] clickable [cursor:pointer, onclick]
+      - button "Disk janitor Unread updates Last turn took 19s" [disabled, ref=e87]
+        - generic "Unread updates" [ref=e190] hint="icon:oc-checkbox-circle; id:base-ui-_r_hu_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e134] hint="icon:oc-archive; id:base-ui-_r_i0_"
+      - button "Session menu" [expanded=false, disabled, ref=e135] hint="icon:oc-more-2; id:base-ui-_r_i5_"
+  - button "Expand subsessions Measure #9 · Merged, #11 · Merged, #12 · Merged, #13 · Merged, #14 · Merged, #15 · Merged, #16 · Merged, #17 · Merged, #18 · Merged, #19 · Merged, #20 · Merged, #21 · Merged, #22 · Merged, #23 · Merged, #24 · Merged, #25 · Merged, #27 · Merged, #30 · Merged, #32 · Merged Unread updates Last turn took 5s Archive Session menu" [disabled, ref=e23]
+    - generic "Measure5s" [ref=e52] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e88] hint="icon:oc-arrow-right-s"
+      - button "Measure #9 · Merged, #11 · Merged, #12 · Merged, #13 · Merged, #14 · Merged, #15 · Merged, #16 · Merged, #17 · Merged, #18 · Merged, #19 · Merged, #20 · Merged, #21 · Merged, #22 · Merged, #23 · Merged, #24 · Merged, #25 · Merged, #27 · Merged, #30 · Merged, #32 · Merged Unread updates Last turn took 5s" [disabled, ref=e89]
+        - button "#9 · Merged, #11 · Merged, #12 · Merged, #13 · Merged, #14 · Merged, #15 · Merged, #16 · Merged, #17 · Merged, #18 · Merged, #19 · Merged, #20 · Merged, #21 · Merged, #22 · Merged, #23 · Merged, #24 · Merged, #25 · Merged, #27 · Merged, #30 · Merged, #32 · Merged" [disabled, ref=e191]
+        - generic "Unread updates" [ref=e192] hint="icon:oc-checkbox-circle; id:base-ui-_r_ij_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e136] hint="icon:oc-archive; id:base-ui-_r_il_"
+      - button "Session menu" [expanded=false, disabled, ref=e137] hint="icon:oc-more-2; id:base-ui-_r_iq_"
+  - button "Expand subsessions Lending Bench Unread updates Last turn took 27s Archive Session menu" [disabled, ref=e24]
+    - generic "Lending Bench27s" [ref=e53] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e90] hint="icon:oc-arrow-right-s"
+      - button "Lending Bench Unread updates Last turn took 27s" [disabled, ref=e91]
+        - generic "Unread updates" [ref=e193] hint="icon:oc-checkbox-circle; id:base-ui-_r_j6_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e138] hint="icon:oc-archive; id:base-ui-_r_j8_"
+      - button "Session menu" [expanded=false, disabled, ref=e139] hint="icon:oc-more-2; id:base-ui-_r_jd_"
+  - button "Expand subsessions Graph Unread updates Last turn took 57s Archive Session menu" [disabled, ref=e25]
+    - generic "Graph57s" [ref=e54] clickable [cursor:pointer, onclick]
+      - button "Expand subsessions" [expanded=false, disabled, ref=e92] hint="icon:oc-arrow-right-s"
+      - button "Graph Unread updates Last turn took 57s" [disabled, ref=e93]
+        - generic "Unread updates" [ref=e194] hint="icon:oc-checkbox-circle; id:base-ui-_r_jp_" clickable [cursor:pointer, onclick]
+      - button "Archive" [disabled, ref=e140] hint="icon:oc-archive; id:base-ui-_r_jr_"
+      - button "Session menu" [expanded=false, disabled, ref=e141] hint="icon:oc-more-2; id:base-ui-_r_k0_"
+  - button "Show more Unread updates" [ref=e26]
+    - generic "Unread updates" [ref=e55] hint="icon:oc-circle; id:base-ui-_r_k5_" clickable [cursor:pointer, onclick]
+  - button "In work" [ref=e27] hint="icon:oc-arrow-down-s"
+    - generic "In work" [ref=e56] clickable [cursor:pointer, onclick]
+      - button "In work" [expanded=true, ref=e195] hint="icon:oc-arrow-down-s"
+  - generic "A-63 remediation19s" [ref=e28] clickable [cursor:pointer, onclick]
+    - button "Expand A-63 remediation" [expanded=false, ref=e57]
+    - button "Open A-63 remediation" [ref=e58]
+      - generic "Unread updates" [ref=e94] hint="icon:oc-checkbox-circle; id:base-ui-_r_ke_" clickable [cursor:pointer, onclick]
+    - button "Mark done" [ref=e95] hint="icon:oc-check; id:base-ui-_r_kg_"
+    - button "New draft session in A-63 remediation" [ref=e96]
+    - button "Task menu for A-63 remediation" [expanded=false, ref=e97]
+  - button "Build · www · publish 11-21 post Unread updates Last turn took 13s Mark done Archive Session menu" [disabled, ref=e29]
+    - generic "Build · www · publish 11-21 post13s" [ref=e59] clickable [cursor:pointer, onclick]
+      - button "Build · www · publish 11-21 post Unread updates Last turn took 13s" [disabled, ref=e98]
+        - generic "Unread updates" [ref=e196] hint="icon:oc-checkbox-circle; id:base-ui-_r_l1_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e142] hint="icon:oc-check; id:base-ui-_r_l3_"
+      - button "Archive" [disabled, ref=e143] hint="icon:oc-archive; id:base-ui-_r_l5_"
+      - button "Session menu" [expanded=false, disabled, ref=e144] hint="icon:oc-more-2; id:base-ui-_r_la_"
+  - generic "www/preflight-1120b12s" [ref=e30] clickable [cursor:pointer, onclick]
+    - button "Expand www/preflight-1120b" [expanded=false, ref=e60]
+    - button "Open www/preflight-1120b" [ref=e61]
+      - generic "Unread updates" [ref=e99] hint="icon:oc-checkbox-circle; id:base-ui-_r_lm_" clickable [cursor:pointer, onclick]
+    - button "Mark done" [ref=e100] hint="icon:oc-check; id:base-ui-_r_lo_"
+    - button "New draft session in www/preflight-1120b" [ref=e101]
+    - button "Task menu for www/preflight-1120b" [expanded=false, ref=e102]
+  - button "Build · checker · generated check error text Unread updates Last turn took 20s Mark done Archive Session menu" [disabled, ref=e31]
+    - generic "Build · checker · generated check error text20s" [ref=e62] clickable [cursor:pointer, onclick]
+      - button "Build · checker · generated check error text Unread updates Last turn took 20s" [disabled, ref=e103]
+        - generic "Unread updates" [ref=e197] hint="icon:oc-checkbox-circle; id:base-ui-_r_m9_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e145] hint="icon:oc-check; id:base-ui-_r_mb_"
+      - button "Archive" [disabled, ref=e146] hint="icon:oc-archive; id:base-ui-_r_md_"
+      - button "Session menu" [expanded=false, disabled, ref=e147] hint="icon:oc-more-2; id:base-ui-_r_mi_"
+  - button "Build · www · zh roadmap note on 11-21 Unread updates Last turn took 12s Mark done Archive Session menu" [disabled, ref=e32]
+    - generic "Build · www · zh roadmap note on 11-2112s" [ref=e63] clickable [cursor:pointer, onclick]
+      - button "Build · www · zh roadmap note on 11-21 Unread updates Last turn took 12s" [disabled, ref=e104]
+        - generic "Unread updates" [ref=e198] hint="icon:oc-checkbox-circle; id:base-ui-_r_mu_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e148] hint="icon:oc-check; id:base-ui-_r_n0_"
+      - button "Archive" [disabled, ref=e149] hint="icon:oc-archive; id:base-ui-_r_n2_"
+      - button "Session menu" [expanded=false, disabled, ref=e150] hint="icon:oc-more-2; id:base-ui-_r_n7_"
+  - generic "www/daily-posts-1116-111714m 35s" [ref=e33] clickable [cursor:pointer, onclick]
+    - button "Expand www/daily-posts-1116-1117" [expanded=false, ref=e64]
+    - button "Open www/daily-posts-1116-1117" [ref=e65]
+      - generic "Unread updates" [ref=e105] hint="icon:oc-checkbox-circle; id:base-ui-_r_nj_" clickable [cursor:pointer, onclick]
+    - button "Mark done" [ref=e106] hint="icon:oc-check; id:base-ui-_r_nl_"
+    - button "New draft session in www/daily-posts-1116-1117" [ref=e107]
+    - button "Task menu for www/daily-posts-1116-1117" [expanded=false, ref=e108]
+  - button "Build · www change list · song poster push Looks done Unread updates Last turn took 18m 14s Mark done Archive Session menu" [disabled, ref=e34]
+    - generic "Build · www change list · song poster push18m 14s" [ref=e66] clickable [cursor:pointer, onclick]
+      - button "Build · www change list · song poster push Looks done Unread updates Last turn took 18m 14s" [disabled, ref=e109]
+        - generic "Looks done" [ref=e199] hint="icon:oc-check; id:base-ui-_r_o6_" clickable [cursor:pointer, onclick]
+        - generic "Unread updates" [ref=e200] hint="icon:oc-checkbox-circle; id:base-ui-_r_o8_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e151] hint="icon:oc-check; id:base-ui-_r_oa_"
+      - button "Archive" [disabled, ref=e152] hint="icon:oc-archive; id:base-ui-_r_oc_"
+      - button "Session menu" [expanded=false, disabled, ref=e153] hint="icon:oc-more-2; id:base-ui-_r_oh_"
+  - button "Build · www change list · storytime app-first push Looks done Unread updates Last turn took 18m 52s Mark done Archive Session menu" [disabled, ref=e35]
+    - generic "Build · www change list · storytime app-first push18m 52s" [ref=e67] clickable [cursor:pointer, onclick]
+      - button "Build · www change list · storytime app-first push Looks done Unread updates Last turn took 18m 52s" [disabled, ref=e110]
+        - generic "Looks done" [ref=e201] hint="icon:oc-check; id:base-ui-_r_ot_" clickable [cursor:pointer, onclick]
+        - generic "Unread updates" [ref=e202] hint="icon:oc-checkbox-circle; id:base-ui-_r_ov_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e154] hint="icon:oc-check; id:base-ui-_r_p1_"
+      - button "Archive" [disabled, ref=e155] hint="icon:oc-archive; id:base-ui-_r_p3_"
+      - button "Session menu" [expanded=false, disabled, ref=e156] hint="icon:oc-more-2; id:base-ui-_r_p8_"
+  - button "Build · www_tutor_followups · push closeout Unread updates Last turn took 10s Mark done Archive Session menu" [disabled, ref=e36]
+    - generic "Build · www_tutor_followups · push closeout10s" [ref=e68] clickable [cursor:pointer, onclick]
+      - button "Build · www_tutor_followups · push closeout Unread updates Last turn took 10s" [disabled, ref=e111]
+        - generic "Unread updates" [ref=e203] hint="icon:oc-checkbox-circle; id:base-ui-_r_pk_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e157] hint="icon:oc-check; id:base-ui-_r_pm_"
+      - button "Archive" [disabled, ref=e158] hint="icon:oc-archive; id:base-ui-_r_po_"
+      - button "Session menu" [expanded=false, disabled, ref=e159] hint="icon:oc-more-2; id:base-ui-_r_pt_"
+  - button "Build · www_tutor_followups · merge master and push Unread updates Last turn took 18s Mark done Archive Session menu" [disabled, ref=e37]
+    - generic "Build · www_tutor_followups · merge master and push18s" [ref=e69] clickable [cursor:pointer, onclick]
+      - button "Build · www_tutor_followups · merge master and push Unread updates Last turn took 18s" [disabled, ref=e112]
+        - generic "Unread updates" [ref=e204] hint="icon:oc-checkbox-circle; id:base-ui-_r_q9_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e160] hint="icon:oc-check; id:base-ui-_r_qb_"
+      - button "Archive" [disabled, ref=e161] hint="icon:oc-archive; id:base-ui-_r_qd_"
+      - button "Session menu" [expanded=false, disabled, ref=e162] hint="icon:oc-more-2; id:base-ui-_r_qi_"
+  - button "Build · www_tutor_followups · record Review B waiver Unread updates Last turn took 7s Mark done Archive Session menu" [disabled, ref=e38]
+    - generic "Build · www_tutor_followups · record Review B waiver7s" [ref=e70] clickable [cursor:pointer, onclick]
+      - button "Build · www_tutor_followups · record Review B waiver Unread updates Last turn took 7s" [disabled, ref=e113]
+        - generic "Unread updates" [ref=e205] hint="icon:oc-checkbox-circle; id:base-ui-_r_qu_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e163] hint="icon:oc-check; id:base-ui-_r_r0_"
+      - button "Archive" [disabled, ref=e164] hint="icon:oc-archive; id:base-ui-_r_r2_"
+      - button "Session menu" [expanded=false, disabled, ref=e165] hint="icon:oc-more-2; id:base-ui-_r_r7_"
+  - button "Build · www · open tutor follow-up track Unread updates Last turn took 30s Mark done Archive Session menu" [disabled, ref=e39]
+    - generic "Build · www · open tutor follow-up track30s" [ref=e71] clickable [cursor:pointer, onclick]
+      - button "Build · www · open tutor follow-up track Unread updates Last turn took 30s" [disabled, ref=e114]
+        - generic "Unread updates" [ref=e206] hint="icon:oc-checkbox-circle; id:base-ui-_r_rj_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e166] hint="icon:oc-check; id:base-ui-_r_rl_"
+      - button "Archive" [disabled, ref=e167] hint="icon:oc-archive; id:base-ui-_r_rn_"
+      - button "Session menu" [expanded=false, disabled, ref=e168] hint="icon:oc-more-2; id:base-ui-_r_rs_"
+  - button "Build · track · sub-box SHA rule Unread updates Last turn took 22s Mark done Archive Session menu" [disabled, ref=e40]
+    - generic "Build · track · sub-box SHA rule22s" [ref=e72] clickable [cursor:pointer, onclick]
+      - button "Build · track · sub-box SHA rule Unread updates Last turn took 22s" [disabled, ref=e115]
+        - generic "Unread updates" [ref=e207] hint="icon:oc-checkbox-circle; id:base-ui-_r_s8_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e169] hint="icon:oc-check; id:base-ui-_r_sa_"
+      - button "Archive" [disabled, ref=e170] hint="icon:oc-archive; id:base-ui-_r_sc_"
+      - button "Session menu" [expanded=false, disabled, ref=e171] hint="icon:oc-more-2; id:base-ui-_r_sh_"
+  - generic "p7-green9m 9s" [ref=e41] clickable [cursor:pointer, onclick]
+    - button "Expand p7-green" [expanded=false, ref=e73]
+    - button "Open p7-green" [ref=e74]
+      - generic "Unread updates" [ref=e116] hint="icon:oc-checkbox-circle; id:base-ui-_r_st_" clickable [cursor:pointer, onclick]
+    - button "Mark done" [ref=e117] hint="icon:oc-check; id:base-ui-_r_sv_"
+    - button "New draft session in p7-green" [ref=e118]
+    - button "Task menu for p7-green" [expanded=false, ref=e119]
+  - button "Build · track · copywriter allow Unread updates Last turn took 21s Mark done Archive Session menu" [disabled, ref=e42]
+    - generic "Build · track · copywriter allow21s" [ref=e75] clickable [cursor:pointer, onclick]
+      - button "Build · track · copywriter allow Unread updates Last turn took 21s" [disabled, ref=e120]
+        - generic "Unread updates" [ref=e208] hint="icon:oc-checkbox-circle; id:base-ui-_r_tg_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e172] hint="icon:oc-check; id:base-ui-_r_ti_"
+      - button "Archive" [disabled, ref=e173] hint="icon:oc-archive; id:base-ui-_r_tk_"
+      - button "Session menu" [expanded=false, disabled, ref=e174] hint="icon:oc-more-2; id:base-ui-_r_tp_"
+  - button "Build · track · result line Unread updates Last turn took 32s Mark done Archive Session menu" [disabled, ref=e43]
+    - generic "Build · track · result line32s" [ref=e76] clickable [cursor:pointer, onclick]
+      - button "Build · track · result line Unread updates Last turn took 32s" [disabled, ref=e121]
+        - generic "Unread updates" [ref=e209] hint="icon:oc-checkbox-circle; id:base-ui-_r_u5_" clickable [cursor:pointer, onclick]
+      - button "Mark done" [disabled, ref=e175] hint="icon:oc-check; id:base-ui-_r_u7_"
+      - button "Archive" [disabled, ref=e176] hint="icon:oc-archive; id:base-ui-_r_u9_"
+      - button "Session menu" [expanded=false, disabled, ref=e177] hint="icon:oc-more-2; id:base-ui-_r_ue_"
+  - button "Build · track · prompt audit Unread updates Last turn took 40s Mark done Archive Session menu" [disabled, ref=e44]
+    - button "Build · track · prompt audit Unread updates Last turn took 40s" [disabled, ref=e122]
+    - button "Mark done" [disabled, ref=e178] hint="icon:oc-check; id:base-ui-_r_us_"
+    - button "Archive" [disabled, ref=e179] hint="icon:oc-archive; id:base-ui-_r_uu_"
+    - button "Session menu" [expanded=false, disabled, ref=e180] hint="icon:oc-more-2; id:base-ui-_r_v3_"
+  - button "Expand Book editions rebase plan" [expanded=false, ref=e77]
+  - button "Open Book editions rebase plan" [ref=e78]
+  - button "Mark done" [ref=e123] hint="icon:oc-check; id:base-ui-_r_vh_"
+  - button "New draft session in Book editions rebase plan" [ref=e124]
+  - button "Task menu for Book editions rebase plan" [expanded=false, ref=e125]
+  - button "Build · P1 · www_storytime_page_revamp · maker Unread updates Last turn took 20m 44s Mark done Archive Session menu" [disabled, ref=e45]
+    - button "Build · P1 · www_storytime_page_revamp · maker Unread updates Last turn took 20m 44s" [disabled, ref=e126]
+    - button "Mark done" [disabled, ref=e181] hint="icon:oc-check"
+    - button "Archive" [disabled, ref=e182] hint="icon:oc-archive"
+    - button "Session menu" [expanded=false, disabled, ref=e183] hint="icon:oc-more-2; id:base-ui-_r_10b_"
+  - button "Settings" [ref=e9]
+  - button "Toggle work-status panel" [ref=e8]
+  - heading "What are we working on?" [level=1, ref=e127]
+  - button "Choose project" [expanded=false, ref=e184]
+  - generic [ref=e218] clickable [onclick]
+    - textbox "Plan, build, or ask. @ to mention, $ for skills, / for commands" [ref=e220]: 
+
+  - generic [ref=e216] hint="icon:oc-add-circle; id:base-ui-_r_ek_" clickable [onclick]
+    - button "Add attachment" [expanded=false, ref=e219]
+  - button "Permissions: accept everything" [ref=e210]
+  - button "Start a goal with the next message" [ref=e211]
+  - button "opencode-go logo DeepSeek V4.1 Flash" [expanded=false, ref=e212]
+  - button "measure-orchestrator" [expanded=false, ref=e213]
+  - button "Start dictation" [ref=e214]
+  - generic [ref=e215] hint="icon:oc-arrow-up; id:base-ui-_r_fe_" clickable [onclick]
+    - button "Send message" [disabled, ref=e217]
+  - generic "Session" [ref=e11] clickable [onclick]
+    - button "Choose sections" [ref=e46]
+    - heading "Session" [level=3, ref=e79]
+  - region "Notifications alt+T" [ref=e2]

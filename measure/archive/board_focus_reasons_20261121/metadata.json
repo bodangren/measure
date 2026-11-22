@@ -1,0 +1,13 @@
+{
+  "track_id": "board_focus_reasons_20261121",
+  "type": "fix",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-21T00:00:00Z",
+  "updated_at": "2026-11-22T00:00:00Z",
+  "completed": "2026-11-22",
+  "description": "Board keeps focus and shows a plain reason per card",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": "Light lane: Review B, Review C and adversarial testing were not required. The change has no logins, no data, no routes and no security scope. Reported to the PM. The Red gate allowed package.json and bun.lock changes for the happy-dom dev dependency. The PM accepted this. No second spec review ran for the small rule a0 amendment at 50689cc. This was the PM default. Phase 2 Waits for Daniel checks (Comment button, Reason field, badge, focus spot check) and the 390 px check ran on a fixture page. The live board held zero Waits for Daniel cards. The PM accepted fixture proof on 2026-11-22. Final acceptance ran on kimi-code-plan-cn/k3.1-pro#high. The ra-quota pick opencode/deepseek-v4.1-flash-free#high stopped at its free limit. measure/doctor.sh does not exist. PROJECT_CHECKS (15/15) replaced it, as in earlier tracks. Open PM condition: after the panel deploy, the PM checks the first real Waits for Daniel card on the live board. The PM checks the Comment button and the Reason field and logs the result. A fault there opens a bug track. FR-8: no host focus fault appeared in the Phase 1 live check at 8dafa77 or the Phase 2 live check at e410fd1. The track reports no OpenChamber fault."
+}

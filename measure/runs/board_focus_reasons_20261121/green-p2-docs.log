@@ -1,0 +1,61 @@
+=== Green P2: Phase 2 acceptance doc-only remediation ===
+phase_base_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: ada02de2bb22aff99bbd8194390438c2da6a36b2
+head_before_work: ada02de2bb22aff99bbd8194390438c2da6a36b2
+branch: fix/board-focus-reasons
+doc_commit: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc
+final_head: ac1bf90cd1a439b81df1b2960dc9e42a81340fdc
+No push. No code or test file changed.
+
+=== F1 [Major] FIX ===
+extensions/measure-status/README.md now states FR-11 rule c. It says that a
+[b] task with a non-gate owner gives Waits for PM, naming deferred:pm and
+deferred:mid-red. It says that a registry marker [b] gives Waits for PM with
+the line `Waits for PM: registry marker [b]`, and that a plan with all tasks
+closed gives Waits for PM with the line `Waits for PM: All tasks closed.`.
+The text follows the order in spec.md FR-11 and src/board.ts:307-321. The
+Next in line sentence stays after rule c.
+
+=== F3 [Nit] FIX ===
+measure/tracks/board_focus_reasons_20261121/plan.md Task 2.3 live evidence
+now says the Workbooks D3 row is closed and shows `Waits for PM: All tasks
+closed.` with no Comment button. It adds that three live deferred verification
+rows show Waits for PM. The task marker and SHA stay [x] — e410fd1.
+
+=== F2 [Nit] no change ===
+The gap needs a verification row whose deferred or no visible change words sit
+only on a wrapped continuation line. A read-only plan scan found no real row
+with that shape. No code or test change was made.
+
+=== F4 [Nit] no change ===
+The pinned counts in plan.md match their logs. No claim is false. No change
+was made.
+
+=== Disposition encoding ===
+The gate accepts FIX, DECLINE, CONTEST(text), and ESCALATE(text). The brief's
+"DEFER" for F2 and "ACCEPT" for F4 are Nit findings with no owner action, so
+they are encoded as DECLINE.
+
+=== Gate ===
+The jr-green gate runs GREEN_TEST_COMMAND through heavy-run. No source changed
+since e410fd1, where tsc exited 0 and vitest passed 25 files and 431 tests.
+
+=== Role gate output ===
+PASS: jr-green gate passed
+GATE_EXIT=0
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: board_focus_reasons_20261121
+phase: Phase 2: One state and one reason per card
+commits: ac1bf90 (doc-only remediation)
+tests_run: GREEN_TEST_COMMAND "cd extensions/measure-status && bunx vitest run" run by the jr-green gate through heavy-run; prior e410fd1 heavy-run tsc exit 0 and vitest exit 0 (25 files, 431 tests)
+files_changed: extensions/measure-status/README.md; measure/tracks/board_focus_reasons_20261121/plan.md
+plan_updates: Task 2.3 live evidence corrected for the closed Workbooks D3 row and the three live deferred verification rows. Task 2.3 stays [x] — e410fd1. Task 2.4 untouched at [x] — e410fd1. No other task line changed.
+known_failures: none
+handoff: F1 and F3 are fixed with documentation only. F2 is not changed because no real plan row has the wrapped-shape words; this is the brief's DEFER. F4 is not changed because the counts match their logs; this is the brief's ACCEPT. Phase 2 stays complete with every task [x] and SHA evidence. Track closeout follows final acceptance through the closeout role. No push. phase_base_sha 50689cc; role base ada02de; final HEAD ac1bf90.
+baseline_sha: 50689cc97ac6f972a4f5d5fc70feca2867ee0568
+role_base_sha: ada02de2bb22aff99bbd8194390438c2da6a36b2
+dispositions: F1=FIX; F2=DECLINE; F3=FIX; F4=DECLINE
+END_MEASURE_AGENT_RESULT

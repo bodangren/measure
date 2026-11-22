@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track": "board_focus_reasons_20261121",
+  "phase": "track closeout",
+  "baseline_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc",
+  "audited_head_sha": "ac1bf90cd1a439b81df1b2960dc9e42a81340fdc",
+  "status": "pass",
+  "summary": "Closeout passes at ac1bf90. The track folder is archived, the registry entry is moved and matches the metadata description, and metadata records status done with seven completed tasks. The closeout checker exited 0. No bulky run artifact was deleted.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Pre-closeout HEAD is ac1bf90cd1a439b81df1b2960dc9e42a81340fdc on branch fix/board-focus-reasons with a clean tree.",
+    "final-acceptance-ac1bf90-r3.json has status pass, audited_head_sha ac1bf90cd1a439b81df1b2960dc9e42a81340fdc and role gate exit 0. The orchestrator re-ran the gate with PASS.",
+    "phase-acceptance-0db45c6.json and phase-acceptance-ac1bf90.json both have status pass and audited_head_sha equal to their phase HEADs.",
+    "The archived plan has seven [x] tasks with commit SHA evidence, no [~], no [ ] and no [b] task.",
+    "measure/tracks.md has no active entry for the track. Its archived entry description equals the metadata description.",
+    "The closeout checker printed INFO light lane, INFO no measure/generated folder and PASS closeout checks passed, with exit 0.",
+    "A9 grep for the fixed active track path found no match in tests, scripts or support files, so no test fix was needed.",
+    "metadata.json records the six accepted light-lane deviations, the open post-deploy PM condition and the FR-8 no-fault result."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain && git branch --show-current",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track board_focus_reasons_20261121 -> exit 0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/board_focus_reasons_20261121/closeout-result-ac1bf90.json"
+  ],
+  "changed_files": [
+    "measure/archive/board_focus_reasons_20261121/metadata.json",
+    "measure/archive/board_focus_reasons_20261121/automation-supervisor-closeout-manifest.json",
+    "measure/tracks.md",
+    "measure/runs/board_focus_reasons_20261121/closeout.log",
+    "measure/runs/board_focus_reasons_20261121/closeout-result-ac1bf90.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}
