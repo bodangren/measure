@@ -1,0 +1,14 @@
+{
+  "track_id": "late_finding_stop_rule_20261122",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-22T00:00:00Z",
+  "updated_at": "2026-11-22T12:38:45Z",
+  "completed": "2026-11-22",
+  "description": "Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run (prose and doc tests only). test_s5b_standalone.sh was added in 081e6d2 for Review A F1, beyond the spec Scope list. Third remediation round (records only) through the escalation key; the PM accepted it on 2026-11-22. The round-1 Review A run was inconclusive because of the heavy-run lock; round 2 ran the suites. A gap-closing Red round (24cf00e) updated one pin after Green's standalone wording. measure/doctor.sh does not exist; PROJECT_CHECKS replaced it, as in earlier tracks.",
+  "escalation": "third round: the round-3 re-review found a defect in the changed plan line (Review A F1 on 03c1970); records only"
+}

@@ -1,0 +1,70 @@
+Mid-Red log: Phase 1 Task 1.1, track late_finding_stop_rule_20261122.
+Role base check: phase_base_sha c49d008 and role_base_sha c49d008 both resolve.
+HEAD at role start: c49d0088858785e53e67ee0e8e0eb87b14d62102, clean tree, branch docs/late-finding-stop-rule.
+Spec review passed at c49d008 (spec-review-c49d008.json status pass, one new nonblocking Nit F6).
+
+Task 1.1 marked [~] in plan.md before any test file was written.
+Stale round-count parenthetical refreshed per spec-review Nit F6 to match FR-1:
+"(one audit cycle on one audited HEAD; parallel Reviews A/B/C share one round;
+each re-review after a remediation commit adds one; the two worked counts fix the count)".
+
+New test: tests/spec_review_gate/test_s5_late_finding_stop.sh (style of
+test_s2_role_docs.sh / test_s4_doc_drift.sh; helpers blank, section, in_text,
+in_flat; RESULTS with final total; exit 1 on any FAIL). run.sh needs no change:
+it discovers test_*.sh by glob. 26 checks: 1 file-exists precondition plus
+25 behavior cases, each matching only new Green text (verified absent from the
+six target files at c49d008 before writing).
+
+Red run at c49d008 files: bash tests/spec_review_gate/test_s5_late_finding_stop.sh
+exit 1; === Total: 26 checks (PASS=1, FAIL=25) ===.
+Per-case FAIL output (only PASS is the file-exists precondition):
+FAIL: contracts.md: the bold stop-rule heading: missing [**Late-finding stop rule.**]
+FAIL: contracts.md has no '**Late-finding stop rule.**' line (Round limit at line 160)
+FAIL: stop rule: one audit cycle on one audited HEAD: the searched text is missing or empty
+FAIL: stop rule: parallel Reviews A/B/C share one round: the searched text is missing or empty
+FAIL: stop rule: the adversarial pass is its own round: the searched text is missing or empty
+FAIL: stop rule: each re-review after a remediation commit adds one round: the searched text is missing or empty
+FAIL: stop rule: round 3 or later is late: the searched text is missing or empty
+FAIL: stop rule: worked count (a), adversarial pass on HEAD2 is round 3: the searched text is missing or empty
+FAIL: stop rule: worked count (b), re-review after the fix is round 3: the searched text is missing or empty
+FAIL: stop rule: late findings go to measure/tech-debt.md instead of Green: the searched text is missing or empty
+FAIL: stop rule: the exception gets exactly one fix round: the searched text is missing or empty
+FAIL: stop rule: the exception states the wrong output a user sees: the searched text is missing or empty
+FAIL: contracts.md: the exact record-line form: missing line [- Late finding <id>: <tech-debt|one-fix-round> (<reason>)]
+FAIL: stop rule: the Round limit bounds started fix rounds: the searched text is missing or empty
+FAIL: stop rule: the stop rule stops new fix rounds late in a phase: the searched text is missing or empty
+FAIL: stop rule: a one-fix-round finding counts toward the Round limit: the searched text is missing or empty
+FAIL: stop rule: the Round limit wins: the searched text is missing or empty
+FAIL: stop rule: the fourth-round gate-script example: the searched text is missing or empty
+FAIL: stop rule: the wrong-dashboard-number example: the searched text is missing or empty
+FAIL: SKILL.md: ## Contracts names the Late-finding stop rule: missing [Late-finding stop rule]
+FAIL: no ## Contracts line holds both 'Late-finding stop rule' and 'references/contracts.md'
+FAIL: agents/measure-review-a-correctness.md has no line holding both 'Late-finding stop rule' and 'skills/measure-orchestrator/references/contracts.md'
+FAIL: agents/measure-review-b-security.md has no line holding both 'Late-finding stop rule' and 'skills/measure-orchestrator/references/contracts.md'
+FAIL: agents/measure-review-c-ux-api.md has no line holding both 'Late-finding stop rule' and 'skills/measure-orchestrator/references/contracts.md'
+FAIL: agents/measure-adversarial-testing.md has no line holding both 'Late-finding stop rule' and 'skills/measure-orchestrator/references/contracts.md'
+
+Full suite at c49d008 files (via heavy-run):
+HEAVY_MIN_AVAIL_MB=1500 .../heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'
+=== spec_review_gate: 23 suites (PASS=22, FAIL=1) ===; only test_s5_late_finding_stop.sh fails.
+
+d309d54..c49d008 touches only this track's spec.md, plan.md, spec-review.md, so the
+c49d008 Red proof also covers the d309d54 files named in Task 1.1 for the six target files.
+
+Commit: 39cf9f5 measure(red): late-finding stop-rule doc test fails first (track_id: late_finding_stop_rule_20261122).
+Files: tests/spec_review_gate/test_s5_late_finding_stop.sh (new),
+measure/tracks/late_finding_stop_rule_20261122/plan.md (Task 1.1 [~], refreshed
+parenthetical, Red evidence line).
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: 39cf9f5
+tests_run: bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 1, 26 checks (PASS=1, FAIL=25), every behavior case fails for the expected reason (rule text absent); full bash tests/spec_review_gate/run.sh via heavy-run -> 23 suites (PASS=22, FAIL=1, only the new suite fails)
+files_changed: tests/spec_review_gate/test_s5_late_finding_stop.sh (new Red test); measure/tracks/late_finding_stop_rule_20261122/plan.md (Task 1.1 [~], F6 parenthetical refresh, Red evidence)
+plan_updates: Task 1.1 marked [~]; round-count parenthetical refreshed to FR-1 wording per spec-review Nit F6; Red evidence line added under Phase 1
+known_failures: the 25 new behavior cases fail at HEAD (expected Red state); no other failures
+handoff: Green (Task 1.2) writes the pinned phrases from the test header into contracts.md after the Round limit paragraph, one pointer line under SKILL.md ## Contracts, and one pointer line in each of the four role files appended to the re-review paragraph. No run.sh change is needed. Green must not alter pinned strings of test_s2_role_docs.sh or test_s4_doc_drift.sh.
+END_MEASURE_AGENT_RESULT

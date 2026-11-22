@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Round-four records-only review passes. The plan now records rounds 1 through 3 and classifies the round-three changed-line finding under Re-review scope. The escalation key is valid.",
+  "role": "review-a",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "Phase 1: Stop-rule text and doc test (due 2026-11-24)",
+  "baseline_sha": "c49d008",
+  "phase_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "audited_head_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "F1 withdrawn: `plan.md:22` now names Review A rounds 1, 2, and 3; it identifies the round-three finding as a changed-line defect under Re-review scope and says it is not late.",
+    "The as-of round list remains accurate during round 4: it names the rounds covered and does not claim that no later review round can occur.",
+    "Confirmed audited_head_sha equals HEAD 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5; the initial worktree was clean.",
+    "The exact 03c1970..1c04a3b diff changes only `plan.md` line 22 and the metadata escalation key.",
+    "`metadata.json` holds the non-empty escalation reason for the third remediation round; the reason names the round-three changed-plan finding and states that the round is records-only.",
+    "The round-three finding remains within Re-review scope because it concerned a line changed by remediation 03c1970; the plan correctly says it is not a late finding.",
+    "`bash tests/spec_review_gate/test_s5_late_finding_stop.sh` passed 26/26 checks.",
+    "`bash tests/spec_review_gate/test_s5b_standalone.sh` passed 5/5 checks.",
+    "No `test-strategy.md` exists for this active track; the plan and `measure/gates.json` specify the test commands.",
+    "The skill text and tests did not change after 03c1970; the full spec-review suite passed 24 suites at that HEAD.",
+    "The requested review-a role gate exited 0 with `PASS: review-a gate passed`."
+  ],
+  "commands": [
+    "git status --short && git rev-parse HEAD && git diff --name-status 03c1970..HEAD — clean initial tree; HEAD=1c04a3b79757bbca771cb096ae24e4f5ec21f9a5; only plan.md and metadata.json changed",
+    "bash tests/spec_review_gate/test_s5_late_finding_stop.sh — exit 0; 26 checks passed",
+    "bash tests/spec_review_gate/test_s5b_standalone.sh — exit 0; 5 checks passed",
+    "python3 -m json.tool measure/tracks/late_finding_stop_rule_20261122/metadata.json — valid JSON with a non-empty escalation reason",
+    "git diff --check c49d008..1c04a3b — exit 0",
+    "Previous full-suite result at 03c1970: p1 heavy-run bash tests/spec_review_gate/run.sh exited 0; 24 suites passed; no text or test changed afterward",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track late_finding_stop_rule_20261122 --phase 'Phase 1: Stop-rule text and doc test (due 2026-11-24)' --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/review-a-1c04a3b.json --log-file measure/runs/late_finding_stop_rule_20261122/review-a-1c04a3b.log — exit 0; PASS: review-a gate passed"
+  ],
+  "changed_files": [
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "measure/tracks/late_finding_stop_rule_20261122/metadata.json",
+    "measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "tests/spec_review_gate/test_s5_late_finding_stop.sh",
+    "tests/spec_review_gate/test_s5b_standalone.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "`plan.md:22` identifies Review A rounds 1-3 and the round-three changed-line finding; `metadata.json` records the escalation reason."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "The direct S5 checks passed 26/26 and 5/5; neither skill text nor tests changed after the last 24-suite pass."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-status 03c1970..1c04a3b` lists only plan.md and metadata.json."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The audit records provenance SHAs, direct test exits, the JSON check, and the last full-suite result."
+    }
+  ]
+}

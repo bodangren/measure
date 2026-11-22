@@ -1,0 +1,51 @@
+Phase 1 Green round 5 — Review A round 3 F1
+Track: late_finding_stop_rule_20261122
+
+Immutable phase_base_sha: c49d008.
+role_base_sha for this round: 03c1970350f237989445b277d37fa76cab7ed176.
+Final Green HEAD: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5.
+The tree is clean at this HEAD.
+
+This is the third remediation round of the base track. The Round limit applies.
+The orchestrator allows the round through the escalation key in metadata.json.
+The reason is "third round: the round-3 re-review found a defect in the changed plan line (Review A F1 on 03c1970); records only".
+The escalation is reported to the PM. The escalation key rule stays in force.
+
+F1 FIX: plan.md line 22 no longer claims that no phase round reached round 3.
+The line now records Review A on 1dd106c (round 1), 34789e7 (round 2) and
+03c1970 (round 3). Round 3 raised one finding, a defect in the plan line
+changed by 03c1970. The finding keeps the Re-review scope treatment and is
+not a late finding. No FR-4 record line was added, because Re-review scope
+findings do not need one.
+
+Files changed this round: measure/tracks/late_finding_stop_rule_20261122/metadata.json
+and measure/tracks/late_finding_stop_rule_20261122/plan.md. No test or production
+text changed. No task marker changed. All three tasks stay [x].
+
+Commit: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 measure(plan): round record after the round-3 re-review (Review A F1, escalation)
+
+Verification at this HEAD:
+  metadata.json parses as JSON.
+  git diff --check exits 0.
+  The gate runs both S5 suites through the heavy-run runner.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+baseline_sha: c49d008
+role_base_sha: 03c1970350f237989445b277d37fa76cab7ed176
+commits: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 (plan and metadata)
+tests_run: GREEN_TEST_COMMAND = "bash tests/spec_review_gate/test_s5_late_finding_stop.sh && bash tests/spec_review_gate/test_s5b_standalone.sh"; both suites run through the heavy-run runner
+files_changed: measure/tracks/late_finding_stop_rule_20261122/metadata.json; measure/tracks/late_finding_stop_rule_20261122/plan.md
+plan_updates: the late-finding line now records all three Review A rounds and the Re-review scope treatment of the round-3 finding; no task marker changed
+tasks_flipped_to_x: none in this round; all three Phase 1 tasks stay [x]
+tasks_flipped_to_b: none
+new_files_added: none in this round
+phase_base_sha: c49d008
+final_green_head: 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5
+known_failures: none
+dispositions: F1=FIX
+handoff: Review roles audit final Green HEAD 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 against immutable phase_base_sha c49d008. The escalation key records the allowed third round. No task is deferred.
+END_MEASURE_AGENT_RESULT

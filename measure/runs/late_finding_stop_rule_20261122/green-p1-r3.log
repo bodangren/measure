@@ -1,0 +1,45 @@
+Phase 1 Green round 3 — plan close after the gap-closing pin
+Track: late_finding_stop_rule_20261122
+
+Immutable phase_base_sha: c49d008.
+role_base_sha for this round: 24cf00e9e4a8fdd0cf1a8d9c1bac500198356caa.
+Final Green HEAD: 34789e724564bf3830cab04b33d472729a15ca52.
+The tree is clean at this HEAD.
+
+Scope of this round: plan.md only. No text file and no test file changed.
+Commit: 34789e724564bf3830cab04b33d472729a15ca52 measure(plan): close Task 1.1 after the gap-closing pin.
+
+Plan updates:
+  Task 1.1 is [x] with the SHA list 39cf9f5, 24cf00e at the end of the line.
+  One evidence line records the gap-closing Red round, the 26/26 test_s5 result,
+  and the FR-2 wording breakage proof in red-p1-r2.log.
+  The Task 1.2 evidence line no longer says that a Red retry is pending.
+
+Verification at role_base_sha 24cf00e:
+  test_s5_late_finding_stop.sh: 26 checks, 26 pass.
+  test_s5b_standalone.sh: 5 checks, 5 pass.
+  Full spec_review_gate run.sh: 24 suites, 24 pass (from red-p1-r2.log).
+  The gate runs both suites with GREEN_TEST_COMMAND.
+
+No routed findings hold in this round.
+No task is deferred. No new file was added in this round.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+baseline_sha: c49d008
+role_base_sha: 24cf00e9e4a8fdd0cf1a8d9c1bac500198356caa
+commits: 34789e724564bf3830cab04b33d472729a15ca52 (plan only)
+tests_run: GREEN_TEST_COMMAND = "bash tests/spec_review_gate/test_s5_late_finding_stop.sh && bash tests/spec_review_gate/test_s5b_standalone.sh"; both suites pass through the heavy-run runner
+files_changed: measure/tracks/late_finding_stop_rule_20261122/plan.md
+plan_updates: Task 1.1 [x] with 39cf9f5, 24cf00e and one gap-closing evidence line; Task 1.2 evidence line corrected to state that no Red retry is pending
+tasks_flipped_to_x: Task 1.1 with 39cf9f5, 24cf00e
+tasks_flipped_to_b: none
+new_files_added: none in this round
+phase_base_sha: c49d008
+final_green_head: 34789e724564bf3830cab04b33d472729a15ca52
+known_failures: none
+handoff: Review roles audit final Green HEAD 34789e7 against immutable phase_base_sha c49d008. All three Phase 1 tasks are [x]. No routed finding and no deferred task remain.
+END_MEASURE_AGENT_RESULT

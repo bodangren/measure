@@ -135,6 +135,7 @@ text plus ` | CONTEST kept: <reason>` in this run's result, in the same list tha
 held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 `retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
 ESCALATE item to the user.
+The Late-finding stop rule in `skills/measure-orchestrator/references/contracts.md` also governs late findings in this phase.
 
 This is an audit-only role. Do not edit production code, tests, plans, or registry files and do not commit. Write only the orchestrator-supplied result artifact. Route blockers to Green with `retry_recommendation: "retry_implementation"`.
 

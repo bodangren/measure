@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "inconclusive",
+  "summary": "The phase diff implements the stop rule and its pointers. A Nit remains because the contract cites undefined track-local FR-2 labels. Required heavy-run gates could not acquire the lock.",
+  "role": "review-a",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "Phase 1: Stop-rule text and doc test (due 2026-11-24)",
+  "baseline_sha": "c49d008",
+  "phase_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "1dd106c1cc0f098ebdf55067071dc2843cad2502",
+  "audited_head_sha": "1dd106c1cc0f098ebdf55067071dc2843cad2502",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-a: `skills/measure-orchestrator/references/contracts.md:170,176` cites `FR-2` and the `FR-2 bar`, but the standalone skill contract does not define that track-local identifier. Replace both citations with self-contained wording so readers do not need this track's spec."
+  ],
+  "evidence": [
+    "HEAD matched audited_head_sha 1dd106c1cc0f098ebdf55067071dc2843cad2502; initial `git status --short` was clean.",
+    "`git diff --name-only c49d008..1dd106c` contained the planned six documentation files, the new S5 test, and the plan evidence file.",
+    "`measure/tracks/late_finding_stop_rule_20261122/spec.md`, `plan.md`, `spec-review.md`, `index.md`, `metadata.json`, `measure/index.md`, `measure/tracks.md`, `measure/anti-patterns.md`, `measure/gates.json`, and the changed skill/role files were reviewed.",
+    "No `test-strategy.md` exists for the active track; the plan and `measure/gates.json` specify its test commands.",
+    "`test_s5_late_finding_stop.sh` on a temporary fixture populated with c49d008 documentation exited 1 with 25 FAIL and 1 PASS; every stop-rule case failed before the text existed.",
+    "`test_s5_late_finding_stop.sh` on a temporary fixture with empty deliverable files exited 1 with 26 FAIL and 0 PASS, including explicit missing/empty-file failures.",
+    "`git diff --check c49d008..1dd106c` exited 0.",
+    "The heavy-run wrapper reported `lock wait over 600 s` with holder PID 343004 running `scripts/jobs/heavy-run.sh --locked -c bash tests/run-all.sh`; the requested test suite command was terminated with exit 143 after the 20-minute shell timeout."
+    ,"The requested `role-gate` command exited 1: the checker rejects `status: inconclusive` because audit status must be pass."
+  ],
+  "commands": [
+    "git status --short && git rev-parse HEAD && git diff --name-status c49d008..HEAD — clean tree at start; HEAD=1dd106c1cc0f098ebdf55067071dc2843cad2502; exact phase diff reviewed",
+    "Temporary baseline-document fixture invoking bash tests/spec_review_gate/test_s5_late_finding_stop.sh — MUTANT_BASELINE_EXIT=1; PASS=1, FAIL=25",
+    "Temporary missing-deliverable fixture invoking bash tests/spec_review_gate/test_s5_late_finding_stop.sh — MISSING_DELIVERABLE_EXIT=1; PASS=0, FAIL=26",
+    "git diff --check c49d008..1dd106c — exit 0",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — wrapper lock wait exceeded 600 seconds; holder PID 343004; command ended exit 143 after 1200-second shell timeout",
+    "HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh' — not run; stop condition reached after the first heavy-run lock wait",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track late_finding_stop_rule_20261122 --phase 'Phase 1: Stop-rule text and doc test (due 2026-11-24)' --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/review-a-1dd106c.json --log-file measure/runs/late_finding_stop_rule_20261122/review-a-1dd106c.log — exit 1; audit status must be pass, got inconclusive"
+  ],
+  "changed_files": [
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "tests/spec_review_gate/test_s5_late_finding_stop.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "infrastructure_retry",
+  "confidence": "medium",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 4,
+      "evidence": "The round rules and exception appear in `skills/measure-orchestrator/references/contracts.md:162-178`, with only the undefined FR-2 citations remaining."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "`test_s5_late_finding_stop.sh` failed on both the c49d008 baseline fixture and the missing-deliverable fixture, but the full suite could not acquire the heavy-run lock."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-only c49d008..1dd106c` contains only planned docs, the S5 doc test, and phase plan evidence."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 3,
+      "evidence": "The baseline and missing-deliverable mutants have recorded failing output, while both requested wrapped suites lack a completed exit."
+    }
+  ]
+}

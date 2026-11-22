@@ -177,6 +177,7 @@ Leave test files out with `--exclude <file>`, once per file. The gate removes th
 
 Read `references/contracts.md` before writing or reviewing role prompts. It defines the
 required `MEASURE_AGENT_RESULT` block and audit JSON shape.
+Apply the Late-finding stop rule in `references/contracts.md` to findings that arrive late in a phase.
 
 ## Closeout Standard
 

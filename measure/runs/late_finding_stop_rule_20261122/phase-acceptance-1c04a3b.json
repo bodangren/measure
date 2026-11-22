@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Phase 1 passes acceptance at 1c04a3b with no finding. My four round-1 findings F1 to F4 are closed. The skill text changed only by three word changes and paragraph splits since 34789e7. Both S5 tests pass, and the full spec-review suite exits 0 at p1. The escalation key is valid, and the plan record is honest.",
+  "role": "phase-acceptance",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "Phase 1: Stop-rule text and doc test (due 2026-11-24)",
+  "baseline_sha": "c49d008",
+  "phase_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "audited_head_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 equals the audited HEAD, and phase_base_sha c49d008 resolves to c49d0088858785e53e67ee0e8e0eb87b14d62102. The branch is `docs/late-finding-stop-rule`. `git status --porcelain` printed nothing before and after every run.",
+    "Prerequisites target the audited HEAD. Spec review passed at c49d008 (`spec-review-c49d008.json`), and `git log --oneline c49d008..HEAD -- measure/tracks/late_finding_stop_rule_20261122/spec.md` prints nothing, so the spec is unchanged. Review A round 4 passed at 1c04a3b (`review-a-1c04a3b.json`), and its audited_head_sha equals HEAD. No commit lies between that HEAD and the audited HEAD, so no test-only HEAD advance applies.",
+    "Light lane confirmed: `metadata.json` holds the key `lane` with the value `light`. `measure/reviews/2026-11-10-orchestrator-process-review.md:168` defines the lane as spec review plus Review A with no final acceptance. The phase diff holds prose, plan, metadata, and doc tests only. Review B, Review C, adversarial testing, and UX review are not required.",
+    "F1 closed: the nine paragraphs on lines 162 to 178 of `skills/measure-orchestrator/references/contracts.md` hold 1, 5, 5, 2, 5, 6, 5, 5, and 1 sentences. Lines 182 and 184 hold 1 and 3 sentences. The old paragraphs held 10, 11, and 10 sentences, and each now splits in two. The word `would` occurs 0 times in the file. The longest sentence has 22 words (24 with the bold label on line 162), and the limit is 25.",
+    "F2 closed: line 170 of `contracts.md` now reads `Test tooling, gate scripts, fixtures, logs, and records do not meet this test`. `spec.md:22` names `test tooling` in the same list, so the exclusion list matches FR-2 again.",
+    "F3 closed: `plan.md:22` now lists Review A rounds 1 to 3 with their HEADs (1dd106c, 34789e7, and 03c1970). It names the round-3 finding as a defect in a changed line. That finding keeps the Re-review scope treatment and is not late. The results `review-a-1dd106c.json` (inconclusive), `review-a-34789e7.json` (pass), and `review-a-03c1970.json` (fail, one blocker) match that list. The line keeps `Late finding: none`, and that result is true.",
+    "The third remediation round came from my own round-1 F3 text. I proposed `no round reached round 3`, and Green adopted it. The claim was time-bound, and it became false when Review A round 3 ran. `plan.md:22` now records each round with its HEAD, so the line does not depend on a running count.",
+    "F4 closed: `plan.md:18` now names `test_s5b_standalone.sh`, and the phrase `No other files change` is gone (0 matches). A grep of the plan for `PASS=`, `FAIL=`, and a number before `suites`, `checks`, or `tests` finds nothing, so no pinned count remains. Lines 17, 19, 21, and 23 cite logs under `measure/runs/late_finding_stop_rule_20261122/`, and each cited log exists.",
+    "The text diff 34789e7..658bccc of `contracts.md` changes no meaning. After whitespace collapse, the 34789e7 text with three substitutions equals the 658bccc text, and each old phrase occurs once. The flattened text at 658bccc equals the flattened text at HEAD, so no later commit changed the file.",
+    "The three substitutions are word changes only. `Tooling` becomes `Test tooling`. `would see or receive` becomes `sees or receives`. `would be the third remediation round` becomes `is the third remediation round`. At `contracts.md:176`, the rule still blocks the fix round when it is the third remediation round, and the finding still goes to the user.",
+    "The escalation key is valid under the Round limit. `contracts.md:160` allows a third round only when `metadata.json` holds an `escalation` key with a non-empty reason. `metadata.json` is valid JSON and holds `escalation` with the reason `third round: the round-3 re-review found a defect in the changed plan line (Review A F1 on 03c1970); records only`. The reason is true, because `review-a-03c1970.json` F1 is a defect in `plan.md:22`, a line that 03c1970 changed. `tests/dsh/test-registry.sh` checks the key only for active `_fix[3-9]_` tracks. This track is not one of them, and the test exits 0 at HEAD.",
+    "The plan is honest. All three tasks are `[x]`, and each cites real commits (Task 1.1: 39cf9f5 and 24cf00e; Task 1.2: 081e6d2 and 658bccc; Task 1.3: 4bdb3d3). `git cat-file -t` shows a commit for every SHA in the plan. `plan.md:22` is an as-of record of Review A rounds 1 to 3. Review A round 4 on 1c04a3b raised no finding, so `Late finding: none` stays true.",
+    "A5 holds: each pass or exit claim in `plan.md` lines 17 to 23 matches its cited log or SHA. No plan line claims `PASS=N, FAIL=0` or `all checks pass`. A3 holds for the two S5 tests: a grep found no `grep -v`, no `rg -v`, and no digit-only count. A4, A6, and A7 do not apply, because the phase diff changes no marker check, no tracks registry (`measure/tracks.md`), and no filter. No fake-gate masking exists: the S5 tests hold no `|| true` and no skip, and both end with `exit \"$FAILED\"`.",
+    "FR-1 to FR-5 sit at `contracts.md:162-184`. FR-6 is unchanged: `skills/measure-orchestrator/SKILL.md:180` and one pointer line in each role file (`agents/measure-review-a-correctness.md:138`, `agents/measure-review-b-security.md:137`, `agents/measure-review-c-ux-api.md:132`, `agents/measure-adversarial-testing.md:51`). `git diff --name-status 34789e7..HEAD` lists only `contracts.md`, `plan.md`, and `metadata.json`. For FR-7, `git branch -vv` shows the branch 11 commits ahead of `origin/docs/late-finding-stop-rule`, so nothing is pushed yet. Push only to that branch.",
+    "`test_s5_late_finding_stop.sh` exits 0 with 26 checks (PASS=26, FAIL=0) when I run it directly at HEAD. `test_s5b_standalone.sh` exits 0 with 5 checks (PASS=5, FAIL=0). Both tests flatten whitespace before they match, so the paragraph splits cannot break them. The tests are unchanged since round 1, so the Red proof in my round-1 result still applies. At the c49d008 documents, test_s5 exits 1 with PASS=1 and FAIL=25.",
+    "The p1 full-suite run exits 0. `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'` prints `=== spec_review_gate: 24 suites (PASS=24, FAIL=0) ===`. All 24 suite result lines read PASS, and none reads FAIL. The run started at 19:17:10 and ended at 19:20:54, after a lock wait of about 2 minutes behind an external p1 job. The 20-minute stop did not apply.",
+    "The brief named the S5 tests and the full spec-review suite. I did not re-run the whole dsh suite, PROJECT_LINT, or the node tests at HEAD. Their 34789e7 results stay valid: 15 passed and 0 failed; `parity: ok` twice; 383 tests passed. Only `contracts.md`, `plan.md`, and `metadata.json` changed since 34789e7. No dsh test, parity script, or plugin test names `contracts.md`, and the dsh world copies the real skill tree into a fake home. `tests/dsh/test-registry.sh` is the one test that reads the real tracks tree, and it exits 0 at HEAD.",
+    "Distribution: `bin/install-targets.tsv` says the installer reads from the ref (default `main`), not from the working tree. An installed copy carries the rule only after the PM or Daniel merges the branch and the installer runs. This is outside the track scope.",
+    "This role wrote only the two `phase-acceptance-1c04a3b` files under `measure/runs/late_finding_stop_rule_20261122/`. It made no scratch fixture in this round. `git status --porcelain` printed nothing at the end.",
+    "New findings: none. I looked for a defect that can hide a wrong result in the skill text and found none. I did not raise `The Round limit wins` or `the careful call` as style nits. Both are spec wording (`spec.md:22-23`), and `test_s5_late_finding_stop.sh:164` pins the first."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git status --porcelain — HEAD=1c04a3b79757bbca771cb096ae24e4f5ec21f9a5; clean tree before and after the runs",
+    "git log --oneline c49d008..HEAD and git diff --name-status c49d008..HEAD — 11 commits (39cf9f5 to 1c04a3b), 10 files",
+    "git diff --check c49d008..HEAD — exit 0",
+    "git diff --name-status 34789e7..HEAD — 3 files: contracts.md, plan.md, metadata.json",
+    "python3 -I (git show of contracts.md at 34789e7, 658bccc, and HEAD; whitespace collapsed; three substitutions) — 34789e7 to 658bccc equal: True; 658bccc to HEAD equal: True; whole-word would count: 0",
+    "python3 -I (paragraph and sentence count over contracts.md lines 162 to 184) — 1, 5, 5, 2, 5, 6, 5, 5, 1, record line, 1, 3 sentences; longest sentence 22 words (24 with the label)",
+    "bash tests/spec_review_gate/test_s5_late_finding_stop.sh — exit 0; 26 checks (PASS=26, FAIL=0)",
+    "bash tests/spec_review_gate/test_s5b_standalone.sh — exit 0; 5 checks (PASS=5, FAIL=0)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0; 24 suites (PASS=24, FAIL=0); 19:17:10 to 19:20:54",
+    "bash tests/dsh/test-registry.sh — exit 0 at HEAD; every check [PASS], including no active _fix3+ track lacks an escalation reason",
+    "python3 -I (json.load of measure/tracks/late_finding_stop_rule_20261122/metadata.json) — valid JSON; escalation key non-empty",
+    "grep over plan.md and the two S5 tests (pinned counts, No other files change, grep -v, rg -v, || true, skip) — no match; plan.md:18 names test_s5b_standalone.sh",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track late_finding_stop_rule_20261122 --phase 'Phase 1: Stop-rule text and doc test (due 2026-11-24)' --baseline c49d008 --result-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.json --log-file measure/runs/late_finding_stop_rule_20261122/phase-acceptance-1c04a3b.log — exit 0; PASS: phase-acceptance gate passed"
+  ],
+  "changed_files": [
+    "agents/measure-adversarial-testing.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "measure/tracks/late_finding_stop_rule_20261122/metadata.json",
+    "measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "skills/measure-orchestrator/SKILL.md",
+    "skills/measure-orchestrator/references/contracts.md",
+    "tests/spec_review_gate/test_s5_late_finding_stop.sh",
+    "tests/spec_review_gate/test_s5b_standalone.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "claude-code/claude-sonnet-5-5#max",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "`contracts.md:162-184` carries FR-1 to FR-5, and `test_s5_late_finding_stop.sh` passes 26 of 26 at HEAD."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "`test_s5_late_finding_stop.sh` fails 25 of 26 cases on the c49d008 documents, but no test pins the 6-sentence limit or the `Test tooling` wording."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 4,
+      "evidence": "`test_s5b_standalone.sh` and the `escalation` key lie beyond the spec Scope sentence `No other files change`, and each has a recorded cause."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "Each claim in this result has a command result, a `file:line`, or a named log, and `plan.md:17-23` cites logs instead of pinned counts."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 5,
+      "evidence": "Its round 3 blocker F1 on `plan.md:22` was valid, because that line said no round reached round 3 while its own audit was round 3."
+    },
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 5,
+      "evidence": "Its round 4 pass holds, because my reruns match it: the S5 tests pass, the escalation key is valid, and `plan.md:22` is accurate."
+    }
+  ]
+}

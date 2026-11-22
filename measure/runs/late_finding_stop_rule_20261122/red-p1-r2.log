@@ -1,0 +1,60 @@
+Mid-Red retry log (round 2): Review A F1 pin update, track late_finding_stop_rule_20261122.
+Role base check: role_base_sha 88b31e5 verified (HEAD equaled 88b31e5, clean tree,
+branch docs/late-finding-stop-rule) before any edit.
+Green 081e6d2 replaced "FR-2" with "the wrong-result exception" in contracts.md
+line 170 so the delivered text reads standalone (Review A F1, routed FIX).
+
+Guard note: the edit tool refused the test change until a task was [~]; Task 1.1
+was flipped [x]->[~] (guard-prescribed marker only) before editing. No task text changed.
+
+Change (only two lines in the test file, nothing else):
+- tests/spec_review_gate/test_s5_late_finding_stop.sh:23 (header pinned phrase)
+- tests/spec_review_gate/test_s5_late_finding_stop.sh:163 (the FR-3 case)
+both now pin: `A one-fix-round finding under the wrong-result exception counts toward the Round limit count.`
+
+Verification at HEAD 88b31e5:
+- bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 0,
+  === Total: 26 checks (PASS=26, FAIL=0) ===.
+- Red proof against c49d008: c49d008's contracts.md holds neither the old nor the
+  new phrase (the stop-rule paragraph postdates c49d008); the test's STOP extract
+  from that file is EMPTY, so in_flat fails the updated case there. The case fails
+  at c49d008 and passes at HEAD.
+- Full suite: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh
+  -c 'bash tests/spec_review_gate/run.sh' -> === spec_review_gate: 24 suites (PASS=24, FAIL=0) ===.
+
+Commit: 24cf00e measure(red): pin the standalone wording of the Round limit
+sentence (track_id: late_finding_stop_rule_20261122). Files: the test file
+(2 lines) and plan.md (Task 1.1 [~] marker only).
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: 24cf00e
+tests_run: bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 0, 26 checks (PASS=26, FAIL=0); c49d008 contracts.md proof -> updated case fails there (STOP extract empty); full bash tests/spec_review_gate/run.sh via heavy-run -> 24 suites (PASS=24, FAIL=0)
+files_changed: tests/spec_review_gate/test_s5_late_finding_stop.sh (pin update, 2 lines); measure/tracks/late_finding_stop_rule_20261122/plan.md (Task 1.1 [~] marker only)
+plan_updates: Task 1.1 flipped [x]->[~] as the guard-prescribed precondition for the pin edit; no task text changed
+known_failures: none; the updated case passes at HEAD and fails at c49d008 as proven above
+handoff: The pin now matches the standalone Green text from 081e6d2. Task 1.1 stays [~] for the orchestrator to close. No other test file changed; test_s2/s4 pins untouched.
+END_MEASURE_AGENT_RESULT
+
+Mid-Red round 3 (orchestrator call): gap-closing declaration for the Review A F1 pin.
+No file changed; no commit made; HEAD stays 24cf00e (verified before and after).
+Task 1.1 stays [~]; Green closes it.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+commits: 24cf00e
+tests_run: bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 0, 26 checks (PASS=26, FAIL=0); breakage proof below -> updated case FAILs on FR-2-worded text; full bash tests/spec_review_gate/run.sh via heavy-run -> 24 suites (PASS=24, FAIL=0)
+files_changed: none this round (pin landed in 24cf00e; this round appends only this log)
+plan_updates: none this round (Task 1.1 stays [~] for Green to close)
+known_failures: none
+handoff: Gap-closing Red for the Review A F1 pin. The updated case passes at HEAD and fails on reverted text per the breakage proof. Green closes Task 1.1.
+red_kind: gap_closing
+gaps: Review A F1 (standalone wording of the Round limit sentence in contracts.md)
+breakage_proof: cp skills/measure-orchestrator/references/contracts.md /tmp/break-contracts.md + sed revert to 'A one-fix-round finding under FR-2 counts toward the Round limit count.' -> reverted copy holds OLD phrase (grep count 1); the test's stop_rule extract + in_flat grep for 'A one-fix-round finding under the wrong-result exception counts toward the Round limit count.' on that copy -> CASE RESULT: FAIL (grep exit 1), breakage caught
+END_MEASURE_AGENT_RESULT

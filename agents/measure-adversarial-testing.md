@@ -48,6 +48,7 @@ text plus ` | CONTEST kept: <reason>` in this run's result, in the same list tha
 held the finding before (`blocking_findings` or `nonblocking_findings`), and set
 `retry_recommendation: escalate_human`. The orchestrator sends each kept item and each
 ESCALATE item to the user.
+The Late-finding stop rule in `skills/measure-orchestrator/references/contracts.md` also governs late findings in this phase.
 
 Write the block exactly. It opens with the whole line `MEASURE_AGENT_RESULT`, holds one line per field of the Agent Result Block template, and closes with the whole line `END_MEASURE_AGENT_RESULT`.
 

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "role": "closeout",
+  "summary": "Closeout passes at 1c04a3b. The light-lane track is archived, metadata is done, the registry is updated, and the closeout manifest is in the archive. The checker exits 0 after the commit.",
+  "track_id": "late_finding_stop_rule_20261122",
+  "phase": "track closeout",
+  "baseline_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "track_base_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "role_base_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "audited_head_sha": "1c04a3b79757bbca771cb096ae24e4f5ec21f9a5",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "The light lane skipped Review B, Review C, adversarial testing, UX review, and final acceptance. Phase acceptance and Review A round 4 passed at 1c04a3b.",
+    "Six deviation notes are in metadata.json. They record the added test file, the escalation round, the inconclusive round-1 run, the gap-closing Red round, and the missing measure/doctor.sh."
+  ],
+  "evidence": [
+    "Pre-closeout HEAD is 1c04a3b79757bbca771cb096ae24e4f5ec21f9a5 on docs/late-finding-stop-rule, with a clean tree. It equals the audited_head_sha of phase-acceptance-1c04a3b.json, which has status pass.",
+    "plan.md has three [x] tasks with SHAs 39cf9f5, 24cf00e, 081e6d2, 658bccc, and 4bdb3d3. It has zero [~], zero [ ], and zero [b] markers, and no false-claim text.",
+    "The track folder moved to measure/archive/late_finding_stop_rule_20261122. The active entry is gone from measure/tracks.md and an archived entry with the metadata description is present.",
+    "metadata.json has status done, actual_tasks 3, completed 2026-11-22, updated_at, and the six deviation notes. It keeps lane light, so the closeout checker skips final acceptance.",
+    "The closeout checker exited 1 before any change, then 0 before and after the commit. No measure/generated folder exists, so the generated freshness check is skipped.",
+    "A9 check: grep for the fixed track path in tests/, mods/, plugins/, scripts/, agents/, and skills/ found no match. The only matches are in retained run evidence, which is not test code. No test fix was needed."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git branch --show-current && git status --porcelain",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 (before changes, exit 1)",
+    "grep -rn 'measure/tracks/late_finding_stop_rule_20261122/' tests/ mods/ plugins/ scripts/ agents/ skills/",
+    "grep -nE '^\\s*- \\[[ ~x]\\]' measure/tracks/late_finding_stop_rule_20261122/plan.md",
+    "git mv measure/tracks/late_finding_stop_rule_20261122 measure/archive/late_finding_stop_rule_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 (before commit, exit 0)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/late_finding_stop_rule_20261122/closeout-1c04a3b.json",
+    "git add measure/archive/late_finding_stop_rule_20261122 measure/tracks.md && git add -f measure/runs/late_finding_stop_rule_20261122 && git commit -m 'measure(closeout): archive late_finding_stop_rule_20261122'",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track late_finding_stop_rule_20261122 (after commit, exit 0)"
+  ],
+  "changed_files": [
+    "measure/tracks.md",
+    "measure/archive/late_finding_stop_rule_20261122/metadata.json",
+    "measure/archive/late_finding_stop_rule_20261122/automation-supervisor-closeout-manifest.json",
+    "measure/runs/late_finding_stop_rule_20261122/closeout.log",
+    "measure/runs/late_finding_stop_rule_20261122/closeout-1c04a3b.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

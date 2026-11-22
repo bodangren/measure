@@ -1,0 +1,35 @@
+Spec review round 2 (re-review) for track late_finding_stop_rule_20261122.
+Audited HEAD: c49d0088858785e53e67ee0e8e0eb87b14d62102
+Baseline: c49d0088858785e53e67ee0e8e0eb87b14d62102
+
+### What this track proposes
+This track documents a stop rule for late findings in the measure-orchestrator skill. A round is one audit cycle on one audited HEAD, with parallel Reviews A/B/C sharing a round and the adversarial pass holding its own. A finding raised in round 3 or later goes to measure/tech-debt.md unless it passes a two-part test for a wrong result in delivered work. That finding gets one fix round, unless the Round limit blocks a third remediation round. The orchestrator records each call and its reason in the track plan under the current phase.
+
+### How the current system works, per this spec
+Per the spec, contracts.md holds the Re-review scope rule and the Round limit rule. Re-review scope keeps a kept routed finding and a defect in changed lines blocking, and treats other new findings as nonblocking. Round limit sends open findings to the user after the second remediation round for a base track, with an escalation key escape hatch for a third round. SKILL.md points to contracts.md under its Contracts section. The four named role files hold only re-review CONTEST handling and no round logic.
+
+### Findings
+- F6 [Nit] plan.md Task 1.1: The round-count case keeps the old parenthetical 'first result is round 1, each re-review or adversarial rerun adds one'. Rationale: FR-1 now defines one audit cycle per HEAD and two worked counts. The added anchor sentence points Red to the two worked counts, so the case stays workable. Refresh the parenthetical so Red does not pin a phrase that Green will not write.
+
+Dispositions of round 1 findings:
+- F1 FIX verified: FR-1 defines the round count, shares A/B/C, gives the adversarial pass its own round, and adds two worked counts.
+- F2 FIX verified: FR-2 gives a two-part test and an unsure careful call recorded in the reason.
+- F3 FIX verified: FR-3 lets the Round limit win at the third remediation round and keeps the escalation key.
+- F4 FIX verified: Task 1.1 anchors each case in new text only and forbids the three old strings alone.
+- F5 FIX verified: FR-4 names the track plan.md under the current phase heading.
+
+Re-review scope: no CONTEST item was routed. F6 is a new Nit outside the remediated wording, so it does not block. The zero-decision check was repeated and found no new Blocker or Major finding.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: late_finding_stop_rule_20261122
+phase: track setup
+commits: none
+tests_run: audit-result valid (exit 0); role-gate exit 0 (gate passed)
+files_changed: measure/runs/late_finding_stop_rule_20261122/spec-review-c49d008.json, measure/runs/late_finding_stop_rule_20261122/spec-review-c49d008.log
+plan_updates: none (report-only role)
+known_failures: none; F1-F5 closed; F6 is a nonblocking Nit
+handoff: All round 1 findings are closed. The spec and plan are ready for Red Task 1.1. Red should use FR-1's two worked counts as the round-count anchor and may refresh the stale Task 1.1 parenthetical. No copy of the skill text needs an update. No file outside the two artifacts was edited and no commit was made.
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX; F5=FIX
+END_MEASURE_AGENT_RESULT

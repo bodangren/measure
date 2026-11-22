@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Round 2 re-review. All five round 1 findings are closed by the author's amendments. One new nonblocking Nit records stale round-count wording in Task 1.1. No blocking findings remain.",
+  "role": "spec-review",
+  "track": "late_finding_stop_rule_20261122",
+  "phase": "track setup",
+  "baseline_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "audited_head_sha": "c49d0088858785e53e67ee0e8e0eb87b14d62102",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F6 [Nit] plan.md Task 1.1: The round-count case keeps the old parenthetical 'first result is round 1, each re-review or adversarial rerun adds one'. Rationale: FR-1 now defines one audit cycle per HEAD and two worked counts. The added anchor sentence points Red to the two worked counts, so the case stays workable. Refresh the parenthetical so Red does not pin a phrase that Green will not write."
+  ],
+  "evidence": [
+    "HEAD c49d0088858785e53e67ee0e8e0eb87b14d62102 equals audited_head_sha; git status --porcelain is empty; branch is docs/late-finding-stop-rule.",
+    "No CONTEST item was routed for round 2. The round 1 record marks F1 through F5 as FIX, and the amended spec.md and plan.md carry the fixes.",
+    "F1 closed: FR-1 defines one audit cycle on one audited HEAD, A/B/C parallel as one round, the adversarial pass as its own round, one round per re-review, round 3 and later as late, and two worked counts (a) and (b). Both undecided cases from F1 are now decided.",
+    "F2 closed: FR-2 requires both conditions, excludes test tooling, gate scripts, fixtures, logs, and records, and gives an unsure careful call recorded in the reason. The exception now has a decidable test.",
+    "F3 closed: FR-3 states that the Round limit wins, that no third remediation round starts without the escalation key, and that the stop rule grants no round beyond the Round limit.",
+    "F4 closed: Task 1.1 requires each case to match only new text, names the two worked counts as anchors, forbids matching 'Round limit', 'base track', or 're-review' alone, and requires Red to prove each case fails at the d309d54 files.",
+    "F5 closed: FR-4 places records in the track plan.md under the current phase heading and keeps the exact record line.",
+    "Zero-decision check repeated: round count, wrong-result test, Round limit boundary, file locations, record-line shape, and normal and edge test cases are all decided. No new Blocker or Major finding.",
+    "Task 1.1 round-count parenthetical still holds older wording, but its operative anchor sentence points to the two worked counts from FR-1. F6 records this as a Nit and does not block.",
+    "Copy check still holds: no live copy of the rule text outside contracts.md; claude-skills/ and skills/measure-orchestrator-workspace/ have no match.",
+    "audit-result validation and role-gate results are recorded in the commands list."
+  ],
+  "commands": [
+    "git rev-parse HEAD -> c49d0088858785e53e67ee0e8e0eb87b14d62102",
+    "git status --porcelain -> empty",
+    "git diff --name-only d309d54..c49d008 -> plan.md, spec-review.md, spec.md of this track",
+    "git diff d309d54..c49d008 -- spec.md plan.md -> FR-1, FR-2, FR-3, FR-4 rewritten; Task 1.1 anchored to new text",
+    "audit-result --role spec-review --file ... -> PASS: audit result is valid (exit 0)",
+    "role-gate --repo . --role spec-review --track late_finding_stop_rule_20261122 --phase 'track setup' --baseline c49d008 -> PASS: spec-review gate passed (exit 0)"
+  ],
+  "changed_files": [
+    "measure/runs/late_finding_stop_rule_20261122/spec-review-c49d008.json",
+    "measure/runs/late_finding_stop_rule_20261122/spec-review-c49d008.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This track documents a stop rule for late findings in the measure-orchestrator skill. A round is one audit cycle on one audited HEAD, with parallel Reviews A/B/C sharing a round and the adversarial pass holding its own. A finding raised in round 3 or later goes to measure/tech-debt.md unless it passes a two-part test for a wrong result in delivered work. That finding gets one fix round, unless the Round limit blocks a third remediation round. The orchestrator records each call and its reason in the track plan under the current phase.",
+    "current_system": "Per the spec, contracts.md holds the Re-review scope rule and the Round limit rule. Re-review scope keeps a kept routed finding and a defect in changed lines blocking, and treats other new findings as nonblocking. Round limit sends open findings to the user after the second remediation round for a base track, with an escalation key escape hatch for a third round. SKILL.md points to contracts.md under its Contracts section. The four named role files hold only re-review CONTEST handling and no round logic."
+  }
+}

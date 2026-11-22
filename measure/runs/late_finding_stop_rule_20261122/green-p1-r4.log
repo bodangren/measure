@@ -1,0 +1,65 @@
+Phase 1 Green round 4 — phase acceptance F1 to F4
+Track: late_finding_stop_rule_20261122
+
+Immutable phase_base_sha: c49d008.
+role_base_sha for this round: 34789e724564bf3830cab04b33d472729a15ca52.
+Final Green HEAD: 03c1970350f237989445b277d37fa76cab7ed176.
+The tree is clean at this HEAD.
+
+F1 FIX: three over-long paragraphs split at the requested sentences.
+  The round-count paragraph now splits before "Two worked counts fix the count."
+  The exception paragraph now splits before "Second, it states".
+  The two-rule fit paragraph now splits before "When the one fix round".
+  Each resulting paragraph holds at most 6 sentences, verified by a period-based
+  count that excludes code spans.
+  "would see or receive" is now "sees or receives".
+  "would be the third remediation round" is now "is the third remediation round".
+  No pinned phrase in test_s5 or test_s5b holds "would", so no pinned phrase was kept.
+  grep for "would" in both tests returned no match before the edit.
+
+F2 FIX: "Tooling, gate scripts, fixtures, logs, and records" is now
+  "Test tooling, gate scripts, fixtures, logs, and records" at the exception paragraph.
+
+F3 FIX: the "Late finding: none" supporting sentence now reads:
+  Phase 1 had two review rounds (Review A on 1dd106c and on 34789e7); spec review
+  and phase acceptance are outside the count; no round reached round 3.
+
+F4 FIX: the Task 1.2 file list now names tests/spec_review_gate/test_s5b_standalone.sh,
+  added in 081e6d2. Pinned test, check, and suite counts are gone from the plan
+  evidence lines; each now cites a log under measure/runs/late_finding_stop_rule_20261122/.
+  Task 1.2 ends with its SHA list: 081e6d2, 658bccc.
+
+Commits:
+  658bcccf83d00d2a1ddba573083f0e4dae32cda2 measure(green): stop rule paragraphs meet ASD-STE100 (phase acceptance F1 F2)
+  03c1970350f237989445b277d37fa76cab7ed176 measure(plan): record ASD-STE100 fix and late-finding rounds (phase acceptance F1-F4)
+
+Direct verifications after the text edit:
+  bash tests/spec_review_gate/test_s5_late_finding_stop.sh -> exit 0, 26 checks, 26 pass.
+  bash tests/spec_review_gate/test_s5b_standalone.sh -> exit 0, 5 checks, 5 pass.
+  grep for "would" in contracts.md -> no match.
+
+Heavy verification after the text edit:
+  HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'
+  exit 0, 24 suites, 24 pass, 0 fail.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: late_finding_stop_rule_20261122
+phase: Phase 1: Stop-rule text and doc test (due 2026-11-24)
+baseline_sha: c49d008
+role_base_sha: 34789e724564bf3830cab04b33d472729a15ca52
+commits: 658bcccf83d00d2a1ddba573083f0e4dae32cda2 (text); 03c1970350f237989445b277d37fa76cab7ed176 (plan)
+tests_run: test_s5_late_finding_stop.sh exit 0 (26 checks, 26 pass); test_s5b_standalone.sh exit 0 (5 checks, 5 pass); p1 heavy-run full run.sh exit 0 (24 suites, 24 pass)
+files_changed: skills/measure-orchestrator/references/contracts.md; measure/tracks/late_finding_stop_rule_20261122/plan.md
+plan_updates: Task 1.2 keeps [x] with the SHA list 081e6d2, 658bccc; its file list names the new suite; the late-finding sentence records both Review A rounds; every pinned count was replaced by a log citation
+tasks_flipped_to_x: none in this round; Task 1.2 stayed [x] with an extended SHA list
+tasks_flipped_to_b: none
+new_files_added: none in this round
+phase_base_sha: c49d008
+final_green_head: 03c1970350f237989445b277d37fa76cab7ed176
+known_failures: none
+pinned_phrase_note: no pinned phrase in test_s5 or test_s5b holds "would", so both wording changes were applied and both suites pass
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX
+handoff: Review roles audit final Green HEAD 03c1970350f237989445b277d37fa76cab7ed176 against immutable phase_base_sha c49d008. All four routed findings are fixed. No task is deferred.
+END_MEASURE_AGENT_RESULT
