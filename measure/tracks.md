@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: CI workflow for the measure repo**
+  *Link: [./tracks/ci_workflow_20261123/](./tracks/ci_workflow_20261123/)*
+  *CI for the measure repo: a GitHub Actions workflow runs the four repo checks on each pull request and each push to main, so the pre-merge rule becomes a machine check (PM assignment A-new, due 2026-11-25).*
+
 ---
 
 ## Cancelled Tracks
