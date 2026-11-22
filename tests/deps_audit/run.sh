@@ -11,7 +11,9 @@
 # - Exit 0 when both folders hold 0 critical and 0 high advisories.
 # - Exit 1 when any folder holds a critical or high advisory that the allow
 #   file does not cover.
-# - Exit 2 when `bun audit` fails or its output does not parse.
+# - Exit 2 when `bun audit` fails or its output does not parse. It also exits
+#   2 when an advisory record has a severity outside critical, high,
+#   moderate, and low. The parser never drops such a record.
 #
 # Env:
 # - DEPS_AUDIT_FIXTURE_DIR: when set, the parser reads
@@ -20,8 +22,9 @@
 #   `bun audit`, so the tests run without the network.
 # - DEPS_AUDIT_ALLOW_FILE: path of the allow file; defaults to
 #   tests/deps_audit/allow.txt. Each line holds a GHSA id and its
-#   PM-accepted reason. An advisory whose GHSA id (the advisory `url` tail)
-#   matches an allow line does not count.
+#   PM-accepted reason. An entry needs both parts: a bare id exempts
+#   nothing. The id matches exactly, never as a prefix. An advisory whose
+#   GHSA id (the advisory `url` tail) matches an allow line does not count.
 #
 # `bun audit --json` exits 1 when it finds advisories and 0 when it finds
 # none. A run that fails for another reason exits with a code above 1 and
@@ -83,8 +86,11 @@ try:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            token = line.split()[0].rstrip(":")
-            if token:
+            parts = line.split(None, 1)
+            token = parts[0].rstrip(":")
+            reason = parts[1].strip() if len(parts) > 1 else ""
+            # An entry needs an id and a reason. A bare id exempts nothing.
+            if token and reason:
                 allowed.add(token)
 except OSError:
     # A missing allow file allows nothing.
@@ -111,12 +117,19 @@ for pair in sys.argv[2:]:
             if not isinstance(advisory, dict):
                 sys.stderr.write("run.sh: the audit output for %s has a malformed advisory\n" % name)
                 sys.exit(2)
-            severity = advisory.get("severity", "")
+            severity = advisory.get("severity")
+            # The severity is checked before the count and before the
+            # allowance. A record with an unknown severity is malformed.
+            if severity not in SEVERITIES:
+                sys.stderr.write(
+                    "run.sh: the audit output for %s has an advisory with an unknown severity: %r\n"
+                    % (name, severity)
+                )
+                sys.exit(2)
             ghsa = str(advisory.get("url", "")).rsplit("/", 1)[-1]
             if ghsa in allowed:
                 continue
-            if severity in counts:
-                counts[severity] += 1
+            counts[severity] += 1
             if severity in ("critical", "high"):
                 sys.stderr.write(
                     "run.sh: %s %s in %s: %s\n" % (severity, name, package, ghsa or advisory.get("title", ""))
