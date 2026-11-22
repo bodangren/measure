@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Late-finding stop rule for the measure-orchestrator skill**
+  *Link: [./tracks/late_finding_stop_rule_20261122/](./tracks/late_finding_stop_rule_20261122/)*
+  *After the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan.*
 
 ---
 

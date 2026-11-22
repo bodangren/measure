@@ -1,0 +1,18 @@
+# Implementation Plan: Late-finding stop rule for the measure-orchestrator skill
+
+Track: `late_finding_stop_rule_20261122`
+Spec: [./spec.md](./spec.md)
+
+**All commits go on docs/late-finding-stop-rule. Push only to origin/docs/late-finding-stop-rule, never to main. Only the PM or Daniel merges.**
+
+Test commands: `bash tests/spec_review_gate/run.sh`; PROJECT_CHECKS `bash tests/dsh/run.sh`; PROJECT_LINT `bash plugins/dsh-measure-guard/scripts/check-parity.sh && bash plugins/opencode-measure-guard/scripts/check-parity.sh` (both from `measure/gates.json`). Run each long command through `/home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh` with `HEAVY_MIN_AVAIL_MB=1500`.
+
+Pinned-text guard. `tests/spec_review_gate/test_s2_role_docs.sh` pins `contracts.md` strings (the `## Spec Review JSON` order, the finding format, the `escalate_human` route) and `SKILL.md` strings (Role Order items, the gate paragraph, the Inter-Phase Checks example, the Anti-Patterns Registry count). `tests/spec_review_gate/test_s4_doc_drift.sh` pins the SKILL.md Anti-Patterns Registry count and Role Order item 10. Green keeps every pinned string and position. Green adds text only: one paragraph in `contracts.md`, one line under `## Contracts` in `SKILL.md`, and one line in each of the four role files.
+
+Copy check (2026-11-22). `grep -rn "Round limit|Re-review scope"` found live rule text only in `skills/measure-orchestrator/references/contracts.md`. Historical mentions in `measure/reviews/2026-11-10-orchestrator-process-review.md` and `measure/archive/orchestrator_process_fixes_20261111/spec.md` and `plan.md` are track records and stay unchanged. No copy lives in `claude-skills/` or `skills/measure-orchestrator-workspace/`.
+
+## Phase 1: Stop-rule text and doc test (due 2026-11-24)
+
+- [ ] Task 1.1 (due 2026-11-24): Red doc test `tests/spec_review_gate/test_s5_late_finding_stop.sh` in the style of `test_s2_role_docs.sh` / `test_s4_doc_drift.sh` (helpers `blank`, `section`, `in_text`, `in_flat`; `RESULTS` with a final total; exit 1 on any FAIL). Cases: `contracts.md` holds `**Late-finding stop rule.**`; it holds the round count (first result is round 1, each re-review or adversarial rerun adds one); it holds the `measure/tech-debt.md` call; it holds the wrong-result exception with exactly one fix round; it holds the exact record-line form `- Late finding <id>: <tech-debt|one-fix-round> (<reason>)`; it holds the two-rule fit (Round limit bounds started fix rounds per base track; the stop rule stops new fix rounds late in a phase; a one-fix-round finding counts toward the Round limit); it holds the Math D1 gate-script example and the wrong-dashboard-number example; `SKILL.md` `## Contracts` holds the pointer line; each of the four role files holds the pointer line. At Red time the rule text does not exist, so every case fails; that is the Red state.
+- [ ] Task 1.2 (due 2026-11-24): Green text change. Files: `skills/measure-orchestrator/references/contracts.md` (the FR-1 through FR-5 text directly after the `**Round limit.**` paragraph, which ends at line 160); `skills/measure-orchestrator/SKILL.md` (one pointer line under `## Contracts`); `agents/measure-review-a-correctness.md`, `agents/measure-review-b-security.md`, `agents/measure-review-c-ux-api.md`, `agents/measure-adversarial-testing.md` (one pointer line each, appended to the re-review paragraph that starts "A re-review receives each CONTEST item"). No other files change.
+- [ ] Task 1.3 (due 2026-11-24): records. Run the three Commands and record each exit in this plan. When this track's own rounds produce a late finding, record the FR-4 line in this plan; expected: none.

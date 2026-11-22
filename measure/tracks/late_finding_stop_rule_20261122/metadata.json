@@ -1,0 +1,12 @@
+{
+  "track_id": "late_finding_stop_rule_20261122",
+  "type": "chore",
+  "status": "in-progress",
+  "lane": "light",
+  "created_at": "2026-11-22T00:00:00Z",
+  "updated_at": "2026-11-22T00:00:00Z",
+  "description": "Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
