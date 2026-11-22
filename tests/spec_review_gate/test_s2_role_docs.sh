@@ -486,14 +486,14 @@ else
   pass "agents/measure-orchestrator.md does not hold the RESULT line"
 fi
 
-echo "=== subagent rules: the orchestrator role allows the four global subagents in order ==="
+echo "=== subagent rules: the orchestrator role allows the five global subagents in order ==="
 if [ ! -s "$ORCH_AGENT" ]; then fail "agents/measure-orchestrator.md is missing or empty"
 else
   SUBAGENT_RULES="$(rules "$ORCH_AGENT" | grep '^subagent|' | cut -d'|' -f2,3)"
-  EXPECT_SUBAGENT=$'"*"|deny\n"measure-*"|allow\n"coder"|allow\n"copywriter"|allow\n"fact-gate-checker"|allow\n"thai-writer"|allow\n"print-proof-auditor"|allow\n"change-quality-reviewer"|allow'
+  EXPECT_SUBAGENT=$'"*"|deny\n"measure-*"|allow\n"coder"|allow\n"www-publisher"|allow\n"copywriter"|allow\n"fact-gate-checker"|allow\n"thai-writer"|allow\n"print-proof-auditor"|allow\n"change-quality-reviewer"|allow'
   if blank "$SUBAGENT_RULES"; then fail "the orchestrator role has no subagent rules"
-  elif [ "$SUBAGENT_RULES" = "$EXPECT_SUBAGENT" ]; then pass "the subagent rules equal the eight pairs in order"
-  else fail "the subagent rules differ from the eight pairs: [$(flat "$SUBAGENT_RULES")]"; fi
+  elif [ "$SUBAGENT_RULES" = "$EXPECT_SUBAGENT" ]; then pass "the subagent rules equal the nine pairs in order"
+  else fail "the subagent rules differ from the nine pairs"; fi
 fi
 
 # ---------------------------------------------------------------------------
