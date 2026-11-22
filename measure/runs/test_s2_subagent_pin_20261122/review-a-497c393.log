@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: test_s2_subagent_pin_20261122
+phase: Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)
+commits: none
+tests_run: bash tests/spec_review_gate/test_s2_role_docs.sh exited 0 (90 checks). The baseline pin and five negative fixtures exited 1 as expected. The p1 heavy-run spec review gate suite exited 0 (24 suites).
+files_changed: review-a-497c393.json and review-a-497c393.log
+plan_updates: none
+known_failures: none
+handoff: Review A passes on 497c393. The nine pairs match in order. The agent file and other checks are unchanged. The plan records match the evidence. Retry recommendation: none. Role gate exit: 0.
+END_MEASURE_AGENT_RESULT

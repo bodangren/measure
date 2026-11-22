@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "role": "closeout",
+  "summary": "Closeout passes at 497c393. The light-lane track is archived, metadata is done, the registry is updated, and the closeout manifest is in the archive. The checker exits 0 after the commit.",
+  "track_id": "test_s2_subagent_pin_20261122",
+  "phase": "track closeout",
+  "baseline_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "track_base_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "role_base_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "audited_head_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "The light lane skipped Review B, Review C, adversarial testing, UX review, and final acceptance. Phase acceptance and Review A round 2 passed at 497c393.",
+    "Four deviation notes are in metadata.json. They record the light-lane skips, the gap-closing Red round, the interrupted Review A round 1, and the missing measure/doctor.sh.",
+    "The pre-closeout checker exit 1 is expected on the untouched state. It is not a finding against the delivered closeout."
+  ],
+  "evidence": [
+    "Pre-closeout HEAD is 497c393d1f186fea2d4c3fdffc83c6eef153f733 on fix/test-s2-subagent-pin, with a clean tree. It equals the audited_head_sha of phase-acceptance-497c393.json, which has status pass.",
+    "plan.md has two [x] tasks with SHAs d25f04e and 3d29856. It has zero [~], zero [ ], and zero [b] markers, and no false-claim text.",
+    "The track folder moved to measure/archive/test_s2_subagent_pin_20261122. The active entry is gone from measure/tracks.md and an archived entry with the metadata description is present.",
+    "metadata.json has status done, actual_tasks 2, completed 2026-11-22, updated_at, and four deviation notes. It keeps lane light, so the closeout checker skips final acceptance.",
+    "The closeout checker exited 1 before any change, then 0 before and after the commit. No measure/generated folder exists, so the generated freshness check is skipped.",
+    "A9 check: grep for the fixed track path found matches only in retained run evidence, which is not test code. No test fix was needed."
+  ],
+  "commands": [
+    "git rev-parse HEAD && git branch --show-current && git status --porcelain",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 (before changes, exit 1)",
+    "grep -rn --exclude-dir=.git 'measure/tracks/test_s2_subagent_pin_20261122/' . ",
+    "grep -nE '^\\s*- \\[[ ~xb]\\]' measure/tracks/test_s2_subagent_pin_20261122/plan.md",
+    "git mv measure/tracks/test_s2_subagent_pin_20261122 measure/archive/test_s2_subagent_pin_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 (before commit, exit 0)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/test_s2_subagent_pin_20261122/closeout-497c393.json",
+    "git add measure/archive/test_s2_subagent_pin_20261122 measure/tracks.md && git add -f measure/runs/test_s2_subagent_pin_20261122 && git commit -m 'measure(closeout): archive test_s2_subagent_pin_20261122'",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 (after commit, exit 0)"
+  ],
+  "changed_files": [
+    "measure/tracks.md",
+    "measure/archive/test_s2_subagent_pin_20261122/metadata.json",
+    "measure/archive/test_s2_subagent_pin_20261122/automation-supervisor-closeout-manifest.json",
+    "measure/runs/test_s2_subagent_pin_20261122/closeout.log",
+    "measure/runs/test_s2_subagent_pin_20261122/closeout-497c393.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "test_s2_subagent_pin_20261122",
+  "phase": "Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)",
+  "baseline_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "phase_base_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "role_base_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "audited_head_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "status": "pass",
+  "summary": "The S2 pin matches all nine orchestrator rules in order. The direct test and p1 suite passed. No findings.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD matched the supplied audited_head_sha and the confirmed role_base_sha. The worktree was clean at role start.",
+    "The phase baseline is an ancestor of the audited HEAD. The S2 file is byte-identical outside the subagent check; the only other file change is the plan.",
+    "The orchestrator agent blob is identical at the phase baseline and audited HEAD. The test file did not change after d25f04e.",
+    "An independent extraction matched tests/spec_review_gate/test_s2_role_docs.sh:493, agents/measure-orchestrator.md:147-173, and spec.md:16 in order.",
+    "The direct S2 test exited 0 with 90 passing checks. The same script exited 0 with an unmodified copy of the agent file.",
+    "The S2 script exited 1 with the expected subagent failure on each isolated copy with a missing or reordered www-publisher row.",
+    "A4: The S2 script exited 1 for an absent agent file, an empty agent file, and an agent file with no subagent rows.",
+    "The base revision of the test exited 1 on the unchanged agent file. Its only failure was the stale eight-pair pin.",
+    "A3: The unchanged S2 count checks at lines 288-303 match the label before they parse the integer. The changed check compares the complete ordered list.",
+    "A5: The mutation reruns corroborate plan.md:16-17. The raw Green output at green-gates-p1.tmp:1723-1724 and 1825-1830 corroborates the three zero exits in plan.md:19.",
+    "The independent p1 spec review gate rerun exited 0 with 24 passing suites. HEAD still matched audited_head_sha and the worktree remained clean.",
+    "The light track has no test-strategy.md. The spec and plan give the phase tests; measure/gates.json confirms the project checks and lint commands.",
+    "The diff changes no TypeScript or exported symbols, so build-graph does not apply. The unchanged suite runner discovers the shell test by glob.",
+    "The role gate exited 0 and reported PASS: review-a gate passed."
+  ],
+  "commands": [
+    "git status --porcelain=v1 -b",
+    "git rev-parse HEAD 497c393 6c4f9a0",
+    "git merge-base --is-ancestor 6c4f9a0 497c393",
+    "git diff --check 6c4f9a0..497c393",
+    "git diff --no-ext-diff 6c4f9a0..497c393",
+    "git rev-parse 6c4f9a0:agents/measure-orchestrator.md 497c393:agents/measure-orchestrator.md",
+    "git diff --quiet d25f04e..497c393 -- tests/spec_review_gate/test_s2_role_docs.sh",
+    "bash tests/spec_review_gate/test_s2_role_docs.sh",
+    "Python probe compared the three ordered lists and ran the S2 script against isolated /tmp fixtures.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 HEAVY_LOCK_WAIT_S=1190 timeout 20m /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track test_s2_subagent_pin_20261122 --phase \"Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)\" --baseline 6c4f9a0 --result-file measure/runs/test_s2_subagent_pin_20261122/review-a-497c393.json --log-file measure/runs/test_s2_subagent_pin_20261122/review-a-497c393.log"
+  ],
+  "changed_files": [
+    "measure/tracks/test_s2_subagent_pin_20261122/plan.md",
+    "tests/spec_review_gate/test_s2_role_docs.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The independent extraction matched all nine pairs at test_s2_role_docs.sh:493, measure-orchestrator.md:147-173, and spec.md:16 in order."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "The S2 fixture runs rejected the stale pin and each missing or reordered rule case, and accepted the unmodified file."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The phase diff changes only the subagent check and plan records, and both revisions have the same agent blob."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The independent p1 suite exited 0, and green-gates-p1.tmp:1723-1724 and 1825-1830 corroborate the recorded gate exits."
+    }
+  ]
+}

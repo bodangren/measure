@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Test S2 subagent pin matches the orchestrator subagent rules**
-  *Link: [./tracks/test_s2_subagent_pin_20261122/](./tracks/test_s2_subagent_pin_20261122/)*
-  *Update the test_s2_role_docs.sh subagent pin to the nine pairs now in agents/measure-orchestrator.md (adds the www-publisher allow row); the agent file does not change.*
+- (none)
 
 ---
 
@@ -541,3 +539,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Late-finding stop rule for the measure-orchestrator skill**
   *Link: [./archive/late_finding_stop_rule_20261122/](./archive/late_finding_stop_rule_20261122/)*
   *Late-finding stop rule for the measure-orchestrator skill: after the second review or adversarial round of a phase, a new finding goes to tech-debt.md unless it can hide a wrong result in the delivered work, which gets one fix round; each call goes in the plan*
+
+- [x] **Track: Test S2 subagent pin matches the orchestrator subagent rules**
+  *Link: [./archive/test_s2_subagent_pin_20261122/](./archive/test_s2_subagent_pin_20261122/)*
+  *Update the test_s2_role_docs.sh subagent pin to the nine pairs now in agents/measure-orchestrator.md (adds the www-publisher allow row); the agent file does not change*

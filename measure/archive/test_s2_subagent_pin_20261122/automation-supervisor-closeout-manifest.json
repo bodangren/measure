@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "test_s2_subagent_pin_20261122",
+  "track_title": "Test S2 subagent pin matches the orchestrator subagent rules",
+  "lane": "light",
+  "closeout_baseline_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "audited_head_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "closeout_commit_sha": "pending (written before the commit; see MEASURE_AGENT_RESULT and git log after commit)",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.json", "status": "pass", "audited_head_sha": "6c4f9a0d187fe6", "note": "Passing spec review at setup."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/test_s2_subagent_pin_20261122/review-a-497c393.json", "status": "pass", "audited_head_sha": "497c393d1f186f", "note": "Round 2 ran the audit. Round 1 stopped because the orchestrator brief omitted role_base_sha."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/test_s2_subagent_pin_20261122/phase-acceptance-497c393.json", "status": "pass", "audited_head_sha": "497c393d1f186f", "note": "Gating audit for this light lane; no final acceptance was run."},
+    {"role": "closeout", "artifact": "measure/runs/test_s2_subagent_pin_20261122/closeout.log", "status": "pass", "note": "Baseline checker exit 1 before the move; pre-commit and post-commit runs exit 0."},
+    {"role": "closeout", "artifact": "measure/runs/test_s2_subagent_pin_20261122/closeout-497c393.json", "status": "pass", "note": "Audit result validates with the checker's audit-result command."}
+  ],
+  "models": "Light lane. Review B, Review C, adversarial testing, UX review, and final acceptance were not run. Phase acceptance and Review A passed at 497c393. See metadata.json deviation_notes.",
+  "commands": [
+    "git rev-parse HEAD && git branch --show-current && git status --porcelain -> 497c393d1f186fea2d4c3fdffc83c6eef153f733, fix/test-s2-subagent-pin, clean tree",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 -> exit 1 on the untouched pre-closeout state (active track present, no archive, metadata not done, no manifest)",
+    "grep -rn --exclude-dir=.git 'measure/tracks/test_s2_subagent_pin_20261122/' . -> matches only in retained run evidence; no match in tests/, scripts/, mods/, plugins/, agents/, or skills/ (A9)",
+    "grep -nE '^\\s*- \\[[ ~xb]\\]' measure/tracks/test_s2_subagent_pin_20261122/plan.md -> two [x] lines with SHAs d25f04e and 3d29856; zero [~], zero [ ], zero [b]",
+    "git mv measure/tracks/test_s2_subagent_pin_20261122 measure/archive/test_s2_subagent_pin_20261122",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 -> exit 0 before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/test_s2_subagent_pin_20261122/closeout-497c393.json -> exit 0",
+    "git add measure/archive/test_s2_subagent_pin_20261122 measure/tracks.md && git add -f measure/runs/test_s2_subagent_pin_20261122 && git commit -m 'measure(closeout): archive test_s2_subagent_pin_20261122'",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track test_s2_subagent_pin_20261122 -> exit 0 after the commit"
+  ],
+  "task_shas": {
+    "1.1": "d25f04e",
+    "1.2": "3d29856"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "497c393d1f186fea2d4c3fdffc83c6eef153f733"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "pass (the plan cites real SHAs and logs; no false-claim text)",
+    "a6_registry_check": "pass (the archived registry note is factual; it claims no adversarial test state)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep -rn --exclude-dir=.git 'measure/tracks/test_s2_subagent_pin_20261122/' . before the move",
+    "result": "matches only in measure/runs/test_s2_subagent_pin_20261122/ evidence files, which are retained and are not tests; no match in tests/ or other support code",
+    "test_fix": "none",
+    "post_archive_gate_note": "The orchestrator runs the project test gate through scripts/jobs/heavy-run.sh after this closeout. No hardcoded track path exists in tests, so no reference fix is needed."
+  },
+  "retained_evidence": [
+    "measure/runs/test_s2_subagent_pin_20261122/ (Red, Green, spec review, Review A, phase acceptance, closeout log and audit result; retained, nothing deleted)",
+    "measure/archive/test_s2_subagent_pin_20261122/ (index, plan, spec, spec-review, metadata, and this manifest)"
+  ],
+  "artifact_cleanup": {
+    "deleted": [],
+    "note": "No bulky run artifact was deleted. The orchestrator did not name any artifact for deletion."
+  },
+  "lessons_and_tech_debt": {
+    "lessons_learned_updated": false,
+    "tech_debt_updated": false,
+    "note": "Phase acceptance raised no finding. The four deviations are in metadata.json, so no new lesson or tech-debt row is warranted."
+  },
+  "out_of_repository_facts": [
+    "measure/runs/ is gitignored. The closeout log, audit result, and all run evidence were force-added to git with git add -f.",
+    "No push was made. Only the PM or Daniel merges origin/fix/test-s2-subagent-pin."
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

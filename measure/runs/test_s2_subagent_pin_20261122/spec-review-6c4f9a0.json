@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "summary": "Round 1 spec review of a light-lane chore. The spec and plan are precise and internally consistent: they name the one file to change, give the exact FR-1 pair order, and give exact pass and fail message text. The nine FR-1 pairs match the nine subagent rules in agents/measure-orchestrator.md byte for byte in order. The breakage proof and both gate commands are named. No Blocker, Major or Nit finding. Pass.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD verified: 6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257 (short 6c4f9a0), branch fix/test-s2-subagent-pin, clean working tree; equals audited_head_sha and the gate baseline.",
+    "Spec inputs read: measure/tracks/test_s2_subagent_pin_20261122/{spec.md,plan.md,metadata.json,index.md}; tests/spec_review_gate/test_s2_role_docs.sh; agents/measure-orchestrator.md; skills/measure-orchestrator/references/contracts.md (Gap-Closing Red); the Spec Review Standard. spec-review.md was not read, per the report-only contract.",
+    "Current-failure claim confirmed by inspection: EXPECT_SUBAGENT at test_s2_role_docs.sh line 493 holds eight pairs and omits \"www-publisher\"|allow; the live orchestrator file lines 147-173 hold nine subagent rules. SUBAGENT_RULES therefore differs from EXPECT_SUBAGENT and the check fails with 'the subagent rules differ from the eight pairs'. Running the suite was blocked by the shell permission for this role, so no test execution is claimed.",
+    "FR-1 pair order verified against the file: \"*\"|deny, \"measure-*\"|allow, \"coder\"|allow, \"www-publisher\"|allow, \"copywriter\"|allow, \"fact-gate-checker\"|allow, \"thai-writer\"|allow, \"print-proof-auditor\"|allow, \"change-quality-reviewer\"|allow. This matches agents/measure-orchestrator.md lines 147-173 exactly, in order.",
+    "Open point resolved: 'five global subagents' in the new check title is the correct count. In this repo 'global subagents' is the established phrase for the named helper agents allowed after the 'coder' rule and before the 'change-quality-reviewer' rule. The archived copywriter_allow_20261115 spec, metadata and CHANGELOG line 13 define the original four as copywriter, fact-gate-checker, thai-writer and print-proof-auditor. PR #39 (f208c55) added www-publisher as the fifth (orchestrator file lines 156-158), placed after coder. The '*' deny and the measure-*, coder and change-quality-reviewer allow rows were never counted in that phrase. Four plus www-publisher equals five.",
+    "Paraphrase check: both required sections can be written in 2 to 5 sentences; no Comprehension gap.",
+    "Zoom-out check: the track fixes the stale-pin root cause, not a symptom; no speculative feature; no premature optimization; it reuses the existing S2 compare logic in test_s2_role_docs.sh and changes only its expected values; the pin stays in its correct file; the text stays at requirement level.",
+    "Zero-decision check: schema is not applicable but the expected-list format is given exactly; the title, pass and fail text are fixed by FR-1 and Task 1.1; no new dependency; the two breakage cases and the live PASS case are named as edge and normal tests; the single changed file is named; both task states are testable.",
+    "The title text is described as 'names the five global subagents' rather than quoted verbatim. The current title is quoted in spec.md line 5 and Task 1.1 names the pass and fail text verbatim, so the implementer has an unambiguous template; this is not a gap."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git branch --show-current; git status --porcelain",
+    "read measure/tracks/test_s2_subagent_pin_20261122/{spec.md,plan.md,metadata.json,index.md}",
+    "read tests/spec_review_gate/test_s2_role_docs.sh; read agents/measure-orchestrator.md",
+    "read skills/measure-orchestrator/references/contracts.md; read spec-review standard",
+    "grep -i 'global subagent' across measure/ and agents/; grep -i 'www-publisher' across measure/",
+    "ls -1 ~/.config/opencode/agents/ (global agent definitions)",
+    "bash tests/spec_review_gate/test_s2_role_docs.sh was attempted and denied by the shell permission for this role; no execution result is claimed",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track test_s2_subagent_pin_20261122 --phase 'track setup' --baseline 6c4f9a0 --result-file measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.json --log-file measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.log -> PASS, exit 0"
+  ],
+  "changed_files": [
+    "measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.json",
+    "measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "role": "spec-review",
+  "track": "test_s2_subagent_pin_20261122",
+  "phase": "track setup",
+  "baseline_sha": "6c4f9a0",
+  "audited_head_sha": "6c4f9a0",
+  "paraphrase": {
+    "proposes": "This light-lane chore updates one stale test pin so main is no longer red. It changes only the subagent check in tests/spec_review_gate/test_s2_role_docs.sh: the title names the five global subagents, EXPECT_SUBAGENT holds the nine pairs in FR-1 order, and the pass and fail messages say nine pairs. Red proves breakage by running the check against a copy of the orchestrator file without the www-publisher row and a copy with reordered rows, and confirms PASS on the live file. Green records both gate commands exiting 0, and the orchestrator agent file stays byte-identical. Push goes only to origin/fix/test-s2-subagent-pin; only the PM or Daniel merges.",
+    "current_system": "Per the spec, agents/measure-orchestrator.md holds nine subagent rules: one \"*\" deny followed by eight allows (measure-*, coder, www-publisher, copywriter, fact-gate-checker, thai-writer, print-proof-auditor, change-quality-reviewer). PR #39 added the www-publisher allow row. The S2 check in tests/spec_review_gate/test_s2_role_docs.sh still pins the old eight pairs and omits www-publisher, so main fails that one check with 'the subagent rules differ from the eight pairs'. No other copy of the rule text exists in the repo and no other file changes in this track."
+  }
+}

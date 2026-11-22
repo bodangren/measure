@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "test_s2_subagent_pin_20261122",
+  "phase": "Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)",
+  "baseline_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "phase_base_sha": "6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257",
+  "role_base_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "audited_head_sha": "497c393d1f186fea2d4c3fdffc83c6eef153f733",
+  "status": "pass",
+  "summary": "Phase 1 meets the acceptance criteria at 497c393. The ordered pin matches the live rules, the negative copies fail as expected, and both p1 suites exit 0.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "The worktree was clean on entry. HEAD matched the role baseline and audited HEAD. The phase base is an ancestor of HEAD.",
+    "Review A passed on this exact HEAD and its role gate rerun passed. Green recorded the same final HEAD. No test-only HEAD exception applies.",
+    "Spec review passed at setup. The spec and metadata have not changed since setup. The test blob at Red commit d25f04e matches the audited blob.",
+    "The brief exempts Review B, Review C, adversarial testing, and UX browser review for this one-test light lane. Metadata line 5 confirms the lane.",
+    "No track test-strategy.md exists. The spec and plan define the tests. measure/gates.json identifies the project check and parity commands.",
+    "Task 1.1 cites d25f04e. Only the title, expected list, and verdict messages changed in the S2 check. The live agent blob did not change.",
+    "An independent extraction matched the nine ordered pairs in spec.md:16, test_s2_role_docs.sh:493, and measure-orchestrator.md:147-173.",
+    "The baseline pin failed on the live file. The updated pin passed on the live file and on an unchanged copy.",
+    "The full S2 check exited 1 with the specified message on two isolated copies: one without the www-publisher row and one with reordered rows.",
+    "A3: The changed assertion compares the full ordered list. The existing role count assertions parse the number after an explicit label.",
+    "A4: A copy with zero subagent rules failed. Both phase tasks have [x] and commit evidence. The diff does not change the marker checker.",
+    "A6 and A7: No registry entry or banned-term filter changed.",
+    "Task 1.2 cites 3d29856 for the exit records. Commit 497c393 closes the marker. Neither commit changes the test.",
+    "A5: The S2 check exited 0 on the live file. The p1 spec review suite reported 24 passes, including S2. The p1 DSH suite reported 15 passes. Both suites and both parity checks exited 0.",
+    "green-gates-p1.tmp:1724 and :1826-1830 also record both suite exits and the parity exit.",
+    "The DSH reference check used its fixture because it found no readable profile patch. The check passed.",
+    "The tracked main ref does not contain the phase test commit. The topic branch was ahead of its matching remote ref. Acceptance made no push or merge.",
+    "After the two p1 reruns, git rev-parse HEAD still matched audited_head_sha and git status --porcelain=v1 was empty.",
+    "The phase-acceptance role gate reported PASS and exited 0."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git branch --show-current; git status --porcelain=v1",
+    "git diff --check 6c4f9a0..HEAD; git diff 6c4f9a0..HEAD; git log --format=fuller --stat 6c4f9a0..HEAD",
+    "git merge-base --is-ancestor 6c4f9a0 HEAD; git rev-parse 6c4f9a0:agents/measure-orchestrator.md HEAD:agents/measure-orchestrator.md d25f04e:tests/spec_review_gate/test_s2_role_docs.sh HEAD:tests/spec_review_gate/test_s2_role_docs.sh",
+    "git show --format=oneline --no-ext-diff 3d29856 -- measure/tracks/test_s2_subagent_pin_20261122/plan.md",
+    "git merge-base --is-ancestor d25f04e origin/main; git merge-base --is-ancestor d25f04e origin/fix/test-s2-subagent-pin",
+    "bash tests/spec_review_gate/test_s2_role_docs.sh",
+    "Python probe extracted FR-1 and ran the complete S2 script against live bytes and in-memory copies.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 HEAVY_LOCK_WAIT_S=1190 timeout 20m /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 HEAVY_LOCK_WAIT_S=1190 timeout 20m /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh'",
+    "bash plugins/dsh-measure-guard/scripts/check-parity.sh && bash plugins/opencode-measure-guard/scripts/check-parity.sh",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track test_s2_subagent_pin_20261122 --phase \"Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)\" --baseline 6c4f9a0 --result-file measure/runs/test_s2_subagent_pin_20261122/review-a-497c393.json --log-file measure/runs/test_s2_subagent_pin_20261122/review-a-497c393.log",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track test_s2_subagent_pin_20261122 --phase \"Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)\" --baseline 6c4f9a0 --result-file measure/runs/test_s2_subagent_pin_20261122/phase-acceptance-497c393.json --log-file measure/runs/test_s2_subagent_pin_20261122/phase-acceptance-497c393.log"
+  ],
+  "changed_files": ["measure/tracks/test_s2_subagent_pin_20261122/plan.md", "tests/spec_review_gate/test_s2_role_docs.sh"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The extraction matched spec.md:16, test_s2_role_docs.sh:493, and measure-orchestrator.md:147-173 in order."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "The S2 probe rejected the old pin, the deleted row, the reordered rows, and zero rows."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The 6c4f9a0..497c393 diff changes only the S2 subagent check and its plan records."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "Both independent p1 suite reruns and the parity rerun corroborate plan.md:19."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6.2-sol#high",
+      "agreed": true,
+      "score": 5,
+      "evidence": "The audit reproduced the ordered match, negative fixtures, and passing p1 spec review suite in review-a-497c393.json:18-25."
+    }
+  ]
+}
