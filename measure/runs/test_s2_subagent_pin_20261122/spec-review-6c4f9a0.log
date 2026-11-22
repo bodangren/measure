@@ -1,0 +1,35 @@
+Spec review, round 1, track test_s2_subagent_pin_20261122, audited head 6c4f9a0.
+Reviewer: measure-spec-review subagent (opencode-go/hy4-flash-free).
+Author model from brief: opencode-go/muse-spark-1.3-contributor (Muse); different model family.
+Gate baseline 6c4f9a0; clean tree; branch fix/test-s2-subagent-pin.
+
+### What this track proposes
+
+This light-lane chore updates one stale test pin so main is no longer red. It changes only the subagent check in tests/spec_review_gate/test_s2_role_docs.sh: the title names the five global subagents, EXPECT_SUBAGENT holds the nine pairs in FR-1 order, and the pass and fail messages say nine pairs. Red proves breakage by running the check against a copy of the orchestrator file without the www-publisher row and a copy with reordered rows, and confirms PASS on the live file. Green records both gate commands exiting 0, and the orchestrator agent file stays byte-identical. Push goes only to origin/fix/test-s2-subagent-pin; only the PM or Daniel merges.
+
+### How the current system works, per this spec
+
+Per the spec, agents/measure-orchestrator.md holds nine subagent rules: one "*" deny followed by eight allows (measure-*, coder, www-publisher, copywriter, fact-gate-checker, thai-writer, print-proof-auditor, change-quality-reviewer). PR #39 added the www-publisher allow row. The S2 check in tests/spec_review_gate/test_s2_role_docs.sh still pins the old eight pairs and omits www-publisher, so main fails that one check with "the subagent rules differ from the eight pairs". No other copy of the rule text exists in the repo and no other file changes in this track.
+
+### Findings
+
+- None
+
+Note on the author's open point (not a finding): "five global subagents" in the new check title is the correct count. "Global subagents" is the repo's established phrase for the named helper agents allowed after the "coder" rule and before the "change-quality-reviewer" rule. The archived copywriter_allow_20261115 spec, its metadata and CHANGELOG line 13 define the original four as copywriter, fact-gate-checker, thai-writer and print-proof-auditor. PR #39 added www-publisher as the fifth, placed after coder in agents/measure-orchestrator.md lines 156-158. The "*" deny and the measure-*, coder and change-quality-reviewer allow rows were never counted in that phrase. Four plus www-publisher equals five.
+
+Zoom-out and zero-decision checks pass. The track fixes the stale-pin root cause, adds no speculative feature and no premature optimization, reuses the existing S2 compare logic, keeps the pin in its correct file, and stays at requirement level. The changed file, the nine-pair order and the pass and fail text are named; no dependency or schema choice is left open; the two breakage cases and the live PASS case are named as tests.
+
+Per the Spec Review Standard, the reviewer returns only these three subsections; the author writes them into measure/tracks/test_s2_subagent_pin_20261122/spec-review.md. The reviewer did not read spec-review.md and edits no track document. The current-failure claim is confirmed by file inspection; running the suite was denied by this role's shell permission, so no test execution is claimed.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: test_s2_subagent_pin_20261122
+phase: track setup
+commits: none
+tests_run: read-only inspection of spec.md, plan.md, the orchestrator file, the S2 test script, contracts.md and the Spec Review Standard; suite run denied by shell permission, no execution claimed; role-gate passed exit 0
+files_changed: measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.json, measure/runs/test_s2_subagent_pin_20261122/spec-review-6c4f9a0.log (uncommitted)
+plan_updates: none
+known_failures: none
+handoff: Round 1 verdict is pass with no Blocker, Major or Nit finding; retry_recommendation none; role-gate passed exit 0. HEAD 6c4f9a0 matches audited_head_sha and the gate baseline; clean tree. FR-1 nine pairs match the orchestrator file in order. The open point is answered: five global subagents is correct. No commit and no push; report-only. The author must place the three subsections in spec-review.md. No CONTEST item was routed, so no dispositions line.
+END_MEASURE_AGENT_RESULT

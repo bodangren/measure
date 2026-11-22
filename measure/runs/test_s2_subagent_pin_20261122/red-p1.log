@@ -1,0 +1,64 @@
+# Red round log: Phase 1 Task 1.1 (gap-closing Red)
+
+Track: test_s2_subagent_pin_20261122
+Phase: Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)
+Role: measure-mid-red (mid-red), model opencode-go/muse-spark-1.3-contributor
+Baseline: phase_base_sha = role_base_sha = 6c4f9a0 (verified: `git rev-parse HEAD` gave 6c4f9a0d187fe696a1d5a6b5fa2174a88dee0257 with a clean tree before work)
+Resulting HEAD: d25f04e17237285cd2ebdd6fb1933c8a497af9e9
+Commit: d25f04e "measure(red): test_s2 pin matches the nine orchestrator subagent rules (track_id: test_s2_subagent_pin_20261122)"
+Files changed: tests/spec_review_gate/test_s2_role_docs.sh (subagent check only), measure/tracks/test_s2_subagent_pin_20261122/plan.md (Task 1.1 [ ] -> [~])
+agents/measure-orchestrator.md: byte-identical (`git diff 6c4f9a0..HEAD -- agents/measure-orchestrator.md` is empty)
+
+## Change
+
+The subagent check in tests/spec_review_gate/test_s2_role_docs.sh pinned eight
+pairs (stale after PR #39 added the www-publisher allow row). Updated only that
+check: title now "subagent rules: the orchestrator role allows the five global
+subagents in order"; EXPECT_SUBAGENT holds the nine FR-1 pairs with
+"www-publisher"|allow after "coder"|allow; pass "the subagent rules equal the
+nine pairs in order"; fail "the subagent rules differ from the nine pairs".
+
+## Breakage proof (updated check logic vs file copies)
+
+Copy without the www-publisher row:
+  cp agents/measure-orchestrator.md /tmp/orch_live.md
+  awk removal of the 3-line subagent block whose resource is www-publisher > /tmp/orch_nowww.md
+  (grep -c www-publisher /tmp/orch_nowww.md -> 0)
+  check -> FAIL: the subagent rules differ from the nine pairs
+
+Copy with the rows reordered (www-publisher moved after copywriter):
+  awk rewrite swapping the www-publisher and copywriter blocks > /tmp/orch_reordered.md
+  (resource lines: copywriter at 157, www-publisher at 160)
+  check -> FAIL: the subagent rules differ from the nine pairs
+
+Live file:
+  check against agents/measure-orchestrator.md -> PASS: the subagent rules equal the nine pairs in order
+
+## Test evidence
+
+- bash tests/spec_review_gate/test_s2_role_docs.sh -> EXIT=0, Total: 90 checks (PASS=90, FAIL=0); subagent check PASS.
+- HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' -> HEAVY_EXIT=0, 24 suites (PASS=24, FAIL=0).
+
+## Remaining
+
+Task 1.2 (records: run.sh + dsh/run.sh exits) stays [ ] for the next role. No
+remaining failures in the Red command. No fabrication: every proof ran the real
+check logic against real file copies.
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: pass
+track: test_s2_subagent_pin_20261122
+phase: Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)
+baseline_sha: 6c4f9a0
+resulting_head: d25f04e17237285cd2ebdd6fb1933c8a497af9e9
+commits: d25f04e measure(red): test_s2 pin matches the nine orchestrator subagent rules (track_id: test_s2_subagent_pin_20261122)
+tests_run: bash tests/spec_review_gate/test_s2_role_docs.sh (EXIT=0, 90/90); heavy-run -c 'bash tests/spec_review_gate/run.sh' (EXIT=0, 24/24 suites)
+files_changed: tests/spec_review_gate/test_s2_role_docs.sh, measure/tracks/test_s2_subagent_pin_20261122/plan.md
+plan_updates: Task 1.1 [ ] -> [~]; Task 1.2 stays [ ]
+known_failures: none in the Red command; Task 1.2 records run pending (next role)
+red_kind: gap_closing
+gaps: stale test_s2 subagent pin after PR #39
+breakage_proof: updated check logic FAILs on /tmp/orch_nowww.md (www-publisher row removed, grep count 0) with "the subagent rules differ from the nine pairs"; FAILs on /tmp/orch_reordered.md (www-publisher moved after copywriter: copywriter line 157, www-publisher line 160) with the same message; PASSes on live agents/measure-orchestrator.md with "the subagent rules equal the nine pairs in order"
+handoff: Red pin update committed at d25f04e; Green owns only the check title, expected list, and pass/fail messages if the file changes again; agents/measure-orchestrator.md must stay byte-identical; Task 1.2 records run belongs to the next role
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,36 @@
+Closeout log for track test_s2_subagent_pin_20261122 (light lane, chore).
+
+Pre-closeout HEAD is 497c393d1f186fea2d4c3fdffc83c6eef153f733 on branch
+fix/test-s2-subagent-pin. The tree is clean. The gating phase-acceptance
+result phase-acceptance-497c393.json has status pass and audited_head_sha
+equal to that HEAD. Review A round 2 at 497c393 also passed with no finding.
+
+The plan has two [x] tasks with commit SHAs: d25f04e (Task 1.1) and 3d29856
+(Task 1.2). There is no [~] task, no [ ] task, and no [b] task. The plan has
+no false-claim text. The registry note makes no adversarial-test claim.
+
+Actions: git mv of the track folder to measure/archive/; active entry removed
+from measure/tracks.md and an archived entry added with the metadata
+description; metadata set to done with actual_tasks 2, completed 2026-11-22,
+updated_at, and four deviation notes; closeout manifest written in the
+archive; this log and the closeout audit result written in measure/runs/.
+No test needed a path fix (A9): the fixed track path appears only in retained
+run evidence, never in tests/ or other support code.
+
+Checker exit before any change: 1 (expected: active folder present, no archive,
+metadata not done, no manifest). Checker exit after the changes and before the
+commit: 0. Checker exit after the commit: 0. The audit result
+closeout-497c393.json validates with the checker.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: pass
+track: test_s2_subagent_pin_20261122
+phase: track closeout
+commits: Task 1.1 d25f04e; Task 1.2 3d29856; closeout commit pending at write time (pre-closeout HEAD 497c393d1f186fea2d4c3fdffc83c6eef153f733)
+tests_run: closeout checker exit 1 before changes and exit 0 before and after commit; audit-result closeout validation exit 0; A9 grep found no fixed track path in tests/ or support code; plan marker scan two [x], zero [~], zero [ ], zero [b]
+files_changed: measure/tracks.md; moved folder measure/tracks/test_s2_subagent_pin_20261122 to measure/archive/test_s2_subagent_pin_20261122; measure/archive/test_s2_subagent_pin_20261122/metadata.json; measure/archive/test_s2_subagent_pin_20261122/automation-supervisor-closeout-manifest.json; measure/runs/test_s2_subagent_pin_20261122/closeout.log; measure/runs/test_s2_subagent_pin_20261122/closeout-497c393.json (force-added)
+plan_updates: none; the plan was already closeout-clean with two [x] tasks and SHA evidence
+known_failures: baseline closeout checker exit 1 is expected on the untouched pre-closeout state; no failing audit remains; the light lane skipped Review B, Review C, adversarial testing, UX review, and final acceptance
+handoff: closed track archived; metadata done; checker passes after commit; no question for the orchestrator; nothing pushed; only the PM or Daniel merges
+END_MEASURE_AGENT_RESULT

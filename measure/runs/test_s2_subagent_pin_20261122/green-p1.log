@@ -1,0 +1,54 @@
+# Green round log: Phase 1 (plan and records only)
+
+Track: test_s2_subagent_pin_20261122
+Phase: Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)
+Role: measure-jr-green, model opencode-go/hy4-flash-free
+Immutable phase_base_sha: 6c4f9a0 (baseline)
+Separate role_base_sha: d25f04e (committed Red HEAD on entry)
+Final Green HEAD: 497c393d1f186fea2d4c3fdffc83c6eef153f733
+Branch: fix/test-s2-subagent-pin
+
+## Preconditions
+
+- `git rev-parse HEAD` on entry gave d25f04e (clean tree), matching role_base_sha.
+- Committed Red change is inside `6c4f9a0..HEAD`: d25f04e "measure(red): test_s2 pin matches the nine orchestrator subagent rules (track_id: test_s2_subagent_pin_20261122)".
+- `git diff 6c4f9a0 HEAD -- agents/measure-orchestrator.md` is empty (agent file byte-identical).
+- No test file and no agent file changed in Green. Scope was plan and records only.
+
+## Targeted Red command output
+
+The Red round updated the stale pin, so the targeted check no longer fails.
+- Red baseline run (measure/runs/test_s2_subagent_pin_20261122/red-p1.log): `bash tests/spec_review_gate/test_s2_role_docs.sh` -> EXIT=0.
+- Green rerun: `bash tests/spec_review_gate/test_s2_role_docs.sh` -> EXIT=0 (subagent check PASS; total 90 checks, no failures).
+
+## Gate records (each through heavy-run.sh, HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500)
+
+- `bash tests/spec_review_gate/run.sh` -> EXIT=0 (suite result PASS).
+- `bash tests/dsh/run.sh` -> EXIT=0 (summary: passed, none failed).
+- PROJECT_LINT `bash plugins/dsh-measure-guard/scripts/check-parity.sh && bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> EXIT=0 (both parity: ok).
+- Raw outputs: measure/runs/test_s2_subagent_pin_20261122/green-gates-p1.tmp.
+
+## Commits
+
+- 3d29856 measure(plan): test_s2 pin records  (Task 1.1 closed with d25f04e; Task 1.2 marked [~]; gate exits recorded)
+- 497c393 measure(plan): close test_s2 records task  (Task 1.2 closed with 3d29856)
+
+## New files added
+
+- measure/runs/test_s2_subagent_pin_20261122/green-p1.log (this log; run records, not a tracked source file)
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: test_s2_subagent_pin_20261122
+phase: Phase 1: Test pin matches the orchestrator subagent rules (due 2026-11-22)
+baseline_sha: 6c4f9a0
+role_base_sha: d25f04e
+final_head: 497c393d1f186fea2d4c3fdffc83c6eef153f733
+commits: 3d29856 measure(plan): test_s2 pin records; 497c393 measure(plan): close test_s2 records task
+tests_run: bash tests/spec_review_gate/test_s2_role_docs.sh (EXIT=0); heavy-run -c 'bash tests/spec_review_gate/run.sh' (EXIT=0); heavy-run -c 'bash tests/dsh/run.sh' (EXIT=0); heavy-run PROJECT_LINT check-parity both guards (EXIT=0)
+files_changed: measure/tracks/test_s2_subagent_pin_20261122/plan.md
+plan_updates: Task 1.1 [~] -> [x] with evidence line and trailing — d25f04e; Task 1.2 [ ] -> [~] -> [x] with exit-evidence line and trailing — 3d29856
+known_failures: none
+handoff: Phase 1 both tasks closed with SHA evidence; phase_base_sha 6c4f9a0 and final Green HEAD 497c393; agents/measure-orchestrator.md byte-identical (git diff 6c4f9a0..HEAD empty); no test or agent file changed; no deferred [b] tasks; no push performed; gate exits all 0; records in measure/runs/test_s2_subagent_pin_20261122/green-p1.log
+END_MEASURE_AGENT_RESULT
