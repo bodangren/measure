@@ -15,4 +15,6 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 2
 
-(empty)
+- Round 2 at 006f46d on openai/gpt-6.1-terra#high (same reviewer session as Round 1). Verdict: pass. Findings: none.
+- The amendments close F1 to F4.
+- Gate: role-gate spec-review exit 0 (evidence measure/runs/ci_workflow_20261123/spec-review-006f46d.json).
