@@ -42,8 +42,13 @@
   "devDependencies": {
     "@openchamber/sdk": "^2.7.1",
     "@types/node": "^26.6.6",
-    "happy-dom": "^15.11.7",
+    "happy-dom": "^21.0.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
+    "vite": "^6.4.4",
+    "vitest": "^3.2.7"
+  },
+  "overrides": {
+    "tinypool": "^2.1.2",
+    "zod": "^4.6.6"
   }
 }
