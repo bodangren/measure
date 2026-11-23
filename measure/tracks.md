@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Audit roles may run role-gate**
+  *Link: [./tracks/audit_role_gate_allow_20261123/](./tracks/audit_role_gate_allow_20261123/)*
+  *Audit roles may run role-gate: allow the role-gate command in the 8 audit agent files that deny *rm * (PM order, due 2026-11-26).*
+
 ---
 
 ## Cancelled Tracks
