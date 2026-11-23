@@ -1,0 +1,13 @@
+{
+  "track_id": "readme_heavy_run_form_20261123",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-23T00:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "completed": "2026-11-23",
+  "description": "README of opencode-measure-guard uses the heavy-run form and lists the heavy-run guard; closes the README tech-debt row (PM order route 1, due 2026-11-26).",
+  "estimated_tasks": 4,
+  "actual_tasks": 4,
+  "deviation_notes": "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run. The work was a README edit plus one local test. Route 1 was chosen by the PM. measure-guard denies edits outside measure/ while no track is in progress. The one-commit README chore became a minimal track. The PM had first ordered no track. Spec review passed in round 1 on openai/gpt-6.1-terra#high. Red ran on opencode-go/muse-spark-1.3-contributor#high. Green ran on opencode-go/hy4-flash-free#high. Review A ran on openai/gpt-6-luna#high and found one Nit. The example agent name measure-reviewer did not exist. The Nit was fixed in 08780bf and Review A re-ran. Luna's shell denied the role-gate command twice. The orchestrator ran the gate. Luna finalized its audit JSON as pass after the first provisional file said inconclusive. Green's first edit of the README fix was denied by measure-guard. No task was in progress at that time. Green marked Task 1.2 [~] for the edit. Green restored it to [x] 20ecf85 before the commit. The committed plan shows only the evidence line. Phase acceptance ran on claude-agent/sonnet#max and raised three Nits. F1 covers test strength and the tech-debt row. F2 covers the plan.md line 29 diff stat, pinned to HEAD instead of f5d2806. That text was not reworded, because a reword advances HEAD. F3 covers the bullet, which names npx/bunx but not bun x, while the matcher strips bun x. The bullet was not changed. Its shell denied the phase-acceptance gate. The orchestrator ran it and it passed. PR #47 check checks passed on f5d2806. The later commits (a20c52c, be29449, 08780bf, 5442514 and the closeout) are pushed by a build session after closeout. measure/doctor.sh does not exist. PROJECT_CHECKS replaced it, as in earlier tracks."
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "readme_heavy_run_form_20261123",
+  "phase": "track setup",
+  "baseline_sha": "76d5f27bccd37756f53e401bf6511aca4ac57b75",
+  "audited_head_sha": "76d5f27bccd37756f53e401bf6511aca4ac57b75",
+  "status": "pass",
+  "summary": "The spec supports the intended README change and a testable contract.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD and branch match the requested baseline; the initial worktree is clean.",
+    "The README at HEAD matches the pinned cd3c41b baseline.",
+    "The spec names the changed regions, command forms, test files, and baseline comparison.",
+    "The zoom-out and zero-decision checks found no findings."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "git diff cd3c41b HEAD -- plugins/opencode-measure-guard/README.md"
+  ],
+  "changed_files": [
+    "measure/runs/readme_heavy_run_form_20261123/spec-review-76d5f27.json",
+    "measure/runs/readme_heavy_run_form_20261123/spec-review-76d5f27.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "The track replaces two README commands with the heavy-run form and documents the guard. It adds a local contract test and closes the related debt row.",
+    "current_system": "The README shows bare test and type-check commands. The heavy-run guard refuses those commands in role sessions, and the README does not list the guard."
+  }
+}

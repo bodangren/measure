@@ -1,0 +1,50 @@
+# Red round log: Phase 1 Task 1.1
+
+Track: readme_heavy_run_form_20261123
+Phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+Role: measure-mid-red
+phase_base_sha: 6cbbe7b (immutable)
+role_base_sha: 6cbbe7b (this role started here with a clean tree on chore/readme-heavy-run-form)
+Verified before work: `git rev-parse HEAD` gave 6cbbe7b with empty `git status --short`. Spec review passed in round 1 (gate PASS).
+Resulting HEAD: 74717f15992ad225ce233d87bfed82b1bfae0f08
+
+Commits of this role:
+- 74717f1 measure(red): readme heavy-run form contract test (track_id: readme_heavy_run_form_20261123)
+
+Files changed (tests): tests/readme/test-readme-heavy-run.sh (new), tests/readme/run.sh (new)
+Files changed (plan): measure/tracks/readme_heavy_run_form_20261123/plan.md (Task 1.1 [~] marker + Red evidence)
+Production files touched: none. plugins/opencode-measure-guard/README.md is unedited.
+
+## Red command
+`HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh'` exits 1.
+12 checks: PASS=2 (readme-file-exists, readme-nothing-else-moves), FAIL=10 (bare bun test, bare tsc, both heavy-run lines missing, sentence missing, bullet present/matcher/scope/version, intro shell tools).
+
+## Breakage proof (/tmp fixtures only, no README edit)
+Correct /tmp fixture (spec FR-1..FR-4 edit applied in /tmp only) passes 12/12 via README_UNDER_TEST. Each mutant fails:
+- M1 bare `bun test` back -> checks-no-bare-bun-test + checks-heavy-test-line FAIL
+- M2 sentence removed -> checks-new-sentence FAIL
+- M3 bullet removed -> guards-bullet-present/matcher/scope/version FAIL
+- M4 extra changed line elsewhere -> readme-nothing-else-moves FAIL (names the diff)
+- M5 heavy-run prefix stripped -> checks-heavy-test-line FAIL (plus no-bare FAIL)
+
+## Remaining failures (expected Red state)
+`bash tests/readme/run.sh` exits 1 until Green Task 1.2 edits the README per FR-1..FR-4. No production file was changed by this role.
+
+MEASURE_AGENT_RESULT
+role: measure-mid-red
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+task: T1.1
+baseline_sha: 6cbbe7b
+role_base_sha: 6cbbe7b
+head_sha: 74717f15992ad225ce233d87bfed82b1bfae0f08
+commits: 74717f1 measure(red): readme heavy-run form contract test (track_id: readme_heavy_run_form_20261123)
+tests: tests/readme/run.sh, tests/readme/test-readme-heavy-run.sh (12 contract checks)
+files: tests/readme/run.sh (new), tests/readme/test-readme-heavy-run.sh (new), measure/tracks/readme_heavy_run_form_20261123/plan.md (Task 1.1 [~] marker + Red evidence)
+red_command: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh'
+red_exit: 1
+red_reason: plugins/opencode-measure-guard/README.md is unedited; bare bun test and bare bun x tsc lines, both heavy-run lines missing, new sentence missing, Heavy-run guard bullet missing, Guards intro lacks shell tools (PASS=2, FAIL=10)
+breakage_proof: /tmp fixtures only, no README edit. Good fixture passes (exit 0). Each mutant fails: m1 bare bun test -> no-bare-bun-test/heavy-test-line; m2 sentence removed -> new-sentence; m3 bullet removed -> bullet-present/matcher/scope/version; m4 extra line elsewhere -> nothing-else-moves; m5 prefix stripped -> heavy-test-line.
+remaining_failures: bash tests/readme/run.sh exits 1 (expected Red state; Green Task 1.2 edits the README per FR-1 through FR-4)
+production_files_touched: none (plugins/opencode-measure-guard/README.md not edited)
+END_MEASURE_AGENT_RESULT

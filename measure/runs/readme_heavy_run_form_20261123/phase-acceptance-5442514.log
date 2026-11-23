@@ -1,0 +1,70 @@
+# Phase acceptance log: Phase 1 of readme_heavy_run_form_20261123
+
+Role: measure-phase-acceptance
+Route: claude-agent/sonnet#max
+Track: readme_heavy_run_form_20261123 (chore, light lane)
+Phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+phase_base_sha: 6cbbe7b5cf12d4b50aceea172f42241191b2854f
+role_base_sha: 54425142ea5dccbb5e1766d3546e5a9fdb469ee6
+audited_head_sha: 54425142ea5dccbb5e1766d3546e5a9fdb469ee6
+Result artifact: measure/runs/readme_heavy_run_form_20261123/phase-acceptance-5442514.json
+
+## Verdict
+
+PASS. No finding blocks acceptance. Three nonblocking Nits remain: F1, F2, and F3.
+
+## What I verified
+
+1. HEAD equals the role base 5442514, the branch is chore/readme-heavy-run-form, and the tree was clean.
+2. Task SHAs resolve. 74717f1 is the Red commit (tests/readme/run.sh and the contract test). 20ecf85 is the Green commit (README only). a20c52c records Tasks 1.3 and 1.4 and closes the README row of measure/tech-debt.md.
+3. The README diff cd3c41b..5442514 meets FR-1 to FR-4. It has two hunks: the Guards intro clause plus the Heavy-run guard bullet, and the Checks block plus the new sentence. No other line changed. git diff --check prints nothing.
+4. Every claim of the Heavy-run guard bullet and the Guards intro is true against heavyRunDecision (mods/measure-guard/hooks/guards.ts:1082, parity copy in plugins/opencode-measure-guard) and the wiring at plugins/opencode-measure-guard/src/guard.ts:213-215. A bun -e probe of 22 cases confirms the modes, the exemption by name, the runner prefixes, the refused classes, the one-line deny, and the unchecked wrappers.
+5. The contract test exits 0 through heavy-run with 12 checks, PASS=12, FAIL=0. It exits 1 on the unedited README with PASS=2, FAIL=10. That equals the Red record at plan.md line 18.
+6. The other suites exit 0 through heavy-run: the opencode parity check, tests/spec_review_gate/run.sh (24 suites), and tests/dsh/run.sh (15 passed, 0 failed). The dsh parity check prints parity: ok.
+7. measure/tech-debt.md changes one line: the README row of heavy_run_guard_20261123. No other row changed.
+8. PR #47 is OPEN at head f5d2806 and check checks has the conclusion SUCCESS. The delta f5d2806..5442514 holds one README token, plan.md, and tech-debt.md. The CI run therefore covers the README except that token. HEAD is 4 commits ahead of the pushed head.
+9. Light lane: metadata.json holds lane light. Review B, Review C, adversarial testing, UX review, and final acceptance are not required for a README-only change with a local test.
+10. The Review A artifact review-a-5442514.json is consistent with my checks. It records no exit code for its gate run, and I could not re-run that gate.
+
+## Findings (all nonblocking)
+
+F1 [Nit] phase-acceptance: tests/readme/test-readme-heavy-run.sh hides lines from the readme-nothing-else-moves check. Line 219 replaces the whole Guards intro line with a placeholder. Line 235 drops every line that holds the bullet marker or the sentence start. A moved bullet, a moved sentence, a duplicate, or a larger intro rewrite therefore passes. Rationale: FR-1 and FR-2 state where the new sentence and the new bullet go, and FR-5 allows one clause on line 68. The README at 5442514 is correct by diff, so the README holds no wrong text.
+
+F2 [Nit] phase-acceptance: plan.md line 29 gives the diff stat of the range 6cbbe7b..HEAD as 4 files, 321 insertions, and 5 deletions. The same command at the audited HEAD 5442514 prints 5 files, 329 insertions, and 8 deletions. Rationale: the numbers are true for the pushed head f5d2806 only. Pin the range to 6cbbe7b..f5d2806 in the record.
+
+F3 [Nit] phase-acceptance: The Heavy-run guard bullet names the runner prefixes npx and bunx only. The function stripCommand also strips the pair bun x (plugins/opencode-measure-guard/src/core/guards.ts:954). The Checks block of the same README uses that pair. Rationale: the bullet text is true but incomplete. FR-2 has the same wording, so the spec owns the change.
+
+## Proof for F1
+
+I loaded the collapse function (test lines 218 to 236) with eval and fed it README streams from process substitution. These streams gave the hash 5019e172: the real README, the unedited README, an intro cut after the shell tools, a bullet moved to the end, a sentence moved to the end, and a duplicated sentence. An unrelated heading change gave the hash 40304a7a. The function therefore sees real changes but not the changes in F1.
+
+## Anti-pattern check
+
+- A3 absent: tests/readme holds no [0-9] assertion.
+- A4 absent: the test has no marker check, and the phase holds four [x] tasks.
+- A5 absent: plan.md lines 18, 22, and 25 reproduce in my runs. Line 29 is F2.
+- A6 does not apply: measure/tracks.md is outside the phase diff.
+- A7 absent: the test filters are fixed strings, not bare English words. The filter effect is F1.
+
+## Limits of this audit
+
+- I built no mutant of the current README. The permission rules of this role denied cp, sed -i, and the edit tool for /tmp copies. I did not work around the rules.
+- Non-vacuity rests on three runs: the unedited README (exit 1, PASS=2, FAIL=10), an older README revision 82411ec (readme-nothing-else-moves fails), and the F1 hash replay. I read the mutant runs of Review A at be29449 and of red-p1.log (M1 to M5) and did not re-run them.
+- The shell rules of this role denied my run of the review-a role-gate. They also denied the phase-acceptance role-gate command of the brief. I did not look for a way around the denial. The orchestrator runs that command.
+- By code reading, the phase-acceptance gate checks the result block markers, the dispositions line (absent here), the audit JSON (valid, status pass, no hard blocker), and the phase task counts (four [x], none open). I expect exit 0.
+- Observation, no finding: measure/tech-stack.md line 43 still names bun x tsc --noEmit -p plugins/opencode-measure-guard. The guard refuses that form in a role session. The PM order limits this track to the README.
+- Observation, no finding: FR-1 puts the machine path /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh in a public README.
+- Observation, no finding: red-p1.log and green-p1*.log end with result blocks that differ from the Agent Result Block template. The gate reads the marker lines only.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+commits: none
+tests_run: heavy-run bash tests/readme/run.sh: pass, exit 0 (12 checks, PASS=12, FAIL=0); heavy-run opencode check-parity.sh: pass, parity: ok; heavy-run bash tests/spec_review_gate/run.sh: pass, exit 0; heavy-run bash tests/dsh/run.sh: pass, exit 0; dsh check-parity.sh: pass; bun -e matcher probe, 22 cases: as expected; role-gate phase-acceptance: denied by the shell rules of this role, not run (the orchestrator runs it)
+files_changed: measure/runs/readme_heavy_run_form_20261123/phase-acceptance-5442514.json and .log
+plan_updates: none
+known_failures: none; three nonblocking Nits F1, F2, and F3 are in the audit JSON
+handoff: PASS at HEAD 5442514 with no blocking finding. Route F1 to Green or decline it. Route F2 to the build session: pin the diff stat range to 6cbbe7b..f5d2806 in plan.md line 29. F3 belongs to the spec owner. Light lane confirmed. The build session can push the four unpushed commits: CI covers the README except one token, and my local run of the four CI commands at HEAD passes. A plan-only commit for F2 advances HEAD, and the orchestrator decides whether to rerun this gate. I built no /tmp mutants because cp, sed -i, and the edit tool were denied there. I could not run the review-a gate or the phase-acceptance gate (Permission denied: shell), so the orchestrator runs the gate command of the brief and expects exit 0. Candidate tech-debt row: measure/tech-stack.md line 43 names a bare tsc form that the guard refuses.
+END_MEASURE_AGENT_RESULT

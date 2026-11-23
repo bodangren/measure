@@ -4,10 +4,6 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: README uses the heavy-run form**
-  *Link: [./tracks/readme_heavy_run_form_20261123/](./tracks/readme_heavy_run_form_20261123/)*
-  *README of opencode-measure-guard uses the heavy-run form and lists the heavy-run guard; closes the README tech-debt row (PM order route 1, due 2026-11-26).*
-
 ---
 
 ## Cancelled Tracks
@@ -557,3 +553,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Heavy-run guard refuses heavy commands outside heavy-run**
   *Link: [./archive/heavy_run_guard_20261123/](./archive/heavy_run_guard_20261123/)*
   *Heavy-run guard in measure-guard: a role session that starts a dev server, a Playwright or Chrome capture, a full tsc --noEmit, a full test suite, a render, or build-graph outside scripts/jobs/heavy-run.sh is refused with one line that names the heavy-run form (PM assignment A-new2, due 2026-11-26).*
+
+- [x] **Track: README uses the heavy-run form**
+  *Link: [./archive/readme_heavy_run_form_20261123/](./archive/readme_heavy_run_form_20261123/)*
+  *README of opencode-measure-guard uses the heavy-run form and lists the heavy-run guard; closes the README tech-debt row (PM order route 1, due 2026-11-26).*

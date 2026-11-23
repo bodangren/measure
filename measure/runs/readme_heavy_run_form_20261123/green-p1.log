@@ -1,0 +1,38 @@
+# Green round log: Phase 1 final records (Tasks 1.3 and 1.4)
+
+Track: readme_heavy_run_form_20261123
+Phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+Role: measure-jr-green
+phase_base_sha: 6cbbe7b (immutable)
+role_base_sha: f5d2806 (this role started here with a clean tree on chore/readme-heavy-run-form)
+Verified before work: `git rev-parse HEAD` gave f5d2806 with empty `git status --short`.
+Final HEAD: be2944941e1652ed387be8b40d0a416f8616e8ce
+
+## Commits of this role
+- a20c52c measure(plan): readme_heavy_run_form PR and records (closes Tasks 1.3 and 1.4 with evidence; closes the README tech-debt row)
+- be29449 measure(plan): close readme_heavy_run_form records with the commit SHA (appends a20c52c to Tasks 1.3 and 1.4)
+
+## Orchestrator-verified evidence cited in the plan
+- Task 1.3: branch pushed at head f5d2806; PR #47 https://github.com/bodangren/measure/pull/47 is open; check `checks` passed on run https://github.com/bodangren/measure/actions/runs/45126292036 (6m15s); origin/main had not moved beyond cd3c41b; nothing merged.
+- Task 1.4: Red 74717f1 ran the contract test that failed first and later passed after the README edit 20ecf85; parity check ok. PR number, check result, and diff stat are recorded in the plan. Diff stat verified locally: `git diff --stat 6cbbe7b..HEAD` = 4 files changed, 321 insertions(+), 5 deletions(-).
+
+## Verification commands
+- `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh'` exits 0.
+- `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh'` exits 0: `parity: ok`.
+
+## Files changed
+- measure/tracks/readme_heavy_run_form_20261123/plan.md: Tasks 1.3 and 1.4 closed with SHA a20c52c; one evidence line each; stale Green note replaced; Records evidence section added.
+- measure/tech-debt.md: one row closed (2026-11-23, heavy_run_guard_20261123, README lines 148-154 and missing Guards bullet): status Closed, one-line resolution naming PR #47 and README commit 20ecf85. No other row touched.
+
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: pass
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+commits: a20c52c measure(plan): readme_heavy_run_form PR and records; be29449 measure(plan): close readme_heavy_run_form records with the commit SHA
+tests_run: wrapper -c 'bash tests/readme/run.sh' exit 0; wrapper -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh' exit 0 (parity: ok)
+files_changed: measure/tracks/readme_heavy_run_form_20261123/plan.md; measure/tech-debt.md
+plan_updates: Task 1.3 flipped to [x] with a20c52c and one evidence line; Task 1.4 flipped to [x] with a20c52c and one evidence line; Tasks 1.1 and 1.2 stay [x] with 74717f1 and 20ecf85; tech-debt README row closed with PR #47 and 20ecf85
+known_failures: none. Both required verification commands exit 0.
+handoff: Immutable phase_base_sha 6cbbe7b; role_base_sha f5d2806; final HEAD be2944941e1652ed387be8b40d0a416f8616e8ce. All four Phase 1 tasks are [x] with commit SHA evidence. PR #47 is open with check `checks` passing; nothing merged. New files added by this role: none. Committed Red tests were not edited. Do not move the track to archive or update final closeout metadata in Green.
+END_MEASURE_AGENT_RESULT

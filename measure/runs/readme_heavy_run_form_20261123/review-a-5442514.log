@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+commits: none
+tests_run: heavy-run bash tests/readme/run.sh PASS (12 checks); heavy-run parity check PASS; role-gate run by the orchestrator
+files_changed: measure/runs/readme_heavy_run_form_20261123/review-a-5442514.json and .log
+plan_updates: verified the current phase and re-review evidence; no plan edits
+known_failures: none
+handoff: F1 withdrawn: Nit fixed in 08780bf. README now names measure-review-a-correctness, and agents/measure-review-a-correctness.md exists. The exact be29449..5442514 delta changes README.md and plan.md only. PR #47 checks succeeded at pushed head f5d2806. Role-gate run by the orchestrator.
+END_MEASURE_AGENT_RESULT

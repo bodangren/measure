@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "readme_heavy_run_form_20261123",
+  "track_title": "README uses the heavy-run form",
+  "track_base_sha": "6cbbe7b5cf12d4b50aceea172f42241191b2854f",
+  "closeout_baseline_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "audited_head_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/readme_heavy_run_form_20261123/spec-review-76d5f27.json", "status": "pass", "audited_head_sha": "76d5f27", "note": "Round 1 on openai/gpt-6.1-terra#high. Verdict pass with no findings. The spec file is unchanged since that review."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/readme_heavy_run_form_20261123/review-a-5442514.json", "status": "pass", "audited_head_sha": "5442514", "note": "Re-review on openai/gpt-6-luna#high after the Nit fix in 08780bf. The first attempt (review-a-be29449.json) was inconclusive because the shell denied the role gate."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/readme_heavy_run_form_20261123/phase-acceptance-5442514.json", "status": "pass", "audited_head_sha": "5442514", "note": "Three nonblocking Nits: F1 test strength, F2 pinned diff stat, F3 omitted bun x prefix. The orchestrator ran the phase gate: PASS."},
+    {"role": "closeout", "artifact": "measure/runs/readme_heavy_run_form_20261123/closeout.log", "status": "pass", "note": "Agent Result Block written before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review ran one round on openai/gpt-6.1-terra#high. Red ran on opencode-go/muse-spark-1.3-contributor#high. Green ran on opencode-go/hy4-flash-free#high. Review A ran on openai/gpt-6-luna#high. Phase acceptance ran on claude-agent/sonnet#max. Closeout ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash.",
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git rev-parse --abbrev-ref HEAD -> 54425142ea5dccbb5e1766d3546e5a9fdb469ee6; clean tree; chore/readme-heavy-run-form",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, spec-review.md, phase-acceptance-5442514.json, review-a-5442514.json, review-a-be29449.json, spec-review-76d5f27.json, measure/lessons-learned.md and measure/tech-debt.md",
+    "Confirm phase-acceptance-5442514.json and review-a-5442514.json each have status pass and audited_head_sha equal to the pre-closeout HEAD 5442514; the light lane needs no final acceptance",
+    "Confirm the archived plan has four [x] tasks with commit SHA evidence; zero [~], zero [ ] and zero [b] tasks; no deferred closeout task",
+    "git cat-file -t on every cited SHA -> 74717f1, 20ecf85, a20c52c, be29449, 08780bf, f5d2806, 6cbbe7b and cd3c41b all resolve as commits",
+    "grep the repository for the fixed path measure/tracks/readme_heavy_run_form_20261123/ before the move -> 9 occurrences, all in retained evidence under measure/runs; zero hits in tests, scripts, plugins, mods, agents, skills and .github",
+    "git mv measure/tracks/readme_heavy_run_form_20261123 measure/archive/readme_heavy_run_form_20261123",
+    "grep the repository for measure/tracks/readme_heavy_run_form_20261123/ after the move -> the same 9 occurrences under measure/runs; zero hits in tests, scripts, plugins, mods, agents, skills and .github; no test path fix was needed",
+    "Write metadata.json: status done, actual_tasks 4, updated_at 2026-11-23T15:00:00Z, completed 2026-11-23, eight deviation notes",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "Add two Low Open rows to measure/tech-debt.md for the tracked limits (dated 2026-11-23, track readme_heavy_run_form_20261123)",
+    "Write this manifest in the archive, plus closeout.log and closeout-result-5442514.json in measure/runs/readme_heavy_run_form_20261123/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track readme_heavy_run_form_20261123 -> exit before the commit (see closeout.log)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/readme_heavy_run_form_20261123/closeout-result-5442514.json -> exit before the commit (see closeout.log)",
+    "git add measure/tracks.md measure/tech-debt.md and the archive; git add -f measure/runs/readme_heavy_run_form_20261123; commit with measure(closeout): archive readme_heavy_run_form_20261123 via git commit -F",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track readme_heavy_run_form_20261123 -> exit after the commit (reported in the final message)"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track readme_heavy_run_form_20261123",
+    "exit_code_before_any_change": "1 (the track was still active and not archived)",
+    "exit_code_before_commit": "recorded in closeout.log",
+    "exit_code_after_commit": "reported in the final message of the closeout session",
+    "run_point": "before the closeout work, before the closeout commit, and after the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "74717f1",
+    "1.2": "20ecf85",
+    "1.3": "a20c52c",
+    "1.4": "a20c52c"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "no A5 hit: the plan records Red as PASS=2, FAIL=10 and Green as PASS=12, FAIL=0, and both numbers reproduce. The diff stat at plan.md line 29 is stale (Phase acceptance F2): it names the range 6cbbe7b..HEAD and prints 4 files, 321 insertions and 5 deletions, while the same range at 5442514 prints 5 files, 329 insertions and 8 deletions. The orchestrator declined a reword because a reword advances HEAD. The deviation is in metadata deviation_notes.",
+    "a6_registry_check": "pass (the archived entry makes no adversarial-test claim and its description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/readme_heavy_run_form_20261123/ before and after the move",
+    "hits_before_move": [
+      "measure/runs/readme_heavy_run_form_20261123/red-p1.log:15,43",
+      "measure/runs/readme_heavy_run_form_20261123/green-p1.log:24,34",
+      "measure/runs/readme_heavy_run_form_20261123/green-p1-local.log:25,36",
+      "measure/runs/readme_heavy_run_form_20261123/green-p1-r3.log:24",
+      "measure/runs/readme_heavy_run_form_20261123/review-a-5442514.json:35",
+      "measure/runs/readme_heavy_run_form_20261123/review-a-be29449.json:45"
+    ],
+    "hits_after_move": [
+      "the same 9 occurrences in retained audit evidence under measure/runs/readme_heavy_run_form_20261123/; zero hits in tests, scripts, plugins, mods, agents, skills and .github"
+    ],
+    "tests_scripts_support_hits": 0,
+    "note": "All hits are command or path text inside retained audit evidence. No test holds the fixed active path, so no test path fix was needed. The post-move test gate was not rerun because the closeout command allowlist excludes the heavy-run wrapper and this repository holds no scripts/jobs/heavy-run.sh. The phase acceptance gate re-ran every suite at 5442514 with PASS, and the A9 grep is the evidence for this move."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run. The work was a README edit plus one local test.",
+    "Route 1 was chosen by the PM. measure-guard denies edits outside measure/ while no track is in progress. The one-commit README chore became a minimal track. The PM had first ordered no track.",
+    "Spec review passed in round 1 on openai/gpt-6.1-terra#high. Red ran on opencode-go/muse-spark-1.3-contributor#high. Green ran on opencode-go/hy4-flash-free#high.",
+    "Review A ran on openai/gpt-6-luna#high and found one Nit. The example agent name measure-reviewer did not exist. The Nit was fixed in 08780bf and Review A re-ran. Luna's shell denied the role-gate command twice. The orchestrator ran the gate. Luna finalized its audit JSON as pass after the first provisional file said inconclusive.",
+    "Green's first edit of the README fix was denied by measure-guard. No task was in progress at that time. Green marked Task 1.2 [~] for the edit. Green restored it to [x] 20ecf85 before the commit. The committed plan shows only the evidence line.",
+    "Phase acceptance ran on claude-agent/sonnet#max and raised three Nits. F1 covers test strength and the tech-debt row. F2 covers the plan.md line 29 diff stat, pinned to HEAD instead of f5d2806. That text was not reworded, because a reword advances HEAD. F3 covers the bullet, which names npx/bunx but not bun x, while the matcher strips bun x. The bullet was not changed. Its shell denied the phase-acceptance gate. The orchestrator ran it and it passed.",
+    "PR #47 check checks passed on f5d2806. The later commits (a20c52c, be29449, 08780bf, 5442514 and the closeout) are pushed by a build session after closeout.",
+    "measure/doctor.sh does not exist. PROJECT_CHECKS replaced it, as in earlier tracks."
+  ],
+  "retained_evidence": [
+    "measure/runs/readme_heavy_run_form_20261123/ (all logs and audit JSON files, force-added)",
+    "measure/archive/readme_heavy_run_form_20261123/plan.md (SHA evidence for each task)",
+    "PR #47 check checks success on f5d2806 (run 45126292036)"
+  ],
+  "artifact_cleanup": "none; no bulky run artifact was deleted",
+  "lessons_learned_rows_added": 0,
+  "tech_debt_rows_added": [
+    "The contract test hides the Guards intro line and every line that holds the bullet marker or the sentence start, so a moved or duplicated line still passes (Phase acceptance F1, declined)",
+    "measure/tech-stack.md line 43 still names a bare bun x tsc command that the heavy-run guard refuses for role agents, and FR-1 puts a machine-specific heavy-run path in a public README (Phase acceptance out-of-scope notes)"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

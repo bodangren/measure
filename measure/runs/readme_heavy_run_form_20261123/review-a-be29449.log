@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: partial
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+commits: none
+tests_run: heavy-run bash tests/readme/run.sh PASS (12 checks); heavy-run parity check PASS; baseline README fixture fails 10/12; bare-bun-test mutation fails; removed-sentence mutation fails; role-gate rejected by shell permission before execution
+files_changed: measure/runs/readme_heavy_run_form_20261123/review-a-be29449.json and .log
+plan_updates: verified Phase 1 claims and current phase evidence; no plan edits
+known_failures: F1 Nit: README example names nonexistent measure-reviewer agent; see audit JSON
+handoff: Exact diff audited: 6cbbe7b..be2944941e1652ed387be8b40d0a416f8616e8ce; HEAD and role base match. Route F1 to Green to replace the stale example with an existing role agent. PR #47 checks succeeded at pushed head f5d2806; later commits change plan and tech-debt records only. The required role gate did not execute; shell permission was denied.
+END_MEASURE_AGENT_RESULT
