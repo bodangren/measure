@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "ci_workflow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "006f46d71743b5635d730bcc239eb4be7142e861",
+  "audited_head_sha": "006f46d71743b5635d730bcc239eb4be7142e861",
+  "status": "pass",
+  "summary": "The amendments resolve the four round 1 findings. No new blocking gap was found.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD and baseline resolve to 006f46d71743b5635d730bcc239eb4be7142e861; the tree was clean before artifact creation.",
+    "F1 fixed: FR-3 and Task 1.1 specify the local contract test and its runner.",
+    "F2 fixed: the plan permits the named throwaway branch push for Task 1.3.",
+    "F3 fixed: FR-5 and Task 1.3 require a draft pull request to trigger the red check.",
+    "F4 fixed: FR-7 limits the wrapper to local runs; FR-2 and FR-4 require plain CI steps.",
+    "Zoom-out: the amendments preserve the CI goal, reuse the four existing checks, and add no apparent speculative feature or optimization.",
+    "Zero-decision: the amendments specify the test location, proof event, branch, and wrapper scope. Q1 and Q2 remain runtime discovery items.",
+    "The reviewer did not read the track spec-review.md under the role instruction."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git rev-parse 006f46d",
+    "git status --porcelain",
+    "git branch --show-current",
+    "git diff 9ffdc8e 006f46d -- track spec and plan",
+    "role-gate --role spec-review: exit 0"
+  ],
+  "changed_files": [
+    "measure/runs/ci_workflow_20261123/spec-review-006f46d.json",
+    "measure/runs/ci_workflow_20261123/spec-review-006f46d.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "The track adds one GitHub Actions job that runs four existing checks on pull requests and pushes to main. A local contract test checks the workflow. A draft pull request proves a red check, and the track configures or reports the required check.",
+    "current_system": "The spec says the repository has no CI workflow. The existing checks run as local scripts, and the debt record says main has no branch protection."
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "ci_workflow_20261123",
+  "phase": "Phase 1: CI workflow runs the repo checks (due 2026-11-25)",
+  "phase_base_sha": "064f188",
+  "role_base_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "baseline_sha": "064f188",
+  "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "status": "pass",
+  "summary": "The workflow and checks satisfy the phase contract; one nonblocking gap remains in the absolute-path contract test.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] tests/ci/test-workflow.sh: no-absolute-path only rejects /home, /root, /mnt, /media, /etc, /var, /usr, /opt, and /private prefixes, so a /tmp or /workspace absolute path passes. The spec requires rejecting absolute paths outside the repository, and this test does not cover all such paths."
+  ],
+  "evidence": [
+    "git rev-parse HEAD returned c74252d3362077f9baa3dbe962230d66f86e6a06; git status --short was empty before audit artifacts.",
+    "git diff 064f188..c74252d3362077f9baa3dbe962230d66f86e6a06 contains the workflow, CI tests, plan, and one tech-debt row only.",
+    "CI workflow test passed 19 checks; temporary mutations for second trigger, missing command, swapped order, heavy-run, unpinned action, and missing workflow each exited 1.",
+    "The plan's green Actions claim is confirmed by run 45076806403: success on 1d7da70909a1840fbe7964f99073f90c91c790c5, job checks; all four test steps passed.",
+    "The red proof claim is confirmed by run 45077462199: failure at tests/dsh/run.sh due to FAIL: deliberate red proof; PR #44 is closed and unmerged.",
+    "Run 45075474798 failed at tests/spec_review_gate/run.sh on shallow checkout; eae63f3 sets fetch-depth: 0, and subsequent run 45076806403 passed without skips.",
+    "GitHub required status checks for main contain only checks; PR #43 is merged; no local or remote ci-proof/red-20261123 branch was found.",
+    "Current plan tasks are marked complete with commit evidence; its local CI test result matched the rerun."
+  ],
+  "commands": [
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/ci/run.sh' — exit 0.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh' — exit 0.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/dsh-measure-guard/scripts/check-parity.sh' — exit 0.",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh' — exit 0.",
+    "gh run view 45076806403 --json conclusion,headSha,jobs,url — success; checks job steps passed.",
+    "gh run view 45075474798 --json conclusion,headSha,jobs,url — failure in spec_review_gate.",
+    "gh run view 45077462199 --log-failed — deliberate red test caused failure.",
+    "gh pr view 44 --json state,isDraft,mergedAt,headRefName,url — CLOSED, draft, mergedAt null.",
+    "gh api repos/bodangren/measure/branches/main/protection/required_status_checks — contexts [checks].",
+    "git diff 1f142cc..HEAD --exit-code -- tests/ci — empty.",
+    "python3 temporary-fixture mutation probe — all five mutants and missing workflow exited 1."
+  ],
+  "changed_files": [
+    ".github/workflows/ci.yml",
+    "measure/tech-debt.md",
+    "measure/tracks/ci_workflow_20261123/plan.md",
+    "tests/ci/run.sh",
+    "tests/ci/test-workflow.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": ".github/workflows/ci.yml runs both specified triggers and the four checks in order."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The CI contract test passed 19 checks and rejected six temporary mutation or missing-file fixtures."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The diff contains only the planned workflow, its contract runner and test, plan evidence, and the CI tech-debt row."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "Heavy-run tests passed, GitHub run and PR evidence matched the plan, and the required context is checks."
+    }
+  ]
+}

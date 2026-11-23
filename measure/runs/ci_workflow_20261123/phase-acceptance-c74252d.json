@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "ci_workflow_20261123",
+  "phase": "Phase 1: CI workflow runs the repo checks (due 2026-11-25)",
+  "phase_base_sha": "064f188",
+  "role_base_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "baseline_sha": "064f188",
+  "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "status": "pass",
+  "summary": "The phase passes acceptance at HEAD c74252d. Each task and acceptance criterion has proof from a command or a read-only GitHub call. The workflow runs the four checks on pull requests and on pushes to main. Main requires the `checks` status. Two nonblocking gaps remain: one in the contract test and one in the closeout record.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F2 [Nit] phase-acceptance: tests/ci/test-workflow.sh does not reject a masked gate. Five probe copies of ci.yml exit 0 with 19 PASS (see the probe evidence entry). The probes add continue-on-error, a `|| true` suffix, a step `if: false`, a job `if: false`, or a pull_request `branches` filter. The delivered ci.yml holds none of these, and FR-3 does not list them. A later edit could mask the required check and keep the test green. Record one tech-debt row at closeout, with F1 of Review A. No Green round is needed.",
+    "F3 [Nit] phase-acceptance: The closed no-CI row hides three suites that CI does not run. The old row named `node --test` and guard `bun test` as CI scope. The three suites are plugins/dsh-measure-guard (`node --test`, 28 files), plugins/dsh-idle-compaction (`node --test`), and plugins/opencode-measure-guard (`bun test`). measure/gates.json PROJECT_TESTS also runs the first suite. The PM set the four-command scope in the spec, so this is a record gap and not a defect. Record one Open tech-debt row at closeout unless the PM declines it."
+  ],
+  "evidence": [
+    "HEAD is c74252d3362077f9baa3dbe962230d66f86e6a06 on chore/ci-workflow, and the tree was clean before this audit wrote its files. phase_base_sha is 064f188. role_base_sha equals the audited HEAD.",
+    "Prerequisites: the spec review passed at 006f46d. spec.md is unchanged since then, and the plan task text differs only by markers and SHA suffixes. The Red log red-p1.log, the Green log green-p1.log, and review-a-c74252d.json (same HEAD, status pass) exist. No test-only commit advanced HEAD, so this acceptance allows none. The track has no test-strategy.md (light lane); the plan header test commands, FR-2, and FR-3 served as the strategy.",
+    "Light lane confirmed. metadata.json holds lane light. measure/reviews/2026-11-10-orchestrator-process-review.md line 168 defines the lane as spec review plus Review A. The code exempts only final acceptance (measure_interphase_checks.py line 1168). No Review B, Review C, adversarial, or UX result exists, and none is required.",
+    "UX is not applicable: ux-paths with --track ci_workflow_20261123 and --baseline 064f188 printed no path. Security surface of ci.yml: no pull_request_target, no expression, no secret, no env, no write scope, and one first-party action (actions/checkout@v4).",
+    "The phase diff 064f188..c74252d holds five files: .github/workflows/ci.yml, tests/ci/run.sh, tests/ci/test-workflow.sh, plan.md, and tech-debt.md. Commits after 1d7da70 (522f463 and c74252d) change plan.md and tech-debt.md only. The phase diff does not touch measure/tracks.md, plugins/, or extensions/.",
+    "Task SHAs resolve to matching commits. 1f142cc adds tests/ci/run.sh and tests/ci/test-workflow.sh. 09e72e7 adds ci.yml, and eae63f3 adds fetch-depth 0 to it. 522f463 changes plan.md and the tech-debt row. c74252d adds the SHA suffixes to Task 1.3 and Task 1.4.",
+    "Local verification through heavy-run (HEAVY_PRIORITY=p1, HEAVY_MIN_AVAIL_MB=1500): tests/ci/run.sh exit 0 with 19 checks (PASS=19, FAIL=0); tests/spec_review_gate/run.sh exit 0 with 24 suites (PASS=24, FAIL=0); tests/dsh/run.sh exit 0 with 15 passed, 0 failed; both parity checks print `parity: ok` and exit 0.",
+    "A5 holds. The plan claim of 19 passing checks matches the run. The plan claim of 16 failing checks before Green matches a rerun against a missing workflow path (exit 1, PASS=0, FAIL=16). The plan holds no 'all checks pass' text and no 'PASS=N, FAIL=0' text.",
+    "A3, A4, and A7 hold for the new contract test. The A3 pattern rg -q '[0-9]+' has no match in tests/ci. Counts use labeled integers (Job count, Run step count, Occurrences). The grep -v filters are allow-lists or blank-line drops. The runner exits 1 with zero tests (no tests found). A missing workflow gives 16 FAIL, not a vacuous pass. A6 is not applicable: measure/tracks.md is unchanged by the phase.",
+    "Live proof, green PR: PR #43 (head 1d7da70) run 45076806403, event pull_request, conclusion success, job `checks`, all four test steps success. The PR check rollup shows `checks` SUCCESS.",
+    "Live proof, first failure: run 45075474798 (head 0a8c9a9) failed at tests/spec_review_gate/run.sh. Two FAIL lines say the base commit is not in the git history (test_s1_new_track.sh and test_s2_role_docs.sh). Both tests call git cat-file -e on the commit. eae63f3 sets fetch-depth 0, which is a root fix and not a skip.",
+    "No runner-only skip exists. The Actions log and the local run show equal totals for the 12 spec_review_gate suites (23, 119, 43, 16, 94, 90, 107, 98, 94, 34, 26, 5 checks), the same three INFO skip lines, and the same silent output of test-live-digest.sh and test-reload.sh. Those two tests have no skip branch.",
+    "Live proof, push to main: run 45078557826 (event push, head bd8b329, the merge of PR #43) concluded success. This proves the FR-1 push trigger. The plan does not record this run.",
+    "Live proof, red PR: draft PR #44 from ci-proof/red-20261123 (head 68a720b) closed on 2026-11-22T22:29:00Z with mergedAt null. The commit adds one file, tests/dsh/test-zz-deliberate-red.sh (prints FAIL: deliberate red proof, exit 1). Run 45077462199 failed at tests/dsh/run.sh with 15 passed, 1 failed, job `checks`. The parent is 1d7da70, so the broken test is the only difference from the green run.",
+    "Branch cleanup: git ls-remote origin 'refs/heads/ci-proof/*' prints nothing. The GitHub API lists no ci-proof head or tag. No local ci-proof branch exists. The deliberate test is absent from HEAD and from origin/main. One stale local tracking ref remains: origin/ci-proof/red-20261123 (see handoff).",
+    "Main protection (GET): required_status_checks contexts [checks] with one check (context checks, app_id 15368), strict false, enforce_admins false, no review rule, no push restriction. No ruleset exists. The same GET shows allow_force_pushes false and allow_deletions false (protection defaults). PR #44 reports mergeStateStatus BLOCKED with its failed check.",
+    "Merge state: PR #43 merged on 2026-11-22T22:35:13Z (merge commit bd8b329, head 1d7da70). origin/main holds ci.yml and tests/ci identical to HEAD (empty git diff). Commits 522f463 and c74252d are not on origin/main.",
+    "Tech-debt row at HEAD is Closed. Its text names PR #43, job `checks`, and the required check on main. Each part holds: runs 45076806403 and 45078557826 show both triggers, and the GET shows the required check. The row on origin/main is still Open.",
+    "Review A F1 (Nit): DECLINE agreed. A probe copy of ci.yml with env OUT=/tmp/out exits 0, so F1 holds. The gap is in test tooling. ci.yml names no absolute path (21 lines read in full). The gap cannot meet the wrong-result exception of the Late-finding stop rule. The closeout tech-debt row is the right treatment.",
+    "Probe evidence for F2. Probe copies of ci.yml were built in a scratch folder, which this role removed. Exit 1: contents write; a second job; actions/checkout@main; swapped command order; a schedule trigger. Exit 0 with PASS=19: continue-on-error true; `|| true` suffix; step `if: false`; job `if: false`; pull_request `branches` filter; env OUT=/tmp/out.",
+    "Not run by this role: node --test plugins/dsh-measure-guard/tests/*.test.js, the dsh-idle-compaction node tests, and the opencode-measure-guard bun test. The phase diff touches no plugins/ file, and ci.yml runs none of them. See F3.",
+    "No caller update is missing. No file outside the track and tests/ci names ci.yml or tests/ci. Apart from the closed tech-debt row, no markdown file claims that the repo has no CI. The folder .github holds only workflows/ci.yml. measure/gates.json needs no change because the spec makes the contract test a local check.",
+    "Gate: role-gate phase-acceptance (command in the brief) exited 0 with PASS: phase-acceptance gate passed. That run used the provisional files. The final files add only this entry, the gate command, and one log note.",
+    "measure/runs/ is ignored by git (.gitignore line 213). The run files of this track are untracked, so this audit does not advance HEAD. Other tracks force-added 521 run files; the orchestrator decides whether to force-add these at closeout."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git diff --stat 064f188 HEAD; git diff --stat 1d7da70 HEAD; git diff --stat origin/main HEAD",
+    "gh run view 45076806403, 45075474798, and 45077462199 (--json, --log, --log-failed); gh run list --workflow ci.yml",
+    "gh pr view 43 and gh pr view 44 (--json state, merge data, head, check rollup)",
+    "gh api repos/bodangren/measure/branches/main/protection (GET); .../protection/required_status_checks (GET); repos/bodangren/measure/rulesets (GET); .../git/matching-refs/heads/ci-proof and tags/ci-proof (GET)",
+    "git ls-remote origin 'refs/heads/ci-proof/*' (empty); git fetch origin; git branch --list; git branch -r --list 'origin/ci-proof*'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/ci/run.sh' (exit 0, 19 checks, PASS=19, FAIL=0)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' (exit 0, 24 suites, PASS=24, FAIL=0)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh' (exit 0, 15 passed, 0 failed)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/dsh-measure-guard/scripts/check-parity.sh' (exit 0, parity: ok)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh' (exit 0, parity: ok)",
+    "CI_WORKFLOW_UNDER_TEST=<scratch copy> bash tests/ci/test-workflow.sh over 11 probe copies of ci.yml, one control copy, and one missing path; bash <scratch copy of tests/ci/run.sh in an empty folder>",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py ux-paths --repo . --baseline 064f188 --track ci_workflow_20261123 (no output, exit 0)",
+    "A3, A5, A6, and A7 detection patterns from measure/anti-patterns.md (grep tool); git grep for no-CI claims in *.md; git show --stat for 1f142cc, 09e72e7, 0a8c9a9, eae63f3, 1d7da70, 522f463, c74252d, and 68a720b",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track ci_workflow_20261123 --phase 'Phase 1: CI workflow runs the repo checks (due 2026-11-25)' --baseline 064f188 --result-file measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.json --log-file measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.log (exit 0)"
+  ],
+  "changed_files": [
+    ".github/workflows/ci.yml",
+    "measure/tech-debt.md",
+    "measure/tracks/ci_workflow_20261123/plan.md",
+    "tests/ci/run.sh",
+    "tests/ci/test-workflow.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "claude-agent/sonnet#max",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": ".github/workflows/ci.yml lines 3-21 meet FR-1 to FR-4, and runs 45076806403 (PR green), 45077462199 (PR red), and 45078557826 (push to main green) prove it live."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "tests/ci/test-workflow.sh fails first (16 FAIL on a missing file) and rejects 5 of 11 probe copies; 6 gating or path probes exit 0 (F1, F2)."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 4,
+      "evidence": "git diff --stat 064f188 HEAD lists only the 5 planned files, but the protection GET shows force-push and deletion blocks that the plan does not record."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "Each plan claim has a command result: gh run view, gh pr view, gh api GET, and five heavy-run exits with counts."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 4,
+      "evidence": "The pass verdict holds at c74252d and F1 reproduces with an env OUT=/tmp/out probe; its probe set did not include the gating forms of F2."
+    }
+  ]
+}

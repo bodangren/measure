@@ -1,0 +1,56 @@
+# Final Green round log: Phase 1 of ci_workflow_20261123
+
+Track: ci_workflow_20261123
+Phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+Role: measure-jr-green (jr-green), model opencode-go/hy4-flash-free
+phase_base_sha: 064f188 (immutable)
+role_base_sha: 1f142cc (the committed Red change the Green role started from)
+Verified before work: HEAD was 1f142cc with an empty `git status --short` on branch chore/ci-workflow.
+Resulting HEAD: c74252d3362077f9baa3dbe962230d66f86e6a06
+
+Commits of this role:
+- 09e72e72493bea65b1c151d99aaffdc8f5e345e0 measure(green): ci workflow runs the repo checks
+- 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554 measure(plan): ci_workflow green local records
+- eae63f332e87c4c42e8ad595705b7b62ae96c9ab measure(green): ci checkout fetches full history
+- 1d7da70909a1840fbe7964f99073f90c91c790c5 measure(plan): ci_workflow first run evidence
+- 522f463dcd295a91d2b801995dcddba36adc09fe measure(plan): ci_workflow proof and required check records
+- c74252d3362077f9baa3dbe962230d66f86e6a06 measure(plan): close ci_workflow records with the commit SHA
+
+## Change
+
+The new workflow .github/workflows/ci.yml has name CI, one job named checks, permissions contents: read, runs-on ubuntu-latest, a pinned actions/checkout@v4 with fetch-depth: 0, and exactly four plain `bash ...` steps in spec order. No test was skipped and no command changed. No setup step was added. The pinned checkout fetches full history so the commit-object checks in test_s1_new_track.sh and test_s2_role_docs.sh can read their base commits.
+
+## Proof supplied by the orchestrator
+
+- Green: Actions run 45076806403 on PR #43 at head 1d7da70 concluded success; job `checks`; every step passed. Run 45075474798 at head 0a8c9a9 failed on the shallow checkout and was fixed at the root by eae63f3.
+- Red proof: draft PR #44 from branch ci-proof/red-20261123 held one deliberately broken test tests/dsh/test-zz-deliberate-red.sh. Run 45077462199 failed at `bash tests/dsh/run.sh` with `FAIL: deliberate red proof`, naming job `checks`. PR #44 was closed unmerged. `git ls-remote` lists no remote branch and the local branch does not exist.
+- Required check: main was unprotected (404). PUT branches/main/protection returned 200 with required_status_checks contexts ["checks"], strict false, enforce_admins false, no review rule, and no restriction. `gh api .../required_status_checks` shows contexts ["checks"]. PR #43 is MERGEABLE and CLEAN.
+
+## Test evidence (each through heavy-run.sh with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500)
+
+- `bash tests/ci/run.sh` -> EXIT[ci]=0.
+- `bash tests/dsh/run.sh` -> EXIT[dsh]=0.
+- `bash tests/spec_review_gate/run.sh` -> EXIT[spec]=0.
+- `bash plugins/dsh-measure-guard/scripts/check-parity.sh` -> EXIT[dsh-parity]=0, prints `parity: ok`.
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> EXIT[opencode-parity]=0, prints `parity: ok`.
+- OVERALL=0 and the wrapper returned EXIT=0.
+
+## Records
+
+plan.md closes Task 1.1 with 1f142cc, Task 1.2 with eae63f3, Task 1.3 with 522f463, and Task 1.4 with 522f463. Each task has one evidence line. The first Actions run, the red proof, the branch deletions, and the required-check state are recorded. measure/tech-debt.md closes only its "no CI" row with a one-line resolution that names PR #43, job `checks`, and the required check on main. No track archive move or final closeout metadata was changed. The committed Red tests are unchanged. No push was made.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: ci_workflow_20261123
+phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+baseline_sha: 064f188
+role_base_sha: 1f142cc
+resulting_head: c74252d3362077f9baa3dbe962230d66f86e6a06
+commits: 09e72e72493bea65b1c151d99aaffdc8f5e345e0 measure(green): ci workflow runs the repo checks; 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554 measure(plan): ci_workflow green local records; eae63f332e87c4c42e8ad595705b7b62ae96c9ab measure(green): ci checkout fetches full history; 1d7da70909a1840fbe7964f99073f90c91c790c5 measure(plan): ci_workflow first run evidence; 522f463dcd295a91d2b801995dcddba36adc09fe measure(plan): ci_workflow proof and required check records; c74252d3362077f9baa3dbe962230d66f86e6a06 measure(plan): close ci_workflow records with the commit SHA
+tests_run: bash tests/ci/run.sh (EXIT=0); bash tests/dsh/run.sh (EXIT=0); bash tests/spec_review_gate/run.sh (EXIT=0); bash plugins/dsh-measure-guard/scripts/check-parity.sh (EXIT=0); bash plugins/opencode-measure-guard/scripts/check-parity.sh (EXIT=0); all through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500
+files_changed: .github/workflows/ci.yml, measure/tracks/ci_workflow_20261123/plan.md, measure/tech-debt.md
+plan_updates: Task 1.1 [x] with 1f142cc; Task 1.2 [x] with eae63f3; Task 1.3 [x] with 522f463; Task 1.4 [x] with 522f463; one evidence line per task; measure/tech-debt.md "no CI" row closed
+known_failures: none
+handoff: phase_base_sha is 064f188 (immutable) and final Green HEAD is c74252d3362077f9baa3dbe962230d66f86e6a06; role_base_sha was 1f142cc. New file: .github/workflows/ci.yml. Actions run 45076806403 on PR #43 passed job `checks`; run 45075474798 failed on the shallow checkout and was fixed by eae63f3 with fetch-depth: 0. Draft PR #44 proof run 45077462199 failed at `bash tests/dsh/run.sh` with `FAIL: deliberate red proof`; PR #44 was closed unmerged and the branch was deleted remote and local. Main now requires context ["checks"]; PR #43 is MERGEABLE and CLEAN. The tech-debt "no CI" row is Closed with a one-line resolution. All five local commands exited 0 through heavy-run. No task was marked [b]. No push was made. No archive move or final closeout metadata was changed.
+END_MEASURE_AGENT_RESULT

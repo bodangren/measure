@@ -1,0 +1,65 @@
+# Phase acceptance log: Phase 1 of ci_workflow_20261123
+
+Role: measure-phase-acceptance (phase-acceptance). Route: claude-agent/sonnet#max.
+Audited HEAD: c74252d3362077f9baa3dbe962230d66f86e6a06 (branch chore/ci-workflow, clean tree before this audit).
+phase_base_sha: 064f188. role_base_sha: c74252d3362077f9baa3dbe962230d66f86e6a06.
+Result file: measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.json
+
+## Verdict
+
+status: pass. There is no blocking finding. Two nonblocking Nits remain (F2 and F3). The DECLINE of Review A F1 is agreed.
+
+Gate: role-gate phase-acceptance exited 0 (PASS: phase-acceptance gate passed) on the provisional files. The final files add only the gate entries.
+Git note: measure/runs/ is ignored by git (.gitignore line 213). The run files of this track are untracked, so this audit leaves HEAD unchanged.
+
+## Tasks
+
+- Task 1.1 Red (1f142cc): tests/ci/run.sh and tests/ci/test-workflow.sh exist. A rerun against a missing workflow path exits 1 with PASS=0, FAIL=16, so the plan claim of 16 failing checks holds. The runner exits 1 with zero tests.
+- Task 1.2 Green (eae63f3): ci.yml holds one job `checks`, two triggers, read-only permissions, one pinned first-party action, and four plain bash steps in spec order. PR #43 run 45076806403 concluded success. The first run 45075474798 failed on the shallow checkout, and eae63f3 fixed it at the root with fetch-depth 0.
+- Task 1.3 Proof (522f463): draft PR #44 ran job `checks` red (run 45077462199, FAIL: deliberate red proof). PR #44 is closed, unmerged. No ci-proof branch, local or remote, remains. Main requires the `checks` status.
+- Task 1.4 Records (522f463): the plan records match the live state. The tech-debt row is Closed at HEAD.
+
+## Acceptance criteria (spec.md)
+
+- A pull request shows the check green: PR #43, run 45076806403, job `checks`.
+- A broken test shows the check red on its draft PR: PR #44, run 45077462199, job `checks`. The PR is closed unmerged, and the branch is deleted remote and local.
+- Main requires the check: required_status_checks contexts [checks], app_id 15368, no other rule.
+- The tech-debt no-CI row is closed: Closed at HEAD. The row on origin/main is still Open until the two later commits land.
+
+## Local verification (heavy-run, HEAVY_PRIORITY=p1, HEAVY_MIN_AVAIL_MB=1500)
+
+- bash tests/ci/run.sh: exit 0, 19 checks (PASS=19, FAIL=0)
+- bash tests/spec_review_gate/run.sh: exit 0, 24 suites (PASS=24, FAIL=0)
+- bash tests/dsh/run.sh: exit 0, 15 passed, 0 failed
+- bash plugins/dsh-measure-guard/scripts/check-parity.sh: exit 0, parity: ok
+- bash plugins/opencode-measure-guard/scripts/check-parity.sh: exit 0, parity: ok
+
+## Anti-pattern checks
+
+- A5: holds. The 19-check claim and the 16-FAIL claim match the runs. The plan holds no all-checks-pass text.
+- A3, A4, A7: hold for tests/ci/test-workflow.sh. A3 has no match. The grep -v filters are allow-lists. A zero-test runner and a missing workflow both exit 1.
+- A6: not applicable. The phase diff does not change measure/tracks.md.
+
+## Probe copies of ci.yml (scratch folder, removed after the run)
+
+- Exit 1: contents write; a second job; actions/checkout@main; swapped command order; a schedule trigger.
+- Exit 0 with PASS=19: continue-on-error true; a `|| true` suffix; a step `if: false`; a job `if: false`; a pull_request `branches` filter (F2). env OUT=/tmp/out also exits 0 (F1 of Review A).
+
+## Findings
+
+- F2 [Nit] phase-acceptance: the contract test does not reject a masked gate (five probes above).
+- F3 [Nit] phase-acceptance: CI does not run `node --test` (two plugins) and `bun test` (one plugin); the closed row no longer records this.
+- Review A F1 [Nit]: DECLINE agreed. The probe with env OUT=/tmp/out confirms it. It is test tooling, and ci.yml names no absolute path.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: ci_workflow_20261123
+phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+commits: none
+tests_run: heavy-run bash tests/ci/run.sh (exit 0, 19 checks PASS); bash tests/spec_review_gate/run.sh (exit 0, 24 suites PASS); bash tests/dsh/run.sh (exit 0, 15 passed); both parity checks (exit 0, parity: ok); probe copies of ci.yml (see the JSON evidence)
+files_changed: measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.json; measure/runs/ci_workflow_20261123/phase-acceptance-c74252d.log
+plan_updates: none
+known_failures: none; nonblocking Nits F2 and F3 remain
+handoff: Acceptance passes at HEAD c74252d3362077f9baa3dbe962230d66f86e6a06 with phase_base_sha 064f188. Review A F1: DECLINE agreed; record it as a tech-debt row at closeout. F2 and F3 are new nonblocking Nits; the orchestrator picks DECLINE or a tech-debt row for each, with no Green round. Commits 522f463 and c74252d are not on origin/main. PR #43 merged at head 1d7da70, and the remote branch chore/ci-workflow is gone, so the orchestrator needs a new PR for them. The PM or Daniel merges it, and the required check `checks` runs on it. The tech-debt row on origin/main stays Open until then. Two stale local tracking refs remain (origin/ci-proof/red-20261123 and origin/chore/ci-workflow); git fetch --prune removes them. Facts changed for the PM: main is now protected. The required check is `checks`. Strict mode is off and admins are not enforced. Protection defaults block force-push and deletion of main. CI runs four commands only, so the `node --test` and `bun test` suites stay local (F3). Run 45078557826 proves the push-to-main trigger. The run files of this track are untracked because measure/runs/ is ignored by git; the orchestrator decides whether to force-add them. Closeout is next; the light lane needs no final acceptance.
+END_MEASURE_AGENT_RESULT

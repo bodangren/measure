@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track": "ci_workflow_20261123",
+  "phase": "track closeout",
+  "baseline_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "audited_head_sha": "c74252d3362077f9baa3dbe962230d66f86e6a06",
+  "status": "pass",
+  "summary": "Closeout passes at c74252d. The track folder moved to measure/archive, the registry entry moved and matches the metadata description, and metadata records status done with four completed tasks. Three Low Open tech-debt rows record the tracked nits. The closeout checker exited 0 before the commit.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Pre-closeout HEAD is c74252d3362077f9baa3dbe962230d66f86e6a06 on branch chore/ci-workflow with a clean tree.",
+    "phase-acceptance-c74252d.json has status pass, role phase-acceptance, and audited_head_sha c74252d3362077f9baa3dbe962230d66f86e6a06, which equals the pre-closeout HEAD. The PM re-ran the gate with PASS.",
+    "review-a-c74252d.json has status pass at the same audited HEAD.",
+    "The archived plan has four [x] tasks with commit SHA evidence, zero [~], zero [ ] and zero [b] tasks, and no deferred closeout task.",
+    "measure/tracks.md has no active entry for the track. Its archived entry description equals the metadata description.",
+    "metadata.json records status done, actual_tasks 4, updated_at, completed 2026-11-23 and the deviation notes.",
+    "The closeout checker printed INFO light lane, INFO no generated folder and PASS closeout checks passed, with exit 0 before the commit.",
+    "The A9 grep found no fixed active track path outside measure/runs, so no test fix was needed. The post-move test gate was not rerun because the closeout command allowlist excludes heavy-run."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git branch --show-current -> c74252d3362077f9baa3dbe962230d66f86e6a06; clean; chore/ci-workflow",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track ci_workflow_20261123 -> exit 0 before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/ci_workflow_20261123/closeout-result-c74252d.json -> see closeout.log",
+    "grep the repository for measure/tracks/ci_workflow_20261123/ before and after the move -> only measure/tracks.md line 8 before the move; zero hits after"
+  ],
+  "changed_files": [
+    "measure/archive/ci_workflow_20261123/",
+    "measure/archive/ci_workflow_20261123/metadata.json",
+    "measure/archive/ci_workflow_20261123/automation-supervisor-closeout-manifest.json",
+    "measure/tracks.md",
+    "measure/tech-debt.md",
+    "measure/runs/ci_workflow_20261123/closeout.log",
+    "measure/runs/ci_workflow_20261123/closeout-result-c74252d.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "blocking_reason": "",
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

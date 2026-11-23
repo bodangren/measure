@@ -1,0 +1,21 @@
+### What this track proposes
+The track adds one GitHub Actions job that runs four existing checks on pull requests and pushes to main. A local contract test checks the workflow. A draft pull request proves a red check, and the track configures or reports the required check.
+
+### How the current system works, per this spec
+The spec says the repository has no CI workflow. The existing checks run as local scripts, and the debt record says main has no branch protection.
+
+### Findings
+- None
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: ci_workflow_20261123
+phase: track setup
+commits: none
+tests_run: role-gate exit 0 (pass)
+files_changed: measure/runs/ci_workflow_20261123/spec-review-006f46d.json and .log
+plan_updates: none
+known_failures: none
+handoff: The four round 1 findings are fixed. The orchestrator must check the round 1 record; this role cannot read spec-review.md.
+END_MEASURE_AGENT_RESULT

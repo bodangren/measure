@@ -1,0 +1,66 @@
+# Green round log: Phase 1 Task 1.1 close and Task 1.2 local part
+
+Track: ci_workflow_20261123
+Phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+Role: measure-jr-green (jr-green), model opencode-go/hy4-flash-free
+phase_base_sha: 064f188 (immutable)
+role_base_sha: 1f142cc (the committed Red change this role started from)
+Verified before work: `git rev-parse HEAD` gave 1f142cc with an empty `git status --short` on branch chore/ci-workflow. The committed Red change 1f142cc sits inside phase_base_sha..HEAD (064f188..1f142cc).
+Resulting HEAD: 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554
+
+Commits of this role:
+- 09e72e72493bea65b1c151d99aaffdc8f5e345e0 measure(green): ci workflow runs the repo checks
+- 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554 measure(plan): ci_workflow green local records
+
+Files changed (production): .github/workflows/ci.yml (new)
+Files changed (plan): measure/tracks/ci_workflow_20261123/plan.md
+New files added: .github/workflows/ci.yml
+Committed Red tests changed: none. tests/ci/test-workflow.sh and tests/ci/run.sh from 1f142cc are unchanged.
+
+## Change
+
+Task 1.1 closed with its Red SHA 1f142cc and one evidence line. Task 1.2 marked [~] with one local evidence line; it stays open until the PR Actions run passes. The new workflow uses `name: CI`, one job named `checks`, `permissions: contents: read`, `runs-on: ubuntu-latest`, one pinned `- uses: actions/checkout@v4`, and exactly four plain `run: bash ...` steps in spec order. No wrapper, no HEAVY_ variable, no matrix, no cache, and no absolute path. No setup step was added.
+
+## Red rerun before the change
+
+`HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/ci/run.sh'` at HEAD 1f142cc -> EXIT=1. The contract test reported `=== Total: 16 checks (PASS=0, FAIL=16) ===`. The first line read `FAIL: workflow-file-exists: /home/daniebo/Desktop/measure/.github/workflows/ci.yml is missing (Green has not added it yet)`. The runner summary was `== summary: 0 passed, 1 failed ==`.
+
+## Test evidence (each through heavy-run.sh with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500)
+
+- `bash tests/ci/run.sh` -> EXIT=0. Contract test reported 19 checks pass, 0 fail. The runner summary was `== summary: 1 passed, 0 failed ==`.
+- `bash tests/spec_review_gate/run.sh` -> EXIT=0. 24 suites pass, 0 fail.
+- `bash tests/dsh/run.sh` -> EXIT=0. 15 passed, 0 failed.
+- `bash plugins/dsh-measure-guard/scripts/check-parity.sh` -> EXIT=0, prints `parity: ok`.
+- `bash plugins/opencode-measure-guard/scripts/check-parity.sh` -> EXIT=0, prints `parity: ok`.
+- The four commands ran in one heavy-run job with labeled exits EXIT1=0, EXIT2=0, EXIT3=0, EXIT4=0, OVERALL=0; the wrapper returned EXIT=0.
+- An earlier array-based loop was mangled by the session shell guard and did not run the four commands. It was discarded and replaced by the explicit run above, which produced the labeled exits.
+
+## Q1 and Q2 findings
+
+Q1 (runner tools): the four commands use bash, git, python3, node, and coreutils tools (grep, awk, sed, diff, cmp, mktemp, sort). No bun, jq, claude binary, or ra-quota appears in the four command trees. ubuntu-latest provides the listed tools, so no setup step is needed. Two dsh tests call `node --experimental-strip-types`, which needs Node 22.6 or later; the PR Actions run confirms the runner node version. No path or tool that cannot exist on a clean runner was found.
+
+Q2 (paths outside the repo): no `/home/` path appears in any of the four command trees. The `/usr` matches are `/usr/bin/env` shebangs. The new workflow names no absolute path. The contract check `no-absolute-path` passes.
+
+## Known failures
+
+None. Every command above exited 0, so no tech-debt row was needed and measure/tech-debt.md is unchanged. The Red failure at 1f142cc is the intended pre-Green state.
+
+## Records
+
+plan.md closes Task 1.1 with ` — 1f142cc` and one evidence line and marks Task 1.2 [~] with one local evidence line. Task 1.2 is not closed: the Actions run on the pull request belongs to another session. The track stays open: measure/tracks.md and metadata.json are not touched here. No archive move or final closeout metadata was changed.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: ci_workflow_20261123
+phase: Phase 1: CI workflow runs the repo checks (due 2026-11-25)
+baseline_sha: 064f188
+role_base_sha: 1f142cc
+resulting_head: 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554
+commits: 09e72e72493bea65b1c151d99aaffdc8f5e345e0 measure(green): ci workflow runs the repo checks; 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554 measure(plan): ci_workflow green local records
+tests_run: bash tests/ci/run.sh through heavy-run at role base 1f142cc (EXIT=1, 16 checks FAIL on the missing workflow); bash tests/ci/run.sh through heavy-run at Green 09e72e7 (EXIT=0, 19 checks pass); bash tests/spec_review_gate/run.sh (EXIT=0); bash tests/dsh/run.sh (EXIT=0); bash plugins/dsh-measure-guard/scripts/check-parity.sh (EXIT=0); bash plugins/opencode-measure-guard/scripts/check-parity.sh (EXIT=0)
+files_changed: .github/workflows/ci.yml, measure/tracks/ci_workflow_20261123/plan.md
+plan_updates: Task 1.1 [x] with ` — 1f142cc` and one evidence line; Task 1.2 [~] with one local evidence line and not closed
+known_failures: none
+handoff: phase_base_sha is 064f188 (immutable) and final Green HEAD is 0a8c9a955ca5585bd26b47a27b0d2e39ba4b0554; role_base_sha was 1f142cc. Task 1.1 is [x] with 1f142cc and an evidence line. Task 1.2 is [~] with one local evidence line; it stays open for the PR Actions run by another session. No task was marked [b]. Targeted Red command output: heavy-run -c 'bash tests/ci/run.sh' exited 1 with 16 checks FAIL, led by the missing ci.yml. Green command output: the same command exited 0 with 19 checks pass, and each of the four repo checks exited 0. New files added: .github/workflows/ci.yml (name CI, one job checks, permissions contents read, pinned actions/checkout@v4, four plain bash run steps in spec order). Q1: tools are bash, git, python3, node, and coreutils; no bun, jq, claude binary, or ra-quota; node 22.6+ needed by two dsh tests is a risk for the PR run; no setup step added. Q2: no /home/ path in the four command trees and no absolute path in the workflow. Committed Red tests are unchanged. No push was made.
+END_MEASURE_AGENT_RESULT
