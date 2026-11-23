@@ -13,4 +13,11 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 2
 
+- Round 2 at d92ae46 on openai/gpt-6.1-terra#high (same reviewer session as Round 1). Verdict: fail.
+- F3 (Blocker): the chained-command claim needs allow even with a redirect, but the redirected shape must be denied. Disposition: accepted, fixed in the amendment commit (exact disjoint cases on `>`).
+- F4 (Blocker): FR-2 forbids files outside its list, but closeout must edit the registry, tech debt, and archive. Disposition: accepted, fixed in the amendment commit (closeout files named as exception).
+- F1 and F2 are closed.
+
+### Round 3
+
 (empty)
