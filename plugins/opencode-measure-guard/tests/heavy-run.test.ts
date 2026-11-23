@@ -58,6 +58,20 @@ describe('heavy-run hook deny', () => {
     await expect(guard.onToolBefore(shell('vite'))).resolves.toBeUndefined()
   })
 
+  test('accepted v1 gaps pass through the hook', async () => {
+    const root = await withMeasure(await tempProject())
+    const guard = makeGuard(root)
+    await expect(guard.onToolBefore(shell(`bash -c 'vite'`))).resolves.toBeUndefined()
+    await expect(guard.onToolBefore(shell('timeout 60 vite'))).resolves.toBeUndefined()
+    await expect(guard.onToolBefore(shell('env CI=1 vite'))).resolves.toBeUndefined()
+  })
+
+  test('a bare heavy-run.sh is an ordinary unknown command and passes', async () => {
+    const root = await withMeasure(await tempProject())
+    const guard = makeGuard(root)
+    await expect(guard.onToolBefore(shell('./heavy-run.sh -c vite'))).resolves.toBeUndefined()
+  })
+
   test('a non-shell tool is not a heavy-run check', async () => {
     const root = await withMeasure(await tempProject())
     const guard = makeGuard(root)

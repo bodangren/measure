@@ -1,4 +1,6 @@
-// Red (Task 1.1): the heavy-run pure matcher of FR-1 to FR-7.
+// Red (Task 1.1, v1 scope): the heavy-run pure matcher of FR-1 to FR-7.
+// v1 guards direct commands only: wrapper words, shell -c recursion, and
+// non-path heavy-run -c recursion are out of scope (spec.md, tech-debt).
 // heavyRunDecision(agent, command) does not exist yet, so every deny test
 // fails here and passes once Green adds the matcher. This file imports from
 // 'bun:test' (not 'claude-code/testing') so `bun test tests/heavy-run.test.ts`
@@ -61,7 +63,6 @@ describe('dev-server', () => {
     expect(decide(ROLE, 'npx vite')).toEqual({ deny: denyFor('dev-server', 'npx vite') })
     expect(decide(ROLE, 'bunx vite')).toEqual({ deny: denyFor('dev-server', 'bunx vite') })
     expect(decide(ROLE, 'bun x vite')).toEqual({ deny: denyFor('dev-server', 'bun x vite') })
-    expect(decide(ROLE, 'npm exec -- vite')).toEqual({ deny: denyFor('dev-server', 'npm exec -- vite') })
   })
 })
 
@@ -100,9 +101,11 @@ describe('tsc-full', () => {
     expect(decide(ROLE, 'tsc --noEmit')).toEqual({ deny: denyFor('tsc-full', 'tsc --noEmit') })
   })
 
-  test('tsc -b and tsc --build are refused', () => {
+  test('tsc -b and tsc --build are full regardless of operands', () => {
     expect(decide(ROLE, 'tsc -b')).toEqual({ deny: denyFor('tsc-full', 'tsc -b') })
     expect(decide(ROLE, 'tsc --build')).toEqual({ deny: denyFor('tsc-full', 'tsc --build') })
+    expect(decide(ROLE, 'tsc -b tsconfig.json')).toEqual({ deny: denyFor('tsc-full', 'tsc -b tsconfig.json') })
+    expect(decide(ROLE, 'tsc -b src/a.ts')).toEqual({ deny: denyFor('tsc-full', 'tsc -b src/a.ts') })
   })
 
   test('tsc --noEmit -p tsconfig.json has no operand and is refused', () => {
@@ -189,69 +192,6 @@ describe('build-graph', () => {
   })
 })
 
-describe('wrappers', () => {
-  test('env, nohup, and timeout wrappers still refuse the dev server', () => {
-    expect(decide(ROLE, 'env CI=1 vite')).toEqual({ deny: denyFor('dev-server', 'env CI=1 vite') })
-    expect(decide(ROLE, 'nohup vite')).toEqual({ deny: denyFor('dev-server', 'nohup vite') })
-    expect(decide(ROLE, 'timeout 60 vite')).toEqual({ deny: denyFor('dev-server', 'timeout 60 vite') })
-  })
-
-  test('env -u and timeout -k option values are skipped', () => {
-    expect(decide(ROLE, 'env -u CI vite')).toEqual({ deny: denyFor('dev-server', 'env -u CI vite') })
-    expect(decide(ROLE, 'timeout -k 5s 60s vite')).toEqual({ deny: denyFor('dev-server', 'timeout -k 5s 60s vite') })
-  })
-
-  test('time -p and exec -a option forms still refuse', () => {
-    expect(decide(ROLE, 'time -p vite')).toEqual({ deny: denyFor('dev-server', 'time -p vite') })
-    expect(decide(ROLE, 'exec -a x vite')).toEqual({ deny: denyFor('dev-server', 'exec -a x vite') })
-  })
-
-  test('command -v is a lookup and passes', () => {
-    expect(decide(ROLE, 'command -v vite')).toBeNull()
-  })
-
-  test("env -S checks its command string: vite refused, ls passes", () => {
-    expect(decide(ROLE, `env -S 'vite --port 3000'`)).toEqual({ deny: denyFor('dev-server', `env -S 'vite --port 3000'`) })
-    expect(decide(ROLE, `env -S 'ls -l'`)).toBeNull()
-  })
-
-  test('words after the env -S string are its arguments and are ignored', () => {
-    expect(decide(ROLE, `env -S 'vite' foo`)).toEqual({ deny: denyFor('dev-server', `env -S 'vite' foo`) })
-  })
-})
-
-describe('shell -c recursion', () => {
-  test("bash -c 'vite' is refused and names the inner code", () => {
-    expect(decide(ROLE, `bash -c 'vite'`)).toEqual({ deny: denyFor('dev-server', 'vite') })
-  })
-
-  test("sh -c 'cd x && vite' is refused and names the inner offending part", () => {
-    expect(decide(ROLE, `sh -c 'cd x && vite'`)).toEqual({ deny: denyFor('dev-server', 'vite') })
-  })
-
-  test("bash -c 'ls' passes", () => {
-    expect(decide(ROLE, `bash -c 'ls'`)).toBeNull()
-  })
-
-  test('two levels of shell -c are still refused (depth limit 2)', () => {
-    expect(decide(ROLE, `bash -c 'bash -c "vite"'`)).toEqual({ deny: denyFor('dev-server', 'vite') })
-  })
-
-  test('three levels of shell -c pass (past the depth limit)', () => {
-    expect(decide(ROLE, `bash -c 'bash -c "bash -c \\"vite\\""'`)).toBeNull()
-  })
-})
-
-describe('non-path heavy-run.sh -c', () => {
-  test('./heavy-run.sh -c vite is refused as dev-server', () => {
-    expect(decide(ROLE, './heavy-run.sh -c vite')).toEqual({ deny: denyFor('dev-server', 'vite') })
-  })
-
-  test('./heavy-run.sh -c ls passes', () => {
-    expect(decide(ROLE, `./heavy-run.sh -c 'ls'`)).toBeNull()
-  })
-})
-
 describe('heavy-run form', () => {
   test('the path form passes with or without HEAVY_ assignments', () => {
     expect(decide(ROLE, `scripts/jobs/heavy-run.sh -c 'vite'`)).toBeNull()
@@ -262,8 +202,9 @@ describe('heavy-run form', () => {
     expect(decide(ROLE, `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'vite'`)).toBeNull()
   })
 
-  test('a bare heavy-run.sh is not the form', () => {
-    expect(decide(ROLE, './heavy-run.sh -c vite')).toEqual({ deny: denyFor('dev-server', 'vite') })
+  test('a bare heavy-run.sh is an ordinary unknown command and passes', () => {
+    expect(decide(ROLE, 'heavy-run.sh')).toBeNull()
+    expect(decide(ROLE, './heavy-run.sh -c vite')).toBeNull()
   })
 
   test('a segment that only mentions the path is not the form', () => {
@@ -298,6 +239,12 @@ describe('allowed commands (FR-6)', () => {
     expect(decide(ROLE, 'grep -rn foo src')).toBeNull()
     expect(decide(ROLE, 'ls')).toBeNull()
     expect(decide(ROLE, 'cat file.txt')).toBeNull()
+  })
+
+  test('accepted v1 gaps pass: env CI=1 vite, bash -c vite, timeout 60 vite', () => {
+    expect(decide(ROLE, 'env CI=1 vite')).toBeNull()
+    expect(decide(ROLE, `bash -c 'vite'`)).toBeNull()
+    expect(decide(ROLE, 'timeout 60 vite')).toBeNull()
   })
 })
 
