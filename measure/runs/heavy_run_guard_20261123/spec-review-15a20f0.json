@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "heavy_run_guard_20261123",
+  "phase": "track setup",
+  "baseline_sha": "15a20f021fcab48162c0d714050e71187ea5e415",
+  "audited_head_sha": "15a20f021fcab48162c0d714050e71187ea5e415",
+  "status": "pass",
+  "summary": "F8 is closed for the reported command. No blocking issue was found in the amendment.",
+  "paraphrase": {
+    "proposes": "The track adds a matcher and an OpenCode hook that refuse specified heavy commands outside heavy-run. The matcher handles listed wrappers and shell command strings, and the track checks the installed plugin after merge.",
+    "current_system": "The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and parity checks compare the shared cores."
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F9 [Nit] spec.md FR-3 Wrappers: The rule ignores arguments after an `env -S` string, so `env -S 'tsc' --noEmit` is allowed. Rationale: This limited wrapper form can run a full type check without heavy-run."
+  ],
+  "evidence": [
+    "Confirmed HEAD and baseline are 15a20f021fcab48162c0d714050e71187ea5e415 and the initial worktree was clean.",
+    "F8 closed: the spec checks the env -S string recursively and requires a test that refuses env -S 'vite --port 3000'.",
+    "The spec also requires a passing env -S 'ls -l' test.",
+    "The review treats rare wrapper forms and obfuscation as nonblocking, per the supplied scope."
+  ],
+  "commands": ["git rev-parse HEAD", "git status --porcelain", "git branch --show-current", "git diff 22cfbad..15a20f0 -- measure/tracks/heavy_run_guard_20261123/spec.md measure/tracks/heavy_run_guard_20261123/plan.md"],
+  "changed_files": ["measure/runs/heavy_run_guard_20261123/spec-review-15a20f0.json", "measure/runs/heavy_run_guard_20261123/spec-review-15a20f0.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

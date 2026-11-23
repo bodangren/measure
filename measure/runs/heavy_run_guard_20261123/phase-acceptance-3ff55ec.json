@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "heavy_run_guard_20261123",
+  "phase": "Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)",
+  "baseline_sha": "05a3f38",
+  "audited_head_sha": "3ff55ec",
+  "status": "pass",
+  "summary": "HEAD 3ff55ec is current and the tree is clean. The four tasks carry SHAs that resolve to the right commits. FR-1 to FR-9 are implemented and tested. The matcher tests, the hook tests, the plugin suite, both shell suites, and both parity checks pass in a fresh run. The PR check passed on 46349f2, and the delta to 3ff55ec is plan.md only. No blocker found. Four nonblocking nits remain.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F3 [Nit] phase-acceptance: Line plan.md:16 says `All suites and both parity checks pass`, but plan.md:19 records that `bun test` in mods/measure-guard exits 1, and plan.md:10 lists that command. The record is honest and every count matches a fresh run, so this is wording only. Narrow plan.md:16 to the suites that ran, or fold the edit into the closeout plan edit. Rationale: A5 forbids an all-pass claim that a cited command contradicts.",
+    "F4 [Nit] phase-acceptance: The FR-7 tests do not cover three wrong-refusal classes, and the literal spec rules refuse all three. A backslash line continuation (`bun test` ending in a backslash, then a file on the next line) splits at the newline and is refused. A heredoc body line that starts with `bun test` is refused. `bun test --help`, `pytest --version`, `vitest --version`, and `bun test tests` have no file-like operand and are refused. The deny line names the heavy-run form and `/measure-off`, so a role agent recovers in one retry. Record the classes as accepted limits in the tech-debt row. Rationale: a wrong refusal costs one retry and loses no data.",
+    "F5 [Nit] phase-acceptance: Some direct heavy forms still pass, and the spec does not name them as v1 gaps. `sleep 1 & vite` passes because a single `&` does not split. `for x in a; do vite; done` and `(vite)` pass because argv[0] is a shell word. `sudo vite` passes because `sudo` is a wrapper word. A redirect target counts as a file operand under the FR-3 rule, so `bun test` with a redirect to `out.txt` passes (read from `hasFileOperand`, not run). Add these forms to the wrapper-gap tech-debt row. Rationale: each form is a path for a load-watch escape like the named gaps.",
+    "F6 [Nit] phase-acceptance: The plugin README `## Guards` section (plugins/opencode-measure-guard/README.md:66-78) lists each guard but not the heavy-run guard. Add this item to the F2 tech-debt row with the README.md:148-154 check lines. Rationale: a reader of the README cannot learn why a bare `bun test` is refused."
+  ],
+  "evidence": [
+    "HEAD and tree: `git rev-parse HEAD` returned 3ff55ec7b11961d78ddf3950a69b8a491ac78e91, `git status --porcelain` returned no output, and the branch is feat/heavy-run-guard. Phase base 05a3f38 and role base 3ff55ec match the brief.",
+    "Prerequisites: spec review passed in round 7 (spec-review-8cfd643.json), and `git diff --stat 8cfd643 3ff55ec -- spec.md` returned no output, so the reviewed spec is the audited spec. Review A passed at 3ff55ec (review-a-3ff55ec.json). `git diff --name-only 46349f2 3ff55ec` returned only plan.md, so Review A at 3ff55ec and the earlier code review at 46349f2 cover the same code.",
+    "Light lane confirmed: metadata.json holds `lane: light`. SKILL.md:194-195 lets closeout accept it, and measure/reviews/2026-11-10-orchestrator-process-review.md:168 names the lane as spec review plus Review A. `heavyRunDecision` is a pure function with no file, network, or auth access, and the hook only throws. Review B, Review C, adversarial testing, UX review, and final acceptance do not apply.",
+    "Task SHAs resolve: Task 1.1 is 03e0353 (Red tests), Task 1.2 is 7fa1822 (matcher, both parity copies, hook wiring, two tdd.test.ts lines), and Tasks 1.3 and 1.4 are b631277 (the plan commit that holds the installer, CI, and records evidence). `git rev-parse` resolved all three. Commit 3ff55ec only appended those SHAs to the plan.",
+    "FR coverage: FR-1 `heavyRunDecision` sits at mods/measure-guard/hooks/guards.ts:1082 and `cmp` shows the opencode core copy is byte-identical. FR-2 and the null, empty, and unknown agent cases sit at mods/measure-guard/tests/heavy-run.test.ts:261-280. FR-3 classes and option lists match the spec item by item (TSC_OPTIONS 13, RUNNER_OPTIONS 10, PYTEST_OPTIONS 10). FR-4 uses exact `toEqual` text. FR-5 sits at lines 215-234, FR-6 and FR-7 at lines 236-259. FR-8 sits at plugins/opencode-measure-guard/src/guard.ts:213-216 with 8 hook tests. FR-9 is a read check (see the installer entry).",
+    "Matcher spot-check with `bun -e` from /tmp/heavy-run-accept (no file written): 52 command and agent pairs gave the expected result. They include `CI=1 vite`, `npx vite`, `tsc -b tsconfig.json`, `tsc --noEmit src/a.ts`, `bun test`, `bun test tests/a.test.ts`, `pytest -k expression`, the heavy-run path form with `HEAVY_PRIORITY=p1`, the FR-7 false positives, an orchestrator agent, a null agent, and the exact FR-4 text. The FR-7 item with `git commit` is covered by heavy-run.test.ts:255, which passed; the shell rules of this role deny that text in a command.",
+    "Extra probes: 28 forms outside the spec lists gave the results in F4 and F5. A 60,000-run fuzz of hostile compounds gave 0 throws, 0 deny texts with a newline, and 0 non-string denies. A 200 KB word list, 200,001 quote characters, and 50,000 segments finished in 12 ms, 3 ms, and 20 ms. A non-string command returns null. A matcher crash would block every shell call, so this check matters.",
+    "Fresh runs through heavy-run (HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500, no lock wait): the matcher file in mods/measure-guard gave 54 pass, 0 fail. The hook file in plugins/opencode-measure-guard gave 8 pass, 0 fail. `bun test` in that plugin gave 195 pass, 0 fail over 16 files. `bash tests/spec_review_gate/run.sh` printed `24 suites (PASS=24, FAIL=0)`. `bash tests/dsh/run.sh` printed `15 passed, 0 failed`. Both `check-parity.sh` scripts printed `parity: ok`.",
+    "A5 check: every count in plan.md:17-27 matches a fresh run: 54, 8, 195, 24 suites, 15 passed, parity ok twice, and `node --test plugins/dsh-measure-guard/tests/*.test.js` with 384 pass, 0 fail. The claim at plan.md:19 is true: `bun test` in mods/measure-guard gave 54 pass, 12 fail, 12 errors (`Cannot find module 'claude-code/testing'`). `git grep` lists the same 12 importing files at 05a3f38, and heavy-run.test.ts only names the module in a comment. The one mismatch is the wording at plan.md:16 (F3).",
+    "A3, A4, A6, and A7 do not apply: `git diff --name-only 05a3f38 3ff55ec` holds no contract test, no filter, and no tracks.md change. measure/tracks.md:7-9 makes no resolved claim.",
+    "CI: `gh pr view 46` returned OPEN, MERGEABLE, headRefOid 46349f2, and check `checks` SUCCESS. `gh run view 45110383286` returned conclusion success, headSha 46349f2, and job `checks` from 04:12:03Z to 04:18:29Z (6m26s). `git ls-remote origin refs/heads/feat/heavy-run-guard` returned 46349f2, so b631277 and 3ff55ec are not pushed. The delta 46349f2..3ff55ec is plan.md only, so the run covers all code at 3ff55ec. The job has four steps (spec_review_gate, dsh suite, two parity checks), and none runs `bun test`: CI proves parity and the shell suites. The local runs above prove the matcher and hook tests.",
+    "FR-9 read: bin/install-targets.tsv:12 ships plugins/opencode-measure-guard with the extglob `!(tests/*)`. bin/install-measure-skill:197-206 matches that pattern against each path relative to the bundle, so src/guard.ts and src/core/guards.ts install and tests/ does not. The stamp name is `.measure-install` (line 29). The options are --ref, --check, --adopt, --adopt-matching, --cron, and --help, so there is no dry-run or list mode. `install-measure-skill --check` was not run: FR-9 says a branch-time check proves nothing, and the post-merge step in the plan footer owns the installed-copy proof.",
+    "F2 [Nit] of review-a verified: README.md:150-153 holds a bare `bun test` and `bun x tsc --noEmit -p .`, and the matcher refuses both for a role agent. I agree with DECLINE: a human terminal is not guarded, the deny text names the fix, and a Nit allows DECLINE. The tech-debt row must also carry F6.",
+    "The `install` false positive in a commit message is pre-existing: the diff of mods/measure-guard/hooks/guards.ts is 312 insertions and 0 deletions, so `shellWritePaths` is unchanged. It belongs in the closeout tech-debt log, not in this phase.",
+    "Red and Green integrity: red-p1-r2.log shows the mods file at 0 pass and 54 fail on the missing export, and the plugin hook file at 6 pass and 2 fail. `git diff --stat 03e0353 3ff55ec` on both Red test files returned no output, so Green did not change them. Green changed two lines in plugins/opencode-measure-guard/tests/tdd.test.ts (101-102 and 114-115) to the heavy-run form. The assertions are unchanged, and plan.md:20 records the reason.",
+    "Copy checks: the dsh copy loads under Node v24.19.0 type stripping and returns the expected decisions for three probes, and the 384 dsh plugin tests import that file. The Claude Code engine suite (`claude plugin test mods/measure-guard`) was not run: the plan claims no result for it, the mod change is append-only, and no mod hook calls the matcher.",
+    "Wiring check: Mode is `advise`, `guard`, or `strict` (src/types.ts:9), so `mode !== 'advise'` equals the FR-8 condition `guard or strict`. The bypass read is the same `this.bypass.get(this.root)` call that the end-of-turn check uses. The heavy check runs before the early return at guard.ts:217, so a command with no write path is still checked. src/index.ts:29 passes the host event, with its `agent`, to `onToolBefore`."
+  ],
+  "commands": [
+    "git rev-parse HEAD — 3ff55ec7b11961d78ddf3950a69b8a491ac78e91",
+    "git status --porcelain — no output",
+    "git diff --stat 05a3f38 3ff55ec — 10 files, 1362 insertions, 15 deletions",
+    "git diff --numstat 05a3f38 3ff55ec — guards.ts 312 insertions and 0 deletions in each of three copies",
+    "git diff --name-only 46349f2 3ff55ec — only measure/tracks/heavy_run_guard_20261123/plan.md",
+    "git diff --stat 03e0353 3ff55ec -- mods/measure-guard/tests/heavy-run.test.ts plugins/opencode-measure-guard/tests/heavy-run.test.ts — no output",
+    "git diff --stat 8cfd643 3ff55ec -- measure/tracks/heavy_run_guard_20261123/spec.md — no output",
+    "cmp mods/measure-guard/hooks/guards.ts plugins/opencode-measure-guard/src/core/guards.ts — identical",
+    "gh pr view 46 --json number,state,mergeable,headRefName,headRefOid,baseRefName,statusCheckRollup,url — OPEN, MERGEABLE, headRefOid 46349f2, checks SUCCESS",
+    "gh run view 45110383286 --json conclusion,status,headSha,headBranch,event,jobs — success, headSha 46349f2, four steps",
+    "git ls-remote origin refs/heads/feat/heavy-run-guard — 46349f2bdd79018584f3998835d03d202e366a31",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test tests/heavy-run.test.ts' — 54 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test tests/heavy-run.test.ts' — 8 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test' — 195 pass, 0 fail, 16 files",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure && bash tests/spec_review_gate/run.sh' — 24 suites (PASS=24, FAIL=0)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure && bash tests/dsh/run.sh 2>&1 | tail -25' — summary 15 passed, 0 failed",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/dsh-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure && node --test plugins/dsh-measure-guard/tests/*.test.js 2>&1 | tail -12' — 384 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test 2>&1 | tail -30' — 54 pass, 12 fail, 12 errors (claude-code/testing import)",
+    "git grep -l claude-code/testing 03e0353 -- mods/measure-guard/tests — 13 files (12 import it, heavy-run.test.ts names it in a comment)",
+    "git grep -c claude-code/testing 05a3f38 -- mods/measure-guard/tests — 12 files",
+    "bun -e (scratch checks from /tmp/heavy-run-accept, no file written) — 52 spec pairs as expected, 28 probe forms, 60,000-run fuzz with 0 throws",
+    "node -e import of plugins/dsh-measure-guard/src/core/guards.ts — heavyRunDecision loads and decides as expected under Node v24.19.0",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track heavy_run_guard_20261123 --phase \"Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)\" --baseline 05a3f38 --result-file measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.json --log-file measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.log — PASS: phase-acceptance gate passed, exit 0"
+  ],
+  "changed_files": [
+    "measure/tracks/heavy_run_guard_20261123/plan.md",
+    "measure/tracks/heavy_run_guard_20261123/spec-review.md",
+    "measure/tracks/heavy_run_guard_20261123/spec.md",
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/tests/heavy-run.test.ts",
+    "plugins/dsh-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/guard.ts",
+    "plugins/opencode-measure-guard/tests/heavy-run.test.ts",
+    "plugins/opencode-measure-guard/tests/tdd.test.ts"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "claude-agent/sonnet#max",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 4,
+      "evidence": "heavyRunDecision at mods/measure-guard/hooks/guards.ts:1082 gave the expected result for 52 spec pairs and a 60,000-run fuzz with 0 throws, with edge gaps in F4 and F5."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "Each spec-named test exists and failed first for the right reason (red-p1-r2.log: 54 fail on the missing export), but F4 forms have no test and CI does not run bun test."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The diff holds the planned matcher, two parity copies, the hook wiring, and the tests, plus two caller-fixture lines in tdd.test.ts that plan.md:20 records."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 4,
+      "evidence": "Every plan count at plan.md:17-27 matched a fresh run, but plan.md:16 says all suites pass while plan.md:19 records one suite at exit 1 (F3)."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 4,
+      "evidence": "The review-a-3ff55ec.json PASS and its counts (54, 8, parity ok) held in a fresh run, but it missed the plan.md:16 wording (F3) and the README Guards omission (F6)."
+    },
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 4,
+      "evidence": "The review-a-46349f2.json F1 withdrawal and F2 Nit held, and its 54 pass and 12 baseline import errors matched my run, but its edge probe was denied so F4 and F5 stayed unprobed."
+    }
+  ]
+}

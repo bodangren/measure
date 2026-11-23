@@ -774,3 +774,315 @@ export function shellWritePaths(command: string): string[] {
   }
   return seen
 }
+
+
+// ---- The heavy-run matcher (FR-1 to FR-7) ------------------------------------
+// The matcher reads the words of a command segment. It finds a heavy command by
+// its program and its flags, never by a substring, so `grep vite` passes.
+// v1 guards direct commands only: wrapper words, a shell `-c` recursion, and a
+// non-path heavy-run `-c` recursion are out of scope (spec.md, tech-debt).
+
+/** The heavy classes of FR-3, in the order the matcher tries them. */
+type HeavyClass = 'dev-server' | 'capture' | 'tsc-full' | 'test-suite' | 'render' | 'build-graph'
+
+/** One heavy finding: the class and the part of the command that fired it. */
+type HeavyFinding = { cls: HeavyClass; part: string }
+
+/** The program names of the dev-server class. */
+const DEV_SERVERS = new Set(['vite', 'http-server', 'serve'])
+
+/** The program names of the capture class: the headless browsers. */
+const BROWSERS = new Set(['google-chrome', 'chrome', 'chromium', 'chromium-browser'])
+
+/** The capture flags of a headless browser. */
+const CAPTURE_FLAGS = ['--screenshot', '--print-to-pdf', '--dump-dom']
+
+/** The subcommand words that never count as a file operand. */
+const SUBCOMMANDS = new Set(['run', 'test', 'start'])
+
+/** A `NAME=value` word. */
+const ASSIGNMENT = /^[A-Za-z_][A-Za-z0-9_]*=/
+
+/** The value-taking options of tsc. */
+const TSC_OPTIONS: ReadonlySet<string> = new Set([
+  '-p', '--project', '--outDir', '--rootDir', '--target', '--module', '--lib', '--jsx',
+  '--moduleResolution', '--types', '--typeRoots', '--declarationDir', '--tsBuildInfoFile',
+])
+
+/** The value-taking options of vitest and jest. */
+const RUNNER_OPTIONS: ReadonlySet<string> = new Set([
+  '--reporter', '--config', '-c', '--project', '--testNamePattern', '-t', '--timeout',
+  '--bail', '--coverage-reporter', '--shard',
+])
+
+/** The value-taking options of `bun test`. */
+const BUN_TEST_OPTIONS: ReadonlySet<string> = new Set([...RUNNER_OPTIONS, '--test-name-pattern'])
+
+/** The value-taking options of pytest. */
+const PYTEST_OPTIONS: ReadonlySet<string> = new Set([
+  '-k', '-m', '--maxfail', '--tb', '-p', '--rootdir', '-c', '-n', '--junitxml', '--durations',
+])
+
+/** The tools with no value-taking option. */
+const NO_OPTIONS: ReadonlySet<string> = new Set()
+
+/** One test-suite command: the program, the words it needs, and its value-taking options. */
+type TestSuite = { program: string; words: readonly string[]; options: ReadonlySet<string> }
+
+/** The test-suite commands of FR-3. */
+const TEST_SUITES: readonly TestSuite[] = [
+  { program: 'bun', words: ['test'], options: BUN_TEST_OPTIONS },
+  { program: 'bun', words: ['run', 'test'], options: BUN_TEST_OPTIONS },
+  { program: 'npm', words: ['test'], options: NO_OPTIONS },
+  { program: 'npm', words: ['run', 'test'], options: NO_OPTIONS },
+  { program: 'yarn', words: ['test'], options: NO_OPTIONS },
+  { program: 'yarn', words: ['run', 'test'], options: NO_OPTIONS },
+  { program: 'pnpm', words: ['test'], options: NO_OPTIONS },
+  { program: 'pnpm', words: ['run', 'test'], options: NO_OPTIONS },
+  { program: 'vitest', words: [], options: RUNNER_OPTIONS },
+  { program: 'jest', words: [], options: RUNNER_OPTIONS },
+  { program: 'pytest', words: [], options: PYTEST_OPTIONS },
+  { program: 'node', words: ['--test'], options: NO_OPTIONS },
+]
+
+/** The last part of a path: the name of the program. */
+const baseName = (word: string): string => {
+  const slash = word.lastIndexOf('/')
+  return slash === -1 ? word : word.slice(slash + 1)
+}
+
+/**
+ * The words of a segment: the whitespace-separated words, with the quotes
+ * removed. A quoted span is one word, so `echo "a b"` has two words.
+ */
+const wordsOf = (segment: string): string[] => {
+  const words: string[] = []
+  let word = ''
+  let has = false
+  let quote = ''
+  const push = (): void => {
+    if (has) words.push(word)
+    word = ''
+    has = false
+  }
+  for (let i = 0; i < segment.length; i += 1) {
+    const char = segment[i]!
+    if (quote !== '') {
+      if (char === '\\' && quote === '"' && (segment[i + 1] === '"' || segment[i + 1] === '\\')) {
+        word += segment[i + 1]
+        i += 1
+        continue
+      }
+      if (char === quote) {
+        quote = ''
+        continue
+      }
+      word += char
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      has = true
+      continue
+    }
+    if (/\s/.test(char)) {
+      push()
+      continue
+    }
+    word += char
+    has = true
+  }
+  push()
+  return words
+}
+
+/**
+ * The parts of a command: the segments between `&&`, `||`, `;`, `|`, and
+ * newlines outside quotes. A quoted separator stays inside its word.
+ */
+const segmentsOf = (command: string): string[] => {
+  const segments: string[] = []
+  let current = ''
+  let quote = ''
+  const push = (): void => {
+    const segment = current.trim()
+    if (segment !== '') segments.push(segment)
+    current = ''
+  }
+  for (let i = 0; i < command.length; i += 1) {
+    const char = command[i]!
+    if (quote !== '') {
+      if (char === '\\' && quote === '"' && (command[i + 1] === '"' || command[i + 1] === '\\')) {
+        current += char + (command[i + 1] ?? '')
+        i += 1
+        continue
+      }
+      if (char === quote) quote = ''
+      current += char
+      continue
+    }
+    if (char === "'" || char === '"') {
+      quote = char
+      current += char
+      continue
+    }
+    if (char === '&' && command[i + 1] === '&') {
+      push()
+      i += 1
+      continue
+    }
+    if (char === ';' || char === '|' || char === '\n') {
+      push()
+      continue
+    }
+    current += char
+  }
+  push()
+  return segments
+}
+
+/**
+ * The command of a segment: its words after the leading `NAME=value`
+ * assignments and after one runner prefix (`npx`, `bunx`, or the pair `bun x`).
+ * The program is the first word.
+ */
+const stripCommand = (words: readonly string[]): string[] => {
+  let i = 0
+  while (i < words.length && ASSIGNMENT.test(words[i]!)) i += 1
+  const runner = i < words.length ? baseName(words[i]!) : ''
+  if (runner === 'npx' || runner === 'bunx') i += 1
+  else if (runner === 'bun' && words[i + 1] === 'x') i += 2
+  return words.slice(i)
+}
+
+/** True when the words hold the flag, with or without an attached value. */
+const hasFlag = (words: readonly string[], flag: string): boolean =>
+  words.some(word => word === flag || word.startsWith(`${flag}=`))
+
+/** True when the words hold a capture flag of a headless browser. */
+const hasCaptureFlag = (words: readonly string[]): boolean =>
+  words.some(word => CAPTURE_FLAGS.some(flag => word === flag || word.startsWith(`${flag}=`)))
+
+/** The first word after the program that is not an option. */
+const firstSubcommand = (argv: readonly string[]): string | null => {
+  for (let i = 1; i < argv.length; i += 1) {
+    const word = argv[i]!
+    if (word.startsWith('-')) continue
+    return word
+  }
+  return null
+}
+
+/** The code of a `node -e` or `node --eval` argument; null when there is none. */
+const nodeCode = (argv: readonly string[]): string | null => {
+  for (let i = 1; i < argv.length; i += 1) {
+    const word = argv[i]!
+    if (word === '-e' || word === '--eval') return argv[i + 1] ?? ''
+    if (word.startsWith('--eval=')) return word.slice('--eval='.length)
+  }
+  return null
+}
+
+/**
+ * True when the command names a file: a word that is not an option, not the
+ * value of an option, and not a subcommand word, and that looks like a path.
+ */
+const hasFileOperand = (argv: readonly string[], options: ReadonlySet<string>): boolean => {
+  for (let i = 1; i < argv.length; i += 1) {
+    const word = argv[i]!
+    if (word.startsWith('-')) {
+      if (options.has(word)) i += 1
+      continue
+    }
+    if (SUBCOMMANDS.has(word)) continue
+    if (word.includes('/') || word.includes('.') || word.includes('::')) return true
+  }
+  return false
+}
+
+/** The test-suite command of a program; null when the program is not one. */
+const suiteOf = (argv: readonly string[]): TestSuite | null => {
+  const program = baseName(argv[0]!)
+  for (const suite of TEST_SUITES) {
+    if (suite.program !== program) continue
+    const words = argv.slice(1, 1 + suite.words.length)
+    if (suite.words.every((word, index) => words[index] === word)) return suite
+  }
+  return null
+}
+
+/**
+ * The heavy class of a command: the first rule of FR-3 that fires, in the
+ * fixed order dev-server, capture, tsc-full, test-suite, render, build-graph.
+ * Null when no rule fires.
+ */
+const heavyClass = (argv: readonly string[]): HeavyClass | null => {
+  const program = baseName(argv[0]!)
+  const rest = argv.slice(1)
+  const sub = firstSubcommand(argv)
+  if (DEV_SERVERS.has(program)) return 'dev-server'
+  if (program === 'next' && (sub === 'dev' || sub === 'start')) return 'dev-server'
+  if (program === 'node' && (nodeCode(argv) ?? '').includes('listen(')) return 'dev-server'
+  if (program === 'playwright') return 'capture'
+  if (BROWSERS.has(program) && hasFlag(rest, '--headless') && hasCaptureFlag(rest)) return 'capture'
+  if (program === 'tsc') {
+    if (rest.includes('-b') || rest.includes('--build')) return 'tsc-full'
+    if (rest.includes('--noEmit') && !hasFileOperand(argv, TSC_OPTIONS)) return 'tsc-full'
+  }
+  const suite = suiteOf(argv)
+  if (suite !== null && !hasFileOperand(argv, suite.options)) return 'test-suite'
+  if (program === 'ffmpeg') return 'render'
+  if (program === 'remotion' && (sub === 'render' || sub === 'still')) return 'render'
+  if (program === 'build-graph') return 'build-graph'
+  return null
+}
+
+/**
+ * True when the program is the heavy-run script of the path form: a path whose
+ * last three parts are `scripts/jobs/heavy-run.sh`.
+ */
+const isHeavyRunPath = (word: string): boolean => {
+  const parts = word.split('/')
+  if (parts.length < 3) return false
+  const last = parts.slice(-3)
+  return last[0] === 'scripts' && last[1] === 'jobs' && last[2] === 'heavy-run.sh'
+}
+
+/**
+ * The finding of one segment: its class and the part that fired it. Null when
+ * the segment is not heavy. The heavy-run form passes as a whole, so its `-c`
+ * argument is not checked.
+ */
+const findingOf = (segment: string): HeavyFinding | null => {
+  const argv = stripCommand(wordsOf(segment))
+  if (argv.length === 0) return null
+  if (isHeavyRunPath(argv[0]!)) return null
+  const cls = heavyClass(argv)
+  return cls === null ? null : { cls, part: segment }
+}
+
+/** The finding of a command: the first heavy part, with its class. */
+const heavyFinding = (command: string): HeavyFinding | null => {
+  for (const segment of segmentsOf(command)) {
+    const finding = findingOf(segment)
+    if (finding !== null) return finding
+  }
+  return null
+}
+
+/** The deny text of FR-4. */
+const heavyDeny = (cls: HeavyClass, part: string): string =>
+  `measure-guard: heavy ${cls} runs only through heavy-run: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c '${part}'. ${BYPASS}`
+
+/**
+ * The heavy-run decision (FR-1 to FR-7): null to allow the command, or
+ * `{ deny }` with the FR-4 text. An agent with `orchestrator` in its name is
+ * exempt (FR-2). Every other agent, including an unknown one, is guarded.
+ */
+export const heavyRunDecision = (agent: string | null, command: string): Decision => {
+  if (typeof agent === 'string' && agent.toLowerCase().includes('orchestrator')) return null
+  if (typeof command !== 'string' || command === '') return null
+  const finding = heavyFinding(command)
+  if (finding === null) return null
+  return { deny: heavyDeny(finding.cls, finding.part.replace(/\n/g, ' ')) }
+}

@@ -10,6 +10,7 @@ import {
   commitDecision,
   commitReminder,
   editDecision,
+  heavyRunDecision,
   isInside,
   isInstallerCommand,
   isTestCommand,
@@ -189,9 +190,10 @@ export class Guard {
   }
 
   /**
-   * The guards before a tool call: the edit guard, the closeout guard, and in
-   * strict mode the TDD and commit guards. A deny throws an Error with the text
-   * the agent reads; an allowed call may earn notes for the after hook.
+   * The guards before a tool call: the heavy-run guard, the edit guard, the
+   * closeout guard, and in strict mode the TDD and commit guards. A deny
+   * throws an Error with the text the agent reads; an allowed call may earn
+   * notes for the after hook.
    */
   async onToolBefore(event: ToolBeforeEvent): Promise<void> {
     const session = this.session(event.sessionID)
@@ -207,6 +209,10 @@ export class Guard {
       this.deny(check.decision)
       if (check.note !== null) this.callNotes.set(event.id, [check.note])
       return
+    }
+    // The heavy-run guard (FR-8): a heavy command outside heavy-run is refused.
+    if (command !== null && this.mode !== 'advise' && (await this.bypass.get(this.root)) === null) {
+      this.deny(heavyRunDecision(event.agent, command))
     }
     if (paths.length === 0 && commit === null && shellTargets.length === 0) return
     const context = await this.guardContext(event.sessionID)

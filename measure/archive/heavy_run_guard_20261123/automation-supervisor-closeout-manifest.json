@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "heavy_run_guard_20261123",
+  "track_title": "Heavy-run guard refuses heavy commands outside heavy-run",
+  "track_base_sha": "05a3f38",
+  "closeout_baseline_sha": "3ff55ec7b11961d78ddf3950a69b8a491ac78e91",
+  "audited_head_sha": "3ff55ec7b11961d78ddf3950a69b8a491ac78e91",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/heavy_run_guard_20261123/spec-review-8cfd643.json", "status": "pass", "audited_head_sha": "8cfd643", "note": "Seven rounds on openai/gpt-6.1-terra#high. Rounds 1 to 4 and 6 failed on rule gaps. Round 5 passed on the full spec. Round 7 passed on the v1 spec cut after the PM scope cut."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/heavy_run_guard_20261123/review-a-3ff55ec.json", "status": "pass", "audited_head_sha": "3ff55ec", "note": "F2 (Nit) declined and sent to tech-debt. First attempt on openai/gpt-6-luna#high had no shell; the retry passed."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.json", "status": "pass", "audited_head_sha": "3ff55ec", "note": "Four Nits: F3 plan wording, F4 wrong refusals, F5 direct heavy gaps, F6 README omission. The PM re-ran the gate: PASS."},
+    {"role": "closeout", "artifact": "measure/runs/heavy_run_guard_20261123/closeout.log", "status": "pass", "note": "Agent Result Block written before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review ran seven rounds on openai/gpt-6.1-terra#high. Red ran on opencode-go/muse-spark-1.3-contributor#high. Green ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash after opencode-free-deepseek hit its usage limit. Review A ran on openai/gpt-6-luna#high. Phase acceptance ran on claude-agent/sonnet#max.",
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git branch --show-current -> 3ff55ec7b11961d78ddf3950a69b8a491ac78e91; clean tree; feat/heavy-run-guard",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, phase-acceptance-3ff55ec.json, review-a-3ff55ec.json, measure/lessons-learned.md and measure/tech-debt.md",
+    "Confirm phase-acceptance-3ff55ec.json and review-a-3ff55ec.json each have audited_head_sha equal to the pre-closeout HEAD 3ff55ec and status pass; the light lane needs no final acceptance",
+    "Confirm all four plan tasks are [x] with commit SHA evidence; zero [~], zero [ ] and zero [b] tasks; no deferred closeout task",
+    "grep the repository for the fixed path measure/tracks/heavy_run_guard_20261123/ before the move: 30 occurrences at 25 file and line positions, all in historical evidence under measure/runs/; zero hits in tests, scripts or support files",
+    "git mv measure/tracks/heavy_run_guard_20261123 measure/archive/heavy_run_guard_20261123",
+    "grep the repository for measure/tracks/heavy_run_guard_20261123/ after the move: zero hits outside measure/runs; no test path fix was needed",
+    "Write metadata.json: status done, actual_tasks 4, updated_at, completed 2026-11-23, eight short deviation sentences",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description",
+    "Add five Low Open rows to measure/tech-debt.md for the tracked limits (dated 2026-11-23, track heavy_run_guard_20261123)",
+    "Write this manifest in the archive, plus closeout.log and closeout-result-3ff55ec.json in measure/runs/heavy_run_guard_20261123/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track heavy_run_guard_20261123 -> exit before the commit (see closeout.log)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/heavy_run_guard_20261123/closeout-result-3ff55ec.json -> exit before the commit (see closeout.log)",
+    "git add measure/tracks.md measure/tech-debt.md and the archive; git add -f measure/runs/heavy_run_guard_20261123; commit with measure(closeout): archive heavy_run_guard_20261123 via git commit -F",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track heavy_run_guard_20261123 -> exit after the commit (reported in the final message)"
+  ],
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track heavy_run_guard_20261123",
+    "exit_code_before_commit": "recorded in closeout.log",
+    "exit_code_after_commit": "reported in the final message of the closeout session",
+    "run_point": "before and after the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "03e0353",
+    "1.2": "7fa1822",
+    "1.3": "b631277",
+    "1.4": "b631277"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "3ff55ec7b11961d78ddf3950a69b8a491ac78e91"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "deviation: plan.md line 16 says all suites pass while line 19 records the baseline mods suite failure from claude-code/testing imports (Phase acceptance F3). The orchestrator declined a reword; the deviation is in metadata deviation_notes",
+    "a6_registry_check": "pass (the archived entry makes no adversarial-test claim and its description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/heavy_run_guard_20261123/ before and after the move",
+    "hits_before_move": [
+      "measure/runs/heavy_run_guard_20261123/green-p1-local.log:39",
+      "measure/runs/heavy_run_guard_20261123/green-p1.log:5,37",
+      "measure/runs/heavy_run_guard_20261123/red-p1.log:20",
+      "measure/runs/heavy_run_guard_20261123/red-p1-r2.log:22",
+      "measure/runs/heavy_run_guard_20261123/spec-review-2b1b0b2.json:28 (two occurrences)",
+      "measure/runs/heavy_run_guard_20261123/spec-review-22cfbad.json:25 (two occurrences)",
+      "measure/runs/heavy_run_guard_20261123/spec-review-d5df135.json:24 (two occurrences)",
+      "measure/runs/heavy_run_guard_20261123/spec-review-15a20f0.json:24 (two occurrences)",
+      "measure/runs/heavy_run_guard_20261123/spec-review-8cfd643.json:22 (two occurrences)",
+      "measure/runs/heavy_run_guard_20261123/review-a-46349f2.json:44,45,46",
+      "measure/runs/heavy_run_guard_20261123/review-a-3ff55ec.json:18,19,28,34,47,48,49",
+      "measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.json:41,43,64,65,66"
+    ],
+    "hits_after_move": [
+      "the same historical evidence JSON files under measure/runs/heavy_run_guard_20261123/; zero hits in tests, scripts or support files"
+    ],
+    "tests_scripts_support_hits": 0,
+    "note": "All hits before the move are command or path text inside retained audit evidence. No test path fix was needed. The post-move test gate was not rerun because the closeout command allowlist excludes heavy-run; the phase acceptance gate re-ran all suites at 3ff55ec with PASS, and the A9 grep is the evidence for this move."
+  },
+  "deviations": [
+    "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run. The hook is deny-only and holds no data, authentication or UI.",
+    "Spec review took seven rounds on openai/gpt-6.1-terra#high. Rounds 1 to 4 and 6 failed on rule gaps. Round 5 passed on the full spec.",
+    "After round 5 the PM cut the scope to version 1, direct commands only. Wrapper and shell -c recursion moved to tech-debt. A Green round on the full spec was aborted and stashed as green-r2-aborted, outside the track. Red amended its tests at 81e4791, superseded by 03e0353.",
+    "Free-route limits: opencode-free-deepseek hit its usage limit on a Green spawn. Green ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash. Red ran on opencode-go/muse-spark-1.3-contributor#high. Review A ran on openai/gpt-6-luna#high; its first attempt had no shell and the retry passed. Phase acceptance ran on claude-agent/sonnet#max.",
+    "Green changed two strict-mode tests in plugins/opencode-measure-guard/tests/tdd.test.ts to the heavy-run form. The guard refuses a bare suite command.",
+    "plan.md line 16 says all suites pass. Line 19 records the baseline mods suite failure from claude-code/testing imports (Phase acceptance F3). The text was not reworded.",
+    "PR #46 check checks passed on 46349f2. A build session pushes the plan-only commits b631277, 3ff55ec and the closeout after closeout. The installed-copy proof is the post-merge step in the plan footer and runs after the PM merges.",
+    "measure/doctor.sh does not exist. PROJECT_CHECKS replaced it, as in earlier tracks."
+  ],
+  "retained_evidence": [
+    "measure/runs/heavy_run_guard_20261123/ (all logs and audit JSON files, force-added)",
+    "measure/archive/heavy_run_guard_20261123/plan.md (SHA evidence for each task)",
+    "PR #46 check checks success on 46349f2 (run 45110383286)",
+    "stash green-r2-aborted (aborted Green round on the full spec, outside the track)"
+  ],
+  "artifact_cleanup": "none; no bulky run artifact was deleted",
+  "lessons_learned_rows_added": 0,
+  "tech_debt_rows_added": [
+    "Wrapper and shell recursion gap, with the Phase acceptance F5 direct forms (PM scope cut, trigger: a load-watch escape through a wrapper)",
+    "Wrong-refusal classes from Phase acceptance F4, accepted limits",
+    "README lines 148-154 and the missing Guards entry (Review A F2 declined, Phase acceptance F6)",
+    "Pre-existing measure-guard install false positive in a git commit message (found by Green)",
+    "CI scope follow-up for the matcher and hook suites, with the baseline mods suite failure"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

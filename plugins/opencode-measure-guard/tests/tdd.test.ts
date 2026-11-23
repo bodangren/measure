@@ -98,7 +98,8 @@ describe('TDD guard', () => {
     const testEdit = edit(testFile)
     await guard.onToolBefore(testEdit)
     await guard.onToolAfter(completed(testEdit))
-    const run = shell('bun test')
+    // A suite runs through heavy-run: the heavy-run guard refuses it otherwise.
+    const run = shell("scripts/jobs/heavy-run.sh -c 'bun test'")
     await guard.onToolBefore(run)
     await guard.onToolAfter(completed(run, 1))
     await expect(guard.onToolBefore(edit(source))).resolves.toBeUndefined()
@@ -110,7 +111,8 @@ describe('TDD guard', () => {
     const testEdit = edit(testFile)
     await guard.onToolBefore(testEdit)
     await guard.onToolAfter(completed(testEdit))
-    const run = shell('npm test')
+    // A suite runs through heavy-run: the heavy-run guard refuses it otherwise.
+    const run = shell("scripts/jobs/heavy-run.sh -c 'npm test'")
     await guard.onToolBefore(run)
     await guard.onToolAfter({ ...completed(run), status: 'error', error: { message: 'exit 1' } } as ToolAfterEvent)
     await expect(guard.onToolBefore(edit(source))).resolves.toBeUndefined()

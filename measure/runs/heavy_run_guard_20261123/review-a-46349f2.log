@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: heavy_run_guard_20261123
+phase: Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)
+commits: none
+tests_run: Wrapped matcher tests passed 54/54 and hook tests passed 8/8; plugin suite passed 195/195; both parity checks passed. Full mod suite had 54 passes and 12 known Claude Code import errors.
+files_changed: measure/runs/heavy_run_guard_20261123/review-a-46349f2.json; measure/runs/heavy_run_guard_20261123/review-a-46349f2.log
+plan_updates: none
+known_failures: role-gate exited 1 because the phase still has 2 non-deferred incomplete tasks, Tasks 1.3 and 1.4 open by design. The custom wrapped bun -e probe returned Permission denied. F2 [Nit]: plugins/opencode-measure-guard/README.md:148-154 documents bare heavy commands that the new guard denies. F1 is withdrawn because FR-3 explicitly says playwright with any args.
+handoff: F2 [Nit] review-a: Update or clarify the plugin README checks at plugins/opencode-measure-guard/README.md:148-154 because bare `bun test` and `bun x tsc --noEmit -p .` are refused by the new guard. Gate exit: 1, current phase has 2 non-deferred incomplete tasks.
+END_MEASURE_AGENT_RESULT

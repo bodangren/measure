@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: measure-phase-acceptance
+status: complete
+track: heavy_run_guard_20261123
+phase: Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)
+commits: none
+tests_run: Through heavy-run: matcher file in mods/measure-guard 54 pass, 0 fail; hook file in plugins/opencode-measure-guard 8 pass, 0 fail; bun test in that plugin 195 pass, 0 fail; tests/spec_review_gate/run.sh 24 suites PASS=24 FAIL=0; tests/dsh/run.sh 15 passed, 0 failed; both check-parity.sh parity: ok; node --test of the dsh plugin 384 pass, 0 fail; bun test in mods/measure-guard 54 pass, 12 fail, 12 errors (the known claude-code/testing import). role-gate (phase-acceptance) printed PASS and exited 0.
+files_changed: measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.json; measure/runs/heavy_run_guard_20261123/phase-acceptance-3ff55ec.log
+plan_updates: none
+known_failures: none in the phase. bun test in mods/measure-guard exits 1 at the baseline too, because 12 files import claude-code/testing (plan.md:19 records it). Nits F3 to F6 are nonblocking.
+handoff: PASS at 3ff55ec, no blocker. F3 plan.md:16 says all suites pass while plan.md:19 records one suite at exit 1; reword it or fold the edit into the closeout plan edit. F4 wrong-refusal classes (line continuation, heredoc body, --help and --version, a directory word) and F5 passing forms (single &, shell keyword, subshell, sudo, redirect target as file operand) go into the wrapper-gap tech-debt row. F6 the README Guards section lacks the heavy-run guard and joins the F2 tech-debt row. I agree with the F2 DECLINE. The pre-existing install-word false positive is a closeout tech-debt item and no part of this phase. CI check passed on 46349f2; the delta to 3ff55ec is plan.md only; CI runs parity and the shell suites, not bun test. b631277 and 3ff55ec are not pushed: push before the merge. The installed-copy proof stays the post-merge step in the plan footer.
+END_MEASURE_AGENT_RESULT

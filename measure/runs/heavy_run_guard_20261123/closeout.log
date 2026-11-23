@@ -1,0 +1,26 @@
+Closeout of heavy_run_guard_20261123 at pre-closeout HEAD 3ff55ec7b11961d78ddf3950a69b8a491ac78e91.
+
+Pre-closeout state: branch feat/heavy-run-guard, clean tree, HEAD verified. Phase acceptance phase-acceptance-3ff55ec.json has status pass and audited_head_sha equal to HEAD. Review A review-a-3ff55ec.json has status pass at the same HEAD. Light lane: no final acceptance is required, and the PM re-ran the phase gate with PASS.
+
+The plan has four tasks, all [x], each with commit SHA evidence. Zero [~], zero [ ] and zero [b] tasks. No deferred closeout task. The A5 wording deviation at plan.md line 16 is recorded in metadata and the manifest; the orchestrator declined a reword. The archived registry entry makes no adversarial-test claim, so A6 holds.
+
+A9: the fixed path measure/tracks/heavy_run_guard_20261123/ had 30 occurrences at 25 file and line positions before the move, all in retained evidence under measure/runs. Zero hits in tests, scripts or support files before and after the move. No test path fix was needed. The post-move test gate was not rerun because the closeout command allowlist excludes heavy-run; phase acceptance re-ran all suites at 3ff55ec with PASS.
+
+Actions: git mv of the track folder to measure/archive/; active entry removed from measure/tracks.md and an archived entry added with the metadata description; metadata set to status done, actual_tasks 4, completed 2026-11-23, updated_at 2026-11-23T12:30:00Z and eight deviation sentences; five Low Open tech-debt rows added; closeout manifest written in the archive; this log and closeout-result-3ff55ec.json written in measure/runs/heavy_run_guard_20261123/.
+
+Checker before the commit: closeout exit 0 (INFO light lane; INFO no generated folder; PASS closeout checks passed). audit-result closeout exit 0 (PASS: audit result is valid). The post-commit closeout exit is reported in the final message.
+
+Nothing was pushed. The git stash green-r2-aborted was left alone. No bulky run artifact was deleted. No lesson row was added.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: complete
+track: heavy_run_guard_20261123
+phase: track closeout
+commits: Task 1.1 03e0353; Task 1.2 7fa1822; Task 1.3 b631277; Task 1.4 b631277; closeout commit pending at write time (pre-closeout HEAD 3ff55ec7b11961d78ddf3950a69b8a491ac78e91)
+tests_run: closeout checker exit 0 before the commit; audit-result closeout exit 0; A9 grep zero hits in tests, scripts and support files after the move; no heavy-run test gate rerun because the closeout command allowlist excludes it; phase acceptance re-ran all suites at 3ff55ec with PASS
+files_changed: moved measure/tracks/heavy_run_guard_20261123 to measure/archive/heavy_run_guard_20261123 (index.md, metadata.json, plan.md, spec-review.md, spec.md); measure/tracks.md; measure/tech-debt.md; measure/archive/heavy_run_guard_20261123/automation-supervisor-closeout-manifest.json; measure/runs/heavy_run_guard_20261123/closeout.log; measure/runs/heavy_run_guard_20261123/closeout-result-3ff55ec.json (force-added)
+plan_updates: none; the archived plan was already closeout clean with four [x] tasks and SHA evidence; the A5 wording deviation was recorded in metadata and the manifest, not reworded
+known_failures: none; light lane omits review-b, review-c, adversarial testing, ux review and final acceptance; the A5 plan wording deviation is recorded, not fixed; bun test in mods/measure-guard exits 1 at baseline from claude-code/testing imports
+handoff: track archived, registry updated, metadata done, five tech-debt rows open; checker exit 0 before the commit, post-commit exit reported in the final message; no question for the orchestrator; no bulky artifact deleted; stash left alone; nothing pushed
+END_MEASURE_AGENT_RESULT

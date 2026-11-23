@@ -549,3 +549,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: CI workflow for the measure repo**
   *Link: [./archive/ci_workflow_20261123/](./archive/ci_workflow_20261123/)*
   *CI for the measure repo: a GitHub Actions workflow runs the four repo checks on each pull request and each push to main, so the pre-merge rule becomes a machine check (PM assignment A-new, due 2026-11-25).*
+
+- [x] **Track: Heavy-run guard refuses heavy commands outside heavy-run**
+  *Link: [./archive/heavy_run_guard_20261123/](./archive/heavy_run_guard_20261123/)*
+  *Heavy-run guard in measure-guard: a role session that starts a dev server, a Playwright or Chrome capture, a full tsc --noEmit, a full test suite, a render, or build-graph outside scripts/jobs/heavy-run.sh is refused with one line that names the heavy-run form (PM assignment A-new2, due 2026-11-26).*
