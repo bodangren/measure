@@ -15,4 +15,12 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 2
 
+- Commit: 31de549. Model: openai/gpt-6.1-terra#high. Verdict: fail.
+- F3 (Blocker): `env CI=1 vite` passes because argv[0] is `env`. Disposition: accepted, fixed in the amendment commit.
+- F4 (Blocker): `pytest -k expression` reads as a file operand. Disposition: accepted, fixed in the amendment commit.
+- F5 (Blocker): `diff -r` fails on the installer stamp. Disposition: accepted, fixed in the amendment commit.
+- F6 (Blocker): basename-only heavy-run form lets `./heavy-run.sh` pass. Disposition: accepted, fixed in the amendment commit.
+
+### Round 3
+
 (empty)
