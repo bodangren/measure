@@ -11,8 +11,8 @@ Test commands: `bash tests/readme/run.sh`; `bash plugins/opencode-measure-guard/
 
 - [x] Task 1.1 Red: add the contract test `tests/readme/test-readme-heavy-run.sh` and the runner `tests/readme/run.sh` (same shape as `tests/ci/run.sh`; local only, not in CI). The test checks FR-1 through FR-4 and fails before the README edit. — 74717f1
 - [x] Task 1.2 Green: edit `plugins/opencode-measure-guard/README.md` per FR-1 through FR-4. Suites: `bash tests/readme/run.sh` plus `bash plugins/opencode-measure-guard/scripts/check-parity.sh`. — 20ecf85
-- [x] Task 1.3 PR and CI: the build session pushes the branch, opens the pull request, and watches check `checks` green. No merge.
-- [x] Task 1.4 Records: record the PR number, the check result, and the diff stat in this plan. Close the README tech-debt row in `measure/tech-debt.md` with the PR number.
+- [x] Task 1.3 PR and CI: the build session pushes the branch, opens the pull request, and watches check `checks` green. No merge. — a20c52c
+- [x] Task 1.4 Records: record the PR number, the check result, and the diff stat in this plan. Close the README tech-debt row in `measure/tech-debt.md` with the PR number. — a20c52c
 
 ## Red evidence (Task 1.1, 2026-11-23)
 - `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh'` exits 1: 12 checks, PASS=2, FAIL=10 (bare `bun test`/`bun x tsc`, both heavy-run lines missing, sentence missing, bullet missing, intro lacks shell tools).
