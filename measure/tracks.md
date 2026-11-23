@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: README uses the heavy-run form**
+  *Link: [./tracks/readme_heavy_run_form_20261123/](./tracks/readme_heavy_run_form_20261123/)*
+  *README of opencode-measure-guard uses the heavy-run form and lists the heavy-run guard; closes the README tech-debt row (PM order route 1, due 2026-11-26).*
+
 ---
 
 ## Cancelled Tracks
