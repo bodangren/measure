@@ -65,9 +65,10 @@ The server writes `~/.local/state/measure/opencode-guard/<16 hex of sha1(root)>.
 
 ## Guards
 
-The `execute.before` tool hook runs the guards for `edit`, `write`, `multiedit`, and `apply_patch`. The file of a call comes from `path` (OpenCode 2.0) or `filePath` (older builds); an `apply_patch` names every `*** Update File:`, `*** Add File:`, and `*** Delete File:` path of its `patchText`. A deny is an `Error` thrown from the hook; OpenCode marks the tool call as failed and the agent reads the error text.
+The `execute.before` tool hook runs the guards for the shell tools and for `edit`, `write`, `multiedit`, and `apply_patch`. The file of a call comes from `path` (OpenCode 2.0) or `filePath` (older builds); an `apply_patch` names every `*** Update File:`, `*** Add File:`, and `*** Delete File:` path of its `patchText`. A deny is an `Error` thrown from the hook; OpenCode marks the tool call as failed and the agent reads the error text.
 
 - **Edit guard.** In mode `guard` or `strict`, a write outside `measure/` passes only when the active plan has a `[~]` task. The deny text names the next task and the bypass command. A git repository without `measure/` gets the setup deny once per session; the text names `/measure-setup` and `/measure-off`. The shell tools are covered as well: the shared grammar (from `src/core/guards`) extracts the file targets of a `shell`/`bash` command — redirection, `tee`, `sed -i`, and `cp`/`mv`/`install`/`ln` destinations — and each goes through the edit guard and the strict TDD guard.
+- **Heavy-run guard.** In mode `guard` or `strict`, a role session (for example `measure-jr-green` or `measure-reviewer`) must not start a dev server, a Playwright or Chrome capture, a full `tsc --noEmit` or `tsc -b`, a full test suite, a render, or `build-graph` outside `scripts/jobs/heavy-run.sh`. The matcher `heavyRunDecision` in `src/core/guards` reads the first word of each part after `NAME=value` assignments and one `npx`/`bunx` prefix. The deny is one line and names the heavy-run form. Version 1 checks direct commands only: a wrapper (`env`, `timeout`, `sudo`) or a `bash -c` string is not checked.
 - **Closeout guard.** A write of `tracks.md` that closes a track whose plan has open tasks is denied; a close with only `[b]` tasks passes and the `[b]` list rides on the tool output. A track with open tasks also closes when its plan has a `Superseded by <target>` line at the start of a line and its `metadata.json` has `"status": "superseded"`; the note names the target, and the open tasks stay open. A write of a `plan.md` that starts a new phase before the previous phase has its `[checkpoint: <sha>]` line is allowed, because phases can run at the same time. The tool output then gets a note that names the checkpoint protocol. The guard rebuilds the file after the edit (`edit`, `write`, and `multiedit` inputs) to decide.
 - **Role spawn routes.** In mode `guard` or `strict`, a `subagent` or `task` call that names a `measure-*` agent must name a model in the approved list of its role in `~/.config/ra-quota/routes.json`. The guard maps the agent to a ra-quota role and compares the `model` of the call with the route strings of that role, exactly and including a variant. An unknown Measure role, a spawn that names no model, and a missing or unreadable routes file are allowed, with a warning note on the tool output. The deny lists the approved routes and names `ra-quota pick <role>`. The Claude Code mod and the DSH adapter carry the same core but do not call it yet.
 - **Task note after a call.** The `execute.after` hook appends the task note to the result of a shell call, of a write inside `measure/`, or of a write whose path names a new track, when the note of the session changed.
@@ -149,9 +150,11 @@ Load check (Task 8.4, OpenCode 2.0.32): the terminal started under a pseudo-term
 
 ```bash
 cd plugins/opencode-measure-guard
-bun test                      # unit tests; no install needed
-bun install && bun x tsc --noEmit -p .   # type check against the published @opencode/plugin types
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bun test'                      # unit tests; no install needed
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'timeout 120 bun install && bun x tsc --noEmit -p .'   # type check against the published @opencode/plugin types
 ```
+
+The heavy-run guard refuses a bare suite or a bare `tsc --noEmit` in a role session; run both through `scripts/jobs/heavy-run.sh` as shown.
 
 `node_modules/` and `bun.lock` are not committed. OpenCode provides `@opencode/plugin`, `@opencode/plugin/tui`, `solid-js`, and the OpenTUI packages at runtime.
 
