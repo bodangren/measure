@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "readme_heavy_run_form_20261123",
+  "phase": "Phase 1: README uses the heavy-run form (due 2026-11-26)",
+  "baseline_sha": "6cbbe7b",
+  "audited_head_sha": "be2944941e1652ed387be8b40d0a416f8616e8ce",
+  "phase_base_sha": "6cbbe7b",
+  "role_base_sha": "be2944941e1652ed387be8b40d0a416f8616e8ce",
+  "status": "inconclusive",
+  "summary": "The README change meets the phase requirements, and its contract test has failing-first proof. One nonblocking example names a nonexistent role agent. The role gate could not run because shell permission was denied.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] plugins/opencode-measure-guard/README.md: The Heavy-run guard example names `measure-reviewer`, but no such agent exists in `agents/` or ROLE_OF_AGENT; replace it with the actual review agent name. Rationale: the example is incorrect even though the guard also applies to unknown agent names."
+  ],
+  "evidence": [
+    "HEAD is be2944941e1652ed387be8b40d0a416f8616e8ce; role_base_sha matches HEAD and the worktree was clean before the audit artifact was created.",
+    "The exact 6cbbe7b..be2944941e1652ed387be8b40d0a416f8616e8ce diff changes the README, its new local test and runner, the current plan, and the matching tech-debt row.",
+    "The README diff matches FR-1 through FR-4; no other README line changes.",
+    "The tests/readme diff from 74717f1 to HEAD is empty, so Red test files are unchanged.",
+    "The baseline README fixture fails 10 of 12 checks; a bare-bun-test mutation fails 2 checks; a removed-sentence mutation fails 1 check.",
+    "The current README passes all 12 contract checks, and the parity check prints `parity: ok`.",
+    "The README bullet's command classes, mode condition, shell-tool introduction, parsing description, and heavy-run form match guards.ts and src/guard.ts.",
+    "No `agents/measure-reviewer.md` exists; ROLE_OF_AGENT lists `measure-review-a-correctness` and does not list `measure-reviewer`.",
+    "The PR #47 checks status is SUCCESS at pushed head f5d280636cc0ee14050b036857eaecc6bdeb240f; later changes through HEAD affect only plan.md and tech-debt.md.",
+    "The required role-gate command was rejected by the shell tool with `Permission denied: shell`; no gate exit code was produced.",
+    "No project-root or current-track test-strategy.md exists; the current spec and plan provide the test requirements."
+  ],
+  "commands": [
+    "git rev-parse HEAD: be2944941e1652ed387be8b40d0a416f8616e8ce",
+    "git status --short: clean before audit artifact creation",
+    "git diff 6cbbe7b..be2944941e1652ed387be8b40d0a416f8616e8ce --check: exit 0",
+    "git diff cd3c41b..be2944941e1652ed387be8b40d0a416f8616e8ce -- plugins/opencode-measure-guard/README.md: only planned README text changed",
+    "git diff 74717f1..be2944941e1652ed387be8b40d0a416f8616e8ce -- tests/readme: empty",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/readme/run.sh': exit 0, 12 checks pass",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh': exit 0, parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/readme/test-readme-heavy-run.sh /tmp/readme-heavy-baseline.md': exit 1, 2 pass and 10 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/readme/test-readme-heavy-run.sh /tmp/readme-heavy-bare-bun.md': exit 1, bare command mutation detected",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/readme/test-readme-heavy-run.sh /tmp/readme-heavy-no-sentence.md': exit 1, removed sentence detected",
+    "gh pr view 47 --json state,headRefOid,statusCheckRollup: OPEN; checks SUCCESS at f5d2806",
+    "role-gate: shell tool rejected the command before execution; gate exit unavailable"
+  ],
+  "changed_files": [
+    "measure/tech-debt.md",
+    "measure/tracks/readme_heavy_run_form_20261123/plan.md",
+    "plugins/opencode-measure-guard/README.md",
+    "tests/readme/run.sh",
+    "tests/readme/test-readme-heavy-run.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "infrastructure_retry",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 4,
+      "evidence": "The README matches the guard wiring at plugins/opencode-measure-guard/src/guard.ts:213-215, but its example agent name is absent from ROLE_OF_AGENT."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The contract test fails against the baseline and both tested mutations, while the current runner passes all 12 checks."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The 6cbbe7b..HEAD diff changes only the README, its dedicated test and runner, the phase plan, and its README debt row."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The review records exact diff checks, passing tests, two mutation failures, and the PR check result at f5d2806."
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "readme_heavy_run_form_20261123",
+  "phase": "Phase 1: README uses the heavy-run form (due 2026-11-26)",
+  "baseline_sha": "6cbbe7b",
+  "phase_base_sha": "6cbbe7b",
+  "role_base_sha": "5442514",
+  "audited_head_sha": "5442514",
+  "status": "pass",
+  "summary": "HEAD is 5442514. The README example fix is correct, both requested checks pass, and F1 is withdrawn.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD is 5442514; the worktree was clean before the re-review artifacts were created.",
+    "F1 withdrawn: Nit fixed in 08780bf. The README now names measure-review-a-correctness; agents/measure-review-a-correctness.md exists and ROLE_OF_AGENT maps it to review-a.",
+    "The be29449..5442514 diff contains only README.md and plan.md; the README changes one example name.",
+    "The f5d2806..5442514 diff changes measure/tech-debt.md, the current track plan, and README.md only.",
+    "PR #47 remains OPEN; its checks result is SUCCESS on pushed head f5d280636cc0ee14050b036857eaecc6bdeb240f. The later commits are not on the pushed head.",
+    "The README contract runner passes all 12 checks, and the parity check prints `parity: ok`.",
+    "Role-gate run by the orchestrator."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse --short HEAD: 5442514",
+    "git -C /home/daniebo/Desktop/measure status --short: clean before review artifacts",
+    "git -C /home/daniebo/Desktop/measure diff be29449 5442514 --stat: README.md and plan.md only",
+    "git -C /home/daniebo/Desktop/measure diff f5d2806 5442514 --stat: README.md, plan.md, and tech-debt.md only",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash tests/readme/run.sh': exit 0, 12 checks pass",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh': exit 0, parity: ok",
+    "gh pr view 47 --json state,headRefOid,statusCheckRollup: OPEN; checks SUCCESS at f5d2806",
+    "role-gate run by the orchestrator"
+  ],
+  "changed_files": [
+    "measure/tech-debt.md",
+    "measure/tracks/readme_heavy_run_form_20261123/plan.md",
+    "plugins/opencode-measure-guard/README.md",
+    "tests/readme/run.sh",
+    "tests/readme/test-readme-heavy-run.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The corrected example names an existing agent, and the README claims still match the guard wiring at plugins/opencode-measure-guard/src/guard.ts:213-215."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The current contract runner passes all 12 checks after the example correction."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The be29449..HEAD delta changes only the README example and the plan evidence line."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The re-review records the exact delta, passing tests, PR check success at f5d2806, and that the orchestrator runs the role gate."
+    }
+  ]
+}

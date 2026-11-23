@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "track": "readme_heavy_run_form_20261123",
+  "phase": "track closeout",
+  "baseline_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "audited_head_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "status": "pass",
+  "summary": "Closeout passes at 5442514. The track folder moved to measure/archive, the registry entry moved and matches the metadata description, and metadata records status done with four completed tasks. Two Low Open tech-debt rows record the tracked limits. The closeout checker and the audit-result check exited 0 before the commit.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "The diff stat at plan.md line 29 is stale (Phase acceptance F2): it names the range 6cbbe7b..HEAD and prints 4 files, 321 insertions and 5 deletions, while the same range at 5442514 prints 5 files, 329 insertions and 8 deletions. The orchestrator declined a reword because a reword advances HEAD. The deviation is recorded in metadata deviation_notes and in the closeout manifest."
+  ],
+  "evidence": [
+    "Pre-closeout HEAD is 54425142ea5dccbb5e1766d3546e5a9fdb469ee6 on branch chore/readme-heavy-run-form with a clean tree.",
+    "phase-acceptance-5442514.json and review-a-5442514.json each have status pass and audited_head_sha 5442514, which equals the pre-closeout HEAD. The light lane needs no final acceptance. The orchestrator ran both gates with PASS.",
+    "The archived plan has four [x] tasks with commit SHA evidence, zero [~], zero [ ] and zero [b] tasks, and no deferred closeout task.",
+    "The A5 check found no false claim: the plan records Red as PASS=2, FAIL=10 and Green as PASS=12, FAIL=0, and both numbers reproduce. The stale diff stat is the only wording deviation, and it is recorded, not reworded.",
+    "measure/tracks.md has no active entry for the track. Its archived entry description equals the metadata description, so A6 holds.",
+    "metadata.json records status done, actual_tasks 4, updated_at 2026-11-23T15:00:00Z, completed 2026-11-23 and eight deviation notes.",
+    "Two Low Open tech-debt rows were added, dated 2026-11-23 and attributed to this track. lessons-learned.md was not changed; the file already sits at its 50-line limit.",
+    "The A9 grep found no fixed active track path in tests, scripts, plugins, mods, agents, skills or .github before or after the move. All 9 hits are retained evidence under measure/runs. The post-move test gate was not rerun because the closeout command allowlist excludes the heavy-run wrapper and this repository holds no scripts/jobs/heavy-run.sh.",
+    "Every cited SHA resolves as a commit: 74717f1, 20ecf85, a20c52c, be29449, 08780bf, f5d2806, 6cbbe7b and cd3c41b."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git rev-parse --abbrev-ref HEAD -> 54425142ea5dccbb5e1766d3546e5a9fdb469ee6; clean; chore/readme-heavy-run-form",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track readme_heavy_run_form_20261123 -> exit 1 before the closeout work (the track was still active)",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track readme_heavy_run_form_20261123 -> exit 0 before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/readme_heavy_run_form_20261123/closeout-result-5442514.json -> PASS: audit result is valid",
+    "grep the repository for measure/tracks/readme_heavy_run_form_20261123/ before and after the move -> 9 hits, all in retained evidence under measure/runs; zero hits in tests, scripts, plugins, mods, agents, skills and .github",
+    "git mv measure/tracks/readme_heavy_run_form_20261123 measure/archive/readme_heavy_run_form_20261123 -> 5 files moved"
+  ],
+  "changed_files": [
+    "measure/archive/readme_heavy_run_form_20261123/index.md",
+    "measure/archive/readme_heavy_run_form_20261123/metadata.json",
+    "measure/archive/readme_heavy_run_form_20261123/plan.md",
+    "measure/archive/readme_heavy_run_form_20261123/spec-review.md",
+    "measure/archive/readme_heavy_run_form_20261123/spec.md",
+    "measure/archive/readme_heavy_run_form_20261123/automation-supervisor-closeout-manifest.json",
+    "measure/tracks.md",
+    "measure/tech-debt.md",
+    "measure/runs/readme_heavy_run_form_20261123/closeout.log",
+    "measure/runs/readme_heavy_run_form_20261123/closeout-result-5442514.json"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "blocking_reason": "",
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

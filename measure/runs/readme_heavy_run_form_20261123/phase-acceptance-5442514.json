@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "readme_heavy_run_form_20261123",
+  "phase": "Phase 1: README uses the heavy-run form (due 2026-11-26)",
+  "baseline_sha": "6cbbe7b5cf12d4b50aceea172f42241191b2854f",
+  "phase_base_sha": "6cbbe7b5cf12d4b50aceea172f42241191b2854f",
+  "role_base_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "audited_head_sha": "54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+  "status": "pass",
+  "summary": "Phase 1 meets spec FR-1 to FR-5 and the acceptance criteria at HEAD 5442514. The README claims match the guard code, the four suites exit 0, and the PR check passed at f5d2806. Three nonblocking Nits remain: F1 test strength, F2 pinned diff stat, and F3 the omitted bun x prefix. No finding blocks acceptance.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] phase-acceptance: tests/readme/test-readme-heavy-run.sh hides lines from the readme-nothing-else-moves check. Line 219 replaces the whole Guards intro line with a placeholder. Line 235 drops every line that holds the bullet marker or the sentence start. A moved bullet, a moved sentence, a duplicate, or a larger intro rewrite therefore passes. Rationale: FR-1 and FR-2 state where the new sentence and the new bullet go, and FR-5 allows one clause on line 68. The README at 5442514 is correct by diff, so the README holds no wrong text.",
+    "F2 [Nit] phase-acceptance: plan.md line 29 gives the diff stat of the range 6cbbe7b..HEAD as 4 files, 321 insertions, and 5 deletions. The same command at the audited HEAD 5442514 prints 5 files, 329 insertions, and 8 deletions. Rationale: the numbers are true for the pushed head f5d2806 only. Pin the range to 6cbbe7b..f5d2806 in the record.",
+    "F3 [Nit] phase-acceptance: The Heavy-run guard bullet names the runner prefixes npx and bunx only. The function stripCommand also strips the pair bun x (plugins/opencode-measure-guard/src/core/guards.ts:954). The Checks block of the same README uses that pair. Rationale: the bullet text is true but incomplete. FR-2 has the same wording, so the spec owns the change."
+  ],
+  "evidence": [
+    "HEAD is 54425142ea5dccbb5e1766d3546e5a9fdb469ee6 on branch chore/readme-heavy-run-form. The worktree was clean at the start. The role base equals the audited HEAD.",
+    "Prerequisite: spec review passed in round 1 at 76d5f27 (spec-review-76d5f27.json). The file spec.md is unchanged since that review: git diff 76d5f27 5442514 -- spec.md is empty.",
+    "Prerequisite: Review A passed at audited_head_sha 5442514 (review-a-5442514.json). The last Green round ended at 5442514 (green-p1-r3.log). No test-only commit needs an exception.",
+    "Task SHAs resolve. 74717f1 adds tests/readme/run.sh and tests/readme/test-readme-heavy-run.sh. 20ecf85 edits only plugins/opencode-measure-guard/README.md. a20c52c records Tasks 1.3 and 1.4 in plan.md and measure/tech-debt.md.",
+    "All four phase tasks are marked [x] and each carries a resolving SHA.",
+    "The README diff cd3c41b..5442514 holds two hunks. Hunk 1 adds the shell tools clause to the Guards intro and the Heavy-run guard bullet after the Edit guard bullet. Hunk 2 changes the two Checks lines and adds the new sentence after the code block.",
+    "FR-1 to FR-4 hold in the diff. Both Checks lines carry the exact prefix. The new sentence matches the spec word for word. The intro changes one clause. No other README line changed. The command git diff --check prints nothing.",
+    "The delta f5d2806..5442514 holds three files: README.md (one token, measure-reviewer to measure-review-a-correctness), plan.md, and measure/tech-debt.md.",
+    "The guard claims match mods/measure-guard/hooks/guards.ts:1082 and its byte-identical copy plugins/opencode-measure-guard/src/core/guards.ts. The wiring at plugins/opencode-measure-guard/src/guard.ts:213-215 runs the matcher in every mode except advise. The type Mode has three values (src/types.ts:9).",
+    "The agent test at guards.ts:1083 exempts a name that holds orchestrator. Both README example names exist as agents/*.md files and in ROLE_OF_AGENT (guards.ts:198-199).",
+    "A matcher probe with bun -e on the plugin core copy ran 20 cases. The matcher denied these cases with a one-line deny that names scripts/jobs/heavy-run.sh: bun test, bun x tsc --noEmit -p ., FOO=1 npx vite, bunx vite, tsc -b, playwright test, a headless chromium screenshot, ffmpeg, build-graph, and ls && bun test.",
+    "The matcher allowed these cases: the measure-orchestrator agent, both README heavy-run lines, npx bunx vite, env bun test, timeout 120 bun test, sudo bun test, bash -c 'bun test', and bun test tests/foo.test.ts. A null agent is guarded.",
+    "Contract test: the heavy-run run of bash tests/readme/run.sh exits 0 with 12 checks, PASS=12, FAIL=0. I ran it twice.",
+    "Other suites through heavy-run: the opencode parity check prints parity: ok. tests/spec_review_gate/run.sh exits 0 with 24 suites and FAIL=0. tests/dsh/run.sh exits 0 with 15 passed and 0 failed. The dsh parity check prints parity: ok.",
+    "Fail-first proof: the unedited README (git archive cd3c41b) makes the test exit 1 with 12 checks, PASS=2, FAIL=10. This equals the Red record at plan.md line 18.",
+    "Non-vacuity of readme-nothing-else-moves: an older README revision (82411ec) makes that check fail. The test then reports PASS=1, FAIL=11.",
+    "Limit: the permission rules of this role denied cp, sed -i, and the edit tool for /tmp copies. I built no mutant of the current README. I read the mutant runs of Review A at be29449 and of red-p1.log (M1 to M5) and did not re-run them.",
+    "F1 proof: I loaded the collapse function (test lines 218 to 236) and fed it README streams from process substitution. The real README, the unedited README, an intro cut after the shell tools, a bullet moved to the end, a sentence moved to the end, and a duplicated sentence all gave hash 5019e172. An unrelated heading change gave hash 40304a7a.",
+    "A3 absent: tests/readme holds no [0-9] assertion. A4 absent: the test has no marker check and the phase holds four [x] tasks.",
+    "A5 absent: plan.md lines 18, 22, and 25 reproduce in my runs. Line 29 is F2.",
+    "A6 does not apply: measure/tracks.md is outside the phase diff. A7 absent: the test filters are fixed strings, not bare English words. The filter effect is F1.",
+    "CI: gh pr view 47 reports state OPEN, headRefOid f5d280636cc0ee14050b036857eaecc6bdeb240f, and check checks COMPLETED with conclusion SUCCESS (run 45126292036, 6m15s).",
+    "HEAD is 4 commits ahead of the pushed head (git rev-list --count origin/chore/readme-heavy-run-form..HEAD prints 4). The main branch on origin is still cd3c41b41d5e3bf46dbf3866ddb9817fb03a036f (gh api).",
+    "The CI workflow runs four commands: the spec_review_gate suite, the dsh suite, and two parity checks. It does not run tests/readme. The delta f5d2806..5442514 holds one README token, plan.md, and tech-debt.md, so the CI run covers the README except that token. My local run of the same four commands at HEAD passes.",
+    "Tech debt: the diff of measure/tech-debt.md changes one line, the README row of heavy_run_guard_20261123 (Open to Closed, note names PR #47 and 20ecf85). No other row changed. The file holds 29 lines.",
+    "The Review A artifact is consistent with my checks: HEAD, the SHA fields, the five changed files, both deltas, the PR state, and the agent names. It records no exit code for its gate run.",
+    "My own run of the review-a role-gate was denied by the shell rules of this role, so I could not re-check that gate.",
+    "The shell rules of this role also denied the phase-acceptance role-gate command, so the orchestrator runs it. By code reading, the gate checks the result block markers, the dispositions line (absent here), the audit JSON (valid, status pass, no hard blocker), and the phase task counts (four [x], none open). I expect exit 0.",
+    "Light lane: metadata.json holds lane light. The repository records the light lane as spec review plus Review A with no final acceptance (measure/reviews/2026-11-10-orchestrator-process-review.md line 168). measure_interphase_checks.py lines 1135 to 1168 encode the final acceptance exemption.",
+    "Review B, Review C, adversarial testing, and UX review are not required. No gate asks for them, and the phase diff holds no code file and no UI file.",
+    "No code caller needs an update, because the track changes no code. README lines 24 and 75 name bun test as a directory note and a test-command class, and FR-4 keeps them.",
+    "Out of scope, no finding: measure/tech-stack.md line 43 still names bun x tsc --noEmit -p plugins/opencode-measure-guard, which the guard refuses in a role session. The PM order limits this track to the README. The orchestrator can record a tech-debt row.",
+    "Record format, no finding: red-p1.log and green-p1*.log end with result blocks that differ from the Agent Result Block template. The Red block has no status, tests_run, files_changed, plan_updates, known_failures, or handoff line. The Green blocks use status: pass. The gate reads the marker lines only.",
+    "Observation, no finding: FR-1 puts the machine path /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh in a public README. A reader outside this machine cannot run the lines as written. The PM order fixes this text.",
+    "The folder measure/runs is git-ignored (.gitignore:213). The run artifacts stay on this machine."
+  ],
+  "commands": [
+    "git rev-parse HEAD: 54425142ea5dccbb5e1766d3546e5a9fdb469ee6",
+    "git status --porcelain: empty",
+    "git diff cd3c41b 5442514 -- plugins/opencode-measure-guard/README.md: two hunks, FR-1 to FR-4 hold",
+    "git diff --check cd3c41b 5442514 -- plugins/opencode-measure-guard/README.md tests/readme measure/tech-debt.md: exit 0",
+    "git diff --stat f5d2806 5442514: README.md, plan.md, tech-debt.md only",
+    "git diff --stat 6cbbe7b 5442514: 5 files changed, 329 insertions(+), 8 deletions(-)",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh': exit 0, 12 checks, PASS=12, FAIL=0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh': exit 0, parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh': exit 0, 24 suites, PASS=24, FAIL=0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh': exit 0, 15 passed, 0 failed",
+    "bash plugins/dsh-measure-guard/scripts/check-parity.sh: parity: ok",
+    "README_UNDER_TEST=<README of cd3c41b> bash tests/readme/test-readme-heavy-run.sh: exit 1, PASS=2, FAIL=10",
+    "README_UNDER_TEST=<README of 82411ec> bash tests/readme/test-readme-heavy-run.sh: exit 1, readme-nothing-else-moves fails, PASS=1, FAIL=11",
+    "bun -e <20 heavyRunDecision cases on plugins/opencode-measure-guard/src/core/guards.ts>: eleven denied, nine allowed, as listed in evidence",
+    "bun -e <2 more cases>: bun x tsc --noEmit -p plugins/opencode-measure-guard denied (tsc-full), bun test plugins/opencode-measure-guard allowed",
+    "bash -c <eval of test lines 218-236, collapse of seven README streams, md5sum>: six equal hashes 5019e172, one control hash 40304a7a",
+    "gh pr view 47 --json state,headRefOid,statusCheckRollup,baseRefName,headRefName,mergeable: OPEN, f5d2806, check checks SUCCESS",
+    "gh api repos/bodangren/measure/git/ref/heads/main --jq .object.sha: cd3c41b41d5e3bf46dbf3866ddb9817fb03a036f",
+    "git rev-list --count origin/chore/readme-heavy-run-form..HEAD: 4",
+    "cp, sed -i, and the edit tool on /tmp copies: denied by the permission rules of this role",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --role review-a: denied by the shell rules of this role, not run",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --role phase-acceptance (the command of the brief): denied by the shell rules of this role, not run; the orchestrator runs it"
+  ],
+  "changed_files": [
+    "measure/runs/readme_heavy_run_form_20261123/phase-acceptance-5442514.json",
+    "measure/runs/readme_heavy_run_form_20261123/phase-acceptance-5442514.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "claude-agent/sonnet#max",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The README matches heavyRunDecision (guards.ts:1082) in a 20-case probe, and git diff cd3c41b 5442514 meets FR-1 to FR-4."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 3,
+      "evidence": "The test fails on the unedited README (PASS=2, FAIL=10) but passes a moved bullet, a moved sentence, and a cut intro (hash replay)."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "git diff --name-status 6cbbe7b 5442514 lists the README, two test files, plan.md, and one tech-debt row; no code file changed."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 4,
+      "evidence": "Every plan claim reproduces in my runs except the pinned diff stat at plan.md:29 (F2)."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6-luna#high",
+      "agreed": true,
+      "score": 4,
+      "evidence": "The pass verdict of review-a-5442514.json matches my checks of the README diff, the PR state, and the agent names."
+    }
+  ]
+}

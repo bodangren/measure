@@ -1,0 +1,21 @@
+### What this track proposes
+The track replaces two README commands with the heavy-run form and documents the guard. It adds a local contract test and closes the related debt row.
+
+### How the current system works, per this spec
+The README shows bare test and type-check commands. The heavy-run guard refuses those commands in role sessions, and the README does not list the guard.
+
+### Findings
+- None
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: readme_heavy_run_form_20261123
+phase: track setup
+commits: none
+tests_run: spec-review role gate passed, exit 0
+files_changed: spec-review JSON and log
+plan_updates: none
+known_failures: none
+handoff: No findings.
+END_MEASURE_AGENT_RESULT

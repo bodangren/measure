@@ -1,0 +1,28 @@
+# Green round log: Phase 1 Review A Nit fix
+
+Track: readme_heavy_run_form_20261123
+Role: measure-jr-green
+role_base_sha: be29449 (verified with a clean tree)
+Final HEAD: 54425142ea5dccbb5e1766d3546e5a9fdb469ee6
+Role gate: skipped this round per brief.
+
+Fix: in `plugins/opencode-measure-guard/README.md`, the Heavy-run guard bullet's example role `measure-reviewer` became `measure-review-a-correctness`. Checked with glob: `agents/measure-review-a-correctness.md` exists. One README token changed; no other line changed. The committed Red test was not edited.
+
+Commits:
+- 08780bf measure(green): README heavy-run guard example names an existing agent
+- 5442514 measure(plan): readme_heavy_run_form example fix record
+
+Verification: `heavy-run -c 'bash tests/readme/run.sh'` exit 0; `heavy-run -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh'` exit 0 (parity: ok).
+
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: pass
+track: readme_heavy_run_form_20261123
+phase: Phase 1: README uses the heavy-run form (due 2026-11-26)
+commits: 08780bf measure(green): README heavy-run guard example names an existing agent; 5442514 measure(plan): readme_heavy_run_form example fix record
+tests_run: wrapper -c 'bash tests/readme/run.sh' exit 0; wrapper -c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh' exit 0
+files_changed: plugins/opencode-measure-guard/README.md; measure/tracks/readme_heavy_run_form_20261123/plan.md
+plan_updates: one evidence line under Task 1.2 records the Review A Nit, the fix, and commit 08780bf; Task 1.2 stays [x] with 20ecf85
+known_failures: none. Both verification commands exit 0.
+handoff: role_base_sha be29449; final HEAD 54425142ea5dccbb5e1766d3546e5a9fdb469ee6. The example role now names an existing agent. No Red test was edited. No new files added.
+END_MEASURE_AGENT_RESULT
