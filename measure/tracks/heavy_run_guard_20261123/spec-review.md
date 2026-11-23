@@ -36,4 +36,7 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 5
 
-(empty)
+- Commit: 15a20f0. Model: openai/gpt-6.1-terra#high (same reviewer session as Rounds 1 to 4). Verdict: pass.
+- F8 is closed.
+- F9 [Nit]: the `env -S` rule ignores the arguments after the `-S` string, so `env -S 'tsc' --noEmit` is allowed. Disposition: declined for this track (a limited wrapper form beyond the contract); the closeout records it as a tech-debt row.
+- Gate: role-gate spec-review exit 0 (evidence `measure/runs/heavy_run_guard_20261123/spec-review-15a20f0.json`).
