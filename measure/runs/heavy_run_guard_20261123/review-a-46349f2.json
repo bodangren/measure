@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "heavy_run_guard_20261123",
+  "phase": "Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)",
+  "baseline_sha": "05a3f38",
+  "audited_head_sha": "46349f2",
+  "status": "pass",
+  "summary": "The exact phase diff matches the implementation and tests. Hook placement, bypass and mode conditions, exception flow, parity, named test suites, and current plan evidence passed review. One README check command now triggers the intended guard.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F2 [Nit] review-a: The plugin README still tells users to run `bun test` and `bun x tsc --noEmit -p .` without heavy-run (plugins/opencode-measure-guard/README.md:148-154). The new guard denies both commands in guard and strict mode. Update the check instructions or explain the required wrapper so the documented checks remain usable."
+  ],
+  "evidence": [
+    "F1 withdrawn: spec.md FR-3 item Capture says basename `playwright` with any args; that includes no arguments, so guards.ts:1026 matches the spec.",
+    "HEAD verification: `git -C /home/daniebo/Desktop/measure rev-parse --short HEAD` returned `46349f2`.",
+    "`git -C /home/daniebo/Desktop/measure status --short` returned no output; the tree was clean before audit artifacts were written.",
+    "`git diff --name-status 05a3f38..46349f2` showed the 10 expected phase files: spec/review/plan, matcher and tests, parity copies, hook wiring, and TDD test adaptation.",
+    "`git diff --quiet 03e0353 -- mods/measure-guard/tests/heavy-run.test.ts plugins/opencode-measure-guard/tests/heavy-run.test.ts` exited 0; Red tests were unchanged.",
+    "FR-3 matcher cases, exact FR-4 text/class order, FR-5 segments, FR-6 allowed cases, FR-7 false positives, heavy-run path forms, and FR-2 identities have named matcher tests in mods/measure-guard/tests/heavy-run.test.ts:25-280.",
+    "Hook deny, mode/bypass, orchestrator, accepted gaps, bare heavy-run, and non-shell cases have tests in plugins/opencode-measure-guard/tests/heavy-run.test.ts:22-89.",
+    "FR-8 wiring is before path/installer early returns in plugins/opencode-measure-guard/src/guard.ts:198-216; `deny` throws in the existing path at line 281.",
+    "The TDD fixture now uses the path-form heavy-run command in plugins/opencode-measure-guard/tests/tdd.test.ts:101-117; plugin suite passed.",
+    "The plan's baseline failure note for the Claude Code-only imports is consistent with the full mod-suite run: 54 passed and 12 errored on missing `claude-code/testing` imports.",
+    "No current project or track test-strategy.md was found; plan.md:10 supplies the test command list.",
+    "F2 evidence: plugins/opencode-measure-guard/README.md:148-154 documents both now-refused commands."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse --short HEAD — 46349f2",
+    "git -C /home/daniebo/Desktop/measure status --short — no output",
+    "git -C /home/daniebo/Desktop/measure diff --name-status 05a3f38..46349f2 — 10 expected files",
+    "git -C /home/daniebo/Desktop/measure diff --stat 05a3f38..46349f2 — 10 files changed; 1355 insertions, 13 deletions",
+    "git -C /home/daniebo/Desktop/measure stash list — one existing stash: green-r2-aborted",
+    "git -C /home/daniebo/Desktop/measure diff --quiet 03e0353 -- mods/measure-guard/tests/heavy-run.test.ts plugins/opencode-measure-guard/tests/heavy-run.test.ts — exit 0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test tests/heavy-run.test.ts' — 54 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test tests/heavy-run.test.ts' — 8 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test' — 195 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test' — 54 pass; 12 baseline Claude Code import errors",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/dsh-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "Custom wrapped bun -e false-positive/100 KB probe — shell returned Permission denied; the committed FR-7 tests passed."
+  ],
+  "changed_files": [
+    "measure/tracks/heavy_run_guard_20261123/plan.md",
+    "measure/tracks/heavy_run_guard_20261123/spec-review.md",
+    "measure/tracks/heavy_run_guard_20261123/spec.md",
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/tests/heavy-run.test.ts",
+    "plugins/dsh-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/guard.ts",
+    "plugins/opencode-measure-guard/tests/heavy-run.test.ts",
+    "plugins/opencode-measure-guard/tests/tdd.test.ts"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "FR-1 to FR-8 are implemented in mods/measure-guard/hooks/guards.ts:779-1088 and plugins/opencode-measure-guard/src/guard.ts:198-216."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The matcher suite passed 54 tests and the hook test passed 8; the custom long-input probe was unavailable."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The 05a3f38..46349f2 diff contains the planned matcher, parity, hook, tests, and phase records."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 4,
+      "evidence": "HEAD, exact diff file list, test outputs, parity outputs, and plan claims were checked; the custom probe was denied."
+    }
+  ]
+}

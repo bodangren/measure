@@ -1,0 +1,13 @@
+{
+  "track_id": "heavy_run_guard_20261123",
+  "type": "feature",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-23T00:00:00Z",
+  "updated_at": "2026-11-23T12:30:00Z",
+  "completed": "2026-11-23",
+  "description": "Heavy-run guard in measure-guard: a role session that starts a dev server, a Playwright or Chrome capture, a full tsc --noEmit, a full test suite, a render, or build-graph outside scripts/jobs/heavy-run.sh is refused with one line that names the heavy-run form (PM assignment A-new2, due 2026-11-26).",
+  "estimated_tasks": 4,
+  "actual_tasks": 4,
+  "deviation_notes": "Light lane: Review B, Review C, adversarial testing, UX review and final acceptance were not run. The hook is deny-only and holds no data, authentication or UI. Spec review took seven rounds on openai/gpt-6.1-terra#high. Rounds 1 to 4 and round 6 failed on rule gaps: heavy-run form, class order, wrapper parsing, operand definition, installer proof and tsc -b. Round 5 passed on the full spec. After round 5 the PM cut the scope to version 1, direct commands only. Wrapper and shell -c recursion moved to tech-debt. A Green round on the full spec was aborted and stashed as green-r2-aborted, outside the track. Red amended its tests at 81e4791, superseded by 03e0353. Free-route limits: opencode-free-deepseek hit its usage limit on a Green spawn. Green ran on minimax-cn-coding-plan/MiniMax-M3.1-Flash. Red ran on opencode-go/muse-spark-1.3-contributor#high. Review A ran on openai/gpt-6-luna#high. Its first attempt had no shell, and the retry passed. Phase acceptance ran on claude-agent/sonnet#max. Green changed two strict-mode tests in plugins/opencode-measure-guard/tests/tdd.test.ts to the heavy-run form. The guard refuses a bare suite command. plan.md line 16 says all suites pass. Line 19 records the baseline mods suite failure from claude-code/testing imports (Phase acceptance F3). The text was not reworded. PR #46 check checks passed on 46349f2. A build session pushes the plan-only commits b631277, 3ff55ec and the closeout after closeout. The installed-copy proof is the post-merge step in the plan footer and runs after the PM merges. measure/doctor.sh does not exist. PROJECT_CHECKS replaced it, as in earlier tracks."
+}

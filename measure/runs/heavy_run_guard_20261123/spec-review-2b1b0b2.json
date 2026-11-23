@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "heavy_run_guard_20261123",
+  "phase": "track setup",
+  "baseline_sha": "2b1b0b2fc3ee0afc99c97fc124d07168704d3c83",
+  "audited_head_sha": "2b1b0b2fc3ee0afc99c97fc124d07168704d3c83",
+  "status": "fail",
+  "summary": "The amendment closes F3, F4, and F5. It leaves one conflicting example in F6 and an undefined wrapper-option rule.",
+  "paraphrase": {
+    "proposes": "The track adds a matcher and an OpenCode hook that refuse specified heavy commands outside heavy-run. The matcher handles listed wrappers and shell command strings, and the track checks the installed plugin after merge.",
+    "current_system": "The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and parity checks compare the shared cores."
+  },
+  "blocking_findings": [
+    "F6 [Blocker] spec.md FR-3 Heavy-run form and FR-6: The spec says `./heavy-run.sh -c vite` is refused, but no heavy pattern matches its argv[0] and FR-6 allows it. Rationale: Red and Green must choose between the required test and the allow rule.",
+    "F7 [Blocker] spec.md FR-3 Patterns: The new wrapper rule does not define which `env` options take values or how `timeout` options are stripped. For example, `env -u CI vite` and `timeout -k 5s 60s vite` start a listed server. Rationale: Red and Green must choose how to parse these ordinary wrapper forms."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Confirmed HEAD and baseline are 2b1b0b2fc3ee0afc99c97fc124d07168704d3c83 and the initial worktree was clean.",
+    "F3 closed: env assignments, package-manager test forms, and bare node --test have explicit rules.",
+    "F4 closed for the reported case: pytest -k consumes its value and pytest -k expression is explicitly refused.",
+    "F5 closed: the post-merge diff excludes tests and .measure-install.",
+    "F6 partly closed: the accepted wrapper path must end in scripts/jobs/heavy-run.sh; its negative test conflicts with FR-6.",
+    "The shell recursion examples and the per-segment compound example have explicit outcomes.",
+    "Deliberate obfuscation is outside this review's blocking scope."
+  ],
+  "commands": ["git rev-parse HEAD", "git status --porcelain", "git branch --show-current", "git diff 31de549..2b1b0b2 -- measure/tracks/heavy_run_guard_20261123/spec.md measure/tracks/heavy_run_guard_20261123/plan.md"],
+  "changed_files": ["measure/runs/heavy_run_guard_20261123/spec-review-2b1b0b2.json", "measure/runs/heavy_run_guard_20261123/spec-review-2b1b0b2.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high"
+}

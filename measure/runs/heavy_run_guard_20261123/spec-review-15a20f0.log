@@ -1,0 +1,21 @@
+### What this track proposes
+The track adds a matcher and an OpenCode hook that refuse specified heavy commands outside heavy-run. The matcher handles listed wrappers and shell command strings, and the track checks the installed plugin after merge.
+
+### How the current system works, per this spec
+The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and parity checks compare the shared cores.
+
+### Findings
+- F9 [Nit] spec.md FR-3 Wrappers: The rule ignores arguments after an `env -S` string, so `env -S 'tsc' --noEmit` is allowed. Rationale: This limited wrapper form can run a full type check without heavy-run.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: heavy_run_guard_20261123
+phase: track setup
+commits: none
+tests_run: role-gate passed; exit 0
+files_changed: spec-review-15a20f0.json and spec-review-15a20f0.log
+plan_updates: none
+known_failures: none
+handoff: F8 is closed. F9 is nonblocking. retry_recommendation: none.
+END_MEASURE_AGENT_RESULT

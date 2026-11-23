@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "heavy_run_guard_20261123",
+  "phase": "track setup",
+  "baseline_sha": "7e29f5d17907b722e3c283b0763c3b1aba109448",
+  "audited_head_sha": "7e29f5d17907b722e3c283b0763c3b1aba109448",
+  "status": "fail",
+  "summary": "The specification leaves bypasses and conflicting decisions in the command matcher. The plan does not install or check the feature branch.",
+  "paraphrase": {
+    "proposes": "The track adds a pure matcher and an OpenCode hook to refuse specified heavy commands outside heavy-run. It exempts orchestrators, preserves core parity, and checks distribution and CI.",
+    "current_system": "The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer already distributes the OpenCode plugin, and the parity checks compare its shared core with the mod."
+  },
+  "blocking_findings": [
+    "F1 [Blocker] spec.md FR-3 and FR-5: A heavy-run path anywhere allows the whole command, but FR-5 requires each unwrapped heavy segment to be refused. For example, `echo scripts/jobs/heavy-run.sh; vite` passes under FR-3 and fails under FR-5. Rationale: Green must choose between conflicting rules, and the whole-command exemption bypasses the contract.",
+    "F2 [Blocker] spec.md FR-3 and FR-4: `playwright test` matches both the capture and full-suite rules, but the spec does not define which class the deny text uses. Rationale: Red and Green must choose between `capture` and `test-suite` for the required exact text.",
+    "F3 [Blocker] spec.md FR-3: The argv[0] rule misses common direct forms such as `CI=1 vite`, `npm run test`, and `node --test` without a file. Rationale: These commands start a listed server or full suite without the wrapper, and the spec gives no matching rule for them.",
+    "F4 [Blocker] spec.md FR-3: The spec does not define which option arguments count as positional file operands. For example, `tsc --noEmit -p tsconfig.json` and `vitest run --reporter verbose` can be read as targeted runs. Rationale: Red and Green must choose how to distinguish option values from file operands to enforce full-run coverage.",
+    "F5 [Blocker] spec.md FR-9 and plan.md Task 1.3: The plan only runs `bin/install-measure-skill --check`, which reads `main` and writes nothing. It neither installs nor checks the feature branch. Rationale: A clean check can report success while the installed plugin lacks the new guard, so the stated installation outcome is not verified."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Confirmed HEAD and baseline are 7e29f5d17907b722e3c283b0763c3b1aba109448 and the initial worktree was clean.",
+    "The FR-7 examples use non-heavy argv[0] values and are sound under the specified direct-command pattern.",
+    "The parity scripts check the OpenCode copy byte-for-byte and the DSH copy after the parse import transform.",
+    "bin/install-targets.tsv maps the OpenCode plugin to the requested target; bin/install-measure-skill defaults to main and --check does not write.",
+    "Guard.onToolBefore returns early for calls with no write targets or commit; the new check must run before that return.",
+    "Zoom-out and zero-decision checks found the listed root-problem and edge-case gaps."
+  ],
+  "commands": ["git rev-parse HEAD", "git status --porcelain", "git branch --show-current"],
+  "changed_files": ["measure/runs/heavy_run_guard_20261123/spec-review-7e29f5d.json", "measure/runs/heavy_run_guard_20261123/spec-review-7e29f5d.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high"
+}

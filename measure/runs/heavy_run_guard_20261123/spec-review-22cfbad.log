@@ -1,0 +1,21 @@
+### What this track proposes
+The track adds a matcher and an OpenCode hook that refuse specified heavy commands outside heavy-run. It handles listed wrappers and shell command strings, and checks the installed plugin after merge.
+
+### How the current system works, per this spec
+The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and parity checks compare the shared cores.
+
+### Findings
+- F8 [Blocker] spec.md FR-3 Wrappers: The new `env -S` rule consumes the split string as an option value instead of checking its command. Thus `env -S 'vite --port 3000'` starts a listed dev server but passes the matcher. Rationale: This listed wrapper form conflicts with the required refusal of unwrapped dev servers.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: heavy_run_guard_20261123
+phase: track setup
+commits: none
+tests_run: role-gate exit 1; audit status is fail
+files_changed: spec-review-22cfbad.json and spec-review-22cfbad.log
+plan_updates: none
+known_failures: F8 blocks the spec review
+handoff: F6 and F7 are closed. Resolve F8 before implementation. retry_recommendation: escalate_human.
+END_MEASURE_AGENT_RESULT

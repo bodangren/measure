@@ -1,0 +1,29 @@
+Red round 2 for Task 1.1 (v1 scope cut): the matcher tests drop wrappers, shell -c, and non-path heavy-run recursion; bare heavy-run.sh passes; v1 gaps pass; tsc -b/--build are full regardless of operands.
+
+Mods command: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test tests/heavy-run.test.ts'
+Mods result: 0 pass / 54 fail, exit 1. 53 failures are the named Red error `heavyRunDecision is not exported from ../hooks/guards yet`; the export test fails on its typeof check (same missing-export reason).
+Plugin command: HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test tests/heavy-run.test.ts'
+Plugin result: 6 pass / 2 fail, exit 1. The 2 failures are `Expected promise that rejects / Received promise that resolved` on the unwrapped `vite` (dev-server) and `bun test` (test-suite) hook denies: Guard.onToolBefore passes heavy commands through because the FR-8 wiring does not exist yet.
+Rest of plugin suite (`bun test`, full dir): 193 pass, only the 2 new Red deny tests fail.
+Removed cases (cut from spec): wrappers describe (env/nohup/timeout/time/exec/command, env -u/timeout -k, env -S string + args, command -v), shell -c recursion describe (bash/sh -c refused, depth 2/3, bash -c ls), non-path heavy-run describe (./heavy-run.sh -c vite refused), npm exec -- runner prefix line.
+Added cases: tsc -b tsconfig.json + tsc -b src/a.ts refused (build full regardless of operands); bare heavy-run.sh + ./heavy-run.sh -c vite pass; accepted v1 gaps pass (env CI=1 vite, bash -c 'vite', timeout 60 vite); plugin hook v1-gap pass-through + bare heavy-run.sh pass.
+Kept: all FR-3 classes, runner prefixes (npx/bunx/bun x), CI=1 vite refused, operand rules, pytest list, path-form heavy-run, compounds, FR-6/FR-7, FR-2 exemption.
+
+MEASURE_AGENT_RESULT
+role: measure-mid-red
+track: heavy_run_guard_20261123
+phase: Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)
+task: T1.1
+baseline_sha: 05a3f38
+role_base_sha: ea0e17d
+head_sha: 03e0353f69dad0754f786e26bd8a3cfe8b9232be
+commits: 03e0353 measure(red): heavy-run guard tests cut to v1 (track_id: heavy_run_guard_20261123)
+tests: mods/measure-guard/tests/heavy-run.test.ts (54 checks, all fail on the missing export, exit 1); plugins/opencode-measure-guard/tests/heavy-run.test.ts (8 checks, 2 fail on the unwired hook, exit 1); plugin full suite 193 pass with only the 2 new Red failures
+files: mods/measure-guard/tests/heavy-run.test.ts (v1 cut), plugins/opencode-measure-guard/tests/heavy-run.test.ts (v1 gaps added), measure/tracks/heavy_run_guard_20261123/plan.md (Task 1.1 stays [~], round-2 evidence)
+red_command: RED_TEST_COMMAND="cd mods/measure-guard && bun test tests/heavy-run.test.ts" via role-gate --role mid-red --baseline 05a3f38 --runner .../heavy-run.sh
+red_exit: 1 (expected Red failure)
+red_reason: heavyRunDecision is not exported from mods/measure-guard/hooks/guards.ts (all 54 mods checks fail on the missing export); Guard.onToolBefore has no FR-8 heavy-run wiring (both plugin deny checks resolve instead of throwing the FR-4 text)
+breakage_proof: no production file touched (missing export and unwired hook are the breakage). Inverse proof: the 6 plugin pass-checks (heavy-run form, v1 gaps, bare heavy-run.sh, orchestrator agent, advise/bypass, non-shell tool) already resolve, so the hook path the Green wiring will extend is live.
+remaining_failures: mods heavy-run.test.ts exits 1 and plugin heavy-run.test.ts exits 1 (both expected v1 Red state; Green Task 1.2 adds heavyRunDecision in guards.ts, the two parity core copies, and the Guard.onToolBefore wiring)
+production_files_touched: none (mods/measure-guard/hooks/guards.ts, src/core/guards.ts, src/guard.ts not created or edited)
+END_MEASURE_AGENT_RESULT

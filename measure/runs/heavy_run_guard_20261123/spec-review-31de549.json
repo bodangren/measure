@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "heavy_run_guard_20261123",
+  "phase": "track setup",
+  "baseline_sha": "31de5490d4f758dcf8772a17a4a88bf6bd226b31",
+  "audited_head_sha": "31de5490d4f758dcf8772a17a4a88bf6bd226b31",
+  "status": "fail",
+  "summary": "The amendment resolves several original examples but leaves full-suite coverage and installation proof incomplete. It also introduces a wrapper-path bypass.",
+  "paraphrase": {
+    "proposes": "The track adds a pure matcher and an OpenCode hook that refuse specified heavy commands outside heavy-run. It preserves shared-core parity and checks the installed plugin after merge.",
+    "current_system": "The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and the parity checks compare the shared cores."
+  },
+  "blocking_findings": [
+    "F3 [Blocker] spec.md FR-3 and FR-6: `env CI=1 vite` passes because `env` is argv[0], although it starts the same server as the now-refused `CI=1 vite`. Rationale: The original server coverage gap remains, and Red and Green must choose whether to follow the allow rule or the heavy-run contract.",
+    "F4 [Blocker] spec.md FR-3: The new option lists omit value-taking options for listed runners, including `pytest -k expression`. The definition treats `expression` as a file operand and allows a full filtered suite. Rationale: The amendment still leaves Red and Green to choose between the operand rule and full-suite coverage.",
+    "F5 [Blocker] spec.md FR-9 and plan.md Post-merge: The required recursive diff excludes `tests/` but not the installer's `.measure-install` stamp, which exists only in the installed target. Rationale: The stated equality proof fails after a correct installation unless the implementer chooses an additional exclusion.",
+    "F6 [Blocker] spec.md FR-3 Heavy-run form: The new basename-only exemption allows `./heavy-run.sh -c vite` even when that file is not `scripts/jobs/heavy-run.sh`. Rationale: This new exemption permits an unwrapped server and conflicts with the required wrapper path."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Confirmed HEAD and baseline are 31de5490d4f758dcf8772a17a4a88bf6bd226b31 and the initial worktree was clean.",
+    "F1: Per-segment checking now refuses `echo scripts/jobs/heavy-run.sh; vite`.",
+    "F2: Fixed class order makes `playwright test` a capture.",
+    "F3: Assignment prefixes, package-manager run test forms, and bare node --test are now listed.",
+    "F4: The new option lists resolve the original tsc -p and vitest --reporter examples.",
+    "F5: The installer check now runs after merge; the installer writes .measure-install at lines 277-293.",
+    "FR-5 checks `cd x && vite` by segment. The argv[0] rule allows `bash -c 'vite'`, `sh -c 'vite'`, and parenthesized command forms; these limits predate this amendment.",
+    "The FR-7 examples remain sound. No new dependency, schema, or file-location ambiguity was found.",
+    "The track spec-review.md was not read because the role instructions prohibit it."
+  ],
+  "commands": ["git rev-parse HEAD", "git status --porcelain", "git branch --show-current"],
+  "changed_files": ["measure/runs/heavy_run_guard_20261123/spec-review-31de549.json", "measure/runs/heavy_run_guard_20261123/spec-review-31de549.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high"
+}

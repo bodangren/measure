@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "heavy_run_guard_20261123",
+  "phase": "track setup",
+  "baseline_sha": "8cfd6434bc83e35ed18f6822dac4d06be066c1bc",
+  "audited_head_sha": "8cfd6434bc83e35ed18f6822dac4d06be066c1bc",
+  "status": "pass",
+  "summary": "The amendment closes F10. The changed tsc rules have no conflicting outcomes.",
+  "paraphrase": {
+    "proposes": "Version 1 adds a matcher and an OpenCode hook for specified direct heavy commands. The track checks parity and the installed plugin after merge.",
+    "current_system": "The spec says role briefs state the heavy-run rule, but role sessions do not always follow it. The installer stages the OpenCode plugin from main, and parity checks compare the shared cores."
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "Confirmed HEAD and baseline are 8cfd6434bc83e35ed18f6822dac4d06be066c1bc and the initial worktree was clean.",
+    "F10 closed: FR-3 refuses tsc -b regardless of operands, and FR-6 excludes -b and --build from its file-operand allowance.",
+    "The spec names tests for tsc -b tsconfig.json, tsc --build, and tsc --noEmit src/a.ts.",
+    "Task 1.1 names the tsc build tests. The review did not inspect test files."
+  ],
+  "commands": ["git rev-parse HEAD", "git status --porcelain", "git branch --show-current", "git diff d5df135..8cfd643 -- measure/tracks/heavy_run_guard_20261123/spec.md measure/tracks/heavy_run_guard_20261123/plan.md"],
+  "changed_files": ["measure/runs/heavy_run_guard_20261123/spec-review-8cfd643.json", "measure/runs/heavy_run_guard_20261123/spec-review-8cfd643.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

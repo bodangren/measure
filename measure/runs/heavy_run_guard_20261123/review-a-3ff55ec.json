@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "heavy_run_guard_20261123",
+  "phase": "Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)",
+  "baseline_sha": "05a3f38",
+  "audited_head_sha": "3ff55ec",
+  "status": "pass",
+  "summary": "HEAD is 3ff55ec and the working tree is clean. The only change since the prior reviewed HEAD is plan.md. The phase diff, plan evidence, test outputs, and parity checks support the prior verdict.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F2 [Nit] review-a: The plugin README still tells users to run `bun test` and `bun x tsc --noEmit -p .` without heavy-run (plugins/opencode-measure-guard/README.md:148-154). The new guard denies both commands in guard and strict mode. Update the check instructions or explain the required wrapper so the documented checks remain usable. Declined per plan.md:26."
+  ],
+  "evidence": [
+    "F1 withdrawn: spec.md FR-3 Capture says basename `playwright` with any args; that includes no arguments, so guards.ts:1026 matches the spec.",
+    "HEAD verification: `git -C /home/daniebo/Desktop/measure rev-parse --short HEAD` returned `3ff55ec`.",
+    "`git -C /home/daniebo/Desktop/measure status --short` returned no output.",
+    "`git -C /home/daniebo/Desktop/measure diff --stat 46349f2 3ff55ec` reported only measure/tracks/heavy_run_guard_20261123/plan.md: 1 file changed, 7 insertions, 2 deletions.",
+    "`git diff --name-status 46349f2 3ff55ec` reported only M measure/tracks/heavy_run_guard_20261123/plan.md.",
+    "The exact phase diff `05a3f38..3ff55ec` has the expected 10 files: track spec, spec-review, plan, matcher implementations/tests, OpenCode hook, and its TDD fixture.",
+    "The pushed PR head is still 46349f2: `gh run view 45110383286 --json conclusion,headSha` returned conclusion success and headSha 46349f2bdd79018584f3998835d03d202e366a31; `gh pr view 46 --json state,headRefOid` returned state OPEN and the same headRefOid.",
+    "Plan line 22 installer facts match `bin/install-targets.tsv:12` and `bin/install-measure-skill:9,18-22,29,49-75`: target row excludes tests, stamp is `.measure-install`, and supported options include no dry-run or list mode.",
+    "The mod matcher tests passed: 54 pass, 0 fail.",
+    "The OpenCode hook tests passed: 8 pass, 0 fail.",
+    "The OpenCode parity check printed `parity: ok`.",
+    "The DSH parity check printed `parity: ok`.",
+    "Plan lines 21-27 close tasks 1.3 and 1.4 with commit evidence b631277; `git show --stat` confirms both b631277 and 3ff55ec change only the track plan.",
+    "F2 remains declined as recorded in measure/tracks/heavy_run_guard_20261123/plan.md:26."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse --short HEAD — 3ff55ec",
+    "git -C /home/daniebo/Desktop/measure status --short — no output",
+    "git -C /home/daniebo/Desktop/measure diff --stat 46349f2 3ff55ec — only plan.md; 7 insertions, 2 deletions",
+    "git -C /home/daniebo/Desktop/measure diff --name-status 46349f2 3ff55ec — only M measure/tracks/heavy_run_guard_20261123/plan.md",
+    "gh run view 45110383286 --json conclusion,headSha — success; headSha 46349f2bdd79018584f3998835d03d202e366a31",
+    "gh pr view 46 --json state,headRefOid — OPEN; headRefOid 46349f2bdd79018584f3998835d03d202e366a31",
+    "git -C /home/daniebo/Desktop/measure diff --name-status 05a3f38..3ff55ec — 10 expected phase files",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/mods/measure-guard && bun test tests/heavy-run.test.ts' — 54 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bun test tests/heavy-run.test.ts' — 8 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/opencode-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'cd /home/daniebo/Desktop/measure/plugins/dsh-measure-guard && bash scripts/check-parity.sh' — parity: ok",
+    "git -C /home/daniebo/Desktop/measure show --stat --oneline b631277 — plan.md only",
+    "git -C /home/daniebo/Desktop/measure show --stat --oneline 3ff55ec — plan.md only",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track heavy_run_guard_20261123 --phase \"Phase 1: Heavy-run guard refuses heavy commands outside heavy-run (due 2026-11-26)\" --baseline 05a3f38 --result-file measure/runs/heavy_run_guard_20261123/review-a-3ff55ec.json --log-file measure/runs/heavy_run_guard_20261123/review-a-3ff55ec.log — PASS, exit 0"
+  ],
+  "changed_files": [
+    "measure/tracks/heavy_run_guard_20261123/plan.md",
+    "measure/tracks/heavy_run_guard_20261123/spec-review.md",
+    "measure/tracks/heavy_run_guard_20261123/spec.md",
+    "mods/measure-guard/hooks/guards.ts",
+    "mods/measure-guard/tests/heavy-run.test.ts",
+    "plugins/dsh-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/core/guards.ts",
+    "plugins/opencode-measure-guard/src/guard.ts",
+    "plugins/opencode-measure-guard/tests/heavy-run.test.ts",
+    "plugins/opencode-measure-guard/tests/tdd.test.ts"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "Matcher tests passed 54/54, hook tests passed 8/8, and both parity checks passed."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 5,
+      "evidence": "The named matcher and hook tests passed, and unchanged Red files were previously verified against 03e0353."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --stat 46349f2 3ff55ec` shows the final delta changes only plan.md."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The HEAD, diff, CI run, PR head, installer facts, test outputs, and parity outputs were verified by commands or file lines."
+    }
+  ]
+}
