@@ -40,3 +40,8 @@ Author model: opencode-go/muse-spark-1.3-contributor
 - F8 is closed.
 - F9 [Nit]: the `env -S` rule ignores the arguments after the `-S` string, so `env -S 'tsc' --noEmit` is allowed. Disposition: declined for this track (a limited wrapper form beyond the contract); the closeout records it as a tech-debt row.
 - Gate: role-gate spec-review exit 0 (evidence `measure/runs/heavy_run_guard_20261123/spec-review-15a20f0.json`).
+- PM scope cut after Round 5 passed at 15a20f0: wrapper and `-c` recursion removed; the smaller spec is reviewed again in Round 6.
+
+### Round 6
+
+(empty)
