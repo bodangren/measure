@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Heavy-run guard refuses heavy commands outside heavy-run**
+  *Link: [./tracks/heavy_run_guard_20261123/](./tracks/heavy_run_guard_20261123/)*
+  *Heavy-run guard in measure-guard: a role session that starts a dev server, a Playwright or Chrome capture, a full tsc --noEmit, a full test suite, a render, or build-graph outside scripts/jobs/heavy-run.sh is refused with one line that names the heavy-run form (PM assignment A-new2, due 2026-11-26).*
+
 ---
 
 ## Cancelled Tracks
