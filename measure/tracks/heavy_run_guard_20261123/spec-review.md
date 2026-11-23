@@ -23,4 +23,11 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 3
 
+- Commit: 2b1b0b2. Model: openai/gpt-6.1-terra#high. Verdict: fail.
+- F6 (Blocker): `./heavy-run.sh -c vite` is required refused but no rule matches it. Disposition: accepted, fixed in the amendment commit.
+- F7 (Blocker): wrapper option parsing is undefined. Disposition: accepted, fixed in the amendment commit.
+- F3 to F5 are closed.
+
+### Round 4
+
 (empty)
