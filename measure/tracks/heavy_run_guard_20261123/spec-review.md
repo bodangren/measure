@@ -30,4 +30,10 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 4
 
+- Commit: 22cfbad. Model: openai/gpt-6.1-terra#high. Verdict: fail.
+- F8 (Blocker): `env -S 'vite --port 3000'` passes because `-S` consumes the string as an option value. Disposition: accepted, fixed in the amendment commit.
+- F6 and F7 are closed.
+
+### Round 5
+
 (empty)
