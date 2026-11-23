@@ -26,4 +26,7 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 4
 
-(empty)
+- Round 4 at e43d546 on openai/gpt-6.1-terra#high (same reviewer session as Rounds 1 to 3). Verdict: pass. Findings: none.
+- F5 is closed.
+- The reviewer ran the v2_shell_effect helper over every named test shape for the eight roles (72 checks); every shape matched the spec.
+- Gate: role-gate spec-review exit 0 (evidence measure/runs/audit_role_gate_allow_20261123/spec-review-e43d546.json).
