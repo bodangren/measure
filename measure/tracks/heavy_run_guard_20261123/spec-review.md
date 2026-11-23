@@ -44,4 +44,10 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 6
 
+- Commit: d5df135. Model: openai/gpt-6.1-terra#high. Verdict: fail.
+- F10 (Blocker): `tsc -b tsconfig.json` must be refused, but FR-6 allows `tsc` with file operands and `tsconfig.json` is file-like. Disposition: accepted, fixed in the amendment commit.
+- The v1 cut is otherwise clean.
+
+### Round 7
+
 (empty)
