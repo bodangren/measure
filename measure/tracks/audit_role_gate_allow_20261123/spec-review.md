@@ -20,4 +20,10 @@ Author model: opencode-go/muse-spark-1.3-contributor
 
 ### Round 3
 
+- Round 3 at 0f4bd77 on openai/gpt-6.1-terra#high (same reviewer session). Verdict: fail.
+- F5 (Blocker): the spec says any role-gate command with a `>` anywhere is denied, but the three redirect denies need a space before `>` or `>>`. An unspaced `>` gives allow. Disposition: accepted, fixed in the amendment commit (exact redirect cases, new `2>&1` test case).
+- F3 and F4 are closed.
+
+### Round 4
+
 (empty)
