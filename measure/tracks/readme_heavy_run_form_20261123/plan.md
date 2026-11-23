@@ -22,6 +22,7 @@ Test commands: `bash tests/readme/run.sh`; `bash plugins/opencode-measure-guard/
 - Local part, run with Task 1.2 marked `[~]`: `HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/readme/run.sh'` exits 0: 12 checks, PASS=12, FAIL=0. The same wrapper with `-c 'bash plugins/opencode-measure-guard/scripts/check-parity.sh'` prints `parity: ok` and exits 0.
 - Implementation commit 20ecf85 edits only `plugins/opencode-measure-guard/README.md`: the two Checks commands in heavy-run form, the new sentence after the code block, the Heavy-run guard bullet after the Edit guard bullet, and one clause of the Guards intro. No other README line changed.
 - Task 1.3 and Task 1.4 are closed in the records round; see the Records evidence section below.
+- Review A Nit fixed in 08780bf: the Heavy-run guard bullet's example role `measure-reviewer` named no agent, so it now names `measure-review-a-correctness`, an existing agent. The contract and parity commands still pass.
 
 ## Records evidence (Tasks 1.3 and 1.4, 2026-11-23)
 - Task 1.3 (orchestrator verified): branch `chore/readme-heavy-run-form` pushed at head f5d2806; PR #47 (https://github.com/bodangren/measure/pull/47) is open; check `checks` passed on run https://github.com/bodangren/measure/actions/runs/45126292036 (6m15s); origin/main had not moved beyond cd3c41b; nothing merged.
