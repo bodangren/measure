@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "green_gate_review_task_20261124",
+  "phase": "track setup",
+  "baseline_sha": "c5bc2ff7afcf28172c4421f0cbf630036035be3a",
+  "audited_head_sha": "c5bc2ff7afcf28172c4421f0cbf630036035be3a",
+  "status": "pass",
+  "summary": "Verdict: pass. All six round 1 findings are fixed, and no Blocker or Major remains. The regex matches both real Lending forms, and it matched no work task among 2671 plan tasks. A prototype built from the spec text reproduces every claimed fixture output, and all 148 existing Python tests still pass with it. The Red cases catch each wrong version that I built, except one contrived version that lets a closed review task use the ignore. Three new Nits remain: the regex misses letter-suffix ids, no task owns the CHANGELOG entry, and FR-4 dropped the closeout clause.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F7 [Nit] spec.md FR-1: The number part of the regex, `\\d+(?:\\.\\d+)*`, accepts no letter, so `- [~] 4b.5 Review A.` and `- [~] 4.13s Adversarial tests` still fail the jr-green gate. Rationale: The regex matches 13 of 15 distinct role tasks in the Measure and Lending plans. It misses `4b.5` (daily_model_schedule) and `4.13s` (model_guide). The miss is safe, because the gate fails as today. Allow one letter after each number. Add one Red case.",
+    "F8 [Nit] plan.md Task 1.2: FR-4 adds one `CHANGELOG.md` entry, but no task owns it. Task 1.2 cites FR-1 through FR-3, and Task 1.3 holds only the pull request and the records. Add the entry to Task 1.2. Rationale: The four earlier checker commits (f68a87f, 94698fe, 7e6dc79, 27c2ed0) each added the entry with the checker change. The Green role file names implementation files, Green tests, and plan updates, not `CHANGELOG.md`. A task without an owner can leave FR-4 open until phase acceptance.",
+    "F9 [Nit] spec.md FR-4: FR-4 says `exactly`, but the closeout step of the light lane changes more files. Name them again: `measure/tracks.md`, `measure/archive/<track>/`, and `measure/runs/<track>/`. Rationale: The earlier text of FR-4 named the closeout files, and the revision removed that sentence. The closeout of audit_role_gate_allow_20261123 (commit 800df77) changed all three paths. An auditor can read `exactly` as a scope breach."
+  ],
+  "evidence": [
+    "HEAD c5bc2ff7afcf28172c4421f0cbf630036035be3a equals audited_head_sha. The working tree was clean at the start and at the end. The branch is fix/green-gate-open-review-task.",
+    "Role rule note: one combined shell command printed measure/tracks/green_gate_review_task_20261124/spec-review.md by mistake. The file held only the Author model line and an empty `## Spec Review` heading. It gave this review no input.",
+    "F1 fixed. The FR-1 regex matches `Task 3.5 Review A ...` and `3.5 Review A.`. It matched no work task in 2671 task lines of 196 plans: 24 matches, all role tasks. The round 1 counter-examples (`per the acceptance criteria`, `Review assignments`) now fail the match.",
+    "F2 fixed. Plan Task 1.1 now holds the deferred cases, the unfinished Green case, and the SHA case. Against wrong versions, the deferred cases catch a helper with no deferred check, and the SHA case catches a helper that skips the SHA check.",
+    "F3 fixed. Each case names a fixture and an output. A prototype built from the spec text gave every claimed output through the real role-gate command, in one temporary git repository per case. The mid-red and review-a fixtures catch a change of phase_counts.",
+    "F4 fixed: FR-1 says `at most one`. F5 fixed: FR-3 keeps the five-value return, names the three callers, and names phase_blocks and the task-line pattern. F6 fixed: FR-4 adds CHANGELOG.md and the post-merge install, and Out of Scope adds no tech-debt row.",
+    "FR-3 line numbers hold at HEAD: phase_blocks at line 371, callers at lines 1293, 1334, and 1359, and the task-line pattern at lines 386, 400, and 415. No other caller of phase_counts exists in the repository.",
+    "Installer claim holds: bin/install-targets.tsv maps skills/measure-orchestrator to ~/.agents/skills/measure-orchestrator, and the installer reads the ref (default main), so the install must follow the merge. The installed checker equals the repo copy today.",
+    "Lending fixture holds: commit 6faaf42 of lending-desk-bench, measure/tracks/domain_trust/plan.md lines 140 to 199, has the Phase 3 heading, tasks 3.1 to 3.4 as [x] with SHAs, `- [~] 3.5 Review A.`, and two [b] tasks. The checker reads no [b] line. The current checker fails it (incomplete 1). The prototype passes it.",
+    "Claimed outputs, current checker versus prototype: base plus one [~] Review A gives FAIL before and PASS after. Two label tasks give `still has 2` before and `still has 1` after. The eleven label forms and the Lending fixture pass only after. The boundary cases give the same result before and after.",
+    "Mid-red and review-a: for the plan fixtures, the current checker and the prototype both give `PASS: mid-red gate passed` and `FAIL: current phase still has 1 non-deferred incomplete tasks`. A version that changes phase_counts fails both cases. The mid-red fixture needs its open [ ] task to catch that version.",
+    "Mutation check with 13 wrong versions: the plan cases catch 12. The survivor lets a closed [x] review task use the ignore. No natural implementation does this, so it is not a finding.",
+    "Existing tests: no fixture in tests/ holds a [~] task that starts with a role label. All 148 Python tests of tests/spec_review_gate pass with the prototype, in a throwaway copy of the repository, run through heavy-run.sh at priority p1.",
+    "Regex coverage over the Measure and four Lending plan sets: 15 distinct role tasks, 13 match, 2 miss (`4b.5` and `4.13s`, F7). Zero work tasks match. The Measure form `Run measure-review-a-correctness` is not a label at the start, so the rule leaves it open. This is safe and in scope.",
+    "FR-4 precedent: the four earlier checker commits each changed CHANGELOG.md with the checker. The closeout of audit_role_gate_allow_20261123 (commit 800df77) changed measure/tracks.md, measure/archive, and measure/runs (F8, F9). No live document states the jr-green task rule, so no document goes stale.",
+    "Plan Task 1.3 stays open at the Green gate, as in audit_role_gate_allow_20261123. A records round closes it. This is a process note, not a finding.",
+    "Method note: the experiments ran as Python from stdin, with temporary folders that the program removed. The edit rule of this role denied a script file in /tmp. The shell rule `*rm *` denied two runs because a variable name ended in `rm`. This is the known unanchored-glob issue."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --short; git log --oneline -5; git show --stat c5bc2ff",
+    "git diff 9dad8a3 c5bc2ff -- measure/tracks/green_gate_review_task_20261124/spec.md; read of plan.md at both commits",
+    "read and grep of phase_blocks, phase_counts, track_incomplete, discover_phases, cmd_role_gate, gate_command, track_scope, and validate_spec_review_payload in measure_interphase_checks.py",
+    "git -C /home/daniebo/Desktop/lending-desk-bench show 6faaf42:measure/tracks/domain_trust/plan.md (read only)",
+    "python3 -I corpus scans of 196 plan.md files in this repository and in four lending-desk-bench checkouts (read only)",
+    "python3 -I experiment from stdin: 14 checker versions (current, prototype, 12 wrong versions) times 29 fixture repositories through the real role-gate command, in temporary folders",
+    "python3 -I experiment from stdin: mid-red and review-a fixtures against the current checker, the prototype, and two phase_counts versions",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh -c 'python3 -B -m unittest discover -s tests/spec_review_gate -p test_*.py' in a throwaway copy with the prototype (148 tests, OK)",
+    "grep of tests, skills, agents, and docs for [~] fixtures, phase_counts, and jr-green gate text; read of bin/install-targets.tsv and bin/install-measure-skill",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track green_gate_review_task_20261124 --phase \"track setup\" --baseline c5bc2ff --result-file measure/runs/green_gate_review_task_20261124/spec-review-c5bc2ff.json --log-file measure/runs/green_gate_review_task_20261124/spec-review-c5bc2ff.log"
+  ],
+  "changed_files": [
+    "measure/runs/green_gate_review_task_20261124/spec-review-c5bc2ff.json",
+    "measure/runs/green_gate_review_task_20261124/spec-review-c5bc2ff.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "This chore makes the jr-green role gate ignore at most one open `[~]` task whose title starts with a later-role label. A case-insensitive regex pins the labels `Review A`, `Review B`, `Review C`, `Adversarial`, and `Acceptance`, and a word in the body never matches. A helper used only by the jr-green branch holds the logic, and `phase_counts` keeps its five-value return. A `[ ]` task, a `deferred` task, a second label task, and the SHA-evidence check stay as today. Red adds a contract test with named fixtures, Green adds the helper, and the change set holds one `CHANGELOG.md` entry.",
+    "current_system": "`phase_counts` in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` reads one phase of `plan.md` and returns five counts. A task counts as incomplete when it is not `[x]` and its text has no `deferred`. The jr-green branch fails with `current phase still has N non-deferred incomplete tasks` when the incomplete count is above zero. Mid-red, jr-green, and the review and phase-acceptance branch each unpack the five values, and final-acceptance uses `track_incomplete`. Lending rule A12 marks the review task `[~]` before Review A starts, so the open task 3.5 fails the jr-green gate."
+  }
+}

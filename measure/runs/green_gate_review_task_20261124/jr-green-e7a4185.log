@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: jr-green
+status: PASS
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: implementation 7ac430facb4bdac2aa5e10571d187b7f34f2912b; plan evidence 5afab9a575c1e6ac7c46348a2b79f028bbfafb2e; final Green HEAD 5afab9a575c1e6ac7c46348a2b79f028bbfafb2e
+tests_run: targeted Red command before the edit: Ran 13 tests, FAILED (failures=14), suite FAIL, exit 1. Targeted command after the edit: Ran 13 tests, OK, suite PASS, exit 0. Full proof: 26 suites, PASS=26, FAIL=0, exit 0. GREEN_TEST_COMMAND node --test plugins/dsh-measure-guard/tests/*.test.js: pass 384, fail 0, exit 0. All three test commands ran through heavy-run.sh with HEAVY_PRIORITY=p1 and HEAVY_MIN_AVAIL_MB=1500. Role gate: one FAIL line, exit 1.
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py; CHANGELOG.md; measure/tracks/green_gate_review_task_20261124/plan.md. New file: measure/runs/green_gate_review_task_20261124/jr-green-e7a4185.log (gitignored, not committed). No file in tests/ changed during Green.
+plan_updates: Task 1.2 flipped from [~] to [x] with implementation SHA 7ac430f and the recorded evidence. Task 1.1 stays as recorded in Red. Task 1.3 stays open for the build session. No [b] task and no deferred marker were added. Task 1.3 is not closed out.
+known_failures: role gate exit 1 with the exact output FAIL: current phase still has 1 non-deferred incomplete tasks. That line names Task 1.3 only, which the build session owns. GREEN_TEST_COMMAND passed inside the gate.
+handoff: Immutable phase_base_sha is 8ab715b. Separate role_base_sha is e7a4185. Committed Red change 7c2435c is inside 8ab715b..HEAD. Final Green HEAD is 5afab9a. The jr-green branch now calls a separate helper that ignores at most one [~] task with a later-role label at the start of its text. phase_counts keeps its five-value return. Mid-red and review callers stay unchanged. Review A and phase acceptance can audit the two commits in 8ab715b..5afab9a. Task 1.3 remains open for the build session.
+END_MEASURE_AGENT_RESULT

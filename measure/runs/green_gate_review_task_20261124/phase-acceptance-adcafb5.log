@@ -1,0 +1,61 @@
+# Phase acceptance log: Phase 1 of green_gate_review_task_20261124
+
+Role: measure-phase-acceptance
+Route: claude-agent/sonnet#max
+Track: green_gate_review_task_20261124 (chore, light lane)
+Phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+phase_base_sha: 8ab715b
+role_base_sha: adcafb5
+audited_head_sha: adcafb5c7edf6766467fa6ca8648c7dd7ace939b
+Result artifact: measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.json
+
+## Verdict
+
+PASS. No finding blocks acceptance. Four nonblocking Late findings (PA-1 to PA-4) go to tech-debt.
+
+## What I verified
+
+1. HEAD equals the audited SHA adcafb5, the tree was clean at the start and at the end, and the remote branch holds the same SHA. PR #49 is open and not merged. The check "checks" passed at adcafb5.
+2. The phase diff 8ab715b..adcafb5 holds 5 files: the checker, the new test, CHANGELOG.md, plan.md, and spec.md. No closeout file is in it (measure/tracks.md, measure/archive/, measure/tech-debt.md, run.sh).
+3. All 3 tasks are [x] with a SHA that resolves to the claimed commit: 7c2435c (Red), 7ac430f (Green), 5afab9a (PR and records). The plan counts are (3, 3, 0, 0, 3).
+4. FR-1 to FR-5 hold. The helper jr_green_phase_counts has one caller, the jr-green branch. The regex equals the spec regex. The completed-task rule from the 544a85d remediation holds.
+5. The real Lending plan at 6faaf42 (read with git show) fails jr-green at 8ab715b and passes at adcafb5. Across 4 phases and 9 roles, every other gate output is byte-identical between the base and HEAD.
+6. A spec-based oracle agrees with the helper on 6000 random plans (0 mismatches) and with the CLI on 29 curated shapes. The other count functions are identical at the base and at HEAD.
+7. Fail-first reproduces. The Red test against the base checker fails 14 times in 13 tests, as plan.md records. The remediation case fails against 7ac430f and 9c9e70e and passes at adcafb5.
+8. 11 of 11 core mutants of the HEAD checker are killed by the 15-test suite.
+9. Suites at adcafb5 through heavy-run: the target test (15 tests), run.sh (26 suites, PASS=26, FAIL=0), the node suite (384 pass), tests/dsh/run.sh (15 passed, 0 failed), and both parity scripts (parity: ok) all exit 0.
+10. Review A round 2 passed at the same HEAD. Its F1 to F4 withdrawals hold, and its F5 and F6 Late findings hold.
+
+## Findings (nonblocking, all Late findings)
+
+- PA-1 [Nit]: a [~] work task such as `Task 1.4 Review A remediation: ...` or `Task 6.5: Final acceptance remediation (...)` uses the one ignore. The code follows the spec regex. Real plans hold 1 such task in 21,673 (advantage-pr/measure/archive/repo_hardening_20261017/plan.md:310). The review-a and phase-acceptance gates still count the open task. Route: tech-debt.
+- PA-2 [Nit]: the committed test pins no colon form, no no-number form, and no three-level number form. Mutants that drop each form survive. Route: tech-debt.
+- PA-3 [Nit]: the CHANGELOG.md:25 entry omits the completed-task rule that FR-1 states. Route: tech-debt.
+- PA-4 [Nit]: plan.md holds no `- Late finding <id>: tech-debt (<reason>)` line for F5 and F6, and spec Out of Scope says the track adds no tech-debt row. The orchestrator records the lines and the rows at closeout.
+
+## Anti-pattern check
+
+- A3 absent: the contract test matches the full labeled line, and the two-review case rejects the count of 2.
+- A4 absent: a phase with no [x] task fails with the incomplete line.
+- A5: each pass claim in plan.md reproduces (Red 14 failures, suites, stat, run time, PR facts).
+- A6 does not apply: measure/tracks.md is outside the phase diff.
+- A7: the filter is spec-conformant. A real scan finds no [~] match, and one remediation task has the matching shape (PA-1).
+
+## Limits of this audit
+
+- The committed Lending case is a reduced shape fixture. I ran the real blob by hand.
+- The installed copy in ~/.agents/skills is outside this phase. FR-4 assigns the install and its --check to the orchestrator after the merge.
+- I wrote only under measure/runs/, and I removed my scratch folder in /tmp.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: none
+tests_run: heavy-run bash tests/spec_review_gate/run.sh test_green_gate_review_task.py: pass, exit 0 (15 tests); heavy-run bash tests/spec_review_gate/run.sh: pass, exit 0 (26 suites, PASS=26, FAIL=0); heavy-run node --test plugins/dsh-measure-guard/tests/*.test.js: pass, exit 0 (384 pass, 0 fail); heavy-run bash tests/dsh/run.sh: pass, exit 0 (15 passed, 0 failed); both check-parity.sh scripts: pass, parity: ok; Red replay (7c2435c test, 8ab715b checker): exit 1, 14 failures in 13 tests, as the plan records; 11 of 11 core mutants killed; 6000-plan oracle run: 0 mismatches; 29 CLI shapes: 0 mismatches; real Lending plan at 6faaf42: jr-green fails at 8ab715b and passes at adcafb5; role-gate phase-acceptance (the command of the brief): pass, exit 0, PASS: phase-acceptance gate passed
+files_changed: measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.json and phase-acceptance-adcafb5.log
+plan_updates: none
+known_failures: none; four nonblocking Late findings PA-1 to PA-4 are in the audit JSON
+handoff: PASS at HEAD adcafb5 with no blocking finding. Route PA-1, PA-2, and PA-3 to measure/tech-debt.md as Late findings. Add one `- Late finding <id>: tech-debt (<reason>)` line for F5, F6, PA-1, PA-2, and PA-3 to plan.md at closeout, and name the exception to the spec line that says no tech-debt row (PA-4). A plan-only commit advances HEAD, and you decide whether to rerun this gate. After the merge, run bin/install-measure-skill and its --check so the copy in ~/.agents/skills that Lending runs holds the fix (FR-4). PA-1 is your call: I routed it to tech-debt because the contract sends a late finding on a gate script there, the code follows the spec regex, and the review-a and phase-acceptance gates still count the open task. If you judge that a false jr-green pass for a remediation task can hide a wrong result, send PA-1 to one fix round instead. Light lane: Review B, Review C, adversarial, UX, and final acceptance do not exist, and I treated them as not required.
+END_MEASURE_AGENT_RESULT

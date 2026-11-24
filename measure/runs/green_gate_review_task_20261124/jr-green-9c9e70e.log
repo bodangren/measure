@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: jr-green
+status: PASS
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: implementation 544a85d8e071ebde52a64ba55ac6ac167b5ab198; plan evidence adcafb5c7edf6766467fa6ca8648c7dd7ace939b; final Green HEAD adcafb5c7edf6766467fa6ca8648c7dd7ace939b
+tests_run: Targeted command on the pre-remediation tree: 13 tests OK, exit 0. New F1 case against the 9c9e70e checker: exit 0 with PASS: jr-green gate passed, while the incomplete line was expected. New F3 case against a deferred-order mutant: exit 1 with FAIL: current phase still has 1 non-deferred incomplete tasks. Targeted command after the fix: 15 tests OK, exit 0. Full proof suite: 26 suites passed, exit 0. node --test plugins/dsh-measure-guard/tests/*.test.js: 384 pass, 0 fail, exit 0. All three commands ran through heavy-run.sh with HEAVY_PRIORITY=p1 and HEAVY_MIN_AVAIL_MB=1500. The role gate exited 0 after this block was written.
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py; tests/spec_review_gate/test_green_gate_review_task.py; measure/tracks/green_gate_review_task_20261124/spec.md; CHANGELOG.md; measure/tracks/green_gate_review_task_20261124/plan.md. No new repository file. The committed Red test was edited only with the F1 and F3 additions.
+plan_updates: Task 1.1 flipped from [~] to [x] with Red SHA 7c2435c and the evidence line kept. Task 1.2 stays [x] with 7ac430f. Task 1.3 stays [x] with 5afab9a. A short Review A remediation line names implementation commit 544a85d. No task flipped to [b]. No deferred owner was added. No archive move and no final closeout metadata change.
+known_failures: The first role-gate run exited 1 with a missing result block, because this log did not exist yet. This block was written and the gate then exited 0.
+handoff: Immutable phase_base_sha is 8ab715bbb7ee80f51da3a8dc615243f472d09080. Separate role_base_sha is 9c9e70ebff966f6987a8de028e5f04ef2bca2c96. Committed Red change 7c2435c0134994c7b97f11e38664ffcc78692b8a is inside 8ab715b..HEAD. Final Green HEAD is adcafb5c7edf6766467fa6ca8648c7dd7ace939b. The jr-green helper now applies its one later-role ignore only when the phase has a completed [x] task. F1 and F3 contract cases were added to the committed Red test. spec.md FR-1 has one bounded sentence for the precondition. CHANGELOG.md now states that the numeric task prefix is required and the word Task is optional. All Phase 1 tasks carry SHA evidence, so the jr-green role gate exits 0. No other gate changed.
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX
+END_MEASURE_AGENT_RESULT

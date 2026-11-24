@@ -99,6 +99,16 @@ AGENT_RESULT_END = "END_MEASURE_AGENT_RESULT"
 TRACK_ID_PATTERN = r"[A-Za-z0-9][A-Za-z0-9_.-]*"
 TRACK_TAG_RE = re.compile(rf"\(track_id: ({TRACK_ID_PATTERN})\)")
 TRACK_LINE_RE = re.compile(rf"track_id: ({TRACK_ID_PATTERN})")
+# One task line: a status marker, then the task text. Shared by phase_counts,
+# track_incomplete, discover_phases, and the jr-green count helper.
+TASK_LINE_RE = re.compile(r"^- \[([ ~x])\] (.+)", re.MULTILINE)
+# FR-1: a later-role label at the start of the task text, after the optional
+# `Task N.M` prefix. The word boundary keeps a body word from matching.
+LATER_ROLE_TASK_RE = re.compile(
+    r"^(?:task\s+)?\d+(?:\.\d+)*\s*:?\s*"
+    r"(review a|review b|review c|adversarial(?:\s+testing)?|phase acceptance|final acceptance|acceptance)\b",
+    re.IGNORECASE,
+)
 TEST_SUFFIXES = (
     ".test.ts",
     ".test.tsx",
@@ -383,7 +393,7 @@ def phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int, int, in
     for heading, block in phase_blocks(plan_path.read_text(encoding="utf-8", errors="ignore")):
         if heading != phase_heading:
             continue
-        tasks = re.findall(r"^- \[([ ~x])\] (.+)", block, re.MULTILINE)
+        tasks = TASK_LINE_RE.findall(block)
         total = len(tasks)
         complete = sum(1 for status, _ in tasks if status == "x")
         in_progress = sum(1 for status, _ in tasks if status == "~")
@@ -393,11 +403,36 @@ def phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int, int, in
     return 0, 0, 0, 0, 0
 
 
+def jr_green_phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int, int, int, int]:
+    """Phase counts for jr-green: ignore one open later-role task when a completed task exists."""
+    if not plan_path.exists():
+        return 0, 0, 0, 0, 0
+    for heading, block in phase_blocks(plan_path.read_text(encoding="utf-8", errors="ignore")):
+        if heading != phase_heading:
+            continue
+        tasks = TASK_LINE_RE.findall(block)
+        total = len(tasks)
+        complete = sum(1 for status, _ in tasks if status == "x")
+        in_progress = sum(1 for status, _ in tasks if status == "~")
+        incomplete = 0
+        ignored = 0
+        for status, task in tasks:
+            if status == "x" or "deferred" in task.lower():
+                continue
+            if complete > 0 and status == "~" and ignored == 0 and LATER_ROLE_TASK_RE.match(task):
+                ignored += 1
+                continue
+            incomplete += 1
+        with_sha = sum(1 for status, task in tasks if status == "x" and re.search(r"\b[0-9a-f]{7,40}\b", task))
+        return total, complete, in_progress, incomplete, with_sha
+    return 0, 0, 0, 0, 0
+
+
 def track_incomplete(plan_path: Path) -> int:
     if not plan_path.exists():
         return 0
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
-    tasks = re.findall(r"^- \[([ ~x])\] (.+)", text, re.MULTILINE)
+    tasks = TASK_LINE_RE.findall(text)
     return sum(1 for status, task in tasks if status != "x" and "deferred" not in task.lower())
 
 
@@ -412,7 +447,7 @@ def discover_phases(repo: Path, track_regex: str) -> list[Phase]:
         if not plan.exists():
             continue
         for heading, block in phase_blocks(plan.read_text(encoding="utf-8", errors="ignore")):
-            tasks = re.findall(r"^- \[([ ~x])\] (.+)", block, re.MULTILINE)
+            tasks = TASK_LINE_RE.findall(block)
             incomplete = sum(1 for status, task in tasks if status != "x" and "deferred" not in task.lower())
             if incomplete:
                 phases.append(Phase(len(phases) + 1, track_dir.name, heading, incomplete, len(tasks)))
@@ -1331,7 +1366,7 @@ def cmd_role_gate(args: argparse.Namespace) -> int:
                 feedback.append(
                     f"expected committed Green-phase implementation change, but baseline..HEAD has no commit of track {args.track}"
                 )
-        total, complete, _in_progress, incomplete, with_sha = phase_counts(plan, args.phase)
+        total, complete, _in_progress, incomplete, with_sha = jr_green_phase_counts(plan, args.phase)
         if total == 0:
             feedback.append(f"could not find phase {args.phase!r} in {plan}")
         elif incomplete:

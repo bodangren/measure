@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: blocked
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: none
+tests_run: Targeted replay at 8ab715b failed as expected. Targeted suite, full spec_review_gate suite, and Node guard suite passed at 9c9e70e. CLI probes reproduced F1. Review A role gate exited 1 on the audit verdict.
+files_changed: review-a-9c9e70e.json, review-a-9c9e70e.log
+plan_updates: none
+known_failures: F1: jr-green passes without a completed task. F2: Task 1.1 remains open and the plan checks do not report it.
+handoff: Route F1 to Green with the missing-deliverable fixture. Route F2 to the build session for the plan record. The JSON records two additional Nits.
+END_MEASURE_AGENT_RESULT

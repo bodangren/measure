@@ -1,0 +1,85 @@
+Spec review: green_gate_review_task_20261124
+Round: 1
+Reviewer: measure-spec-review subagent, claude-agent/sonnet#max (claude-sonnet-5-5)
+Author model (from the brief): opencode-go/muse-spark-1.3-contributor
+Baseline: 9dad8a38bcdccaec5a8016546cbe9c9590ecd0b9
+Audited HEAD: 9dad8a38bcdccaec5a8016546cbe9c9590ecd0b9
+
+PRECHECK
+HEAD equals the audited HEAD. The working tree is clean. The branch is fix/green-gate-open-review-task.
+The brief lists spec-review.md among the inputs. My role rules forbid reading it, so I did not read it.
+
+INPUTS READ
+- measure/tracks/green_gate_review_task_20261124/spec.md, plan.md, metadata.json, and index.md
+- /home/daniebo/.agents/skills/measure/references/spec-review.md (the standard)
+- skills/measure-orchestrator/references/contracts.md and skills/measure-orchestrator/SKILL.md
+- skills/measure-orchestrator/scripts/measure_interphase_checks.py: phase_counts, track_incomplete, discover_phases, cmd_role_gate, and validate_spec_review_payload
+- tests/spec_review_gate/run.sh, test_gate_track_scope.py, test_role_gate_heavy_run.py, and a search of every suite for jr-green and [~] fixtures
+- agents/measure-mid-red.md, agents/measure-jr-green.md, measure/gates.json, measure/tech-debt.md, CHANGELOG.md, and .github/workflows/ci.yml
+- measure/archive/audit_role_gate_allow_20261123 (spec, plan, and run logs) as the precedent
+- Read only, outside this repo: lending-desk-bench commit 6faaf42, and the domain_trust plan and test strategy
+
+### What this track proposes
+This chore makes the jr-green role gate ignore one open review task, as Lending task 3.5 needs. Today the gate counts each task that is not `[x]` and has no `deferred` as incomplete. A helper, used only by the jr-green branch, ignores at most one `[~]` task whose text names `review-a`, `review-b`, `review-c`, `adversarial`, or `acceptance`. Every other gate, the SHA-evidence check, and the return shape of `phase_counts` stay unchanged. Red adds `tests/spec_review_gate/test_green_gate_review_task.py`, Green edits the checker, and the build session opens the pull request.
+
+### How the current system works, per this spec
+`phase_counts` in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` reads one phase of `plan.md` and returns five counts: total, complete, in progress, incomplete, and complete with a SHA. A task is incomplete when it is not `[x]` and its text has no `deferred`. The jr-green branch fails with `current phase still has N non-deferred incomplete tasks` when the incomplete count is above zero. Mid-red, review-a, review-b, review-c, and phase-acceptance read the same counts, and final-acceptance uses `track_incomplete`. Lending rule A12 marks the review task `[~]` before Review A starts, so the open task 3.5 fails the jr-green gate.
+
+### Findings
+- F1 [Blocker] spec.md FR-1: FR-1 does not say if a name matches as a substring, as a whole word, or as the role label of the task. Define the rule. Add a Red case for near-miss text. Rationale: In Lending plans, `review a` matches 'review assignments' (lending-desk-bench measure/tracks/domain_trust/plan.md:83), and `acceptance` matches Red task 7.1 (measure/tracks/daily_model_schedule/plan.md:1126). A `[~]` Green task that says 'per the acceptance criteria' counts 1 today and 0 with a substring helper, so the gate passes in error. The bare words `adversarial` and `acceptance` already match each listed phrase form, so the intended rule is unclear.
+- F2 [Major] plan.md Task 1.1 and spec.md FR-2: No Red case pins the `deferred` clause or the unchanged `complete > with_sha` check. The plan needs a case where a `[~]` Review A task holds `deferred`: the gate passes, as today. It needs the same case plus an unfinished `[~]` Green task: the gate fails. It needs a case with an `[x]` task without a SHA plus a `[~]` Review A task: the gate fails with the SHA message. Rationale: A helper that skips the `deferred` check makes `incomplete` equal to -1, and the branch treats -1 as true, so a passing plan fails. The same helper lets a deferred task use the one ignore, so an unfinished Green task passes.
+- F3 [Major] plan.md Task 1.1: The old-result cases, the 'each named later role' case, and the Lending-shape case name no fixture or expected result. The mid-red case needs an open `[ ]` task and a `[~]` review task as the only `[~]` task; the result must not change. The review-a case needs all `[x]` tasks plus one `[~]` Review A task; the gate must still fail. State if 'each named later role' means the five names or all eleven forms. Write the Lending fixture into the plan from commit 6faaf42 of lending-desk-bench (`measure/tracks/domain_trust/plan.md`, lines 140 to 199). Rationale: A weak fixture passes even if `phase_counts` ignores the review task, and a Lending fixture needs each SHA on its marker line.
+- F4 [Nit] spec.md FR-1 and FR-2: FR-1 says the gate ignores exactly one task, and FR-2 says at most one. With no qualifying task, the gate ignores none. Use 'at most one' in FR-1. Rationale: 'Exactly one' can mean 'ignore only when one task qualifies', and that reading gives a different count for two tasks.
+- F5 [Nit] spec.md FR-3: The condition 'if other callers need it' has one answer. Mid-red (line 1293), jr-green (line 1334), and the review and phase-acceptance branch (line 1359) each unpack the five values of `phase_counts`. State that the five-value return stays. Name the code that the helper reuses: `phase_blocks` (line 371) and the task-line pattern that `phase_counts`, `track_incomplete`, and `discover_phases` repeat. Rationale: A condition hides a fixed fact, and a fourth copy of the pattern adds drift.
+- F6 [Nit] spec.md FR-4 and Out of Scope: Three change-set points stay open. Out of Scope names 'the other tech-debt rows', but `measure/tech-debt.md` holds no row for this track and FR-4 lists none. FR-4 omits `CHANGELOG.md`, and earlier checker gate changes (commits f68a87f, 94698fe, 7e6dc79, and 27c2ed0) each added an entry. The fix reaches Lending only after the install of `~/.agents/skills/measure-orchestrator/scripts/measure_interphase_checks.py`, which Lending runs, and the spec is silent on that step. State each decision. Rationale: The earlier spec `audit_role_gate_allow_20261123` states its install step in FR-4.
+
+ZOOM-OUT CHECK
+1. Root problem: Pass. FR-0 names the cause in phase_counts, and the PM scope fixes the design: ignore at the Green gate only.
+2. Speculative feature: Pass. The list holds the five PM names and their phrase forms.
+3. Premature optimization: Pass.
+4. Reuse: Nit F5. The spec does not name phase_blocks (line 371) as the reuse point.
+5. Placement: Pass. The helper sits in the jr-green branch. The other callers keep phase_counts.
+6. Requirement level: Pass. FR-3 states placement. The repo precedent allows this.
+
+ZERO-DECISION CHECK
+- Schema: no change. API or CLI shape: no change, and the failure message text stays.
+- Dependency: none.
+- Edge-case behavior: the matching rule is open (Blocker F1). The deferred and SHA clauses have no case (Major F2).
+- File location: pass. FR-4 names the checker script and the test file. The test file name matches the pattern test_*.py of run.sh.
+- Test cases: Major F2 and Major F3.
+- Pinned counts: none in spec.md or plan.md.
+- Each phase names its files and leaves a testable state: pass. The single phase ends with a passing runner.
+
+FACT CHECKS (spec claims against the code)
+- FR-0: pass. Line 390 counts each non-[x] task without 'deferred' as incomplete. Line 1338 prints the message. A Lending-shaped plan gives phase_counts (3, 2, 1, 1, 2), so jr-green fails today.
+- FR-1 names: pass against the PM scope (review-a, review-b, review-c, adversarial, acceptance).
+- FR-2 gate list: pass. A helper in the jr-green branch leaves mid-red (lines 1282 to 1322), the audit branch (lines 1358 to 1363), final-acceptance (track_incomplete, line 1374), and closeout (line 1381) unchanged.
+- FR-3: three callers unpack five values, so the return shape must stay (F5).
+- FR-4: no existing suite pairs a [~] task with a later-role word, so no current test needs an edit.
+- FR-5: pass. run.sh runs each test_*.py file with python3 -m unittest discover, and it fails a file with zero tests. Both style files use unittest and a temporary git repository. The CI job checks runs the runner.
+- Lending claims: pass. Commit 6faaf42 exists. Plan lines 187 to 199 show '[~] 3.5 Review A.' and '[b]' tasks 3.6 and 3.7.
+- Rule A12 text: partial. A12 keeps exactly one [~] task while a [b] task remains and marks the next task [~] when the current one closes (domain_trust plan lines 27 to 32). The one-line summary in the spec is true for task 3.5.
+
+OBSERVATIONS (not findings)
+1. Task 1.3 stays open at the Green gate. The jr-green gate exits 1 after Task 1.2 until a records round closes Task 1.3. The precedent audit_role_gate_allow_20261123 gave the same result (green-p1-local.log). Plan one records round.
+2. Rule A12 supports FR-2: only a [~] task qualifies, and at most one task is open at a time.
+3. The name list omits ux-browser-review. The list is PM scope, so I raise no finding.
+4. F1 needs one decision from the author or the PM. The options are: whole words anywhere in the text; the role label only; or phrase forms only, without the bare words adversarial and acceptance. Whole words alone still match 'acceptance criteria'. The Lending task '3.5 Review A.' passes under each option.
+5. gate_value reads the environment before measure/gates.json, and gates.json holds a node command. The orchestrator sets RED_TEST_COMMAND and GREEN_TEST_COMMAND, as in the precedent.
+
+VERDICT
+Fail. One Blocker (F1), two Majors (F2, F3), and three Nits (F4, F5, F6). retry_recommendation is escalate_human.
+A revision of spec.md and plan.md for F1, F2, and F3 clears the Blocker and the Majors. The standard allows one re-review.
+
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: green_gate_review_task_20261124
+phase: track setup
+commits: none
+tests_run: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track green_gate_review_task_20261124 --phase "track setup" --baseline 9dad8a3 --result-file measure/runs/green_gate_review_task_20261124/spec-review-9dad8a3.json --log-file measure/runs/green_gate_review_task_20261124/spec-review-9dad8a3.log (FAIL, exit 1, one line: audit status must be pass, got 'fail', with F1)
+files_changed: measure/runs/green_gate_review_task_20261124/spec-review-9dad8a3.json, measure/runs/green_gate_review_task_20261124/spec-review-9dad8a3.log
+plan_updates: none (report-only)
+known_failures: The role-gate exits 1 only because the verdict is fail (F1 Blocker). It reports no format, result-block, baseline, or scope error.
+handoff: Verdict fail: F1 is a Blocker because FR-1 leaves the matching rule open, so a loose match can pass one unfinished Green task. F2 and F3 are Majors: Task 1.1 lacks cases for deferred and SHA, and it names no fixture for the old-result and Lending cases. F4, F5, and F6 are Nits. F1 needs one decision: match whole words anywhere in the text, match the role label only, or match phrase forms only. One re-review follows a committed revision of spec.md or plan.md. Task 1.3 keeps the Green gate at exit 1 until a records round, as in audit_role_gate_allow_20261123.
+END_MEASURE_AGENT_RESULT

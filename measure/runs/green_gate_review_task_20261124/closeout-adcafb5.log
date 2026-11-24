@@ -1,0 +1,16 @@
+Closeout command: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role closeout --track green_gate_review_task_20261124 --phase "Phase 1: Green gate ignores the open review task (due 2026-11-27)" --baseline adcafb5 --result-file measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json --log-file measure/runs/green_gate_review_task_20261124/closeout-adcafb5.log
+Pre-closeout HEAD: adcafb5c7edf6766467fa6ca8648c7dd7ace939b, clean tree.
+Post-move project test gate through heavy-run: exit 0; spec_review_gate 26 suites (PASS=26, FAIL=0); node --test tests 384, pass 384, fail 0.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: complete
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: closeout commit pending at log write; reported to the orchestrator in the final message
+tests_run: heavy-run 'bash tests/spec_review_gate/run.sh && node --test plugins/dsh-measure-guard/tests/*.test.js' exit 0: 26 suites PASS=26 FAIL=0, node tests 384 pass 384 fail 0
+files_changed: measure/archive/green_gate_review_task_20261124/, measure/tracks.md, measure/tech-debt.md, measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json and .log
+plan_updates: five late-finding lines under Phase 1, stop-rule exception in spec Out of Scope, archived plan and spec, metadata done with 2026-11-24, registry archived entry, three tech-debt rows, closeout manifest and audit records
+known_failures: none
+handoff: Light lane is closed. Five late findings route to three Low Open tech-debt rows. PA-1 was decided as tech-debt by the orchestrator. The installed checker copy is orchestrator work after the merge. No push and no merge by closeout.
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "role": "measure-review-a-correctness",
+  "track": "green_gate_review_task_20261124",
+  "phase": "Phase 1: Green gate ignores the open review task (due 2026-11-27)",
+  "baseline_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "phase_base_sha": "8ab715bbb7ee80f51da3a8dc615243f472d09080",
+  "role_base_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "status": "pass",
+  "summary": "All four Round 1 fixes hold at adcafb5. The Green gate rejects a lone open review task without a completed task. The SHA check and the deferred task rules still apply.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "Late finding F5: tech-debt (FR-1 at spec.md:12 can imply that every phase without a completed task fails. An all-deferred phase passes on 8ab715b, 9c9e70e, and adcafb5. Clarify that the precondition only controls the new ignore. The wording does not change the gate result.)",
+    "Late finding F6: tech-debt (The two count functions duplicate SHA counting and phase selection at measure_interphase_checks.py:390–427. The duplication adds maintenance risk but does not cause a wrong gate result in this phase.)"
+  ],
+  "evidence": [
+    "The supplied audited SHA matched HEAD. The exact phase diff contains five files, and git diff --check passed.",
+    "The active track index, metadata, spec, plan, spec-review records, and Red and Green logs provided the phase context. No current project or track test-strategy.md exists.",
+    "F1 withdrawn: The plan-only fixture with a lone open review task fails at 8ab715b, passes at 9c9e70e, and fails at adcafb5 with one incomplete task. A missing plan and an empty phase also fail at adcafb5. The new F1 contract case fails against 9c9e70e and passes against adcafb5.",
+    "F2 withdrawn: plan.md:14 marks Task 1.1 [x] and cites Red commit 7c2435c, which adds the contract test. All three tasks are [x] with their cited commits. Current phase counts are (3, 3, 0, 0, 3), and the plan closeout check reports no findings.",
+    "F3 withdrawn: test_deferred_review_before_eligible_review_passes passes against 9c9e70e and adcafb5. It fails when a test-only checker variant spends the ignore before checking whether the task is deferred.",
+    "F4 withdrawn: CHANGELOG.md:25 says that the number is required and Task is optional. The gate passes the mixed-case numbered form with a colon and rejects the form without a number.",
+    "An eligible review stays incomplete after a deferred task when the phase has no [x] task. With one [x] task, the ignore applies and a missing SHA still fails the gate. With unfinished Green work and a missing SHA, the gate reports both failures.",
+    "The exact Lending plan at 6faaf42 gives (5, 4, 1, 1, 4) to the original count and (5, 4, 1, 0, 4) to the Green count.",
+    "The only new helper caller is the jr-green branch at measure_interphase_checks.py:1369. The other count sites keep the five-value contract and the same task regex. build-graph is TypeScript-only; the diff changes Python code only.",
+    "The role fixture gives identical exit codes, stdout, and stderr at 8ab715b and adcafb5 for mid-red, review-a/b/c, phase acceptance, final acceptance, and closeout.",
+    "A3: The two-review test rejects the labeled count of 2 when it expects 1. The original Red tests yield 14 expected failures with no errors against the base checker and pass against 7ac430f.",
+    "A5: The target suite, the full contract suite, and the Node suite pass at adcafb5. The 5afab9a plan snapshot accounts for the historical nonzero Green gate: Task 1.3 is its only non-deferred incomplete task.",
+    "The plan records the correct stat for 8ab715b..5afab9a. GitHub confirms the cited checks job succeeded at 5afab9a in 6m41s. PR #49 remains open, and checks also succeeded at adcafb5.",
+    "The requested Review A role gate exited 0 and printed PASS: review-a gate passed."
+  ],
+  "commands": [
+    "git rev-parse HEAD adcafb5 8ab715b; git status --porcelain; git diff --check 8ab715b..adcafb5; git diff --find-renames 8ab715b..adcafb5",
+    "git show --format=fuller --stat 544a85d adcafb5; git show --name-status 7c2435c 7ac430f 5afab9a; git diff --shortstat 8ab715b..5afab9a; git grep -n jr_green_phase_counts adcafb5",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_green_gate_review_task.py' — exit 0, 15 tests",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0, 26 suites",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js' — exit 0, 384 tests",
+    "Python unittest replay through heavy-run.sh with Git blobs from 7c2435c, 7ac430f, 9c9e70e, and adcafb5 and a temporary deferred-order variant",
+    "Python CLI fixtures through heavy-run.sh for missing plans, the completed-task rule, SHA evidence, deferred order, prefix forms, and unchanged role gates",
+    "Python phase-count probes through heavy-run.sh on Measure plan blobs from 5afab9a, 9c9e70e, and adcafb5 and the Lending plan from 6faaf42",
+    "gh pr view 49 --json state,headRefOid,statusCheckRollup,url; gh api repos/bodangren/measure/actions/runs/45389039841/jobs",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track green_gate_review_task_20261124 --phase \"Phase 1: Green gate ignores the open review task (due 2026-11-27)\" --baseline adcafb5 --result-file measure/runs/green_gate_review_task_20261124/review-a-adcafb5.json --log-file measure/runs/green_gate_review_task_20261124/review-a-adcafb5.log — exit 0"
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "measure/tracks/green_gate_review_task_20261124/plan.md",
+    "measure/tracks/green_gate_review_task_20261124/spec.md",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "tests/spec_review_gate/test_green_gate_review_task.py"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "The plan-only, deferred-order, missing-SHA, and Lending probes verify the boundaries of measure_interphase_checks.py:419–427."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The F1 case fails on the old checker and the F3 case rejects the deferred-order variant, but the committed suite lacks a no-number case."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "The exact phase diff lists only the checker, contract test, CHANGELOG, and track records allowed by FR-4."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The Red replay, Green suites, and GitHub job record corroborate plan.md:14–19."
+    }
+  ]
+}

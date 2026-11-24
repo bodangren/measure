@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: measure-review-a-correctness
+status: complete
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+commits: none
+tests_run: Target and full contract suites pass; Node guard tests pass; Red replay fails as expected; F1 and F3 checks pass; Review A role gate passes.
+files_changed: review-a-adcafb5.json and review-a-adcafb5.log
+plan_updates: none
+known_failures: none
+handoff: F1–F4 are resolved at adcafb5. Route F5 and F6 to tech debt without another Green round.
+dispositions: none
+END_MEASURE_AGENT_RESULT

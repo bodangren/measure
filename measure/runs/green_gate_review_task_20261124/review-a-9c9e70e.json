@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "green_gate_review_task_20261124",
+  "phase": "Phase 1: Green gate ignores the open review task (due 2026-11-27)",
+  "baseline_sha": "9c9e70ebff966f6987a8de028e5f04ef2bca2c96",
+  "audited_head_sha": "9c9e70ebff966f6987a8de028e5f04ef2bca2c96",
+  "status": "fail",
+  "summary": "The Lending plan now passes jr-green, and the other role gates keep their results. A phase with no completed task can also pass jr-green. The track plan leaves its Red task open, but the checker does not report it.",
+  "blocking_findings": [
+    "F1 [Blocker] review-a: A4: jr-green passes a phase with only `- [~] Task 1.3 Review A.` and a plan-only commit. The base checker fails the same fixture. The ignore at skills/measure-orchestrator/scripts/measure_interphase_checks.py:422 removes the only incomplete task, and the SHA check at line 1374 has no completed task to check. Require a completed task before applying the ignore. Add a contract case with no completed task.",
+    "F2 [Blocker] review-a: measure/tracks/green_gate_review_task_20261124/plan.md:14 leaves Task 1.1 `[~]` after the Red test and Green fix are committed. The text contains deferred examples, so the checker reports zero incomplete tasks and no plan closeout failure. Record Task 1.1 as `[x]` with its verified Red SHA `7c2435c`."
+  ],
+  "nonblocking_findings": [
+    "F3 [Nit] review-a: tests/spec_review_gate/test_green_gate_review_task.py:240 does not prove that a deferred task leaves the ignore available. The whole suite passes a mutant that spends the ignore on a deferred review task. Put a deferred review task before an eligible review task and assert that jr-green passes.",
+    "F4 [Nit] review-a: CHANGELOG.md:25 calls the `Task N.M` prefix optional, but the regex requires the numeric prefix. State that the `Task` word is optional, not the task number."
+  ],
+  "evidence": [
+    "phase_base_sha=8ab715bbb7ee80f51da3a8dc615243f472d09080; role_base_sha=9c9e70ebff966f6987a8de028e5f04ef2bca2c96; audited_head_sha=9c9e70ebff966f6987a8de028e5f04ef2bca2c96.",
+    "HEAD matched the audited SHA, and `git status --short` returned no output. The exact phase diff changed only the four files listed below and passed `git diff --check`.",
+    "The active track index, metadata, spec, plan, spec-review results, and Red and Green logs supplied the routing and phase context. Neither the track nor the project has a current test-strategy.md.",
+    "The A4 fixture with one review task and a plan-only commit exits 1 at 8ab715b and 0 at 9c9e70e. A missing plan and an empty phase still exit 1 on both revisions.",
+    "The exact Lending plan at 6faaf42 gives counts (5, 4, 1, 1, 4) with phase_counts and (5, 4, 1, 0, 4) with jr_green_phase_counts. A `[checkpoint:abc1234]` heading with `Task 1.3: rEvIeW A.` gives the expected one-task reduction.",
+    "The diff preserves the five-value return, the task marker pattern, and the completed-task SHA check. Direct symbol search shows only jr-green calls the new helper. build-graph is TypeScript-only, and the changes do not include TypeScript symbols.",
+    "The base and HEAD checker return identical output and exit codes for mid-red, review-a, review-b, review-c, phase-acceptance, and final-acceptance on the role fixtures. The closeout branch has no edit.",
+    "The Red replay used the same test blob as 7c2435c and the checker blob at 8ab715b. It exits 1 with the 14 recorded failures and no errors. At HEAD the runner discovers the test and all 13 tests pass.",
+    "A3: the count assertion checks the full labeled line. The Red replay finds '2 non-deferred incomplete tasks' and rejects it when the test expects 1.",
+    "At 5afab9a, the historical plan gives jr-green one non-deferred incomplete task. At 9c9e70e, ordinary phase_counts gives (3, 2, 1, 0, 2), track_incomplete gives 0, and plan_closeout_feedback gives [].",
+    "A5: the full Python and Node suites pass at 9c9e70e. The historical PR check, elapsed time, and diff stat at 5afab9a match the plan record. The latest PR check also passes at 9c9e70e.",
+    "The deferred-order mutant fails with one incomplete task when a deferred review precedes an eligible review. The unmodified checker passes the same fixture.",
+    "The requested Review A role gate ran and exited 1 because the audit status is fail. It reported both blockers and no additional gate errors."
+  ],
+  "commands": [
+    "git rev-parse HEAD 9c9e70e 8ab715b; git status --short; git diff --check 8ab715b..9c9e70e; git diff 8ab715b..9c9e70e",
+    "git rev-parse 7c2435c:skills/measure-orchestrator/scripts/measure_interphase_checks.py 8ab715b:skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_green_gate_review_task.py' — exit 0",
+    "HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — exit 0, 26 suites passed",
+    "HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js' — exit 0, 384 tests passed",
+    "Python unittest through heavy-run.sh with 8ab715b checker source loaded from git — exit 1 as expected; with the deferred-order mutant loaded in memory — exit 0",
+    "Python CLI comparison in temporary fixture repositories: plan-only, missing and empty plans, mid-red, review-a/b/c, phase-acceptance, and final-acceptance",
+    "Python runpy checks of phase counts: historical track plan, actual Lending plan, checkpoint suffix, and deferred and eligible review pair",
+    "git diff --shortstat 8ab715b..5afab9a; gh api repos/bodangren/measure/actions/runs/45389039841/jobs; gh pr view 49 --json state,headRefOid,statusCheckRollup,url",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track green_gate_review_task_20261124 --phase \"Phase 1: Green gate ignores the open review task (due 2026-11-27)\" --baseline 9c9e70e --result-file measure/runs/green_gate_review_task_20261124/review-a-9c9e70e.json --log-file measure/runs/green_gate_review_task_20261124/review-a-9c9e70e.log — exit 1, audit status fail"
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "measure/tracks/green_gate_review_task_20261124/plan.md",
+    "skills/measure-orchestrator/scripts/measure_interphase_checks.py",
+    "tests/spec_review_gate/test_green_gate_review_task.py"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 3,
+      "evidence": "The Lending plan passes, but the plan-only fixture at measure_interphase_checks.py:422 also passes with no completed task."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 3,
+      "evidence": "The Red replay reports 14 expected failures, but test_deferred_review_never_uses_the_ignore passes the deferred-order mutant."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-only 8ab715b..9c9e70e` lists only the four planned files."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 4,
+      "evidence": "The test and CI evidence on plan.md:14-17 matches the replay, but Task 1.1 still has the open marker."
+    }
+  ]
+}
