@@ -291,6 +291,48 @@ class CloseoutNestedSubboxesFeedbackTest(unittest.TestCase):
             ["plan task is not complete: - [ ] Child of pending review"],
         )
 
+    def test_case_22_f5_deferred_open_parent_child_needs_own_sha(self) -> None:
+        """A SHA-less [x] child of a deferred [ ] parent reports its own missing SHA."""
+        repo = Path(self.tmp) / "repo"
+        archive = repo / "measure" / "archive" / "deferred-open-parent"
+        archive.mkdir(parents=True)
+        (archive / "plan.md").write_text(
+            f"- [x] Root {SHA}\n"
+            f"  - [ ] Parent {SHA} deferred:owner\n"
+            "    - [x] Child\n",
+            encoding="utf-8",
+        )
+        (archive / "metadata.json").write_text(
+            '{"status": "done", "completed": "2026-11-24", "lane": "light"}\n',
+            encoding="utf-8",
+        )
+        (archive / "automation-supervisor-closeout-manifest.json").write_text("{}\n", encoding="utf-8")
+        self.assertEqual(
+            self.module.closeout_feedback(repo, "deferred-open-parent"),
+            ["completed plan task lacks commit SHA: - [x] Child"],
+        )
+
+    def test_case_23_f5_deferred_tilde_parent_child_needs_own_sha(self) -> None:
+        """A SHA-less [x] child of a deferred [~] parent reports its own missing SHA."""
+        repo = Path(self.tmp) / "repo"
+        archive = repo / "measure" / "archive" / "deferred-tilde-parent"
+        archive.mkdir(parents=True)
+        (archive / "plan.md").write_text(
+            f"- [x] Root {SHA}\n"
+            f"  - [~] Parent {SHA} deferred:owner\n"
+            "    - [x] Child\n",
+            encoding="utf-8",
+        )
+        (archive / "metadata.json").write_text(
+            '{"status": "done", "completed": "2026-11-24", "lane": "light"}\n',
+            encoding="utf-8",
+        )
+        (archive / "automation-supervisor-closeout-manifest.json").write_text("{}\n", encoding="utf-8")
+        self.assertEqual(
+            self.module.closeout_feedback(repo, "deferred-tilde-parent"),
+            ["completed plan task lacks commit SHA: - [x] Child"],
+        )
+
 
 class CloseoutNestedSubboxesCandidatesTest(unittest.TestCase):
     """Class 2 (end to end): closeout_candidates() on a temporary repository."""
@@ -319,6 +361,28 @@ class CloseoutNestedSubboxesCandidatesTest(unittest.TestCase):
 
     def test_case_18_candidates_hold_only_nested_ok(self) -> None:
         """closeout_candidates() returns exactly ["nested-ok"]."""
+        self.assertEqual(self.module.closeout_candidates(self.repo, ""), ["nested-ok"])
+
+    def test_case_24_f5_deferred_open_parent_blocks_candidate(self) -> None:
+        """A track with a SHA-less [x] child of a deferred [ ] parent is no candidate."""
+        (self.repo / "measure" / "tracks" / "deferred-open-parent").mkdir(parents=True)
+        self.write(
+            "deferred-open-parent",
+            f"- [x] Root {SHA}\n"
+            f"  - [ ] Parent {SHA} deferred:owner\n"
+            "    - [x] Child\n",
+        )
+        self.assertEqual(self.module.closeout_candidates(self.repo, ""), ["nested-ok"])
+
+    def test_case_25_f5_deferred_tilde_parent_blocks_candidate(self) -> None:
+        """A track with a SHA-less [x] child of a deferred [~] parent is no candidate."""
+        (self.repo / "measure" / "tracks" / "deferred-tilde-parent").mkdir(parents=True)
+        self.write(
+            "deferred-tilde-parent",
+            f"- [x] Root {SHA}\n"
+            f"  - [~] Parent {SHA} deferred:owner\n"
+            "    - [x] Child\n",
+        )
         self.assertEqual(self.module.closeout_candidates(self.repo, ""), ["nested-ok"])
 
 

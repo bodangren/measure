@@ -1156,12 +1156,12 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
         if indent == 0:
             covered = has_sha
         else:
-            # Coverage comes only from the nearest covered [x] ancestor.
-            # Ignored ancestors are open boxes, so they are skipped here.
-            parent = next(
-                (item for item in reversed(processed) if item[1] == "x" and item[2] and not item[3]), None
-            )
-            covered = has_sha or parent is not None
+            # Skip only ignored boxes. The first remaining entry is the nearest
+            # parent. Outside an ignored chain that parent covers this [x] box
+            # only when it is itself a covered [x] line. A deferred open parent
+            # or a [b] boundary is a normal parent and gives no coverage.
+            parent = next((item for item in reversed(processed) if not item[3]), None)
+            covered = has_sha or (parent is not None and parent[1] == "x" and parent[2])
         if not covered:
             feedback.append(f"completed plan task lacks commit SHA: {full_line.strip()}")
         processed.append((indent, status, covered, False, ""))
