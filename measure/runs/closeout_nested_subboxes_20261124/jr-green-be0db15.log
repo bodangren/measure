@@ -1,0 +1,39 @@
+jr-green Review A remediation log
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+role_base_sha: be0db155df52526e789ffcca83f9cffc2f855cbe
+phase_base_sha: a943347f0348fe31e69941f7c6830aa8314d9966
+implementation_sha: 8dad0c12cee430a565afe9d2292057f810a6ee14
+plan_evidence_sha: 4219d3605f1dadca2cfca51d002966a578202a92
+
+Targeted Red command at the role base (before implementation):
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py'
+Output: Ran 18 tests in 0.009s; OK; suite result PASS; EXIT=0. This is a remediation round, so the original committed Red cases already pass at the role base.
+
+Base replay of the new cases with the be0db15 checker copied to a temp folder outside the tree:
+case 19 FAIL: ['completed plan task lacks commit SHA: - [x] Done B'] != []
+case 20 FAIL: only the root SHA line returned; the Done B SHA line is missing
+case 21 FAIL: closeout_feedback returned [] instead of the child line
+case 09 ok on base: it guards a mutant that drops a nested [x] own SHA
+FAILED_ON_BASE= True; BASE_FAILURES= 3 BASE_ERRORS= 0
+The working tree stayed clean of the temp copy; no base file was edited.
+
+Gates after the fix:
+targeted: Ran 21 tests in 0.012s; OK; suite result PASS; EXIT=0
+full: 27 suites, all PASS; EXIT=0
+node: tests 384, pass 384, fail 0; EXIT=0
+git diff --check: clean. No doctor.sh exists in this repository.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: 8dad0c12cee430a565afe9d2292057f810a6ee14 implementation; 4219d3605f1dadca2cfca51d002966a578202a92 plan evidence
+tests_run: targeted, full spec-review-gate, and node gates exit 0 through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500; the three new cases fail on a temp copy of checker be0db15
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py; tests/spec_review_gate/test_closeout_nested_subboxes.py; measure/tracks/closeout_nested_subboxes_20261124/spec.md; CHANGELOG.md; measure/tracks/closeout_nested_subboxes_20261124/plan.md. No new files added in this round.
+plan_updates: Task 1.4 flipped to [x] with implementation SHA 8dad0c1; no task flipped to [b]; no archive or registry change.
+known_failures: none
+handoff: Review roles should audit the ancestor-stack rewrite in plan_closeout_feedback, the three added cases 19-21, the case 09 isolation, and the two spec sentences. phase_base_sha a943347f0348fe31e69941f7c6830aa8314d9966; role_base_sha be0db155df52526e789ffcca83f9cffc2f855cbe; final Green HEAD 4219d3605f1dadca2cfca51d002966a578202a92. Targeted output at the role base: 18 tests OK, EXIT=0; after the fix: 21 tests OK, EXIT=0.
+dispositions: F1=FIX; F2=FIX; F3=FIX; F4=FIX
+END_MEASURE_AGENT_RESULT

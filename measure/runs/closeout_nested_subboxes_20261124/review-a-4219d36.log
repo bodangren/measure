@@ -1,0 +1,13 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: none
+tests_run: Targeted and full spec-review-gate suites and the DSH Node suite pass through heavy-run. Cases 19–21 fail on be0db15 and pass on 4219d36. Caller probes reproduce F5. The review-a role gate exits 1 for F5.
+files_changed: review-a-4219d36.json and review-a-4219d36.log
+plan_updates: none
+known_failures: F5: closeout incorrectly passes when a SHA-less [x] child has a deferred open parent under a covered [x] root. F4 remains a documentation nit.
+handoff: Route F5 to Green. Preserve the nearest-parent SHA rule outside ignored chains. Add caller coverage for deferred [ ] and [~] parents. Do not start a round for F4 alone.
+dispositions: none
+END_MEASURE_AGENT_RESULT

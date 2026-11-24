@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "closeout_nested_subboxes_20261124",
+  "phase": "Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)",
+  "baseline_sha": "be0db155df52526e789ffcca83f9cffc2f855cbe",
+  "phase_base_sha": "a943347f0348fe31e69941f7c6830aa8314d9966",
+  "role_base_sha": "be0db155df52526e789ffcca83f9cffc2f855cbe",
+  "audited_head_sha": "be0db155df52526e789ffcca83f9cffc2f855cbe",
+  "status": "fail",
+  "summary": "Closeout can read SHA evidence from a sibling branch and can hide open work under a deferred [b] parent. The committed suites pass.",
+  "blocking_findings": [
+    "F1 [Blocker] review-a: measure_interphase_checks.py:1150 can select an earlier sibling instead of an ancestor when it skips ignored boxes. With a SHA'd [x] root, a deferred [ ] child, and an ignored [ ] sibling with a SHA-less [x] child, closeout incorrectly reports a missing SHA. An earlier sibling branch with its own SHA can also hide a real missing-SHA diagnostic under an uncovered root. Restrict the SHA lookup to active ancestors and test both results.",
+    "F2 [Blocker] review-a: measure_interphase_checks.py:1113 skips the standard [b] marker. If a SHA'd [x] task precedes a deferred [b] task, the deferred task's open child inherits the ignore from the previous task. A fixture with `- [b] Pending review a1b2c3d deferred:owner` and one indented open child made role-gate closeout exit 0 at HEAD, versus exit 1 at the base. Retain the deferred box as a boundary for the ignore and test the caller result."
+  ],
+  "nonblocking_findings": [
+    "F3 [Nit] review-a: test_closeout_nested_subboxes.py:136 does not isolate a nested [x] box's own SHA. A mutant that discards an [x] box's own SHA under an ignored parent passes all 18 cases. Give case 09 a SHA-less root and expect only the root's missing-SHA diagnostic.",
+    "F4 [Nit] review-a: CHANGELOG.md:49 still says that only top-level tasks require a SHA. Case 11 shows that a nested [x] box also needs its own SHA when it has no covered ancestor. State that a nested [x] box can inherit coverage."
+  ],
+  "evidence": [
+    "HEAD and the role base resolved to be0db155df52526e789ffcca83f9cffc2f855cbe. The checkout was clean and git diff --check passed for a943347..be0db15.",
+    "The active plan has no separate test-strategy.md. The light-lane plan lists the test command and the three tasks. The audit read the spec review, the role logs, and the contracts.",
+    "build-graph indexes TypeScript, not the changed Python function. git grep found the two direct callers at measure_interphase_checks.py:464 and :1210. The status command, closeout command, and closeout role gate use those callers.",
+    "The phase diff changes only plan_closeout_feedback in the checker. The base and HEAD return the same phase_counts, jr_green_phase_counts, and track_incomplete values for the caller fixtures. The final-acceptance branch has no call to plan_closeout_feedback.",
+    "The real Math lines 38–50 give no feedback. Lines 52–60 give only the missing SHA for line 52. An independent active-ancestor scan matches all 102 diagnostics on the full plan.",
+    "The full Math plan retains 15 top-level and 56 nested missing-SHA lines. It also retains 5 top-level open lines and 26 nested open lines under open parents. The base gave 302 lines.",
+    "A3: the new tests assert exact messages, a fixed candidate list, or the numeric track_incomplete result. They do not look for bare digits in output.",
+    "A4: a fixture without an archived plan returns no candidate and role-gate closeout exits 1 with the missing-plan diagnostic. A valid nested-open fixture changes from exit 1 to exit 0, but the top-level-open control remains at exit 1.",
+    "F1 false positive fixture: `- [x] Task a1b2c3d\n  - [ ] A (deferred) a1b2c3d\n  - [ ] B\n    - [x] Done B\n`. HEAD reports a missing SHA for Done B. Expected feedback is empty.",
+    "F1 false negative fixture: `- [x] Task\n  - [ ] A\n    - [x] Done A a1b2c3d\n  - [ ] B\n    - [ ] B step\n      - [x] Done B\n`. HEAD reports only the root's missing SHA. Expected feedback also names Done B.",
+    "F2 fixture: `- [x] Task a1b2c3d\n- [b] Pending review a1b2c3d deferred:owner\n  - [ ] Child of pending review\n`. HEAD lists it as a candidate and passes role-gate closeout. The base rejects it at both callers. The orchestrator SKILL.md:47 lists [b] as the standard deferred marker.",
+    "Task 1.1: the test bytes at 77598a6 match HEAD. An in-memory run against the base checker reproduced 12 failing contract cases and six passing boundary cases.",
+    "Task 1.2 and A5: the checker bytes at 032efb7 match HEAD. The contract cases and rewritten case 3 pass at HEAD. The full spec-review-gate suite and the DSH Node test command both pass.",
+    "Mutation tests reject a covered-parent-only rule, a missing deferred guard, a missing ignored-chain rule, a missing SHA-inheritance rule, and a space-only ignore rule. The own-SHA mutation survives.",
+    "Task 1.3: PR #50 is open at be0db15 with no merge and a successful checks job in run 45430258505. Run 45428772546 and the diff stat at 7558213 match the plan's SHA-qualified records.",
+    "The current plan has three completed tasks with SHA evidence and no plan_closeout_feedback lines. The previously accepted README Status nit was not reopened.",
+    "The supplied review-a role gate ran and exited 1 because the audit status is fail. It reported F1 and F2 with no artifact validation error."
+  ],
+  "commands": [
+    "git rev-parse HEAD be0db15 a943347 origin/fix/closeout-nested-subboxes",
+    "git diff --check a943347..be0db15; git diff a943347..be0db15",
+    "git diff --stat a943347..7558213; git diff --name-status 7558213..be0db15",
+    "gh pr view 50 --json state,headRefOid,headRefName,mergeCommit,statusCheckRollup,url",
+    "gh run view 45428772546 --json headSha,status,conclusion,name,url,createdAt,updatedAt",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js'",
+    "python3 -I -B -c <read-only Math comparison; in-memory Red/Green and mutation tests; in-memory status candidate and closeout role-gate fixtures>",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track closeout_nested_subboxes_20261124 --phase \"Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)\" --baseline be0db15 --result-file measure/runs/closeout_nested_subboxes_20261124/review-a-be0db15.json --log-file measure/runs/closeout_nested_subboxes_20261124/review-a-be0db15.log"
+  ],
+  "changed_files": [
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-be0db15.json",
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-be0db15.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {"axis": "correctness", "score": 3, "evidence": "The Math scan matches the intended diagnostics, but the deferred [b] fixture incorrectly passes role-gate closeout at HEAD."},
+    {"axis": "test_meaning", "score": 3, "evidence": "The base checker fails 12 new cases, but test_case_09_x_with_sha_under_ignored_box passes when its own SHA is ignored."},
+    {"axis": "scope_discipline", "score": 5, "evidence": "git diff --name-status a943347..be0db15 lists exactly the six planned paths."},
+    {"axis": "evidence_quality", "score": 4, "evidence": "The Red replay, wrapped Green suites, and GitHub checks substantiate plan.md:14–17, but the plan omits a direct closeout caller probe."}
+  ]
+}

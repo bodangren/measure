@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "closeout_nested_subboxes_20261124",
+  "phase": "Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)",
+  "baseline_sha": "a5fc0be655833d35eb2966c1ab6a6eba1db89849",
+  "role_base_sha": "a5fc0be655833d35eb2966c1ab6a6eba1db89849",
+  "phase_base_sha": "a943347f0348fe31e69941f7c6830aa8314d9966",
+  "audited_head_sha": "a5fc0be655833d35eb2966c1ab6a6eba1db89849",
+  "route": "openai/gpt-6.2-sol#high",
+  "status": "fail",
+  "summary": "F5 is fixed. Closeout still ignores open boxes in a separate list branch because it treats the previous completed task as their parent.",
+  "blocking_findings": [
+    "F6 [Blocker] review-a: measure_interphase_checks.py:1115–1122 scans only checkbox lines. A plain sibling list item or a phase heading does not clear the previous branch. At :1145–1152, an open child of `- Required checks` inherits the ignore from a prior `[x]` task. FR-1 requires an actual completed parent or ignored open parent. The base reports the open task and exits 1. HEAD lists the track as a candidate and closeout exits 0. This fails with both open markers and with or without a phase heading."
+  ],
+  "nonblocking_findings": [
+    "F7 [Nit] review-a: Late finding for tech debt. README.md:33 still says only top-level tasks require a SHA. A nested `[x]` without coverage needs its own SHA.",
+    "F8 [Nit] review-a: Late finding for tech debt. spec.md:5 lists only top-level blockers for Math. The full plan also retains 56 nested missing-SHA lines and 26 nested open lines under open parents."
+  ],
+  "evidence": [
+    "HEAD and role base both resolve to a5fc0be655833d35eb2966c1ab6a6eba1db89849. The branch is fix/closeout-nested-subboxes. The checkout is clean and git diff --check passes for a943347..a5fc0be.",
+    "The light-lane plan supplies its test command at plan.md:8. It has no separate test-strategy.md. The audit read the Measure status, index, prior results, spec, and contracts.",
+    "build-graph is installed but indexes TypeScript only. Source search found the Python callers at measure_interphase_checks.py:464 and :1223. Those callers feed status, standalone closeout, and role-gate closeout.",
+    "F1 verified fixed: the covered sibling case passes all closeout callers. The uncovered sibling case reports both missing SHAs and fails closeout.",
+    "F2 verified fixed: top-level and nested `[b]` boundaries keep open children visible. A `[b]` boundary also prevents a completed child from inheriting a SHA.",
+    "F3 verified fixed: case 09 and a two-level ignored-chain probe report only the root's missing SHA when the child has its own SHA.",
+    "F4 verified fixed in CHANGELOG.md:49. The entry no longer says only top-level tasks need a SHA and describes inherited coverage.",
+    "F5 verified fixed: deferred `[ ]` and `[~]` parents stop a SHA-less `[x]` child from inheriting a SHA. Both forms fail closeout as at a943347. Both passed incorrectly at 4219d36.",
+    "The F5 result also holds inside deeper ignored chains. A child with its own SHA passes. A deferred `[x]` with a SHA covers a completed child but does not hide an open child.",
+    "The fresh caller matrix exercises both open markers, two levels, tabs, mixed indentation, ignored chains, covered and uncovered ancestors, siblings, and deferred boundaries. The ordinary checkbox trees matched the spec.",
+    "F6 fixture: `## Phase 1: Build\\n\\n- [x] Task 1.1: Build a1b2c3d\\n\\n## Phase 2: Verify\\n\\n- Required checks\\n  - [ ] Verify output\\n- [x] Task 2.1: Record baseline d4e5f6a\\n`. The open box belongs to the plain bullet, not Task 1.1.",
+    "F6 probe: base candidates `[]`, feedback `plan task is not complete: - [ ] Verify output`, gate exit 1. HEAD candidates `[\"f6\"]`, feedback `[]`, gate exit 0. The `[~]` marker and the same-phase form give the same verdicts.",
+    "All other checker code is AST-identical at base and HEAD. The caller matrix confirms equal phase_counts, jr_green_phase_counts, track_incomplete, and discover_phases results.",
+    "The real Math plan gives no feedback for lines 38–50 and one missing SHA for lines 52–60. The full plan remains off the candidate list.",
+    "The independent Math scan matches all 102 remaining diagnostics: 15 top-level and 56 nested missing SHAs, plus 5 top-level and 26 nested open boxes. The base reports 302 diagnostics.",
+    "A3: changed assertions use exact feedback, exact candidate lists, or the integer from track_incomplete. None use bare digits as a count. A4: a missing plan returns no candidate and makes closeout exit 1.",
+    "A5 and plan.md:14–19: the historical Red suite fails at a943347 and passes at 032efb7. Cases 19–21 fail at be0db15 and pass at 8dad0c1. Cases 22–25 fail at 4219d36 and pass at 7181be6.",
+    "The targeted suites, full spec-review-gate suite, and DSH Node suite exit 0 through heavy-run. The current plan has five completed tasks with SHA evidence.",
+    "Task 1.3 records the historical checks run for 7558213 and its diff stat correctly. PR #50 is open and unmerged. GitHub reports a5fc0be as the current PR head.",
+    "The supplied review-a role gate exits 1 for the fail verdict and reports F6. It reports no artifact error."
+  ],
+  "commands": [
+    "git rev-parse --verify HEAD; git rev-parse --verify a5fc0be; git rev-parse --verify a943347; git status --short",
+    "git diff --check a943347..a5fc0be; git diff a943347..a5fc0be; git diff --stat a943347..7558213",
+    "gh pr view 50 --json state,headRefOid,mergeCommit,statusCheckRollup; gh run view 45428772546 --json headSha,conclusion,jobs",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js'",
+    "python3 -I -B -c <caller matrix and F6 role-gate replay with isolated light-lane fixtures>",
+    "python3 -I -B -c <committed Red and Green replays, AST parity check, and independent Math ancestry scan>",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track closeout_nested_subboxes_20261124 --phase \"Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)\" --baseline a5fc0be --result-file measure/runs/closeout_nested_subboxes_20261124/review-a-a5fc0be.json --log-file measure/runs/closeout_nested_subboxes_20261124/review-a-a5fc0be.log"
+  ],
+  "changed_files": [
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-a5fc0be.json",
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-a5fc0be.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "ratings": [
+    {"axis": "correctness", "score": 2, "evidence": "The F6 fixture makes role-gate closeout exit 0 at HEAD and exit 1 at a943347."},
+    {"axis": "test_meaning", "score": 4, "evidence": "Cases 22–25 fail at 4219d36, but the committed suite lacks the F6 list boundary fixture."},
+    {"axis": "scope_discipline", "score": 5, "evidence": "git diff --name-status a943347..a5fc0be lists only paths named in FR-5."},
+    {"axis": "evidence_quality", "score": 5, "evidence": "Commit replays, wrapped suite exits, and the historical CI run verify the claims in plan.md:14–19."}
+  ]
+}

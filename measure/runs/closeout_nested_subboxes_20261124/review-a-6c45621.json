@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "closeout_nested_subboxes_20261124",
+  "phase": "Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)",
+  "baseline_sha": "6c456214566d2b760c2c48deb60c0eaf3074cee9",
+  "phase_base_sha": "a943347f0348fe31e69941f7c6830aa8314d9966",
+  "role_base_sha": "6c456214566d2b760c2c48deb60c0eaf3074cee9",
+  "audited_head_sha": "6c456214566d2b760c2c48deb60c0eaf3074cee9",
+  "status": "fail",
+  "summary": "Closeout can pass with an open task after a nested deferred boundary. The targeted, full, and DSH Node suites pass.",
+  "blocking_findings": [
+    "F9 [Blocker] review-a: measure_interphase_checks.py:1130–1157 preserves earlier ancestors across a nested [b] or deferred line. When the next box is a sibling of that line, the pop exposes the old [x] parent. FR-1 says the boundary ends the block. The base rejects the open box, but HEAD lists the track as a candidate and passes closeout and role-gate closeout. Terminate inheritance across these boundaries and test the caller results."
+  ],
+  "nonblocking_findings": [
+    "F10 [Nit] review-a: Late finding for tech debt. test_subbox_sha.py:5–7 still says an ignored open parent can hide its open child. Case 08 and FR-1 require the child to fail.",
+    "F11 [Nit] review-a: Late finding for tech debt. test_closeout_nested_subboxes.py:499–572 does not exercise a missing plan. A mutant that lists a missing plan as a candidate passes all 35 cases.",
+    "F12 [Nit] review-a: Late finding for tech debt. measure_interphase_checks.py:1120 and spec.md:14 retain an ignored flag that no lookup reads. The checker also uses a string as a Boolean deferred flag."
+  ],
+  "evidence": [
+    "HEAD and the role base resolve to 6c456214566d2b760c2c48deb60c0eaf3074cee9. The checkout is clean and git diff --check a943347..6c45621 passes.",
+    "Measure status and the track index resolve the light-lane plan. The active track has no test-strategy.md; plan.md:8 supplies the test command.",
+    "build-graph is installed but does not index Python. Git search found direct callers at measure_interphase_checks.py:464 and :1229. They feed status, standalone closeout, and role-gate closeout.",
+    "F9 minimal plan: `## Phase 1: Build\\n- [x] Root a1b2c3d\\n  - [b] Deferred deferred:owner\\n  - [ ] Verify\\n`.",
+    "F9 CLI replay with valid registry and archive metadata: base lists zero candidates. Both closeout commands exit 1 with `plan task is not complete: - [ ] Verify`.",
+    "F9 CLI replay at HEAD: status lists `probe` as a candidate. Standalone closeout and role-gate closeout both exit 0.",
+    "The same wrong pass occurs with either open marker after any nested deferred marker: [b], [x], [ ], or [~]. The next line can also be shallower than the deferred line.",
+    "A SHA-less completed sibling incorrectly inherits coverage across the same boundary. The base also passed that SHA-only fixture. A fresh [x] with its own SHA correctly starts a new block.",
+    "F1: Both original fixtures reject closeout and report the SHA-less descendant. The covered-root fixture still hides sibling B after the deferred line; F9 records that residual defect.",
+    "F2: A direct open child of [b] rejects closeout at both depths. F9 applies to a sibling or shallower box after the boundary, not a direct child.",
+    "F3: Dropping the nested box's own SHA makes cases 09, 12, and 20 fail. F4: CHANGELOG.md:49 now states that a nested [x] needs SHA evidence.",
+    "F5: A direct SHA-less [x] child of a deferred [ ] or [~] parent fails in both caller paths and the closeout role gate.",
+    "F6: Both open markers fail after a plain item, text line, heading, or blank line at top level or inside the block. Candidate and role-gate results agree.",
+    "The caller matrix also checks tabs, direct nested [~], deeper open chains, same and shallower indentation, sibling SHA isolation, and covered and uncovered parents.",
+    "Other checker code is AST-identical. The active Math plan gives the same phase_counts, jr_green_phase_counts, discover_phases, and track_incomplete results at base and HEAD.",
+    "The checked-in Math fixture matches the real Math plan byte for byte. An independent scan matches the itemized feedback in order: 40 open lines, including 35 nested, and 71 missing-SHA lines.",
+    "The real Math plan is not a candidate at either SHA. Actual lines 38–50 give no feedback; lines 52–60 give only the root's missing-SHA line.",
+    "README.md:33, CHANGELOG.md:25 and :49, and spec.md:5 do not claim Math passes. CHANGELOG.md:25 states that a deferred line ends the block, which F9 disproves.",
+    "A3: Changed tests check exact messages, candidate lists, and an integer return. A4: Removing plan.md excludes the track and gives a missing-plan diagnostic with gate exit 1.",
+    "A5: Task 1.1 and 1.2 claim the original Red fails and then passes. The historical replay reproduces both outcomes.",
+    "Task 1.4 cases 19–21 fail on be0db15 and pass on 8dad0c1. F5 cases 22–25 fail on 4219d36 and pass on 7181be6.",
+    "Task 1.5: All 15 changed or new cases fail on a5fc0be and pass on f1fe0bb. Case 19 omits the open sibling diagnostic that FR-1 requires.",
+    "A boundary reset in an in-memory checker makes only case 19 fail. Other mutants fail tests for block resets, ignored chains, deferred parents, SHA handling, and tabs.",
+    "The targeted and full spec-review-gate suites and the DSH Node suite pass through heavy-run. The current phase has six completed task lines with SHA evidence.",
+    "Task 1.3 records the correct diff stat and 7m2s CI pass at 7558213. PR #50 is open and unmerged at 6c45621; its current checks job was in progress during verification.",
+    "The supplied review-a role gate exits 1 for the fail verdict and names F9. It reports no artifact or phase validation error."
+  ],
+  "commands": [
+    "git rev-parse HEAD a943347 6c45621; git status --short; git diff --check a943347..6c45621; git diff --name-status a943347..6c45621",
+    "git grep -n -E 'plan_closeout_feedback|closeout_candidates|closeout_feedback' -- skills",
+    "git diff --stat a943347..7558213; gh pr view 50 --json state,headRefOid,mergeCommit,statusCheckRollup; gh run view 45428772546 --json headSha,conclusion,jobs",
+    "cmp tests/spec_review_gate/fixtures/math_real_plan.md /home/daniebo/Desktop/ra-math-advantage/measure/tracks/eslint-to-oxlint-migration_20260820/plan.md",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js'",
+    "python3 -I -B -c <86 caller probes; base and HEAD CLI replay; committed test replays and mutants; independent Math scan and gate parity>",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track closeout_nested_subboxes_20261124 --phase \"Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)\" --baseline 6c45621 --result-file measure/runs/closeout_nested_subboxes_20261124/review-a-6c45621.json --log-file measure/runs/closeout_nested_subboxes_20261124/review-a-6c45621.log"
+  ],
+  "changed_files": ["measure/runs/closeout_nested_subboxes_20261124/review-a-6c45621.json", "measure/runs/closeout_nested_subboxes_20261124/review-a-6c45621.log"],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {"axis": "correctness", "score": 2, "evidence": "The F9 fixture passes role-gate closeout at HEAD and fails at a943347."},
+    {"axis": "test_meaning", "score": 3, "evidence": "Case 19 detects missing SHA evidence but expects the checker to hide an open sibling after a deferred line."},
+    {"axis": "scope_discipline", "score": 5, "evidence": "The eight paths in git diff --name-status a943347..6c45621 match spec.md:16."},
+    {"axis": "evidence_quality", "score": 4, "evidence": "The replay confirms the test exits at plan.md:14–20, but its records lack a caller probe that exercises F9."}
+  ]
+}

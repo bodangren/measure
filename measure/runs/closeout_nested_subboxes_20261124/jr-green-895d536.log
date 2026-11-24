@@ -1,0 +1,41 @@
+Measure jr-green result — closeout_nested_subboxes_20261124
+Role base SHA: 895d536
+Phase base SHA: a943347
+Implementation commit: 032efb743517690b955cdac9361b3b6bfa416efa
+Plan evidence commit: 75582136c0769c4ccd3646ab954f07a213df1d08
+Final Green HEAD: 75582136c0769c4ccd3646ab954f07a213df1d08
+
+Targeted Red command before the checker edit (checker at a943347):
+  HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py'
+  Result: FAIL, exit 1. Failing cases: Math shape, nested tilde, two-level, tab indent,
+  ignored chain, SHA nested [x], covered ancestor, uncovered ancestor, open top chain,
+  Math real shape, line 52 shape, and candidates. Each failure carries an extra
+  "plan task is not complete" line. Top-level boxes, tilde parent, deferred parents,
+  and track_incomplete boundary cases pass.
+
+Targeted Red command after the checker edit (implementation at 032efb7):
+  Same command. Result: PASS, exit 0. All cases pass; "plan task is not complete"
+  appears only for top-level open tasks and open tasks under an open parent.
+
+Full proof gate:
+  HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'
+  Result: PASS, exit 0.
+
+Node gate:
+  HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js'
+  Result: PASS, exit 0.
+
+measure/doctor.sh is absent in this repo. The strategy live gates above passed.
+
+MEASURE_AGENT_RESULT
+role: measure-jr-green
+status: pass
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: 032efb7 implementation (checker, subbox_sha rewrite, README, CHANGELOG); 7558213 plan evidence
+tests_run: targeted Red failed at a943347 with exit 1 and passed at 032efb7 with exit 0; full spec_review_gate proof passed with exit 0; node --test plugins/dsh-measure-guard/tests/*.test.js passed with exit 0
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py (plan_closeout_feedback only); tests/spec_review_gate/test_subbox_sha.py (case 3 and docstrings); README.md (Status sentence); CHANGELOG.md (sub-box sentence and new Bug Fixes entry); measure/tracks/closeout_nested_subboxes_20261124/plan.md (Task 1.1 and 1.2 evidence)
+plan_updates: Task 1.1 flipped to [x] with Red SHA 77598a6; Task 1.2 flipped to [x] with implementation SHA 032efb7; Task 1.3 left open for the build session
+known_failures: the jr-green role-gate may exit 1 only on the single non-deferred incomplete task, Task 1.3 PR and records; no test or proof gate failed
+handoff: Green done. Immutable phase_base_sha a943347 and role_base_sha 895d536 verified; Red commit 77598a6 is inside phase_base_sha..HEAD. New file in the phase range: tests/spec_review_gate/test_closeout_nested_subboxes.py, added by Red, left immutable. No implementation-owned new test files were added. Final Green HEAD is 7558213. Reviewers should audit only plan_closeout_feedback and the four bounded documentation/test edits. Task 1.3 stays open for PR and records.
+END_MEASURE_AGENT_RESULT

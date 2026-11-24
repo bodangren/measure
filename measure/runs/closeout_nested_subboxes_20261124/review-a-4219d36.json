@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "closeout_nested_subboxes_20261124",
+  "phase": "Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)",
+  "baseline_sha": "4219d3605f1dadca2cfca51d002966a578202a92",
+  "phase_base_sha": "a943347f0348fe31e69941f7c6830aa8314d9966",
+  "role_base_sha": "4219d3605f1dadca2cfca51d002966a578202a92",
+  "audited_head_sha": "4219d3605f1dadca2cfca51d002966a578202a92",
+  "status": "fail",
+  "summary": "The round 1 caller regressions are fixed, but the new SHA lookup can pass a closeout that lacks required SHA evidence.",
+  "blocking_findings": [
+    "F5 [Blocker] review-a: measure_interphase_checks.py:1161 skips non-ignored deferred open parents, not just ignored boxes. A SHA-less [x] child inherits coverage through a nested [ ] or [~] parent marked deferred:owner. The phase base and be0db15 reject the fixture as a candidate and exit 1 at role-gate closeout. HEAD lists the track and exits 0. Keep the existing nearest-parent SHA rule outside ignored chains, as spec.md:13–14 requires. Add a caller regression for both deferred open markers."
+  ],
+  "nonblocking_findings": [
+    "F4 [Nit] review-a: CHANGELOG.md:49 adds the inheritance rule but still says only top-level tasks require a SHA. Case 11 and the following sentence contradict that claim. Remove the qualifier."
+  ],
+  "evidence": [
+    "HEAD and the role base matched 4219d3605f1dadca2cfca51d002966a578202a92. The checkout was clean and git diff --check passed on a943347..4219d36.",
+    "The light-lane track has no separate test-strategy.md. The audit read Measure status, the track index, the metadata, the spec, the phase plan, the spec review, and the role artifacts.",
+    "build-graph indexes TypeScript only. Git search found the two Python callers at measure_interphase_checks.py:464 and :1223. They feed status, closeout, and role-gate closeout.",
+    "F1 withdrawn: the covered-root sibling probe now gives no feedback and passes role-gate closeout. The uncovered-root probe now reports both missing SHAs and remains excluded from candidates.",
+    "F2 withdrawn: a top-level [b] stops the previous [x] task from hiding the open child. A nested [b] also keeps its open child visible. Both probes now fail role-gate closeout and are not candidates.",
+    "F3 withdrawn: case 09 now expects only the root's missing-SHA line. The case fails when an in-memory mutation discards the nested child's own SHA.",
+    "F4 remains nonblocking. CHANGELOG.md:49 now describes how nested coverage works, but its opening sentence still says 'top-level task lines only'.",
+    "F5 fixture: `- [x] Root a1b2c3d\\n  - [ ] Parent a1b2c3d deferred:owner\\n    - [x] Child\\n` in the last phase of a valid light-lane archive. Replace `[ ]` with `[~]` for the second failing form.",
+    "Both F5 forms produce `completed plan task lacks commit SHA: - [x] Child` at a943347 and be0db15. They produce no feedback at 4219d36.",
+    "The caller table checked nested [~], two levels, tabs, ignored chains, uncovered roots, sibling branches, and open children of deferred [x], [ ], and [b] parents. A non-ignored open parent still causes open-task feedback.",
+    "Standalone [b] lines with and without deferred:owner give no new feedback. A deferred [x] without a SHA in the last phase still reports its missing done SHA.",
+    "The probe plans give identical phase_counts, jr_green_phase_counts, track_incomplete, and discover_phases results across a943347, be0db15, and 4219d36. The role-gate branches other than closeout do not call the changed function.",
+    "The real Math plan remains off the candidate list. An independent nearest-parent scan matches all 102 diagnostics at HEAD: 71 missing-SHA lines and 31 open lines. The base reports 302.",
+    "Math lines 38–50 give no feedback. Lines 52–60 give only the missing SHA for line 52. The current track plan gives no closeout plan feedback and has four completed tasks with SHA evidence.",
+    "A3: the changed cases assert exact feedback lists, a fixed candidate list, or an integer from track_incomplete. None match bare digits as a count.",
+    "A4: removing plan.md excludes the track from candidates and gives the missing-plan diagnostic at role-gate closeout with exit 1.",
+    "Task 1.1: the test from 77598a6 fails the named 12 cases against a943347. Its six boundary cases pass.",
+    "Task 1.2 and A5: the original Red suite passes against 032efb7. At HEAD, the targeted suite, full spec-review-gate suite, and DSH Node suite pass through heavy-run.",
+    "Task 1.3: PR #50 is open and unmerged. The plan's historical diff stat matches a943347..7558213. The successful checks job for 7558213 lasted 7m2s. The current PR head is already 4219d36.",
+    "Task 1.4: cases 19–21 fail on be0db15 and all 21 cases pass on 8dad0c1. The two new spec sentences describe the intended fixes. The new lookup also changes the case in F5.",
+    "The supplied review-a role gate ran and exited 1. It reported the fail verdict and F5 without an artifact validation error."
+  ],
+  "commands": [
+    "git rev-parse HEAD 4219d36 a943347 be0db15; git status --short",
+    "git diff --check a943347..4219d36; git diff a943347..4219d36; git diff be0db15..4219d36 -- CHANGELOG.md",
+    "git grep -n plan_closeout_feedback -- skills/measure-orchestrator/scripts; git ls-files '*test-strategy.md' '*graph.db'",
+    "gh pr view 50 --json state,headRefOid,mergeCommit,statusCheckRollup; gh run view 45428772546 --json jobs; git diff --stat a943347..7558213",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh'",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js'",
+    "python3 -I -B -c <caller matrix and missing-plan control; committed Red/Green replay and case 09 mutation; independent Math scan>",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role review-a --track closeout_nested_subboxes_20261124 --phase \"Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)\" --baseline 4219d36 --result-file measure/runs/closeout_nested_subboxes_20261124/review-a-4219d36.json --log-file measure/runs/closeout_nested_subboxes_20261124/review-a-4219d36.log"
+  ],
+  "changed_files": [
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-4219d36.json",
+    "measure/runs/closeout_nested_subboxes_20261124/review-a-4219d36.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "retry_implementation",
+  "confidence": "high",
+  "route": "openai/gpt-6.2-sol#high",
+  "ratings": [
+    {"axis": "correctness", "score": 3, "evidence": "The caller matrix confirms F1 and F2, but the deferred open parent fixture changes from a closeout failure to a pass."},
+    {"axis": "test_meaning", "score": 4, "evidence": "Cases 19–21 fail on be0db15, but the suite omits a SHA-less [x] child of a deferred open parent."},
+    {"axis": "scope_discipline", "score": 3, "evidence": "measure_interphase_checks.py:1161 changes SHA coverage outside the ignored chains that spec.md:13–14 identifies."},
+    {"axis": "evidence_quality", "score": 4, "evidence": "Commit replay and wrapped suites verify plan.md:14–18, but Task 1.4 does not cover the failing deferred parent input."}
+  ]
+}
