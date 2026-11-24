@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "audit_role_gate_allow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "0f4bd77c6f697805ff425ff93e82bddb098eb240",
+  "audited_head_sha": "0f4bd77c6f697805ff425ff93e82bddb098eb240",
+  "status": "fail",
+  "summary": "The amendment resolves F3 and F4 but introduces a false claim about redirect matching.",
+  "blocking_findings": [
+    "F5 [Blocker] spec.md FR-1 and acceptance criteria: The spec requires deny for any role-gate command containing >, but the specified rules allow unspaced redirects such as role-gate ...>out.txt. Rationale: The three later patterns do not match every >, so the stated outcome conflicts with the required rule placement."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD matches the supplied baseline; the initial branch and worktree match the brief.",
+    "F3 resolved: the chain and spaced-redirect test cases now specify distinct outcomes.",
+    "F4 resolved: FR-2 permits the registry, tech-debt row and archive changes at closeout.",
+    "The actual v2_shell_effect helper evaluated Review A rules with the proposed allow inserted in memory: chain=allow; spaced redirect=deny; chain plus spaced redirect=deny.",
+    "The same helper returned allow for an unspaced redirect and for 2>&1. The existing later patterns are * > *, * >*, and *>>*."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "v2_shell_effect helper probe with an in-memory rule list"
+  ],
+  "changed_files": [
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-0f4bd77.json",
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-0f4bd77.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "Add a role-gate allow rule to eight audit roles and add a contract test. Record the chained-command gap and add a tech-debt row at closeout.",
+    "current_system": "Audit roles allow shell commands and then deny unanchored word patterns. A phase heading matches one deny pattern, which blocks the role-gate command."
+  }
+}

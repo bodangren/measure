@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "audit_role_gate_allow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "e43d546cb65d4ed9473da085242992f4b22f4b61",
+  "audited_head_sha": "e43d546cb65d4ed9473da085242992f4b22f4b61",
+  "status": "pass",
+  "summary": "F5 is resolved. The named test cases match the proposed rules in all eight roles.",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD matches the supplied baseline; the initial branch and worktree match the brief.",
+    "F5 resolved: FR-1 and the acceptance criteria identify the redirect patterns and record the unspaced single-redirect gap.",
+    "The actual v2_shell_effect helper evaluated all eight rule lists with the proposed allow inserted in memory.",
+    "All 72 checks passed: eight named command shapes and the closeout baseline comparison for each of eight roles.",
+    "The closeout command gives allow at commit 3c694b5 and with the proposed rule in every role."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "v2_shell_effect helper probe with in-memory rule lists and 3c694b5 baseline"
+  ],
+  "changed_files": [
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-e43d546.json",
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-e43d546.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "Add a role-gate allow rule to eight audit roles and add a contract test. Record the accepted permission gaps and add a tech-debt row at closeout.",
+    "current_system": "Audit roles allow shell commands and then deny unanchored word patterns. A phase heading matches one deny pattern, which blocks the role-gate command."
+  }
+}

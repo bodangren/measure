@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "role": "review-a",
+  "track": "audit_role_gate_allow_20261123",
+  "phase": "Phase 1: Audit roles may run role-gate (due 2026-11-26)",
+  "baseline_sha": "3e78c79",
+  "audited_head_sha": "d94646f",
+  "status": "pass",
+  "summary": "The exact phase diff implements the specified allow rule in all eight roles. Both test commands and the pushed CI check passed; the contract test omits two redirect forms named by FR-1.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F1 [Nit] review-a: The contract test does not exercise either ` >out.txt` or a `>>` redirect, although FR-1 names both as matched redirect forms and requires them to remain denied. Add cases for both forms in all eight roles. Rationale: the new allow must remain subordinate to each existing redirect deny; the current ` > out.txt` case proves only the `* > *` pattern."
+  ],
+  "evidence": [
+    "HEAD is d94646f and the working tree was clean: `git -C /home/daniebo/Desktop/measure rev-parse --short HEAD` returned d94646f; `git -C /home/daniebo/Desktop/measure status --short` returned no output.",
+    "The exact phase diff `3e78c79..d94646f` contains eight agent files, the new contract test, and the track plan only; `git diff --stat` reported 10 files, 184 insertions, 4 deletions.",
+    "`git diff 2247555 8b41988 -- agents` shows one identical 3-line allow rule in each of the eight FR-1 files, after `*truncate *` and before `* > *`.",
+    "`git diff --exit-code 2247555 d94646f -- tests` exited 0, so the Red test file is unchanged.",
+    "The test fails if the allow rule is removed: `BASE_CMD` then matches the earlier `*rm *` deny and returns deny, contradicting the expected allow at test_audit_role_gate_allow.sh:100-103. A placement before truncate fails the same effect checks and the order assertion at lines 132-145. Placement after `* > *` fails the order assertion at lines 141-145.",
+    "The test confirms the exact role-gate form, no-redirect chain, spaced `> out.txt`, chained spaced redirect, `2>&1`, three non-role-gate denies, closeout parity, and allow-rule ordering at test_audit_role_gate_allow.sh:66-145. It does not cover ` >out.txt` or `>>`.",
+    "`grep` found exactly the eight FR-1 roles with `resource: \"*rm *\"`; no additional audit role has that deny.",
+    "The resource and effect match agents/measure-orchestrator.md:43-45.",
+    "`gh pr view 48 --json state,headRefOid,statusCheckRollup` reports OPEN, head 900b4911fba7e32428bdfce1290fa178f70d55c3, and check `checks` SUCCESS.",
+    "`git diff --stat 900b491 d94646f` reports only measure/tracks/audit_role_gate_allow_20261123/plan.md.",
+    "Plan lines 15-18 record CI success and the change evidence. This audit independently verified the PR check and the current test outputs.",
+    "No project-root test-strategy.md exists. The track contains no test-strategy.md. The phase changes a contract test, so A3/A4/A5 checks were applied; no bare-digit count assertion, vacuous deliverable-presence pass, or false all-pass claim was found.",
+    "The changed files are Markdown role definitions, one shell contract test, and plan.md; no exported TypeScript symbols or callers changed, so build-graph dependency analysis does not apply."
+  ],
+  "commands": [
+    "git -C /home/daniebo/Desktop/measure rev-parse --short HEAD — d94646f",
+    "git -C /home/daniebo/Desktop/measure status --short — no output",
+    "git -C /home/daniebo/Desktop/measure diff --stat 3e78c79 d94646f — 10 files, 184 insertions, 4 deletions",
+    "git -C /home/daniebo/Desktop/measure diff --name-status 3e78c79 d94646f — eight agent files, plan.md, new test",
+    "git -C /home/daniebo/Desktop/measure diff 2247555 8b41988 -- agents — exactly one allow rule in each of the eight files",
+    "git -C /home/daniebo/Desktop/measure diff --exit-code 2247555 d94646f -- tests — exit 0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/test_audit_role_gate_allow.sh' — 88 checks, PASS=88, FAIL=0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' — 25 suites, PASS=25, FAIL=0",
+    "gh pr view 48 --json state,headRefOid,statusCheckRollup — OPEN; head 900b4911fba7e32428bdfce1290fa178f70d55c3; checks SUCCESS",
+    "git -C /home/daniebo/Desktop/measure diff --stat 900b491 d94646f — plan.md only",
+    "python3 /home/daniebo/Desktop/measure/skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo /home/daniebo/Desktop/measure --role review-a --track audit_role_gate_allow_20261123 --phase \"Phase 1: Audit roles may run role-gate (due 2026-11-26)\" --baseline 3e78c79 --result-file /home/daniebo/Desktop/measure/measure/runs/audit_role_gate_allow_20261123/review-a-d94646f.json --log-file /home/daniebo/Desktop/measure/measure/runs/audit_role_gate_allow_20261123/review-a-d94646f.log — PASS, exit 0 after final record; initial provisional attempt exited 1 because status was inconclusive"
+  ],
+  "changed_files": [
+    "agents/measure-final-acceptance.md",
+    "agents/measure-orchestrator-audit.md",
+    "agents/measure-phase-acceptance.md",
+    "agents/measure-review-a-correctness.md",
+    "agents/measure-review-b-security.md",
+    "agents/measure-review-c-ux-api.md",
+    "agents/measure-spec-review.md",
+    "agents/measure-ux-browser-review.md",
+    "measure/tracks/audit_role_gate_allow_20261123/plan.md",
+    "tests/spec_review_gate/test_audit_role_gate_allow.sh"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "openai/gpt-6-luna#high",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "All eight role files contain the ordered allow rule, and the 88-check test passed."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "The contract test covers the specified allow/deny shapes but omits ` >out.txt` and `>>` at tests/spec_review_gate/test_audit_role_gate_allow.sh:104-108."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "`git diff --name-status 3e78c79 d94646f` contains only the eight scoped agent files, track plan, and new test."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "The phase diff, PR check, and both test commands were independently verified."
+    }
+  ]
+}

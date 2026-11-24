@@ -1,0 +1,28 @@
+Closeout of audit_role_gate_allow_20261123 at pre-closeout HEAD d94646f8a69506bd318f88b0928b9ba3d536e88a.
+
+Pre-closeout state: branch chore/audit-role-gate-allow, clean tree, HEAD verified. Phase acceptance phase-acceptance-d94646f.json has status pass and audited_head_sha d94646f, which equals the current HEAD. Review A review-a-d94646f.json has status pass at the same HEAD. The orchestrator re-ran the phase gate with exit 0. Light lane: final acceptance does not run.
+
+The archived plan has four tasks, all [x], each with a commit SHA. Zero [~], zero [ ] and zero [b] tasks. No deferred closeout task. The A5 scan found no false pass claim. The plan's Task 1.4 records no diff stat; phase acceptance raised that as F1 Nit and closeout records it as a deviation, not a fix. The registry entry carried no adversarial-test claim, so A6 holds.
+
+A9: the fixed path measure/tracks/audit_role_gate_allow_20261123/ had one hit in a test comment and eight hits in retained evidence before the move, and the same nine after it. The test hit names the source spec in a comment and is not a path the test reads. The A9 pattern names plan.md, not spec.md. The tests/ folder is outside the closeout write scope, so no test edit was made.
+
+Post-move project test gate through the heavy-run wrapper: exit 0 through the heavy-run wrapper: spec_review_gate 25 suites (PASS=25, FAIL=0); node --test 384 tests, pass 384, fail 0 (811.948825 ms)
+
+Actions: git mv of the track folder to measure/archive/; the active entry removed from measure/tracks.md and an archived entry added with the metadata description; metadata set to status done, actual_tasks 4, completed 2026-11-23, updated_at 2026-11-24T16:30:00Z, with deviation notes; three Low Open tech-debt rows added; this manifest and result written in the archive and the runs folder.
+
+Closeout checker before the work: exit 1, as expected, with the track still active. Checker after the work and before the commit: exit 0 (INFO light lane, no final acceptance; INFO no generated folder; PASS closeout checks passed). The post-commit role-gate result is reported in the final message.
+
+Nothing was pushed. No bulky run artifact was deleted. No lesson row was added. The deviation notes are in the archived metadata and the closeout manifest.
+
+MEASURE_AGENT_RESULT
+role: closeout
+status: complete
+track: audit_role_gate_allow_20261123
+phase: track closeout
+commits: Task 1.1 2247555; Task 1.2 8b41988; Task 1.3 77876fa; Task 1.4 77876fa; closeout commit pending at write time (pre-closeout HEAD d94646f8a69506bd318f88b0928b9ba3d536e88a)
+tests_run: closeout checker exit 1 before the work; exit 0 (INFO light lane, no final acceptance; INFO no generated folder; PASS closeout checks passed) before the commit; post-move project test gate exit 0 through the heavy-run wrapper: spec_review_gate 25 suites (PASS=25, FAIL=0); node --test 384 tests, pass 384, fail 0 (811.948825 ms); A9 grep nine hits before and after the move, one test comment and eight retained-evidence hits, zero functional hits; role-gate result reported in the final message
+files_changed: moved measure/tracks/audit_role_gate_allow_20261123 to measure/archive/audit_role_gate_allow_20261123; new measure/archive/audit_role_gate_allow_20261123/automation-supervisor-closeout-manifest.json; measure/tracks.md; measure/tech-debt.md; measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.json and closeout-d94646f.log (force-added)
+plan_updates: none; the archived plan was already closeout clean with four [x] tasks and SHA evidence; the Task 1.4 diff stat Nit is recorded in metadata and the manifest, not reworded
+known_failures: none; the light lane omits Review B, Review C, adversarial testing, UX review and final acceptance; the Task 1.4 diff stat and the declined Review A F1 are recorded deviations, not fixes
+handoff: track archived, registry updated, metadata done, three new Low Open tech-debt rows; the orchestrator runs the closeout role-gate after the commit; no question for the orchestrator; no bulky artifact deleted; nothing pushed
+END_MEASURE_AGENT_RESULT

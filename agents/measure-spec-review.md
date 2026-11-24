@@ -97,6 +97,9 @@ permissions:
     resource: "*truncate *"
     effect: deny
   - action: shell
+    resource: "python3 */measure-orchestrator/scripts/measure_interphase_checks.py role-gate *"
+    effect: allow
+  - action: shell
     resource: "* > *"
     effect: deny
   - action: shell

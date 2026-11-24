@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "audit_role_gate_allow_20261123",
+  "track_title": "Audit roles may run role-gate",
+  "track_base_sha": "3c694b5",
+  "closeout_baseline_sha": "d94646f8a69506bd318f88b0928b9ba3d536e88a",
+  "audited_head_sha": "d94646f8a69506bd318f88b0928b9ba3d536e88a",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {"role": "spec-review", "artifact": "measure/runs/audit_role_gate_allow_20261123/spec-review-e43d546.json", "status": "pass", "audited_head_sha": "e43d546", "note": "Round 4 on openai/gpt-6.1-terra#high. No findings. Rounds 1 to 3 failed on F1 to F5; each was accepted and fixed in an amendment commit. The spec file is unchanged from e43d546 to d94646f."},
+    {"role": "review-a", "phase": "Phase 1", "artifact": "measure/runs/audit_role_gate_allow_20261123/review-a-d94646f.json", "status": "pass", "audited_head_sha": "d94646f", "note": "On openai/gpt-6-luna#high. One declined Nit F1 on the omitted >out.txt and >> cases. The first result file was inconclusive; the reviewer finalized it as pass. Its shell denied the role-gate command twice; the orchestrator ran the gate."},
+    {"role": "phase-acceptance", "phase": "Phase 1", "artifact": "measure/runs/audit_role_gate_allow_20261123/phase-acceptance-d94646f.json", "status": "pass", "audited_head_sha": "d94646f", "note": "On claude-agent/sonnet#max. One nonblocking Nit F1: Task 1.4 records no diff stat. The independent evaluator found 0 mismatches over 19 shapes in 8 files. The orchestrator re-ran the gate with exit 0."},
+    {"role": "closeout", "artifact": "measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.json", "status": "pass", "audited_head_sha": "d94646f", "note": "Agent Result Block written in closeout-d94646f.log before the closeout commit."}
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review ran four rounds on openai/gpt-6.1-terra#high. Red ran on opencode-go/muse-spark-1.3-contributor#high. Green and closeout ran on opencode-go/hy4-flash-free#high. Review A ran on openai/gpt-6-luna#high. Phase acceptance ran on claude-agent/sonnet#max.",
+  "commands": [
+    "git rev-parse HEAD; git status --short; git branch --show-current -> d94646f8a69506bd318f88b0928b9ba3d536e88a, clean tree, chore/audit-role-gate-allow",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, spec-review.md, phase-acceptance-d94646f.json, review-a-d94646f.json, measure/lessons-learned.md and measure/tech-debt.md",
+    "Confirm phase-acceptance-d94646f.json and review-a-d94646f.json each have status pass and audited_head_sha equal to the pre-closeout HEAD d94646f; the light lane needs no final acceptance",
+    "git cat-file -t on every cited SHA -> 2247555, 8b41988, 77876fa, 3c694b5, 3e78c79, 900b491, e43d546 and d94646f all resolve as commits",
+    "grep the active plan for PASS=...FAIL=0 and all checks pass -> no A5 hit; grep the active registry entry for resolved or pass claims -> no A6 hit",
+    "grep the repository for the fixed path measure/tracks/audit_role_gate_allow_20261123/ before the move -> one hit in tests/spec_review_gate/test_audit_role_gate_allow.sh line 3 and eight hits under measure/runs",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track audit_role_gate_allow_20261123 -> exit 1 before the closeout work",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role closeout --track audit_role_gate_allow_20261123 --phase 'Phase 1: Audit roles may run role-gate (due 2026-11-26)' --baseline d94646f --log-file measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.log -> exit 1 before the work; the log had no result block and the brief gate form omits --result-file",
+    "git mv measure/tracks/audit_role_gate_allow_20261123 measure/archive/audit_role_gate_allow_20261123",
+    "grep the repository for the fixed path after the move -> the same nine hits; zero functional hits in tests, scripts, plugins, mods, agents, skills and .github",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh && node --test plugins/dsh-measure-guard/tests/*.test.js' -> exit 0 through the heavy-run wrapper: spec_review_gate 25 suites (PASS=25, FAIL=0); node --test 384 tests, pass 384, fail 0 (811.948825 ms)",
+    "Write metadata.json: status done, actual_tasks 4, updated_at 2026-11-24T16:30:00Z, completed 2026-11-23, and deviation notes",
+    "Edit measure/tracks.md: remove the Active Tracks entry and add the Archived Tracks entry with the metadata description; a Python comparison of the two returned true",
+    "Add three Low Open rows to measure/tech-debt.md for the unanchored deny globs, the omitted redirect forms, and the accepted chained-command gap",
+    "Write this manifest in the archive and closeout-d94646f.json and closeout-d94646f.log in measure/runs/audit_role_gate_allow_20261123/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track audit_role_gate_allow_20261123 -> exit 0 (INFO light lane, no final acceptance; INFO no generated folder; PASS closeout checks passed) before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.json -> exit 0 (PASS: audit result is valid) before the commit",
+    "git add measure/tracks.md measure/tech-debt.md and the archive; git add -f measure/runs/audit_role_gate_allow_20261123; commit with the measure(closeout): prefix",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role closeout --track audit_role_gate_allow_20261123 --phase 'Phase 1: Audit roles may run role-gate (due 2026-11-26)' --baseline d94646f --result-file measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.json --log-file measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.log -> reported in the final message"
+  ],
+  "post_move_project_test_gate": "exit 0 through the heavy-run wrapper: spec_review_gate 25 suites (PASS=25, FAIL=0); node --test 384 tests, pass 384, fail 0 (811.948825 ms)",
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track audit_role_gate_allow_20261123",
+    "exit_code_before_any_change": "1 (the track was still active and not archived)",
+    "exit_code_before_commit": "exit 0 (INFO light lane, no final acceptance; INFO no generated folder; PASS closeout checks passed)",
+    "exit_code_after_commit": "reported in the final message of the closeout session",
+    "run_point": "before the closeout work, before the closeout commit, and after the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "2247555",
+    "1.2": "8b41988",
+    "1.3": "77876fa",
+    "1.4": "77876fa"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "d94646f8a69506bd318f88b0928b9ba3d536e88a"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "no A5 hit: plan.md holds no PASS=...FAIL=0 or all-checks-pass claim; phase acceptance reproduced the Red fail-first, the passing runner, and the PR #48 check claims; the missing Task 1.4 diff stat is the recorded F1 Nit",
+    "a6_registry_check": "pass (the active entry made no adversarial-test claim, and the archived entry description equals the metadata description)"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/audit_role_gate_allow_20261123/ before and after the move",
+    "hits_before_move": [
+      "tests/spec_review_gate/test_audit_role_gate_allow.sh:3 (comment naming the source spec)",
+      "measure/runs/audit_role_gate_allow_20261123/red-p1.log:16",
+      "measure/runs/audit_role_gate_allow_20261123/phase-acceptance-d94646f.json:61",
+      "measure/runs/audit_role_gate_allow_20261123/review-a-d94646f.json:24,51",
+      "measure/runs/audit_role_gate_allow_20261123/green-p1.log:3,21",
+      "measure/runs/audit_role_gate_allow_20261123/green-p1-local.log:25",
+      "measure/runs/audit_role_gate_allow_20261123/spec-review-d92ae46.json:27"
+    ],
+    "hits_after_move": [
+      "the same one test comment and eight retained-evidence occurrences under measure/runs; zero functional hits in tests, scripts, plugins, mods, agents, skills and .github"
+    ],
+    "tests_scripts_support_hits": 1,
+    "note": "The only tests/ hit is a comment on line 3 that names the source spec. The test never reads that path, and the A9 detection pattern names plan.md, not spec.md. The tests/ folder is outside the closeout write scope, so no test edit was made. The post-move project test gate was rerun through the heavy-run wrapper; summary recorded above."
+  },
+  "deviations": [
+    "Light lane: spec review and Review A ran. Review B, Review C, adversarial testing, UX review and final acceptance did not run.",
+    "Spec review took four rounds on openai/gpt-6.1-terra#high. Rounds 1 to 3 failed on F1 chain allow, F2 change-set contradiction, F3 redirect chain, F4 closeout files outside the change set and F5 unspaced redirect. Each was accepted and fixed in an amendment commit. Round 4 at e43d546 passed with no findings.",
+    "Spec-review F4 named the closeout files as an exception to FR-2. Spec-review F5 narrowed the redirect claims to exact globs and left the unspaced > as an existing gap.",
+    "Red ran on opencode-go/muse-spark-1.3-contributor#high. The build session amended the spec and plan during setup; the amendments are in the committed track files.",
+    "Review A ran on openai/gpt-6-luna#high. Its first result file was inconclusive; the reviewer finalized it as pass at d94646f. Its shell denied the role-gate command twice and the orchestrator ran the gate.",
+    "Review A F1 was declined: the contract test omits the >out.txt and >> forms. Phase acceptance independently found 0 mismatches over 19 shapes in 8 files; the four omitted forms all give deny. This is a coverage gap, not a behavior defect.",
+    "Phase acceptance ran on claude-agent/sonnet#max. Its shell denied the phase-acceptance gate and the orchestrator re-ran it with exit 0.",
+    "Phase-acceptance F1 Nit is recorded, not fixed: Task 1.4 marks the records task done but records no diff stat. Git holds the stat. The previous light-lane chore also left a stale diff stat in place when a reword would advance HEAD.",
+    "The chained-command allow is an accepted gap: a command after the role-gate form also passes a git write, since the allow rule sits after the git-write denies. The deny list is a guard rail, not a sandbox; the roles are audit-only by contract and can already run python3 -c or node -e.",
+    "No live installed-copy proof exists before the merge; FR-4 assigns that proof to the orchestrator after the merge. Nothing was pushed by closeout and nothing was merged."
+  ],
+  "retained_evidence": [
+    "measure/runs/audit_role_gate_allow_20261123/ (all Red, Green, spec-review, Review A and phase-acceptance logs and JSON files, force-added)",
+    "measure/runs/audit_role_gate_allow_20261123/closeout-d94646f.json and closeout-d94646f.log (force-added)",
+    "measure/archive/audit_role_gate_allow_20261123/spec-review.md and plan.md (task SHAs and review rounds)",
+    "PR #48 check checks success on 900b491 (run 45144937306)"
+  ],
+  "artifact_cleanup": "none; no bulky run artifact was deleted",
+  "lessons_learned_rows_added": 0,
+  "tech_debt_rows_added": [
+    "Unanchored deny globs in the 8 audit roles match words inside arguments; an unspaced > also matches none of the redirect denies (Low, Open)",
+    "The contract test omits the >out.txt and >> redirect forms named by FR-1 (Low, Open)",
+    "A chained command after the role-gate form is allowed, so a chained git write also passes (Low, Open)"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

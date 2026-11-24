@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "audit_role_gate_allow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "02e6684753ce0f1376d8193bd4f32ce0b2d63af2",
+  "audited_head_sha": "02e6684753ce0f1376d8193bd4f32ce0b2d63af2",
+  "status": "fail",
+  "summary": "The proposed allow resolves the reported false denial but also overrides destructive-command denies. FR-2 also conflicts with the required test file.",
+  "blocking_findings": [
+    "F1 [Blocker] spec.md FR-1 and acceptance criteria: The proposed allow also matches role-gate commands followed by ; rm x or && cp a b. Rationale: The later allow overrides existing word denies, but the spec says old deny cases stay denied and does not define this exception.",
+    "F2 [Blocker] spec.md FR-2 and FR-3: FR-2 forbids every other file change, but FR-3 requires a new test file. Rationale: Red cannot satisfy both requirements without choosing an exception."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD and baseline match; the branch and initial working tree match the brief.",
+    "The v2_shell_effect helper returns deny for the reported heading and allow after the proposed insertion. The matching word deny is *rm *.",
+    "The helper returns allow for a chained destructive command and deny for a redirected command after the insertion. It evaluates the last matching rule, not the first.",
+    "The platform independently rejected a shell call containing a word-deny pattern; platform rule ordering was not independently verified.",
+    "Exactly eight agent files contain the word deny. Adversarial testing has shell allow and no word deny.",
+    "The runner discovers test_*.sh, and the required positive assertion fails at the current base. The named comparison commit exists."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "v2_shell_effect helper probe on original and in-memory proposed rules",
+    "git cat-file -e 3c694b5:agents/measure-review-a-correctness.md"
+  ],
+  "changed_files": [
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-02e6684.json",
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-02e6684.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "Add a role-gate allow rule to eight audit roles after their word denies and before their redirection denies. Add a contract test for the reported heading and existing deny cases.",
+    "current_system": "The audit roles allow shell commands, then deny several unanchored word patterns. A phase heading contains text that matches a deny pattern, so the role-gate command is denied."
+  }
+}

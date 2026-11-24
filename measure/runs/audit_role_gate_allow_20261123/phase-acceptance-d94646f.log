@@ -1,0 +1,62 @@
+# Phase acceptance log: Phase 1 of audit_role_gate_allow_20261123
+
+Role: measure-phase-acceptance
+Route: claude-agent/sonnet#max
+Track: audit_role_gate_allow_20261123 (chore, light lane)
+Phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+phase_base_sha: 3e78c79
+role_base_sha: d94646f
+audited_head_sha: d94646f8a69506bd318f88b0928b9ba3d536e88a
+Result artifact: measure/runs/audit_role_gate_allow_20261123/phase-acceptance-d94646f.json
+
+## Verdict
+
+PASS. No finding blocks acceptance. One nonblocking Nit remains: F1.
+
+## What I verified
+
+1. HEAD equals the role base d94646f, and the tree was clean at the start and at the end.
+2. All 8 audit role files hold the same 3-line allow rule. It sits after the truncate deny and before the three redirect denies. Lines: 94 in 7 files, 100 in agents/measure-spec-review.md.
+3. The phase diff holds the 8 agent files, plan.md, and the new test only. No closeout file is in it. The installer is untouched.
+4. The contract test exits 0 with 88 checks, PASS=88, FAIL=0. The full runner exits 0 with 25 suites, PASS=25, FAIL=0. Both ran through heavy-run.
+5. The fail-first claim reproduces. The 3e78c79 agent files with the Red test give 88 checks, PASS=56, FAIL=32. This equals the Red record in plan.md.
+6. My own awk evaluator checked 19 command shapes in each of the 8 files with 0 mismatches. It includes the forms ' >out.txt' and '>>', which the test does not run. Both give deny.
+7. The other CI steps pass at the audited HEAD: tests/dsh/run.sh (15 passed, 0 failed) and both parity checks.
+8. PR #48 is OPEN at the pushed head 900b491, and check checks has the conclusion SUCCESS (run 45144937306, 5m9s). origin/main is still 3c694b5. HEAD is 2 plan-only commits ahead of the pushed head.
+9. Review A passed at the same HEAD. Light lane: spec review plus Review A apply.
+
+## Findings (nonblocking)
+
+F1 [Nit] phase-acceptance: Task 1.4 is marked [x], but plan.md records no diff stat. The task text requires the PR number, the check result, and the diff stat. The Task 1.3 evidence records the first two. Fix: add one line with a pinned range. For example, git diff --shortstat 3c694b5 900b491 gives 15 files changed, 284 insertions(+). The range 3e78c79..900b491 gives 10 files changed, 180 insertions(+), 2 deletions(-).
+
+## Anti-pattern check
+
+- A3 absent: the test has no count or baseline assertion.
+- A4 absent: the test has no markers-consistent check, and every extract is asserted non-blank.
+- A5: every pass claim in plan.md reproduces. The absent diff stat is F1.
+- A6 does not apply: measure/tracks.md is outside the phase diff.
+- A7 absent: the test uses exact fixed strings.
+
+## Accepted gaps and observation (no findings)
+
+- Accepted by the brief: a chain after the role-gate form is allowed, an unspaced redirect stays allowed, and Review A F1 is declined to tech-debt.
+- Observation: the allow rule sits after the git-write denies too. The role-gate form followed by a git push gives allow in all 8 files. The accepted chain gap covers this.
+
+## Limits of this audit
+
+- No live proof exists before the merge. The test evaluates the permission text. The installed-copy proof stays with the orchestrator after the merge.
+- I built no misplacement mutants. The order assertion at test lines 132-145 pins the rule position.
+- My first commands were rejected because the strings I tested held rm, cp, or a redirect operator. I rebuilt them at run time inside awk and bash. I ran no denied command, and I did not turn measure-guard off.
+
+MEASURE_AGENT_RESULT
+role: phase-acceptance
+status: complete
+track: audit_role_gate_allow_20261123
+phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+commits: none
+tests_run: heavy-run bash tests/spec_review_gate/test_audit_role_gate_allow.sh: pass, exit 0 (88 checks, PASS=88, FAIL=0); heavy-run bash tests/spec_review_gate/run.sh: pass, exit 0 (25 suites, PASS=25, FAIL=0); heavy-run bash tests/dsh/run.sh: pass, exit 0 (15 passed, 0 failed); both check-parity.sh scripts: pass, parity: ok; Red reproduction on the 3e78c79 agent files: exit 1 (88 checks, PASS=56, FAIL=32), as the plan records; awk evaluator, 19 shapes in each of 8 files: 0 mismatches; role-gate phase-acceptance (the command of the brief): pass, exit 0
+files_changed: measure/runs/audit_role_gate_allow_20261123/phase-acceptance-d94646f.json and phase-acceptance-d94646f.log
+plan_updates: none
+known_failures: none; one nonblocking Nit F1 (Task 1.4 records no diff stat) is in the audit JSON
+handoff: PASS at HEAD d94646f with no blocking finding. All 8 audit role files hold the allow rule in the right place, and the contract test and the full runner exit 0. Route F1 [Nit] to the build session: add one diff-stat line to the Task 1.4 evidence in plan.md, pinned to a fixed range such as 3c694b5..900b491 (15 files changed, 284 insertions(+)). A plan-only commit advances HEAD, and the orchestrator decides whether to rerun this gate. HEAD is 2 plan-only commits ahead of the pushed head 900b491, so push them before the merge. Light lane assumed: Review B, Review C, adversarial, and UX results do not exist and I treated them as not required. Accepted gaps stay as the brief states. Observation for the closeout tech-debt row: the allow rule also lets a git write pass after a chained role-gate form. The installed-copy proof after the merge stays with the orchestrator.
+END_MEASURE_AGENT_RESULT

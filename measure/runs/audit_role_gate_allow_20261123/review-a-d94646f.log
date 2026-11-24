@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: audit_role_gate_allow_20261123
+phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+commits: none
+tests_run: heavy-run wrapped test_audit_role_gate_allow.sh PASS (88/88); heavy-run wrapped tests/spec_review_gate/run.sh PASS (25 suites)
+files_changed: measure/runs/audit_role_gate_allow_20261123/review-a-d94646f.json and review-a-d94646f.log
+plan_updates: none
+known_failures: F1 Nit: test lacks cases for ` >out.txt` and `>>` redirects named by FR-1.
+handoff: Exact diff and PR check verified. role-gate passed on the final result file; F1 is a nonblocking test-coverage finding.
+END_MEASURE_AGENT_RESULT

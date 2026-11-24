@@ -1,0 +1,24 @@
+Final Green records report for track audit_role_gate_allow_20261123, Phase 1.
+role_base_sha 900b491 verified with a clean tree before work. Immutable phase_base_sha 3e78c79.
+Only measure/tracks/audit_role_gate_allow_20261123/plan.md was touched. Tasks 1.3 and 1.4 closed [x], each with one evidence line citing orchestrator-verified facts and each ending with commit SHA 77876fa.
+Commits: 77876fa measure(plan): audit_role_gate_allow PR and records; d94646f measure(plan): close audit_role_gate_allow records with the commit SHA.
+Task 1.3 evidence: branch pushed at head 900b491; PR #48 https://github.com/bodangren/measure/pull/48 is open; check `checks` passed at run https://github.com/bodangren/measure/actions/runs/45144937306 (5m9s); origin/main had not moved beyond 3c694b5; nothing merged. Installed-copy proof is post-merge orchestrator work, not a task.
+Task 1.4 evidence: Red 2247555 failed the contract test first (56 pass, 32 fail), then all checks passed after the agent edit 8b41988; full spec_review_gate runner passes.
+Both local commands ran through HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh. Targeted test exits 0 (88 checks, PASS=88, FAIL=0). Full runner exits 0 (25 suites, PASS=25, FAIL=0).
+MEASURE_AGENT_RESULT
+role: jr-green
+status: pass
+track: audit_role_gate_allow_20261123
+phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+phase_base_sha: 3e78c79
+role_base_sha: 900b491
+result_head_sha: d94646f
+commits: 77876fa measure(plan): audit_role_gate_allow PR and records; d94646f measure(plan): close audit_role_gate_allow records with the commit SHA
+tests_run: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exits 0 (88 checks, PASS=88, FAIL=0); bash tests/spec_review_gate/run.sh exits 0 (25 suites, PASS=25, FAIL=0)
+tasks_closed: Task 1.3 [x] — 77876fa; Task 1.4 [x] — 77876fa
+tasks_deferred: none
+new_files_added: none
+files_changed: measure/tracks/audit_role_gate_allow_20261123/plan.md only
+plan_updates: Tasks 1.3 and 1.4 closed [x], each with one orchestrator-verified evidence line and ending SHA 77876fa; Tasks 1.1 and 1.2 unchanged
+handoff: All Phase 1 tasks are now [x]. PR #48 is open with check `checks` green at run 45144937306. Nothing merged. The installed-copy proof remains post-merge work for the orchestrator. Final Green HEAD d94646f; immutable phase_base_sha 3e78c79. No new files added.
+END_MEASURE_AGENT_RESULT
