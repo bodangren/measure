@@ -1094,53 +1094,83 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
     if not plan_path.exists():
         return [f"missing closeout plan: {plan_path}"]
     text = plan_path.read_text(encoding="utf-8", errors="ignore")
+    lines = text.splitlines()
     feedback: list[str] = []
     sha_pattern = re.compile(r"\b[0-9a-f]{7,40}\b")
+    checkbox = re.compile(r"^(\s*- \[([ ~xb])\] (.+))$")
     # The closeout phase is the last phase block of the plan. A deferred task
     # of that phase, or a task whose text names records, closeout, or
     # regenerate, cites its done SHA on the line. Deferred tasks in earlier
     # phases keep the old rule and give no feedback.
     last_heading = max(
-        (match.start() for match in re.finditer(r"^## Phase ", text, re.MULTILINE)),
+        (index for index, line in enumerate(lines) if line.startswith("## Phase ")),
         default=None,
     )
-    # Each processed line is (indent, status, covered). A parent covers a
-    # sub-box when it is an [x] line that is itself covered.
-    processed: list[tuple[int, str, bool]] = []
-    for match in re.finditer(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
+    # Each processed entry is (indent, status, covered, ignored, deferred).
+    # The list is an ancestor stack for one contiguous checkbox block. Every
+    # line that is not a checkbox line, including a blank line, clears the
+    # stack. Entries at the same or a deeper indent are popped before each
+    # checkbox line, so the remaining entries are its shallower ancestors.
+    # An open box is ignored only when its nearest shallower checkbox line is
+    # a non-deferred [x] line in this block. There is no ignored chain: an
+    # open box under another open box always fails. A nested [x] takes
+    # coverage only from its own SHA or its direct [x] parent in this block.
+    # A deferred parent and a [b] line stay as boundary parents with the
+    # deferred marker, so they grant neither ignore nor coverage.
+    processed: list[tuple[int, str, bool, bool, str]] = []
+    for index, line in enumerate(lines):
+        match = checkbox.match(line)
+        if not match:
+            processed = []
+            continue
         full_line, status, task = match.groups()
-        # The regex may capture a newline before a top-level checkbox. Measure
-        # only the horizontal white space before the checkbox on its own line.
+        # Measure only the horizontal white space before the checkbox.
         prefix = full_line[: full_line.index("- [")]
-        indent = len(prefix[prefix.rfind("\n") + 1 :].expandtabs(4))
+        indent = len(prefix.expandtabs(4))
+        while processed and processed[-1][0] >= indent:
+            processed.pop()
+        parent = processed[-1] if processed else None
         has_sha = sha_pattern.search(task) is not None
         lowered = task.lower()
+        if status == "b":
+            processed.append((indent, status, False, False, "deferred"))
+            continue
         if "deferred" in lowered:
-            is_closeout = (last_heading is not None and match.start() >= last_heading) or any(
+            is_closeout = (last_heading is not None and index >= last_heading) or any(
                 word in lowered for word in ("records", "closeout", "regenerate")
             )
             if not is_closeout:
                 # A deferred line gives no feedback. It stays a parent and is covered.
-                processed.append((indent, status, True))
+                processed.append((indent, status, True, False, "deferred"))
                 continue
             if not has_sha:
                 feedback.append(f"deferred closeout task lacks done SHA: {full_line.strip()}")
-                processed.append((indent, status, False))
+                processed.append((indent, status, False, False, "deferred"))
                 continue
-            processed.append((indent, status, True))
+            processed.append((indent, status, True, False, "deferred"))
             continue
         if status != "x":
+            ignored = (
+                indent > 0
+                and parent is not None
+                and not parent[4]
+                and parent[1] == "x"
+            )
+            if ignored:
+                processed.append((indent, status, False, True, ""))
+                continue
             feedback.append(f"plan task is not complete: {full_line.strip()}")
-            processed.append((indent, status, False))
+            processed.append((indent, status, False, False, ""))
             continue
         if indent == 0:
             covered = has_sha
         else:
-            parent = next((item for item in reversed(processed) if item[0] < indent), None)
+            # The nearest shallower checkbox line is the only coverage source.
+            # It covers this [x] box only when it is itself a covered [x] line.
             covered = has_sha or (parent is not None and parent[1] == "x" and parent[2])
         if not covered:
             feedback.append(f"completed plan task lacks commit SHA: {full_line.strip()}")
-        processed.append((indent, status, covered))
+        processed.append((indent, status, covered, False, ""))
     return feedback
 
 

@@ -2,7 +2,9 @@
 
 A top-level [x] task line needs a commit SHA. An indented [x] sub-box is
 covered when it has its own SHA, or when its nearest parent [x] line is
-covered. An unticked box fails at every depth, except a "deferred" line.
+covered. An unticked box under an [x] parent or an ignored nested open box
+gives no feedback. An unticked box under an open box still fails. A
+"deferred" line gives no feedback.
 Class 1 calls plan_closeout_feedback() on plans in a temporary folder.
 Class 2 calls closeout_candidates() on a temporary repository with three
 tracks. Each class imports the checker with importlib, as in
@@ -71,16 +73,13 @@ class SubboxShaFeedbackTest(unittest.TestCase):
         self.assertIn("Task 1.1", feedback[0])
         self.assertIn("Add the first sub-step", feedback[1])
 
-    def test_case_3_unticked_subbox_fails(self) -> None:
-        """Case 3: an indented [ ] sub-box under a SHA'd parent gets one line."""
+    def test_case_3_unticked_subbox_ignored(self) -> None:
+        """Case 3: an indented [ ] sub-box under a SHA'd [x] parent gives no feedback."""
         plan = self.plan(
             f"- [x] Task 1.1: Do the work — `{SHA}`\n"
             "  - [ ] Add the first sub-step\n"
         )
-        feedback = self.module.plan_closeout_feedback(plan)
-        self.assertEqual(len(feedback), 1)
-        self.assertIn("plan task is not complete", feedback[0])
-        self.assertIn("Add the first sub-step", feedback[0])
+        self.assertEqual(self.module.plan_closeout_feedback(plan), [])
 
     def test_case_3b_deferred_subbox_passes(self) -> None:
         """Case 3b: an indented deferred [ ] sub-box gives no feedback."""

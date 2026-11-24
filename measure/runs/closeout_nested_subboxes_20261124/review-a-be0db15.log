@@ -1,0 +1,12 @@
+MEASURE_AGENT_RESULT
+role: review-a
+status: complete
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: none
+tests_run: Full spec-review-gate and DSH Node suites passed. In-memory Red failed as expected. Green contract cases passed. Caller probes reproduced F1 and F2. The review-a gate exited 1 on the audit verdict.
+files_changed: Review A JSON and log only.
+plan_updates: none
+known_failures: F1: an earlier sibling can change SHA coverage. F2: an open box under a deferred [b] parent can pass closeout.
+handoff: Route F1 and F2 to Green. Add regression tests for both caller results. See the JSON for the input fixtures and the two Nits.
+END_MEASURE_AGENT_RESULT

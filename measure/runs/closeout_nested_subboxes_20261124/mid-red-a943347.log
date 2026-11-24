@@ -1,0 +1,30 @@
+# Mid-red result: closeout_nested_subboxes_20261124
+
+MEASURE_AGENT_RESULT
+  baseline_sha: a943347
+  role: mid-red
+  track: closeout_nested_subboxes_20261124
+  phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+  head: 895d536
+  commits:
+    - 77598a6 test(spec-review-gate): Red contract test for closeout nested sub-box ignore
+    - 9b2c6a8 measure(plan): closeout_nested_subboxes Task 1.1 Red evidence
+    - 895d536 measure(plan): keep closeout_nested_subboxes Task 1.1 [~] for the mid-red gate
+  tests:
+    - tests/spec_review_gate/test_closeout_nested_subboxes.py (new, 18 cases, exact-list assertions)
+  files:
+    - tests/spec_review_gate/test_closeout_nested_subboxes.py
+    - measure/tracks/closeout_nested_subboxes_20261124/plan.md (Task 1.1 [x] with Red evidence)
+  red_command: HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py'
+  red_result: FAIL as expected (unittest failures in the ignore and candidates cases)
+  failing_cases: Math-shape, nested-tilde, two-level, tab-indent, ignored-chain, SHA-nested-[x], covered-ancestor, uncovered-ancestor, open-top-chain, Math-real-shape lines 38-50, line-52-shape, closeout_candidates nested-ok — each shows the extra `plan task is not complete` lines the Green fix removes
+  passing_boundary_cases: top-level [ ], top-level [~], [ ] under top-level [~] (two lines), nested [ ] under deferred [x] parent, nested [ ] under deferred [ ] parent, track_incomplete zero
+  production_code_changed: none (measure_interphase_checks.py untouched; test_subbox_sha.py untouched — its case 3 still passes today and Green Task 1.2 flips it)
+  gate_note: the configured RED_TEST_COMMAND of measure/gates.json cannot demonstrate this Red; the orchestrator runs the gate with RED_TEST_COMMAND set to the track command
+END_MEASURE_AGENT_RESULT
+
+# Gate run (best effort, default env)
+# command: python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role mid-red --track closeout_nested_subboxes_20261124 --phase "Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)" --baseline a943347 --log-file measure/runs/closeout_nested_subboxes_20261124/mid-red-a943347.log
+# exit: 1
+# leg results: [~]-task check passes; track-scope own-commits check passes; non-test-files check passes; result-block presence passes.
+# sole failure: RED_TEST_COMMAND leg — the configured measure/gates.json command (node DSH tests) exits 0, so the failing-first expectation fails. This is the pre-declared mismatch: the track Red command fails correctly (see Red evidence in plan.md). The orchestrator re-runs the gate with RED_TEST_COMMAND set to the track command.

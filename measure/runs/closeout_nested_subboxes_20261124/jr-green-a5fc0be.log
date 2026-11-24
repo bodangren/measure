@@ -1,0 +1,38 @@
+jr-green rule-narrowing log (PM decision A, F6/F7/F8)
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+role_base_sha: a5fc0be655833d35eb2966c1ab6a6eba1db89849
+phase_base_sha: a943347f0348fe31e69941f7c6830aa8314d9966
+implementation_sha: f1fe0bb4cb33493b1a98bc81a3596c6fb00b4408
+plan_evidence_sha: 6c456214566d2b760c2c48deb60c0eaf3074cee9
+
+Targeted Red command after the fix:
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'
+Output: both suites reported OK, the runner printed 'spec_review_gate: 2 suites (PASS=2, FAIL=0)', and the command exited 0.
+
+Base replay of every new and changed case with checker a5fc0be copied to a temp tree outside the repository:
+case 08, case 10, case 15, case 19, case 20, case 26, case 27, case 28, case 29, case 30, case 31, case 32, case 33, case 34, case 35 each FAILED at the role base and PASSED at f1fe0bb. The temp tree was removed and the repository tree stayed clean.
+
+Gates after the fix, each through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500:
+targeted: suite reports PASS, EXIT=0
+full: runner reports 'spec_review_gate: 27 suites (PASS=27, FAIL=0)', EXIT=0
+node: node suite reports fail 0, EXIT=0
+git diff --check: clean, no output
+
+Rule narrowing: the PM replaced the any-depth rule with a contiguous-block rule. FR-1 through FR-3 now state that an open box is ignored only when it sits directly under a non-deferred [x] line in one contiguous checkbox block. A plain item, a heading, a blank line, a deferred line, a [b] line, or a same-or-shallower indent line ends the block. A nested [x] needs its own SHA unless its direct [x] parent in the block covers it. The skip-ignored coverage lookup is gone. No ignored chain remains. [b] and deferred boundary handling from rounds 1 and 2 stays unchanged.
+
+Math fixture: tests/spec_review_gate/fixtures/math_real_plan.md is a verbatim read-only copy of Math's plan. The fixture test builds its expected feedback from itemized line numbers, not pinned totals. The narrow rule gives 40 'plan task is not complete' lines and 71 'completed plan task lacks commit SHA' lines. Of the 35 nested 'not complete' lines, 26 sit under four top-level open manual-verification parents (L148-153, L273-279, L395-401, L491-496) and 9 sit after the plain list item at L261 (L262-270). These are genuine open tasks of Math's plan that Math must tick or defer. The other nested [ ] lines yield no 'not complete' line. The Math plan is not fully covered by this fix; the Overview, README, and CHANGELOG state that fact.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: f1fe0bb4cb33493b1a98bc81a3596c6fb00b4408 implementation; 6c456214566d2b760c2c48deb60c0eaf3074cee9 plan evidence
+tests_run: targeted suite, full spec-review-gate suite, and node suite each exited 0 through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500. Every new and changed case failed on a temp copy of checker a5fc0be and passed at f1fe0bb.
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py; tests/spec_review_gate/test_closeout_nested_subboxes.py; tests/spec_review_gate/fixtures/math_real_plan.md (new); measure/tracks/closeout_nested_subboxes_20261124/spec.md; CHANGELOG.md; README.md; measure/tracks/closeout_nested_subboxes_20261124/plan.md. No other function or gate changed.
+plan_updates: Task 1.5 flipped to [x] with implementation SHA f1fe0bb. The PM decision line records that SHA. No task flipped to [b]. No archive move, registry update, metadata change, or final closeout edit.
+known_failures: none
+handoff: Review roles should audit the contiguous-block reset in plan_closeout_feedback, the F6 regressions through both callers, the changed expectations for cases 08, 10, 15, 19, 20 and the candidate fixture, and the Math fixture with its itemized expected feedback. The Math plan is not fully covered by this fix; its genuine open tasks stay in the feedback and Math must tick or defer them. Immutable phase_base_sha a943347f0348fe31e69941f7c6830aa8314d9966; role_base_sha a5fc0be655833d35eb2966c1ab6a6eba1db89849; final Green HEAD 6c456214566d2b760c2c48deb60c0eaf3074cee9. Red model opencode-go/muse-spark-1.3-contributor#high; no coder delegated.
+dispositions: F6=FIX; F7=FIX; F8=FIX
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,38 @@
+jr-green late-finding remediation log (Review A round 2, F5 one-fix-round)
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+role_base_sha: 4219d3605f1dadca2cfca51d002966a578202a92
+phase_base_sha: a943347f0348fe31e69941f7c6830aa8314d9966
+implementation_sha: 7181be67b679d035bcaa1f9961886a9cb40799a3
+plan_evidence_sha: a5fc0be655833d35eb2966c1ab6a6eba1db89849
+
+Targeted Red command before the fix:
+HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_closeout_nested_subboxes.py test_subbox_sha.py'
+Output: both suites reported OK and the command exited 0. The committed Red cases already pass at the role base. This is a late-finding remediation round. Review A round 2 found behavior that the committed Red cases do not cover. I added caller cases for that behavior and proved they fail on the role base.
+
+Base replay of the new caller cases with checker 4219d36 copied to a temp tree outside the repository:
+case 22 FAIL: closeout_feedback returned [] instead of the missing-SHA line for a deferred [ ] parent.
+case 23 FAIL: closeout_feedback returned [] instead of the missing-SHA line for a deferred [~] parent.
+case 24 FAIL: closeout_candidates listed the deferred [ ] parent track as a candidate.
+case 25 FAIL: closeout_candidates listed the deferred [~] parent track as a candidate.
+The base run exited 1. The temp tree was removed. The repository tree stayed clean.
+
+Gates after the fix, each through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500:
+targeted: suite report PASS, EXIT=0
+full: 27 suites, all PASS, EXIT=0
+node: node suite PASS, fail 0, EXIT=0
+git diff --check: clean. No measure/doctor.sh exists in this repository.
+
+MEASURE_AGENT_RESULT
+role: jr-green
+status: complete
+track: closeout_nested_subboxes_20261124
+phase: Phase 1: Closeout ignores nested sub-boxes (due 2026-11-27)
+commits: 7181be67b679d035bcaa1f9961886a9cb40799a3 implementation; a5fc0be655833d35eb2966c1ab6a6eba1db89849 plan evidence
+tests_run: targeted suite, full spec-review-gate suite, and node suite all exited 0 through heavy-run with HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500. The four new caller cases failed on a temp copy of checker 4219d36 and passed after the fix.
+files_changed: skills/measure-orchestrator/scripts/measure_interphase_checks.py; tests/spec_review_gate/test_closeout_nested_subboxes.py; CHANGELOG.md; measure/tracks/closeout_nested_subboxes_20261124/plan.md. No new files added in this round.
+plan_updates: one task flipped to [x] with implementation SHA 7181be6. No task flipped to [b]. No archive or registry change.
+known_failures: none
+handoff: Review roles should audit the coverage lookup in plan_closeout_feedback, the four added caller cases 22-25, and the CHANGELOG sentence. phase_base_sha a943347f0348fe31e69941f7c6830aa8314d9966; role_base_sha 4219d3605f1dadca2cfca51d002966a578202a92; final Green HEAD a5fc0be655833d35eb2966c1ab6a6eba1db89849. The targeted Red command at the role base exited 0 because the committed Red cases already pass; the new cases failed on the base checker. No task is deferred, no new file was added, and no human-owned artifact changed.
+dispositions: F5=FIX; F4=FIX
+END_MEASURE_AGENT_RESULT

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "closeout_nested_subboxes_20261124",
+  "phase": "track setup",
+  "baseline_sha": "9c8d63ac9fefc570b7dae1de3ca63be276431e76",
+  "audited_head_sha": "9c8d63ac9fefc570b7dae1de3ca63be276431e76",
+  "status": "pass",
+  "summary": "No Blocker. The revision fixes F1 to F11. Probes of the specified rule match every named fixture and the real Math lines. One new Major (F12): the four-value processed tuple of FR-3 cannot mark a deferred parent, which FR-2 needs. Five new Nits (F13 to F17).",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "F12 [Major] spec.md FR-3 and FR-2: FR-3 fixes each `processed` entry at four values `(indent, status, covered, ignored)`, with `ignored=False` when a line is not ignored. A `deferred` line then has the same four values as an ordinary `[x]` line. The checker stores it as `(indent, status, True)`, or `(indent, status, False)` for a closeout line without a SHA. FR-1(a) ignores a box under any `[x]` line, and FR-2 forbids it under a `deferred` parent. Probe: `- [x] T (deferred)` plus `  - [ ] s` gives one `plan task is not complete` line today and none by the four values. Rationale: a Green that follows FR-3 fails the deferred `[x]` fixture of Task 1.1, so the implementer must add a fifth fact or recode `status`. A recode of `status` changes today's result for `- [x] T (deferred)` plus `  - [x] s` (empty feedback). The revision removed the round 1 sentences that kept `deferred` handling and the SHA rule of nested `[x]` boxes, and no fixture checks them. State the behavior and drop the tuple layout, or add a `deferred` value, and keep `deferred` handling and `[x]` coverage outside an ignored chain as today.",
+    "F13 [Nit] spec.md FR-1: The sentence 'A SHA-less `[x]` parent still reports its own `completed plan task lacks commit SHA` line; its nested boxes add no second line' says 'boxes', not 'open boxes'. A nested `[x]` box under a SHA-less `[x]` parent still gets its own SHA line. Probe: `- [x] T`, `  - [x] a`, `  - [x] b`, `    - [ ] c`, `  - [ ] d` gives three SHA lines (T, a, b) and no other line. Rationale: the wording conflicts with FR-3 and with case 2 of `test_subbox_sha.py`, which stays and expects two lines. Write 'nested open boxes'.",
+    "F14 [Nit] spec.md Acceptance Criteria and plan.md Task 1.1: The case 'a `[x]` box without a SHA under an ignored `[ ]` box ... the SHA message with an uncovered ancestor' does not give the exact list. The rule gives two lines: the `completed plan task lacks commit SHA` line of the uncovered `[x]` ancestor and the same message for the box. Probe: `- [x] T`, `  - [ ] s`, `    - [x] ss` gives [T, ss]. Rationale: Task 1.1 says each case names an exact list, and a Red that expects one line fails after Green. State the two-line list.",
+    "F15 [Nit] plan.md Task 1.1: The `closeout_candidates` case names no fixture tracks and no expected list. Class 2 of `test_subbox_sha.py` builds `expected` from `plan_closeout_feedback`, which is true by construction because `closeout_candidates` calls it. Only the fixed list `[\"passes\"]` checks the rule. Rationale: without a fixed list and a track with a SHA'd `[x]` parent and a nested `[ ]` box, the case passes before Green. Name the tracks and the expected list.",
+    "F16 [Nit] spec.md FR-5 and plan.md Task 1.2: The plan updates 'the README.md Status sentence', but README.md holds two `As of` Status sentences: line 33 (2026-11-18, Sub-box SHA rule) and line 34 (2026-11-19, Measure board). Neither says that unticked boxes fail, and line 33 stays true after the change. The plan names no new text. Rationale: the implementer must pick the sentence and the text. The archive commits of earlier tracks rewrite this sentence (bf96031, 4b3d82e), so closeout changes it again. Name the sentence and its text, or move the README edit to closeout.",
+    "F17 [Nit] spec.md FR-1 and FR-2: A `[x]` line nested under an open top-level task also grants the ignore by FR-1(a). FR-2 says that a box under a non-ignored open parent fails, and that 'this holds under a top-level `[ ]` or `[~]`'. Probe: `- [ ] T`, `  - [x] a <sha>`, `    - [ ] c` gives only the line of T, so `c` is ignored. Rationale: no fixture checks this, and a reader of the FR-2 sentence can expect `c` to fail. The verdict does not change, because T still fails. Add one fixture or one sentence."
+  ],
+  "evidence": [
+    "HEAD equals audited_head_sha 9c8d63ac9fefc570b7dae1de3ca63be276431e76; the working tree was clean at the start; the standard was read from ~/.agents/skills/measure/references/spec-review.md.",
+    "F1 resolved: FR-5 lists the bounded edit of tests/spec_review_gate/test_subbox_sha.py, and Task 1.2 rewrites case 3 and fixes the docstring. Only case 3 (line 74) and the module docstring (line 5) assert the old rule. Cases 1, 2, 3b, 3c, and Class 2 (top-level open task) give the same result under the new rule.",
+    "F2 resolved: lines 38-50 of the Math plan, extracted verbatim, give 11 lines today and 0 lines by the specified rule. Lines 52-60 extracted verbatim give 9 lines today and exactly one `completed plan task lacks commit SHA` line (for line 52) by the specified rule.",
+    "F3 resolved: the Overview counts match the Math plan with a correct indent measure: 10 top-level [x] with a SHA, 15 without, 4 top-level [ ], 1 top-level [~], 226 nested [ ], 161 nested [x], no tab, no deferred. The specified rule gives 102 lines for the plan (71 lacks SHA, 31 not complete) against 302 today. The 31 are 5 open top-level lines and 26 nested boxes under them. The Math plan still fails closeout, as the Overview says.",
+    "F4 resolved: FR-3 names the tuple and the coverage source. Over 2000376 enumerated plans (3 to 5 lines, indents 0/2/4, six line kinds) the two readings of 'nearest covered [x] ancestor' never differ. They differ only in a five-level chain with a deferred [ ] line between (probe: [x] sha, deferred [ ], [x], [ ], [x] gives 2 or 1 SHA lines). That form is extreme and untested, so no finding.",
+    "F5 resolved: FR-1(b) ignores a box under an ignored box at any depth (probe: [x] sha, [ ], [ ] gives []).",
+    "F6 resolved: Task 1.1 names a case for each row of the round 1 table. Probe results match the named results: nested [~] gives []; two levels gives []; [ ] under top-level [~] gives two lines; tab-indented gives []; [ ] under ignored [ ] gives []; [x] with SHA under ignored gives []; [x] without SHA under ignored gives [] with a covered ancestor.",
+    "F7 resolved at the behavior level: FR-2 wins over FR-1 and names both deferred [x] and deferred [ ] parents. Probe with the real checker and a reference implementation: both give `plan task is not complete: <line>` and no extra line when the fixture has no `## Phase` heading. With a heading the deferred [x] parent adds `deferred closeout task lacks done SHA`. The representation gap is F12.",
+    "F8 resolved for the Math fixture: exactly one SHA line for line 52. The one open ambiguity is F14.",
+    "F9, F10, F11 resolved: FR-0 has no line numbers, the CHANGELOG heading and form are named (CHANGELOG.md line 47 sits under Unreleased / Bug Fixes at line 23), and a closeout_candidates case exists (F15 for its detail). FR-4 and FR-6 state that both callers change.",
+    "Other assertions of the old rule: grep of tests, plugins, mods, extensions, bin, docs, skills, agents, claude-skills found none besides test_subbox_sha.py case 3. mods/measure-guard/tests/fixtures/plans.ts and extensions/measure-status fixtures feed other parsers. test_checker.py, test_closeout_deferred_generated.py, and test_generated_gates_json.py use top-level lines only. CHANGELOG.md line 47 holds the old sentence 'Unticked boxes still fail at every depth'; README.md does not.",
+    "Callers of plan_closeout_feedback: closeout_candidates (line 464) and closeout_feedback (line 1199); track_incomplete returns 0 for a plan of only nested [ ] boxes (probe on the real function); discover_phases, phase_counts, and jr_green_phase_counts read column 0 only.",
+    "Specified-rule probe table (reference implementation of FR-1 to FR-3, real checker for today): top-level [ ] and [~] give one line; [ ], [~] under [x] with SHA give none; [ ] under SHA-less [x] gives only the SHA line; [x] SHA-less parent with nested [x] a, b and nested [ ] gives 3 SHA lines; [x] nested under top-level [ ] with a nested [ ] gives only the parent line; orphan indented [ ] gives one line; [x] nested under deferred [x] without SHA gives none today and none by the rule.",
+    "The measure-guard denied an inline python command that held the characters less-than and greater-than, so the probes used the operator module and wrote no file."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --short; git diff 249afce 9c8d63a",
+    "python3 -I -B -c <reference implementation of FR-1 to FR-3 against the real checker over the 20-row probe table>",
+    "python3 -I -B -c <extract Math plan lines 38-50 and 52-60, count shape and feedback of the full Math plan>",
+    "python3 -I -B -c <enumeration of 2000376 small plans for the two readings of FR-3>",
+    "python3 -I -B -c <track_incomplete and deferred fixture probes>",
+    "grep and glob of tests, plugins, mods, extensions, docs, skills, agents for the old rule",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role spec-review --track closeout_nested_subboxes_20261124 --phase \"track setup\" --baseline 9c8d63a --result-file measure/runs/closeout_nested_subboxes_20261124/spec-review-9c8d63a.json --log-file measure/runs/closeout_nested_subboxes_20261124/spec-review-9c8d63a.log"
+  ],
+  "changed_files": [
+    "measure/runs/closeout_nested_subboxes_20261124/spec-review-9c8d63a.json",
+    "measure/runs/closeout_nested_subboxes_20261124/spec-review-9c8d63a.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "The track changes plan_closeout_feedback so an indented [ ] or [~] box gives no `plan task is not complete` line. The box is ignored when its nearest shallower parent is an [x] line, covered or not, or an ignored nested open box. Top-level open tasks, boxes under non-ignored open parents, and boxes under deferred parents keep today's feedback. An ignored box is stored with covered False and ignored True, and a [x] box under it takes coverage from its own SHA or the nearest covered [x] ancestor. A new Red test, a rewrite of case 3 of test_subbox_sha.py, and README and CHANGELOG edits go in; track_incomplete, phase_counts, and the jr-green branch stay unchanged.",
+    "current_system": "plan_closeout_feedback reads each checkbox line and keeps (indent, status, covered) for each line. It appends `plan task is not complete` for each non-[x] line at any depth, before the parent-cover rule runs, except for deferred lines. A nested [x] line is covered by its own SHA or by a covered [x] line that is its nearest parent. track_incomplete and phase_counts read only column-0 lines, so they already ignore nested boxes. Only closeout_candidates and closeout_feedback call plan_closeout_feedback, and the Math plan fails closeout today with 302 feedback lines."
+  }
+}

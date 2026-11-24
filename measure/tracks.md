@@ -4,7 +4,9 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- (none)
+- [~] **Track: Closeout ignores nested sub-boxes**
+  *Link: [./tracks/closeout_nested_subboxes_20261124/](./tracks/closeout_nested_subboxes_20261124/)*
+  *Closeout ignores nested sub-boxes: plan_closeout_feedback gives no 'not complete' feedback for an indented [ ] or [~] sub-box under a covered [x] parent (chore, light lane).*
 
 ---
 
