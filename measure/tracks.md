@@ -4,10 +4,6 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Audit roles may run role-gate**
-  *Link: [./tracks/audit_role_gate_allow_20261123/](./tracks/audit_role_gate_allow_20261123/)*
-  *Audit roles may run role-gate: allow the role-gate command in the 8 audit agent files that deny *rm * (PM order, due 2026-11-26).*
-
 ---
 
 ## Cancelled Tracks
@@ -561,3 +557,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: README uses the heavy-run form**
   *Link: [./archive/readme_heavy_run_form_20261123/](./archive/readme_heavy_run_form_20261123/)*
   *README of opencode-measure-guard uses the heavy-run form and lists the heavy-run guard; closes the README tech-debt row (PM order route 1, due 2026-11-26).*
+
+- [x] **Track: Audit roles may run role-gate**
+  *Link: [./archive/audit_role_gate_allow_20261123/](./archive/audit_role_gate_allow_20261123/)*
+  *Audit roles may run role-gate: allow the role-gate command in the 8 audit agent files that deny *rm * (PM order, due 2026-11-26).*

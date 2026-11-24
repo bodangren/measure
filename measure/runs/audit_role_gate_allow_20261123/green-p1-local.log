@@ -1,0 +1,31 @@
+Green report: Task 1.2 implementation for audit role-gate allow (track audit_role_gate_allow_20261123, Phase 1).
+phase_base_sha 3e78c79 and role_base_sha 2247555 both verified; HEAD was 2247555 with a clean tree before work. The committed Red change 2247555 is inside phase_base_sha..HEAD.
+The Red test was not edited and does not contradict the specification. It is immutable.
+Targeted Red command rerun before the edit: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exited 1 with 88 checks (PASS=56, FAIL=32), the expected Red state.
+Implementation: exactly one FR-1 allow rule added to each of the 8 audit agent files, after the *truncate * deny and before the * > * deny, in the local YAML style. Diff is 8 files, 24 insertions, 0 deletions. No other change in any agent file.
+Targeted Red command after the edit: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exits 0 with 88 checks (PASS=88, FAIL=0).
+Full runner: bash tests/spec_review_gate/run.sh exits 0 with 25 suites (PASS=25, FAIL=0).
+Both local commands ran through HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 heavy-run.sh. Both exits are 0.
+Tasks 1.3 and 1.4 stay open. No task was flipped to [b]; no deferred owner is needed.
+MEASURE_AGENT_RESULT
+role: jr-green
+status: blocked
+track: audit_role_gate_allow_20261123
+phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+phase_base_sha: 3e78c79
+role_base_sha: 2247555
+baseline_sha: 3e78c79
+result_head_sha: 900b491
+implementation_commit: 8b41988 measure(green): audit roles may run role-gate
+plan_evidence_commit: 900b491 measure(plan): audit_role_gate_allow green records
+commits: 8b41988 measure(green): audit roles may run role-gate; 900b491 measure(plan): audit_role_gate_allow green records
+tests_run: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exits 0 (88 checks, PASS=88, FAIL=0); bash tests/spec_review_gate/run.sh exits 0 (25 suites, PASS=25, FAIL=0)
+tasks_closed: Task 1.1 [x] with evidence 2247555; Task 1.2 [x] with evidence 8b41988
+tasks_deferred: none
+files_changed: agents/measure-ux-browser-review.md, agents/measure-final-acceptance.md, agents/measure-review-c-ux-api.md, agents/measure-phase-acceptance.md, agents/measure-orchestrator-audit.md, agents/measure-review-a-correctness.md, agents/measure-review-b-security.md, agents/measure-spec-review.md (one FR-1 allow rule each, 24 insertions total); measure/tracks/audit_role_gate_allow_20261123/plan.md (Task 1.1 [x] — 2247555, Task 1.2 [x] — 8b41988)
+new_files_added: none
+gate_result: role-gate exits 1 with exactly: FAIL: current phase still has 2 non-deferred incomplete tasks
+blocked_by: Tasks 1.3 and 1.4 stay open by instruction; they belong to the build session, not to jr-green
+plan_updates: Task 1.1 closed [x] with 2247555 and its Red evidence kept; Task 1.2 closed [x] with 8b41988; Tasks 1.3 and 1.4 remain open
+handoff: ROLE-GATE EXIT 1, exact message: FAIL: current phase still has 2 non-deferred incomplete tasks. The gate rejects only because Tasks 1.3 and 1.4 stay open by instruction; they belong to the build session and were not closed. Both local commands exit 0 and both commits exist. Green added the one FR-1 allow rule to each of the 8 audit agent files. The targeted test and the full runner both exit 0. Review roles should audit the 8 agent files and the two Green commits. Tasks 1.3 and 1.4 stay for the build session. phase_base_sha is 3e78c79; final Green HEAD is 900b491.
+END_MEASURE_AGENT_RESULT

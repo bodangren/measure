@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "role": "spec-review",
+  "track": "audit_role_gate_allow_20261123",
+  "phase": "track setup",
+  "baseline_sha": "d92ae460b2fbec7de5dd2820467db9561ced35eb",
+  "audited_head_sha": "d92ae460b2fbec7de5dd2820467db9561ced35eb",
+  "status": "fail",
+  "summary": "The amendment resolves the original findings but introduces two requirement conflicts.",
+  "blocking_findings": [
+    "F3 [Blocker] spec.md FR-3 and acceptance criteria: The new chained-command claim requires allow even when the command also has a denied redirect. Rationale: The same requirements require the redirected shape to be denied, so the outcomes conflict.",
+    "F4 [Blocker] spec.md FR-2 and Tech-debt note for closeout: FR-2 prohibits changes outside its exact file list, but closeout must add a row to measure/tech-debt.md. Rationale: The required debt file is not in the permitted change set."
+  ],
+  "nonblocking_findings": [],
+  "evidence": [
+    "HEAD equals the supplied baseline, and the initial branch and worktree match the brief.",
+    "F1 resolved: FR-1 and FR-3 name the accepted chained-command gap and test its expected effect.",
+    "F2 resolved: FR-2 now explicitly includes the new contract test.",
+    "FR-3 requires deny for the redirected shape and allow for a role-gate command containing ; rm x without excluding redirects.",
+    "The new tech-debt note requires a row at closeout, while FR-2 excludes measure/tech-debt.md from its exact change set.",
+    "The repository index identifies measure/tech-debt.md as the tech-debt registry."
+  ],
+  "commands": [
+    "git rev-parse HEAD",
+    "git status --porcelain",
+    "git branch --show-current",
+    "git diff 02e6684 d92ae46 -- measure/tracks/audit_role_gate_allow_20261123/spec.md measure/tracks/audit_role_gate_allow_20261123/plan.md"
+  ],
+  "changed_files": [
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-d92ae46.json",
+    "measure/runs/audit_role_gate_allow_20261123/spec-review-d92ae46.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "escalate_human",
+  "confidence": "high",
+  "paraphrase": {
+    "proposes": "Add a role-gate allow rule to eight audit roles and add a contract test. Record the chained-command gap and add a tech-debt row at closeout.",
+    "current_system": "Audit roles allow shell commands and then deny unanchored word patterns. A phase heading matches one deny pattern, which blocks the role-gate command."
+  }
+}

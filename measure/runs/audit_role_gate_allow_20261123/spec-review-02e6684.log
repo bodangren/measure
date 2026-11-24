@@ -1,0 +1,14 @@
+Review status: fail. See JSON for findings and evidence.
+The spec-review role-gate exited 1 because the audit status is fail.
+MEASURE_AGENT_RESULT
+role: spec-review
+status: complete
+track: audit_role_gate_allow_20261123
+phase: track setup
+commits: none
+tests_run: v2_shell_effect helper probe; expected denial and bypass confirmed
+files_changed: review JSON and log
+plan_updates: none
+known_failures: F1 and F2 block the specification
+handoff: Resolve both blockers before Red.
+END_MEASURE_AGENT_RESULT

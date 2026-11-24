@@ -1,0 +1,13 @@
+{
+  "track_id": "audit_role_gate_allow_20261123",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-23T00:00:00Z",
+  "updated_at": "2026-11-24T16:30:00Z",
+  "completed": "2026-11-23",
+  "description": "Audit roles may run role-gate: allow the role-gate command in the 8 audit agent files that deny *rm * (PM order, due 2026-11-26).",
+  "estimated_tasks": 4,
+  "actual_tasks": 4,
+  "deviation_notes": "Light lane: spec review and Review A ran. Review B, Review C, adversarial testing, UX review and final acceptance did not run. The work is one allow rule in each of 8 audit role files plus one contract test. Spec review took 4 rounds on openai/gpt-6.1-terra#high. Rounds 1 to 3 failed: F1 chain allow, F2 change set contradiction, F3 redirect chain, F4 closeout files outside the change set, F5 unspaced redirect. Each finding was accepted and fixed in an amendment commit. Round 4 at e43d546 passed with no findings. Spec-review F4 named closeout files as an exception to FR-2. Spec-review F5 narrowed the redirect claims to exact globs and left the unspaced > as an existing gap. Red ran on opencode-go/muse-spark-1.3-contributor#high. The build session amended the spec and plan during setup; those amendments are in the committed track files. Review A ran on openai/gpt-6-luna#high. Its first result file was inconclusive; the reviewer finalized it as pass at d94646f. Its shell denied the role-gate command twice; the orchestrator ran the gate. Review A F1 is declined: the contract test omits the >out.txt and >> forms. Phase acceptance ran on claude-agent/sonnet#max and independently evaluated 19 command shapes in each of the 8 files with a separate awk evaluator. It found 0 mismatches. The four omitted forms all give deny, so F1 is a coverage gap, not a behavior defect. The phase gate also denied in the reviewer shell; the orchestrator re-ran it with PASS. Phase acceptance F1 Nit is recorded, not fixed: Task 1.4 marks the records task done but records no diff stat. Git holds the stat. The previous light-lane chore also left a stale diff stat in place when a reword would advance HEAD. The chained-command allow is an accepted gap: a command after the role-gate form also passes a git write, because the allow rule sits after the git-write denies. The audit roles are audit-only by contract and can already run python3 -c or node -e. No live installed-copy proof exists before the merge; FR-4 assigns that proof to the orchestrator after the merge. The branch was not pushed by closeout and nothing was merged."
+}

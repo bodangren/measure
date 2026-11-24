@@ -1,0 +1,20 @@
+Red report: Task 1.1 contract test for audit role-gate allow (track audit_role_gate_allow_20261123, Phase 1).
+phase_base_sha 3e78c79 and role_base_sha 3e78c79 both verified; HEAD was 3e78c79 with a clean tree before work.
+New test tests/spec_review_gate/test_audit_role_gate_allow.sh checks FR-1 through FR-3 for each of the 8 audit agent files with the same v2_shell_effect helper as test_s2_role_docs.sh; run.sh discovers it with no edit.
+Targeted Red command: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exits 1 with 88 checks (PASS=56, FAIL=32). The 32 failures are 8 files times (role-gate shape gives deny not allow; "; rm x" chain gives deny not allow; "2>&1" shape gives deny not allow; allow rule missing between the *truncate * deny and the * > * deny). All fail for the expected reason: the FR-1 allow rule does not exist yet.
+Full runner: bash tests/spec_review_gate/run.sh gives 25 suites (PASS=24, FAIL=1); the only failure is the new test.
+MEASURE_AGENT_RESULT
+role: mid-red
+status: blocked
+track: audit_role_gate_allow_20261123
+phase: Phase 1: Audit roles may run role-gate (due 2026-11-26)
+baseline_sha: 3e78c79
+role_base_sha: 3e78c79
+result_head_sha: 22475557bb9970a763fa0c61155e1e201d3a7d5a
+commits: 2247555 measure(red): audit role-gate allow contract test (track_id: audit_role_gate_allow_20261123)
+tests_run: bash tests/spec_review_gate/test_audit_role_gate_allow.sh exits 1 with 88 checks (PASS=56, FAIL=32); bash tests/spec_review_gate/run.sh gives 25 suites (PASS=24, FAIL=1)
+files_changed: tests/spec_review_gate/test_audit_role_gate_allow.sh (new), measure/tracks/audit_role_gate_allow_20261123/plan.md (Task 1.1 marked [~], Red evidence recorded)
+plan_updates: Task 1.1 marked [~]; Red evidence recorded in plan.md
+known_failures: 32 checks fail for the expected Red reason (the FR-1 allow rule does not exist): per audit file, the role-gate shape gives deny not allow, the "; rm x" chain gives deny not allow, the "2>&1" shape gives deny not allow, and the allow-rule position check fails; closeout, spaced-redirect deny, and old-deny checks pass
+handoff: Green adds the one FR-1 allow rule to each of the 8 audit agent files after the *truncate * deny and before the * > * deny; the new test then passes.
+END_MEASURE_AGENT_RESULT
