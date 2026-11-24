@@ -1104,9 +1104,12 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
         (match.start() for match in re.finditer(r"^## Phase ", text, re.MULTILINE)),
         default=None,
     )
-    # Each processed line is (indent, status, covered). A parent covers a
-    # sub-box when it is an [x] line that is itself covered.
-    processed: list[tuple[int, str, bool]] = []
+    # Each processed line is (indent, status, covered, ignored, deferred).
+    # A parent covers a sub-box when it is an [x] line that is itself covered.
+    # An indented open box is ignored when its nearest shallower parent is an
+    # [x] line or an ignored nested open box. A deferred parent never grants
+    # the ignore. The deferred marker keeps a deferred [x] parent distinct.
+    processed: list[tuple[int, str, bool, bool, str]] = []
     for match in re.finditer(r"^(\s*- \[([ ~x])\] (.+))$", text, re.MULTILINE):
         full_line, status, task = match.groups()
         # The regex may capture a newline before a top-level checkbox. Measure
@@ -1121,26 +1124,34 @@ def plan_closeout_feedback(plan_path: Path) -> list[str]:
             )
             if not is_closeout:
                 # A deferred line gives no feedback. It stays a parent and is covered.
-                processed.append((indent, status, True))
+                processed.append((indent, status, True, False, "deferred"))
                 continue
             if not has_sha:
                 feedback.append(f"deferred closeout task lacks done SHA: {full_line.strip()}")
-                processed.append((indent, status, False))
+                processed.append((indent, status, False, False, "deferred"))
                 continue
-            processed.append((indent, status, True))
+            processed.append((indent, status, True, False, "deferred"))
             continue
         if status != "x":
+            parent = next((item for item in reversed(processed) if item[0] < indent), None)
+            ignored = False
+            if indent > 0 and parent is not None and not parent[4]:
+                ignored = parent[1] == "x" or parent[3]
+            if ignored:
+                processed.append((indent, status, False, True, ""))
+                continue
             feedback.append(f"plan task is not complete: {full_line.strip()}")
-            processed.append((indent, status, False))
+            processed.append((indent, status, False, False, ""))
             continue
         if indent == 0:
             covered = has_sha
         else:
-            parent = next((item for item in reversed(processed) if item[0] < indent), None)
+            # Skip ignored boxes. A nested [x] keeps the parent-coverage rule.
+            parent = next((item for item in reversed(processed) if item[0] < indent and not item[3]), None)
             covered = has_sha or (parent is not None and parent[1] == "x" and parent[2])
         if not covered:
             feedback.append(f"completed plan task lacks commit SHA: {full_line.strip()}")
-        processed.append((indent, status, covered))
+        processed.append((indent, status, covered, False, ""))
     return feedback
 
 
