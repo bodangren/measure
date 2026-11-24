@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Green gate ignores the open review task**
+  *Link: [./tracks/green_gate_review_task_20261124/](./tracks/green_gate_review_task_20261124/)*
+  *Green gate ignores one open review task: the jr-green gate passes when the phase holds one [~] task that names a later role (chore, light lane).*
+
 ---
 
 ## Cancelled Tracks
