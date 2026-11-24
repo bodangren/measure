@@ -22,6 +22,8 @@
 
 ### Bug Fixes
 
+* **jr-green open review task:** the jr-green gate ignores at most one `[~]` task whose text starts with a later-role label. The label follows the optional `Task N.M` prefix and an optional colon. The labels are Review A, Review B, Review C, Adversarial, Adversarial testing, Acceptance, Phase acceptance, and Final acceptance. The match ignores case and requires a whole phrase. A deferred task and a `[ ]` task never use the ignore. The mid-red, review, acceptance, and closeout gates stay unchanged. Track `green_gate_review_task_20261124`.
+
 * **board focus:** the Measure board keeps the open comment box, its text, its focus, and its caret across a data refresh and a host ready event. A held data paint sets one pending flag and changes no DOM node. A user paint clears the pending paint and draws the latest data once. The rail badge still updates with each data result. Track `board_focus_reasons_20261121`.
 
 * **generated gates.json fallback:** the closeout generated check reads `GENERATED_CHECK_COMMAND` from the environment first, then from `measure/gates.json`. That order already held and stays. An empty command fails and names the key, the absolute `gates.json` path, and the state. The state is `file missing`, `file unreadable or not a JSON object`, or `key absent`. It skips with INFO when no `measure/generated` exists. Track `generated_gates_json_20261119`, error `generated_check_error_20261119`.
