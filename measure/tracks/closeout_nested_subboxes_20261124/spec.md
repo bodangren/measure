@@ -2,31 +2,36 @@
 
 ## Overview
 
-`plan_closeout_feedback` fails every nested sub-box with `plan task is not complete`. Math (`track eslint-to-oxlint-migration_20260820`) has top-level `- [x]` lines with a SHA and indented `- [ ]` checklist sub-boxes. The file holds 226 nested `[ ]` lines. Every top-level task is `[x]` with a SHA, yet the closeout check fails.
+Math (`track eslint-to-oxlint-migration_20260820`, read-only reference) mixes finished checklist work with open tasks. Its plan holds 25 top-level `[x]` lines (10 with a SHA), 4 top-level `[ ]` lines, 1 top-level `[~]` line, and 226 nested `[ ]` lines. That plan still fails closeout after this fix for genuine reasons: SHA-less top-level `[x]` lines, top-level `[ ]` lines, and the top-level `[~]` line. This track removes only the nested-box noise. Math's own plan still has to close or defer its open tasks. This track does not claim that Math's check passes after the fix.
 
 Source: chore track, light lane, created 2026-11-24.
 
 ## Functional Requirements
 
-- **FR-0 (Root cause).** `plan_closeout_feedback` lives in `skills/measure-orchestrator/scripts/measure_interphase_checks.py` (lines 1093-1144). Line 1133 appends `plan task is not complete` for every line whose status is not `x`. This fires before the parent-cover rule runs. The `processed` list holds `(indent, status, covered)` for each line. A parent covers a sub-box when the parent is an `[x]` line that is itself covered. A nested `[ ]` line never reaches that rule.
-- **FR-1 (Ignore rule).** An indented box (indent greater than 0) with status `[ ]` or `[~]` gives no `plan task is not complete` feedback when its nearest shallower-indent parent is an `[x]` line that is itself covered. The parent lookup stays the nearest `processed` entry with a smaller indent.
-- **FR-2 (Boundaries).** A top-level (indent 0) `[ ]` or `[~]` task still fails. A nested `[ ]` or `[~]` box under a non-`[x]` parent still fails; the parent already fails, and the sub-box feedback stays. A nested box under a `deferred` parent keeps today's behaviour. A nested `[x]` sub-box keeps today's SHA-coverage rule. `deferred` handling is unchanged.
-- **FR-3 (Processed record).** An ignored nested `[ ]` or `[~]` box is recorded in `processed` as not covered. It never becomes a covering parent for deeper boxes. A deeper box under it still fails unless its own nearest shallower covered `[x]` parent covers it.
-- **FR-4 (Other functions unchanged).** `phase_counts`, `track_incomplete` (used by final-acceptance), and the jr-green branch stay unchanged. `track_incomplete` (line 431) uses `TASK_LINE_RE` (line 104, `^- \[([ ~x])\] (.+)`), which is anchored at column 0. It already ignores nested boxes. A Red case proves this.
-- **FR-5 (Change set).** The change set is exactly: the checker script, the new test file `tests/spec_review_gate/test_closeout_nested_subboxes.py`, one `CHANGELOG.md` entry, and the track files with their plan records. The install of the fixed script into `~/.agents/skills` is orchestrator work after the merge with `bin/install-measure-skill` and `--check`. It is not part of the change set.
-- **FR-6 (Contract test).** The test uses the style of the other `tests/spec_review_gate` Python tests. The runner `run.sh` discovers it with no edit of `run.sh`.
+- **FR-0 (Rationale).** `plan_closeout_feedback` appends `plan task is not complete` for every non-`[x]` line before the parent-cover rule runs. Finished checklist sub-boxes therefore block closeout. The `processed` list already tracks each line, so the fix keys the ignore off the nearest shallower parent in `processed`.
+- **FR-1 (Ignore rule).** An indented open box (`[ ]` or `[~]`, indent greater than 0) gives no `plan task is not complete` line when its nearest shallower-indent parent in `processed` is (a) an `[x]` line, covered or not, or (b) itself an ignored nested open box. A SHA-less `[x]` parent still reports its own `completed plan task lacks commit SHA` line; its nested boxes add no second line. The ignore reaches any depth along a chain rooted at an `[x]` ancestor.
+- **FR-2 (Boundaries; wins over FR-1).** A top-level (indent 0) `[ ]` or `[~]` box always fails. An open box whose nearest parent is an open box that is not ignored still fails; this holds under a top-level `[ ]` or `[~]`. A parent line that carries the word `deferred` never grants the ignore. A nested open box under a `deferred` parent (`[x]` or `[ ]`) keeps today's feedback.
+- **FR-3 (Records and `[x]` coverage).** An ignored box is recorded in `processed` as `(indent, status, covered=False, ignored=True)`. Every `processed` entry carries the same four values, with `ignored=False` elsewhere. A `[x]` box under an ignored box takes coverage from its own SHA, else from the nearest shallower `[x]` ancestor that is covered, skipping ignored boxes.
+- **FR-4 (Other functions).** `phase_counts`, `track_incomplete`, and the jr-green branch stay unchanged. `track_incomplete` uses `TASK_LINE_RE` anchored at column 0, so it already ignores nested boxes; a Red case proves it. `closeout_feedback` and `closeout_candidates` both call `plan_closeout_feedback`, so both change by design.
+- **FR-5 (Change set).** The change set is exactly: the checker script, the new test file `tests/spec_review_gate/test_closeout_nested_subboxes.py`, the bounded edit of `tests/spec_review_gate/test_subbox_sha.py` (case 3 rewritten to the new rule, docstring fixed), the README.md Status sentence, one new CHANGELOG.md entry, and the track files with their plan records. The install of the fixed script into `~/.agents/skills` is orchestrator work after the merge with `bin/install-measure-skill` and `--check`; it is not part of the change set. The closeout of this track also changes `measure/tracks.md` and the archive folder, as every closeout does; these are not part of the implementation change set.
+- **FR-6 (Contract test).** The test uses the style of the other `tests/spec_review_gate` Python tests. The runner `run.sh` discovers it with no edit of `run.sh`. One case calls `closeout_candidates` on a temporary repository, as Class 2 of `test_subbox_sha.py` does.
 
 ## Acceptance Criteria
 
-- The Math shape passes: top-level `[x]` tasks with SHAs and nested `[ ]` sub-boxes give no closeout feedback.
-- A top-level `[ ]` task fails with `plan task is not complete`.
-- A top-level `[~]` task fails with `plan task is not complete`.
-- A nested `[ ]` box under an `[x]` parent without a SHA fails with `completed plan task lacks commit SHA`.
-- A nested `[ ]` box under a `[ ]` parent fails with `plan task is not complete`.
-- A nested `[x]` box without a SHA under an uncovered parent fails with the SHA message.
-- A nested `[ ]` box under a `deferred` parent keeps today's result.
-- The real-shape fixture copied from Math plan lines 36-60 passes.
-- `track_incomplete` still ignores nested boxes.
+- Math lines 38-50 (the SHA'd task `commit 45c95cec` with nested boxes) give exactly `[]`.
+- Math line 52 plus lines 53-60 give exactly one line: `completed plan task lacks commit SHA` for the line-52 task; the eight nested boxes add none.
+- A top-level `[ ]` task gives exactly one `plan task is not complete` line.
+- A top-level `[~]` task gives exactly one `plan task is not complete` line.
+- A nested `[~]` box under a covered `[x]` parent gives `[]`.
+- A `[ ]` box two levels under covered `[x]` boxes gives `[]`.
+- A `[ ]` box under a top-level `[~]` gives two `plan task is not complete` lines: one for the parent, one for the box.
+- A tab-indented sub-box under a covered `[x]` parent gives `[]`.
+- A `[ ]` box under an ignored `[ ]` box (grandchild of a covered `[x]`) gives `[]`.
+- A `[x]` box with a SHA under an ignored `[ ]` box gives `[]`.
+- A `[x]` box without a SHA under an ignored `[ ]` box gives `[]` when a covered `[x]` ancestor stands above, and the SHA message when the ancestor is uncovered.
+- A nested `[ ]` box under a `deferred` `[x]` parent and one under a `deferred` `[ ]` parent each keep today's `plan task is not complete` line.
+- A plan with only nested `[ ]` boxes gives `track_incomplete` zero.
+- A `closeout_candidates` case agrees with `plan_closeout_feedback`.
 
 ## Out of Scope
 
