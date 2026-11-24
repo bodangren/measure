@@ -4,9 +4,7 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
-- [~] **Track: Green gate ignores the open review task**
-  *Link: [./tracks/green_gate_review_task_20261124/](./tracks/green_gate_review_task_20261124/)*
-  *Green gate ignores one open review task: the jr-green gate passes when the phase holds one [~] task that names a later role (chore, light lane).*
+- (none)
 
 ---
 
@@ -565,3 +563,7 @@ Cancelled on 2026-10-05. Each `metadata.json` has the reason in `cancel_reason`.
 - [x] **Track: Audit roles may run role-gate**
   *Link: [./archive/audit_role_gate_allow_20261123/](./archive/audit_role_gate_allow_20261123/)*
   *Audit roles may run role-gate: allow the role-gate command in the 8 audit agent files that deny *rm * (PM order, due 2026-11-26).*
+
+- [x] **Track: Green gate ignores the open review task**
+  *Link: [./archive/green_gate_review_task_20261124/](./archive/green_gate_review_task_20261124/)*
+  *Green gate ignores one open review task: the jr-green gate passes when the phase holds one [~] task that names a later role (chore, light lane).*

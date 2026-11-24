@@ -1,0 +1,62 @@
+INFO: no heavy-run wrapper found; running gate commands directly
+FAIL: RED_TEST_COMMAND failed (expected failure, exit 0): node --test plugins/dsh-measure-guard/tests/*.test.js
+FAIL: ere (0.172058ms)
+✔ Repos round-trips the mode and the repository bypass through repos.json (20.098849ms)
+✔ Repos tolerates a missing and a corrupt repos.json (3.98043ms)
+✔ Bypass precedence is repo > session > null (2.576671ms)
+✔ Agents keeps one record per agent id and forgets it (0.740015ms)
+✔ Turns are keyed by agent id and turn, and never leak between turns (0.734825ms)
+✔ newUserMessage deep-clones and deep-freezes a user message with a fresh id (0.993473ms)
+✔ parseModeOf accepts the three modes, defaults to guard, and warns once on an unknown value (0.400337ms)
+✔ createState builds the four state classes (3.187596ms)
+✔ statusText is the status lines plus the task note (1.598068ms)
+✔ statusText names the bypass state (0.262748ms)
+✔ statusText handles no active track, no measure/, and a parse error (0.544865ms)
+✔ measureStatusTool is a complete hand-built ToolDefinition (2.533001ms)
+✔ measureStatusTool refreshes the snapshot and returns the status text (0.539276ms)
+✔ measureStatusTool falls back to invalidate + get without a refresh dep (0.276678ms)
+✔ noteRedEdit keeps a successful test-file write and ignores a source write (2.729259ms)
+✔ noteRedFailure keeps a failed test command only (0.714774ms)
+✔ a new [~] task resets the Red record (0.331757ms)
+✔ strict mode denies a source edit until the task has a failing test (0.948263ms)
+✔ strict mode allows the source edit after a test edit and a failed test command (0.342787ms)
+✔ the TDD guard is inert outside strict mode and with a bypass (0.356397ms)
+✔ the TDD guard ignores test files, measure/ files, and files outside the root (0.328217ms)
+✔ prepareDecision denies a source edit in strict mode (4.435556ms)
+✔ recordRed keeps a successful test-file edit and a failed test command (0.444506ms)
+✔ recordRed ignores a passing test run, a failing non-test command, and a non-strict mode (0.622335ms)
+✔ recordRed never throws on a malformed call (0.223768ms)
+✔ the measure_verify tool carries the read-only report for the agent (3.97835ms)
+✔ a clean plan reports the checked task count (0.276598ms)
+✔ a fake SHA and a missing note are reported with the end-of-turn texts (0.440297ms)
+✔ a metadata actual_tasks mismatch is reported with both numbers (0.287137ms)
+✔ malformed metadata is reported with its path (0.297028ms)
+✔ matching metadata keeps the report clean (0.232228ms)
+✔ a missing project, no active track, and a failing probe degrade to nothing-to-verify (0.468477ms)
+✔ the command is registered read-only with a handler (0.397627ms)
+✔ an open track with actual_tasks null keeps the report clean (0.324708ms)
+✔ git cannot answer and a non-work-tree are nothing-to-verify, not clean (0.290588ms)
+✔ the report refreshes the snapshot before verifying (0.295127ms)
+✔ the command is read-only: it never writes and never mutates the repository state (0.295898ms)
+✔ a non-numeric actual_tasks adds no verdict (0.207528ms)
+✔ WORKFLOWS holds the eight commands in order with the exact descriptions (1.952426ms)
+✔ measureWorkflowCommands registers one whole definition per command (1.989095ms)
+✔ every handler steers exactly one message with the resolved reference path (18.722169ms)
+✔ measure-new-track appends a trimmed Arguments line only when rawInput is non-empty (7.612002ms)
+✔ a project without measure/ errors and steers nothing (except measure-setup) (5.159091ms)
+✔ a missing reference errors and steers nothing (4.721604ms)
+✔ measure-setup works without a measure/ folder (5.108671ms)
+✔ measure-orchestrate resolves its own skill root, not the measure skill (2.6533ms)
+✔ the skill roots follow the documented order and a project root wins (2.951538ms)
+✔ a symlinked agents home is deduplicated against the Claude root (2.843838ms)
+✔ resolveSkillFile does not cache: repairing a missing file makes the next call succeed (4.107059ms)
+✔ a throwing root or snapshot becomes an error result and never throws (3.441274ms)
+ℹ tests 384
+ℹ suites 0
+ℹ pass 384
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 768.783023
+

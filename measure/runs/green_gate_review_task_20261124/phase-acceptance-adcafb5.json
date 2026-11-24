@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "role": "phase-acceptance",
+  "track": "green_gate_review_task_20261124",
+  "phase": "Phase 1: Green gate ignores the open review task (due 2026-11-27)",
+  "phase_base_sha": "8ab715bbb7ee80f51da3a8dc615243f472d09080",
+  "role_base_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "baseline_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "status": "pass",
+  "summary": "Phase 1 meets spec FR-1 to FR-5 and all 12 acceptance criteria at HEAD adcafb5. The jr-green gate ignores one open later-role task only when the phase has a completed task. The mid-red, review, acceptance, and closeout gates give the same output as at the base. All suites pass, and the Red replay fails first with 14 failures. Four nonblocking Late findings go to tech-debt. No finding blocks acceptance.",
+  "blocking_findings": [],
+  "nonblocking_findings": [
+    "PA-1 [Nit] phase-acceptance: Late finding, tech-debt. A [~] work task can use the one ignore when its title starts with a label word. These titles pass jr-green beside one completed task: `- [~] Task 1.4 Review A remediation: fix F1 and F2 in the helper` and `- [~] Task 6.5: Final acceptance remediation (F1, F2, N2; x.json)`. The second title is real: advantage-pr/measure/archive/repo_hardening_20261017/plan.md:310. The code follows the spec regex, so the gap is in spec FR-1. The gap is small: 1 of 21,673 real task lines. The review-a and phase-acceptance gates still count the open task. The contract routes a late finding on a gate script to tech-debt. Fix later: add a tail rule, for example reject the word remediation after the label.",
+    "PA-2 [Nit] phase-acceptance: Late finding, tech-debt. The committed test leaves three spec forms unpinned. No case uses a colon after the number (`Task 3.5: Review A`). No case omits the number (`Review A of x`). No case uses a three-level number (`Task 1.2.3 Review A`). A mutant that drops each form survives the 15-test suite. The code is right for each form: the 6000-plan oracle run covers them. Add three cases in a later track.",
+    "PA-3 [Nit] phase-acceptance: Late finding, tech-debt. The CHANGELOG.md:25 entry omits the completed-task rule. Spec FR-1 states the rule: a phase with no [x] task still fails with the incomplete line. The gate and the test already apply the rule. Add one sentence to the entry in a later track.",
+    "PA-4 [Nit] phase-acceptance: Record gap for the orchestrator. plan.md holds no `- Late finding <id>: tech-debt (<reason>)` line for Review A F5 and F6. The stop rule in contracts.md requires one line for each call under the phase heading. Spec Out of Scope says the track adds no tech-debt row, but F5, F6, PA-1, PA-2, and PA-3 route there. Record the lines and the rows at closeout, and name the spec exception. A plan-only commit advances HEAD, so the orchestrator decides whether to rerun this gate."
+  ],
+  "evidence": [
+    "HEAD is adcafb5c7edf6766467fa6ca8648c7dd7ace939b, the audited SHA. The tree was clean at the start and at the end. The remote branch head is the same SHA.",
+    "Prerequisites: metadata.json holds lane light, so the spec review and Review A apply. Spec review passed at c5bc2ff. Review A round 1 failed at 9c9e70e. Review A round 2 passed at adcafb5, the audited HEAD, so no test-only exception applies. Review B, Review C, adversarial, UX, and final acceptance do not run in the light lane.",
+    "The phase diff 8ab715b..adcafb5 holds 5 files: CHANGELOG.md, plan.md, spec.md, the checker, and the new test. git diff --check is clean. No closeout file is in the diff: measure/tracks.md, measure/archive/, measure/tech-debt.md, and run.sh are absent.",
+    "spec.md changed once after the spec review: commit 544a85d adds one sentence to FR-1 for the completed-task rule. The code, the test, and plan.md:19 match that sentence. Review A round 2 reviewed the sentence.",
+    "Tasks: Task 1.1 cites 7c2435c, which adds only the test and plan.md, so the checker is unchanged between 8ab715b and 7c2435c. Task 1.2 cites 7ac430f, which edits the checker and CHANGELOG.md. Task 1.3 cites 5afab9a. All three tasks are [x] with a SHA. The plan counts are (3, 3, 0, 0, 3), and plan_closeout_feedback reports no finding.",
+    "FR-1 and FR-2 hold in the code. LATER_ROLE_TASK_RE (measure_interphase_checks.py:107) is the spec regex with IGNORECASE. jr_green_phase_counts (lines 406-428) skips an [x] or deferred task first. It then ignores one [~] task when the phase has a completed task. The SHA check and the other jr-green branches are unchanged.",
+    "FR-3 holds. The helper has one caller, the jr-green branch at line 1369. phase_counts keeps its five-value return. Mid-red (line 1328) and the review branch (line 1394) still call phase_counts. TASK_LINE_RE equals the old pattern at the three other sites.",
+    "Real Lending plan at 6faaf42, read with git show: Phase 3 gives (5, 4, 1, 1, 4) to phase_counts and (5, 4, 1, 0, 4) to the helper. The jr-green role gate fails at 8ab715b with the one-incomplete line and passes at adcafb5. Across 4 phases and 9 roles, every other output is byte-identical between 8ab715b and adcafb5.",
+    "Oracle run: I wrote an oracle from the spec text, not from the regex. 6000 random plans give 0 mismatches. The ignore applied in 2171 plans and never to more than one task. phase_counts, track_incomplete, and discover_phases are identical at the base and at HEAD.",
+    "29 curated jr-green shapes through the CLI match the oracle. A phase with no [x] task fails with the incomplete line. Two review [~] tasks fail with the one-incomplete line. A [ ] review task, a body word, and Review assignments all fail. A deferred review before an eligible review passes. The 4b.5 letter-suffix form fails as the spec review accepted.",
+    "Fail-first, reproduced: the Red test (7c2435c) against the base checker (8ab715b) runs 13 tests and fails 14 times. The failures are 11 label forms, the Lending shape, the single-review case, and the two-review bound. This equals the Red record in plan.md. The same test passes against 7ac430f and adcafb5.",
+    "Remediation fail-first, reproduced: the HEAD test (15 tests) fails 1 test against 7ac430f and 9c9e70e: test_only_open_review_task_without_completed_task_fails. It fails 15 times against 8ab715b. It passes against adcafb5.",
+    "Mutants of the HEAD checker, run with the HEAD test: 11 of 11 core mutants are killed. They are: no completed-task rule, no one-ignore bound, [ ] allowed, deferred task spends the ignore, no word boundary, body word matches, a label missing, wiring reverted, helper in the review branch, and SHA check removed. The 9c9e70e suite lets the deferred mutant survive, which confirms Review A F3.",
+    "Suites at adcafb5 through heavy-run with HEAVY_PRIORITY=p1 and HEAVY_MIN_AVAIL_MB=1500: test_green_gate_review_task.py exits 0 (15 tests). tests/spec_review_gate/run.sh exits 0 (26 suites, PASS=26, FAIL=0). node --test plugins/dsh-measure-guard/tests/*.test.js exits 0 (384 pass, 0 fail). tests/dsh/run.sh exits 0 (15 passed, 0 failed). Both check-parity.sh scripts print parity: ok.",
+    "A3 absent: the contract test matches the full labeled line with assertIn on out.splitlines(). The two-review case rejects the count of 2. A4 absent: a phase with no [x] task fails with the incomplete line (test_only_open_review_task_without_completed_task_fails, probe S02). A6 does not apply: measure/tracks.md is outside the phase diff. A5 and A7 follow below.",
+    "A5: each pass claim in plan.md reproduces. The Red claim lists 14 failures by name and matches. The 5afab9a plan gives only the Task 1.3 incomplete line and exit 1 at the 7ac430f checker. The stat 8ab715b..5afab9a is 4 files changed, 342 insertions(+), 6 deletions(-). Run 45389039841 took 6m41s. PR #49 is open and not merged. The check checks passed at adcafb5 (run 45394159740).",
+    "A7: I scanned 21,673 task lines in 1,236 distinct plans of the repositories on this machine. 28 lines match the label regex. 27 are role tasks or role notes, and none is [~]. One is a remediation work task (PA-1). The probes show that a [~] task with that shape uses the one ignore. A second [~] review task still fails the gate.",
+    "Reviewer re-checks: Review A round 1 F1 reproduces (the 7ac430f checker passes a plan with only an open review task). F2 reproduces (plan@9c9e70e counts (3, 2, 1, 0, 2) with Task 1.1 marked [~]). F3 reproduces (the 9c9e70e suite lets the deferred-order mutant survive). F4 holds: the CHANGELOG wording is now correct. The round 2 withdrawals hold. F5 holds: an all-deferred phase passes at all three revisions. F6 holds: lines 390-427 duplicate the counting.",
+    "Limits: the committed Lending case is a reduced shape fixture, not the verbatim blob. I ran the real blob by hand (see the Lending entry). The installed copy in ~/.agents/skills is outside this phase: FR-4 assigns the install and its --check to the orchestrator after the merge. I ran no gate against the installed copy.",
+    "Process: this role writes only under measure/runs/. I ran each probe as a Python heredoc through heavy-run. The scratch files lived in /tmp/opencode/pa-ggrt, and I removed the folder. I did not turn measure-guard off. I made no commit and no push."
+  ],
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git ls-remote origin refs/heads/fix/green-gate-open-review-task; git diff --check 8ab715b..adcafb5; git diff --name-status 8ab715b..adcafb5; git diff --shortstat 8ab715b..5afab9a",
+    "gh pr view 49 --json number,state,mergedAt,headRefOid,statusCheckRollup; gh api repos/bodangren/measure/actions/runs/45389039841/jobs; gh api repos/bodangren/measure/actions/runs/45394159740",
+    "git show 544a85d; git diff --stat c5bc2ff adcafb5 -- measure/tracks/green_gate_review_task_20261124/spec.md; git grep -n jr_green_phase_counts HEAD",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_green_gate_review_task.py' - exit 0, 15 tests",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh' - exit 0, 26 suites, PASS=26, FAIL=0",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'node --test plugins/dsh-measure-guard/tests/*.test.js' - exit 0, 384 pass, 0 fail",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/dsh/run.sh' - exit 0, 15 passed, 0 failed",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash plugins/dsh-measure-guard/scripts/check-parity.sh; bash plugins/opencode-measure-guard/scripts/check-parity.sh' - both exit 0, parity: ok",
+    "heavy-run python3 -I - (heredoc): 3 test blobs (7c2435c, 9c9e70e, adcafb5) against 4 checker blobs (8ab715b, 7ac430f, 9c9e70e, adcafb5); 11 core mutants and 9 form and label mutants (1 was equivalent) of the HEAD checker against the HEAD test",
+    "heavy-run python3 -I - (heredoc): real Lending plan at 6faaf42 (read-only git show in lending-desk-bench) through role-gate for 4 phases and 9 roles; this track plan at 5afab9a and adcafb5",
+    "heavy-run python3 -I - (heredoc): 6000 random plans against the spec oracle; scan of 1,605 plan files (1,236 distinct) for the label regex",
+    "heavy-run python3 -I - (heredoc): 29 curated jr-green shapes and 3 remediation shapes through role-gate at 8ab715b and adcafb5",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role phase-acceptance --track green_gate_review_task_20261124 --phase \"Phase 1: Green gate ignores the open review task (due 2026-11-27)\" --baseline adcafb5 --result-file measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.json --log-file measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.log - exit 0, PASS: phase-acceptance gate passed"
+  ],
+  "changed_files": [
+    "measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.json",
+    "measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.log"
+  ],
+  "test_strategy_violations": [],
+  "live_contract_violations": [],
+  "prod_wiring_violations": [],
+  "route_parity_violations": [],
+  "retry_recommendation": "none",
+  "confidence": "high",
+  "route": "claude-agent/sonnet#max",
+  "ratings": [
+    {
+      "axis": "correctness",
+      "score": 5,
+      "evidence": "6000 random plans and 29 CLI shapes match a spec-based oracle, and the real Lending plan at 6faaf42 passes (measure_interphase_checks.py:406-428)."
+    },
+    {
+      "axis": "test_meaning",
+      "score": 4,
+      "evidence": "11 of 11 core mutants are killed by the 15-test suite, but mutants that drop the colon, the number prefix, or three-level numbers survive (PA-2)."
+    },
+    {
+      "axis": "scope_discipline",
+      "score": 5,
+      "evidence": "git diff --name-status 8ab715b..adcafb5 lists exactly the checker, the new test, CHANGELOG.md, spec.md, and plan.md, with no closeout file."
+    },
+    {
+      "axis": "evidence_quality",
+      "score": 5,
+      "evidence": "Each plan claim reproduces: Red 14 failures, 26 suites, 384 tests, stat 4 files 342 insertions 6 deletions, and run 45389039841 in 6m41s."
+    }
+  ],
+  "reviewer_ratings": [
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6.2-sol#high",
+      "agreed": true,
+      "score": 5,
+      "evidence": "Round 1 (fail at 9c9e70e): F1 reproduces, because only test_only_open_review_task_without_completed_task_fails kills the 7ac430f behavior, and F3 reproduces, because the 9c9e70e suite lets the deferred-order mutant survive."
+    },
+    {
+      "reviewer_role": "review-a",
+      "reviewer_route": "openai/gpt-6.2-sol#high",
+      "agreed": true,
+      "score": 5,
+      "evidence": "Round 2 (pass at adcafb5): its Lending counts (5, 4, 1, 0, 4), its identical role outputs, and its F5 and F6 Late findings all reproduce in my probes."
+    }
+  ]
+}

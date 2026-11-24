@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "role": "closeout",
+  "status": "pass",
+  "track_id": "green_gate_review_task_20261124",
+  "track_title": "Green gate ignores the open review task",
+  "track_base_sha": "8ab715b",
+  "closeout_baseline_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+  "closeout_commit_sha": "pending at manifest write; reported to the orchestrator after the commit",
+  "audits": [
+    {
+      "role": "spec-review",
+      "artifact": "measure/runs/green_gate_review_task_20261124/spec-review-9dad8a3.json",
+      "status": "fail",
+      "audited_head_sha": "9dad8a38bcdccaec5a8016546cbe9c9590ecd0b9",
+      "note": "Round 1. F1 was a Blocker on the matching rule. The build session fixed it in c5bc2ff."
+    },
+    {
+      "role": "spec-review",
+      "artifact": "measure/runs/green_gate_review_task_20261124/spec-review-c5bc2ff.json",
+      "status": "pass",
+      "audited_head_sha": "c5bc2ff7afcf28172c4421f0cbf630036035be3a",
+      "note": "Round 2. Three Nits accepted: F7 letter-suffix ids are a safe miss, F8 no task owns the CHANGELOG entry, F9 FR-4 'exactly' wording."
+    },
+    {
+      "role": "review-a",
+      "phase": "Phase 1",
+      "artifact": "measure/runs/green_gate_review_task_20261124/review-a-9c9e70e.json",
+      "status": "fail",
+      "audited_head_sha": "9c9e70ebff966f6987a8de028e5f04ef2bca2c96",
+      "note": "Round 1. F1 no [x] precondition, F2 Task 1.1 [~], F3 deferred-order mutant, F4 CHANGELOG wording."
+    },
+    {
+      "role": "review-a",
+      "phase": "Phase 1",
+      "artifact": "measure/runs/green_gate_review_task_20261124/review-a-adcafb5.json",
+      "status": "pass",
+      "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+      "note": "Round 2. F1 to F4 withdrawn. Late findings F5 and F6 routed to tech-debt."
+    },
+    {
+      "role": "phase-acceptance",
+      "phase": "Phase 1",
+      "artifact": "measure/runs/green_gate_review_task_20261124/phase-acceptance-adcafb5.json",
+      "status": "pass",
+      "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+      "note": "All FR-1 to FR-5 and 12 acceptance criteria hold. Four Nits PA-1 to PA-4. PA-4 ordered the late-finding lines and this manifest. The orchestrator re-ran the gate with exit 0."
+    },
+    {
+      "role": "closeout",
+      "artifact": "measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json",
+      "status": "pass",
+      "audited_head_sha": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b",
+      "note": "The Agent Result Block is written in closeout-adcafb5.log before the closeout commit."
+    }
+  ],
+  "light_lane_roles_not_required": ["review-b", "review-c", "adversarial-testing", "ux-browser-review", "final-acceptance"],
+  "models": "Spec review ran two rounds on the Muse route (opencode-go/muse-spark-1.3-contributor). Red and the spec amendments were build-session work on the Muse route. Review A ran on openai/gpt-6.2-sol#high. Phase acceptance ran on claude-agent/sonnet#max. Closeout ran on opencode-go/hy4-flash-free#high.",
+  "commands": [
+    "git rev-parse HEAD; git status --porcelain; git branch --show-current -> adcafb5c7edf6766467fa6ca8648c7dd7ace939b, clean tree, fix/green-gate-open-review-task",
+    "Read measure/index.md, measure/tracks.md, the full spec.md and plan.md, measure/anti-patterns.md, metadata.json, spec-review.md, phase-acceptance-adcafb5.json, review-a-adcafb5.json, spec-review-c5bc2ff.json, measure/lessons-learned.md and measure/tech-debt.md",
+    "Confirm phase-acceptance-adcafb5.json and review-a-adcafb5.json have status pass and audited_head_sha equal to the pre-closeout HEAD adcafb5; the light lane needs no final acceptance",
+    "git rev-parse --verify --quiet on 9dad8a3, c5bc2ff, 7c2435c, 7ac430f, 9c9e70e, 544a85d, 5afab9a, 8ab715b and adcafb5 -> all resolve as commits",
+    "grep the active plan for PASS=...FAIL=0 and all checks pass -> no A5 hit; grep measure/tracks.md for the new registry note -> no A6 hit",
+    "grep the repository for the fixed path measure/tracks/green_gate_review_task_20261124/ before the move -> no hit in tests, scripts, plugins, mods, agents, skills or .github",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track green_gate_review_task_20261124 -> exit 1 before the work: only the closeout manifest was missing",
+    "git mv measure/tracks/green_gate_review_task_20261124 measure/archive/green_gate_review_task_20261124",
+    "grep the repository for the fixed path after the move -> no hit; no test reference needed a fix",
+    "HEAVY_PRIORITY=p1 HEAVY_MIN_AVAIL_MB=1500 /home/daniebo/Desktop/advantage-pr/scripts/jobs/heavy-run.sh -c 'bash tests/spec_review_gate/run.sh && node --test plugins/dsh-measure-guard/tests/*.test.js' -> exit 0: spec_review_gate 26 suites (PASS=26, FAIL=0); node --test tests 384, pass 384, fail 0, duration_ms 847.479891",
+    "Edit the archived plan.md with five late-finding lines and the archived spec.md with the stop-rule exception to Out of Scope",
+    "Write metadata.json: status done, completed 2026-11-24, updated_at 2026-11-24T13:03:13Z, and deviation notes",
+    "Edit measure/tracks.md: remove the Active Tracks entry, mark the section (none), and add the Archived Tracks entry with the metadata description",
+    "Add three Low Open rows to measure/tech-debt.md for F5/F6, PA-1, and PA-2/PA-3; the file holds 37 lines after the edit",
+    "Write this manifest in the archive and closeout-adcafb5.json and closeout-adcafb5.log in measure/runs/green_gate_review_task_20261124/",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track green_gate_review_task_20261124 -> exit 0 before the commit",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py audit-result --role closeout --file measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json -> exit 0 before the commit",
+    "git add measure/tracks.md measure/tech-debt.md and the archive; git add -f measure/runs/green_gate_review_task_20261124; commit with the measure(closeout): prefix",
+    "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py role-gate --repo . --role closeout --track green_gate_review_task_20261124 --phase 'Phase 1: Green gate ignores the open review task (due 2026-11-27)' --baseline adcafb5 --result-file measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json --log-file measure/runs/green_gate_review_task_20261124/closeout-adcafb5.log -> full-form gate result in the final message"
+  ],
+  "post_move_project_test_gate": "exit 0 through the heavy-run wrapper: spec_review_gate 26 suites (PASS=26, FAIL=0); node --test tests 384, pass 384, fail 0, duration_ms 847.479891",
+  "closeout_check": {
+    "command": "python3 skills/measure-orchestrator/scripts/measure_interphase_checks.py closeout --repo . --track green_gate_review_task_20261124",
+    "exit_code_before_any_change": "1 (only the closeout manifest was missing)",
+    "exit_code_before_commit": "exit 0 (INFO light lane, no final acceptance; INFO no generated folder; PASS closeout checks passed)",
+    "exit_code_after_commit": "reported in the final message of the closeout session",
+    "run_point": "before the closeout work, before the closeout commit, and after the closeout commit"
+  },
+  "task_shas": {
+    "1.1": "7c2435c",
+    "1.2": "7ac430f",
+    "1.3": "5afab9a"
+  },
+  "checkpoint_shas": {
+    "Phase 1": "adcafb5c7edf6766467fa6ca8648c7dd7ace939b"
+  },
+  "pre_closeout_state": {
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "human_gated_tasks": 0,
+    "a5_false_claim_check": "no A5 hit: plan.md holds no PASS=...FAIL=0 or all-checks-pass claim; phase acceptance reproduced the Red fail-first, the passing runner, and the PR #49 check claims",
+    "a6_registry_check": "pass: the new archived entry makes no resolved or all-pass claim, and its description equals the metadata description"
+  },
+  "a9_archived_track_path": {
+    "check": "grep the repository for the fixed path measure/tracks/green_gate_review_task_20261124/ before and after the move",
+    "hits_before_move": [],
+    "hits_after_move": [],
+    "tests_scripts_support_hits": 0,
+    "note": "No test, script or support file hardcodes the active track path. No test fix was needed. The post-move project test gate was rerun through the heavy-run wrapper; the summary is recorded above."
+  },
+  "deviations": [
+    "Light lane: spec review and Review A ran. Review B, Review C, adversarial testing, UX review and final acceptance did not run.",
+    "Spec review took two rounds. Round 1 failed on F1, the blocker matching rule; c5bc2ff fixed it. Round 2 passed with Nits F7 (letter-suffix ids, a safe miss), F8 (CHANGELOG entry owned by no task) and F9 (FR-4 'exactly' wording); all three were accepted.",
+    "The configured RED_TEST_COMMAND cannot show this Red. The orchestrator re-ran the mid-red gate with RED_TEST_COMMAND set to the track's test command; exit 0, and no heavy-run wrapper was found.",
+    "Review A round 1 failed at 9c9e70e on F1 (no [x] precondition), F2 (Task 1.1 [~]), F3 and F4. Commit 544a85d fixed them in one round with a bounded spec.md FR-1 amendment and additions to the Red test. Review A round 2 passed at adcafb5.",
+    "Review A late findings F5 and F6 and phase-acceptance late findings PA-1, PA-2 and PA-3 go to tech-debt. The orchestrator decided PA-1 as tech-debt: the case is rare, and the review-a and phase-acceptance gates still count the open task.",
+    "The build session ran the Muse-route Red and made the spec amendments. Closeout records the five late findings under the phase and names the exception to the Out of Scope no-tech-debt line."
+  ],
+  "retained_evidence": [
+    "measure/runs/green_gate_review_task_20261124/ (all Red, Green, spec-review, Review A and phase-acceptance logs and JSON files, force-added)",
+    "measure/runs/green_gate_review_task_20261124/closeout-adcafb5.json and closeout-adcafb5.log (force-added)",
+    "measure/archive/green_gate_review_task_20261124/plan.md (five late-finding lines and task SHAs), spec.md (stop-rule exception), spec-review.md and metadata.json (deviation notes)",
+    "PR #49 check checks success at 5afab9a and adcafb5"
+  ],
+  "artifact_cleanup": "none; the orchestrator identified no bulky run artifact for deletion",
+  "lessons_learned_rows_added": 0,
+  "tech_debt_rows_added": [
+    "F5 and F6: FR-1 wording and duplicate SHA counting and phase selection (Low, Open)",
+    "PA-1: a [~] remediation task with a later-role label uses the one ignore (Low, Open)",
+    "PA-2 and PA-3: three unpinned test forms and the CHANGELOG omission of the completed-task rule (Low, Open)"
+  ],
+  "blocking_findings": [],
+  "retry_recommendation": "none",
+  "confidence": "high"
+}

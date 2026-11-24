@@ -1,0 +1,76 @@
+INFO: no heavy-run wrapper found; running gate commands directly
+FAIL: missing MEASURE_AGENT_RESULT block
+FAIL: RED_TEST_COMMAND failed (expected failure, exit 0): node --test plugins/dsh-measure-guard/tests/*.test.js
+FAIL: here (0.155479ms)
+✔ Repos round-trips the mode and the repository bypass through repos.json (17.2484ms)
+✔ Repos tolerates a missing and a corrupt repos.json (4.210798ms)
+✔ Bypass precedence is repo > session > null (2.925618ms)
+✔ Agents keeps one record per agent id and forgets it (0.975473ms)
+✔ Turns are keyed by agent id and turn, and never leak between turns (0.739494ms)
+✔ newUserMessage deep-clones and deep-freezes a user message with a fresh id (1.20809ms)
+✔ parseModeOf accepts the three modes, defaults to guard, and warns once on an unknown value (0.306708ms)
+✔ createState builds the four state classes (2.225253ms)
+✔ statusText is the status lines plus the task note (2.136044ms)
+✔ statusText names the bypass state (0.449697ms)
+✔ statusText handles no active track, no measure/, and a parse error (0.498807ms)
+✔ measureStatusTool is a complete hand-built ToolDefinition (0.821634ms)
+✔ measureStatusTool refreshes the snapshot and returns the status text (1.20748ms)
+✔ measureStatusTool falls back to invalidate + get without a refresh dep (0.352157ms)
+✔ noteRedEdit keeps a successful test-file write and ignores a source write (2.871638ms)
+✔ noteRedFailure keeps a failed test command only (0.615366ms)
+✔ a new [~] task resets the Red record (0.375427ms)
+✔ strict mode denies a source edit until the task has a failing test (0.959833ms)
+✔ strict mode allows the source edit after a test edit and a failed test command (0.348277ms)
+✔ the TDD guard is inert outside strict mode and with a bypass (0.361157ms)
+✔ the TDD guard ignores test files, measure/ files, and files outside the root (0.317187ms)
+✔ prepareDecision denies a source edit in strict mode (1.115321ms)
+✔ recordRed keeps a successful test-file edit and a failed test command (0.489296ms)
+✔ recordRed ignores a passing test run, a failing non-test command, and a non-strict mode (0.630355ms)
+✔ recordRed never throws on a malformed call (0.177869ms)
+✔ the measure_verify tool carries the read-only report for the agent (2.480721ms)
+✔ a clean plan reports the checked task count (0.187789ms)
+✔ a fake SHA and a missing note are reported with the end-of-turn texts (0.270237ms)
+✔ a metadata actual_tasks mismatch is reported with both numbers (0.335498ms)
+✔ malformed metadata is reported with its path (0.319008ms)
+✔ matching metadata keeps the report clean (0.213519ms)
+✔ a missing project, no active track, and a failing probe degrade to nothing-to-verify (0.375728ms)
+✔ the command is registered read-only with a handler (0.353617ms)
+✔ an open track with actual_tasks null keeps the report clean (0.286028ms)
+✔ git cannot answer and a non-work-tree are nothing-to-verify, not clean (0.238758ms)
+✔ the report refreshes the snapshot before verifying (0.198309ms)
+✔ the command is read-only: it never writes and never mutates the repository state (0.192488ms)
+✔ a non-numeric actual_tasks adds no verdict (0.140409ms)
+✔ WORKFLOWS holds the eight commands in order with the exact descriptions (1.899706ms)
+✔ measureWorkflowCommands registers one whole definition per command (0.374437ms)
+✔ every handler steers exactly one message with the resolved reference path (16.336017ms)
+✔ measure-new-track appends a trimmed Arguments line only when rawInput is non-empty (6.224193ms)
+✔ a project without measure/ errors and steers nothing (except measure-setup) (2.810258ms)
+✔ a missing reference errors and steers nothing (3.413504ms)
+✔ measure-setup works without a measure/ folder (4.233568ms)
+✔ measure-orchestrate resolves its own skill root, not the measure skill (1.980355ms)
+✔ the skill roots follow the documented order and a project root wins (2.56828ms)
+✔ a symlinked agents home is deduplicated against the Claude root (2.310033ms)
+✔ resolveSkillFile does not cache: repairing a missing file makes the next call succeed (3.509754ms)
+✔ a throwing root or snapshot becomes an error result and never throws (3.111647ms)
+ℹ tests 384
+ℹ suites 0
+ℹ pass 384
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 742.481441
+
+MEASURE_AGENT_RESULT
+role: mid-red
+status: complete
+track: green_gate_review_task_20261124
+phase: Phase 1: Green gate ignores the open review task (due 2026-11-27)
+baseline_sha: 8ab715b
+commits: 7c2435c e7a4185
+tests_run: HEAVY_MIN_AVAIL_MB=1500 HEAVY_PRIORITY=p1 heavy-run.sh -c 'bash tests/spec_review_gate/run.sh test_green_gate_review_task.py' -> FAIL as expected (single-review, each later-role label form, Lending shape, and two-task bound fail with the incomplete line; non-role, bracket, near-miss, deferred, SHA, mid-red, and review-a boundary cases pass)
+files_changed: tests/spec_review_gate/test_green_gate_review_task.py, measure/tracks/green_gate_review_task_20261124/plan.md
+plan_updates: Task 1.1 marked [~]; Red evidence recorded
+known_failures: mid-red role-gate exit 1 on this log: missing MEASURE_AGENT_RESULT block (log was empty at read time) and RED_TEST_COMMAND from measure/gates.json passes (node suite exit 0) so the expected-failure check cannot demonstrate this Red; the failing Red is proven by the heavy-run command above
+handoff: orchestrator decides: accept the heavy-run Red proof, or reconfigure RED_TEST_COMMAND for this track
+END_MEASURE_AGENT_RESULT

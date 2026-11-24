@@ -35,6 +35,7 @@ Source: chore track, light lane, created 2026-11-24.
 - No change to the mid-red gate.
 - No change to any review, acceptance, or closeout gate.
 - No tech-debt change: this track adds no tech-debt row and changes no existing row.
+- Exception (recorded at closeout): the late-finding stop rule routes Review A F5 and F6 and phase-acceptance PA-1, PA-2, and PA-3 to `measure/tech-debt.md`. These five late findings create three new rows at closeout. The rows come from the stop rule, not from the delivered gate change.
 
 ## Open Questions
 

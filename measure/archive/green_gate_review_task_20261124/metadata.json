@@ -1,0 +1,13 @@
+{
+  "track_id": "green_gate_review_task_20261124",
+  "type": "chore",
+  "status": "done",
+  "lane": "light",
+  "created_at": "2026-11-24T00:00:00Z",
+  "updated_at": "2026-11-24T13:03:13Z",
+  "completed": "2026-11-24",
+  "description": "Green gate ignores one open review task: the jr-green gate passes when the phase holds one [~] task that names a later role (chore, light lane).",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": "Light lane: spec review and Review A ran. Review B, Review C, adversarial testing, UX review and final acceptance did not run. Spec review took two rounds. Round 1 failed on F1, the blocker matching rule; commit c5bc2ff fixed it. Round 2 passed with Nits F7 (letter-suffix ids, a safe miss), F8 (CHANGELOG entry owned by no task) and F9 (FR-4 'exactly' wording); all three were accepted. The build session ran the Muse-route Red and made the spec amendments. The configured RED_TEST_COMMAND cannot show this Red. The orchestrator re-ran the mid-red gate with RED_TEST_COMMAND set to the track's test command; exit 0, and no heavy-run wrapper was found. Review A round 1 failed at 9c9e70e on F1 (no [x] precondition), F2 (Task 1.1 [~]), F3 and F4. Commit 544a85d fixed them in one round with a bounded spec.md FR-1 amendment and additions to the Red test. Review A round 2 passed at adcafb5. Review A late findings F5 and F6 and phase-acceptance late findings PA-1, PA-2 and PA-3 go to tech-debt. The orchestrator decided PA-1 as tech-debt: the case is rare, and the review-a and phase-acceptance gates still count the open task."
+}
