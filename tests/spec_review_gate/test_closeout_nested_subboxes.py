@@ -135,13 +135,16 @@ class CloseoutNestedSubboxesFeedbackTest(unittest.TestCase):
         self.assertEqual(self.module.plan_closeout_feedback(plan), [])
 
     def test_case_09_x_with_sha_under_ignored_box(self) -> None:
-        """A [x] box with a SHA under an ignored [ ] box gives []."""
+        """A SHA-less root gives only its own line; the nested [x] keeps its own SHA."""
         plan = self.plan(
-            f"- [x] Task 1.1: Do the work — `{SHA}`\n"
+            "- [x] Task 1.1: Do the work\n"
             "  - [ ] Add the first sub-step\n"
             f"    - [x] Check an edge case — `{SHA}`\n"
         )
-        self.assertEqual(self.module.plan_closeout_feedback(plan), [])
+        self.assertEqual(
+            self.module.plan_closeout_feedback(plan),
+            ["completed plan task lacks commit SHA: - [x] Task 1.1: Do the work"],
+        )
 
     def test_case_10_x_without_sha_under_ignored_box_covered_ancestor(self) -> None:
         """A [x] box without a SHA under an ignored [ ] box gives [] above a covered ancestor."""
@@ -238,6 +241,55 @@ class CloseoutNestedSubboxesFeedbackTest(unittest.TestCase):
             "    - [ ] A deeper nested box\n"
         )
         self.assertEqual(self.module.track_incomplete(plan), 0)
+
+    def test_case_19_f1_sibling_does_not_hide_covered_ancestor(self) -> None:
+        """A deferred sibling and an ignored sibling do not remove a covered [x] ancestor."""
+        plan = self.plan(
+            f"- [x] Task 1.1: Do the work {SHA}\n"
+            f"  - [ ] A (deferred) {SHA}\n"
+            "  - [ ] B\n"
+            "    - [x] Done B\n"
+        )
+        self.assertEqual(self.module.plan_closeout_feedback(plan), [])
+
+    def test_case_20_f1_sibling_branch_does_not_cover_missing_sha(self) -> None:
+        """A SHA'd [x] in an earlier sibling branch does not cover a later branch's [x]."""
+        plan = self.plan(
+            "- [x] Task 1.1: Do the work\n"
+            "  - [ ] A\n"
+            f"    - [x] Done A {SHA}\n"
+            "  - [ ] B\n"
+            "    - [ ] B step\n"
+            "      - [x] Done B\n"
+        )
+        self.assertEqual(
+            self.module.plan_closeout_feedback(plan),
+            [
+                "completed plan task lacks commit SHA: - [x] Task 1.1: Do the work",
+                "completed plan task lacks commit SHA: - [x] Done B",
+            ],
+        )
+
+    def test_case_21_f2_deferred_b_boundary_through_closeout_feedback(self) -> None:
+        """A [b] boundary keeps an open child from inheriting the previous task's ignore."""
+        repo = Path(self.tmp) / "repo"
+        archive = repo / "measure" / "archive" / "deferred-boundary"
+        archive.mkdir(parents=True)
+        (archive / "plan.md").write_text(
+            f"- [x] Task 1.1: Do the work {SHA}\n"
+            f"- [b] Pending review {SHA} deferred:owner\n"
+            "  - [ ] Child of pending review\n",
+            encoding="utf-8",
+        )
+        (archive / "metadata.json").write_text(
+            '{"status": "done", "completed": "2026-11-24", "lane": "light"}\n',
+            encoding="utf-8",
+        )
+        (archive / "automation-supervisor-closeout-manifest.json").write_text("{}\n", encoding="utf-8")
+        self.assertEqual(
+            self.module.closeout_feedback(repo, "deferred-boundary"),
+            ["plan task is not complete: - [ ] Child of pending review"],
+        )
 
 
 class CloseoutNestedSubboxesCandidatesTest(unittest.TestCase):
