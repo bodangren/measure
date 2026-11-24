@@ -181,6 +181,12 @@ class GreenGateReviewTaskTest(unittest.TestCase):
         code, out = self.gate("jr-green")
         self.assert_gate_pass(out, code, "one open [~] review task")
 
+    def test_only_open_review_task_without_completed_task_fails(self) -> None:
+        """Only `- [~] Task 1.3 Review A of the helper` and no `[x]` task gives the one-incomplete line."""
+        self.stage_plan(["- [~] Task 1.3 Review A of the helper"])
+        code, out = self.gate("jr-green")
+        self.assert_gate_fails(out, code, "only open [~] review task and no completed task", INCOMPLETE_1)
+
     def test_two_open_review_tasks_fail(self) -> None:
         """Base plus two label-at-start `[~]` tasks gives the one-incomplete line (one ignore only)."""
         self.stage_plan([
@@ -244,6 +250,16 @@ class GreenGateReviewTaskTest(unittest.TestCase):
         ])
         code, out = self.gate("jr-green")
         self.assert_gate_fails(out, code, "deferred review plus unfinished Green task", INCOMPLETE_1)
+
+    def test_deferred_review_before_eligible_review_passes(self) -> None:
+        """A deferred review before an eligible review passes: the deferred task never spends the one ignore."""
+        self.stage_plan([
+            *BASE_TASKS,
+            "- [~] Task 3.5 Review A (deferred:review-a)",
+            "- [~] Task 3.6 Review B of the helper",
+        ])
+        code, out = self.gate("jr-green")
+        self.assert_gate_pass(out, code, "deferred review before an eligible review task")
 
     # ------------------------------------------------------------------ FR-2 SHA check unchanged
     def test_missing_sha_with_review_task_fails(self) -> None:

@@ -22,7 +22,7 @@
 
 ### Bug Fixes
 
-* **jr-green open review task:** the jr-green gate ignores at most one `[~]` task whose text starts with a later-role label. The label follows the optional `Task N.M` prefix and an optional colon. The labels are Review A, Review B, Review C, Adversarial, Adversarial testing, Acceptance, Phase acceptance, and Final acceptance. The match ignores case and requires a whole phrase. A deferred task and a `[ ]` task never use the ignore. The mid-red, review, acceptance, and closeout gates stay unchanged. Track `green_gate_review_task_20261124`.
+* **jr-green open review task:** the jr-green gate ignores at most one `[~]` task whose text starts with a later-role label. A numeric task prefix is required; the word `Task` before the number is optional, and a colon after the prefix is optional. The labels are Review A, Review B, Review C, Adversarial, Adversarial testing, Acceptance, Phase acceptance, and Final acceptance. The match ignores case and requires a whole phrase. A deferred task and a `[ ]` task never use the ignore. The mid-red, review, acceptance, and closeout gates stay unchanged. Track `green_gate_review_task_20261124`.
 
 * **board focus:** the Measure board keeps the open comment box, its text, its focus, and its caret across a data refresh and a host ready event. A held data paint sets one pending flag and changes no DOM node. A user paint clears the pending paint and draws the latest data once. The rail badge still updates with each data result. Track `board_focus_reasons_20261121`.
 

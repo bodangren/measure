@@ -404,7 +404,7 @@ def phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int, int, in
 
 
 def jr_green_phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int, int, int, int]:
-    """Phase counts for jr-green: ignore at most one open later-role task."""
+    """Phase counts for jr-green: ignore one open later-role task when a completed task exists."""
     if not plan_path.exists():
         return 0, 0, 0, 0, 0
     for heading, block in phase_blocks(plan_path.read_text(encoding="utf-8", errors="ignore")):
@@ -419,7 +419,7 @@ def jr_green_phase_counts(plan_path: Path, phase_heading: str) -> tuple[int, int
         for status, task in tasks:
             if status == "x" or "deferred" in task.lower():
                 continue
-            if status == "~" and ignored == 0 and LATER_ROLE_TASK_RE.match(task):
+            if complete > 0 and status == "~" and ignored == 0 and LATER_ROLE_TASK_RE.match(task):
                 ignored += 1
                 continue
             incomplete += 1
