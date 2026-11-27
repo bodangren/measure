@@ -161,6 +161,7 @@ export const loadRepo = async (
       lastChange,
       doneDate: entry.doneDate,
       doneSource: entry.doneSource,
+      shelved: entry.shelved,
       now,
     })
   }

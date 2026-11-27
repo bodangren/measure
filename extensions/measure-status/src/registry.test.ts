@@ -179,3 +179,28 @@ describe('parseRegistry done dates', () => {
     expect(parseRegistry(wide)[0]?.doneSource).toBe('folder')
   })
 })
+
+describe('parseRegistry shelved entries', () => {
+  test('an entry under a Shelved heading carries its status note; other headings end it', () => {
+    const md = [
+      '## Active Tracks',
+      '- [~] **Track: Live**',
+      '  *Link: [./tracks/live_1/](./tracks/live_1/)*',
+      '## Shelved Tracks',
+      '- [ ] **Track: Parked**',
+      '  *Link: [./tracks/parked_1/](./tracks/parked_1/)*',
+      '  *Status: shelved, not done (PM 2026-11-27) | Priority: LOW*',
+      '- [ ] **Track: Bare**',
+      '  *Link: [./tracks/bare_1/](./tracks/bare_1/)*',
+      '## Archived Tracks',
+      '- [x] **Track: Old**',
+      '  *Link: [./archive/old_1/](./archive/old_1/)*',
+    ].join('\n')
+    expect(parseRegistry(md).map(entry => entry.shelved)).toEqual([
+      null,
+      'shelved, not done (PM 2026-11-27)',
+      'shelved',
+      null,
+    ])
+  })
+})

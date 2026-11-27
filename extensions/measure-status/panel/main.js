@@ -1994,7 +1994,6 @@ ${GUEST_UI_LOOK_CSS}`;
   var CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/;
   var OWNER = /\bdeferred:([A-Za-z0-9._;-]*)/;
   var LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/;
-  var BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/;
   var ownerToken = (text) => {
     const match = OWNER.exec(text);
     if (match === null) return null;
@@ -2019,12 +2018,8 @@ ${GUEST_UI_LOOK_CSS}`;
     const collapsed = withoutSha.replace(/\s+/g, " ").trim();
     return collapsed.length > 140 ? `${collapsed.slice(0, 140)}\u2026` : collapsed;
   };
-  var taskBody = (text) => {
-    const match = BODY_PREFIX.exec(text);
-    if (match === null) return text;
-    return text.slice(match[0].length).replace(/\s*\*\*$/, "").trim();
-  };
-  var isGateText = (text) => /^GATE\b/.test(taskBody(text)) || text.includes("User Manual Verification");
+  var TASK_ID = /Task\s+(?=[A-Za-z0-9_-]*[A-Za-z_-])(?=[0-9A-Za-z_-]*\d)[A-Za-z0-9_-]{10,}(?![A-Za-z0-9_-])/m;
+  var hasTaskId = (text) => TASK_ID.test(text);
   var joinPath = (...parts) => {
     const out = [];
     for (const segment of parts.join("/").split("/")) {
@@ -2224,7 +2219,6 @@ ${GUEST_UI_LOOK_CSS}`;
     if (open === 0) return "All tasks closed.";
     return open === 1 ? "1 open task, no current task." : `${open} open tasks, no current task.`;
   };
-  var gateAgeOk = (lastChange, now) => lastChange !== null && now - lastChange <= DONE_WINDOW_DAYS * DAY_MS;
   var trackIdOf = (folder) => folder === null ? "" : folder.split("/").pop() ?? "";
   var r2Card = (base, marker, plan) => {
     const note = plan.kind === "unreadable" ? "Plan unreadable" : "No plan.";
@@ -2272,6 +2266,22 @@ ${GUEST_UI_LOOK_CSS}`;
         archived: folder !== null && folder.startsWith("archive/")
       };
     }
+    if (input.shelved) {
+      return {
+        ...base,
+        column: "planned",
+        state: "next",
+        reason: `Shelved: ${input.shelved}`,
+        position: null,
+        marker: null,
+        taskText: null,
+        note: null,
+        line: null,
+        doneDate: null,
+        doneSource: null,
+        archived: false
+      };
+    }
     if (input.plan.kind !== "plan") return r2Card(base, input.registryMarker, input.plan);
     const plan = input.plan.plan;
     const tasks = tasksOf(plan);
@@ -2303,7 +2313,8 @@ ${GUEST_UI_LOOK_CSS}`;
     }
     if (first !== null && first.marker === "b") {
       const gate = gateForOwner(first.deferredOwner);
-      if (gate !== null) {
+      const danielGate = gate === "deletion" || gate === "paid spend" || gate === "public date" || gate === "Thai check";
+      if (danielGate && hasTaskId(first.text)) {
         return cardOf2(
           "waiting",
           "waits-daniel",
@@ -2311,14 +2322,14 @@ ${GUEST_UI_LOOK_CSS}`;
           first.text
         );
       }
-    }
-    if (current2 !== null && isGateText(current2.text) && gateAgeOk(input.lastChange, input.now)) {
-      return cardOf2(
-        "waiting",
-        "waits-daniel",
-        `Waits for Daniel: look${DASH}${taskLabel(current2.text)}`,
-        current2.text
-      );
+      if (danielGate) {
+        return cardOf2(
+          "blocked",
+          "waits-pm",
+          "Waits for PM: gate without a Task: open the Task or decide it",
+          first.text
+        );
+      }
     }
     if (current2 !== null && current2.marker === "~") {
       return cardOf2("in-progress", "running", `Running: ${taskLabel(current2.text)}`, null);
@@ -2585,6 +2596,8 @@ ${GUEST_UI_LOOK_CSS}`;
   var TITLE_TRACK = /^Track [A-Za-z0-9.]+:\s+/;
   var DONE_WORD = /(?:completed|complete|archived|done)\b[^0-9]{0,24}(\d{4}-\d{2}-\d{2})/i;
   var SCHEME = /^[A-Za-z][A-Za-z0-9+.-]*:/;
+  var SHELVED_HEADING = /^#{1,6}\s+Shelved\b/i;
+  var STATUS_NOTE = /\*Status:\s*([^|*]+)/;
   var stripPrefix = (title) => title.replace(TITLE_PREFIX, "").replace(TITLE_TRACK, "").trim();
   var titleOf = (rest) => {
     const bold = BOLD.exec(rest);
@@ -2638,8 +2651,10 @@ ${GUEST_UI_LOOK_CSS}`;
   var parseRegistry = (md) => {
     const lines = md.split("\n");
     const entries = [];
+    let inShelved = false;
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index] ?? "";
+      if (HEADING.test(line)) inShelved = SHELVED_HEADING.test(line);
       const entry = ENTRY2.exec(line);
       if (entry === null) continue;
       let end = lines.length;
@@ -2670,7 +2685,12 @@ ${GUEST_UI_LOOK_CSS}`;
           }
         }
       }
-      entries.push({ marker, title: titleOf(rest), folder, doneDate, doneSource });
+      let shelved = null;
+      if (inShelved) {
+        const status = lines.slice(index, end).map((text) => STATUS_NOTE.exec(text)).find((match) => match !== null);
+        shelved = (status?.[1] ?? "").trim() || "shelved";
+      }
+      entries.push({ marker, title: titleOf(rest), folder, doneDate, doneSource, shelved });
     }
     return entries;
   };
@@ -2796,6 +2816,7 @@ ${GUEST_UI_LOOK_CSS}`;
         lastChange,
         doneDate: entry.doneDate,
         doneSource: entry.doneSource,
+        shelved: entry.shelved,
         now
       });
     }

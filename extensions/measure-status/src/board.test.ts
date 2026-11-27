@@ -702,3 +702,19 @@ describe('FR-16, D2: the Done group', () => {
     expect(summary.more).toBe(0)
   })
 })
+
+describe('shelved tracks', () => {
+  test('a shelved track with done tasks is planned, not In progress, Waits for PM, or Done', () => {
+    const shelved = card({
+      shelved: 'shelved, not done',
+      plan: { kind: 'plan', plan: plan('## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Two deferred:forge\n') },
+    })
+    expect(shelved.column).toBe('planned')
+    expect(shelved.state).toBe('next')
+    expect(shelved.reason).toBe('Shelved: shelved, not done')
+  })
+
+  test('a done track under the Shelved heading stays done', () => {
+    expect(card({ shelved: 'shelved', registryMarker: 'x' }).column).toBe('done')
+  })
+})

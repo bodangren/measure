@@ -12,6 +12,8 @@ export type RegistryEntry = {
   /** `YYYY-MM-DD`, only for marker `x`. */
   doneDate: string | null
   doneSource: DoneSource | null
+  /** The status note when the entry sits under a "Shelved" heading, else null. */
+  shelved: string | null
 }
 
 /** A column-0 line with a status marker. An indented line is not an entry. */
@@ -25,6 +27,8 @@ const TITLE_PREFIX = /^(?:Track|Program):\s+/
 const TITLE_TRACK = /^Track [A-Za-z0-9.]+:\s+/
 const DONE_WORD = /(?:completed|complete|archived|done)\b[^0-9]{0,24}(\d{4}-\d{2}-\d{2})/i
 const SCHEME = /^[A-Za-z][A-Za-z0-9+.-]*:/
+const SHELVED_HEADING = /^#{1,6}\s+Shelved\b/i
+const STATUS_NOTE = /\*Status:\s*([^|*]+)/
 
 /** Removes a leading `Track: `, `Program: `, or `Track <id>: ` prefix. */
 const stripPrefix = (title: string): string =>
@@ -103,8 +107,10 @@ const targetOf = (lines: readonly string[], start: number, end: number, rest: st
 export const parseRegistry = (md: string): RegistryEntry[] => {
   const lines = md.split('\n')
   const entries: RegistryEntry[] = []
+  let inShelved = false
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index] ?? ''
+    if (HEADING.test(line)) inShelved = SHELVED_HEADING.test(line)
     const entry = ENTRY.exec(line)
     if (entry === null) continue
     let end = lines.length
@@ -135,7 +141,12 @@ export const parseRegistry = (md: string): RegistryEntry[] => {
         }
       }
     }
-    entries.push({ marker, title: titleOf(rest), folder, doneDate, doneSource })
+    let shelved: string | null = null
+    if (inShelved) {
+      const status = lines.slice(index, end).map(text => STATUS_NOTE.exec(text)).find(match => match !== null)
+      shelved = (status?.[1] ?? '').trim() || 'shelved'
+    }
+    entries.push({ marker, title: titleOf(rest), folder, doneDate, doneSource, shelved })
   }
   return entries
 }

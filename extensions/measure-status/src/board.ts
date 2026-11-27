@@ -71,6 +71,8 @@ export type TrackInput = {
   lastChange: number | null
   doneDate: string | null
   doneSource: DoneSource | null
+  /** The status note of a track under the "Shelved" heading of tracks.md. */
+  shelved?: string | null
   /** The time of the load in milliseconds. */
   now: number
 }
@@ -228,6 +230,24 @@ export const classifyTrack = (input: TrackInput): Card => {
       doneDate: input.doneDate,
       doneSource: input.doneSource,
       archived: folder !== null && folder.startsWith('archive/'),
+    }
+  }
+
+  // A shelved track is planned work: never In progress, never Done, never a wait.
+  if (input.shelved) {
+    return {
+      ...base,
+      column: 'planned',
+      state: 'next',
+      reason: `Shelved: ${input.shelved}`,
+      position: null,
+      marker: null,
+      taskText: null,
+      note: null,
+      line: null,
+      doneDate: null,
+      doneSource: null,
+      archived: false,
     }
   }
 
