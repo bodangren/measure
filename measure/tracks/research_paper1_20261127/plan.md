@@ -12,4 +12,4 @@ Track: `research_paper1_20261127`
 - [x] Task 4 Tables rebuild: `paper1_tables.py` runs from the new folder with relative paths. Evidence: heavy-run rebuild against the frozen snapshot reproduces all 19 generated CSVs byte-identical (`diff -q` clean); 4 hand-maintained files (number-map, trial-evidence, trial-evidence-sonnet, route_match, leave_one_dir_out_focus) documented as inputs in the data README.
 - [x] Task 5 README links: `research/README.md` one line per paper; main `README.md` links to it. Evidence: `research/README.md` and the `Research papers:` line in `README.md`.
 - [x] Task 6 Scan: secret scan on `research/` is clean. Evidence: strict patterns for keys (`sk-…`, `xox…`, `gh…_…`, `AIza…`, `ya29…`), session ids (`ses_…`), Drive/Task URLs, and `/home/` paths all return no hit; remaining `token`/`sk-` hits are English words and route labels, verified by context.
-- [~] Task 7 Push: commit and plain push to `origin/main`; remote head equals the commit.
+- [x] Task 7 Push: commit and plain push to `origin/main`; remote head equals the commit. Evidence: commit a33de2b; ls-remote matches; files listed via gh api.
