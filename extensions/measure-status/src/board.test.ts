@@ -135,39 +135,41 @@ describe('R2: a track with no readable task', () => {
   })
 })
 
-describe('R3a: a gate task', () => {
+describe('User Manual Verification and GATE text make no Daniel card', () => {
   const gate = '## Phase 1: A\n\n- [x] Task: One\n- [ ] Task: End User Manual Verification\n'
 
-  test('is Waiting on Daniel when the updated age is 14 days or less', () => {
+  test('a User Manual Verification task is an ordinary next task', () => {
     const track = card({ plan: { kind: 'plan', plan: plan(gate) }, lastChange: NOW - 14 * DAY })
     expect(track).toMatchObject({
-      column: 'waiting',
-      line: 'Task: End User Manual Verification',
+      column: 'in-progress',
+      line: null,
       marker: ' ',
       note: null,
     })
     expect(track.position).toMatchObject({ phase: 1, phases: 1, task: 2, tasks: 2 })
+    expect(track.reason).toBe('Next in line: Task: End User Manual Verification')
     expect(cardLabel(track)).toBeNull()
   })
 
-  test('is Waiting on Daniel for a GATE body', () => {
+  test('is ordinary for a GATE body', () => {
     const md = '## Phase 1: A\n\n- [x] Task: One\n- [ ] Task 1.5: GATE. PM look, then Daniel accepts the look.\n'
     const track = card({ plan: { kind: 'plan', plan: plan(md) } })
-    expect(track.column).toBe('waiting')
+    expect(track.column).toBe('in-progress')
+    expect(track.reason).toContain('Next in line:')
     expect(cardLabel(track)).toBeNull()
   })
 
-  test('gives no gate at 14 days plus one millisecond', () => {
+  test('gives an ordinary card at 14 days plus one millisecond', () => {
     const track = card({ plan: { kind: 'plan', plan: plan(gate) }, lastChange: NOW - 14 * DAY - 1 })
     expect(track).toMatchObject({ column: 'in-progress', line: null })
   })
 
-  test('gives no gate with an older or unknown age', () => {
+  test('gives an ordinary card with an older or unknown age', () => {
     expect(card({ plan: { kind: 'plan', plan: plan(gate) }, lastChange: NOW - 20 * DAY }).column).toBe('in-progress')
     expect(card({ plan: { kind: 'plan', plan: plan(gate) }, lastChange: null }).column).toBe('in-progress')
   })
 
-  test('wins over an open [b] task', () => {
+  test('wins no Daniel card over an open [b] task', () => {
     const md = [
       '## Phase 1: A',
       '',
@@ -176,10 +178,10 @@ describe('R3a: a gate task', () => {
       '- [ ] Task: Three User Manual Verification',
       '',
     ].join('\n')
-    expect(card({ plan: { kind: 'plan', plan: plan(md) } }).column).toBe('waiting')
+    expect(card({ plan: { kind: 'plan', plan: plan(md) } }).column).toBe('blocked')
   })
 
-  test('does not apply to a skipped gate task', () => {
+  test('does not skip a User Manual Verification task', () => {
     const md = [
       '## Phase 1: A',
       '',
@@ -259,21 +261,22 @@ describe('R3c and R3d: the current task decides', () => {
 })
 
 describe('R4: no current task', () => {
-  const closed = (owner: string) => `## Phase 1: A\n\n- [x] Task: One\n- [b] Task: Two deferred:${owner}\n`
+  const closed = (owner: string) => `## Phase 1: A\n\n- [x] Task: One \`aaaaaaa\`\n- [b] Task: Two deferred:${owner}\n`
 
-  test('is Waiting on Daniel for a closed [b] task with a Daniel token', () => {
-    const track = card({ plan: { kind: 'plan', plan: plan(closed('owner-manual-verification')) } })
+  test('a four-gate owner without a Task id is Waits for PM with the gate reason', () => {
+    const track = card({ plan: { kind: 'plan', plan: plan(closed('spend')) } })
     expect(track).toMatchObject({
-      column: 'waiting',
-      line: 'Task: Two deferred:owner-manual-verification',
+      column: 'blocked',
+      line: 'Task: Two deferred:spend',
       position: null,
       note: 'All tasks closed.',
+      reason: 'Waits for PM: gate without a Task: open the Task or decide it',
     })
   })
 
-  test('is Waiting on Daniel for each gate owner token', () => {
-    for (const owner of ['daniel-deploy', 'manual', 'paid', 'public-date', 'proof', 'sudo']) {
-      expect(card({ plan: { kind: 'plan', plan: plan(closed(owner)) } }).column).toBe('waiting')
+  test('no owner token makes a Daniel card without a Task id', () => {
+    for (const owner of ['spend', 'thai', 'deletion', 'public', 'daniel-deploy', 'manual', 'paid', 'public-date', 'proof', 'sudo']) {
+      expect(card({ plan: { kind: 'plan', plan: plan(closed(owner)) } }).column).toBe('blocked')
     }
   })
 
@@ -337,6 +340,20 @@ describe('the two real plan shapes', () => {
     '',
   ].join('\n')
 
+
+  test('an open [b] behind the last done task gives Blocked with no position', () => {
+    const track = card({ plan: { kind: 'plan', plan: plan(daily) } })
+    expect(track).toMatchObject({
+      column: 'blocked',
+      line: 'Task: Seven',
+      position: null,
+      marker: null,
+      taskText: null,
+      note: '3 open tasks, no current task.',
+    })
+  })
+})
+
   const mastery = [
     '## Phase 1: A',
     '',
@@ -369,18 +386,7 @@ describe('the two real plan shapes', () => {
     '',
   ].join('\n')
 
-  test('an open [b] behind the last done task gives Blocked with no position', () => {
-    const track = card({ plan: { kind: 'plan', plan: plan(daily) } })
-    expect(track).toMatchObject({
-      column: 'blocked',
-      line: 'Task: Seven',
-      position: null,
-      marker: null,
-      taskText: null,
-      note: '3 open tasks, no current task.',
-    })
-  })
-
+describe('skipped verification tasks stay ordinary', () => {
   test('five skipped verification tasks give In progress with the count note', () => {
     const track = card({ plan: { kind: 'plan', plan: plan(mastery) }, registryMarker: '~' })
     expect(track).toMatchObject({
@@ -393,6 +399,74 @@ describe('the two real plan shapes', () => {
 
   test('the same plan with the registry marker x is Done', () => {
     expect(card({ plan: { kind: 'plan', plan: plan(mastery) }, registryMarker: 'x' }).column).toBe('done')
+  })
+})
+
+describe('the four gates with a Task id', () => {
+  const TASK_ID = 'NjBxVXEzVDVVQzJzZ0pKTg'
+
+  test.each([
+    ['spend', 'paid spend'],
+    ['thai', 'Thai check'],
+    ['deletion', 'deletion'],
+    ['public', 'public date'],
+  ])('[b] deferred:%s with a Task id makes a Daniel card', (owner, gate) => {
+    const track = card({
+      plan: {
+        kind: 'plan',
+        plan: plan(`## Phase 1: A\n\n- [x] Task: One \`aaaaaaa\`\n- [b] Task: Wait deferred:${owner} Task ${TASK_ID}\n`),
+      },
+    })
+    expect(track.column).toBe('waiting')
+    expect(track.state as string).toBe('waits-daniel')
+    expect(track.reason).toContain(`Waits for Daniel: ${gate}`)
+    expect(track.reason).not.toContain('undefined')
+  })
+
+  test('a gate line without a Task id is Waits for PM with the gate reason', () => {
+    const track = card({
+      plan: {
+        kind: 'plan',
+        plan: plan('## Phase 1: A\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Wait deferred:spend\n'),
+      },
+    })
+    expect(track.column).toBe('blocked')
+    expect(track.reason).toBe('Waits for PM: gate without a Task: open the Task or decide it')
+  })
+
+  test('[b] deferred:deploy with a Task id is Waits for PM, not Daniel', () => {
+    const track = card({
+      plan: {
+        kind: 'plan',
+        plan: plan(`## Phase 1: A\n\n- [x] Task: One \`aaaaaaa\`\n- [b] Task: Deploy deferred:deploy Task ${TASK_ID}\n`),
+      },
+    })
+    expect(track.column).toBe('blocked')
+    expect(track.reason).not.toContain('Daniel')
+  })
+
+  test('a plan number with deferred:spend and no id is Waits for PM', () => {
+    const track = card({
+      plan: {
+        kind: 'plan',
+        plan: plan('## Phase 1: A\n\n- [x] Task: One `aaaaaaa`\n- [b] Task 1.5: Wait deferred:spend\n'),
+      },
+    })
+    expect(track.column).toBe('blocked')
+    expect(track.reason).toBe('Waits for PM: gate without a Task: open the Task or decide it')
+  })
+
+  test('a lone User Manual Verification task makes no Daniel card and no Daniel total', () => {
+    const umv = input({
+      plan: {
+        kind: 'plan',
+        plan: plan('## Phase 1: A\n\n- [x] Task: One `aaaaaaa`\n- [ ] Task: Two User Manual Verification\n'),
+      },
+      lastChange: NOW,
+    })
+    const boards = [buildBoard('invented-a', [umv])]
+    expect(classifyTrack(umv).column).not.toBe('waiting')
+    expect(blockedTracks(boards)).toBe(0)
   })
 })
 
@@ -500,7 +574,9 @@ describe('blockedTracks', () => {
     const waiting = input({
       plan: {
         kind: 'plan',
-        plan: plan('## Phase 1: A\n\n- [x] Task: One\n- [ ] Task 1.5: GATE look\n'),
+        plan: plan(
+          '## Phase 1: A\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Wait deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
+        ),
       },
       lastChange: NOW,
     })
@@ -509,6 +585,17 @@ describe('blockedTracks', () => {
       buildBoard('invented-b', [waiting, waiting]),
     ]
     expect(blockedTracks(boards)).toBe(3)
+  })
+
+  test('ignores ordinary tasks that are not the four gates', () => {
+    const ordinary = input({
+      plan: {
+        kind: 'plan',
+        plan: plan('## Phase 1: A\n\n- [x] Task: One `aaaaaaa`\n- [ ] Task: Two User Manual Verification\n'),
+      },
+      lastChange: NOW,
+    })
+    expect(blockedTracks([buildBoard('invented-a', [ordinary])])).toBe(0)
   })
 })
 

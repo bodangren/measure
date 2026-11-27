@@ -8,6 +8,10 @@ This file tracks all major tracks for the Measure project.
   *Link: [./tracks/research_paper1_20261127/](./tracks/research_paper1_20261127/)*
   *Research paper 1 publication: publish v0.3 (agent routing) with data and table script, scrubbed, secret scan clean — a33de2b https://github.com/bodangren/measure/tree/main/research/paper1-agent-routing.*
 
+- [~] **Track: Waits for Daniel only for the four gates with a Task id**
+  *Link: [./tracks/measure_status_daniel_gate_20261127/](./tracks/measure_status_daniel_gate_20261127/)*
+  *measure-status: Waits for Daniel only for the four gates with a Task id.*
+
 - (none)
 
 ---

@@ -93,10 +93,14 @@ The labels `BLOCKER`, `GATE`, and `MANUAL CHECK` do not appear. A card
 that no registry entry names shows `Not in the registry`.
 
 The states are Waits for Daniel, Running, Waits for PM, and Next in line.
-A `User Manual Verification` task that says deferred or no visible change
-gives Waits for PM. A gate word in a `[b]` owner gives Waits for Daniel.
-The gate words name deletion, paid spend, deploy, public date, sudo or
-login, proof, Thai check, and look. A `[~]` task gives Running.
+A `User Manual Verification` task is an ordinary next task. A `Waits for
+Daniel` card happens only when the first not-done task is a `[b]` line
+whose `deferred:` owner is one of thai, spend, deletion, or public AND
+the line names a Google Task id (`Task` plus 10 or more id characters).
+Without the Task id the same line is Waits for PM with the reason
+`gate without a Task: open the Task or decide it`. Every other owner,
+including deploy, sudo or login, proof, and look, gives Waits for PM.
+A `[~]` task gives Running.
 A `[b]` task with a non-gate owner gives Waits for PM. `deferred:pm` and
 `deferred:mid-red` are examples. A registry marker `[b]` gives Waits for PM.
 Its line is `Waits for PM: registry marker [b]`. A plan with all tasks closed

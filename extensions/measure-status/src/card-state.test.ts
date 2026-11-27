@@ -131,38 +131,49 @@ describe('the continuation-line deferred tag (FR-9)', () => {
 })
 
 describe('one state and one reason per card (FR-11)', () => {
-  test('a gate word gives Waits for Daniel with the exact reason line', () => {
-    const label = taskLabel('Task: Deploy the thing deferred:daniel-deploy')
+  test('a four-gate owner with a Task id gives Waits for Daniel with the exact reason line', () => {
+    const label = taskLabel('Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg')
     const found = card(
-      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing deferred:daniel-deploy\n',
+      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
     )
     expect(found.column).toBe('waiting')
     expect(found.state as CardState).toBe('waits-daniel')
-    expect(found.reason).toBe(`Waits for Daniel: deploy${DASH}${label}`)
+    expect(found.reason).toBe(`Waits for Daniel: paid spend${DASH}${label}`)
   })
 
-  test('a wrapped gate tag gives Waits for Daniel', () => {
+  test('a four-gate owner without a Task id is Waits for PM with the gate reason', () => {
+    const found = card(
+      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend\n',
+    )
+    expect(found.column).toBe('blocked')
+    expect(found.state as CardState).toBe('waits-pm')
+    expect(found.reason).toBe('Waits for PM: gate without a Task: open the Task or decide it')
+  })
+
+  test('a wrapped gate tag without a Task id gives Waits for PM', () => {
     const found = card(
       '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing\n  \u2014 deferred:daniel-deploy-word\n',
     )
-    expect(found.state as CardState).toBe('waits-daniel')
-    expect(found.reason as string).toContain('Waits for Daniel: deploy')
+    expect(found.column).toBe('blocked')
+    expect(found.state as CardState).toBe('waits-pm')
+    expect(found.reason as string).not.toContain('Daniel')
   })
 
-  test('a gate-text current task gives Waits for Daniel with gate look', () => {
+  test('a gate-text current task is an ordinary next task', () => {
     const label = taskLabel('GATE check the deploy list')
     const found = card('## Phase 1: Work\n\n- [~] GATE check the deploy list\n')
-    expect(found.column).toBe('waiting')
-    expect(found.state as CardState).toBe('waits-daniel')
-    expect(found.reason).toBe(`Waits for Daniel: look${DASH}${label}`)
+    expect(found.column).toBe('in-progress')
+    expect(found.state as CardState).toBe('running')
+    expect(found.reason).toBe(`Running: ${label}`)
   })
 
-  test('a manual gate word without verification text gives Waits for Daniel', () => {
+  test('a manual gate word without verification text is an ordinary Waits for PM task', () => {
     const found = card(
       '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Manual verify deferred:manual\n',
     )
-    expect(found.state as CardState).toBe('waits-daniel')
-    expect(found.reason as string).toContain('Waits for Daniel: look')
+    expect(found.column).toBe('blocked')
+    expect(found.state as CardState).toBe('waits-pm')
+    expect(found.reason as string).not.toContain('Daniel')
   })
 
   test('a tilde task gives Running with the exact reason line', () => {
@@ -308,7 +319,7 @@ describe('columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15)
       '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Wait for the copy deferred:pm\n',
     )
     const daniel = card(
-      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing deferred:daniel-deploy\n',
+      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
     )
     const running = card('## Phase 1: Work\n\n- [~] Task: Do the work\n')
     expect(cardLabel(pm)).toBe(null)
@@ -318,7 +329,7 @@ describe('columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15)
 
   test('the Waits for Daniel card shows its reason and only it shows Comment', () => {
     const daniel = card(
-      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing deferred:daniel-deploy\n',
+      '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
     )
     const html = renderCard(daniel, NOW, undefined, cardKey(daniel, 0))
     expect(html).toContain(daniel.reason as string)
@@ -346,7 +357,7 @@ describe('columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15)
   test('the board names the new columns', () => {
     const board = buildBoard('invented-repo', [
       input(
-        '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing deferred:daniel-deploy\n',
+        '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
       ),
       input(
         '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Wait for the copy deferred:pm\n',
@@ -363,7 +374,7 @@ describe('columns, labels, buttons, badge, and the Reason field (FR-12 to FR-15)
   test('the rail badge counts Waits for Daniel cards', () => {
     const board = buildBoard('invented-repo', [
       input(
-        '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Deploy the thing deferred:daniel-deploy\n',
+        '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
       ),
       input(
         '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Wait for the copy deferred:pm\n',

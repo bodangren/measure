@@ -19,7 +19,7 @@ const trackInput = (title: string): TrackInput => ({
   title,
   registryMarker: ' ',
   folder: 'tracks/invented_1',
-  plan: { kind: 'plan', plan: parsePlan('## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Two deferred:daniel-deploy-word\n') },
+  plan: { kind: 'plan', plan: parsePlan('## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n') },
   lastChange: NOW,
   doneDate: null,
   doneSource: null,

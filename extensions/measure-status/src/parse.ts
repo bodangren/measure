@@ -17,7 +17,6 @@ const SHA = /(?:^|\s)`?([0-9a-f]{7})`?\s*$/
 const CHECKPOINT = /\s*\[checkpoint: ([0-9a-f]{7,40})\]/
 const OWNER = /\bdeferred:([A-Za-z0-9._;-]*)/
 const LABEL_SHA = /\s`?[0-9a-f]{7}`?\s*$/
-const BODY_PREFIX = /^\s*(?:\*\*)?\s*(?:Task\s+)?([A-Za-z0-9.-]*\d[A-Za-z0-9.-]*)\s*:?\s*/
 
 /** FR-10: the text after `deferred:`, keeping `-`, `_`, `.`, and `;`. */
 export const ownerToken = (text: string): string | null => {
@@ -53,16 +52,17 @@ export const taskLabel = (text: string): string => {
   return collapsed.length > 140 ? `${collapsed.slice(0, 140)}…` : collapsed
 }
 
-/** FR-3: the task text without its id prefix. */
-export const taskBody = (text: string): string => {
-  const match = BODY_PREFIX.exec(text)
-  if (match === null) return text
-  return text.slice(match[0].length).replace(/\s*\*\*$/, '').trim()
-}
+/**
+ * A Google Task id on a task line: the text `Task` plus whitespace plus an
+ * id of 10 or more letters, digits, `_`, or `-`. A plan number such as
+ * `Task 1.5:` or `Task 12` never counts: digits-and-dots-only strings fail
+ * the length rule or the letter rule. The scan covers the task line and its
+ * indented continuation lines, the same lines `ownerOf` reads.
+ */
+const TASK_ID = /Task\s+(?=[A-Za-z0-9_-]*[A-Za-z_-])(?=[0-9A-Za-z_-]*\d)[A-Za-z0-9_-]{10,}(?![A-Za-z0-9_-])/m
 
-/** FR-4: true when the task body starts with `GATE` or the text names the manual check. */
-export const isGateText = (text: string): boolean =>
-  /^GATE\b/.test(taskBody(text)) || text.includes('User Manual Verification')
+/** True when the task text names a Google Task id on its first or continuation lines. */
+export const hasTaskId = (text: string): boolean => TASK_ID.test(text)
 
 /** Joins path parts and resolves `.` and `..` segments. */
 export const joinPath = (...parts: string[]): string => {

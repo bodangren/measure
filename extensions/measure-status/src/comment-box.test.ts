@@ -25,7 +25,7 @@ const danielCard = (): Card =>
     plan: {
       kind: 'plan',
       plan: parsePlan(
-        '## Phase 1: Work\n\n- [x] Task: One\n- [b] Task: Deploy deferred:daniel-deploy\n',
+        '## Phase 1: Work\n\n- [x] Task: One `aaaaaaa`\n- [b] Task: Pay the bill deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
       ),
     },
     lastChange: NOW,

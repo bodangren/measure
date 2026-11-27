@@ -1,7 +1,7 @@
 // FR-4, FR-5, FR-8: the column rules, the card, the column view, and the rail
 // badge. Pure functions over the registry entry and the parsed plan.
 import {
-  isGateText,
+  hasTaskId,
   isOpen,
   taskLabel,
   tasksOf,
@@ -174,10 +174,6 @@ const noteOf = (tasks: readonly Task[]): string => {
     : `${open} open tasks, no current task.`
 }
 
-/** FR-15 C1: rule R3a applies only when the Updated age is 14 days or less. */
-const gateAgeOk = (lastChange: number | null, now: number): boolean =>
-  lastChange !== null && now - lastChange <= DONE_WINDOW_DAYS * DAY_MS
-
 const trackIdOf = (folder: string | null): string =>
   folder === null ? '' : (folder.split('/').pop() ?? '')
 
@@ -277,11 +273,14 @@ export const classifyTrack = (input: TrackInput): Card => {
     return cardOf('blocked', 'waits-pm', `Waits for PM: ${taskLabel(first.text)}`, first.text)
   }
 
-  // FR-11 a: a human gate word on the first not-done task, or a gate text
-  // current task under rule R3a with gate `look`.
+  // FR-11 a: the first not-done task is a [b] line with a four-gate owner
+  // (thai, spend, deletion, or public) and a Task id. Nothing else makes a
+  // Daniel card.
   if (first !== null && first.marker === 'b') {
     const gate = gateForOwner(first.deferredOwner)
-    if (gate !== null) {
+    const danielGate =
+      gate === 'deletion' || gate === 'paid spend' || gate === 'public date' || gate === 'Thai check'
+    if (danielGate && hasTaskId(first.text)) {
       return cardOf(
         'waiting',
         'waits-daniel',
@@ -289,14 +288,14 @@ export const classifyTrack = (input: TrackInput): Card => {
         first.text,
       )
     }
-  }
-  if (current !== null && isGateText(current.text) && gateAgeOk(input.lastChange, input.now)) {
-    return cardOf(
-      'waiting',
-      'waits-daniel',
-      `Waits for Daniel: look${DASH}${taskLabel(current.text)}`,
-      current.text,
-    )
+    if (danielGate) {
+      return cardOf(
+        'blocked',
+        'waits-pm',
+        'Waits for PM: gate without a Task: open the Task or decide it',
+        first.text,
+      )
+    }
   }
 
   // FR-11 b: a task is [~].

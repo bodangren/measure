@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest'
 import {
   currentTask,
   findLink,
-  isGateText,
+  hasTaskId,
   isOpen,
   joinPath,
   ownerToken,
@@ -11,7 +11,6 @@ import {
   parseTracks,
   position,
   selectActive,
-  taskBody,
   taskLabel,
 } from './parse'
 import type { Plan } from './types'
@@ -245,40 +244,25 @@ describe('taskLabel', () => {
   })
 })
 
-describe('taskBody', () => {
-  test('removes the id prefix', () => {
-    expect(taskBody('Task 1.5: GATE. PM look, then Daniel accepts the look.')).toBe(
-      'GATE. PM look, then Daniel accepts the look.',
-    )
-    expect(taskBody('1.5 GATE it')).toBe('GATE it')
-    expect(taskBody('Task 2: GATE ok')).toBe('GATE ok')
+describe('hasTaskId', () => {
+  test('is true for a real-looking Task id', () => {
+    expect(hasTaskId('Task: Wait for the copy deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg')).toBe(true)
+    expect(hasTaskId('Task 9: User Manual Verification Task NjBxVXEzVDVVQzJzZ0pKTg')).toBe(true)
   })
 
-  test('removes the bold markers around the prefix', () => {
-    expect(taskBody('**Task 2.1: GATE ok**')).toBe('GATE ok')
+  test('is false for a plan number, a bare Task, or a short id', () => {
+    expect(hasTaskId('Task 1.5: GATE. PM look')).toBe(false)
+    expect(hasTaskId('Task 12: Do the work')).toBe(false)
+    expect(hasTaskId('Task: Do the work')).toBe(false)
+    expect(hasTaskId('Task ABC: Do the work')).toBe(false)
   })
 
-  test('keeps a text with no id', () => {
-    expect(taskBody('Write the loader')).toBe('Write the loader')
-    expect(taskBody('Task X: Something')).toBe('Task X: Something')
-  })
-})
-
-describe('isGateText', () => {
-  test('is true for a body that starts with GATE', () => {
-    expect(isGateText('GATE')).toBe(true)
-    expect(isGateText('Task 1.5: GATE. PM look')).toBe(true)
-    expect(isGateText('**Task 2.1: GATE ok**')).toBe(true)
+  test('is false for User Manual Verification without an id', () => {
+    expect(hasTaskId('Task 2: End User Manual Verification')).toBe(false)
+    expect(hasTaskId('User Manual Verification')).toBe(false)
   })
 
-  test('is false for GATEWAY, a lower-case gate, or GATE in the middle', () => {
-    expect(isGateText('Task 1.5: GATEWAY work')).toBe(false)
-    expect(isGateText('Task 1.5: Open the gate')).toBe(false)
-    expect(isGateText('Task 1.5: check the GATE first')).toBe(false)
-  })
-
-  test('is true for User Manual Verification in any place', () => {
-    expect(isGateText('Task 2: End User Manual Verification')).toBe(true)
-    expect(isGateText('User Manual Verification')).toBe(true)
+  test('is true for an id on an indented continuation line', () => {
+    expect(hasTaskId('Task: Wait for the copy deferred:spend\n  Task NjBxVXEzVDVVQzJzZ0pKTg')).toBe(true)
   })
 })

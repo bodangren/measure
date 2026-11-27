@@ -32,28 +32,36 @@ const ownerCard = (owner: string): Card =>
     inputOf(`## Phase 1: Work\n\n- [x] Task: Done\n- [b] Task: Gate deferred:${owner}\n`),
   )
 
-describe('F1: every FR-10 separator survives parsing into the card', () => {
+describe('F1: separators parse into the card; only the four gates with a Task id make Daniel', () => {
   const cases: Array<[string, string, string]> = [
     ['a-deploy', 'deploy', '-'],
     ['Deploy_Now', 'deploy', '_'],
     ['a.deploy', 'deploy', '.'],
     ['a;deploy', 'deploy', ';'],
   ]
+  const TASK_ID = 'NjBxVXEzVDVVQzJzZ0pKTg'
   for (const [owner, gate, separator] of cases) {
-    test(`the ${separator} separator in ${owner} gives ${gate}`, () => {
+    test(`the ${separator} separator in ${owner} parses but stays Waits for PM`, () => {
       expect(ownerToken(`Task: Gate deferred:${owner}`)).toBe(owner)
       const card = ownerCard(owner)
-      expect(card.state).toBe('waits-daniel')
-      expect(card.reason).toBe(`Waits for Daniel: ${gate} \u2014 ${taskLabel(`Task: Gate deferred:${owner}`)}`)
-      expect(renderCard(card, NOW, undefined, cardKey(card, 0))).toContain('open-comment')
+      expect(card.state).toBe('waits-pm')
+      expect(card.reason).toBe(`Waits for PM: ${taskLabel(`Task: Gate deferred:${owner}`)}`)
+      expect(renderCard(card, NOW, undefined, cardKey(card, 0))).not.toContain('open-comment')
     })
   }
 
-  test('proof;delete gives deletion by the FR-10 priority order', () => {
+  test('proof;delete parses by the FR-10 priority order but stays Waits for PM', () => {
     expect(ownerToken('Task: Gate deferred:proof;delete')).toBe('proof;delete')
     const card = ownerCard('proof;delete')
+    expect(card.state).toBe('waits-pm')
+    expect(card.reason as string).not.toContain('Waits for Daniel')
+    expect(renderCard(card, NOW, undefined, cardKey(card, 0))).not.toContain('open-comment')
+  })
+
+  test('spend with a Task id makes the Daniel card', () => {
+    const card = ownerCard(`spend Task ${TASK_ID}`)
     expect(card.state).toBe('waits-daniel')
-    expect(card.reason).toContain('Waits for Daniel: deletion ')
+    expect(card.reason).toContain('Waits for Daniel: paid spend ')
     expect(renderCard(card, NOW, undefined, cardKey(card, 0))).toContain('open-comment')
   })
 })
@@ -68,18 +76,9 @@ describe('F2: the mockup reasons follow the new rules', () => {
     expect(empty.map(card => card.trackId)).toEqual([])
   })
 
-  test('every gate group has a fixture card', () => {
+  test('each of the four gates has a fixture card with a Task id', () => {
     const reasons = cards.map(card => card.reason ?? '')
-    for (const gate of [
-      'deletion',
-      'paid spend',
-      'deploy',
-      'public date',
-      'sudo or login',
-      'proof',
-      'Thai check',
-      'look',
-    ]) {
+    for (const gate of ['deletion', 'paid spend', 'public date', 'Thai check']) {
       expect(
         reasons.some(reason => reason.startsWith(`Waits for Daniel: ${gate} \u2014 `)),
         `missing gate ${gate}`,
@@ -92,6 +91,17 @@ describe('F2: the mockup reasons follow the new rules', () => {
     expect(gate).toBeDefined()
     if (gate === undefined) throw new Error('the deletion gate fixture is missing')
     expect(renderCard(gate, NOW, undefined, cardKey(gate, 0))).toContain('open-comment')
+  })
+
+  test('no fixture card uses a Daniel reason the new rule cannot make', () => {
+    const retired = cards.filter(card =>
+      (card.reason ?? '').startsWith('Waits for Daniel: look ') ||
+      (card.reason ?? '').startsWith('Waits for Daniel: deploy ') ||
+      (card.reason ?? '').startsWith('Waits for Daniel: sudo or login ') ||
+      (card.reason ?? '').startsWith('Waits for Daniel: proof '),
+    )
+    const fixed = retired.map(card => card.trackId)
+    expect(fixed).toEqual([])
   })
 })
 
@@ -114,7 +124,7 @@ describe('F4: the fixture column matches the classifier column for its state', (
       return classifyTrack({ ...base, registryMarker: 'x', plan: { kind: 'missing' } }).column
     }
     const plans: Record<Exclude<CardState, 'done'>, string> = {
-      'waits-daniel': '## Phase 1: Work\n\n- [x] Task: Done\n- [b] Task: Gate deferred:manual\n',
+      'waits-daniel': '## Phase 1: Work\n\n- [x] Task: Done `aaaaaaa`\n- [b] Task: Gate deferred:spend Task NjBxVXEzVDVVQzJzZ0pKTg\n',
       'waits-pm': '## Phase 1: Work\n\n- [x] Task: Done\n- [b] Task: Wait deferred:pm\n',
       running: '## Phase 1: Work\n\n- [~] Task: Work\n',
       next: '## Phase 1: Work\n\n- [ ] Task: Work\n',
