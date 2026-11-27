@@ -51,34 +51,34 @@ HY_ROUTES = frozenset({
     "opencode/hy4-flash-free#high",
 })
 
-# Directory basenames come from the frozen snapshot at rebuild time. The
-# published tables carry only anonymous dir_NN labels. The names below map
-# the observed basenames to the paper domain classes.
-DOMAIN = {
-    "Desktop": "code",
-    "Workbooks": "markdown_curriculum",
-    "a63-tutor-calculator": "code",
-    "accounting-intake-p6": "code",
-    "accounting-intake-p7": "code",
-    "advantage-forge": "code",
-    "advantage-mmorpg": "code",
-    "advantage-pr": "markdown_curriculum",
-    "dashboard": "code",
-    "fixture-paths": "benchmark",
-    "jobs": "code",
-    "lending-desk-bench": "benchmark",
-    "mastery-advantage": "code",
-    "measure": "markdown_curriculum",
-    "per_app_cicd_20261107": "code",
-    "ra-math-advantage": "code",
-    "ra-quota": "code",
-    "reading-advantage-monorepo": "code",
-    "sales-seed-1c531677": "benchmark",
-    "storytime-speed": "benchmark",
-    "storytime_teaching_loops_20261103": "markdown_curriculum",
-    "www-storytime-launch-day": "markdown_curriculum",
-    "www-test-audit": "benchmark",
-}
+# The paper domain classes in directory rank order. `directory_layout`
+# ranks directories by run count, so rank position matches the published
+# dir_NN labels and a rebuild reproduces the tables. No basename appears.
+DOMAIN_BY_RANK = [
+    "code",  # dir_01
+    "markdown_curriculum",  # dir_02
+    "code",  # dir_03
+    "markdown_curriculum",  # dir_04
+    "benchmark",  # dir_05
+    "code",  # dir_06
+    "code",  # dir_07
+    "markdown_curriculum",  # dir_08
+    "code",  # dir_09
+    "code",  # dir_10
+    "code",  # dir_11
+    "code",  # dir_12
+    "benchmark",  # dir_13
+    "benchmark",  # dir_14
+    "code",  # dir_15
+    "benchmark",  # dir_16
+    "code",  # dir_17
+    "code",  # dir_18
+    "benchmark",  # dir_19
+    "code",  # dir_20
+    "code",  # dir_21
+    "markdown_curriculum",  # dir_22
+    "markdown_curriculum",  # dir_23
+]
 
 VERDICT_COLUMNS = [
     "verdicts",
@@ -246,11 +246,10 @@ def repo_of(directory: str | None) -> str:
     return os.path.basename(directory.rstrip("/"))
 
 
-def domain_of(directory: str | None) -> str:
-    repo = repo_of(directory)
-    if not repo:
+def domain_of_label(label: str | None, domain_by_label: dict[str, str] | None = None) -> str:
+    if label is None or domain_by_label is None:
         return "unassigned"
-    return DOMAIN.get(repo, "unassigned")
+    return domain_by_label.get(label, "unassigned")
 
 
 def bucket_result(result: str | None) -> str:
@@ -394,12 +393,20 @@ def role_group_of(role: str, role_groups: dict[str, str] | None = None) -> str:
 def directory_layout(runs):
     counts = Counter(repo_of(row["directory"]) or "(empty)" for row in runs)
     ranked_repos = sorted(counts, key=lambda repo: (-counts[repo], repo))
+    if len(ranked_repos) != len(DOMAIN_BY_RANK):
+        raise ValueError(
+            f"expected {len(DOMAIN_BY_RANK)} directories, found {len(ranked_repos)}"
+        )
+    domain_by_label = {
+        f"dir_{index:02d}": DOMAIN_BY_RANK[index - 1]
+        for index in range(1, len(ranked_repos) + 1)
+    }
     mapping = {
         repo: f"dir_{index:02d}"
         for index, repo in enumerate(ranked_repos, start=1)
     }
     order = [mapping[repo] for repo in ranked_repos]
-    return mapping, order
+    return mapping, order, domain_by_label
 
 
 def dir_id_of(row, directory_map: dict[str, str]) -> str:
@@ -460,12 +467,13 @@ def build_overview(
     until: str = DEFAULT_UNTIL,
     role_groups: dict[str, str] | None = None,
     directory_map: dict[str, str] | None = None,
+    domain_by_label: dict[str, str] | None = None,
 ) -> dict:
     runs = fetch_runs(con, until)
     if role_groups is None:
         role_groups = define_role_group(runs)
     if directory_map is None:
-        directory_map, _ = directory_layout(runs)
+        directory_map, _, domain_by_label = directory_layout(runs)
     dates = [row["started_at"] for row in runs if row["started_at"]]
     counts: dict[str, int] = defaultdict(int)
     missing = 0
@@ -516,9 +524,8 @@ def build_overview(
     dir_groups = aggregate_groups(runs, lambda row: (dir_id_of(row, directory_map),))
     for dir_id in sorted(directory_map.values()):
         group = dir_groups[(dir_id,)]
-        sample_row = next(row for row in runs if dir_id_of(row, directory_map) == dir_id)
         rows.append([
-            dir_id, group["runs"], domain_of(sample_row["directory"]), "",
+            dir_id, group["runs"], domain_of_label(dir_id, domain_by_label), "",
             group["runs"], group["pass"], group["fail"], group["no_verdict"],
             group["error"],
         ] + verdict_values(group["pass"], group["fail"], group["runs"]))
@@ -936,14 +943,18 @@ def build_by_domain(
     outdir: str,
     until: str = DEFAULT_UNTIL,
     role_groups: dict[str, str] | None = None,
+    directory_map: dict[str, str] | None = None,
+    domain_by_label: dict[str, str] | None = None,
 ) -> None:
     runs = fetch_runs(con, until)
     if role_groups is None:
         role_groups = define_role_group(runs)
+    if directory_map is None:
+        directory_map, _, domain_by_label = directory_layout(runs)
     groups = aggregate_groups(
         runs,
         lambda row: (
-            domain_of(row["directory"]),
+            domain_of_label(dir_id_of(row, directory_map), domain_by_label),
             role_group_of(row["role"], role_groups),
         ),
     )
@@ -978,7 +989,7 @@ def build_leave_one_directory_out(
     if role_groups is None:
         role_groups = define_role_group(runs)
     if directory_map is None or directory_order is None:
-        directory_map, directory_order = directory_layout(runs)
+        directory_map, directory_order, domain_by_label = directory_layout(runs)
     cells = aggregate_groups(runs, lambda row: (family_of(row["route"]), row["role"]))
     rows = []
     for (family, role), full in sorted(cells.items()):
@@ -1047,7 +1058,7 @@ def build_directory_exclusions(
 ) -> None:
     runs = fetch_runs(con, until)
     if directory_map is None or directory_order is None:
-        directory_map, directory_order = directory_layout(runs)
+        directory_map, directory_order, domain_by_label = directory_layout(runs)
     family_role_runs: dict[tuple[str, str], list] = defaultdict(list)
     for row in runs:
         family_role_runs[(family_of(row["route"]), row["role"])].append(row)
@@ -1375,8 +1386,8 @@ def build_all(
     try:
         runs = fetch_runs(con, until)
         role_groups = define_role_group(runs)
-        directory_map, directory_order = directory_layout(runs)
-        stats = build_overview(con, outdir, until, role_groups, directory_map)
+        directory_map, directory_order, domain_by_label = directory_layout(runs)
+        stats = build_overview(con, outdir, until, role_groups, directory_map, domain_by_label)
         build_by_family_role(con, outdir, until, role_groups)
         build_by_role_group_family(con, outdir, until, role_groups)
         build_by_route_top(con, outdir, until=until)
@@ -1386,7 +1397,7 @@ def build_all(
         stats.update(build_cost_classes(con, outdir, cost_fn, until))
         unmapped = build_cost_class_routes(con, outdir, cost_fn, until)
         build_per_month(con, outdir, until)
-        build_by_domain(con, outdir, until, role_groups)
+        build_by_domain(con, outdir, until, role_groups, directory_map, domain_by_label)
         build_leave_one_directory_out(
             con, outdir, until, role_groups, directory_map, directory_order,
         )

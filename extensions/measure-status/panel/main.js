@@ -2703,7 +2703,7 @@ ${GUEST_UI_LOOK_CSS}`;
     rosterRepo("advantage-pr"),
     rosterRepo("advantage-forge"),
     rosterRepo("mastery-advantage"),
-    rosterRepo("ra-math-advantage"),
+    // ra-math-advantage: parked by Daniel 2026-11-27; add back when he unparks it.
     rosterRepo("lending-desk-bench"),
     rosterRepo("measure")
   ];
