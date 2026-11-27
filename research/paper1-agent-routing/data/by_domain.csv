@@ -1,0 +1,7 @@
+domain,role_group,runs,pass,fail,no_verdict,error,pass_rate,verdicts,coverage,lower_bound,upper_bound,pass_rate_lo,pass_rate_hi,small_cell,run_share
+benchmark,decision,449,277,94,71,7,0.7466,371,0.8263,0.6169,0.7906,0.7000,0.7882,false,0.0765
+benchmark,producer,175,69,6,100,0,0.9200,75,0.4286,0.3943,0.9657,0.8363,0.9628,false,0.0298
+code,decision,2443,1582,522,292,47,0.7519,2104,0.8612,0.6476,0.7863,0.7330,0.7699,false,0.4161
+code,producer,840,379,60,392,9,0.8633,439,0.5226,0.4512,0.9286,0.8280,0.8923,false,0.1431
+markdown_curriculum,decision,1347,822,219,288,18,0.7896,1041,0.7728,0.6102,0.8374,0.7638,0.8133,false,0.2294
+markdown_curriculum,producer,617,226,13,376,2,0.9456,239,0.3874,0.3663,0.9789,0.9092,0.9679,false,0.1051

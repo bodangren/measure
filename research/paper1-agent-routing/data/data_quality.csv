@@ -1,0 +1,6 @@
+section,grouping,scope,group_id,distinct_groups,duplicate_groups,rows,extra_rows,extra_rows_same_result,runs,pass,fail,no_verdict,error,verdicts,pass_rate,coverage,lower_bound,upper_bound,pass_rate_lo,pass_rate_hi,small_cell,dedup_runs,dedup_pass,dedup_fail,dedup_no_verdict,dedup_error,dedup_verdicts,dedup_pass_rate,dedup_coverage,dedup_lower_bound,dedup_upper_bound,dedup_pass_rate_lo,dedup_pass_rate_hi,dedup_small_cell,duration_n,zero_duration_n,zero_duration_share
+duplicates,main_key,selected_sample,,5555,82,5871,316,253,5871,3355,914,1519,83,4269,0.7859,0.7271,0.5715,0.8443,0.7733,0.7979,false,5555,3113,860,1507,75,3973,0.7835,0.7152,0.5604,0.8452,0.7705,0.7961,false,,,
+duplicates,task_tag_key,selected_sample,,5615,117,5871,256,194,5871,3355,914,1519,83,4269,0.7859,0.7271,0.5715,0.8443,0.7733,0.7979,false,5615,3170,863,1507,75,4033,0.7860,0.7183,0.5646,0.8463,0.7731,0.7984,false,,,
+timestamps,role_group,producer,,,,,,,1632,,,,,,,,,,,,,,,,,,,,,,,,,,1215,1,0.0006
+timestamps,role_group,decision,,,,,,,4239,,,,,,,,,,,,,,,,,,,,,,,,,,3976,2629,0.6202
+timestamps,family,unknown,,,,,,,1047,,,,,,,,,,,,,,,,,,,,,,,,,,1047,1047,1.0000

@@ -4,6 +4,8 @@
 
 Measure keeps AI coding agents on plan. Every change starts as a written spec, becomes a task in a phased plan, and ends as a tested commit that you can trace and revert.
 
+Research papers: [research/README.md](research/README.md).
+
 Measure is a set of agent skills, agent roles, and a Claude Code mod. It stores your project context in a `measure/` folder inside your repository, so each new agent session starts with the same knowledge as the last one.
 
 > Measure is a community fork of [Google's Conductor](https://github.com/gemini-cli-extensions/conductor), extended with project memory, multi-agent orchestration, and live guard rails in Claude Code.

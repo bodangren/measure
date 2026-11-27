@@ -1,0 +1,12 @@
+checker_family,agreed,disagreed,checks,agreement_rate
+claude,193,13,206,0.936893
+deepseek,3,0,3,1.000000
+glm,90,0,90,1.000000
+kimi,9,2,11,0.818182
+mimo,4,0,4,1.000000
+minimax,10,0,10,1.000000
+muse,38,1,39,0.974359
+openai,94,27,121,0.776860
+qwen,6,2,8,0.750000
+stepfun,19,0,19,1.000000
+unknown,19,1,20,0.950000

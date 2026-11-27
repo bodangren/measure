@@ -1,0 +1,150 @@
+trial,metric,value,source_file,row_or_cell,derivation
+Jev,start_day,2,~/.local/state/ra-quota/jev-shadow.jsonl,first line t=2026-11-02T14:30:02Z,UTC day
+Jev,planned_days,4,measure/runs/pm-briefs/2026-11-02-jev-shadow-4day.md,Goal,planned duration
+Jev,initial_total,398,~/.local/state/ra-quota/jev-shadow.jsonl,lines with t <= 2026-11-06T14:30:00Z,Count rows; planned end in measure/pm-log.md 2026-11-04 07:35 ICT
+Jev,initial_no_task,211,~/.local/state/ra-quota/jev-shadow.jsonl,lines with t <= 2026-11-06T14:30:00Z,Count skipped=no task
+Jev,all_total,1736,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,Count rows at initial 2026-11-27 report
+Jev,all_no_task,1488,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,Count skipped=no task
+Jev,all_skipped,1553,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,Count skipped; ra-quota jev-report
+Jev,choice_answers,177,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,ra-quota jev-report choice mode denominator
+Jev,choice_agreed,54,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,ra-quota jev-report M1
+Jev,order_stable,139,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,ra-quota jev-report M3
+Jev,live_jev,0,~/.local/state/ra-quota/jev-shadow.jsonl,first 1736 lines,Count arm=jev
+Sonnet,policy_day,24,measure/pm-lessons.md,2026-11-24 row about max,Day of policy change
+Rating,rating_min,1,measure/pm-log.md,2026-11-11 10:34 ICT,rubric lower anchor
+Rating,rating_max,5,measure/pm-log.md,2026-11-11 10:34 ICT,rubric upper anchor
+Sonnet,xhigh_recorded_runs,34,~/.local/state/ra-quota/outcomes.sqlite,runs route=claude-agent/sonnet#xhigh and role=phase-acceptance,Count rows through snapshot date_max
+Sonnet,max_recorded_runs,31,~/.local/state/ra-quota/outcomes.sqlite,runs route=claude-agent/sonnet#max and role=phase-acceptance,Count rows through snapshot date_max
+Sonnet,xhigh_runs,33,~/.local/state/ra-quota/outcomes.sqlite + ~/.local/share/opencode/opencode.db,claude-compare logic: role phase-acceptance ; claude-agent routes; 2026-11-20 to snapshot date_max,Count by matched session route when present else recorded route; excludes actual other routes
+Sonnet,max_runs,29,~/.local/state/ra-quota/outcomes.sqlite + ~/.local/share/opencode/opencode.db,claude-compare logic: role phase-acceptance ; claude-agent routes; 2026-11-20 to snapshot date_max,Count by matched session route when present else recorded route; excludes actual other routes
+Sonnet,xhigh_sessions,6,~/.local/share/opencode/opencode.db,claude-compare match_session; phase-acceptance sonnet#xhigh,Count matched sessions
+Sonnet,max_sessions,13,~/.local/share/opencode/opencode.db,claude-compare match_session; phase-acceptance sonnet#max,Count matched sessions
+Sonnet,xhigh_est_runs,6,~/.local/share/opencode/opencode.db,same matched xhigh sessions,Count matched sessions with estimate
+Sonnet,max_est_runs,13,~/.local/share/opencode/opencode.db,same matched max sessions,Count matched sessions with estimate
+Sonnet,xhigh_wall_mean,11.165122222222221,~/.local/share/opencode/opencode.db,same matched xhigh sessions,Mean minutes session_facts created to first idle else end
+Sonnet,max_wall_mean,43.47613846153846,~/.local/share/opencode/opencode.db,same matched max sessions,Mean minutes session_facts created to first idle else end
+Sonnet,xhigh_est_mean,6.2736035,~/.local/share/opencode/opencode.db,same matched xhigh sessions,Mean estimated USD from claude-compare weight with constant price fallback
+Sonnet,max_est_mean,8.188315015384616,~/.local/share/opencode/opencode.db,same matched max sessions,Mean estimated USD from claude-compare weight with constant price fallback
+Sonnet,xhigh_findings_runs,24,~/.local/state/ra-quota/outcomes.sqlite,xhigh route group matched or recorded,Count runs with findings or collected from note
+Sonnet,max_findings_runs,11,~/.local/state/ra-quota/outcomes.sqlite,max route group matched or recorded,Count runs with findings or collected from note
+Sonnet,xhigh_findings_total,172,~/.local/state/ra-quota/outcomes.sqlite,xhigh route group matched or recorded,Sum findings on evidence-bearing runs
+Sonnet,max_findings_total,39,~/.local/state/ra-quota/outcomes.sqlite,max route group matched or recorded,Sum findings on evidence-bearing runs
+HungerG,enable_day,24,measure/pm-log.md,2026-11-24 13:52 ICT,Day of route enablement
+HungerG,runs,12,~/.local/state/ra-quota/outcomes.sqlite,route exactly opencode-go/hungerg-free in initial snapshot,Count all runs; corroborated by by_family_role.csv family=other
+HungerG,pass,0,~/.local/state/ra-quota/outcomes.sqlite,same rows,Count result=pass
+HungerG,fail,0,~/.local/state/ra-quota/outcomes.sqlite,same rows,Count result=fail
+HungerG,no_verdict,9,~/.local/state/ra-quota/outcomes.sqlite,same rows at initial snapshot,Count result=no_verdict
+HungerG,missing,3,~/.local/state/ra-quota/outcomes.sqlite,same rows at initial snapshot,Count NULL result
+Jev,restart_date,2026-11-27,route configuration,Route trial order confirmed by routing rules and the dated backup,Date confirmed by routing rules and the dated backup
+Jev,live_share,0.2,~/.config/ra-quota/routes.json,rules.jevShadow.explore.share,"Decision semantics in scripts/jobs/ra-quota.md, explore arm; measure/pm-log.md, 2026-11-20 05:02 ICT"
+Jev,end_date,2026-12-11,~/.config/ra-quota/routes.json,rules.jevShadow.until,"Scheduled end date, local time; route trial order in orchestrator brief"
+Jev,readout_date,2026-12-11,~/.config/ra-quota/routes.json,rules.jevShadow.until,Planned readout after the configured end on that date; PM instruction 2026-11-27
+Benchmark,skills_count,5,dir_01:docs/assets/data/benchmark.json,benchmark.arms.b,Count in the exact definition: five skills
+Benchmark,HungerG_a1_trusted,1,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_a1_score,92.8,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_a1_week,2026w48,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_a1_go_usd,0,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,HungerG_a2_trusted,1,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_a2_score,95.2,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_a2_week,2026w48,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_a2_go_usd,0,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,HungerG_a3_trusted,1,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_a3_score,95.7,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_a3_week,2026w48,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_a3_go_usd,0,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,HungerG_b1_trusted,1,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_b1_score,95.8,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_b1_week,2026w48,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_b1_go_usd,0,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,HungerG_b2_trusted,1,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_b2_score,99.5,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_b2_week,2026w48,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_b2_go_usd,0,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,HungerG_b3_trusted,1,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,HungerG_b3_score,100,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,HungerG_b3_week,2026w48,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_b3_go_usd,0,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,go.usd,"Estimated cost, not live quota measurement"
+Benchmark,DeepSeek_a1_trusted,1,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_a1_score,91.4,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_a1_week,2026w37,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,DeepSeek_a2_trusted,1,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_a2_score,90.9,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_a2_week,2026w38,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,DeepSeek_a3_trusted,1,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_a3_score,95,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_a3_week,2026w43,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,DeepSeek_b1_trusted,0,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_b1_score,null,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_b1_week,2026w37,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,DeepSeek_b2_trusted,0,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_b2_score,null,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_b2_week,2026w38,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,DeepSeek_b3_trusted,1,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,trusted,Boolean trust flag as 0 or 1
+Benchmark,DeepSeek_b3_score,97.7,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,total,Direct score; null excluded from mean
+Benchmark,DeepSeek_b3_week,2026w43,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,run_id,ISO week component of run ID
+Benchmark,HungerG_runs,6,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,run artifacts,Count score records
+Benchmark,HungerG_trusted,6,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,trusted,Sum true flags
+Benchmark,HungerG_a_mean,94.56666666666666,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json,trusted and total,Arithmetic mean of nonnull trusted scores
+Benchmark,HungerG_b_mean,98.43333333333334,dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,trusted and total,Arithmetic mean of nonnull trusted scores
+Benchmark,HungerG_a_published_median,95.2,dir_01:docs/assets/data/benchmark.json,models[id=hungerg-free].no_skills.repeats.median,Published lower median of latest valid repeat week
+Benchmark,HungerG_b_published_median,99.5,dir_01:docs/assets/data/benchmark.json,models[id=hungerg-free].skills.repeats.median,Published lower median of latest valid repeat week
+Benchmark,DeepSeek_runs,6,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,run artifacts,Count score records
+Benchmark,DeepSeek_trusted,4,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,trusted,Sum true flags
+Benchmark,DeepSeek_a_mean,92.43333333333334,dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/a-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,trusted and total,Arithmetic mean of nonnull trusted scores
+Benchmark,DeepSeek_b_mean,97.7,dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w37/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w38/artifacts/score.json; dir_01 local run artifact:runs/b-deepseek-v4-1-flash-2026w43-r1/artifacts/score.json,trusted and total,Arithmetic mean of nonnull trusted scores
+Benchmark,DeepSeek_a_published_median,95.0,dir_01:docs/assets/data/benchmark.json,models[id=deepseek-v4.1-flash].no_skills.repeats.median,Published lower median of latest valid repeat week
+Benchmark,DeepSeek_b_published_median,97.7,dir_01:docs/assets/data/benchmark.json,models[id=deepseek-v4.1-flash].skills.repeats.median,Published lower median of latest valid repeat week
+Benchmark,deepseek_model_version,4.1,dir_01:docs/assets/data/benchmark.json,models[id=deepseek-v4.1-flash].name,Model identifier component
+Benchmark,HungerG_each_go_usd,0,dir_01 local run artifact:runs/a-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/a-hungerg-free-2026w48-r3/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r1/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r2/artifacts/score.json; dir_01 local run artifact:runs/b-hungerg-free-2026w48-r3/artifacts/score.json,go.usd for all run artifacts,Every recorded estimated Go USD is zero
+Sonnet,xhigh_joint_run_count,33,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count rows in trial-evidence-sonnet.csv
+Sonnet,xhigh_joint_matched_sessions,6,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count matched_session=1
+Sonnet,xhigh_joint_evidence_runs,24,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count has_findings_evidence=1
+Sonnet,xhigh_joint_intersection_runs,0,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count matched_session=1 and has_findings_evidence=1
+Sonnet,xhigh_joint_intersection_usable,0,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,One when intersection_runs is at least five
+Sonnet,xhigh_joint_intersection_est_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean est_usd over the intersection
+Sonnet,xhigh_joint_intersection_wall_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean wall_min over the intersection
+Sonnet,xhigh_joint_intersection_findings_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean findings_count over the intersection
+Sonnet,xhigh_joint_intersection_findings_median,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median findings_count over the intersection
+Sonnet,xhigh_joint_pass,25,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=pass
+Sonnet,xhigh_joint_fail,5,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=fail
+Sonnet,xhigh_joint_no_verdict,3,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=no_verdict
+Sonnet,xhigh_joint_other,0,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=other
+Sonnet,xhigh_joint_date_min,2026-11-24,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum recorded_date
+Sonnet,xhigh_joint_date_max,2026-11-26,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum recorded_date
+Sonnet,xhigh_joint_matched_est_median,4.850983125000001,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median est over matched sessions
+Sonnet,xhigh_joint_matched_est_min,1.41110295,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum est over matched sessions
+Sonnet,xhigh_joint_matched_est_max,15.668257200000001,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum est over matched sessions
+Sonnet,xhigh_joint_matched_wall_median,10.573458333333335,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median wall over matched sessions
+Sonnet,xhigh_joint_matched_wall_min,4.08045,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum wall over matched sessions
+Sonnet,xhigh_joint_matched_wall_max,20.938533333333332,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum wall over matched sessions
+Sonnet,max_joint_run_count,29,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count rows in trial-evidence-sonnet.csv
+Sonnet,max_joint_matched_sessions,13,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count matched_session=1
+Sonnet,max_joint_evidence_runs,11,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count has_findings_evidence=1
+Sonnet,max_joint_intersection_runs,0,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count matched_session=1 and has_findings_evidence=1
+Sonnet,max_joint_intersection_usable,0,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,One when intersection_runs is at least five
+Sonnet,max_joint_intersection_est_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean est_usd over the intersection
+Sonnet,max_joint_intersection_wall_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean wall_min over the intersection
+Sonnet,max_joint_intersection_findings_mean,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Mean findings_count over the intersection
+Sonnet,max_joint_intersection_findings_median,,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median findings_count over the intersection
+Sonnet,max_joint_pass,21,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=pass
+Sonnet,max_joint_fail,3,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=fail
+Sonnet,max_joint_no_verdict,3,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=no_verdict
+Sonnet,max_joint_other,2,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Count verdict=other
+Sonnet,max_joint_date_min,2026-11-22,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum recorded_date
+Sonnet,max_joint_date_max,2026-11-24,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum recorded_date
+Sonnet,max_joint_matched_est_median,7.8374835,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median est over matched sessions
+Sonnet,max_joint_matched_est_min,4.526517,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum est over matched sessions
+Sonnet,max_joint_matched_est_max,13.92397665,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum est over matched sessions
+Sonnet,max_joint_matched_wall_median,33.635983333333336,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Median wall over matched sessions
+Sonnet,max_joint_matched_wall_min,17.675866666666668,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Minimum wall over matched sessions
+Sonnet,max_joint_matched_wall_max,117.5546,claude-compare logic,phase-acceptance; 2026-11-20 to 2026-11-26,Maximum wall over matched sessions
+Jev,followup_not_skipped,183,jev-shadow log,first 1736 lines,Count skipped is null
+Jev,followup_usable_choice,177,jev-shadow log,first 1736 lines,Count choice mode with jevPick
+Jev,followup_other_without_usable_choice,6,jev-shadow log,first 1736 lines,Count not skipped without a usable choice
+Jev,followup_usable_choice_mode_choice,177,jev-shadow log,first 1736 lines,mode=choice
+Jev,followup_no_usable_choice_atomic_atomic_answer,1,jev-shadow log,first 1736 lines,mode=atomic; outcome=atomic_answer
+Jev,followup_no_usable_choice_choice_TimeoutError,1,jev-shadow log,first 1736 lines,mode=choice; outcome=TimeoutError
+Jev,followup_no_usable_choice_choice_URLError,4,jev-shadow log,first 1736 lines,mode=choice; outcome=URLError
+Jev,followup_other_skips,65,jev-shadow log,first 1736 lines,Count skipped reason other than no task
+Jev,followup_other_skip_menu_under_2,6,jev-shadow log,first 1736 lines,reason=menu under 2
+Jev,followup_other_skip_no_menu,59,jev-shadow log,first 1736 lines,reason=no menu

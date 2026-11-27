@@ -1,0 +1,5 @@
+cost_class,runs,pass,fail,no_verdict,error,pass_rate,routes_distinct,run_share,verdicts,coverage,lower_bound,upper_bound,pass_rate_lo,pass_rate_hi,small_cell
+credit,616,321,61,220,14,0.8403,3,0.1049,382,0.6201,0.5211,0.9010,0.8002,0.8736,false
+free,828,363,100,359,6,0.7840,13,0.1410,463,0.5592,0.4384,0.8792,0.7443,0.8191,false
+subscription,3136,1703,569,833,31,0.7496,32,0.5342,2272,0.7245,0.5430,0.8186,0.7313,0.7669,false
+unknown,1291,968,184,107,32,0.8403,20,0.2199,1152,0.8923,0.7498,0.8575,0.8180,0.8603,false

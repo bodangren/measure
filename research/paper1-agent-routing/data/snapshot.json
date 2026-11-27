@@ -1,0 +1,19 @@
+{
+  "copy_time": "2026-11-27T08:37:16.990865Z",
+  "copy_time_basis": "live_backup",
+  "until": "2026-11-26T22:21:52Z",
+  "file_name": "outcomes-20261127T083716761728Z.sqlite",
+  "sha256": "59eddd0eb34019870463451367f5f059a176331b00acab0beb30b295776e89b0",
+  "run_count": 5947,
+  "selected_run_count": 5871,
+  "schema_tables": [
+    "collected_files",
+    "findings",
+    "rater_checks",
+    "ratings",
+    "runs",
+    "schema_version"
+  ],
+  "routes_file": "routes.json",
+  "routes_sha256": "a59582047f3a9f50898977086328da9fcfffb1508130de2b1d0602d8d3164030"
+}

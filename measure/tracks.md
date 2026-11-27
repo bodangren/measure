@@ -4,6 +4,10 @@ This file tracks all major tracks for the Measure project.
 
 ## Active Tracks
 
+- [~] **Track: Research paper 1 publication**
+  *Link: [./tracks/research_paper1_20261127/](./tracks/research_paper1_20261127/)*
+  *Research paper 1 publication: publish v0.3 (agent routing) with data and table script, scrubbed, secret scan clean; push to main.*
+
 - (none)
 
 ---
