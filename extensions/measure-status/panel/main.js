@@ -2705,6 +2705,7 @@ ${GUEST_UI_LOOK_CSS}`;
     rosterRepo("mastery-advantage"),
     // ra-math-advantage: parked by Daniel 2026-11-27; add back when he unparks it.
     rosterRepo("lending-desk-bench"),
+    rosterRepo("advantage-mmorpg"),
     rosterRepo("measure")
   ];
   var measureFile = (repo, relative) => `${repo.path}/measure/${relative}`;

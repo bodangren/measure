@@ -11,3 +11,4 @@ Track: `measure_status_daniel_gate_20261127`
 - [x] Task 3 Push: commit, plain push, ls-remote verify, sha on the card line. Evidence: 80077b4, 2ed7c5b and d3c6b6f on origin/main (ls-remote).
 - [x] Task 4 Shelved rule and bundle rebuild (PM, 2026-11-27): a track under "## Shelved Tracks" shows in Planned as "Shelved: <status>", never In progress or Done; panel/main.js rebuilt so Daniel's panel carries 80077b4 and the Shelved rule. Evidence: bunx vitest run 444 passed (25 files); tsc --noEmit clean; this commit.
 - [x] Task 5 ra-math-advantage off the roster while parked (Daniel, 2026-11-27): roster.ts, roster.test.ts, package.json filesystem globs; panel/main.js rebuilt. Evidence: bunx vitest run 444 passed; this commit.
+- [x] Task 6 advantage-mmorpg on the roster (PM, 2026-11-28): roster.ts, roster.test.ts, package.json filesystem globs; bundles rebuilt. Evidence: bunx vitest run 444 passed; this commit.

@@ -10,11 +10,12 @@ const IDS = [
   'advantage-forge',
   'mastery-advantage',
   'lending-desk-bench',
+  'advantage-mmorpg',
   'measure',
 ]
 
 describe('ROSTER', () => {
-  test('lists the seven active repos in the assignment order (ra-math-advantage parked)', () => {
+  test('lists the eight active repos in the assignment order (ra-math-advantage parked)', () => {
     expect(ROSTER.map(repo => repo.id)).toEqual(IDS)
   })
 
